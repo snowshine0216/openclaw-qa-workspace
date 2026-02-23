@@ -29,7 +29,7 @@ package-lock.json
 *~
 
 #Reports folders
-/tmp
-/report
-/reports
-/temp
+tmp/
+report/
+reports/
+temp/

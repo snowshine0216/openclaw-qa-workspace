@@ -72,7 +72,7 @@ if [ -z "$DOWNSTREAM_JOBS" ]; then
     # Alternative: check build log for triggered jobs
     DOWNSTREAM_JOBS=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
         "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/consoleText" \
-        | grep -oP 'Starting building: \K[^\s]+' \
+        | grep -o 'Starting building: [^#]*' | sed 's/Starting building: //' \
         | sed 's/#.*//' | sort -u || echo "")
 fi
 
