@@ -5,14 +5,14 @@
 *.key
 
 # OpenClaw Secrets & State
-workspace/.openclaw/
+**/.openclaw/
 **/*auth.json
 **/*token*.json
 **/credentials/
 
 # Memory Files (may contain sensitive context)
-workspace/memory/*.md
-!workspace/memory/.gitkeep
+**/memory/*.md
+!**/memory/.gitkeep
 
 # Logs & Temp Files
 *.log
@@ -27,3 +27,9 @@ package-lock.json
 # Backup files
 *.bak
 *~
+
+#Reports folders
+/tmp
+/report
+/reports
+/temp
