@@ -19,11 +19,12 @@ log() {
 log "Uploading to Feishu: $FILE_PATH"
 
 # Get Feishu credentials from OpenClaw config
-FEISHU_APP_ID=$(grep -A 20 '"feishu"' ~/.openclaw/openclaw.json | grep '"appId"' | sed 's/.*": "//;s/".*//')
-FEISHU_APP_SECRET=$(grep -A 20 '"feishu"' ~/.openclaw/openclaw.json | grep '"appSecret"' | sed 's/.*": "//;s/".*//')
+# Using "daily" account
+FEISHU_APP_ID="cli_a9041a7751b85cd9"
+FEISHU_APP_SECRET="jXxfPsEm34VJ8cGi3qIIpctr6MOc24Dk"
 
 if [ -z "$FEISHU_APP_ID" ] || [ -z "$FEISHU_APP_SECRET" ]; then
-    log "✗ Error: Feishu credentials not found in openclaw.json"
+    log "✗ Error: Feishu credentials not configured"
     exit 1
 fi
 

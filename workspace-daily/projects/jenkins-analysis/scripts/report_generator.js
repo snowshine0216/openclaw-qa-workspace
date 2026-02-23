@@ -105,7 +105,7 @@ report += `\n---\n\n## 📝 Notes
 `;
 
 // Write report
-const reportPath = path.join(outputDir, 'jenkins_daily_report.md');
+const reportPath = path.join(outputDir, `${reportFolder}.md`);
 fs.writeFileSync(reportPath, report, 'utf8');
 
 console.log(`✓ Report generated: ${reportPath}`);

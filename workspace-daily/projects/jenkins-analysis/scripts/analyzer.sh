@@ -8,6 +8,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 TMP_DIR="$PROJECT_DIR/tmp"
+LOGS_DIR="$PROJECT_DIR/logs"
 REPORTS_DIR="$PROJECT_DIR/reports"
 JENKINS_URL="http://tec-l-1081462.labs.microstrategy.com:8080/"
 JENKINS_USER="admin"
@@ -22,7 +23,8 @@ REPORT_FOLDER="${JOB_NAME}_${BUILD_NUMBER}"
 REPORT_DIR="$REPORTS_DIR/$REPORT_FOLDER"
 
 # Logging
-LOG_FILE="$TMP_DIR/analyzer_${JOB_NAME}_${BUILD_NUMBER}.log"
+mkdir -p "$LOGS_DIR"
+LOG_FILE="$LOGS_DIR/analyzer_${JOB_NAME}_${BUILD_NUMBER}.log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 log() {
@@ -35,10 +37,10 @@ log "Report folder: $REPORT_FOLDER"
 log "=========================================="
 
 # Step 1: Check if report already exists
-if [ -f "$REPORT_DIR/jenkins_daily_report.docx" ]; then
+if [ -f "$REPORT_DIR/${REPORT_FOLDER}.docx" ]; then
     log "✓ Report already exists for $REPORT_FOLDER"
     log "Sending existing report to Feishu..."
-    bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/jenkins_daily_report.docx"
+    bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/${REPORT_FOLDER}.docx"
     log "✓ Existing report sent successfully"
     exit 0
 fi
@@ -95,6 +97,9 @@ PASSED_JOBS="[]"
 COUNTER=0
 
 while IFS= read -r job_name; do
+    # Trim whitespace
+    job_name=$(echo "$job_name" | xargs)
+    
     COUNTER=$((COUNTER + 1))
     
     # Update heartbeat every job
@@ -149,6 +154,10 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
         log "[$ANALYSIS_COUNTER/$FAILED_COUNT] Analyzing: $JOB_NAME_F #$JOB_NUM_F"
         
         # Call Jenkins skill to get console log
+        export JENKINS_URL="$JENKINS_URL"
+        export JENKINS_USER="$JENKINS_USER"
+        export JENKINS_API_TOKEN="$JENKINS_API_TOKEN"
+        
         node "$SCRIPT_DIR/../../../skills/jenkins/scripts/jenkins.mjs" console \
             --job "$JOB_NAME_F" \
             --build "$JOB_NUM_F" \
@@ -177,8 +186,8 @@ update_heartbeat "Converting to DOCX..."
 log "Converting markdown to DOCX..."
 
 node "$SCRIPT_DIR/md_to_docx.js" \
-    "$REPORT_DIR/jenkins_daily_report.md" \
-    "$REPORT_DIR/jenkins_daily_report.docx"
+    "$REPORT_DIR/${REPORT_FOLDER}.md" \
+    "$REPORT_DIR/${REPORT_FOLDER}.docx"
 
 log "✓ DOCX created"
 
@@ -186,7 +195,7 @@ log "✓ DOCX created"
 update_heartbeat "Uploading to Feishu..."
 log "Uploading report to Feishu..."
 
-bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/jenkins_daily_report.docx"
+bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/${REPORT_FOLDER}.docx"
 
 log "✓ Report uploaded to Feishu"
 

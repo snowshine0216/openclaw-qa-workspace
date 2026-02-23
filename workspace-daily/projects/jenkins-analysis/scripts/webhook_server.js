@@ -11,7 +11,13 @@ const path = require('path');
 
 const PORT = process.env.WEBHOOK_PORT || 9090;
 const ANALYSIS_SCRIPT = path.join(__dirname, 'analyzer.sh');
-const LOG_FILE = path.join(__dirname, '../tmp/webhook.log');
+const LOG_DIR = path.join(__dirname, '../logs');
+const LOG_FILE = path.join(LOG_DIR, 'webhook.log');
+
+// Ensure logs directory exists
+if (!fs.existsSync(LOG_DIR)) {
+  fs.mkdirSync(LOG_DIR, { recursive: true });
+}
 
 // Watched jobs configuration
 const WATCHED_JOBS = [

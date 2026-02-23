@@ -99,6 +99,12 @@ Analysis progress is written to `tmp/heartbeat_*.txt` every 5 minutes:
 - [DESIGN.md](docs/DESIGN.md) - System architecture and data flow
 - [WEBHOOK_SETUP.md](docs/WEBHOOK_SETUP.md) - Jenkins webhook configuration
 
+## Manually trigger
+```bash
+cd /Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/jenkins-analysis/scripts
+bash manual_trigger.sh Tanzu_Report_Env_Upgrade 1242
+ ```
+
 ## 🐛 Troubleshooting
 
 **Webhook not received?**
