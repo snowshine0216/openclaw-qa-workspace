@@ -30,8 +30,15 @@
 
 - **Language:** English (unless otherwise requested)
 - **Tone:** Professional, business-appropriate
+
+### With Snow
 - **Rule:** Always repeat requirements, ask clarifying questions, and **only proceed after explicit approval**
 - **Deliverables:** Always organized and structured
+
+### With Other Agents
+- **Clear instructions** - specific task, deliverables, constraints
+- **Context transfer** - provide issue keys, previous outputs, dependencies
+- **Coordination signals** - when to start, what to wait for, handoff points
 
 ## Progress Tracking
 

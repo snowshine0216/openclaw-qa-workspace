@@ -1,0 +1,9 @@
+{
+  "name": "microstrategy-ui-test",
+  "description": "UI testing for MicroStrategy dashboards and reports using Playwright CLI",
+  "version": "1.0.0",
+  "author": "OpenClaw",
+  "tags": ["microstrategy", "ui-testing", "playwright", "testing"],
+  "skills": ["playwright-cli"],
+  "commands": ["playwright-cli"]
+}
