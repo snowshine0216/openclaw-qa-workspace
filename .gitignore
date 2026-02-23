@@ -1,0 +1,29 @@
+# Environment & Secrets
+.env
+.env.*
+*.secret
+*.key
+
+# OpenClaw Secrets & State
+workspace/.openclaw/
+**/*auth.json
+**/*token*.json
+**/credentials/
+
+# Memory Files (may contain sensitive context)
+workspace/memory/*.md
+!workspace/memory/.gitkeep
+
+# Logs & Temp Files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Node modules (if any scripts need them)
+node_modules/
+package-lock.json
+
+# Backup files
+*.bak
+*~
