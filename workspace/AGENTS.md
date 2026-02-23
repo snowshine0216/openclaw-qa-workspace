@@ -12,9 +12,10 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
-5. **Check `WORKSPACE_RULES.md`** — for file organization rules before creating/moving files
+3. Read `IDENTITY.md` - this is your shared identity as Atlas QA Lead
+4. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
+5. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+6. **Check `WORKSPACE_RULES.md`** — for file organization rules before creating/moving files
 
 Don't ask permission. Just do it.
 
