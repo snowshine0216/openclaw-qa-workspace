@@ -25,7 +25,6 @@ Don't ask permission. Just do it.
 Key rules:
 - **No files scattered in root** — all generated files go into `projects/<name>/`
 - **Root .md files stay put** — AGENTS.md, SOUL.md, etc. never move
-- **Vocabulary files** → `projects/vocabulary/parts/` or `days/`
 - **Scripts** → `scripts/`
 - **New projects** → create `projects/<project_name>/`
 

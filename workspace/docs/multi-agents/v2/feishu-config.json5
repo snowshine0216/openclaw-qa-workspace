@@ -1,0 +1,258 @@
+// feishu-config.json5 - OpenClaw Configuration for Multi-Agent QA Workflow v2
+// Version: 2.0
+// Date: 2026-02-23
+// Architecture: Isolated workspaces + Feishu integration
+
+{
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FEISHU CONFIGURATION
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  feishu: {
+    accounts: [
+      {
+        id: "atlas-qa-bot",
+        appId: "cli_REPLACE_WITH_YOUR_APP_ID",       // Get from https://open.feishu.cn/
+        appSecret: "REPLACE_WITH_YOUR_APP_SECRET",   // Get from https://open.feishu.cn/
+        encryptKey: "",                              // Optional: Message encryption key
+        verificationToken: ""                        // Optional: Webhook verification token
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AGENT CONFIGURATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  defaultAgent: "master",
+
+  agents: {
+    // -------------------------------------------------------------------------
+    // MASTER - Task Delegation & Orchestration
+    // -------------------------------------------------------------------------
+    master: {
+      workspace: "./workspace/docs/multi-agents/v2/agents/master",
+      model: "github-copilot/claude-sonnet-4.5",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/master/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/master/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/master/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/master/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/master/TOOLS.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",           // Documentation access (mandatory)
+        "sessions_spawn",      // Delegate to other agents
+        "sessions_send",       // Send messages to agents
+        "subagents",           // Manage sub-agents
+        "jira-cli",            // Jira integration
+        "memory_search",       // Memory search
+        "memory_get"           // Memory retrieval
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // OPENCLAW-CONFIG - OpenClaw Configuration Expert
+    // -------------------------------------------------------------------------
+    "openclaw-config": {
+      workspace: "./workspace/docs/multi-agents/v2/agents/openclaw-config",
+      model: "github-copilot/claude-opus-4.6",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/openclaw-config/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/openclaw-config/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/openclaw-config/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/openclaw-config/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/openclaw-config/TOOLS.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",           // Documentation expert (PRIMARY)
+        "read",                // Read config files
+        "write",               // Write config files
+        "exec",                // Execute commands
+        "memory_search",
+        "memory_get"
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // QA-DAILY - Daily Monitoring (Jira & CI)
+    // -------------------------------------------------------------------------
+    "qa-daily": {
+      workspace: "./workspace/docs/multi-agents/v2/agents/qa-daily",
+      model: "github-copilot/claude-sonnet-4.5",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/TOOLS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-daily/HEARTBEAT.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",           // Documentation access
+        "jira-cli",            // Jira integration
+        "qa-daily-workflow",   // Daily workflow skill
+        "read",
+        "write",
+        "exec",
+        "web_fetch",           // Fetch CI reports
+        "memory_search",
+        "memory_get"
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // QA-PLAN - Test Planning & Strategy
+    // -------------------------------------------------------------------------
+    "qa-plan": {
+      workspace: "./workspace/docs/multi-agents/v2/agents/qa-plan",
+      model: "github-copilot/claude-opus-4.5",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-plan/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-plan/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-plan/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-plan/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-plan/TOOLS.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",               // Documentation access
+        "test-case-generator",     // Generate test cases
+        "jira-cli",                // Jira integration
+        "read",
+        "write",
+        "exec",
+        "web_search",              // Research best practices
+        "memory_search",
+        "memory_get"
+      ]
+    },
+
+    // -------------------------------------------------------------------------
+    // QA-TEST - Test Execution & Automation
+    // -------------------------------------------------------------------------
+    "qa-test": {
+      workspace: "./workspace/docs/multi-agents/v2/agents/qa-test",
+      model: "github-copilot/gpt-5.1-codex-max",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-test/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-test/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-test/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-test/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-test/TOOLS.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",                      // Documentation access
+        "microstrategy-ui-test",          // MicroStrategy UI testing
+        "browser",                        // Browser automation
+        "playwright-cli",                 // Playwright
+        "read",
+        "write",
+        "exec",
+        "memory_search",
+        "memory_get"
+      ],
+      
+      // Enable PTY for interactive browser sessions
+      execDefaults: {
+        pty: true
+      }
+    },
+
+    // -------------------------------------------------------------------------
+    // QA-REPORT - Test Reporting & Jira Updates
+    // -------------------------------------------------------------------------
+    "qa-report": {
+      workspace: "./workspace/docs/multi-agents/v2/agents/qa-report",
+      model: "github-copilot/claude-sonnet-4.5",
+      
+      systemPromptOverride: [
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-report/SOUL.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-report/AGENTS.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-report/USER.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-report/IDENTITY.md" },
+        { path: "./workspace/docs/multi-agents/v2/agents/qa-report/TOOLS.md" }
+      ],
+      
+      skillsAllowlist: [
+        "clawddocs",                    // Documentation access
+        "jira-cli",                     // Jira integration
+        "bug-report-formatter",         // Format bug reports
+        "read",
+        "write",
+        "exec",
+        "memory_search",
+        "memory_get"
+      ]
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ROUTING & BINDINGS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  bindings: [
+    // All Feishu messages → master agent
+    {
+      agentId: "master",
+      match: {
+        channel: "feishu",
+        accountId: "atlas-qa-bot"
+      }
+    }
+  ],
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AGENT-TO-AGENT COMMUNICATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  agentToAgent: {
+    enabled: true
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GLOBAL SETTINGS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  thinking: "low",                    // Default thinking level
+  memory: {
+    enabled: true,
+    searchOnRecall: true
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SKILLS CONFIGURATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  skills: {
+    // clawddocs skill path (mandatory for all agents)
+    clawddocs: {
+      path: "~/Documents/Repository/openclaw-qa-workspace/workspace/skills/clawddocs"
+    },
+    
+    // Jira CLI configuration
+    "jira-cli": {
+      server: "https://your-jira-instance.atlassian.net",
+      username: "your-email@example.com",
+      apiToken: "${JIRA_API_TOKEN}"   // Set via environment variable
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RETRY & ERROR HANDLING
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  retry: {
+    maxAttempts: 3,
+    backoffMs: 1000
+  }
+}
