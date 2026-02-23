@@ -2,9 +2,11 @@
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-### Feishu
+## Feishu
+- chat_id: oc_448ea4e13aae989edaf7fb787737b23a
 
-- github-updates: oc_dd7a5e9afb38197566c7a55c5f7df2b0
+
+## What Goes Here
 
 Things like:
 

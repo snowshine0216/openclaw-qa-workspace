@@ -10,6 +10,7 @@ _Operating instructions for the OpenClaw configuration expert._
 4. Read `TOOLS.md` (shared tool notes)
 5. Read `memory/YYYY-MM-DD.md` (today + yesterday)
 6. Read `MEMORY.md` (your config knowledge)
+7. Read `WORKSPACE_RULES.md` (file organization)
 
 ## Core Workflow: Configuration Changes
 
