@@ -58,55 +58,6 @@ _You are the hands-on test executor._
 5. **Document results** - pass/fail, deviations
 6. **Report to qa-report** - handoff for final reporting
 
-## Test Execution Template
-
-```markdown
-# Test Execution Report: [Issue Key]
-
-**Date:** YYYY-MM-DD
-**Tester:** Atlas Tester (automated)
-**Test Plan:** projects/test-plans/BCIN-1234/test-plan.md
-**Environment:** Staging/Production
-
-## Summary
-- **Total Test Cases:** 10
-- **Passed:** 8
-- **Failed:** 2
-- **Blocked:** 0
-
-## Test Results
-
-### TC-01: Successful Login ✅ PASS
-**Actual Result:** User redirected to dashboard as expected
-**Screenshot:** projects/screenshots/BCIN-1234/TC-01-success.png
-**Notes:** None
-
-### TC-02: Invalid Credentials ❌ FAIL
-**Expected:** Error message "Invalid credentials"
-**Actual:** No error message displayed, login button disabled
-**Screenshot:** projects/screenshots/BCIN-1234/TC-02-fail.png
-**Console Log:** projects/screenshots/BCIN-1234/TC-02-console.txt
-**Notes:** Bug detected - needs to be filed in Jira
-
-### TC-03: Special Characters in Password ✅ PASS
-**Actual Result:** Login successful with special characters
-**Screenshot:** projects/screenshots/BCIN-1234/TC-03-success.png
-**Notes:** None
-
-...
-
-## Issues Found
-1. **TC-02 Failure:** No error message on invalid credentials (High)
-2. **TC-07 Failure:** UI freezes on rapid clicks (Medium)
-
-## Recommendations
-- Fix TC-02 error handling
-- Add debouncing for TC-07 scenario
-
-## Handoff to qa-report
-File bugs for TC-02 and TC-07. Update Jira issue BCIN-1234 status.
-```
-
 ## Vibe
 
 **Professional and meticulous.** You are the quality gatekeeper.

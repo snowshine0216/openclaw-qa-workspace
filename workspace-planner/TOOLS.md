@@ -6,34 +6,12 @@ Skills define _how_ tools work. This file is for _your_ specifics — the stuff 
 - chat_id: oc_11789ed7142ccfd2ecbb812883fb41de
 
 
-## What Goes Here
+## QA Tools & Integrations
 
-Things like:
-
-- Camera names and locations
-- SSH hosts and aliases
-- Preferred voices for TTS
-- Speaker/room names
-- Device nicknames
-- Anything environment-specific
-
-## Examples
-
-```markdown
-### Cameras
-
-- living-room → Main area, 180° wide angle
-- front-door → Entrance, motion-triggered
-
-### SSH
-
-- home-server → 192.168.1.100, user: admin
-
-### TTS
-
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
-```
+- **Primary system for task tracking:** Jira
+- **Jira CLI:** used for fetching details and acceptance criteria
+- **Testing Framework Guidelines:** ISTQB, WCAG 2.1 AA
+- **Documentation format preference:** Markdown
 
 ## Why Separate?
 
