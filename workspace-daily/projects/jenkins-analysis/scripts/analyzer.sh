@@ -226,10 +226,20 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
     log "Analyzing failed jobs..."
     
     ANALYSIS_COUNTER=0
-    echo "$FAILED_JOBS" | jq -c '.[]' | while read -r job; do
+    
+    # Export Jenkins credentials for child processes
+    export JENKINS_URL="$JENKINS_URL"
+    export JENKINS_USER="$JENKINS_USER"
+    export JENKINS_API_TOKEN="$JENKINS_API_TOKEN"
+    
+    # Save failed jobs to temp file for iteration
+    FAILED_JOBS_LIST="$TMP_DIR/${REPORT_FOLDER}_failed_list.txt"
+    echo "$FAILED_JOBS" | jq -c '.[]' > "$FAILED_JOBS_LIST"
+    
+    while read -r job; do
         ANALYSIS_COUNTER=$((ANALYSIS_COUNTER + 1))
         
-        # Update heartbeat every 5 minutes worth of work
+        # Update heartbeat every 3 jobs
         if [ $((ANALYSIS_COUNTER % 3)) -eq 0 ]; then
             update_heartbeat "Analyzing failures ($ANALYSIS_COUNTER/$FAILED_COUNT)..."
         fi
@@ -239,20 +249,46 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
         
         log "[$ANALYSIS_COUNTER/$FAILED_COUNT] Analyzing: $JOB_NAME_F #$JOB_NUM_F"
         
-        # Call Jenkins skill to get console log
-        export JENKINS_URL="$JENKINS_URL"
-        export JENKINS_USER="$JENKINS_USER"
-        export JENKINS_API_TOKEN="$JENKINS_API_TOKEN"
-        
+        # Get console log
+        CONSOLE_LOG_FILE="$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_console.json"
         node "$SCRIPT_DIR/../../../skills/jenkins/scripts/jenkins.mjs" console \
             --job "$JOB_NAME_F" \
             --build "$JOB_NUM_F" \
             --tail 200 \
-            > "$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_console.json"
+            > "$CONSOLE_LOG_FILE"
         
-        # Generate analysis (placeholder - will use AI)
         log "  → Console log saved"
-    done
+        
+        # Run AI failure analysis
+        ANALYSIS_FILE="$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_analysis.json"
+        node "$SCRIPT_DIR/ai_failure_analyzer.js" \
+            "$CONSOLE_LOG_FILE" \
+            "$JOB_NAME_F" \
+            "$JOB_NUM_F" \
+            > "$ANALYSIS_FILE" 2>&1
+        
+        if [ $? -eq 0 ]; then
+            log "  → AI analysis completed"
+        else
+            log "  ⚠ AI analysis failed, using fallback"
+        fi
+        
+        # Check previous failures (last 5 builds)
+        HISTORY_FILE="$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_history.json"
+        node "$SCRIPT_DIR/check_previous_failures.js" \
+            "$JOB_NAME_F" \
+            "$JOB_NUM_F" \
+            "$JENKINS_URL" \
+            "$JENKINS_USER" \
+            "$JENKINS_API_TOKEN" \
+            > "$HISTORY_FILE" 2>&1
+        
+        if [ $? -eq 0 ]; then
+            log "  → Historical check completed"
+        else
+            log "  ⚠ Historical check failed"
+        fi
+    done < "$FAILED_JOBS_LIST"
 fi
 
 # Step 7: Generate consolidated report

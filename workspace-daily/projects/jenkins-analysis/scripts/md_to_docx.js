@@ -1,12 +1,26 @@
 #!/usr/bin/env node
 /**
- * Markdown to DOCX Converter
+ * Enhanced Markdown to DOCX Converter with beautiful table formatting
  * Requires: npm install marked docx
  */
 
 const fs = require('fs');
 const { marked } = require('marked');
-const { Document, Packer, Paragraph, TextRun, HeadingLevel } = require('docx');
+const { 
+  Document, 
+  Packer, 
+  Paragraph, 
+  TextRun, 
+  Table,
+  TableCell,
+  TableRow,
+  HeadingLevel,
+  AlignmentType,
+  WidthType,
+  BorderStyle,
+  ShadingType,
+  convertInchesToTwip
+} = require('docx');
 
 const [,, inputMd, outputDocx] = process.argv;
 
@@ -18,11 +32,107 @@ if (!inputMd || !outputDocx) {
 // Read markdown
 const markdown = fs.readFileSync(inputMd, 'utf8');
 
-// Parse markdown tokens
+// Parse markdown with tables
 const tokens = marked.lexer(markdown);
 
 const children = [];
 
+/**
+ * Create a beautiful table from markdown table token
+ */
+function createTable(token) {
+  const rows = [];
+  
+  // Header row with styling
+  const headerCells = token.header.map((cell, idx) => {
+    return new TableCell({
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: cell.text,
+              bold: true,
+              color: "FFFFFF",
+            })
+          ],
+          alignment: AlignmentType.CENTER,
+        })
+      ],
+      shading: {
+        type: ShadingType.SOLID,
+        color: "4472C4", // Blue header
+      },
+      width: {
+        size: idx === 0 ? 20 : idx === 3 ? 25 : idx === 5 ? 25 : 15, // Column widths
+        type: WidthType.PERCENTAGE,
+      },
+    });
+  });
+  
+  rows.push(
+    new TableRow({
+      children: headerCells,
+      tableHeader: true,
+    })
+  );
+  
+  // Data rows with alternating colors
+  token.rows.forEach((row, rowIdx) => {
+    const cells = row.map((cell, cellIdx) => {
+      // Parse cell text for emojis and links
+      let cellText = cell.text;
+      let isLink = false;
+      let linkText = cellText;
+      
+      // Extract link if present: [text](url)
+      const linkMatch = cellText.match(/\[(.+?)\]\((.+?)\)/);
+      if (linkMatch) {
+        linkText = linkMatch[1];
+        isLink = true;
+      }
+      
+      return new TableCell({
+        children: [
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: cellText,
+                color: isLink ? "0563C1" : "000000",
+              })
+            ],
+            alignment: cellIdx === 1 ? AlignmentType.CENTER : AlignmentType.LEFT, // Center "Failed Steps"
+          })
+        ],
+        shading: {
+          type: ShadingType.SOLID,
+          color: rowIdx % 2 === 0 ? "FFFFFF" : "F2F2F2", // Alternating row colors
+        },
+      });
+    });
+    
+    rows.push(new TableRow({ children: cells }));
+  });
+  
+  return new Table({
+    rows,
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      left: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      right: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+    },
+  });
+}
+
+/**
+ * Process markdown tokens into DOCX elements
+ */
 function processTokens(tokens) {
   for (const token of tokens) {
     switch (token.type) {
@@ -32,15 +142,41 @@ function processTokens(tokens) {
             text: token.text,
             heading: token.depth === 1 ? HeadingLevel.HEADING_1 :
                     token.depth === 2 ? HeadingLevel.HEADING_2 :
-                    HeadingLevel.HEADING_3,
+                    token.depth === 3 ? HeadingLevel.HEADING_3 :
+                    HeadingLevel.HEADING_4,
           })
         );
         break;
       
       case 'paragraph':
+        // Check for bold text markers
+        let textRuns = [];
+        const boldPattern = /\*\*(.+?)\*\*/g;
+        let lastIndex = 0;
+        let match;
+        
+        while ((match = boldPattern.exec(token.text)) !== null) {
+          // Add text before bold
+          if (match.index > lastIndex) {
+            textRuns.push(new TextRun(token.text.substring(lastIndex, match.index)));
+          }
+          // Add bold text
+          textRuns.push(new TextRun({ text: match[1], bold: true }));
+          lastIndex = match.index + match[0].length;
+        }
+        
+        // Add remaining text
+        if (lastIndex < token.text.length) {
+          textRuns.push(new TextRun(token.text.substring(lastIndex)));
+        }
+        
+        if (textRuns.length === 0) {
+          textRuns = [new TextRun(token.text)];
+        }
+        
         children.push(
           new Paragraph({
-            children: [new TextRun(token.text)],
+            children: textRuns,
           })
         );
         break;
@@ -50,48 +186,69 @@ function processTokens(tokens) {
           children.push(
             new Paragraph({
               text: `• ${item.text}`,
-              bullet: { level: 0 },
+              spacing: { before: 100, after: 100 },
             })
           );
         });
         break;
       
+      case 'table':
+        children.push(createTable(token));
+        children.push(new Paragraph({ text: "" })); // Add spacing after table
+        break;
+      
       case 'code':
         children.push(
           new Paragraph({
-            children: [new TextRun({
-              text: token.text,
-              font: 'Courier New',
-              size: 20,
-            })],
+            children: [
+              new TextRun({
+                text: token.text,
+                font: "Courier New",
+                size: 20,
+              })
+            ],
           })
         );
         break;
       
-      case 'table':
-        // Simple table representation (convert to text)
-        const tableHeader = token.header.map(cell => cell.text).join(' | ');
-        children.push(new Paragraph({ text: tableHeader, bold: true }));
-        
-        token.rows.forEach(row => {
-          const rowText = row.map(cell => cell.text).join(' | ');
-          children.push(new Paragraph({ text: rowText }));
-        });
+      case 'blockquote':
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: token.text,
+                italics: true,
+                color: "666666",
+              })
+            ],
+            spacing: { before: 200, after: 200 },
+          })
+        );
         break;
       
       case 'hr':
-        children.push(new Paragraph({ text: '---' }));
+        children.push(
+          new Paragraph({
+            text: "",
+            border: {
+              bottom: {
+                color: "CCCCCC",
+                space: 1,
+                style: BorderStyle.SINGLE,
+                size: 6,
+              },
+            },
+          })
+        );
         break;
       
       case 'space':
-        children.push(new Paragraph({ text: '' }));
+        children.push(new Paragraph({ text: "" }));
         break;
       
       default:
-        // Fallback for other token types
-        if (token.text) {
-          children.push(new Paragraph({ text: token.text }));
-        }
+        // Skip unknown tokens
+        break;
     }
   }
 }
@@ -102,7 +259,7 @@ processTokens(tokens);
 const doc = new Document({
   sections: [{
     properties: {},
-    children: children,
+    children,
   }],
 });
 
@@ -111,6 +268,6 @@ Packer.toBuffer(doc).then(buffer => {
   fs.writeFileSync(outputDocx, buffer);
   console.log(`✓ DOCX created: ${outputDocx}`);
 }).catch(error => {
-  console.error(`✗ Error creating DOCX: ${error.message}`);
+  console.error('Error creating DOCX:', error);
   process.exit(1);
 });
