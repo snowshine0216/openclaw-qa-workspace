@@ -61,7 +61,41 @@ update_heartbeat() {
     log "💓 Heartbeat: $message"
 }
 
-# Step 4: Get downstream jobs triggered by this build
+# Function to check if a job is a MultiJob
+is_multijob() {
+    local job_name="$1"
+    # Check if job name contains "MultiJob" or "Multijob"
+    if [[ "$job_name" =~ MultiJob|Multijob ]]; then
+        return 0  # true
+    fi
+    return 1  # false
+}
+
+# Function to get triggered jobs from a MultiJob
+get_multijob_children() {
+    local job_name="$1"
+    local build_number="$2"
+    
+    # Use >&2 to send logs to stderr (not captured in pipe)
+    echo "  → Drilling down into MultiJob: $job_name #$build_number" >&2
+    
+    # Method 1: Get downstream builds from MultiJob API
+    local children=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+        "$JENKINS_URL/job/$job_name/$build_number/api/json?tree=downstreamBuilds[jobName,buildNumber]" \
+        | jq -r '.downstreamBuilds[]? | .jobName' 2>/dev/null || echo "")
+    
+    # Method 2: Parse console log for triggered builds (more reliable)
+    if [ -z "$children" ]; then
+        children=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+            "$JENKINS_URL/job/$job_name/$build_number/consoleText" \
+            | grep 'Starting building:' | awk '{print $3}' | sort -u || echo "")
+    fi
+    
+    # Only output job names to stdout
+    echo "$children"
+}
+
+# Step 4: Get downstream jobs triggered by this build (with MultiJob drill-down)
 update_heartbeat "Fetching downstream jobs..."
 log "Fetching downstream jobs for $JOB_NAME #$BUILD_NUMBER..."
 
@@ -74,8 +108,7 @@ if [ -z "$DOWNSTREAM_JOBS" ]; then
     # Alternative: check build log for triggered jobs
     DOWNSTREAM_JOBS=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
         "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/consoleText" \
-        | grep -o 'Starting building: [^#]*' | sed 's/Starting building: //' \
-        | sed 's/#.*//' | sort -u || echo "")
+        | grep 'Starting building:' | awk '{print $3}' | sort -u || echo "")
 fi
 
 if [ -z "$DOWNSTREAM_JOBS" ]; then
@@ -84,8 +117,61 @@ if [ -z "$DOWNSTREAM_JOBS" ]; then
     exit 1
 fi
 
-TOTAL_JOBS=$(echo "$DOWNSTREAM_JOBS" | wc -l)
-log "✓ Found $TOTAL_JOBS downstream jobs to analyze"
+log "✓ Found $(echo "$DOWNSTREAM_JOBS" | wc -l | xargs) initial downstream jobs"
+
+# Expand MultiJobs to find actual pipeline jobs
+ALL_JOBS=""
+PROCESSED_JOBS=""
+
+for job_name in $DOWNSTREAM_JOBS; do
+    job_name=$(echo "$job_name" | xargs)  # trim whitespace
+    
+    # Check if already processed (avoid duplicates)
+    if echo -e "$PROCESSED_JOBS" | grep -qx "$job_name"; then
+        continue
+    fi
+    PROCESSED_JOBS="${PROCESSED_JOBS}${job_name}\n"
+    
+    if is_multijob "$job_name"; then
+        log "  → Found MultiJob: $job_name - drilling down..."
+        
+        # Get latest build number for this MultiJob
+        MULTIJOB_BUILD=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+            "$JENKINS_URL/job/$job_name/lastBuild/api/json?tree=number" \
+            | jq -r '.number // empty')
+        
+        if [ -n "$MULTIJOB_BUILD" ]; then
+            # Get children of this MultiJob
+            CHILDREN=$(get_multijob_children "$job_name" "$MULTIJOB_BUILD")
+            
+            if [ -n "$CHILDREN" ]; then
+                echo "    ✓ Found $(echo "$CHILDREN" | wc -l | xargs) child jobs" >&2
+                # Add children to the list
+                for child in $CHILDREN; do
+                    child=$(echo "$child" | xargs)
+                    if [ -n "$child" ] && ! echo -e "$ALL_JOBS" | grep -qx "$child"; then
+                        ALL_JOBS="${ALL_JOBS}${child}\n"
+                    fi
+                done
+            else
+                echo "    ⚠ No children found, including MultiJob itself" >&2
+                ALL_JOBS="${ALL_JOBS}${job_name}\n"
+            fi
+        else
+            echo "    ⚠ Could not get MultiJob build number, including it anyway" >&2
+            ALL_JOBS="${ALL_JOBS}${job_name}\n"
+        fi
+    else
+        # Regular job, add to list
+        ALL_JOBS="${ALL_JOBS}${job_name}\n"
+    fi
+done
+
+# Clean up and deduplicate
+DOWNSTREAM_JOBS=$(echo -e "$ALL_JOBS" | grep -v '^$' | grep -v '^#' | grep -v '^\[' | sort -u)
+
+TOTAL_JOBS=$(echo "$DOWNSTREAM_JOBS" | grep -v '^$' | wc -l | xargs)
+log "✓ Total jobs to analyze (after MultiJob expansion): $TOTAL_JOBS"
 echo "$DOWNSTREAM_JOBS" > "$TMP_DIR/${REPORT_FOLDER}_downstream_jobs.txt"
 
 # Step 5: Fetch job statuses
