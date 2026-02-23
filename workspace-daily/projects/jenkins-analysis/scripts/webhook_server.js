@@ -20,6 +20,10 @@ const WATCHED_JOBS = [
 ];
 
 function log(message) {
+  const logDir = path.dirname(LOG_FILE);
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] ${message}\n`;
   console.log(logMessage.trim());

@@ -10,14 +10,19 @@ echo "🧪 Testing Jenkins QA Monitoring System"
 echo "========================================"
 echo ""
 
-# Test 1: Check folder structure
+# Ensure required directories exist
 echo "✓ Test 1: Folder structure"
 for dir in scripts tmp reports docs; do
-    if [ -d "$dir" ]; then
-        echo "  ✓ $dir/ exists"
+    if [ ! -d "$dir" ]; then
+        if [ "$dir" = "tmp" ] || [ "$dir" = "reports" ]; then
+            mkdir -p "$dir"
+            echo "  ✓ created $dir/"
+        else
+            echo "  ✗ $dir/ missing"
+            exit 1
+        fi
     else
-        echo "  ✗ $dir/ missing"
-        exit 1
+        echo "  ✓ $dir/ exists"
     fi
 done
 echo ""
