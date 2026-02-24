@@ -13,8 +13,8 @@ REPORTS_DIR="$PROJECT_DIR/reports"
 JENKINS_URL="http://tec-l-1081462.labs.microstrategy.com:8080/"
 JENKINS_USER="admin"
 JENKINS_API_TOKEN="11596241e9625bf6e48aca51bf0af0a036"
-FEISHU_CHAT_ID="oc_f15b73b877ad243886efaa1e99018807"
-TIMEOUT_MINUTES=120
+# FEISHU_CHAT_ID="oc_f15b73b877ad243886efaa1e99018807"
+# TIMEOUT_MINUTES=120
 
 # Job blacklist - skip these jobs
 BLACKLISTED_JOBS=(
@@ -94,10 +94,12 @@ get_multijob_children() {
     echo "  → Drilling down into MultiJob: $job_name #$build_number" >&2
     
     # Get console log and parse "Starting building: JobName #BuildNum"
-    local console_text=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+    local console_text
+    console_text=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
         "$JENKINS_URL/job/$job_name/$build_number/consoleText")
     
-    local children_with_builds=$(echo "$console_text" | grep 'Starting building:' | \
+    local children_with_builds
+    children_with_builds=$(echo "$console_text" | grep 'Starting building:' | \
         sed -E 's/^Starting building: (.+) #([0-9]+)$/\1|\2/' | sort -u || echo "")
     
     if [ -n "$children_with_builds" ]; then
@@ -106,7 +108,8 @@ get_multijob_children() {
     else
         # Fallback: Try API (but this won't have build numbers)
         echo "    ⚠ No children found in console log, trying API..." >&2
-        local children_names=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+        local children_names
+        children_names=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
             "$JENKINS_URL/job/$job_name/$build_number/api/json?tree=downstreamBuilds[jobName]" \
             | jq -r '.downstreamBuilds[]? | .jobName' 2>/dev/null || echo "")
         
@@ -191,7 +194,6 @@ for job_name in $DOWNSTREAM_JOBS; do
                     if [[ "$child_entry" =~ \| ]]; then
                         # Has build number
                         child_name=$(echo "$child_entry" | cut -d'|' -f1)
-                        child_build=$(echo "$child_entry" | cut -d'|' -f2)
                         
                         # Add to TRIGGERED_BUILDS for later status checks
                         if ! echo "$TRIGGERED_BUILDS" | grep -qx "$child_entry"; then

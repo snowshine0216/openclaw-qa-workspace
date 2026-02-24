@@ -11,14 +11,7 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-const [,, consoleLogPath, jobName, buildNumber] = process.argv;
-
-if (!consoleLogPath || !jobName || !buildNumber) {
-  console.error('Usage: node ai_failure_analyzer.js <consoleLogPath> <jobName> <buildNumber>');
-  process.exit(1);
-}
-
-async function analyzeFailure() {
+async function analyzeFailure(consoleLogPath, jobName, buildNumber) {
   try {
     // Read console log
     const consoleData = JSON.parse(fs.readFileSync(consoleLogPath, 'utf8'));
@@ -304,6 +297,16 @@ function buildAnalysisResult(category, reason, consoleLog) {
         'Check for service maintenance or outages',
         'Consider adding retry logic for transient failures'
       ]
+    },
+    'unknown': {
+      type: 'Unknown Failure',
+      isFalseAlarm: false,
+      actions: [
+        'Review full Jenkins console log for details',
+        'Check for recent code changes that may have caused this',
+        'Compare with previous successful builds',
+        'Manually reproduce the failure if possible'
+      ]
     }
   };
   
@@ -316,7 +319,7 @@ function buildAnalysisResult(category, reason, consoleLog) {
     failureCategory: category,
     failureType: config.type,
     actions: config.actions,
-    confidence: 'medium'
+    confidence: category === 'unknown' ? 'low' : 'medium'
   };
 }
 
@@ -347,7 +350,14 @@ function extractFailureDetails(consoleLog) {
 
 // Run analysis and output JSON if called directly
 if (require.main === module) {
-  analyzeFailure().then(result => {
+  const [,, consoleLogPath, jobName, buildNumber] = process.argv;
+
+  if (!consoleLogPath || !jobName || !buildNumber) {
+    console.error('Usage: node ai_failure_analyzer.js <consoleLogPath> <jobName> <buildNumber>');
+    process.exit(1);
+  }
+
+  analyzeFailure(consoleLogPath, jobName, buildNumber).then(result => {
     console.log(JSON.stringify(result, null, 2));
   }).catch(error => {
     console.error(JSON.stringify({

@@ -6,7 +6,7 @@ const extractFullError = (runBlock) => {
   const errorLines = [];
   
   for (const line of lines) {
-    errorLines.push(line.trim());
+    errorLines.push(line.trimEnd()); // don't trim leading whitespace for stack traces
     // Stop at Jasmine stack trace marker
     if (line.includes('at <Jasmine>')) break;
     // Also stop at other stack trace markers
@@ -19,14 +19,14 @@ const extractFullError = (runBlock) => {
 const extractTestCaseInfo = (tcHeader) => {
   // Match [TC86139_02], [QAC-487_3], [BCIN-5296], etc.
   // Flexible pattern: [<ID>] followed by descriptive text
-  const TC_HEADER_RE = /\[((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+[^\]]*)\]\s+([^:]+)/m;
+  const TC_HEADER_RE = /\[((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+[^\]]*)\]\s+([^\n]+)/m;
   const match = tcHeader.match(TC_HEADER_RE);
   
   if (!match) return null;
   
   return {
     id: match[1],
-    name: match[2].trim()
+    name: match[2].trim().replace(/\s*:\s*$/, '') // remove trailing colons if any
   };
 };
 

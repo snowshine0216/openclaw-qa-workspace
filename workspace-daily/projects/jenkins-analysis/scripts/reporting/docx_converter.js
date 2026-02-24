@@ -97,6 +97,22 @@ const main = async () => {
 
   const children = [];
 
+  processTokens(tokens, children);
+
+  // Create document
+  const doc = new Document({
+    sections: [{
+      properties: {},
+      children,
+    }],
+  });
+
+  // Write to file
+  const buffer = await Packer.toBuffer(doc);
+  fs.writeFileSync(outputDocx, buffer);
+  console.log(`✓ DOCX created: ${outputDocx}`);
+};
+
 /**
  * Create a beautiful table from markdown table token
  */
@@ -302,22 +318,6 @@ function processTokens(tokens, children) {
     }
   }
 }
-
-  processTokens(tokens, children);
-
-  // Create document
-  const doc = new Document({
-    sections: [{
-      properties: {},
-      children,
-    }],
-  });
-
-  // Write to file
-  const buffer = await Packer.toBuffer(doc);
-  fs.writeFileSync(outputDocx, buffer);
-  console.log(`✓ DOCX created: ${outputDocx}`);
-};
 
 if (require.main === module) {
   main().catch(error => {

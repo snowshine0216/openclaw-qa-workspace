@@ -92,7 +92,7 @@ echo ""
 
 # Test 6: Check documentation
 echo "✓ Test 6: Documentation"
-for doc in README.md docs/DESIGN.md docs/WEBHOOK_SETUP.md; do
+for doc in README.md docs/ARCHITECTURE.md docs/DEPLOYMENT.md; do
     if [ -f "$doc" ]; then
         echo "  ✓ $doc exists"
     else
@@ -146,10 +146,10 @@ echo "✅ All tests passed!"
 echo ""
 echo "Next steps:"
 echo "1. Start webhook server: cd scripts && npm start"
-echo "2. Configure Jenkins webhooks (see docs/SETUP.md or docs/WEBHOOK_SETUP.md)"
+echo "2. Configure Jenkins webhooks (see docs/DEPLOYMENT.md)"
 echo "3. Test with: curl -X POST http://localhost:9090/webhook ..."
 echo ""
 echo "Documentation:"
-echo "- Architecture: docs/DESIGN.md"
-echo "- Setup guide: docs/WEBHOOK_SETUP.md"
+echo "- Architecture: docs/ARCHITECTURE.md"
+echo "- Setup guide: docs/DEPLOYMENT.md"
 echo "- Quick start: README.md"
