@@ -70,10 +70,12 @@ const splitByFilePattern = (consoleText) => {
 /**
  * Extract test case info from block
  * Pattern: [TC86139_02] FUN | Report Editor | Grid View:
+ * Also supports: [QAC-487_3], [BCIN-5296], etc.
  */
 const extractTestCaseInfo = (tcHeader) => {
-  // Match [TC86139_02] FUN | Report Editor | Grid View:
-  const TC_HEADER_RE = /\[(TC\d+[^\]]*)\]\s+([^:]+)/m;
+  // Match [TC86139_02], [QAC-487_3], [BCIN-5296], etc.
+  // Flexible pattern: [<ID>] followed by descriptive text
+  const TC_HEADER_RE = /\[((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+[^\]]*)\]\s+([^:]+)/m;
   const match = tcHeader.match(TC_HEADER_RE);
   
   if (!match) return null;
@@ -87,9 +89,11 @@ const extractTestCaseInfo = (tcHeader) => {
 /**
  * Extract screenshot details
  * Pattern: Screenshot "TC78888_01 - Custom info window..." doesn't match
+ * Also supports: "QAC-487_3_1 - ...", "BCIN-5296_04 - ..."
  */
 const extractScreenshotInfo = (runBlock) => {
-  const SCREENSHOT_RE = /Screenshot\s+"(TC\d+_\d+)\s+-\s+(.+?)"\s+doesn't match/;
+  // Updated to support all ID prefixes
+  const SCREENSHOT_RE = /Screenshot\s+"((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)[^"]+)\s+-\s+(.+?)"\s+doesn't match/;
   const match = runBlock.match(SCREENSHOT_RE);
   
   if (!match) return null;
@@ -226,10 +230,10 @@ const extractFailuresFromLog = (consoleText) => {
   
   // Step 2: Process each file block
   fileBlocks.forEach(({ fileName, content }) => {
-    // Split into test case blocks - allow any prefix before [TC...] (e.g., [0-0] emoji)
-    const tcBlocks = content.split(/(?=.*?\[TC\d+)/m).filter(b => {
+    // Split into test case blocks - allow any prefix before [TC...], [QAC-...], [BCIN-...], etc.
+    const tcBlocks = content.split(/(?=.*?\[(?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+)/m).filter(b => {
       const trimmed = b.trim();
-      return trimmed !== "" && trimmed.includes('[TC');
+      return trimmed !== "" && /\[(?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+/.test(trimmed);
     });
     
     tcBlocks.forEach(tcBlock => {
@@ -255,27 +259,31 @@ const extractFailuresFromLog = (consoleText) => {
 /**
  * Legacy parser (fallback for logs without file pattern)
  * Keeps original parsing logic for backwards compatibility
+ * Now supports multiple ID prefixes: TC, QAC-, BCIN-, etc.
  */
 const extractFailuresFromLogLegacy = (consoleText) => {
   const results = [];
-  const TC_HEADER_RE = /^\[?(TC\d+)\]?\s+(.+?)\s*:/m;
-  const RUN_BLOCK_RE = /✗\s+(run_\d+)/g;
-  const SCREENSHOT_RE = /Screenshot\s+"(TC\d+_\d+)\s+-\s+(.+?)"\s+doesn't match/;
-  const SPECTRE_URL_RE = /Visit\s+(http:\/\/.*:3000\/\S+)\s+for details/;
+  // Updated to support multiple ID prefixes
+  const TC_HEADER_RE = /^\[?((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+[^\]]*)\]?\s+(.+?)\s*:/m;
+  const RUN_BLOCK_RE = /[✗�]+\s+(run_\d+)/g;
+  // Updated screenshot pattern to support all ID prefixes
+  const SCREENSHOT_RE = /Screenshot\s+"((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)[^"]+)\s+-\s+(.+?)"\s+doesn't match/;
+  const SPECTRE_URL_RE = /Visit\s+(http:\/\/[^:]+:3000\/\S+)\s+for details/;
   const ASSERTION_RE = /expected\s+(.+?)\s+to\s+(?:equal|be|contain)\s+(.+)/i;
 
-  const tcBlocks = consoleText.split(/(?=^\[?TC\d+\])/m).filter(b => b.trim() !== "");
+  // Split by any supported ID prefix
+  const tcBlocks = consoleText.split(/(?=^\[?(?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\d+\]?)/m).filter(b => b.trim() !== "");
   
   tcBlocks.forEach(block => {
     const headerMatch = block.match(TC_HEADER_RE);
     if (!headerMatch) return;
     const [_, tcId, tcName] = headerMatch;
     
-    const runs = block.split(/(?=✗\s+run_\d+)/g).filter(r => r.includes('✗ run_'));
+    const runs = block.split(/(?=[✗�]+\s+run_\d+)/g).filter(r => /[✗�]+\s+run_\d+/.test(r));
     runs.forEach(runBlock => {
       const runMatch = runBlock.match(RUN_BLOCK_RE);
       if (!runMatch) return;
-      const runLabel = runMatch[0].replace('✗ ', '').trim();
+      const runLabel = runMatch[0].replace(/[✗�]+\s+/, '').trim();
       
       const screenshotMatch = runBlock.match(SCREENSHOT_RE);
       if (screenshotMatch) {

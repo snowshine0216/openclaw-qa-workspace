@@ -347,13 +347,19 @@ if (failedJobs.length > 0) {
           report += `   - 🆕 First occurrence\n`;
         }
         
-        // V2: Add expandable full error
+        // Add snapshot URL if available
+        if (step.snapshot_url) {
+          const badge = step.false_alarm ? ' ⚠️ False Alarm' : '';
+          report += `   - 📸 Snapshot: [View Diff](${step.snapshot_url})${badge}\n`;
+        }
+        
+        // V2: Add concise error message (first line only, not full stack trace)
         if (step.full_error_msg) {
-          report += `\n<details>\n<summary>📋 Full Error Message</summary>\n\n\`\`\`\n`;
-          report += step.full_error_msg;
-          report += `\n\`\`\`\n</details>\n\n`;
+          // Extract only the first line (the actual error message)
+          const firstLine = step.full_error_msg.split('\n')[0].replace(/^- Failed:/, '').trim();
+          report += `   - ❌ Error: ${firstLine}\n\n`;
         } else if (step.failure_msg) {
-          report += `   - ${step.failure_msg}\n\n`;
+          report += `   - ❌ Error: ${step.failure_msg}\n\n`;
         }
       });
     }

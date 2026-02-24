@@ -16,6 +16,12 @@ JENKINS_API_TOKEN="11596241e9625bf6e48aca51bf0af0a036"
 FEISHU_CHAT_ID="oc_f15b73b877ad243886efaa1e99018807"
 TIMEOUT_MINUTES=120
 
+# Job blacklist - skip these jobs
+BLACKLISTED_JOBS=(
+  "LibraryWeb_AutoAnswer_MultiJob"
+  "api_multijob"
+)
+
 # Parse arguments
 JOB_NAME="$1"
 BUILD_NUMBER="$2"
@@ -35,6 +41,14 @@ log "=========================================="
 log "Analysis started for $JOB_NAME #$BUILD_NUMBER"
 log "Report folder: $REPORT_FOLDER"
 log "=========================================="
+
+# Step 0: Check if job is blacklisted
+for blacklisted in "${BLACKLISTED_JOBS[@]}"; do
+    if [ "$JOB_NAME" = "$blacklisted" ]; then
+        log "⚠ Job $JOB_NAME is blacklisted, skipping analysis"
+        exit 0
+    fi
+done
 
 # Step 1: Check if report already exists
 if [ -f "$REPORT_DIR/${REPORT_FOLDER}.docx" ]; then
@@ -125,9 +139,10 @@ if [ -z "$DOWNSTREAM_JOBS" ]; then
 fi
 
 if [ -z "$DOWNSTREAM_JOBS" ]; then
-    log "✗ ERROR: Could not find any downstream jobs"
-    update_heartbeat "ERROR: No downstream jobs found"
-    exit 1
+    log "⚠ No downstream jobs found - treating as standalone job"
+    DOWNSTREAM_JOBS="$JOB_NAME"
+    TRIGGERED_BUILDS="${JOB_NAME}|${BUILD_NUMBER}"
+    update_heartbeat "Analyzing standalone job"
 fi
 
 log "✓ Found $(echo "$DOWNSTREAM_JOBS" | wc -l | xargs) initial downstream jobs"
