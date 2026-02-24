@@ -9,10 +9,11 @@ const initSchema = (db) => {
       job_name      TEXT    NOT NULL,
       job_build     INTEGER NOT NULL,
       job_link      TEXT    NOT NULL,
+      platform      TEXT    DEFAULT 'web',
       recorded_at   TEXT    NOT NULL DEFAULT (datetime('now')),
       pass_count    INTEGER DEFAULT 0,
       fail_count    INTEGER DEFAULT 0,
-      UNIQUE(job_name, job_build)
+      UNIQUE(job_name, job_build, platform)
     );
     
     CREATE TABLE IF NOT EXISTS failed_jobs (
@@ -26,7 +27,9 @@ const initSchema = (db) => {
     CREATE TABLE IF NOT EXISTS failed_steps (
       id                  INTEGER PRIMARY KEY AUTOINCREMENT,
       failed_job_id       INTEGER NOT NULL REFERENCES failed_jobs(id) ON DELETE CASCADE,
+      platform            TEXT    DEFAULT 'web',
       tc_id               TEXT    NOT NULL,
+      tc_id_raw           TEXT,
       tc_name             TEXT    NOT NULL,
       step_id             TEXT    NOT NULL,
       step_name           TEXT    NOT NULL,
@@ -43,7 +46,11 @@ const initSchema = (db) => {
       false_alarm         INTEGER DEFAULT 0,
       snapshot_reason     TEXT,
       last_failed_build   INTEGER,
-      is_recurring        INTEGER DEFAULT 0
+      is_recurring        INTEGER DEFAULT 0,
+      config_url          TEXT,
+      failed_step_name    TEXT,
+      rerun_build_num     INTEGER,
+      rerun_result        TEXT
     );
   `);
 };

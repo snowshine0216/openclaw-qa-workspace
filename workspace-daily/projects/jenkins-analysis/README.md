@@ -74,12 +74,23 @@ bash direct_analyzer.sh Tanzu_Report_Env_Upgrade 1243
 bash direct_analyzer.sh MyCustomJob 999
 ```
 
-**How They Work:**
-- `manual_trigger.sh` → Webhook Server → (checks WATCHED_JOBS) → analyzer.sh
-- `direct_analyzer.sh` → analyzer.sh (direct, no restrictions)
+**Option C: Android CI Analyzer**
+```bash
+# From scripts/ directory
+bash android_analyzer.sh <trigger_job_name> <build_number>
 
-**Both will:**
-1. Parse failures with V2 parser (file names, retries, full errors)
+# Specifically designed for Android Jenkins CI ExtentReports
+# Example:
+bash android_analyzer.sh Trigger_Library_Jobs 89
+```
+
+**How They Work:**
+- `manual_trigger.sh` → Webhook Server → (checks WATCHED_JOBS) → analyzer.sh / android_analyzer.sh
+- `direct_analyzer.sh` → analyzer.sh (direct web CI parsing, no restrictions)
+- `android_analyzer.sh` → ExtentReport HTML parsing for Android library jobs
+
+**Analyzers will:**
+1. Parse failures (V2 logs for Web, ExtentReports for Android)
 2. Write to SQLite history database
 3. Generate enhanced report (markdown + DOCX)
 4. Upload to Feishu chat

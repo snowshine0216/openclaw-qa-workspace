@@ -45,18 +45,13 @@ jira issue view BCIN-1234
 ```
 
 ### Phase 2: CI/Jenkins Checks
-```
-Use exec to call Jenkins API (setup later):
-  1. Fetch recent build results
-  2. Identify failing jobs
-  3. Check for flaky tests (multiple failures)
-  4. Export to: projects/ci-reports/YYYY-MM-DD.json
-```
 
-Placeholder for Jenkins integration:
-```bash
-# Will be configured later
-# Example: curl -s $JENKINS_URL/api/json
+```
+Use the `jenkins-analysis` project scripts:
+  1. Execute `projects/jenkins-analysis/scripts/analyzer.sh` to fetch results
+  2. Process build data and update the database (`db_writer.js`)
+  3. Identify failing jobs, check for flaky tests
+  4. Generate markdown and DOCX reports using `report_generator.js` and `md_to_docx.js`
 ```
 
 ### Phase 3: Generate Daily Summary
@@ -148,22 +143,13 @@ jira issue list --jql "project = BCIN AND status = 'Ready for Testing'"
 
 Save Jira credentials path to `TOOLS.md` if not already there.
 
-## CI/Jenkins Integration (Setup Later)
+## CI/Jenkins Integration
 
-Placeholder workflow:
-1. Authenticate with Jenkins (API token or credentials)
-2. Fetch build statuses via REST API
-3. Parse results and identify failures
-4. Generate report
-
-Example (to be configured):
-```bash
-# Fetch recent builds
-curl -s "$JENKINS_URL/job/$JOB_NAME/api/json?tree=builds[number,result,timestamp]"
-
-# Get test results
-curl -s "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/testReport/api/json"
-```
+Integration is handled by the `jenkins-analysis` project.
+1. Authenticate with Jenkins using configured credentials.
+2. Scripts like `analyzer.sh` fetch build statuses.
+3. Node.js scripts (`report_generator.js`, `md_to_docx.js`) parse results, identify failures, and generate comprehensive reports.
+4. Data is stored in SQLite for historical tracking and trend analysis.
 
 ## Heartbeat Protocol
 
@@ -266,9 +252,9 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 ## Tools
 
-Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
+Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (SSH details, test environment details) in `TOOLS.md`.
 
-**🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
+**CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
 
 ## 💓 Heartbeats - Be Proactive!
 
@@ -292,61 +278,27 @@ During **active tasks** (when you have delegated work in progress):
 **Use heartbeat when:**
 
 - You have active, delegated work in progress that requires monitoring.
-- Multiple checks can batch together (inbox + calendar + notifications in one turn)
-- You need conversational context from recent messages
-- Timing can drift slightly (every ~30 min is fine, not exact)
-- You want to reduce API calls by combining periodic checks
+- You need conversational context from recent messages.
+- Timing can drift slightly.
 
 **Use cron when:**
 
 - Exact timing matters ("9:00 AM sharp every Monday")
 - Task needs isolation from main session history
-- You want a different model or thinking level for the task
-- One-shot reminders ("remind me in 20 minutes")
-- Output should deliver directly to a channel without main session involvement
 
-**Tip:** Batch similar periodic checks into `HEARTBEAT.md` instead of creating multiple cron jobs. Use cron for precise schedules and standalone tasks.
-
-**Things to check (rotate through these, 2-4 times per day):**
-
-- **Emails** - Any urgent unread messages?
-- **Calendar** - Upcoming events in next 24-48h?
-- **Mentions** - Twitter/social notifications?
-- **Weather** - Relevant if your human might go out?
-
-**Track your checks** in `memory/heartbeat-state.json`:
-
-```json
-{
-  "lastChecks": {
-    "email": 1703275200,
-    "calendar": 1703260800,
-    "weather": null
-  }
-}
-```
-
-**When to reach out:**
-
-- Important email arrived
-- Calendar event coming up (&lt;2h)
-- Something interesting you found
-- It's been >8h since you said anything
-
-**When to stay quiet (HEARTBEAT_OK):**
-
-- Late night (23:00-08:00) unless urgent
-- Human is clearly busy
-- Nothing new since last check
-- You just checked &lt;30 minutes ago
-
-**Proactive work you can do without asking:**
+**Proactive work you can do without asking (during heartbeats):**
 
 - Read and organize memory files
-- Check on projects (git status, etc.)
+- Check on QA projects (e.g., Jenkins pipeline status, Jira triage, git status)
 - Update documentation
 - Commit and push your own changes
 - **Review and update MEMORY.md** (see below)
+
+**When to stay quiet (HEARTBEAT_OK):**
+
+- Late night (23:00-08:00) unless critical test failures detected
+- Human is clearly busy
+- No significant QA updates (Jira/CI) since last check
 
 ### 🔄 Memory Maintenance (During Heartbeats)
 

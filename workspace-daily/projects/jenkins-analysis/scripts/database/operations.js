@@ -1,20 +1,20 @@
-const insertJobRun = (db, { jobName, jobBuild, jobLink, passCount, failCount }) => {
+const insertJobRun = (db, { jobName, jobBuild, jobLink, passCount, failCount, platform = 'web' }) => {
   return db.prepare(`
-    INSERT INTO job_runs (job_name, job_build, job_link, pass_count, fail_count)
-    VALUES (?, ?, ?, ?, ?)
-    ON CONFLICT(job_name, job_build) DO UPDATE SET 
+    INSERT INTO job_runs (job_name, job_build, job_link, pass_count, fail_count, platform)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ON CONFLICT(job_name, job_build, platform) DO UPDATE SET 
       pass_count=excluded.pass_count, fail_count=excluded.fail_count
     RETURNING id
-  `).get(jobName, jobBuild, jobLink, passCount, failCount).id;
+  `).get(jobName, jobBuild, jobLink, passCount, failCount, platform).id;
 };
 
-const enforceFiveRecordLimit = (db, jobName) => {
+const enforceFiveRecordLimit = (db, jobName, platform = 'web') => {
   db.prepare(`
     DELETE FROM job_runs 
-    WHERE job_name = ? AND id NOT IN (
-      SELECT id FROM job_runs WHERE job_name = ? ORDER BY job_build DESC LIMIT 5
+    WHERE job_name = ? AND platform = ? AND id NOT IN (
+      SELECT id FROM job_runs WHERE job_name = ? AND platform = ? ORDER BY job_build DESC LIMIT 5
     )
-  `).run(jobName, jobName);
+  `).run(jobName, platform, jobName, platform);
 };
 
 const insertFailedJob = (db, runId, { jobName, jobBuild, jobLink }) => {
@@ -43,15 +43,15 @@ const insertFailedStep = (db, failedJobId, stepData) => {
   `).run(failedJobId, ...keys.map(k => stepData[k]));
 };
 
-const findLastFailedBuild = (db, jobName, fingerprint, currentBuild) => {
+const findLastFailedBuild = (db, jobName, fingerprint, currentBuild, platform = 'web') => {
   // V2: Look back last 5 builds - use fj.job_build (actual failed job build, not trigger build)
   const rows = db.prepare(`
     SELECT fj.job_build
     FROM failed_steps fs
     JOIN failed_jobs fj ON fs.failed_job_id = fj.id
-    WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND fj.job_build < ?
+    WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND fj.job_build < ? AND fs.platform = ?
     ORDER BY fj.job_build DESC LIMIT 5
-  `).all(jobName, fingerprint, currentBuild);
+  `).all(jobName, fingerprint, currentBuild, platform);
   
   if (rows.length === 0) {
     return { lastFailedBuild: null, isRecurring: 0, failureHistory: [] };
