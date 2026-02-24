@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "marked": "^11.1.1",
     "docx": "^8.5.0",
-    "better-sqlite3": "^9.4.3"
+    "marked": "^11.1.1",
+    "sql.js": "^1.14.0"
   },
   "author": "Atlas Daily",
   "license": "MIT"

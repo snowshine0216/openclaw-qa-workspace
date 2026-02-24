@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
+const Database = require('./db-adapter');
 const crypto = require('crypto');
 
 // -- DB Initialization --
@@ -52,10 +52,10 @@ const initSchema = (db) => {
   `);
 };
 
-const openDb = (dbPath) => {
+const openDb = async (dbPath) => {
   const dir = path.dirname(dbPath);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  const db = new Database(dbPath);
+  const db = await Database.create(dbPath);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   initSchema(db);
@@ -264,7 +264,7 @@ const main = async () => {
   const rootDir = path.resolve(__dirname, '..');
   const dbPath = path.join(rootDir, 'data', 'jenkins_history.db');
   
-  const db = openDb(dbPath);
+  const db = await openDb(dbPath);
   
   const failedJobs = JSON.parse(fs.readFileSync(failedJobsFile, 'utf8') || "[]");
   const passedJobs = JSON.parse(fs.readFileSync(passedJobsFile, 'utf8') || "[]");

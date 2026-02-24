@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
+const Database = require('./db-adapter');
 
 const [,, reportFolder, failedJobsPath, passedJobsPath, outputDir] = process.argv;
 
@@ -24,11 +24,20 @@ const passRate = totalJobs > 0 ? ((passedJobs.length / totalJobs) * 100).toFixed
 // Connect to DB
 const dbPath = path.resolve(__dirname, '..', 'data', 'jenkins_history.db');
 let db;
-try {
-  db = new Database(dbPath, { fileMustExist: true });
-} catch (e) {
-  console.error("No database found or error connecting:", e.message);
+
+async function initDb() {
+  try {
+    if (fs.existsSync(dbPath)) {
+      db = await Database.create(dbPath);
+    }
+  } catch (e) {
+    console.error("No database found or error connecting:", e.message);
+  }
 }
+
+// Make main async
+(async () => {
+  await initDb();
 
 /**
  * Truncate text to max length
@@ -235,3 +244,4 @@ fs.writeFileSync(reportPath, report, 'utf8');
 if(db) db.close();
 
 console.log(`✓ Report generated: ${reportPath}`);
+})(); // End async wrapper
