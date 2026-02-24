@@ -1,9 +1,9 @@
-const parser = require('./android/extent_parser');
-const discovery = require('./android/job_discovery');
-const classifier = require('./android/failure_classifier');
+const parser = require('../android/extent_parser');
+const discovery = require('../android/job_discovery');
+const classifier = require('../android/failure_classifier');
 const crypto = require('crypto');
-const dbOperations = require('./database/operations');
-const schema = require('./database/schema');
+const dbOperations = require('../database/operations');
+const schema = require('../database/schema');
 const path = require('path');
 const fs = require('fs');
 

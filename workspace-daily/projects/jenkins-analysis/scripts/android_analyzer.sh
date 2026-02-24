@@ -12,6 +12,12 @@ TMP_DIR="$PROJECT_DIR/tmp"
 LOGS_DIR="$PROJECT_DIR/logs"
 REPORTS_DIR="$PROJECT_DIR/reports"
 
+# Configuration
+export JENKINS_URL="http://tec-l-1081462.labs.microstrategy.com:8080/"
+export JENKINS_USER="admin"
+export JENKINS_API_TOKEN="11596241e9625bf6e48aca51bf0af0a036"
+# For Android specific servers you can also set ANDROID_JENKINS_URL
+
 TRIGGER_JOB="$1"
 TRIGGER_BUILD="$2"
 
@@ -78,12 +84,8 @@ node "$SCRIPT_DIR/reporting/docx_converter.js" \
   "$REPORT_DIR/android_report.docx"
 
 # Step 6: Upload to Feishu
-if [ -n "$FEISHU_WEBHOOK_URL" ]; then
-   log "Dispatching Docx into designated Feishu channel..."
-   bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/android_report.docx" "[Android] "
-else
-   log "⚠ FEISHU_WEBHOOK_URL not supplied. Skipping notification."
-fi
+log "Dispatching Docx into designated Feishu channel..."
+bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DIR/android_report.docx" "[Android] "
 
 rm -f "$HEARTBEAT_FILE"
 log "✅ Android Jenkins CI check completed successfully"
