@@ -118,17 +118,25 @@ projects/jenkins-analysis/
 │   ├── JobName_BuildNum_failed_jobs.json
 │   └── JobName_BuildNum_passed_jobs.json
 │
+├── data/                          # SQLite database for history (gitignored)
+│   └── jenkins_history.db
+│
 ├── reports/                       # Final reports (gitignored)
 │   └── Tanzu_Report_Env_Upgrade_663/
 │       ├── jenkins_daily_report.md
 │       ├── jenkins_daily_report.docx  ← Sent to Feishu
 │       └── LibraryWeb_Report_Sort_888_console.json
 │
+├── tests/                         # Standalone unit tests
+│   ├── db_writer.test.js
+│   └── md_to_docx.test.js
+│
 ├── docs/
 │   ├── DESIGN.md                  # This file
+│   ├── TEST_MANUAL.md             # How to run unit tests
 │   └── WEBHOOK_SETUP.md           # Jenkins webhook configuration guide
 │
-└── .gitignore                     # Excludes /tmp and /reports
+└── .gitignore                     # Excludes /tmp, /reports, /data
 ```
 
 ---
@@ -384,6 +392,8 @@ Classify: passed_jobs.json, failed_jobs.json
     ↓
 For each failed job: Fetch console log
     ↓
+db_writer.js → Parse tests, Fetch Spectre verification API, Save to SQLite `data/jenkins_history.db`
+    ↓
 report_generator.js → jenkins_daily_report.md
     ↓
 md_to_docx.js → jenkins_daily_report.docx
@@ -392,6 +402,16 @@ feishu_uploader.sh → Upload to Feishu
     ↓
 Done (user receives DOCX in Feishu chat)
 ```
+
+---
+
+## Data Structure (SQLite)
+
+The system uses a rolling 5-build window implementation powered by `better-sqlite3`.
+Tables:
+- `job_runs`: Track overall builds (e.g. Tanzu_Report_Env_Upgrade_663)
+- `failed_jobs`: Connects child downstream failures to root triggers.
+- `failed_steps`: Single source of truth containing isolated `tc_id`, `step_id`, `snapshot_url`, and error `fingerprint` hash. Identifies Spectre JSON false alarms visually.
 
 ---
 

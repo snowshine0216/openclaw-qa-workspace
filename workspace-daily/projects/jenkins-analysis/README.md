@@ -48,12 +48,15 @@ tail -f tmp/analyzer_*.log
 
 ```
 ├── scripts/           # All automation scripts
+├── tests/             # Standalone test files
+├── data/              # SQLite database (gitignored)
 ├── tmp/               # Intermediate files (gitignored)
 ├── reports/           # Final reports organized by build (gitignored)
 │   └── Tanzu_Report_Env_Upgrade_663/
 │       └── jenkins_daily_report.docx  ← Sent to Feishu
 ├── docs/              # Documentation
-│   ├── DESIGN.md      # System architecture
+│   ├── DESIGN.md          # System architecture
+│   ├── TEST_MANUAL.md     # Test execution guide
 │   └── WEBHOOK_SETUP.md   # Jenkins configuration guide
 └── .gitignore
 ```

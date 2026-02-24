@@ -14,7 +14,7 @@
 **Fix:** Hard-coded correct Feishu app credentials (default account)
 ```bash
 FEISHU_APP_ID="cli_a9f46899aff8dbce"
-FEISHU_APP_SECRET="5BWLcSunOc5I3rKvqR2ZQefEksQjOyyX"
+FEISHU_APP_SECRET="5B********X"
 ```
 **Result:** File uploads successfully, but **new issue discovered** (see below)
 

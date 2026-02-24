@@ -19,8 +19,16 @@ const {
   WidthType,
   BorderStyle,
   ShadingType,
-  convertInchesToTwip
+  convertInchesToTwip,
+  ExternalHyperlink
 } = require('docx');
+
+// Parse "[display](url)" → { text, url, isLink }
+const parseMarkdownLink = (raw) => {
+  const m = raw.match(/\[(.+?)\]\((.+?)\)/);
+  return m ? { text: m[1], url: m[2], isLink: true }
+           : { text: raw, url: null, isLink: false };
+};
 
 const [,, inputMd, outputDocx] = process.argv;
 
@@ -80,26 +88,38 @@ function createTable(token) {
   token.rows.forEach((row, rowIdx) => {
     const cells = row.map((cell, cellIdx) => {
       // Parse cell text for emojis and links
-      let cellText = cell.text;
-      let isLink = false;
-      let linkText = cellText;
+      const { text, url, isLink } = parseMarkdownLink(cell.text);
       
-      // Extract link if present: [text](url)
-      const linkMatch = cellText.match(/\[(.+?)\]\((.+?)\)/);
-      if (linkMatch) {
-        linkText = linkMatch[1];
-        isLink = true;
+      const childElements = [];
+      if (isLink) {
+        childElements.push(
+          new ExternalHyperlink({
+            link: url,
+            children: [
+              new TextRun({
+                text: text,
+                color: "0563C1",
+                underline: {
+                  type: "single",
+                  color: "0563C1"
+                }
+              })
+            ]
+          })
+        );
+      } else {
+        childElements.push(
+          new TextRun({
+            text: text,
+            color: "000000",
+          })
+        );
       }
       
       return new TableCell({
         children: [
           new Paragraph({
-            children: [
-              new TextRun({
-                text: cellText,
-                color: isLink ? "0563C1" : "000000",
-              })
-            ],
+            children: childElements,
             alignment: cellIdx === 1 ? AlignmentType.CENTER : AlignmentType.LEFT, // Center "Failed Steps"
           })
         ],

@@ -1,0 +1,5 @@
+data/
+logs/
+tmp/
+reports/
+node_modules/

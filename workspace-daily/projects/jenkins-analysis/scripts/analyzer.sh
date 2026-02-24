@@ -291,6 +291,20 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
     done < "$FAILED_JOBS_LIST"
 fi
 
+# Step 6b: Persist results to SQLite history DB
+update_heartbeat "Writing to history DB..."
+log "Writing results to SQLite history DB..."
+
+node "$SCRIPT_DIR/db_writer.js" \
+    "$JOB_NAME" \
+    "$BUILD_NUMBER" \
+    "${JENKINS_URL}job/$JOB_NAME/$BUILD_NUMBER/" \
+    "$TMP_DIR/${REPORT_FOLDER}_failed_jobs.json" \
+    "$TMP_DIR/${REPORT_FOLDER}_passed_jobs.json" \
+    "$REPORT_DIR" \
+    > "$LOGS_DIR/db_write_${REPORT_FOLDER}.log" 2>&1 || \
+    log "⚠ DB write failed (non-blocking, continuing...)"
+
 # Step 7: Generate consolidated report
 update_heartbeat "Generating report..."
 log "Generating consolidated report..."
