@@ -42,10 +42,34 @@ async function initDb() {
 /**
  * Truncate text to max length
  */
-function truncate(text, maxLength = 80) {
+const truncate = (text, maxLength = 80) => {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
-}
+};
+
+/**
+ * Remove noisy lines from raw console output before displaying in report.
+ * Strips:
+ *  - [allure-cleaner] scan/removal messages
+ *  - [INFO] Automation data JSON dumps
+ *  - Stack-trace lines beginning with "at " (e.g. "at async UserContext...")
+ * Returns the last `maxLines` meaningful lines joined as a string.
+ */
+const sanitizeConsoleLog = (rawLog, maxLines = 50) => {
+  const NOISE_PATTERNS = [
+    /^\s*\[allure-cleaner\]/,
+    /^\s*\[INFO\]\s+Automation data:/,
+    /^\s*at\s+(?:async\s+)?\S+/,
+  ];
+
+  const isNoiseLine = (line) => NOISE_PATTERNS.some((re) => re.test(line));
+
+  return rawLog
+    .split('\n')
+    .filter((line) => !isNoiseLine(line))
+    .slice(-maxLines)
+    .join('\n');
+};
 
 // Build report header
 let report = `# Jenkins Daily QA Report - ${reportFolder}
@@ -369,8 +393,9 @@ if (failedJobs.length > 0) {
       try {
         const consoleData = JSON.parse(fs.readFileSync(consoleLogPath, 'utf8'));
         const consoleLog = consoleData.console || '';
+        const cleanLog = sanitizeConsoleLog(consoleLog, 50);
         report += `<details>\n<summary>📋 Console Log (last 50 lines)</summary>\n\n\`\`\`\n`;
-        report += consoleLog.split('\n').slice(-50).join('\n');
+        report += cleanLog;
         report += `\n\`\`\`\n</details>\n\n`;
       } catch (error) {}
     }

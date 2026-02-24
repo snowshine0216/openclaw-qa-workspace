@@ -1,5 +1,77 @@
 # Jenkins Analysis - Changelog
 
+## 2026-02-24 - Removed Trace Noise from Console Log Section
+
+### 🎯 Issues Fixed
+
+1. **Raw Stack Traces / `[allure-cleaner]` / `[INFO] Automation data` in Console Log Block**
+   - Problem: The collapsible "Console Log (last 50 lines)" `<details>` block at the bottom of each failed-job section included:
+     - `at async UserContext.<anonymous> (file:///home/admin/jenkins/...)` stack frames
+     - `[allure-cleaner] Started to scan ./reports/allure-raw folder...` housekeeping messages
+     - `[INFO] Automation data: {"testSuitName":...}` — enormous JSON payloads that cluttered the view
+   - These are not actionable for QA Engineers and made the report hard to scan
+
+### ✅ Changes Made
+
+#### Report Generator Updates (`scripts/report_generator.js`)
+
+**Added `sanitizeConsoleLog` helper:**
+
+```javascript
+const sanitizeConsoleLog = (rawLog, maxLines = 50) => {
+  const NOISE_PATTERNS = [
+    /^\s*\[allure-cleaner\]/,
+    /^\s*\[INFO\]\s+Automation data:/,
+    /^\s*at\s+(?:async\s+)?\S+/,
+  ];
+
+  const isNoiseLine = (line) => NOISE_PATTERNS.some((re) => re.test(line));
+
+  return rawLog
+    .split('\n')
+    .filter((line) => !isNoiseLine(line))
+    .slice(-maxLines)
+    .join('\n');
+};
+```
+
+**Wired into the `<details>` console log block:**
+
+```javascript
+const cleanLog = sanitizeConsoleLog(consoleLog, 50);
+report += `<details>\n<summary>📋 Console Log (last 50 lines)</summary>\n\n\`\`\`\n`;
+report += cleanLog;
+report += `\n\`\`\`\n</details>\n\n`;
+```
+
+### 🧪 Test Coverage
+
+**Noise patterns filtered:**
+
+| Pattern | Example |
+|---------|---------|
+| `[allure-cleaner]` | `[allure-cleaner] Found 17 skipped test result files, removing...` |
+| `[INFO] Automation data:` | `[INFO] Automation data: {"testSuitName":"CustomApp",...}` |
+| Stack-trace `at` lines | `at async UserContext.<anonymous> (file:///home/admin/jenkins/...)` |
+
+### 📋 Files Modified
+
+1. `scripts/report_generator.js` - Added `sanitizeConsoleLog` helper; applied to `<details>` block
+
+### 🎨 Benefits
+
+- ✅ **Cleaner console log**: Only meaningful test output shown (actual error lines, WDIO output)
+- ✅ **No breaking change**: Filtering is purely additive; raw log still on disk untouched
+- ✅ **Configurable**: `sanitizeConsoleLog(log, N)` maxLines param can be tuned per call
+
+### 🔄 Backward Compatibility
+
+✅ **Maintained**
+- Raw `*_console.json` files are not modified — filtering is at render time only
+- All other report sections unaffected
+
+---
+
 ## 2026-02-24 - Improved Report Readability
 
 ### 🎯 Issues Fixed
