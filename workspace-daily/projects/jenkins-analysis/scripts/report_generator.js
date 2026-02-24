@@ -255,8 +255,8 @@ if (failedJobs.length > 0) {
     const buildNumber = job.number;
     const jobUrl = `${JENKINS_URL}/job/${jobName}/${buildNumber}/`;
     
-    // V2.3: Clickable link with build number (same format as summary table)
-    report += `[${jobName} #${buildNumber}](${jobUrl})\n\n`;
+    // Each job gets a Heading 2 with a clickable link (rendered by md_to_docx as HEADING_2)
+    report += `## [${jobName} #${buildNumber}](${jobUrl})\n\n`;
     
     const analysisPath = path.join(outputDir, `${jobName}_${buildNumber}_analysis.json`);
     let analysis = null;

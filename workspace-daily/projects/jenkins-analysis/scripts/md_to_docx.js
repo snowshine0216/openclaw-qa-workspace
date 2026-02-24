@@ -23,11 +23,62 @@ const {
   ExternalHyperlink
 } = require('docx');
 
-// Parse "[display](url)" → { text, url, isLink }
+// Parse a single "[display](url)" — used for table cells
 const parseMarkdownLink = (raw) => {
   const m = raw.match(/\[(.+?)\]\((.+?)\)/);
   return m ? { text: m[1], url: m[2], isLink: true }
            : { text: raw, url: null, isLink: false };
+};
+
+/**
+ * Split inline text that may contain markdown links and **bold** markers
+ * into an array of docx TextRun / ExternalHyperlink elements.
+ * Supports interleaved links and bold spans.
+ */
+const parseInlineContent = (raw, baseStyle = {}) => {
+  const elements = [];
+  // Regex: match [text](url) or **bold** segments
+  const pattern = /\[([^\]]+)\]\(([^)]+)\)|\*\*(.+?)\*\*/g;
+  let lastIndex = 0;
+  let m;
+
+  const addPlain = (text) => {
+    if (!text) return;
+    elements.push(new TextRun({ text, ...baseStyle }));
+  };
+
+  while ((m = pattern.exec(raw)) !== null) {
+    // Text before this match
+    addPlain(raw.substring(lastIndex, m.index));
+
+    if (m[1] !== undefined && m[2] !== undefined) {
+      // It's a link [text](url)
+      elements.push(
+        new ExternalHyperlink({
+          link: m[2],
+          children: [
+            new TextRun({
+              text: m[1],
+              color: "0563C1",
+              underline: { type: "single", color: "0563C1" },
+              ...baseStyle,
+            })
+          ]
+        })
+      );
+    } else if (m[3] !== undefined) {
+      // It's **bold**
+      elements.push(new TextRun({ text: m[3], bold: true, ...baseStyle }));
+    }
+    lastIndex = m.index + m[0].length;
+  }
+
+  // Trailing plain text
+  addPlain(raw.substring(lastIndex));
+
+  // Fallback so Paragraph never has empty children
+  if (elements.length === 0) elements.push(new TextRun({ text: raw, ...baseStyle }));
+  return elements;
 };
 
 const [,, inputMd, outputDocx] = process.argv;
@@ -156,50 +207,28 @@ function createTable(token) {
 function processTokens(tokens) {
   for (const token of tokens) {
     switch (token.type) {
-      case 'heading':
+      case 'heading': {
+        // Support inline links inside headings, e.g. ## [JobName](url)
+        const headingLevel = token.depth === 1 ? HeadingLevel.HEADING_1
+          : token.depth === 2 ? HeadingLevel.HEADING_2
+          : token.depth === 3 ? HeadingLevel.HEADING_3
+          : HeadingLevel.HEADING_4;
+        const headingChildren = parseInlineContent(token.text);
         children.push(
           new Paragraph({
-            text: token.text,
-            heading: token.depth === 1 ? HeadingLevel.HEADING_1 :
-                    token.depth === 2 ? HeadingLevel.HEADING_2 :
-                    token.depth === 3 ? HeadingLevel.HEADING_3 :
-                    HeadingLevel.HEADING_4,
+            children: headingChildren,
+            heading: headingLevel,
           })
         );
         break;
-      
-      case 'paragraph':
-        // Check for bold text markers
-        let textRuns = [];
-        const boldPattern = /\*\*(.+?)\*\*/g;
-        let lastIndex = 0;
-        let match;
-        
-        while ((match = boldPattern.exec(token.text)) !== null) {
-          // Add text before bold
-          if (match.index > lastIndex) {
-            textRuns.push(new TextRun(token.text.substring(lastIndex, match.index)));
-          }
-          // Add bold text
-          textRuns.push(new TextRun({ text: match[1], bold: true }));
-          lastIndex = match.index + match[0].length;
-        }
-        
-        // Add remaining text
-        if (lastIndex < token.text.length) {
-          textRuns.push(new TextRun(token.text.substring(lastIndex)));
-        }
-        
-        if (textRuns.length === 0) {
-          textRuns = [new TextRun(token.text)];
-        }
-        
-        children.push(
-          new Paragraph({
-            children: textRuns,
-          })
-        );
+      }
+
+      case 'paragraph': {
+        // Parse inline links and bold markers together
+        const paraChildren = parseInlineContent(token.text);
+        children.push(new Paragraph({ children: paraChildren }));
         break;
+      }
       
       case 'list':
         token.items.forEach(item => {
