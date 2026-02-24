@@ -23,7 +23,7 @@ const totalJobs = failedJobs.length + passedJobs.length;
 const passRate = totalJobs > 0 ? ((passedJobs.length / totalJobs) * 100).toFixed(1) : 0;
 
 // Connect to DB
-const dbPath = path.resolve(__dirname, '..', 'data', 'jenkins_history.db');
+const dbPath = path.resolve(__dirname, '..', '..', 'data', 'jenkins_history.db');
 let db;
 
 async function initDb() {
