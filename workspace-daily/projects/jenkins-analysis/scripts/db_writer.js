@@ -110,14 +110,13 @@ const insertFailedStep = (db, failedJobId, stepData) => {
 };
 
 const findLastFailedBuild = (db, jobName, fingerprint, currentBuild) => {
-  // V2: Look back last 5 builds, fixed query to read jr.job_build directly
+  // V2: Look back last 5 builds - use fj.job_build (actual failed job build, not trigger build)
   const rows = db.prepare(`
-    SELECT jr.job_build
+    SELECT fj.job_build
     FROM failed_steps fs
     JOIN failed_jobs fj ON fs.failed_job_id = fj.id
-    JOIN job_runs jr ON fj.run_id = jr.id
-    WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND jr.job_build < ?
-    ORDER BY jr.job_build DESC LIMIT 5
+    WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND fj.job_build < ?
+    ORDER BY fj.job_build DESC LIMIT 5
   `).all(jobName, fingerprint, currentBuild);
   
   if (rows.length === 0) {
@@ -145,20 +144,60 @@ const parseSpectreUrl = (snapshotUrl) => {
   return match ? { project: match[1], suite: match[2], runId: parseInt(match[3]), testId: parseInt(match[4]) } : null;
 };
 
-// Spectre API Call - Use fetch directly instead of heavy libraries. Using await needs async shell.
+// Spectre Scraper - Extract data from HTML since no JSON API exists
 const fetchSpectreData = async (snapshotUrl) => {
-  const parsed = parseSpectreUrl(snapshotUrl);
-  if (!parsed) return null;
+  if (!snapshotUrl || !snapshotUrl.includes('10.23.33.4:3000')) return null;
   
-  const baseUrl = snapshotUrl.split('/projects/')[0];
-  const url = `${baseUrl}/projects/${parsed.project}/suites/${parsed.suite}/runs/${parsed.runId}.json`;
+  // Extract test ID from URL
+  const testIdMatch = snapshotUrl.match(/#test_(\d+)/);
+  if (!testIdMatch) return null;
+  
+  const testId = testIdMatch[1];
+  const baseUrl = snapshotUrl.split('#')[0];
   
   try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.tests?.find(t => t.id === parsed.testId) || null;
+    const http = require('http');
+    const { URL } = require('url');
+    
+    const html = await new Promise((resolve, reject) => {
+      http.get(new URL(baseUrl), (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => resolve(data));
+      }).on('error', reject);
+    });
+    
+    // Find test block
+    const testIdAnchor = `id="test_${testId}"`;
+    const testBlockStart = html.indexOf(testIdAnchor);
+    if (testBlockStart === -1) return null;
+    
+    const testBlock = html.substring(testBlockStart, testBlockStart + 2000);
+    
+    // Extract image URLs
+    const imageMatches = [...testBlock.matchAll(/class="test__image" href="([^"]*)"/g)];
+    
+    // Extract diff percentage
+    const diffPctMatch = testBlock.match(/(\d+\.?\d*)%\s+difference/);
+    
+    // Extract tolerance
+    const toleranceMatch = testBlock.match(/(\d+\.?\d*)%\s+tolerance/);
+    
+    // Extract test name
+    const nameMatch = testBlock.match(/<span class="test__name">([^<]+)</);
+    
+    return {
+      id: testId,
+      name: nameMatch ? nameMatch[1].trim() : null,
+      diff: diffPctMatch ? parseFloat(diffPctMatch[1]) : null,
+      diff_threshold: toleranceMatch ? parseFloat(toleranceMatch[1]) : null,
+      pass: testBlock.includes('test--passed') || !testBlock.includes('test--failed'),
+      baselineUrl: imageMatches[0] ? imageMatches[0][1] : null,
+      actualUrl: imageMatches[1] ? imageMatches[1][1] : null,
+      diffUrl: imageMatches[2] ? imageMatches[2][1] : null
+    };
   } catch (error) {
+    console.error(`Spectre fetch error: ${error.message}`);
     return null;
   }
 };
@@ -230,7 +269,7 @@ const processJobFailed = async (db, runId, triggerJobName, triggerBuild, jobInfo
   });
   
   for (const step of failures) {
-    await processStep(db, failedJobId, triggerJobName, triggerBuild, step);
+    await processStep(db, failedJobId, jobInfo.name, parseInt(jobInfo.number), step);
   }
 };
 

@@ -116,7 +116,8 @@ const extractSpectreUrl = (runBlock) => {
  * Extracts all error details from one run (run_1, run_2, etc.)
  */
 const parseRunBlock = (runBlock, fileName, tcInfo) => {
-  const runMatch = runBlock.match(/✗\s+(run_\d+)/);
+  // Match run label - handle both ✗ and corrupted emoji (���)
+  const runMatch = runBlock.match(/[✗�]+\s+(run_\d+)/);
   if (!runMatch) return null;
   
   const runLabel = runMatch[1];
@@ -225,15 +226,18 @@ const extractFailuresFromLog = (consoleText) => {
   
   // Step 2: Process each file block
   fileBlocks.forEach(({ fileName, content }) => {
-    // Split into test case blocks (allow leading whitespace)
-    const tcBlocks = content.split(/(?=\s*\[?TC\d+\])/m).filter(b => b.trim() !== "");
+    // Split into test case blocks - allow any prefix before [TC...] (e.g., [0-0] emoji)
+    const tcBlocks = content.split(/(?=.*?\[TC\d+)/m).filter(b => {
+      const trimmed = b.trim();
+      return trimmed !== "" && trimmed.includes('[TC');
+    });
     
     tcBlocks.forEach(tcBlock => {
       const tcInfo = extractTestCaseInfo(tcBlock);
       if (!tcInfo) return;
       
-      // Split into run blocks
-      const runBlocks = tcBlock.split(/(?=✗\s+run_\d+)/g).filter(r => r.includes('✗ run_'));
+      // Split into run blocks (handle both ✗ and corrupted emoji)
+      const runBlocks = tcBlock.split(/(?=[✗�]+\s+run_\d+)/g).filter(r => /[✗�]+\s+run_\d+/.test(r));
       
       // Parse each run
       const runResults = runBlocks.map(runBlock => parseRunBlock(runBlock, fileName, tcInfo));
