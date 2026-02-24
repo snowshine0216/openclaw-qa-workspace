@@ -71,7 +71,7 @@ is_multijob() {
     return 1  # false
 }
 
-# Function to get triggered jobs from a MultiJob with build numbers
+# Function to get triggered jobs from a MultiJob
 get_multijob_children() {
     local job_name="$1"
     local build_number="$2"
@@ -79,49 +79,36 @@ get_multijob_children() {
     # Use >&2 to send logs to stderr (not captured in pipe)
     echo "  → Drilling down into MultiJob: $job_name #$build_number" >&2
     
-    # Get console log and parse "Starting building: JobName #BuildNum"
-    local console_text=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-        "$JENKINS_URL/job/$job_name/$build_number/consoleText")
+    # Method 1: Get downstream builds from MultiJob API
+    local children=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+        "$JENKINS_URL/job/$job_name/$build_number/api/json?tree=downstreamBuilds[jobName,buildNumber]" \
+        | jq -r '.downstreamBuilds[]? | .jobName' 2>/dev/null || echo "")
     
-    local children_with_builds=$(echo "$console_text" | grep 'Starting building:' | \
-        sed -E 's/^Starting building: (.+) #([0-9]+)$/\1|\2/' | sort -u || echo "")
-    
-    if [ -n "$children_with_builds" ]; then
-        # Return format: "JobName|BuildNum" (one per line)
-        echo "$children_with_builds"
-    else
-        # Fallback: Try API (but this won't have build numbers)
-        echo "    ⚠ No children found in console log, trying API..." >&2
-        local children_names=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-            "$JENKINS_URL/job/$job_name/$build_number/api/json?tree=downstreamBuilds[jobName]" \
-            | jq -r '.downstreamBuilds[]? | .jobName' 2>/dev/null || echo "")
-        
-        # Return just names (without build numbers - will need lastBuild fallback)
-        echo "$children_names"
+    # Method 2: Parse console log for triggered builds (more reliable)
+    if [ -z "$children" ]; then
+        children=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+            "$JENKINS_URL/job/$job_name/$build_number/consoleText" \
+            | grep 'Starting building:' | awk '{print $3}' | sort -u || echo "")
     fi
+    
+    # Only output job names to stdout
+    echo "$children"
 }
 
 # Step 4: Get downstream jobs triggered by this build (with MultiJob drill-down)
 update_heartbeat "Fetching downstream jobs..."
 log "Fetching downstream jobs for $JOB_NAME #$BUILD_NUMBER..."
 
-# Get console log to parse triggered builds with BOTH name and number
-CONSOLE_TEXT=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-    "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/consoleText")
-
-# Extract "Starting building: JobName #BuildNum" → save as "JobName|BuildNum"
-TRIGGERED_BUILDS=$(echo "$CONSOLE_TEXT" | grep 'Starting building:' | \
-    sed -E 's/^Starting building: (.+) #([0-9]+)$/\1|\2/' | sort -u || echo "")
-
-# For compatibility with existing logic, extract just job names
-DOWNSTREAM_JOBS=$(echo "$TRIGGERED_BUILDS" | cut -d'|' -f1)
+DOWNSTREAM_JOBS=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+    "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/api/json?tree=downstreamProjects[name]" \
+    | jq -r '.downstreamProjects[]?.name // empty')
 
 if [ -z "$DOWNSTREAM_JOBS" ]; then
-    log "⚠ No triggered builds found in console log - trying API fallback..."
+    log "⚠ No downstream jobs found - checking triggered builds..."
+    # Alternative: check build log for triggered jobs
     DOWNSTREAM_JOBS=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-        "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/api/json?tree=downstreamProjects[name]" \
-        | jq -r '.downstreamProjects[]?.name // empty')
-    TRIGGERED_BUILDS=""  # No build numbers available from API
+        "$JENKINS_URL/job/$JOB_NAME/$BUILD_NUMBER/consoleText" \
+        | grep 'Starting building:' | awk '{print $3}' | sort -u || echo "")
 fi
 
 if [ -z "$DOWNSTREAM_JOBS" ]; then
@@ -148,50 +135,22 @@ for job_name in $DOWNSTREAM_JOBS; do
     if is_multijob "$job_name"; then
         log "  → Found MultiJob: $job_name - drilling down..."
         
-        # Get specific build number from TRIGGERED_BUILDS (not lastBuild!)
-        MULTIJOB_BUILD=$(echo "$TRIGGERED_BUILDS" | grep "^${job_name}|" | cut -d'|' -f2 | head -1)
-        
-        if [ -z "$MULTIJOB_BUILD" ]; then
-            # Fallback to lastBuild only if not found in triggered builds
-            MULTIJOB_BUILD=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-                "$JENKINS_URL/job/$job_name/lastBuild/api/json?tree=number" \
-                | jq -r '.number // empty')
-        fi
+        # Get latest build number for this MultiJob
+        MULTIJOB_BUILD=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+            "$JENKINS_URL/job/$job_name/lastBuild/api/json?tree=number" \
+            | jq -r '.number // empty')
         
         if [ -n "$MULTIJOB_BUILD" ]; then
-            log "    → Drilling into MultiJob build #$MULTIJOB_BUILD"
             # Get children of this MultiJob
             CHILDREN=$(get_multijob_children "$job_name" "$MULTIJOB_BUILD")
             
             if [ -n "$CHILDREN" ]; then
                 echo "    ✓ Found $(echo "$CHILDREN" | wc -l | xargs) child jobs" >&2
-                # Add children to the lists
-                for child_entry in $CHILDREN; do
-                    child_entry=$(echo "$child_entry" | xargs)
-                    if [ -z "$child_entry" ]; then
-                        continue
-                    fi
-                    
-                    # Check if format is "JobName|BuildNum" or just "JobName"
-                    if [[ "$child_entry" =~ \| ]]; then
-                        # Has build number
-                        child_name=$(echo "$child_entry" | cut -d'|' -f1)
-                        child_build=$(echo "$child_entry" | cut -d'|' -f2)
-                        
-                        # Add to TRIGGERED_BUILDS for later status checks
-                        if ! echo "$TRIGGERED_BUILDS" | grep -qx "$child_entry"; then
-                            TRIGGERED_BUILDS="${TRIGGERED_BUILDS}"$'\n'"${child_entry}"
-                        fi
-                        
-                        # Add to ALL_JOBS (job names only)
-                        if ! echo -e "$ALL_JOBS" | grep -qx "$child_name"; then
-                            ALL_JOBS="${ALL_JOBS}${child_name}\n"
-                        fi
-                    else
-                        # Just job name (no build number from API fallback)
-                        if ! echo -e "$ALL_JOBS" | grep -qx "$child_entry"; then
-                            ALL_JOBS="${ALL_JOBS}${child_entry}\n"
-                        fi
+                # Add children to the list
+                for child in $CHILDREN; do
+                    child=$(echo "$child" | xargs)
+                    if [ -n "$child" ] && ! echo -e "$ALL_JOBS" | grep -qx "$child"; then
+                        ALL_JOBS="${ALL_JOBS}${child}\n"
                     fi
                 done
             else
@@ -210,9 +169,6 @@ done
 
 # Clean up and deduplicate
 DOWNSTREAM_JOBS=$(echo -e "$ALL_JOBS" | grep -v '^$' | grep -v '^#' | grep -v '^\[' | sort -u)
-
-# Save triggered builds for debugging and status checks
-echo -e "$TRIGGERED_BUILDS" > "$TMP_DIR/${REPORT_FOLDER}_triggered_builds.txt"
 
 TOTAL_JOBS=$(echo "$DOWNSTREAM_JOBS" | grep -v '^$' | wc -l | xargs)
 log "✓ Total jobs to analyze (after MultiJob expansion): $TOTAL_JOBS"
@@ -237,22 +193,12 @@ while IFS= read -r job_name; do
         update_heartbeat "Fetching statuses ($COUNTER/$TOTAL_JOBS)..."
     fi
     
-    # Get specific build number from TRIGGERED_BUILDS (if available)
-    JOB_NUMBER=$(echo "$TRIGGERED_BUILDS" | grep "^${job_name}|" | cut -d'|' -f2 | head -1)
+    log "[$COUNTER/$TOTAL_JOBS] Checking: $job_name"
     
-    if [ -n "$JOB_NUMBER" ]; then
-        # Use specific build number from console log
-        log "[$COUNTER/$TOTAL_JOBS] Checking: $job_name #$JOB_NUMBER"
-        JOB_INFO=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-            "$JENKINS_URL/job/$job_name/$JOB_NUMBER/api/json?tree=number,result,timestamp,duration" || echo "{}")
-    else
-        # Fallback to lastBuild (shouldn't happen if console log parsing worked)
-        log "[$COUNTER/$TOTAL_JOBS] Checking: $job_name (lastBuild fallback)"
-        JOB_INFO=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
-            "$JENKINS_URL/job/$job_name/lastBuild/api/json?tree=number,result,timestamp,duration" || echo "{}")
-        JOB_NUMBER=$(echo "$JOB_INFO" | jq -r '.number // "N/A"')
-    fi
+    JOB_INFO=$(curl -s -u "$JENKINS_USER:$JENKINS_API_TOKEN" \
+        "$JENKINS_URL/job/$job_name/lastBuild/api/json?tree=number,result,timestamp,duration" || echo "{}")
     
+    JOB_NUMBER=$(echo "$JOB_INFO" | jq -r '.number // "N/A"')
     JOB_RESULT=$(echo "$JOB_INFO" | jq -r '.result // "UNKNOWN"')
     
     if [ "$JOB_RESULT" = "FAILURE" ] || [ "$JOB_RESULT" = "UNSTABLE" ]; then
