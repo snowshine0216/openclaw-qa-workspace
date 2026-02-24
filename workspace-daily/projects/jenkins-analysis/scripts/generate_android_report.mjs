@@ -116,8 +116,9 @@ function generateMarkdown(outputDir, triggerJob, triggerBuild) {
     md += `---\n\n`;
   });
 
-  const mdFile = path.join(outputDir, 'android_report.md');
+  const mdFile = path.join(outputDir, `${triggerJob}_${triggerBuild}.md`);
   fs.writeFileSync(mdFile, md, 'utf8');
+  console.log(`✅ Android report written to: ${mdFile}`);
 }
 
 const args = process.argv.slice(2);
