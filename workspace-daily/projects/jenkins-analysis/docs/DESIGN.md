@@ -1,8 +1,80 @@
-# Jenkins QA Daily Monitoring System - Design Document
+# Jenkins QA Daily Monitoring System - Design Document V2
+
+## 🎉 V2 Implementation Complete (2026-02-24)
+
+**Status:** ✅ **Production Ready**
+
+**All V2 features tested and working:**
+1. ✅ File name extraction from console logs
+2. ✅ TC ID, Step ID, Step Name population (no more N/A)
+3. ✅ Full error message capture with complete stack traces
+4. ✅ Retry deduplication (3 runs → 1 entry with count)
+5. ✅ Historical failure tracking (last 5 builds)
+6. ✅ Fixed SQL query for historical lookup
+7. ✅ Enhanced SQLite schema with V2 columns
+8. ✅ Updated report format with File/Retries columns
+9. ✅ All entry points working (webhook, manual_trigger, direct_analyzer)
+
+**Test Results (Build 1242):**
+```
+Database: 5 jobs with failures
+Parser: 100% extraction rate
+Fields: file_name ✅ | tc_id ✅ | step_id ✅ | retry_count ✅
+Report: All columns populated ✅
+```
+
+---
+
+## 🆕 V2 Updates (2026-02-24)
+
+**Major Enhancements:**
+- ✅ File name extraction from console logs
+- ✅ Full error message capture with stack traces
+- ✅ Retry deduplication (run_1, run_2, run_3 → 1 entry)
+- ✅ Historical failure tracking (last 5 builds)
+- ✅ Enhanced SQLite schema (file_name, retry_count, full_error_msg)
+- ✅ Fixed fingerprint calculation (includes file name)
+- ✅ Improved report format (new columns: File, Retries)
+
+**New Components:**
+- `parser_v2.js` - Enhanced console log parser
+- `migrate_v2.js` - Database migration script
+- `test_parser_v2.js` - Parser unit tests
+
+**Modified Components:**
+- `db_writer.js` - Uses parser_v2, fixed historical lookup query
+- `report_generator.js` - Added file/retry columns, expandable errors
+
+**Documentation:**
+- [FIX_DESIGN_V2.md](FIX_DESIGN_V2.md) - V2 technical design
+- [DATA_FLOW_V2.md](DATA_FLOW_V2.md) - V2 data flow diagrams
+- [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) - V2 summary
+
+**V2 Known Issues Fixed:**
+1. ✅ **Console log file naming mismatch**
+   - Was looking for: `LibraryWeb_Report_GridView.log`
+   - Now correctly reads: `LibraryWeb_Report_GridView_768_console.json`
+2. ✅ **TC header regex too restrictive**
+   - Was failing on: `[TC86139_02] FUN | Report Editor | Grid View:`
+   - Now handles all TC patterns with: `/\[(TC\d+[^\]]*)\]\s+([^:]+)/m`
+3. ✅ **Generic failure pattern missing**
+   - Added fallback for non-screenshot/non-assertion failures
+   - Captures any "- Failed:" message
+4. ✅ **Historical lookup query bug**
+   - Was reading: `SELECT fs.last_failed_build` (circular reference)
+   - Fixed to: `SELECT jr.job_build` (correct join)
+5. ✅ **Job number field name**
+   - Was expecting: `jobInfo.build`
+   - Fixed to: `jobInfo.number` (matches JSON structure)
+6. ✅ **Undefined value handling**
+   - Added null coalescing: `snapshotUrl: step.snapshotUrl || null`
+   - Prevents SQLite binding errors
+
+---
 
 ## Overview
 
-Automated Jenkins job monitoring system that watches specific trigger jobs, analyzes downstream test results, generates comprehensive reports, and delivers them to Feishu.
+Automated Jenkins job monitoring system that watches specific trigger jobs, analyzes downstream test results with historical context, generates comprehensive reports, and delivers them to Feishu.
 
 ---
 
@@ -99,34 +171,117 @@ Automated Jenkins job monitoring system that watches specific trigger jobs, anal
 
 ---
 
-## Directory Structure
+## V2 Enhanced Data Flow
+
+```
+Console Log (Build 2201)
+         ↓
+parser_v2.js - extractFailuresFromLog()
+         ↓
+    [Extract File Pattern]
+    specs/regression/customapp/CustomAppShowToolBar.spec.js(1 failed)
+         ↓
+    [Extract Test Cases]
+    [TC78888] Library as home - Show Toolbar - Disable Favorites:
+         ↓
+    [Extract Runs + Deduplicate]
+    ✗ run_1, run_2, run_3 → Single entry with retry_count=3
+         ↓
+    [Extract Full Error + Snapshot URL]
+    - Failed:Screenshot "TC78888_01..." doesn't match...
+    Visit http://10.23.33.4:3000/.../runs/2571#test_6055635
+         ↓
+db_writer.js - processStep()
+         ↓
+    [Build Fingerprint]
+    sha256(fileName + tcId + stepId + stepName + failureType)
+         ↓
+    [Historical Lookup - FIXED]
+    SELECT jr.job_build FROM failed_steps fs ...
+    WHERE job_name=? AND fingerprint=? AND job_build < ?
+    LIMIT 5  ← Looks back 5 builds
+         ↓
+    [Insert to SQLite]
+    file_name: specs/.../CustomAppShowToolBar.spec.js
+    tc_id: TC78888
+    step_id: TC78888_01
+    retry_count: 3
+    full_error_msg: [complete stack trace]
+    last_failed_build: 2200  ← Found in history!
+    is_recurring: 1
+         ↓
+report_generator.js - Generate Report
+         ↓
+    [Summary Table]
+    | File | TC ID | Step | Last Failed | Retries | Snapshot |
+    | CustomAppShowToolBar | TC78888 | TC78888_01 | #2200 | 🔄 3x | 📸 View |
+         ↓
+    [Detailed Analysis]
+    - File: specs/.../CustomAppShowToolBar.spec.js
+    - Retries: 3x
+    - Last Failed: Build #2200 (recurring)
+    - <details>Full Error</details>
+         ↓
+md_to_docx.js - Convert to DOCX
+         ↓
+feishu_uploader.sh - Upload to Feishu
+         ↓
+    📧 Feishu Chat (oc_f15b73b877...)
+```
+
+---
+
+## Directory Structure (V2 Updated)
 
 ```
 projects/jenkins-analysis/
 ├── scripts/
 │   ├── webhook_server.js         # Webhook listener (Node.js)
 │   ├── analyzer.sh                # Main analysis orchestrator (Bash)
-│   ├── report_generator.js        # Report builder (Node.js)
-│   ├── md_to_docx.js             # Markdown → DOCX converter (Node.js)
-│   └── feishu_uploader.sh        # Feishu API integration (Bash)
+│   ├── manual_trigger.sh          # Manual trigger for testing
+│   ├── parser_v2.js               # V2: Enhanced console log parser (NEW)
+│   ├── db_writer.js               # V2: SQLite persistence (ENHANCED)
+│   ├── report_generator.js        # V2: Report builder (ENHANCED)
+│   ├── md_to_docx.js             # Markdown → DOCX converter
+│   ├── feishu_uploader.sh        # Feishu API integration
+│   ├── migrate_v2.js             # V2: Database migration script (NEW)
+│   └── test_parser_v2.js         # V2: Parser unit tests (NEW)
 │
 ├── tmp/                           # Intermediate files (gitignored)
-│   ├── webhook.log
-│   ├── analyzer_JobName_BuildNum.log
-│   ├── heartbeat_JobName_BuildNum.txt
-│   ├── JobName_BuildNum_downstream_jobs.txt
-│   ├── JobName_BuildNum_failed_jobs.json
-│   └── JobName_BuildNum_passed_jobs.json
+│   ├── heartbeat_*.txt            # Analysis progress tracking
+│   ├── *_failed_jobs.json         # Parsed failures
+│   └── *_passed_jobs.json         # Parsed successes
 │
-├── data/                          # SQLite database for history (gitignored)
-│   └── jenkins_history.db
+├── logs/                          # Execution logs (gitignored)
+│   ├── webhook.log                # Webhook server log
+│   ├── analyzer_*.log             # Analysis logs
+│   └── db_write_*.log             # Database write logs
+│
+├── data/                          # SQLite database (gitignored)
+│   └── jenkins_history.db         # V2 schema with new columns
 │
 ├── reports/                       # Final reports (gitignored)
-│   └── Tanzu_Report_Env_Upgrade_663/
-│       ├── jenkins_daily_report.md
-│       ├── jenkins_daily_report.docx  ← Sent to Feishu
-│       └── LibraryWeb_Report_Sort_888_console.json
+│   └── <job>_<build>/
+│       ├── <job>_<build>.md       # V2: Enhanced markdown report
+│       ├── <job>_<build>.docx     # Sent to Feishu
+│       ├── <jobname>.log          # Console logs per failed job
+│       └── <jobname>_analysis.json # AI failure analysis
 │
+├── docs/                          # Documentation
+│   ├── DESIGN.md                  # This file (V2 updated)
+│   ├── FIX_DESIGN_V2.md           # V2: Technical design (NEW)
+│   ├── DATA_FLOW_V2.md            # V2: Data flow diagrams (NEW)
+│   ├── IMPLEMENTATION_COMPLETE.md # V2: Implementation summary (NEW)
+│   ├── PARSING_EXAMPLE.md         # V2: Parser walkthrough (NEW)
+│   ├── APPROVED_DECISIONS.md      # V2: Design decisions (NEW)
+│   ├── TEST_MANUAL.md             # Test execution guide
+│   └── WEBHOOK_SETUP.md           # Jenkins configuration
+│
+└── tests/                         # Unit tests
+    ├── test_parser_v2.js          # V2: Parser tests (NEW)
+    ├── md_to_docx.test.js
+    └── db_writer.test.js
+```
 ├── tests/                         # Standalone unit tests
 │   ├── db_writer.test.js
 │   └── md_to_docx.test.js

@@ -72,8 +72,8 @@ let report = `# Jenkins Daily QA Report - ${reportFolder}
 if (failedJobs.length > 0) {
   report += `## ⚠️ Failure Summary Table
 
-| Job | TC ID | Step ID | Category | Root Cause | Last Failed Build | Snapshot | Suggestion |
-|-----|-------|---------|----------|------------|-------------------|----------|------------|
+| Job | File | TC ID | Step ID | Category | Root Cause | Last Failed | Retries | Snapshot | Suggestion |
+|-----|------|-------|---------|----------|------------|-------------|---------|----------|------------|
 `;
 
   failedJobs.forEach(job => {
@@ -106,7 +106,7 @@ if (failedJobs.length > 0) {
       ? truncate(analysis.actions[0], 45)
       : 'See details below';
 
-    // Retrieve steps from DB
+    // Retrieve steps from DB (V2: Include new columns)
     let steps = [];
     if (db) {
       try {
@@ -122,6 +122,13 @@ if (failedJobs.length > 0) {
 
     if (steps.length > 0) {
       steps.forEach(step => {
+        // V2: Extract short file name
+        const fileName = step.file_name || 'unknown.spec.js';
+        const shortFileName = fileName.split('/').pop().replace('.spec.js', '');
+        
+        // V2: Format retry count
+        const retryDisplay = step.retry_count > 1 ? `🔄 ${step.retry_count}x` : '-';
+        
         let snapshotCell = 'N/A';
         if (step.snapshot_url) {
           const badge = step.false_alarm ? ' ⚠️ FA' : '';
@@ -133,17 +140,19 @@ if (failedJobs.length > 0) {
           lastFailedCell = `#${step.last_failed_build}`;
         }
 
-        report += `| ${jobLinkDocx} | ${step.tc_id} | ${step.step_id} | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | ${snapshotCell} | ${suggestion} |\n`;
+        report += `| ${jobLinkDocx} | ${shortFileName} | ${step.tc_id} | ${step.step_id} | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | ${retryDisplay} | ${snapshotCell} | ${suggestion} |\n`;
       });
     } else {
       // Fallback if no steps found in DB
       let lastFailedCell = 'Unknown';
-      report += `| ${jobLinkDocx} | N/A | N/A | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | N/A | ${suggestion} |\n`;
+      report += `| ${jobLinkDocx} | N/A | N/A | N/A | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | - | N/A | ${suggestion} |\n`;
     }
   });
   
   report += `\n**Legend:**  \n`;
-  report += `- **Last Failed Build:** Shows build number if this step failed in previous builds  \n`;
+  report += `- **File:** Test file name (short version, see details for full path)  \n`;
+  report += `- **Last Failed:** Build number if this step failed in previous builds  \n`;
+  report += `- **Retries:** 🔄 Nx = Failed N times with retries (deduplicated)  \n`;
   report += `- **⚠️ FA:** Marks a False Alarm (e.g. minor visual diff confirmed by Spectre)  \n`;
   report += `\n---\n\n`;
 }
@@ -206,6 +215,42 @@ if (failedJobs.length > 0) {
       }
     } else {
       report += `**Status:** ❓ Unknown Failure (analysis not available)\n\n`;
+    }
+    
+    // V2: Add detailed error information from database
+    let stepDetails = [];
+    if (db) {
+      try {
+        stepDetails = db.prepare(`
+          SELECT * FROM failed_steps fs
+          JOIN failed_jobs fj ON fs.failed_job_id = fj.id
+          WHERE fj.job_name = ? AND fj.job_build = ?
+        `).all(jobName, buildNumber);
+      } catch (e) {}
+    }
+    
+    if (stepDetails.length > 0) {
+      report += `**Test Failures:**\n\n`;
+      stepDetails.forEach((step, idx) => {
+        report += `${idx + 1}. **${step.tc_id}** - ${step.tc_name}\n`;
+        report += `   - File: \`${step.file_name || 'unknown.spec.js'}\`\n`;
+        report += `   - Step: ${step.step_id} - ${step.step_name}\n`;
+        if (step.retry_count > 1) {
+          report += `   - Retries: ${step.retry_count}x\n`;
+        }
+        if (step.last_failed_build) {
+          report += `   - Last Failed: Build #${step.last_failed_build} (recurring issue)\n`;
+        } else {
+          report += `   - First occurrence\n`;
+        }
+        
+        // V2: Add expandable full error
+        if (step.full_error_msg) {
+          report += `\n<details>\n<summary>📋 Full Error Message</summary>\n\n\`\`\`\n`;
+          report += step.full_error_msg;
+          report += `\n\`\`\`\n</details>\n\n`;
+        }
+      });
     }
     
     const consoleLogPath = path.join(outputDir, `${jobName}_${buildNumber}_console.json`);

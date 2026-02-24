@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const Database = require('./db-adapter');
 const crypto = require('crypto');
-const { extractFailuresFromLog: extractFailuresV2 } = require('./parser_v2');
 
 // -- DB Initialization --
 
@@ -92,13 +91,6 @@ const insertFailedJob = (db, runId, { jobName, jobBuild, jobLink }) => {
 };
 
 const insertFailedStep = (db, failedJobId, stepData) => {
-  // Debug: Check for undefined values
-  const undefinedKeys = Object.keys(stepData).filter(k => stepData[k] === undefined);
-  if (undefinedKeys.length > 0) {
-    console.error('⚠ Undefined fields in stepData:', undefinedKeys);
-    throw new Error(`Cannot insert undefined values: ${undefinedKeys.join(', ')}`);
-  }
-  
   const keys = Object.keys(stepData);
   const cols = keys.map(k => k.replace(/([A-Z])/g, "_$1").toLowerCase());
   const placeholders = keys.map(() => '?').join(', ');
@@ -110,32 +102,22 @@ const insertFailedStep = (db, failedJobId, stepData) => {
 };
 
 const findLastFailedBuild = (db, jobName, fingerprint, currentBuild) => {
-  // V2: Look back last 5 builds, fixed query to read jr.job_build directly
-  const rows = db.prepare(`
-    SELECT jr.job_build
+  const row = db.prepare(`
+    SELECT fs.last_failed_build, jr.job_build
     FROM failed_steps fs
     JOIN failed_jobs fj ON fs.failed_job_id = fj.id
     JOIN job_runs jr ON fj.run_id = jr.id
     WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND jr.job_build < ?
-    ORDER BY jr.job_build DESC LIMIT 5
-  `).all(jobName, fingerprint, currentBuild);
+    ORDER BY jr.job_build DESC LIMIT 1
+  `).get(jobName, fingerprint, currentBuild);
   
-  if (rows.length === 0) {
-    return { lastFailedBuild: null, isRecurring: 0, failureHistory: [] };
-  }
-  
-  return { 
-    lastFailedBuild: rows[0].job_build,  // Most recent failure
-    isRecurring: 1,
-    failureHistory: rows.map(r => r.job_build)  // All 5 builds
-  };
+  return row ? { lastFailedBuild: row.job_build, isRecurring: 1 } : { lastFailedBuild: null, isRecurring: 0 };
 };
 
 // -- Fingerprint & Parsing --
 
-const buildFingerprint = (fileName, tcId, stepId, stepName, failureType) => {
-  // V2: Now includes fileName for uniqueness across files
-  const payload = [fileName, tcId, stepId, stepName, failureType].join('|');
+const buildFingerprint = (tcId, stepId, stepName, failureType) => {
+  const payload = [tcId, stepId, stepName, failureType].join('|');
   return crypto.createHash('sha256').update(payload).digest('hex');
 };
 
@@ -175,29 +157,80 @@ const classifySpectreResult = (spectreData) => {
 
 // Log Parsing
 
-// -- Legacy parsing functions removed - now in parser_v2.js --
+const extractFailuresFromLog = (consoleText) => {
+  const results = [];
+  const TC_HEADER_RE = /^\[?(TC\d+)\]?\s+(.+?)\s*:/m;
+  const RUN_BLOCK_RE = /✗\s+(run_\d+)/g;
+  const SCREENSHOT_RE = /Screenshot\s+"(TC\d+_\d+)\s+-\s+(.+?)"\s+doesn't match/;
+  const SPECTRE_URL_RE = /Visit\s+(http:\/\/.*:3000\/\S+)\s+for details/;
+  const ASSERTION_RE = /expected\s+(.+?)\s+to\s+(?:equal|be|contain)\s+(.+)/i;
+
+  const tcBlocks = consoleText.split(/(?=^\[?TC\d+\])/m).filter(b => b.trim() !== "");
+  
+  tcBlocks.forEach(block => processTcBlock(block, results, { TC_HEADER_RE, RUN_BLOCK_RE, SCREENSHOT_RE, SPECTRE_URL_RE, ASSERTION_RE }));
+  return results;
+};
+
+const processTcBlock = (block, results, regexes) => {
+  const headerMatch = block.match(regexes.TC_HEADER_RE);
+  if (!headerMatch) return;
+  const [_, tcId, tcName] = headerMatch;
+  
+  const runs = block.split(/(?=✗\s+run_\d+)/g).filter(r => r.includes('✗ run_'));
+  runs.forEach(runBlock => processRunBlock(runBlock, { tcId, tcName }, results, regexes));
+};
+
+const processRunBlock = (runBlock, tcData, results, regexes) => {
+  const runMatch = runBlock.match(regexes.RUN_BLOCK_RE);
+  if (!runMatch) return;
+  const runLabel = runMatch[0].replace('✗ ', '').trim();
+  
+  const screenshotMatch = runBlock.match(regexes.SCREENSHOT_RE);
+  if (screenshotMatch) {
+    addScreenshotFailure(runBlock, tcData, runLabel, screenshotMatch, results, regexes);
+    return;
+  }
+  
+  const assertionMatch = runBlock.match(regexes.ASSERTION_RE);
+  if (assertionMatch) addAssertionFailure(runBlock, tcData, runLabel, results);
+};
+
+const addScreenshotFailure = (runBlock, tcData, runLabel, match, results, regexes) => {
+  const [failureMsg, stepId, stepName] = match;
+  const urlMatch = runBlock.match(regexes.SPECTRE_URL_RE);
+  results.push({
+    tcId: tcData.tcId, tcName: tcData.tcName,
+    stepId, stepName, runLabel,
+    failureType: 'screenshot_mismatch',
+    failureMsg: failureMsg.trim(),
+    snapshotUrl: urlMatch ? urlMatch[1] : null
+  });
+};
+
+const addAssertionFailure = (runBlock, tcData, runLabel, results) => {
+  results.push({
+    tcId: tcData.tcId, tcName: tcData.tcName,
+    stepId: tcData.tcId + "_0X", stepName: "Assertion Failure", runLabel,
+    failureType: 'assertion_failure',
+    failureMsg: "Assertion failed",
+    snapshotUrl: null
+  });
+};
 
 // -- Main Processing Function --
 
 const processStep = async (db, failedJobId, triggerJobName, triggerBuild, step) => {
-  // V2: Use fileName in fingerprint
-  const fingerprint = buildFingerprint(step.fileName, step.tcId, step.stepId, step.stepName, step.failureType);
+  const fingerprint = buildFingerprint(step.tcId, step.stepId, step.stepName, step.failureType);
   const lookback = findLastFailedBuild(db, triggerJobName, fingerprint, triggerBuild);
   
   const spectreData = await fetchSpectreData(step.snapshotUrl);
   const classification = classifySpectreResult(spectreData);
   
   insertFailedStep(db, failedJobId, {
-    // V2: Add file_name, retry_count, full_error_msg
-    fileName: step.fileName,
     tcId: step.tcId, tcName: step.tcName,
     stepId: step.stepId, stepName: step.stepName, runLabel: step.runLabel,
-    retryCount: step.retryCount || 1,  // V2: Retry count from deduplicated parser
-    failureType: step.failureType, 
-    failureMsg: step.failureMsg, 
-    fullErrorMsg: step.fullErrorMsg || step.failureMsg,  // V2: Full error with stack trace
-    errorFingerprint: fingerprint,
-    snapshotUrl: step.snapshotUrl || null,  // Ensure null, not undefined
+    failureType: step.failureType, failureMsg: step.failureMsg, errorFingerprint: fingerprint,
+    snapshotUrl: step.snapshotUrl, 
     spectreTestId: spectreData ? spectreData.id : null,
     spectreDiffPct: spectreData ? spectreData.diff : null,
     spectreThreshold: spectreData ? spectreData.diff_threshold : null,
@@ -209,24 +242,14 @@ const processStep = async (db, failedJobId, triggerJobName, triggerBuild, step) 
 };
 
 const processJobFailed = async (db, runId, triggerJobName, triggerBuild, jobInfo, reportDir) => {
-  // V2: Console logs are saved as JSON files with build number
-  const consoleLogFile = path.join(reportDir, `${jobInfo.name}_${jobInfo.number}_console.json`);
-  if (!fs.existsSync(consoleLogFile)) {
-    console.warn(`⚠ Console log not found: ${consoleLogFile}`);
-    return;
-  }
+  const consoleLogFile = path.join(reportDir, `${jobInfo.name}.log`);
+  if (!fs.existsSync(consoleLogFile)) return;
   
-  // V2: Parse JSON file to get console text
-  const consoleData = JSON.parse(fs.readFileSync(consoleLogFile, 'utf8'));
-  const consoleText = consoleData.console || '';
-  
-  // V2: Use new parser that extracts file names and deduplicates retries
-  const failures = extractFailuresV2(consoleText);
+  const consoleText = fs.readFileSync(consoleLogFile, 'utf8');
+  const failures = extractFailuresFromLog(consoleText);
   
   const failedJobId = insertFailedJob(db, runId, {
-    jobName: jobInfo.name, 
-    jobBuild: parseInt(jobInfo.number),  // V2: Parse number from JSON
-    jobLink: jobInfo.link || ""
+    jobName: jobInfo.name, jobBuild: jobInfo.build, jobLink: jobInfo.link || ""
   });
   
   for (const step of failures) {
@@ -263,7 +286,5 @@ const main = async () => {
 if (require.main === module) { main().catch(console.error); }
 
 module.exports = {
-  openDb, parseSpectreUrl, classifySpectreResult, buildFingerprint
-  // V2: Removed extractFailuresFromLog (now in parser_v2.js)
-  // V2: Removed processTcBlock, processRunBlock (now in parser_v2.js)
+  openDb, parseSpectreUrl, extractFailuresFromLog, classifySpectreResult, buildFingerprint, processTcBlock, processRunBlock
 };
