@@ -1,429 +1,306 @@
-# Fix Plan: DOCX Clickable Links + SQLite History Tracking
+# Fix Plan: TC ID/Name N/A & History Trend Unknown Issue
 
-**Author:** Atlas Daily (QA Monitoring Agent)  
-**Date:** 2026-02-24  
-**Status:** ✅ Final — Ready for Implementation  
-**Scope:** `md_to_docx.js`, `report_generator.js`, `analyzer.sh`, new `db_writer.js`
+## Problem Analysis
 
----
+### Issue Summary
+In build 2442, the report shows:
+- **TC ID:** N/A
+- **TC Name:** N/A  
+- **Last Failed:** Unknown
+- **Snapshot URLs:** Not parsed correctly
+- **Detailed error logs:** Not extracted
 
-## Overview
+Comparison with build 2441 (correct) vs 2442 (broken) reveals:
+- Build 2441: 6 failed_steps for `Dashboard_LockPageSizeE2E #79`
+- Build 2442: Only 2 failed_steps for `Dashboard_LockPageSizeE2E #80`
 
-Two independent improvements:
+### Root Cause Identified
 
-1. **Fix #1 — Clickable Hyperlinks in DOCX** (`md_to_docx.js`)  
-2. **Fix #2 — SQLite Persistence Layer** (new `db_writer.js` + integration into existing scripts)
+**Parser deduplication is TOO aggressive:**
+- Parser correctly extracts TC IDs, TC Names, and file names
+- But deduplication logic is **merging different failure steps within the same TC**
+- Example: TC `QAC-487_4` has multiple screenshot failures:
+  - `QAC-487_4_1` - Chapter 1 Page Pies after setting zoom level to 125%
+  - `QAC-487_4_2` - Chapter 1 Page Pies copy at zoom level 125%
+  - `QAC-487_4_3` - Chapter 1 copy Page Pies copy at zoom level 125%
+  - `QAC-487_4_4` - Chapter 1 copy Page Pies at zoom level 125%
+- Current parser only keeps **ONE** entry instead of all four distinct failures
 
----
+### Affected Components
 
-## Fix #1 — Clickable Hyperlinks in DOCX
+1. **Parser (`scripts/parsing/parser.js`)**
+   - `deduplicateRetries()` in `scripts/parsing/deduplication.js`
+   - Deduplication key is based on `tc_id + step_id`, but it's merging different steps incorrectly
 
-### Bug
+2. **Report Generator (`scripts/reporting/generator.js`)**
+   - Relies on database query results
+   - If database has incomplete data, report will show N/A
 
-`md_to_docx.js` lines 88–100: detects `[text](url)` but passes the raw markdown string as `TextRun.text` with no `ExternalHyperlink` — result is unclickable full-URL text bloating the cell.
-
-### Fix in `scripts/md_to_docx.js`
-
-**1. Add `ExternalHyperlink` to imports:**
-```js
-const {
-  Document, Packer, Paragraph, TextRun,
-  Table, TableCell, TableRow,
-  HeadingLevel, AlignmentType, WidthType,
-  BorderStyle, ShadingType, convertInchesToTwip,
-  ExternalHyperlink,   // ← ADD
-} = require('docx');
-```
-
-**2. Add pure parse helper (top of file):**
-```js
-// Parse "[display](url)" → { text, url, isLink }
-const parseMarkdownLink = (raw) => {
-  const m = raw.match(/\[(.+?)\]\((.+?)\)/);
-  return m ? { text: m[1], url: m[2], isLink: true }
-           : { text: raw, url: null, isLink: false };
-};
-```
-
-**3. Replace `TextRun` with `ExternalHyperlink` in `createTable` cell map:**
-```js
-const { text, url, isLink } = parseMarkdownLink(cell.text);
-const inline = isLink
-  ? new ExternalHyperlink({
-      link: url,
-      children: [new TextRun({ text, style: 'Hyperlink' })],
-    })
-  : new TextRun({ text });
-```
-
-**4. Apply same logic to `processTokens` paragraph tokens** for inline body links.
+3. **Database Writer (`scripts/pipeline/process_build.js`)**
+   - Calls parser and inserts results into DB
+   - No issue here - correctly writes what parser returns
 
 ---
 
-## Fix #2 — SQLite Persistence Layer
+## Fix Strategy
 
-### Key Clarifications
+### Phase 1: Fix Parser Deduplication Logic
+**Skill:** `function-test-coverage`
 
-| Topic | Decision |
-|---|---|
-| Snapshot host | Only `http://10.23.33.4:3000` (Spectre). Jenkins Allure URLs are ignored. |
-| Multiple snapshots | One test case step can fail in **run_1, run_2…** — each run has its own Spectre URL. Store them all. |
-| Step granularity | Two levels: **tc** (`TC78888`) and **step** (`TC78888_01`). Both have separate columns. |
-| Spectre verification | Use the JSON API: `GET /projects/{proj}/suites/{suite}/runs/{run_id}.json` — read `pass`, `diff`, `diff_threshold` for the matching `#test_XXXXXX` id. |
-| False alarm | The test failure IS real in Spectre (image differs). False alarm means after examining the diff + diff %, it is NOT a product regression (e.g., stale baseline, minor cosmetic pixel noise above threshold). Still shown in report, annotated `⚠️ FA`. |
-| Fingerprint | `sha256(tc_id + "\|" + step_id + "\|" + step_name + "\|" + failure_type)` |
-| Rolling window | Max 5 `job_run` records per `job_name`. Oldest auto-deleted by cascade. |
-| DB path | `data/jenkins_history.db` (relative to project root, gitignored) |
+**Goal:** Ensure parser extracts **ALL distinct failure steps**, not just one per TC
 
----
+**Tasks:**
 
-### Spectre API — Confirmed Working
+1. **Review deduplication logic** in `scripts/parsing/deduplication.js`
+   - Current key: `tc_id + step_id` (may be incorrect)
+   - Should key on: `fileName + tcId + stepId + runLabel`
+   - Retries should be deduplicated **per step**, not per TC
 
-**Endpoint:**
-```
-GET http://10.23.33.4:3000/projects/{project}/suites/{suite}/runs/{run_id}.json
-```
+2. **Fix deduplication function:**
+   ```javascript
+   // Current (incorrect):
+   const key = `${result.tcId}_${result.stepId}`;
+   
+   // Should be:
+   const key = `${result.fileName}_${result.tcId}_${result.stepId}_${result.runLabel}`;
+   ```
 
-**Real API Response (run #2571):**
-```json
-{
-  "id": 3900860,
-  "sequential_id": 2571,
-  "tests": [
-    {
-      "id": 6055635,
-      "name": "TC78888_01 - Custom info window - Only show all 7 icons",
-      "pass": false,
-      "diff": 2.07,
-      "diff_threshold": 0.1,
-      "fuzz_level": "30%",
-      "screenshot_uid":          "2026/02/18/..._test.png",
-      "screenshot_baseline_uid": "2026/02/18/..._baseline.png",
-      "screenshot_diff_uid":     "2026/02/18/..._diff.png"
-    }
-  ]
-}
-```
+3. **Add regression test** for multi-step failure parsing:
+   - Fixture: Console log with 1 TC having 4 different screenshot failures
+   - Expected: 4 distinct failed_steps entries (not 1)
+   - Test file: `scripts/tests/unit/parser_deduplication.test.js`
 
-**Spectre URL → API extraction logic:**
-```
-URL:  http://10.23.33.4:3000/projects/wdio_ci/suites/custom-app-show-toolbar/runs/2571#test_6055635
-                                        ↓ parse ↓
-project  = "wdio_ci"
-suite    = "custom-app-show-toolbar"
-run_id   = 2571
-test_id  = 6055635   ← from "#test_6055635" fragment
-```
-
-API call: `GET http://10.23.33.4:3000/projects/wdio_ci/suites/custom-app-show-toolbar/runs/2571.json`  
-Then find the test in `response.tests[]` where `id === 6055635`.
+**Reference files to review:**
+- `scripts/parsing/deduplication.js` - deduplication logic
+- `scripts/parsing/parser.js` - main parser entry
+- `scripts/tests/unit/parser_deduplication.test.js` - existing test to extend
 
 ---
 
-### False Alarm Detection Logic
+### Phase 2: Verify History Trend Logic
+**Skill:** `code-structure-quality`
 
-Once Spectre JSON is fetched for a test instance:
+**Goal:** Ensure `findLastFailedBuild` correctly matches failures across builds
 
-```
-pass = false AND diff > diff_threshold   → Confirmed real failure
-pass = false AND diff ≤ diff_threshold   → Spectre bug / threshold misconfigured (mark suspicious)
-pass = true                              → False alarm (baseline already updated / fluke)
-diff < 1.0 (even if pass=false)          → Likely cosmetic / baseline drift → false_alarm = true
-diff ≥ 1.0 AND pass = false              → Real visual regression
-HTTP error / timeout                     → Unverifiable
-```
+**Tasks:**
 
-**False Alarm Reason** stored examples:
-- `"diff=2.07% exceeds threshold 0.1% — confirmed visual regression"`
-- `"diff=0.2% below 1% margin — likely cosmetic noise"`
-- `"Spectre pass=true — baseline already updated or test fluke"`
-- `"HTTP 404 — Spectre run expired or URL broken"`
+1. **Review fingerprint logic** in `scripts/analysis/fingerprint.js`
+   - Current: `buildFingerprint(fileName, tcId, stepId, stepName, failureType)`
+   - Verify fingerprint is unique enough to match recurring failures
+   - Should NOT match if `stepId` differs (e.g., `QAC-487_4_1` vs `QAC-487_4_2`)
 
----
+2. **Check history lookup** in `scripts/database/operations.js`:
+   ```javascript
+   // Verify this query:
+   SELECT fj.job_build
+   FROM failed_steps fs
+   JOIN failed_jobs fj ON fs.failed_job_id = fj.id
+   WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND fj.job_build < ?
+   ORDER BY fj.job_build DESC LIMIT 5
+   ```
+   - Should match failures with **same fingerprint** (fileName + tcId + stepId)
+   - If fingerprint changes between builds, will show "🆕 First"
 
-### Parsing Console Log — Data Extraction
+3. **Test history tracking:**
+   - Insert test data: same TC failing in build N and N+1 with same stepId
+   - Expected: `last_failed_build` = N
+   - Test file: `scripts/tests/integration/history_tracking.test.js` (new)
 
-WDIO console log block structure:
-```
-[TC78888] Library as home - Show Toolbar - Disable Favorites:
-    ✗ run_1
-      - Failed:Screenshot "TC78888_01 - Custom info window - Only show all 7 icons" doesn't match the baseline.
-        Visit http://10.23.33.4:3000/projects/wdio_ci/suites/custom-app-show-toolbar/runs/2571#test_6055635 for details.
-    ✗ run_2
-      - Failed:Screenshot "TC78888_01 - Custom info window - Only show all 7 icons" doesn't match the baseline.
-        Visit http://10.23.33.4:3000/projects/wdio_ci/suites/custom-app-show-toolbar/runs/2572#test_6055727 for details.
-```
-
-**Extraction yields:**
-
-| Field | Value | Source |
-|---|---|---|
-| `tc_id` | `TC78888` | `[TC78888]` header |
-| `tc_name` | `Library as home - Show Toolbar - Disable Favorites` | rest of header line |
-| `step_id` | `TC78888_01` | first part of screenshot name (`"TC78888_01 - ..."`) |
-| `step_name` | `Custom info window - Only show all 7 icons` | rest of screenshot name |
-| `failure_type` | `screenshot_mismatch` | "doesn't match the baseline" |
-| `run_label` | `run_1`, `run_2` | ✗ run_N marker |
-| `snapshot_url` | `http://10.23.33.4:3000/.../runs/2571#test_6055635` | Visit ... line |
-
-**Regex patterns:**
-
-```js
-// TC header: "[TC78888] Library as home - Show Toolbar - Disable Favorites:"
-const TC_HEADER_RE = /^\[?(TC\d+)\]?\s+(.+?)\s*:/m;
-
-// Run block start: "✗ run_1" or "✗ run_2"
-const RUN_BLOCK_RE = /✗\s+(run_\d+)/g;
-
-// Screenshot failure with step_id and step_name
-const SCREENSHOT_RE = /Screenshot\s+"(TC\d+_\d+)\s+-\s+(.+?)"\s+doesn't match/;
-
-// Spectre URL in "Visit ... for details"
-const SPECTRE_URL_RE = /Visit\s+(http:\/\/10\.23\.33\.4:3000\/\S+)\s+for details/;
-
-// Assertion failure fallback (non-screenshot)
-const ASSERTION_RE = /expected\s+(.+?)\s+to\s+(?:equal|be|contain)\s+(.+)/i;
-```
-
-**Failure type classification:**
-- `"doesn't match the baseline"` → `screenshot_mismatch`
-- `"expected X to equal Y"` / `"expected X to be Y"` → `assertion_failure`
-- Other → `unknown`
+**Reference files to review:**
+- `scripts/analysis/fingerprint.js` - fingerprint generation
+- `scripts/database/operations.js` - `findLastFailedBuild()`
 
 ---
 
-### DB Schema (Revised — 3 Tables)
+### Phase 3: Fix Snapshot URL Parsing
+**Skill:** `function-test-coverage`
 
-```sql
--- Table 1: One row per trigger job build (the parent job, e.g. Tanzu_Report_Env_Upgrade_663)
-CREATE TABLE IF NOT EXISTS job_runs (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  job_name      TEXT    NOT NULL,
-  job_build     INTEGER NOT NULL,
-  job_link      TEXT    NOT NULL,                     -- Jenkins URL to this build
-  recorded_at   TEXT    NOT NULL DEFAULT (datetime('now')),
-  pass_count    INTEGER DEFAULT 0,
-  fail_count    INTEGER DEFAULT 0,
-  UNIQUE(job_name, job_build)
-);
+**Goal:** Ensure snapshot URLs are correctly extracted and stored
 
--- Table 2: One row per FAILED downstream test job within a run
-CREATE TABLE IF NOT EXISTS failed_jobs (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  run_id        INTEGER NOT NULL REFERENCES job_runs(id) ON DELETE CASCADE,
-  job_name      TEXT    NOT NULL,   -- e.g. "LibraryWeb_CustomApp_Pipeline"
-  job_build     INTEGER NOT NULL,   -- e.g. 2201
-  job_link      TEXT    NOT NULL    -- Jenkins URL to this specific failed job build
-);
+**Tasks:**
 
--- Table 3: One row per failed step (tc_id + step_id + run_label combination)
-CREATE TABLE IF NOT EXISTS failed_steps (
-  id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-  failed_job_id       INTEGER NOT NULL REFERENCES failed_jobs(id) ON DELETE CASCADE,
-  tc_id               TEXT    NOT NULL,   -- "TC78888"
-  tc_name             TEXT    NOT NULL,   -- "Library as home - Show Toolbar - Disable Favorites"
-  step_id             TEXT    NOT NULL,   -- "TC78888_01"
-  step_name           TEXT    NOT NULL,   -- "Custom info window - Only show all 7 icons"
-  run_label           TEXT,               -- "run_1", "run_2"
-  failure_type        TEXT,               -- "screenshot_mismatch" | "assertion_failure" | "unknown"
-  failure_msg         TEXT,               -- Raw failure message
-  error_fingerprint   TEXT,               -- sha256(tc_id|step_id|step_name|failure_type)
-  -- Spectre snapshot data
-  snapshot_url        TEXT,               -- Full Spectre URL http://10.23.33.4:3000/...#test_XXXX
-  spectre_test_id     INTEGER,            -- Numeric ID from #test_XXXX fragment
-  spectre_diff_pct    REAL,               -- e.g. 2.07 (percent pixel diff)
-  spectre_threshold   REAL,               -- e.g. 0.1
-  spectre_pass        INTEGER,            -- 0=fail, 1=pass per Spectre
-  -- Verification result
-  snapshot_verified   INTEGER DEFAULT 0,  -- 0=unverified, 1=confirmed_failed, 2=false_alarm
-  false_alarm         INTEGER DEFAULT 0,  -- 1 if not a real production regression
-  snapshot_reason     TEXT,               -- Human-readable reason
-  -- Recurrence tracking
-  last_failed_build   INTEGER,            -- job_build# where same fingerprint last appeared
-  is_recurring        INTEGER DEFAULT 0   -- 1 if same fingerprint found in prev ≤5 builds
-);
-```
+1. **Review extractor logic** in `scripts/parsing/extractors.js`:
+   ```javascript
+   const SPECTRE_URL_RE = /Visit\s+(http:\/\/[^:]+:3000\/\S+)\s+for details/;
+   ```
+   - Verify regex matches console log format
+   - Test with actual console log snippet from build 2442
 
-**Rolling window:** After each insert into `job_runs`, if count for that `job_name` > 5, delete the oldest (cascade deletes `failed_jobs` → `failed_steps`).
+2. **Check database schema** in `scripts/database/schema.js`:
+   - Column: `snapshot_url TEXT`
+   - Ensure it's not defaulting to NULL when URL exists
+
+3. **Test snapshot URL extraction:**
+   - Fixture: Console log with Spectre URL
+   - Expected: `snapshotUrl` field populated
+   - Test file: `scripts/tests/unit/extractor.test.js` (new)
+
+**Reference files to review:**
+- `scripts/parsing/extractors.js` - `extractSpectreUrl()`
+- `scripts/parsing/parser.js` - integration point
 
 ---
 
-### New File: `scripts/db_writer.js`
+### Phase 4: Improve Error Extraction
+**Skill:** `function-test-coverage`
 
-**CLI entry point called from `analyzer.sh`:**
-```bash
-node db_writer.js <trigger_job_name> <trigger_build_number> <trigger_job_link> \
-    <failed_jobs.json> <passed_jobs.json> <report_dir>
-```
+**Goal:** Extract full error messages and stack traces correctly
 
-**Module breakdown (functional, each fn ≤ 20 lines):**
+**Tasks:**
 
-```
-db_writer.js
-  ├── openDb(dbPath)
-  │     → opens or creates SQLite DB, runs initSchema
-  │
-  ├── initSchema(db)
-  │     → CREATE TABLE IF NOT EXISTS for all 3 tables
-  │
-  ├── insertJobRun(db, {jobName, jobBuild, jobLink, passCount, failCount})
-  │     → INSERT OR REPLACE into job_runs, returns runId
-  │
-  ├── enforceFiveRecordLimit(db, jobName)
-  │     → DELETE oldest job_runs beyond 5 for this jobName (cascade handles children)
-  │
-  ├── insertFailedJob(db, runId, {jobName, jobBuild, jobLink})
-  │     → INSERT into failed_jobs, returns failedJobId
-  │
-  ├── parseConsoleLog(consoleText)
-  │     → returns [{ tcId, tcName, stepId, stepName, runLabel,
-  │                  failureType, failureMsg, snapshotUrl }]
-  │     → handles multiple run_N blocks per TC
-  │     → handles multiple TCs per console log
-  │
-  ├── buildFingerprint(tcId, stepId, stepName, failureType)
-  │     → sha256(tcId + "|" + stepId + "|" + stepName + "|" + failureType)
-  │
-  ├── parseSpectreUrl(snapshotUrl)
-  │     → extracts { project, suite, runId, testId } from URL
-  │
-  ├── fetchSpectreData(baseUrl, project, suite, runId, testId)
-  │     → GET /projects/{project}/suites/{suite}/runs/{runId}.json
-  │     → finds test by id, returns { pass, diff, threshold, ... }
-  │
-  ├── classifySpectreResult({pass, diff, threshold})
-  │     → returns { verified: 0|1|2, falseAlarm: bool, reason: string }
-  │     → verified 0=unverifiable, 1=confirmed_failed, 2=false_alarm
-  │     → false_alarm = true if diff < 1.0 OR spectre pass=true
-  │
-  ├── findLastFailedBuild(db, jobName, fingerprint, currentBuild)
-  │     → queries previous ≤5 builds for same fingerprint
-  │     → returns { lastFailedBuild: number|null, isRecurring: bool }
-  │
-  ├── insertFailedStep(db, failedJobId, stepData)
-  │     → INSERT into failed_steps with all fields
-  │
-  └── main()
-        → orchestrates: open db → insert run → per failed job:
-          load console log → parse steps → per step:
-            fingerprint → lookback → fetch spectre → classify → insert
-```
+1. **Review `extractFullError` logic** in `scripts/parsing/extractors.js`:
+   - Should capture multi-line error messages
+   - Should preserve stack trace for debugging
+   - Current implementation may be truncating
+
+2. **Enhance extraction**:
+   - Extract first line for `failure_msg` (concise)
+   - Store full stack in `full_error_msg` (detailed)
+
+3. **Test error extraction:**
+   - Fixture: Console log with stack trace
+   - Expected: Both `failure_msg` and `full_error_msg` populated
+   - Test file: `scripts/tests/unit/extractor.test.js`
+
+**Reference files to review:**
+- `scripts/parsing/extractors.js` - `extractFullError()`
 
 ---
 
-### Changes to Existing Files
+### Phase 5: Add Integration Test
+**Skill:** `function-test-coverage`
 
-#### `scripts/analyzer.sh` — Add Step 6b (after AI analysis, before report)
+**Goal:** End-to-end test from console log to report generation
 
-```bash
-# Step 6b: Persist results to SQLite history DB
-update_heartbeat "Writing to history DB..."
-log "Writing results to SQLite history DB..."
+**Tasks:**
 
-node "$SCRIPT_DIR/db_writer.js" \
-    "$JOB_NAME" \
-    "$BUILD_NUMBER" \
-    "${JENKINS_URL}job/$JOB_NAME/$BUILD_NUMBER/" \
-    "$TMP_DIR/${REPORT_FOLDER}_failed_jobs.json" \
-    "$TMP_DIR/${REPORT_FOLDER}_passed_jobs.json" \
-    "$REPORT_DIR" \
-    > "$LOGS_DIR/db_write_${REPORT_FOLDER}.log" 2>&1 || \
-    log "⚠ DB write failed (non-blocking, continuing...)"
-```
+1. **Create integration test**:
+   - Input: Real console log from build 2442 (Dashboard_LockPageSizeE2E_80)
+   - Expected output:
+     - TC IDs: `QAC-487_3`, `QAC-487_4`
+     - TC Names: "Insert pages/chapters", "Duplicate"
+     - Step IDs: All 4 steps for `QAC-487_4`
+     - Snapshot URLs: All extracted correctly
+     - File name: `specs/regression/lockPageSize/CanvasZoomE2E.spec.js`
 
-> DB write is **non-blocking** — a DB failure does not stop report generation.
+2. **Test file**: `scripts/tests/integration/full_pipeline.test.js`
+   - Parse console log
+   - Insert into test DB
+   - Generate report
+   - Verify report content (no N/A values)
 
-#### `scripts/report_generator.js` — History from DB
-
-Replace `_history.json` file reads with DB queries. Add to the failure summary table:
-
-| Column before | Column after |
-|---|---|
-| `Job` | `Job` (clickable hyperlink via ExternalHyperlink) |
-| `Failed Steps` | `TC ID` + `Step ID` (separate columns) |
-| `Category` | `Category` |
-| `Root Cause` | `Root Cause` |
-| `Last Failed` | `Last Failed Build` (from DB `last_failed_build`) |
-| `Snapshot` | `Snapshot` (clickable Spectre URL, `⚠️ FA` badge if false_alarm) |
-| `Suggestion` | `Suggestion` |
-
-**New query for last-failed lookback:**
-```js
-const getStepHistory = (db, jobName, fingerprint, currentBuild) =>
-  db.prepare(`
-    SELECT fs.last_failed_build, fs.is_recurring, fs.false_alarm,
-           fs.spectre_diff_pct, fs.snapshot_reason, jr.job_build
-    FROM failed_steps fs
-    JOIN failed_jobs fj ON fs.failed_job_id = fj.id
-    JOIN job_runs jr ON fj.run_id = jr.id
-    WHERE fj.job_name = ? AND fs.error_fingerprint = ? AND jr.job_build < ?
-    ORDER BY jr.job_build DESC
-    LIMIT 5
-  `).all(jobName, fingerprint, currentBuild);
-```
-
-#### `scripts/package.json` — Add dependency
-
-```json
-"dependencies": {
-  "marked": "^11.1.1",
-  "docx": "^8.5.0",
-  "better-sqlite3": "^9.4.3"
-}
-```
-
-#### `.gitignore` — Add data dir
-
-```
-data/
-```
+**Reference files to review:**
+- `scripts/pipeline/process_build.js` - orchestration
+- `scripts/reporting/generator.js` - report generation
 
 ---
 
-## Implementation Order
+## Execution Plan
 
-| # | Task | File | Key Details |
-|---|------|------|-------------|
-| 1 | Fix DOCX hyperlinks | `md_to_docx.js` | `ExternalHyperlink`, `parseMarkdownLink` |
-| 2 | Add `better-sqlite3` | `package.json` + `npm install` | |
-| 3 | Create `db_writer.js` | new `scripts/db_writer.js` | All parsing + Spectre API + DB writes |
-| 4 | Wire into `analyzer.sh` | `analyzer.sh` | Step 6b, non-blocking |
-| 5 | Update `report_generator.js` | `report_generator.js` | DB-backed history, false alarm badge |
-| 6 | Update `.gitignore` | `.gitignore` | Add `data/` |
-| 7 | Update `DESIGN.md` (Single Source of Truth) | `docs/DESIGN.md` | Merge all new architecture + SQLite/Spectre details into `DESIGN.md`. Ensure it is the sole source of truth. |
-| 8 | Update `README.md` | `../README.md` | Update usage instructions, requirements, setup. |
-| 9 | Generate Single Tests | `../tests/*.test.js` | Create isolated, individual tests for each new functionality (e.g. `db_writer.test.js`, `md_to_docx.test.js`) so they can be run one by one. |
-| 10 | Create Test Manual | `docs/TEST_MANUAL.md` | Provide separate documented manual explaining how to execute and verify these specific standalone tests. |
+### Step 1: Diagnose with Test First (TDD Approach)
+1. Create failing test that reproduces the issue
+2. Use actual console log from build 2442 as fixture
+3. Assert expected output (all TC IDs, names, steps extracted)
 
----
+### Step 2: Fix Parser Deduplication
+1. Update `scripts/parsing/deduplication.js`
+2. Run test - should now pass
+3. Commit fix with regression test
 
-## Files Summary
+### Step 3: Verify History Tracking
+1. Review fingerprint logic
+2. Add history tracking test
+3. Ensure "Last Failed" shows correct build numbers
 
-```text
-scripts/
-  ├── md_to_docx.js          ← MODIFY  (Fix #1: ExternalHyperlink)
-  ├── db_writer.js           ← CREATE  (Fix #2: SQLite + Spectre verification)
-  ├── report_generator.js    ← MODIFY  (Fix #2: DB-backed history, separate TC/Step columns)
-  ├── analyzer.sh            ← MODIFY  (Fix #2: Step 6b non-blocking)
-  └── package.json           ← MODIFY  (add better-sqlite3)
+### Step 4: Validate End-to-End
+1. Run full pipeline on build 2442 data
+2. Compare output report with build 2441 (correct version)
+3. Ensure no N/A values, all data extracted
 
-tests/
-  ├── md_to_docx.test.js     ← CREATE  (Single test for md_to_docx.js)
-  ├── db_writer.test.js      ← CREATE  (Single test for SQLite & db_writer.js)
-  └── ...                    ← CREATE  (Additional standalone tests)
-
-data/
-  └── jenkins_history.db     ← AUTO-CREATED at runtime
-
-.gitignore                   ← MODIFY  (add data/)
-README.md                    ← MODIFY  (Update usage and requirements)
-
-docs/
-  ├── DESIGN.md              ← MODIFY  (Merge changes to make it the single source of truth)
-  ├── TEST_MANUAL.md         ← CREATE  (Documentation for running individual tests)
-  └── FIX_PLAN.md            ← THIS FILE
-```
+### Step 5: Add Monitoring
+1. Add validation step to pipeline
+2. Log warning if:
+   - TC ID is N/A
+   - File name is N/A
+   - Snapshot URL is missing when expected
+3. Fail fast if parsing degrades
 
 ---
 
-**Status:** ✅ All details confirmed. Implementation begins next.
+## Acceptance Criteria
+
+### Must Have
+- [ ] All TC IDs extracted correctly (no N/A)
+- [ ] All TC Names extracted correctly (no N/A)
+- [ ] All distinct failure steps captured (not just first one)
+- [ ] Snapshot URLs parsed and stored correctly
+- [ ] History trend shows correct "Last Failed" build numbers
+- [ ] Regression test prevents future breakage
+
+### Nice to Have
+- [ ] Full error messages extracted (not just first line)
+- [ ] Parser performance maintained (no slowdown)
+- [ ] Detailed logging for debugging parse failures
+- [ ] Validation warnings for missing data
+
+---
+
+## Risk Assessment
+
+### Low Risk
+- Parser deduplication fix (pure function, well-isolated)
+- Adding regression tests
+
+### Medium Risk
+- Fingerprint logic changes (affects history tracking across all builds)
+- Database schema changes (migration required)
+
+### High Risk
+- None identified (all changes are non-breaking)
+
+---
+
+## Rollback Plan
+
+If fixes cause issues:
+1. Revert parser changes
+2. Restore previous deduplication logic
+3. Keep tests for future reference
+4. Investigate root cause further
+
+---
+
+## Timeline Estimate
+
+- **Phase 1 (Parser Fix):** 2-3 hours
+- **Phase 2 (History Tracking):** 1-2 hours
+- **Phase 3 (Snapshot URLs):** 1 hour
+- **Phase 4 (Error Extraction):** 1 hour
+- **Phase 5 (Integration Test):** 2 hours
+
+**Total:** ~7-9 hours
+
+---
+
+## Skills Applied
+
+1. **function-test-coverage** - Adding regression tests for parser, extractor, and integration
+2. **code-structure-quality** - Reviewing deduplication logic, fingerprinting, and module boundaries
+3. **docs-organization-governance** - Documenting fix plan and rollback strategy
+
+---
+
+## Next Steps
+
+1. ✅ Create fix plan (this document)
+2. ⬜ Create failing regression test
+3. ⬜ Fix parser deduplication logic
+4. ⬜ Verify history tracking
+5. ⬜ Test snapshot URL extraction
+6. ⬜ Run end-to-end integration test
+7. ⬜ Deploy and validate on real builds
+
+---
+
+*Created: 2026-02-24*
+*Author: Atlas Daily (QA Daily Check Agent)*
