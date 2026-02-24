@@ -1,185 +1,339 @@
 /**
- * ExtentParser Module for Android CI
+ * ExtentParser Module for Android CI (v2 — robust Extent Reports v4 parsing)
  *
- * Scrapes ExtentReport v4 HTML looking for the JSON object in the embedded <script> tags
- * Returns a list of ExtentTestResult items.
+ * Extent Reports v4 embeds all test data in a <script> block as a JS assignment.
+ * The exact variable name / format varies across Extent versions:
+ *
+ *   - Modern v4:  testData = { report: { testList: [...] } }   (window.testData or plain var)
+ *   - Older v4:   var testData = [...]
+ *   - v3 compat:  window.TESTS = [...]
+ *
+ * Strategy (with fallbacks in order):
+ *   1. Extract JSON from embedded <script> — covers all v4 variants
+ *   2. JUnit API fallback (caller must set options.junitFallback = async fn)
+ *   3. Regex HTML block extraction as last resort
  */
 
-/**
- * Clean up HTML artifacts from Extent JSON structure
- */
-function cleanDetails(detailsStr) {
-  if (!detailsStr) return '';
-  return detailsStr.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
-}
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Strip HTML tags and collapse whitespace */
+const cleanDetails = (str) => {
+  if (!str) return '';
+  return String(str).replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+};
+
+/** Pull text from <pre> or raw text in a details string */
+const extractPlainText = (str) => cleanDetails(str);
+
+// ---------------------------------------------------------------------------
+// JSON payload extraction — handles all known Extent v4 variants
+// ---------------------------------------------------------------------------
 
 /**
- * Attempt to extract and parse the JSON payload from the raw ExtentReport HTML
- * @param {string} htmlSource 
- * @returns {Array} Array of Test result objects
+ * Try to pull a JSON string from the raw HTML source.
+ * Returns parsed JS object or null.
  */
-function extractTestResultsFromHtml(htmlSource) {
-  // Try finding embedded test payload (window.TESTS or var testData)
-  // Look for something like data: [ { name: "TC...", status: "fail" } ] 
-  // We'll use regex to isolate the chunk since we don't have a full V8 engine running
-  let payloadStr = '';
-  
-  // Pattern 1: JSON payload array encoded in a single script variable
-  const testsMatch = htmlSource.match(/var\s+testData\s*=\s*(\[[^;]+\]);/i) || 
-                     htmlSource.match(/window\.TESTS\s*=\s*(\[[^;]+\]);/);
-  
-  if (testsMatch && testsMatch[1]) {
+const extractJsonPayload = (html) => {
+  // Pattern set: each entry is [description, regex, groupIndex]
+  const patterns = [
+    // v4 modern: testData = { report: { testList: [...] } }
+    ['window.testData assignment (object)',
+      /(?:window\.testData|var\s+testData|let\s+testData|const\s+testData)\s*=\s*(\{[\s\S]*?\});\s*(?:\/\/|<\/script)/i,
+      1],
+    // v4 array form: var testData = [ ... ]
+    ['var testData array',
+      /(?:window\.testData|var\s+testData|let\s+testData|const\s+testData)\s*=\s*(\[[\s\S]*?\]);\s*(?:\/\/|<\/script)/i,
+      1],
+    // window.TESTS = [...]
+    ['window.TESTS',
+      /window\.TESTS\s*=\s*(\[[\s\S]*?\]);\s*(?:\/\/|<\/script)/i,
+      1],
+    // Catch-all: any large JSON array assigned to a var in a script block
+    ['generic var = [...] in script',
+      /<script[^>]*>\s*(?:var|let|const)\s+\w+\s*=\s*(\[[\s\S]{500,}\])\s*;<\/script>/i,
+      1],
+  ];
+
+  for (const [label, re, group] of patterns) {
+    const m = html.match(re);
+    if (!m || !m[group]) continue;
     try {
-      payloadStr = testsMatch[1];
-      // Try to parse it securely
-      // Need to clean potential dangling trailing commas if it isn't strict JSON
-      const cleanPayload = payloadStr.replace(/,(?!\s*?[{["'\w])/g, '');
-      const data = JSON.parse(cleanPayload);
-      return parseJsonData(data);
-    } catch(e) {
-      console.warn("ExtentParser JSON parse error, falling back to regex block parsing", e);
-    }
-  }
-
-  // Fallback: Regex Regex chunking for missing JS variables 
-  return fallbackRegexExtraction(htmlSource);
-}
-
-/**
- * Standardize JSON data into ExtentTestResult objects
- */
-function parseJsonData(dataList) {
-  const results = [];
-  
-  for (const group of dataList) {
-    // Handling Extent V4 format which often groups by Suite > Test
-    const tests = Array.isArray(group.children) && group.children.length > 0 ? group.children : [group];
-
-    for (const t of tests) {
-      const isFail = String(t.status || t.result || '').toLowerCase() === 'fail';
-      
-      let failedStepName = null;
-      let failedStepDetails = null;
-      let configUrl = null;
-      let tcId = null;
-
-      // Scan steps for failure details and known TC IDs
-      (t.logs || t.steps || []).forEach(step => {
-        const stepDetails = String(step.details || '');
-        const stepName = String(step.name || step.stepName || '');
-        const stepStatus = String(step.status || '').toLowerCase();
-
-        // Try extracting TC ID
-        const tcMatch = stepDetails.match(/Rally TC id=(TC\d+)/i);
-        if (tcMatch) tcId = tcMatch[1];
-        
-        // Try extracting Config
-        const urlMatch = stepDetails.match(/Config url = ([^\s<]+)/i);
-        if (urlMatch) configUrl = urlMatch[1];
-
-        // Capture first fail
-        if (stepStatus === 'fail' && !failedStepDetails) {
-          failedStepName = stepName;
-          failedStepDetails = cleanDetails(stepDetails);
+      // Remove trailing commas before ] or } which make JSON.parse choke
+      const cleaned = m[group]
+        .replace(/,\s*([}\]])/g, '$1');
+      return JSON.parse(cleaned);
+    } catch (e) {
+      // Try again with a more relaxed extraction — take everything up to the last }
+      try {
+        const raw = m[group];
+        const lastClose = Math.max(raw.lastIndexOf('}'), raw.lastIndexOf(']'));
+        if (lastClose > 0) {
+          const trimmed = raw.slice(0, lastClose + 1).replace(/,\s*([}\]])/g, '$1');
+          return JSON.parse(trimmed);
         }
-      });
-
-      results.push({
-        testName: t.name,
-        status: isFail ? 'FAIL' : 'PASS',
-        tcId: tcId,
-        configUrl: configUrl,
-        failedStepName: failedStepName,
-        failedStepDetails: failedStepDetails,
-        executionTimeMs: t.time ? t.time.endTime - t.time.startTime : 0
-      });
+      } catch (_) { /* fall through */ }
     }
   }
-  
-  return results;
-}
+  return null;
+};
+
+// ---------------------------------------------------------------------------
+// Parse standard Extent v4 JSON structures → ExtentTestResult[]
+// ---------------------------------------------------------------------------
 
 /**
- * Fallback to RegExp scraping on individual blocks when JSON isn't explicit
+ * Walk one test node and build an ExtentTestResult.
+ * Handles both flat arrays of tests and nested suite > test structures.
  */
-function fallbackRegexExtraction(htmlSource) {
-  const results = [];
-  // Basic slice up by "test-item"
-  const blocks = htmlSource.split('class="test-item"');
-  // Drop first prefix chunk
-  blocks.shift();
+const parseTestNode = (node) => {
+  const status = String(node.status || node.result || '').toLowerCase();
+  const isFail = status === 'fail' || status === 'failed';
 
-  for (const block of blocks) {
-    const isFail = block.includes('status="fail"') || block.includes('status fail');
-    const nameMatch = block.match(/test-name">([^<]+)<\/span>/);
-    if (!nameMatch) continue;
-    
-    let tcId = null;
+  let tcId = null;
+  let configUrl = null;
+  let failedStepName = null;
+  let failedStepDetails = null;
+
+  // Logs can be under .logs, .nodes, .children, .steps
+  const rawLogs = node.logs || node.steps || node.nodes || node.children || [];
+  const logs = Array.isArray(rawLogs) ? rawLogs : [];
+
+  for (const log of logs) {
+    const detailsRaw = log.details || log.description || log.body || '';
+    const details = cleanDetails(detailsRaw);
+    const name = String(log.name || log.stepName || log.status || '');
+    const logStatus = String(log.status || '').toLowerCase();
+
+    // TC ID
+    if (!tcId) {
+      const m = details.match(/Rally\s+TC\s+id\s*=\s*(TC\d+)/i)
+             || details.match(/TC\s+id\s*=\s*(TC\d+)/i);
+      if (m) tcId = m[1];
+    }
+
+    // Config URL
+    if (!configUrl) {
+      const m = details.match(/Config\s+url\s*=\s*([^\s<"']+)/i);
+      if (m) configUrl = m[1];
+    }
+
+    // First failing step
+    if (isFail && !failedStepDetails && logStatus === 'fail') {
+      failedStepName = name || null;
+      failedStepDetails = details || null;
+    }
+  }
+
+  // Sometimes TC ID is directly on the node name or description
+  if (!tcId) {
+    const src = [node.name, node.description, node.fullName].filter(Boolean).join(' ');
+    const m = src.match(/Rally\s+TC\s+id\s*=\s*(TC\d+)/i)
+           || src.match(/TC\s+id\s*=\s*(TC\d+)/i);
+    if (m) tcId = m[1];
+  }
+
+  // Duration
+  const startMs = node.startTime || (node.time && node.time.start) || 0;
+  const endMs   = node.endTime   || (node.time && node.time.end)   || 0;
+
+  return {
+    testName: String(node.name || node.testName || 'Unknown'),
+    status: isFail ? 'FAIL' : 'PASS',
+    tcId,
+    configUrl,
+    failedStepName,
+    failedStepDetails,
+    executionTimeMs: endMs - startMs,
+  };
+};
+
+/**
+ * Convert any known JSON payload shape to ExtentTestResult[].
+ * Handles: object with report.testList, flat array, suite-wrapped array.
+ */
+const parseJsonPayload = (data) => {
+  const results = [];
+
+  // Shape A: { report: { testList: [...] } }
+  if (data && data.report && Array.isArray(data.report.testList)) {
+    for (const t of data.report.testList) {
+      results.push(parseTestNode(t));
+    }
+    return results;
+  }
+
+  // Shape B: flat array [{ name, status, logs, ... }, ...]
+  if (Array.isArray(data)) {
+    for (const item of data) {
+      // If item looks like a suite (has .tests or .children with sub-nodes)
+      const subTests = item.tests || item.children || item.nodes;
+      if (Array.isArray(subTests) && subTests.length > 0 && subTests[0].status !== undefined) {
+        for (const t of subTests) results.push(parseTestNode(t));
+      } else {
+        results.push(parseTestNode(item));
+      }
+    }
+    return results;
+  }
+
+  return results;
+};
+
+// ---------------------------------------------------------------------------
+// Fallback: naive HTML regex extraction
+// ---------------------------------------------------------------------------
+
+const fallbackHtmlExtraction = (html) => {
+  const results = [];
+
+  // Look for rally TC id comments scattered in page to at least get test names + TC IDs
+  const tcBlocks = [...html.matchAll(/Rally\s+TC\s+id\s*=\s*(TC\d+)/gi)];
+  if (tcBlocks.length === 0) return results;
+
+  // For each TC ID occurrence, grab surrounding context
+  for (const m of tcBlocks) {
+    const start = Math.max(0, m.index - 500);
+    const block = html.slice(start, m.index + 500);
+
+    const tcId = m[1];
+    const nameMatch = block.match(/class="test-name[^"]*">\s*([^<]+)</)
+                   || block.match(/data-test-name="([^"]+)"/);
+    const testName = nameMatch ? nameMatch[1].trim() : `Test_${tcId}`;
+
+    // Determine if failed by looking for fail status near this block
+    const isFail = /status[=\s"']+fail/i.test(block);
+
     let failedStepName = null;
     let failedStepDetails = null;
-    let configUrl = null;
-
-    const tcMatch = block.match(/Rally TC id=(TC\d+)/i);
-    if (tcMatch) tcId = tcMatch[1];
-
-    const confMatch = block.match(/Config url = ([^\s<"']+)/i);
-    if (confMatch) configUrl = confMatch[1];
 
     if (isFail) {
-      // Find the row that has failing status
-      // A typical extent row: <tr status="fail"><td...>StepName</td><td...>Details</td></tr>
-      const failRowMatch = block.match(/<tr[^>]*status="fail"[^>]*>([\s\S]*?)<\/tr>/i);
-      if (failRowMatch) {
-        const trHtml = failRowMatch[1];
-        // naive extraction
-        const tdMatches = [...trHtml.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)];
-        if (tdMatches.length >= 2) {
-           failedStepName = cleanDetails(tdMatches[tdMatches.length - 2][1]);
-           failedStepDetails = cleanDetails(tdMatches[tdMatches.length - 1][1]);
+      const rowMatch = block.match(/<tr[^>]*status[=\s"']+fail[^>]*>([\s\S]*?)<\/tr>/i);
+      if (rowMatch) {
+        const cells = [...rowMatch[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)];
+        if (cells.length >= 2) {
+          failedStepName = cleanDetails(cells[cells.length - 2]?.[1] || '');
+          failedStepDetails = cleanDetails(cells[cells.length - 1]?.[1] || '');
         }
       }
     }
 
     results.push({
-      testName: nameMatch[1].trim(),
+      testName,
       status: isFail ? 'FAIL' : 'PASS',
-      tcId: tcId,
-      configUrl: configUrl,
-      failedStepName: failedStepName,
-      failedStepDetails: failedStepDetails,
-      executionTimeMs: 0
+      tcId,
+      configUrl: null,
+      failedStepName,
+      failedStepDetails,
+      executionTimeMs: 0,
     });
   }
 
   return results;
-}
+};
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
 
 /**
- * Extract the reports dynamically based on Directory enumeration 
+ * Extract test results from raw ExtentReport HTML source.
+ * Tries JSON extraction, then regex fallback.
+ *
+ * @param {string} htmlSource
+ * @returns {ExtentTestResult[]}
  */
-async function getReportDirectoryName(jobName, buildNum, jenkinsClient) {
-  const listingHtml = await jenkinsClient.fetchRaw(`/job/${jobName}/${buildNum}/ExtentReport/`);
-  const match = listingHtml.match(/href="([^">]*Report[^">]*)\/"/i);
-  return match ? match[1] : 'newReportVersion2.0';
-}
+const extractTestResultsFromHtml = (htmlSource) => {
+  if (!htmlSource || htmlSource.length < 100) return [];
 
-/**
- * Parse directly from Jenkins client
- */
-async function parseExtentReport(jobName, buildNum, jenkinsClient) {
-  const dirName = await getReportDirectoryName(jobName, buildNum, jenkinsClient);
-  
-  const reportIndexHtml = await jenkinsClient.fetchRaw(`/job/${jobName}/${buildNum}/ExtentReport/${dirName}/index.html`);
-  if (!reportIndexHtml) {
-    console.warn(`Could not fetch ExtentReport for ${jobName}/${buildNum}`);
-    return [];
+  const payload = extractJsonPayload(htmlSource);
+  if (payload !== null) {
+    const results = parseJsonPayload(payload);
+    if (results.length > 0) return results;
   }
-  
-  return extractTestResultsFromHtml(reportIndexHtml);
-}
+
+  // JSON extraction yielded nothing — fall back to HTML regex
+  console.warn('[ExtentParser] JSON payload not found or empty, using HTML fallback');
+  return fallbackHtmlExtraction(htmlSource);
+};
+
+/**
+ * Discover the ExtentReport subdirectory name (e.g. "newReportVersion2.0")
+ * by fetching the Jenkins HTML Publisher directory listing.
+ *
+ * @param {string} jobName
+ * @param {number} buildNum
+ * @param {object} jenkinsClient  - must have .fetchRaw(endpoint) → Promise<string>
+ * @returns {Promise<string>}
+ */
+const getReportDirectoryName = async (jobName, buildNum, jenkinsClient) => {
+  const listingHtml = await jenkinsClient.fetchRaw(
+    `/job/${jobName}/${buildNum}/ExtentReport/`
+  );
+  // Look for href pointing to a sub-directory (href="something/")
+  const match = listingHtml.match(/href="([^">/][^"]*)\/"[^>]*>[^<]*Report/i)
+             || listingHtml.match(/href="([^">/][^"]*)\//i);
+  return match ? match[1] : 'newReportVersion2.0';
+};
+
+/**
+ * Fetch and parse the ExtentReport for a given job build.
+ *
+ * @param {string} jobName
+ * @param {number} buildNum
+ * @param {object} jenkinsClient
+ * @param {object} [options]
+ * @param {Function} [options.junitFallback]  - async (jobName, buildNum) => ExtentTestResult[]
+ * @returns {Promise<ExtentTestResult[]>}
+ */
+const parseExtentReport = async (jobName, buildNum, jenkinsClient, options = {}) => {
+  let dirName;
+  try {
+    dirName = await getReportDirectoryName(jobName, buildNum, jenkinsClient);
+  } catch (e) {
+    console.warn(`[ExtentParser] Could not fetch directory listing for ${jobName}/${buildNum}: ${e.message}`);
+    dirName = 'newReportVersion2.0';
+  }
+
+  // Try index.html first (HTML Publisher serves this as the entry point)
+  const urlsToTry = [
+    `/job/${jobName}/${buildNum}/ExtentReport/${dirName}/index.html`,
+    `/job/${jobName}/${buildNum}/ExtentReport/${dirName}/`,
+    `/job/${jobName}/${buildNum}/ExtentReport/`,
+  ];
+
+  for (const url of urlsToTry) {
+    try {
+      const html = await jenkinsClient.fetchRaw(url);
+      if (html && html.length > 500) {
+        const results = extractTestResultsFromHtml(html);
+        if (results.length > 0) {
+          console.log(`[ExtentParser] ${jobName}/${buildNum}: ${results.length} tests extracted from ${url}`);
+          return results;
+        }
+      }
+    } catch (e) {
+      // try next URL
+    }
+  }
+
+  // JUnit API fallback
+  if (typeof options.junitFallback === 'function') {
+    console.warn(`[ExtentParser] Falling back to JUnit API for ${jobName}/${buildNum}`);
+    return options.junitFallback(jobName, buildNum);
+  }
+
+  console.warn(`[ExtentParser] No test results found for ${jobName}/${buildNum}`);
+  return [];
+};
 
 module.exports = {
   extractTestResultsFromHtml,
+  extractJsonPayload,
+  parseJsonPayload,
   getReportDirectoryName,
-  parseExtentReport
+  parseExtentReport,
 };

@@ -1,9 +1,13 @@
 #!/bin/bash
 # android_analyzer.sh - Android Library CI analysis orchestrator
 #
-# Usage: bash android_analyzer.sh [--force] <trigger_job_name> <trigger_build_number>
-# Example: bash android_analyzer.sh Trigger_Library_Jobs 89
-# Example: bash android_analyzer.sh --force Trigger_Library_Jobs 89
+# Normal mode (trigger job):
+#   bash android_analyzer.sh [--force] <trigger_job_name> <trigger_build_number>
+#   Example: bash android_analyzer.sh Trigger_Library_Jobs 89
+#
+# Single-job mode (test/debug one specific Library job by name + build number):
+#   bash android_analyzer.sh --single-job <job_name> --single-build <build_num> [--force]
+#   Example: bash android_analyzer.sh --single-job Library_RSD_MultiMedia --single-build 330
 
 set -e
 
@@ -13,22 +17,45 @@ TMP_DIR="$PROJECT_DIR/tmp"
 LOGS_DIR="$PROJECT_DIR/logs"
 REPORTS_DIR="$PROJECT_DIR/reports"
 
-# Configuration
-export JENKINS_URL="http://tec-l-1081462.labs.microstrategy.com:8080/"
-export JENKINS_USER="admin"
-export JENKINS_API_TOKEN="11596241e9625bf6e48aca51bf0af0a036"
-# For Android specific servers you can also set ANDROID_JENKINS_URL
+# Auto-load .env from workspace-daily (contains ANDROID_JENKINS_TOKEN etc)
+WORKSPACE_DAILY_ENV="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")/.env"
+if [ -f "$WORKSPACE_DAILY_ENV" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$WORKSPACE_DAILY_ENV"
+    set +a
+fi
+
+# Configuration — Android Library CI runs on a SEPARATE Jenkins server from the main CI
+# Priority: environment variable > .env file > hardcoded default
+export ANDROID_JENKINS_URL="${ANDROID_JENKINS_URL:-http://ci-master.labs.microstrategy.com:8011}"
+export ANDROID_JENKINS_USER="${ANDROID_JENKINS_USER:-xuyin}"
+# Support both ANDROID_JENKINS_TOKEN (real .env name) and ANDROID_JENKINS_API_TOKEN
+export ANDROID_JENKINS_API_TOKEN="${ANDROID_JENKINS_API_TOKEN:-${ANDROID_JENKINS_TOKEN:-}}"
+
+# Main Jenkins (used for non-Android jobs only)
+export JENKINS_URL="${JENKINS_URL:-http://tec-l-1081462.labs.microstrategy.com:8080/}"
 
 # Parse arguments
 FORCE_REGENERATE=0
 TRIGGER_JOB=""
 TRIGGER_BUILD=""
+SINGLE_JOB=""
+SINGLE_BUILD=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --force|-f)
             FORCE_REGENERATE=1
             shift
+            ;;
+        --single-job)
+            SINGLE_JOB="$2"
+            shift 2
+            ;;
+        --single-build)
+            SINGLE_BUILD="$2"
+            shift 2
             ;;
         *)
             if [ -z "$TRIGGER_JOB" ]; then
@@ -41,15 +68,18 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$TRIGGER_JOB" ] || [ -z "$TRIGGER_BUILD" ]; then
-    echo "Usage: bash android_analyzer.sh [--force|-f] <trigger_job_name> <trigger_build_number>"
-    echo ""
-    echo "Options:"
-    echo "  --force, -f    Force regeneration even if report exists"
+# In single-job mode, synthesise trigger job/build from the Library job name+build
+if [ -n "$SINGLE_JOB" ] && [ -n "$SINGLE_BUILD" ]; then
+    TRIGGER_JOB="${SINGLE_JOB}"
+    TRIGGER_BUILD="${SINGLE_BUILD}"
+elif [ -z "$TRIGGER_JOB" ] || [ -z "$TRIGGER_BUILD" ]; then
+    echo "Usage (normal):      bash android_analyzer.sh [--force|-f] <trigger_job_name> <trigger_build_number>"
+    echo "Usage (single-job):  bash android_analyzer.sh --single-job <job_name> --single-build <build_num> [--force]"
     echo ""
     echo "Examples:"
     echo "  bash android_analyzer.sh Trigger_Library_Jobs 89"
     echo "  bash android_analyzer.sh --force Trigger_Library_Jobs 89"
+    echo "  bash android_analyzer.sh --single-job Library_RSD_MultiMedia --single-build 330"
     exit 1
 fi
 
@@ -133,10 +163,18 @@ echo "$(date '+%s')|Starting Android CI Extract..." > "$HEARTBEAT_FILE"
 
 # Step 3: Discover downstream builds + fetch ExtentReports
 log "Executing process_android_build pipeline orchestrator..."
-node "$SCRIPT_DIR/pipeline/process_android_build.js" \
-  --job "$TRIGGER_JOB" \
-  --build "$TRIGGER_BUILD" \
-  --output-dir "$REPORT_DIR"
+if [ -n "$SINGLE_JOB" ] && [ -n "$SINGLE_BUILD" ]; then
+  log "Mode: single-job  →  $SINGLE_JOB #$SINGLE_BUILD"
+  node "$SCRIPT_DIR/pipeline/process_android_build.js" \
+    --single-job "$SINGLE_JOB" \
+    --single-build "$SINGLE_BUILD" \
+    --output-dir "$REPORT_DIR"
+else
+  node "$SCRIPT_DIR/pipeline/process_android_build.js" \
+    --job "$TRIGGER_JOB" \
+    --build "$TRIGGER_BUILD" \
+    --output-dir "$REPORT_DIR"
+fi
 
 if [ $? -ne 0 ]; then
    log "❌ Pipeline execution for Android CI failed"

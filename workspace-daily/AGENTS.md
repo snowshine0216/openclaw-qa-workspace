@@ -241,6 +241,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - ✅ Write: "Slack integration configured in `~/.openclaw/openclaw.json`"
 - ✅ Write: "GitHub Copilot auth stored in `~/.openclaw/credentials/`"
 - ✅ Reference file paths, never actual secrets
+- ✅ Read: "Jenkins credentials stored in `.env`"
 
 **If I accidentally write a secret:**
 
@@ -255,6 +256,9 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (SSH details, test environment details) in `TOOLS.md`.
 
 **CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
+
+And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarentee the ut / integration tests work.
+
 
 ## 💓 Heartbeats - Be Proactive!
 

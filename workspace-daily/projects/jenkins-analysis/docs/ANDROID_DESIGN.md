@@ -153,28 +153,34 @@ The ExtentReport HTML contains a two-panel layout:
 | `failed_step_details` | DETAILS of ❌ row | Error text or exception |
 | `execution_time` | DETAILS "Execution time=" | `4.111s` |
 
-### 4.3 Parsing Strategy
+### 4.3 Parsing Strategy (Implemented v2)
 
 Because the ExtentReport is a JavaScript-rendered SPA (Single Page Application), direct HTML parsing via `cheerio` is NOT sufficient — the test data is injected via JS.
 
-**✅ Confirmed Primary: Parse the embedded JSON data (Option A)**  
-Extent Reports v4 **confirmed** to embed all test data as a JSON payload in a `<script>` tag:
-```html
-<script>
-  var testData = { ... };  // or window.TESTS = [...]
-</script>
-```
-Regex-extract this JSON from the raw HTML source to get all test results without executing JS. This is the authoritative data source — no headless browser required.
+**✅ Primary: Multi-pattern JSON extraction (`android/extent_parser.js`)**  
+Extent Reports v4 embeds all test data as a JSON payload in a `<script>` tag but the exact variable name and object shape varies by Extent version:
 
-**Fallback A: Jenkins JUnit API**  
-Use only when the HTML fetch fails or the JSON payload is absent (e.g., report generation aborted mid-run):
-```
-/job/{JobName}/{BuildNum}/testReport/api/json?tree=suites[cases[name,status,errorDetails,errorStackTrace]]
-```
-Gives test names and error messages but lacks TC IDs and step-level details.
+| Pattern | Variable | Shape |
+|---------|----------|-------|
+| Modern v4 | `window.testData` / `var testData` | `{ report: { testList: [...] } }` |
+| Older v4 | `var testData` | Flat array `[{ name, status, logs }]` |
+| v3 compat | `window.TESTS` | Array |
 
-**Fallback B: Regex on raw HTML**  
-Fetch the raw HTML and regex-extract `Rally TC id=TC#####` patterns. Useful as a last resort when both the JSON payload and JUnit API are incomplete.
+The parser (`extractJsonPayload`) tries all known patterns in order using regex. The JSON is extracted and then `parseJsonPayload` normalises it into `ExtentTestResult[]` regardless of shape.
+
+```javascript
+// Priority cascade in extent_parser.js:
+// 1. window.testData = { report: { testList: [...] } }   ← modern v4
+// 2. window.testData = [...]                             ← array form
+// 3. window.TESTS = [...]                                ← v3 compat
+// 4. Any large JSON array in a <script>                  ← catch-all
+// 5. HTML regex block extraction (Rally TC id= patterns) ← last resort
+```
+
+**Fallback: Regex on raw HTML**  
+Falls back to scanning the raw HTML for `Rally TC id=TC#####` patterns when all JSON extraction attempts yield zero results.
+
+**Note:** JUnit API fallback can be injected via `parseExtentReport(jobName, buildNum, client, { junitFallback: async fn })` but is not wired by default.
 
 **Authentication:** `ANDROID_JENKINS_USER` / `ANDROID_JENKINS_TOKEN` env vars apply Basic Auth to all fetches (`Authorization: Basic base64(user:token)`). This is confirmed to work with the Jenkins HTML Publisher `/ExtentReport/` endpoint.
 

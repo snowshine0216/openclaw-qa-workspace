@@ -42,30 +42,32 @@ async function getAllLibraryJobNames(jenkinsClient, prefix = 'Library_') {
 }
 
 /**
- * Find the primary build triggered by the trigger job
- * @param {string} libraryJobName 
- * @param {string} upstreamProject 
- * @param {number} upstreamBuildNum 
+ * Find the primary build triggered by the trigger job.
+ *
+ * IMPORTANT: Jenkins REST API nests causes inside actions[], NOT directly on the build.
+ * build.causes is always undefined — must use build.actions[].causes[] and flatten.
+ *
+ * @param {string} libraryJobName
+ * @param {string} upstreamProject
+ * @param {number} upstreamBuildNum
  * @param {object} jenkinsClient
  * @returns {Promise<{buildNum: number, result: string, timestamp: number}|null>}
  */
 async function findMatchingBuild(libraryJobName, upstreamProject, upstreamBuildNum, jenkinsClient) {
-  // Fetch recent builds
-  const rs = await jenkinsClient.fetch(`/job/${libraryJobName}/api/json?tree=builds[number,result,timestamp,causes[upstreamProject,upstreamBuild]]{0,10}`);
-  
+  // Bug C fix: query via actions[causes[...]] — causes are NESTED under actions in Jenkins API
+  const rs = await jenkinsClient.fetch(
+    `/job/${libraryJobName}/api/json?tree=builds[number,result,timestamp,actions[_class,causes[upstreamProject,upstreamBuild]]]{0,10}`
+  );
+
   if (!rs.builds) return null;
 
   for (const build of rs.builds) {
-    const causes = build.causes || [];
-    const walkCauses = (causesList) => {
-      for (const cause of causesList) {
-        if (cause.upstreamProject === upstreamProject && cause.upstreamBuild === upstreamBuildNum) {
-          return true;
-        }
-      }
-      return false;
-    };
-    if (walkCauses(causes)) {
+    // Flatten causes from all actions (Jenkins nests them inside CauseAction)
+    const causes = (build.actions || []).flatMap(a => a.causes || []);
+    const matched = causes.some(
+      c => c.upstreamProject === upstreamProject && c.upstreamBuild === upstreamBuildNum
+    );
+    if (matched) {
       return { buildNum: build.number, result: build.result, timestamp: build.timestamp };
     }
   }
@@ -83,7 +85,10 @@ async function findMatchingBuild(libraryJobName, upstreamProject, upstreamBuildN
  * @returns {Promise<{buildNum: number, result: string, timestamp: number}|null>}
  */
 async function detectRerun(jobName, primaryBuildNum, primaryTimestamp, upstreamProject, upstreamBuild, jenkinsClient) {
-  const rs = await jenkinsClient.fetch(`/job/${jobName}/api/json?tree=builds[number,result,timestamp,causes[_class,upstreamProject,upstreamBuild]]{0,5}`);
+  // Bug C fix: same as findMatchingBuild — causes are nested under actions[]
+  const rs = await jenkinsClient.fetch(
+    `/job/${jobName}/api/json?tree=builds[number,result,timestamp,actions[_class,causes[_class,upstreamProject,upstreamBuild]]]{0,5}`
+  );
   if (!rs.builds) return null;
 
   const RE_RUN_WINDOW_MS = 3 * 60 * 60 * 1000;
@@ -93,9 +98,12 @@ async function detectRerun(jobName, primaryBuildNum, primaryTimestamp, upstreamP
     if (build.timestamp - primaryTimestamp > RE_RUN_WINDOW_MS) continue;
     if (build.result === null) continue; // still running
 
-    const causes = build.causes || [];
+    // Flatten causes from all actions
+    const causes = (build.actions || []).flatMap(a => a.causes || []);
     const isManualTrigger = causes.some(c => c._class === 'hudson.model.Cause$UserIdCause');
-    const isSameUpstream = causes.some(c => c.upstreamProject === upstreamProject && c.upstreamBuild === upstreamBuild);
+    const isSameUpstream = causes.some(
+      c => c.upstreamProject === upstreamProject && c.upstreamBuild === upstreamBuild
+    );
 
     if (isManualTrigger || isSameUpstream) {
       return { buildNum: build.number, result: build.result, timestamp: build.timestamp };

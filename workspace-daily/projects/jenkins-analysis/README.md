@@ -75,18 +75,26 @@ bash direct_analyzer.sh MyCustomJob 999
 ```
 
 **Option C: Android CI Analyzer**
-- migrate android database
+- Migrate android database (first time only):
 ```bash
 node scripts/database/migrate_android.js
 ```
-- run android analyzer
+- Run with trigger job (normal mode — discovers all downstream Library_* jobs):
 ```bash
-# From scripts/ directory
-bash android_analyzer.sh <trigger_job_name> <build_number>
+# From project root
+bash scripts/android_analyzer.sh <trigger_job_name> <build_number>
 
-# Specifically designed for Android Jenkins CI ExtentReports
 # Example:
-bash android_analyzer.sh Trigger_Library_Jobs 89
+bash scripts/android_analyzer.sh Trigger_Library_Jobs 89
+```
+- Run with a **single Library job** (test/debug mode — skip trigger discovery):
+```bash
+bash scripts/android_analyzer.sh --single-job Library_RSD_MultiMedia --single-build 330
+
+# Or via the Node pipeline directly:
+cd scripts/
+node pipeline/process_android_build.js --single-job Library_RSD_MultiMedia --single-build 330 --output-dir ../reports/test_330
+node generate_android_report.mjs ../reports/test_330 Library_RSD_MultiMedia 330
 ```
 
 **How They Work:**
@@ -491,14 +499,19 @@ node migrate_v2.js
 
 **Unit Tests:**
 ```bash
-# Test V2 parser
-node tests/test_parser_v2.js
+cd scripts/
 
-# Test markdown to DOCX conversion
-node tests/md_to_docx.test.js
+# Run all unit tests via Jest
+npx jest tests/unit/ --forceExit
 
-# Test database writer
-node tests/db_writer.test.js
+# Run specific Android test suites
+npx jest tests/unit/extent_parser.test.js    # ExtentReport v4 parser (12 tests)
+npx jest tests/unit/android_db.test.js       # DB write/read path (13 tests)
+npx jest tests/unit/job_discovery_bug3.test.js  # Job discovery (existing)
+
+# Legacy standalone runners
+node tests/unit/extent_parser.test.js
+node tests/unit/android_db.test.js
 ```
 
 **Integration Test:**

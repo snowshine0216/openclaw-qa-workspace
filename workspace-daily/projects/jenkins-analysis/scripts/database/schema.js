@@ -50,7 +50,9 @@ const initSchema = (db) => {
       config_url          TEXT,
       failed_step_name    TEXT,
       rerun_build_num     INTEGER,
-      rerun_result        TEXT
+      rerun_result        TEXT,
+      retry_count         INTEGER DEFAULT 1,
+      full_error_msg      TEXT
     );
   `);
 };
