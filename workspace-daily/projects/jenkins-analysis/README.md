@@ -75,6 +75,11 @@ bash direct_analyzer.sh MyCustomJob 999
 ```
 
 **Option C: Android CI Analyzer**
+- migrate android database
+```bash
+node scripts/database/migrate_android.js
+```
+- run android analyzer
 ```bash
 # From scripts/ directory
 bash android_analyzer.sh <trigger_job_name> <build_number>
