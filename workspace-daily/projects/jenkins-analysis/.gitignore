@@ -3,3 +3,5 @@ logs/
 tmp/
 reports/
 node_modules/
+/tmp/
+/reports/

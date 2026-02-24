@@ -29,7 +29,7 @@ echo ""
 
 # Test 2: Check scripts exist
 echo "✓ Test 2: Scripts exist"
-for script in webhook_server.js analyzer.sh report_generator.js md_to_docx.js feishu_uploader.sh; do
+for script in server/index.js analyzer.sh reporting/generator.js reporting/docx_converter.js feishu_uploader.sh; do
     if [ -f "scripts/$script" ]; then
         echo "  ✓ scripts/$script exists"
     else
@@ -103,30 +103,30 @@ echo ""
 
 # Test 7: Webhook server syntax check
 echo "✓ Test 7: Webhook server syntax"
-if node -c scripts/webhook_server.js 2>/dev/null; then
-    echo "  ✓ webhook_server.js has valid syntax"
+if node -c scripts/server/index.js 2>/dev/null; then
+    echo "  ✓ server/index.js has valid syntax"
 else
-    echo "  ✗ webhook_server.js has syntax errors"
+    echo "  ✗ server/index.js has syntax errors"
     exit 1
 fi
 echo ""
 
 # Test 8: Report generator syntax check
 echo "✓ Test 8: Report generator syntax"
-if node -c scripts/report_generator.js 2>/dev/null; then
-    echo "  ✓ report_generator.js has valid syntax"
+if node -c scripts/reporting/generator.js 2>/dev/null; then
+    echo "  ✓ reporting/generator.js has valid syntax"
 else
-    echo "  ✗ report_generator.js has syntax errors"
+    echo "  ✗ reporting/generator.js has syntax errors"
     exit 1
 fi
 echo ""
 
 # Test 9: MD to DOCX converter syntax check
 echo "✓ Test 9: MD to DOCX converter syntax"
-if node -c scripts/md_to_docx.js 2>/dev/null; then
-    echo "  ✓ md_to_docx.js has valid syntax"
+if node -c scripts/reporting/docx_converter.js 2>/dev/null; then
+    echo "  ✓ reporting/docx_converter.js has valid syntax"
 else
-    echo "  ✗ md_to_docx.js has syntax errors"
+    echo "  ✗ reporting/docx_converter.js has syntax errors"
     exit 1
 fi
 echo ""
@@ -145,8 +145,8 @@ echo "========================================"
 echo "✅ All tests passed!"
 echo ""
 echo "Next steps:"
-echo "1. Start webhook server: node scripts/webhook_server.js"
-echo "2. Configure Jenkins webhooks (see docs/WEBHOOK_SETUP.md)"
+echo "1. Start webhook server: cd scripts && npm start"
+echo "2. Configure Jenkins webhooks (see docs/SETUP.md or docs/WEBHOOK_SETUP.md)"
 echo "3. Test with: curl -X POST http://localhost:9090/webhook ..."
 echo ""
 echo "Documentation:"

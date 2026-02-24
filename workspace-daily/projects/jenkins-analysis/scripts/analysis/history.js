@@ -6,14 +6,9 @@
 
 const { execSync } = require('child_process');
 
-const [,, jobName, currentBuildNumber, jenkinsUrl, jenkinsUser, jenkinsToken] = process.argv;
+const [,, jobNameArg, currentBuildNumberArg, jenkinsUrlArg, jenkinsUserArg, jenkinsTokenArg] = process.argv;
 
-if (!jobName || !currentBuildNumber || !jenkinsUrl || !jenkinsUser || !jenkinsToken) {
-  console.error('Usage: node check_previous_failures.js <jobName> <buildNumber> <jenkinsUrl> <user> <token>');
-  process.exit(1);
-}
-
-async function checkPreviousBuilds() {
+async function checkPreviousBuilds(jobName = jobNameArg, currentBuildNumber = currentBuildNumberArg, jenkinsUrl = jenkinsUrlArg, jenkinsUser = jenkinsUserArg, jenkinsToken = jenkinsTokenArg) {
   try {
     const currentBuild = parseInt(currentBuildNumber);
     const previousFailures = [];
@@ -80,14 +75,26 @@ function countConsecutiveFailures(currentBuild, failures) {
   return count;
 }
 
-// Run check and output JSON
-checkPreviousBuilds().then(result => {
-  console.log(JSON.stringify(result, null, 2));
-}).catch(error => {
-  console.error(JSON.stringify({
-    error: error.message,
-    jobName,
-    currentBuild: parseInt(currentBuildNumber),
-  }, null, 2));
-  process.exit(1);
-});
+// Run check and output JSON if called directly
+if (require.main === module) {
+  if (!jobNameArg || !currentBuildNumberArg || !jenkinsUrlArg || !jenkinsUserArg || !jenkinsTokenArg) {
+    console.error('Usage: node check_previous_failures.js <jobName> <buildNumber> <jenkinsUrl> <user> <token>');
+    process.exit(1);
+  }
+
+  checkPreviousBuilds().then(result => {
+    console.log(JSON.stringify(result, null, 2));
+  }).catch(error => {
+    console.error(JSON.stringify({
+      error: error.message,
+      jobName: jobNameArg,
+      currentBuild: parseInt(currentBuildNumberArg),
+    }, null, 2));
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  checkPreviousBuilds,
+  countConsecutiveFailures
+};

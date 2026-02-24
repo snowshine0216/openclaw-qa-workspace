@@ -345,15 +345,24 @@ function extractFailureDetails(consoleLog) {
   return failures.filter(line => line.length > 0);
 }
 
-// Run analysis and output JSON
-analyzeFailure().then(result => {
-  console.log(JSON.stringify(result, null, 2));
-}).catch(error => {
-  console.error(JSON.stringify({
-    isFalseAlarm: null,
-    rootCause: `Analysis error: ${error.message}`,
-    actions: ['Manually review logs'],
-    confidence: 'low'
-  }, null, 2));
-  process.exit(1);
-});
+// Run analysis and output JSON if called directly
+if (require.main === module) {
+  analyzeFailure().then(result => {
+    console.log(JSON.stringify(result, null, 2));
+  }).catch(error => {
+    console.error(JSON.stringify({
+      isFalseAlarm: null,
+      rootCause: `Analysis error: ${error.message}`,
+      actions: ['Manually review logs'],
+      confidence: 'low'
+    }, null, 2));
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  analyzeFailure,
+  heuristicAnalysis,
+  buildAnalysisResult,
+  extractFailureDetails
+};

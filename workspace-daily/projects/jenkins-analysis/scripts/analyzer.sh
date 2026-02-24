@@ -330,7 +330,7 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
         
         # Run AI failure analysis
         ANALYSIS_FILE="$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_analysis.json"
-        node "$SCRIPT_DIR/ai_failure_analyzer.js" \
+        node "$SCRIPT_DIR/analysis/ai_analyzer.js" \
             "$CONSOLE_LOG_FILE" \
             "$JOB_NAME_F" \
             "$JOB_NUM_F" \
@@ -344,7 +344,7 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
         
         # Check previous failures (last 5 builds)
         HISTORY_FILE="$REPORT_DIR/${JOB_NAME_F}_${JOB_NUM_F}_history.json"
-        node "$SCRIPT_DIR/check_previous_failures.js" \
+        node "$SCRIPT_DIR/analysis/history.js" \
             "$JOB_NAME_F" \
             "$JOB_NUM_F" \
             "$JENKINS_URL" \
@@ -364,7 +364,7 @@ fi
 update_heartbeat "Writing to history DB..."
 log "Writing results to SQLite history DB..."
 
-node "$SCRIPT_DIR/db_writer.js" \
+node "$SCRIPT_DIR/pipeline/process_build.js" \
     "$JOB_NAME" \
     "$BUILD_NUMBER" \
     "${JENKINS_URL}job/$JOB_NAME/$BUILD_NUMBER/" \
@@ -378,7 +378,7 @@ node "$SCRIPT_DIR/db_writer.js" \
 update_heartbeat "Generating report..."
 log "Generating consolidated report..."
 
-node "$SCRIPT_DIR/report_generator.js" \
+node "$SCRIPT_DIR/reporting/generator.js" \
     "$REPORT_FOLDER" \
     "$TMP_DIR/${REPORT_FOLDER}_failed_jobs.json" \
     "$TMP_DIR/${REPORT_FOLDER}_passed_jobs.json" \
@@ -390,7 +390,7 @@ log "✓ Report generated"
 update_heartbeat "Converting to DOCX..."
 log "Converting markdown to DOCX..."
 
-node "$SCRIPT_DIR/md_to_docx.js" \
+node "$SCRIPT_DIR/reporting/docx_converter.js" \
     "$REPORT_DIR/${REPORT_FOLDER}.md" \
     "$REPORT_DIR/${REPORT_FOLDER}.docx"
 

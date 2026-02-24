@@ -81,20 +81,21 @@ const parseInlineContent = (raw, baseStyle = {}) => {
   return elements;
 };
 
-const [,, inputMd, outputDocx] = process.argv;
+const main = async () => {
+  const [,, inputMd, outputDocx] = process.argv;
 
-if (!inputMd || !outputDocx) {
-  console.error('Usage: node md_to_docx.js <input.md> <output.docx>');
-  process.exit(1);
-}
+  if (!inputMd || !outputDocx) {
+    console.error('Usage: node docx_converter.js <input.md> <output.docx>');
+    process.exit(1);
+  }
 
-// Read markdown
-const markdown = fs.readFileSync(inputMd, 'utf8');
+  // Read markdown
+  const markdown = fs.readFileSync(inputMd, 'utf8');
 
-// Parse markdown with tables
-const tokens = marked.lexer(markdown);
+  // Parse markdown with tables
+  const tokens = marked.lexer(markdown);
 
-const children = [];
+  const children = [];
 
 /**
  * Create a beautiful table from markdown table token
@@ -204,7 +205,7 @@ function createTable(token) {
 /**
  * Process markdown tokens into DOCX elements
  */
-function processTokens(tokens) {
+function processTokens(tokens, children) {
   for (const token of tokens) {
     switch (token.type) {
       case 'heading': {
@@ -302,21 +303,33 @@ function processTokens(tokens) {
   }
 }
 
-processTokens(tokens);
+  processTokens(tokens, children);
 
-// Create document
-const doc = new Document({
-  sections: [{
-    properties: {},
-    children,
-  }],
-});
+  // Create document
+  const doc = new Document({
+    sections: [{
+      properties: {},
+      children,
+    }],
+  });
 
-// Write to file
-Packer.toBuffer(doc).then(buffer => {
+  // Write to file
+  const buffer = await Packer.toBuffer(doc);
   fs.writeFileSync(outputDocx, buffer);
   console.log(`✓ DOCX created: ${outputDocx}`);
-}).catch(error => {
-  console.error('Error creating DOCX:', error);
-  process.exit(1);
-});
+};
+
+if (require.main === module) {
+  main().catch(error => {
+    console.error('Error creating DOCX:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  parseMarkdownLink,
+  parseInlineContent,
+  createTable,
+  processTokens,
+  main
+};

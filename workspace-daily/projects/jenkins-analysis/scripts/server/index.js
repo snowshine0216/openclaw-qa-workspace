@@ -9,21 +9,18 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.WEBHOOK_PORT || 9090;
-const ANALYSIS_SCRIPT = path.join(__dirname, 'analyzer.sh');
-const LOG_DIR = path.join(__dirname, '../logs');
-const LOG_FILE = path.join(LOG_DIR, 'webhook.log');
+const {
+  PORT,
+  ANALYSIS_SCRIPT,
+  LOG_DIR,
+  LOG_FILE,
+  WATCHED_JOBS
+} = require('./config');
 
 // Ensure logs directory exists
 if (!fs.existsSync(LOG_DIR)) {
   fs.mkdirSync(LOG_DIR, { recursive: true });
 }
-
-// Watched jobs configuration
-const WATCHED_JOBS = [
-  'Tanzu_Report_Env_Upgrade',
-  'TanzuEnvPrepare'
-];
 
 function log(message) {
   const logDir = path.dirname(LOG_FILE);
@@ -98,24 +95,32 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  log(`🚀 Webhook server listening on port ${PORT}`);
-  log(`Watching jobs: ${WATCHED_JOBS.join(', ')}`);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  log('SIGTERM received, shutting down...');
-  server.close(() => {
-    log('Server closed');
-    process.exit(0);
+if (require.main === module) {
+  server.listen(PORT, () => {
+    log(`🚀 Webhook server listening on port ${PORT}`);
+    log(`Watching jobs: ${WATCHED_JOBS.join(', ')}`);
   });
-});
 
-process.on('SIGINT', () => {
-  log('SIGINT received, shutting down...');
-  server.close(() => {
-    log('Server closed');
-    process.exit(0);
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    log('SIGTERM received, shutting down...');
+    server.close(() => {
+      log('Server closed');
+      process.exit(0);
+    });
   });
-});
+
+  process.on('SIGINT', () => {
+    log('SIGINT received, shutting down...');
+    server.close(() => {
+      log('Server closed');
+      process.exit(0);
+    });
+  });
+}
+
+module.exports = {
+  server,
+  log,
+  triggerAnalysis
+};
