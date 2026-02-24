@@ -5,14 +5,40 @@
  */
 
 /**
- * Get downstream job names from Jenkins API
+ * Get downstream job names from Jenkins API.
+ *
+ * @deprecated This method is BROKEN for dynamic trigger jobs.
+ * Jenkins `downstreamProjects[]` only lists statically-configured downstreams.
+ * For Trigger_Library_Jobs, downstream jobs are triggered dynamically via UpstreamCause
+ * and will NEVER appear in downstreamProjects[]. Use getAllLibraryJobNames() instead.
+ *
  * @param {string} triggerJobName
  * @param {object} jenkinsClient - mockable client
- * @returns {Promise<string[]>}
+ * @returns {Promise<string[]>}  Always returns [] for dynamic pipelines.
  */
 async function getDownstreamJobNames(triggerJobName, jenkinsClient) {
   const rs = await jenkinsClient.fetch(`/job/${triggerJobName}/api/json?tree=downstreamProjects[name]`);
   return rs.downstreamProjects?.map(p => p.name).filter(Boolean) || [];
+}
+
+/**
+ * [FIX 3] Get all Jenkins job names that start with a given prefix.
+ *
+ * This replaces the broken getDownstreamJobNames() for dynamic trigger jobs.
+ * Instead of querying downstreamProjects (which is always empty for dynamically-
+ * triggered pipelines), we fetch the full job list from Jenkins root and filter
+ * by the Library_* prefix.
+ *
+ * @param {object} jenkinsClient - mockable Jenkins client with .fetch(endpoint)
+ * @param {string} [prefix='Library_'] - job name prefix to filter by
+ * @returns {Promise<string[]>} List of matching job names
+ */
+async function getAllLibraryJobNames(jenkinsClient, prefix = 'Library_') {
+  const rs = await jenkinsClient.fetch('/api/json?tree=jobs[name]');
+  const jobs = rs.jobs || [];
+  return jobs
+    .map(j => j.name)
+    .filter(name => name && name.startsWith(prefix));
 }
 
 /**
@@ -85,8 +111,13 @@ async function detectRerun(jobName, primaryBuildNum, primaryTimestamp, upstreamP
  * @param {object} jenkinsClient 
  */
 async function discoverAndroidBuilds(triggerJobName, triggerBuildNum, jenkinsClient) {
-  const downstreamJobs = await getDownstreamJobNames(triggerJobName, jenkinsClient);
-  
+  // FIX 3: Use getAllLibraryJobNames() instead of getDownstreamJobNames().
+  // getDownstreamJobNames() queries downstreamProjects[] which is always empty for
+  // dynamically-triggered pipelines like Trigger_Library_Jobs.
+  // getAllLibraryJobNames() scans all Jenkins jobs by the Library_* prefix and then
+  // identifies which ones actually ran under this specific trigger build via UpstreamCause.
+  const downstreamJobs = await getAllLibraryJobNames(jenkinsClient);
+
   const passed = [];
   const failed = [];
   const passedByRerun = [];
@@ -120,7 +151,8 @@ async function discoverAndroidBuilds(triggerJobName, triggerBuildNum, jenkinsCli
 }
 
 module.exports = {
-  getDownstreamJobNames,
+  getAllLibraryJobNames,   // FIX 3: new recommended function
+  getDownstreamJobNames,  // DEPRECATED: broken for dynamic pipelines, kept for compatibility
   findMatchingBuild,
   detectRerun,
   discoverAndroidBuilds

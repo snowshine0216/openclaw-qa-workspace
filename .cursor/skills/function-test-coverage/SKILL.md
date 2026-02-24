@@ -24,6 +24,7 @@ Use this skill when:
 3. Include happy paths, edge cases, and failure modes.
 4. Keep tests deterministic and isolated.
 5. Add regression tests for every confirmed bug.
+6. Should use minimal fixtures to test the behaviors and use real-case as much as possible
 
 ## Coverage Rules
 
