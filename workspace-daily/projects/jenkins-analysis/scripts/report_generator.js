@@ -66,122 +66,12 @@ let report = `# Jenkins Daily QA Report - ${reportFolder}
 
 `;
 
-// V2.2: Add failure breakdown by category and error type
+// V2.3: Build failure summary table FIRST, then generate breakdown from table data
+const tableCategoryCounts = {};
+const tableErrorTypeCounts = {};
+const tableRows = [];
+
 if (failedJobs.length > 0) {
-  // Collect all steps from failed jobs
-  const allFailedSteps = [];
-  failedJobs.forEach(job => {
-    if (db) {
-      try {
-        const steps = db.prepare(`
-          SELECT fs.* FROM failed_steps fs
-          JOIN failed_jobs fj ON fs.failed_job_id = fj.id
-          WHERE fj.job_name = ? AND fj.job_build = ?
-        `).all(job.name, job.number);
-        allFailedSteps.push(...steps);
-      } catch (e) {}
-    }
-  });
-  
-  // Categorize failures (heuristic + AI)
-  const categoryCounts = {};
-  const errorTypeCounts = {};
-  const errorTypeExamples = {};
-  
-  // Load AI analysis for proper categorization
-  const aiCategories = {};
-  failedJobs.forEach(job => {
-    const analysisPath = path.join(outputDir, `${job.name}_${job.number}_analysis.json`);
-    if (fs.existsSync(analysisPath)) {
-      try {
-        const analysis = JSON.parse(fs.readFileSync(analysisPath, 'utf8'));
-        aiCategories[job.name] = analysis.failureType || 'Unknown Failure';
-      } catch (e) {}
-    }
-  });
-  
-  // Deduplicate by TC ID first
-  const uniqueFailedSteps = {};
-  allFailedSteps.forEach(step => {
-    const key = step.tc_id;
-    if (!uniqueFailedSteps[key]) {
-      uniqueFailedSteps[key] = step;
-    }
-  });
-  
-  Object.values(uniqueFailedSteps).forEach(step => {
-    const msg = step.failure_msg || '';
-    
-    // Heuristic rules for error types
-    let errorType = 'Other';
-    if (msg.includes('webdriver') || msg.includes('Request fail')) {
-      errorType = '⚙️ Webdriver/Network';
-    } else if (step.snapshot_url) {
-      errorType = '📸 Snapshot Diff';
-    } else if (msg.includes('element') && msg.includes('not displayed')) {
-      errorType = '👁️ Element Not Found';
-    } else if (msg.includes('timeout') || (msg.includes('after') && msg.includes('ms'))) {
-      errorType = '⏱️ Timeout';
-    }
-    
-    errorTypeCounts[errorType] = (errorTypeCounts[errorType] || 0) + 1;
-    if (!errorTypeExamples[errorType]) {
-      errorTypeExamples[errorType] = step.tc_id || 'N/A';
-    }
-    
-    // Get category from AI analysis (via job name lookup)
-    const jobName = step.job_name || failedJobs.find(j => step.failed_job_id)?.name || '';
-    const category = aiCategories[jobName] || 'Unknown Failure';
-    categoryCounts[category] = (categoryCounts[category] || 0) + 1;
-  });
-  
-  report += `
-### 📊 Failure Breakdown
-
-#### By Category (AI Analysis + Heuristics)
-| Category | Count | Percentage |
-|----------|-------|------------|
-`;
-  
-  const totalUniqueTCs = Object.values(uniqueFailedSteps).length;
-  Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
-    const pct = ((count / totalUniqueTCs) * 100).toFixed(0);
-    const icon = {
-      'Script Failure': '📝',
-      'Production Failure': '🚨',
-      'Environment Failure': '⚙️',
-      'Configuration Failure': '⚙️',
-      'Dependency Failure': '🔗',
-      'Unknown Failure': '❓'
-    }[cat] || '❓';
-    report += `| ${icon} ${cat} | ${count} | ${pct}% |\n`;
-  });
-  
-  report += `
-#### By Error Type (Pattern Detection)
-| Error Type | Count | Example TC |
-|------------|-------|------------|
-`;
-  
-  Object.entries(errorTypeCounts).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
-    const example = errorTypeExamples[type] || 'N/A';
-    report += `| ${type} | ${count} | ${example} |\n`;
-  });
-}
-
-report += `
----
-
-`;
-
-// Add failure summary table if there are failures
-if (failedJobs.length > 0) {
-  report += `## ⚠️ Failure Summary Table
-
-| Job | File | TC ID | Category | Root Cause | Last Failed | Retries | Snapshot | Suggestion |
-|-----|------|-------|----------|------------|-------------|---------|----------|------------|
-`;
-
   failedJobs.forEach(job => {
     const jobName = job.name;
     const buildNumber = job.number;
@@ -197,7 +87,7 @@ if (failedJobs.length > 0) {
       } catch (error) {}
     }
 
-    const category = analysis ? analysis.failureType : 'Unknown';
+    const category = analysis ? (analysis.failureType || 'Unknown Failure') : 'Unknown Failure';
     const categoryIcon = {
       'Script Failure': '📝',
       'Production Failure': '🚨',
@@ -212,7 +102,7 @@ if (failedJobs.length > 0) {
       ? truncate(analysis.actions[0], 45)
       : 'See details below';
 
-    // Retrieve steps from DB (V2: Include new columns)
+    // Retrieve steps from DB
     let steps = [];
     if (db) {
       try {
@@ -227,22 +117,19 @@ if (failedJobs.length > 0) {
     }
 
     if (steps.length > 0) {
-      // V2.2: Deduplicate by TC ID - show each TC only once
+      // V2.2: Deduplicate by TC ID
       const uniqueSteps = {};
       steps.forEach(step => {
         const key = step.tc_id;
         if (!uniqueSteps[key]) {
           uniqueSteps[key] = step;
         } else {
-          // Prefer entry with historical data
           if (step.last_failed_build && !uniqueSteps[key].last_failed_build) {
             uniqueSteps[key] = step;
           }
-          // Prefer entry with snapshot
           if (step.snapshot_url && !uniqueSteps[key].snapshot_url) {
             uniqueSteps[key] = step;
           }
-          // Prefer higher retry count
           if (step.retry_count > (uniqueSteps[key].retry_count || 0)) {
             uniqueSteps[key].retry_count = step.retry_count;
           }
@@ -250,16 +137,11 @@ if (failedJobs.length > 0) {
       });
       
       Object.values(uniqueSteps).forEach(step => {
-        // V2: Extract short file name
         const fileName = step.file_name || 'unknown.spec.js';
         const shortFileName = fileName.split('/').pop().replace('.spec.js', '');
         
-        // V2: Combine TC ID + TC Name (escape pipes for markdown)
         const tcName = step.tc_name ? step.tc_name.replace(/\|/g, '\\|') : '';
         const tcDisplay = tcName ? `${step.tc_id} - ${tcName}` : step.tc_id;
-        
-        // V2: Format retry count
-        const retryDisplay = step.retry_count > 1 ? `🔄 ${step.retry_count}x` : '-';
         
         let snapshotCell = 'N/A';
         if (step.snapshot_url) {
@@ -267,22 +149,90 @@ if (failedJobs.length > 0) {
           snapshotCell = `[📸 View](${step.snapshot_url})${badge}`;
         }
         
-        // V2.2: Highlight first failures with bold + emoji
-        let lastFailedCell = step.last_failed_build ? `#${step.last_failed_build}` : '**🆕 First**';
+        // V2.3: Plain emoji for first failures (no bold)
+        let lastFailedCell = step.last_failed_build ? `#${step.last_failed_build}` : '🆕 First';
 
-        report += `| ${jobLinkDocx} | ${shortFileName} | ${tcDisplay} | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | ${retryDisplay} | ${snapshotCell} | ${suggestion} |\n`;
+        // V2.3: Build table row (removed Retries column)
+        const rowString = `| ${jobLinkDocx} | ${shortFileName} | ${tcDisplay} | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | ${snapshotCell} | ${suggestion} |\n`;
+        tableRows.push(rowString);
+        
+        // V2.3: Count categories from actual table (single source of truth)
+        tableCategoryCounts[category] = (tableCategoryCounts[category] || 0) + 1;
+        
+        // Count error types
+        const msg = step.failure_msg || '';
+        let errorType = 'Other';
+        if (msg.includes('webdriver') || msg.includes('Request fail')) {
+          errorType = 'Webdriver/Network';
+        } else if (step.snapshot_url) {
+          errorType = 'Snapshot Diff';
+        } else if (msg.includes('element') && msg.includes('not displayed')) {
+          errorType = 'Element Not Found';
+        } else if (msg.includes('timeout') || (msg.includes('after') && msg.includes('ms'))) {
+          errorType = 'Timeout';
+        }
+        tableErrorTypeCounts[errorType] = (tableErrorTypeCounts[errorType] || 0) + 1;
       });
     } else {
-      // Fallback if no steps found in DB
+      // Fallback if no steps found
       let lastFailedCell = 'Unknown';
-      report += `| ${jobLinkDocx} | N/A | N/A | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | - | N/A | ${suggestion} |\n`;
+      const rowString = `| ${jobLinkDocx} | N/A | N/A | ${categoryIcon} ${category} | ${rootCause} | ${lastFailedCell} | N/A | ${suggestion} |\n`;
+      tableRows.push(rowString);
+      tableCategoryCounts[category] = (tableCategoryCounts[category] || 0) + 1;
     }
   });
+
+  // V2.3: Generate breakdown from table counts
+  const totalTableRows = tableRows.length;
+  
+  report += `
+### 📊 Failure Breakdown
+
+#### By Category (from Summary Table)
+| Category | Count | Percentage |
+|----------|-------|------------|
+`;
+  
+  Object.entries(tableCategoryCounts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+    const pct = ((count / totalTableRows) * 100).toFixed(0);
+    const icon = {
+      'Script Failure': '📝',
+      'Production Failure': '🚨',
+      'Environment Failure': '⚙️',
+      'Configuration Failure': '⚙️',
+      'Dependency Failure': '🔗',
+      'Unknown Failure': '❓'
+    }[cat] || '❓';
+    report += `| ${icon} ${cat} | ${count} | ${pct}% |\n`;
+  });
+  
+  report += `
+#### By Error Type (Pattern Detection)
+| Error Type | Count | Example |
+|------------|-------|---------|
+`;
+  
+  Object.entries(tableErrorTypeCounts).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
+    report += `| ${type} | ${count} | - |\n`;
+  });
+  
+  report += `
+---
+
+`;
+
+  // V2.3: Append the pre-built table
+  report += `## ⚠️ Failure Summary Table
+
+| Job | File | TC ID | Category | Root Cause | Last Failed | Snapshot | Suggestion |
+|-----|------|-------|----------|------------|-------------|----------|------------|
+`;
+  
+  report += tableRows.join('');
   
   report += `\n**Legend:**  \n`;
   report += `- **File:** Test file name (short version, see details for full path)  \n`;
-  report += `- **Last Failed:** Build number if this step failed in previous builds  \n`;
-  report += `- **Retries:** 🔄 Nx = Failed N times with retries (deduplicated)  \n`;
+  report += `- **Last Failed:** Build number if this step failed in previous builds, 🆕 First for new failures  \n`;
   report += `- **⚠️ FA:** Marks a False Alarm (e.g. minor visual diff confirmed by Spectre)  \n`;
   report += `\n---\n\n`;
 }
@@ -303,8 +253,10 @@ if (failedJobs.length > 0) {
   failedJobs.forEach(job => {
     const jobName = job.name;
     const buildNumber = job.number;
+    const jobUrl = `${JENKINS_URL}/job/${jobName}/${buildNumber}/`;
     
-    report += `### ${jobName} #${buildNumber}\n\n`;
+    // V2.3: Clickable link with build number (same format as summary table)
+    report += `[${jobName} #${buildNumber}](${jobUrl})\n\n`;
     
     const analysisPath = path.join(outputDir, `${jobName}_${buildNumber}_analysis.json`);
     let analysis = null;
