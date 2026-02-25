@@ -37,7 +37,7 @@ Use this skill when:
 
 ## Document Taxonomy (Generic)
 
-- `README`: onboarding, quickstart, map of docs
+- `README`: onboarding, quickstart, map of docs, user-facing, high-level of how to use and run test
 - `CHANGELOG`: user-visible changes by version/date
 - `ARCHITECTURE`: system design, boundaries, data flow
 - `DEPLOYMENT`: runtime setup, operations, rollout/recovery
