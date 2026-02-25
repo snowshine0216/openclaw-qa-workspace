@@ -141,12 +141,10 @@ log ""
 # Step 1: Cost optimization - skip if report already exists (unless --force)
 if [ "$FORCE_REGENERATE" = "0" ] && [ -f "$REPORT_DOCX" ]; then
   log "✓ Re-using existing Android report at $REPORT_DOCX"
-  if [ -n "$FEISHU_WEBHOOK_URL" ]; then
-    log "Uploading cached report to Feishu..."
-    bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DOCX" "[Android] "
-  else
-    log "⚠ FEISHU_WEBHOOK_URL not established, skipping Feishu re-upload"
-  fi
+  log "Uploading cached report to Feishu..."
+  # Reference shared feishu_uploader from jenkins-analysis
+  FEISHU_UPLOADER="$(dirname "$PROJECT_DIR")/jenkins-analysis/scripts/feishu_uploader.sh"
+  bash "$FEISHU_UPLOADER" "$REPORT_DOCX"
   exit 0
 fi
 
@@ -196,13 +194,10 @@ node "$DOCX_CONVERTER" \
   "$REPORT_DOCX"
 
 # Step 6: Upload to Feishu
-if [ -n "$FEISHU_WEBHOOK_URL" ]; then
-    log "Dispatching Docx into designated Feishu channel..."
-    bash "$SCRIPT_DIR/feishu_uploader.sh" "$REPORT_DOCX" "[Android] "
-else
-    log "⚠ FEISHU_WEBHOOK_URL not set, skipping Feishu upload"
-    log "   Set FEISHU_WEBHOOK_URL environment variable to enable Feishu delivery"
-fi
+log "Dispatching Docx into designated Feishu channel..."
+# Reference shared feishu_uploader from jenkins-analysis
+FEISHU_UPLOADER="$(dirname "$PROJECT_DIR")/jenkins-analysis/scripts/feishu_uploader.sh"
+bash "$FEISHU_UPLOADER" "$REPORT_DOCX"
 
 rm -f "$HEARTBEAT_FILE"
 log ""

@@ -301,6 +301,118 @@ android-jenkins-analysis/
 
 ## 🚑 Troubleshooting
 
+### Webhook Issues
+
+**Symptom:** `curl: (7) Failed to connect to localhost port 9091 after XX ms: Connection refused`
+
+**Diagnosis:**
+```bash
+# Check if webhook server is running
+pm2 list | grep android-webhook
+
+# Check server logs
+pm2 logs android-webhook --lines 50
+
+# Check if port 9091 is listening
+lsof -i :9091
+```
+
+**Fix:**
+```bash
+# Restart webhook server
+pm2 restart android-webhook
+
+# If still failing, check the ecosystem config
+cat projects/jenkins-analysis/ecosystem.config.js
+# Ensure ANDROID_WEBHOOK_PORT=9091 is set
+
+# Delete and restart from ecosystem file
+cd projects/jenkins-analysis
+pm2 delete android-webhook
+pm2 start ecosystem.config.js
+pm2 save
+```
+
+---
+
+### Feishu Upload Issues
+
+**Symptom:** `⚠ FEISHU_WEBHOOK_URL not set, skipping Feishu upload`
+
+**Root Cause:** Incorrect conditional check in `android_analyzer.sh`
+
+**Fix:**
+```bash
+# The android_analyzer.sh should reference the shared feishu_uploader.sh
+# from jenkins-analysis (not copy it)
+
+# Verify the reference path is correct:
+grep -A2 "FEISHU_UPLOADER=" projects/android-jenkins-analysis/scripts/android_analyzer.sh
+
+# Expected output:
+# FEISHU_UPLOADER="$(dirname "$PROJECT_DIR")/jenkins-analysis/scripts/feishu_uploader.sh"
+# bash "$FEISHU_UPLOADER" "$REPORT_DOCX"
+```
+
+**Key Point:** Do NOT copy `feishu_uploader.sh` to android-jenkins-analysis. Instead, reference the shared script from jenkins-analysis to avoid duplication and maintain consistency.
+
+**Verification:**
+```bash
+# Trigger a test webhook
+curl -X POST http://localhost:9091/webhook \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Trigger_Library_Jobs","build":{"number":89,"status":"SUCCESS","phase":"COMPLETED"}}'
+
+# Check logs for upload confirmation
+tail -50 projects/android-jenkins-analysis/logs/android_analyzer_Trigger_Library_Jobs_89.log | grep "Feishu"
+
+# Expected output:
+# ✓ Report delivered to Feishu chat: oc_f15b73b877ad243886efaa1e99018807
+```
+
+---
+
+### Analysis Not Running
+
+**Symptom:** Webhook received but analyzer doesn't start
+
+**Diagnosis:**
+```bash
+# Check webhook logs
+tail -50 projects/android-jenkins-analysis/logs/android_webhook.log
+
+# Check if analyzer was spawned
+ps aux | grep android_analyzer.sh
+
+# Check analyzer logs
+ls -lht projects/android-jenkins-analysis/logs/android_analyzer_*.log | head -5
+```
+
+**Common Issues:**
+1. **Wrong working directory**: Android webhook should run from `android-jenkins-analysis` folder
+2. **Missing scripts**: Ensure `android_analyzer.sh` exists and is executable
+3. **PM2 env vars**: Check `pm2 env android-webhook` for ANDROID_WEBHOOK_PORT
+
+---
+
+### Report Already Exists (Cached)
+
+**Symptom:** `✓ Re-using existing Android report` but you want fresh analysis
+
+**Fix:**
+```bash
+# Force regeneration by deleting existing report
+rm -rf projects/android-jenkins-analysis/reports/Trigger_Library_Jobs_89/
+
+# Or use --force flag
+bash projects/android-jenkins-analysis/scripts/android_analyzer.sh \
+  --force Trigger_Library_Jobs 89
+```
+
+---
+
+### Database/Parser/Report Generation Issues
+
 | Symptom | Fix |
 |---------|-----|
 | `table failed_steps has no column named full_error_msg` | Run `node scripts/database/migrate_android.js` |
@@ -309,7 +421,58 @@ android-jenkins-analysis/
 | ExtentReport fetch returns 0 tests | Verify `/job/<name>/<build>/ExtentReport/` URL is reachable |
 | Job discovery finds 0 jobs | Trigger build causes are nested in `actions[]` — see `android/job_discovery.js` |
 | DOCX has plain URLs instead of links | Check `docx_converter.js` has `createHyperlink` support |
-| Webhook not triggered | Confirm Jenkins posts to `http://<server>:9091/webhook` and job is in `ANDROID_WATCHED_JOBS` |
+
+---
+
+### Configuration Comparison
+
+**Why does Web Jenkins not need FEISHU_WEBHOOK_URL but Android does?**
+
+**Answer:** It's a **bug in the initial Android implementation**. Both should work the same way:
+
+- **Web jenkins** (`analyzer.sh`): Calls `feishu_uploader.sh` unconditionally ✅
+- **Android** (`android_analyzer.sh`): ~~Checked for FEISHU_WEBHOOK_URL before calling~~ **FIXED** ✅
+
+**Both now use the same approach:** 
+- Single `feishu_uploader.sh` in `jenkins-analysis/scripts/`
+- Android references it via relative path: `$(dirname "$PROJECT_DIR")/jenkins-analysis/scripts/feishu_uploader.sh`
+- Script has hardcoded Feishu app credentials (APP_ID + APP_SECRET) and chat ID
+- No environment variable needed ✅
+- No duplication ✅
+
+---
+
+### PM2 Ecosystem Config
+
+**Correct configuration** (`projects/jenkins-analysis/ecosystem.config.js`):
+
+```javascript
+module.exports = {
+  apps: [
+    {
+      name: 'jenkins-webhook',
+      script: './scripts/server/index.js',
+      cwd: '/path/to/projects/jenkins-analysis',
+      env: { WEBHOOK_PORT: 9090 },  // Web Jenkins port
+      watch: ['scripts/server'],
+      autorestart: true
+    },
+    {
+      name: 'android-webhook',
+      script: './scripts/server/index.js',
+      cwd: '/path/to/projects/android-jenkins-analysis',  // Different folder!
+      env: { ANDROID_WEBHOOK_PORT: 9091 },  // Android Jenkins port
+      watch: ['scripts/server'],
+      autorestart: true
+    }
+  ]
+};
+```
+
+**Key points:**
+- Each webhook runs from its own project folder (`cwd`)
+- Different port env vars: `WEBHOOK_PORT` (9090) vs `ANDROID_WEBHOOK_PORT` (9091)
+- Separate log files automatically created by each script
 
 ---
 

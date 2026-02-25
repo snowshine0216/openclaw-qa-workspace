@@ -1,8 +1,5 @@
 const path = require('path');
 
-// Import shared base config from jenkins-analysis (PORT, LOG_DIR, etc.)
-const baseConfig = require('../../jenkins-analysis/scripts/server/config');
-
 const ANDROID_PORT = process.env.ANDROID_WEBHOOK_PORT || 9091;
 const ANDROID_ANALYSIS_SCRIPT = path.join(__dirname, '..', 'android_analyzer.sh');
 
@@ -16,7 +13,6 @@ const ANDROID_WATCHED_JOBS = [
 ];
 
 module.exports = {
-  ...baseConfig,             // makes WEB PORT, WATCHED_JOBS etc. accessible if needed
   ANDROID_PORT,
   ANDROID_ANALYSIS_SCRIPT,
   LOG_DIR,
