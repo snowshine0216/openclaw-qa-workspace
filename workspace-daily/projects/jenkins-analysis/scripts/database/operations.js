@@ -1,11 +1,20 @@
-const insertJobRun = (db, { jobName, jobBuild, jobLink, passCount, failCount }) => {
-  return db.prepare(`
-    INSERT INTO job_runs (job_name, job_build, job_link, pass_count, fail_count)
-    VALUES (?, ?, ?, ?, ?)
-    ON CONFLICT(job_name, job_build) DO UPDATE SET 
+const insertJobRun = (db, { jobName, jobBuild, jobLink, platform = 'web', passCount, failCount }) => {
+  const stmt = db.prepare(`
+    INSERT INTO job_runs (job_name, job_build, job_link, platform, pass_count, fail_count)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ON CONFLICT(job_name, job_build, platform) DO UPDATE SET 
       pass_count=excluded.pass_count, fail_count=excluded.fail_count
-    RETURNING id
-  `).get(jobName, jobBuild, jobLink, passCount, failCount).id;
+  `);
+  
+  stmt.run(jobName, jobBuild, jobLink, platform, passCount, failCount);
+  
+  // Get the ID separately (sql.js doesn't support RETURNING)
+  const result = db.prepare(`
+    SELECT id FROM job_runs 
+    WHERE job_name = ? AND job_build = ? AND platform = ?
+  `).get(jobName, jobBuild, platform);
+  
+  return result.id;
 };
 
 const enforceFiveRecordLimit = (db, jobName) => {
