@@ -55,6 +55,22 @@ This is **idempotent** — safe to run again if the schema changes.
 
 ---
 
+### 4. Initialize the OpenAI API key (for screenshot analysis)
+
+The screenshot analyzer uses an LLM to classify failures (e.g. ignorable drift vs real issue).
+Add to `workspace-daily/.env`:
+
+```bash
+OPENAI_API_KEY=<your-openai-api-key>
+# Optional: use a proxy or relay endpoint
+# OPENAI_BASE_URL=https://your-proxy/v1
+```
+
+If `OPENAI_API_KEY` is not set, the analyzer falls back to heuristic-only mode and logs a warning.
+See [`docs/SCREENSHOT_ANALYSIS_DESIGN.md`](docs/SCREENSHOT_ANALYSIS_DESIGN.md) for details.
+
+---
+
 ## 📖 Usage
 
 ### ① Automated — Webhook Server (Production)
@@ -199,6 +215,8 @@ Android-specific columns in `failed_steps`:
 | `ANDROID_JENKINS_USER` | ✅ | Jenkins username |
 | `ANDROID_JENKINS_TOKEN` | ✅ | Jenkins API token |
 | `FEISHU_WEBHOOK_URL` | ✅ | Feishu bot webhook for report delivery |
+| `OPENAI_API_KEY` | optional | API key for LLM screenshot analysis; if unset, heuristic-only mode is used |
+| `OPENAI_BASE_URL` | optional | Override for OpenAI-compatible proxy (default: `https://api.openai.com/v1`) |
 | `ANDROID_WEBHOOK_PORT` | optional | Webhook server port (default: `9091`) |
 
 ---

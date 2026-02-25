@@ -18,9 +18,18 @@
  * for embedding in the markdown report.
  */
 
+const path  = require('path');
 const https = require('https');
 const http  = require('http');
 const url   = require('url');
+
+// Load .env from workspace-daily (OPENAI_API_KEY, OPENAI_BASE_URL)
+const workspaceDailyEnv = path.resolve(__dirname, '../../../../.env');
+try {
+  require('dotenv').config({ path: workspaceDailyEnv });
+} catch {
+  // dotenv may be missing; proceed with process.env only
+}
 
 // ---------------------------------------------------------------------------
 // Metric parsing

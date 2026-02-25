@@ -188,9 +188,10 @@ echo "$(date '+%s')|Generating Markdown/Docx Report..." > "$HEARTBEAT_FILE"
 log "Building Android Summary document..."
 node "$SCRIPT_DIR/generate_android_report.mjs" "$REPORT_DIR" "$TRIGGER_JOB" "$TRIGGER_BUILD"
 
-# Step 5: Convert to DOCX
+# Step 5: Convert to DOCX (use shared docx_converter from jenkins-analysis)
 log "Converting Markdown to Docx format..."
-node "$SCRIPT_DIR/reporting/docx_converter.js" \
+DOCX_CONVERTER="$(dirname "$PROJECT_DIR")/jenkins-analysis/scripts/reporting/docx_converter.js"
+node "$DOCX_CONVERTER" \
   "$REPORT_MD" \
   "$REPORT_DOCX"
 

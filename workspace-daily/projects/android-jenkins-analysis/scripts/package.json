@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
     "sql.js": "^1.14.0",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "docx": "^8.5.0",
+    "marked": "^11.1.1"
   },
   "author": "Atlas Daily",
   "license": "MIT",
