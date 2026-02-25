@@ -1,17 +1,22 @@
 /**
- * generate_android_report.mjs — Android Library CI Report Generator (v2)
+ * generate_android_report.mjs — Android Library CI Report Generator (v3)
  *
- * Output format mirrors the web library report (reporting/generator.js):
- *   Section 1: Executive Summary
- *     1a  Pass/Fail counts table
- *     1b  Failure Breakdown by Type
- *     1c  Failure Breakdown by Error Pattern
+ * v3 adds LLM-powered screenshot comparison analysis:
+ *   - For every screenshot_failure, calls screenshot_analyzer.js
+ *   - Adds AI verdict (ignorable_drift / real_issue / crash) + metrics table to <details> block
+ *   - Adds "AI Verdict" column to the Failure Summary Table for screenshot failures
+ *
+ * Output format:
+ *   Section 1: Executive Summary (pass/fail, failure breakdown)
  *   Section 2: Failure Summary Table (one row per test failure)
  *   Section 3: Passed Jobs
  *   Section 4: Detailed Failure Sections (one per job)
  *
  * Usage:
  *   node generate_android_report.mjs <outputDir> <triggerJob> <triggerBuild>
+ *
+ * Options (env vars):
+ *   SCREENSHOT_ANALYSIS_USE_LLM=false  — disable LLM, use heuristics only
  */
 
 import fs   from 'fs';
@@ -19,6 +24,15 @@ import path from 'path';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
+
+// ---------------------------------------------------------------------------
+// Screenshot Analyzer (LLM-powered)
+// ---------------------------------------------------------------------------
+
+const {
+  analyzeAllScreenshotFailures,
+  renderScreenshotAnalysisMarkdown,
+} = require('./android/screenshot_analyzer.js');
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -31,6 +45,13 @@ const FAILURE_TYPE_LABELS = {
   script_play_failure: '🎬 Script Play',
   fixed_by_rerun:      '✅ Fixed by Re-run',
   unknown:             '❓ Unknown',
+};
+
+const VERDICT_SHORT_LABELS = {
+  ignorable_drift: '✅ Ignorable',
+  real_issue:      '🔴 Real Issue',
+  crash:           '💥 Crash',
+  unknown:         '❓ Unknown',
 };
 
 // ---------------------------------------------------------------------------
@@ -67,7 +88,7 @@ const loadJson = (filePath) => {
 // ---------------------------------------------------------------------------
 
 const buildSummarySection = (passedJobs, failedJobs) => {
-  const total    = passedJobs.length + failedJobs.length;
+  const total     = passedJobs.length + failedJobs.length;
   const passCount = passedJobs.length;
   const failCount = failedJobs.length;
 
@@ -96,7 +117,7 @@ const buildFailureBreakdown = (failureLog) => {
 
     const details = String((entry.testResult && entry.testResult.failedStepDetails) || '').toLowerCase();
     let errorBucket = 'Other';
-    if (details.includes('screenshot') || details.includes('image comparison') || details.includes('does not match')) {
+    if (details.includes('screenshot') || details.includes('image comparison') || details.includes('does not match') || details.includes('diffpercentage')) {
       errorBucket = 'Screenshot Diff';
     } else if (details.includes('nosuchelementexception') || details.includes('element')) {
       errorBucket = 'Element Not Found';
@@ -121,6 +142,23 @@ const buildFailureBreakdown = (failureLog) => {
   });
   md += `\n`;
 
+  // Screenshot verdict summary if any screenshot failures exist
+  const screenshotEntries = failureLog.filter(e => e.failureType === 'screenshot_failure' && e.screenshotAnalysis);
+  if (screenshotEntries.length > 0) {
+    const verdictCounts = {};
+    screenshotEntries.forEach(e => {
+      const v = e.screenshotAnalysis.verdict || 'unknown';
+      verdictCounts[v] = (verdictCounts[v] || 0) + 1;
+    });
+    md += `#### 🤖 AI Screenshot Verdict Summary\n`;
+    md += `| Verdict | Count |\n`;
+    md += `|---------|-------|\n`;
+    Object.entries(verdictCounts).sort((a, b) => b[1] - a[1]).forEach(([verdict, count]) => {
+      md += `| ${VERDICT_SHORT_LABELS[verdict] || verdict} | ${count} |\n`;
+    });
+    md += `\n`;
+  }
+
   md += `#### By Error Pattern\n`;
   md += `| Error Pattern | Count |\n`;
   md += `|---------------|-------|\n`;
@@ -136,30 +174,49 @@ const buildFailureBreakdown = (failureLog) => {
 // Section 2: Failure Summary Table
 // ---------------------------------------------------------------------------
 
-const buildFailureSummaryTable = (failureLog, triggerJob, triggerBuild) => {
+const buildFailureSummaryTable = (failureLog) => {
   if (failureLog.length === 0) return '';
 
+  // Check if any screenshot analysis is available
+  const hasAnalysis = failureLog.some(e => e.screenshotAnalysis != null);
+
   let md = `## ⚠️ Failure Summary Table\n\n`;
-  md += `| Job | TC ID | Test Name | Failure Type | Failed Step | Last Failed | Recurring |\n`;
-  md += `|-----|-------|-----------|--------------|-------------|-------------|-----------|\n`;
+
+  if (hasAnalysis) {
+    md += `| Job | TC ID | Test Name | Failure Type | Failed Step | AI Verdict | Last Failed | Recurring |\n`;
+    md += `|-----|-------|-----------|--------------|-------------|-----------|-------------|----------|\n`;
+  } else {
+    md += `| Job | TC ID | Test Name | Failure Type | Failed Step | Last Failed | Recurring |\n`;
+    md += `|-----|-------|-----------|--------------|-------------|-------------|----------|\n`;
+  }
 
   for (const entry of failureLog) {
-    const t    = entry.testResult || {};
-    const url  = buildLink(entry.jobName, entry.buildNum);
-    const jobCell     = `[${entry.jobName}](${url})`;
-    const tcId        = safe(t.tcId);
-    const testName    = safe(t.testName).replace(/\|/g, '\\|');
-    const typeLabel   = FAILURE_TYPE_LABELS[entry.failureType] || entry.failureType;
-    const step        = safe(t.failedStepName);
-    const lastFailed  = entry.lastFailed ? `#${entry.lastFailed}` : '🆕 First';
-    const recurring   = entry.isRecurring ? '🔁 Yes' : '—';
+    const t         = entry.testResult || {};
+    const url       = buildLink(entry.jobName, entry.buildNum);
+    const jobCell   = `[${entry.jobName}](${url})`;
+    const tcId      = safe(t.tcId);
+    const testName  = safe(t.testName).replace(/\|/g, '\\|');
+    const typeLabel = FAILURE_TYPE_LABELS[entry.failureType] || entry.failureType;
+    const step      = safe(t.failedStepName);
+    const lastFailed = entry.lastFailed ? `#${entry.lastFailed}` : '🆕 First';
+    const recurring  = entry.isRecurring ? '🔁 Yes' : '—';
 
-    md += `| ${jobCell} | ${tcId} | ${testName} | ${typeLabel} | ${step} | ${lastFailed} | ${recurring} |\n`;
+    if (hasAnalysis) {
+      const verdict = entry.screenshotAnalysis
+        ? VERDICT_SHORT_LABELS[entry.screenshotAnalysis.verdict] || '—'
+        : '—';
+      md += `| ${jobCell} | ${tcId} | ${testName} | ${typeLabel} | ${step} | ${verdict} | ${lastFailed} | ${recurring} |\n`;
+    } else {
+      md += `| ${jobCell} | ${tcId} | ${testName} | ${typeLabel} | ${step} | ${lastFailed} | ${recurring} |\n`;
+    }
   }
 
   md += `\n**Legend:**  \n`;
   md += `- **Last Failed:** Build number if this failure was seen before, 🆕 First for new failures  \n`;
   md += `- **🔁 Yes:** Recurring failure across multiple builds  \n`;
+  if (hasAnalysis) {
+    md += `- **AI Verdict:** ✅ Ignorable = pixel noise; 🔴 Real Issue = investigate; 💥 Crash = test infra error  \n`;
+  }
   md += `\n---\n\n`;
 
   return md;
@@ -186,6 +243,33 @@ const buildPassedSection = (passedJobs) => {
 // Section 4: Detailed Failure Analysis
 // ---------------------------------------------------------------------------
 
+const buildDetailsBlock = (entry) => {
+  const t = entry.testResult || {};
+  if (!t.testName) return '';
+
+  let md = `<details>\n<summary>${safe(t.testName)} — Failure Details</summary>\n\n`;
+  md += `**TC ID:** ${safe(t.tcId)}  \n`;
+  if (t.configUrl) {
+    md += `**Config URL:** \`${t.configUrl}\`  \n`;
+  }
+  md += `**Failed Step:** \`${safe(t.failedStepName, 'unknown')}\`  \n`;
+  if (t.failedStepDetails) {
+    const snippet = String(t.failedStepDetails).slice(0, 400);
+    md += `**Details:**\n\`\`\`\n${snippet}\n\`\`\`\n`;
+  }
+  if (entry.rerunNum) {
+    md += `**Re-run Build:** #${entry.rerunNum} (${entry.rerunRes || 'unknown result'})  \n`;
+  }
+
+  // Inject screenshot analysis block (only for screenshot_failure with analysis)
+  if (entry.failureType === 'screenshot_failure' && entry.screenshotAnalysis) {
+    md += renderScreenshotAnalysisMarkdown(entry.screenshotAnalysis);
+  }
+
+  md += `\n</details>\n\n`;
+  return md;
+};
+
 const buildDetailedSection = (failedJobs, failureLog) => {
   if (failedJobs.length === 0) return `## 📋 Detailed Failure Analysis\n\n*No failed jobs* 🎉\n`;
 
@@ -199,15 +283,13 @@ const buildDetailedSection = (failedJobs, failureLog) => {
   let md = `## 📋 Detailed Failure Analysis\n\n`;
 
   for (const fj of failedJobs) {
-    const url     = buildLink(fj.jobName, fj.buildNum);
-    const extUrl  = extentLink(fj.jobName, fj.buildNum);
+    const url    = buildLink(fj.jobName, fj.buildNum);
+    const extUrl = extentLink(fj.jobName, fj.buildNum);
 
-    // Job heading (H3 → clickable in DOCX via docx_converter)
     md += `### [${fj.jobName} #${fj.buildNum}](${url})\n\n`;
 
     // Re-run annotation
     if (fj.rerun) {
-      const rerunUrl  = buildLink(fj.jobName, fj.rerun.buildNum);
       const rerunIcon = fj.rerun.result === 'SUCCESS' ? '✅ FIXED' : '❌ STILL FAILING';
       md += `> ⟳ Re-run #${fj.rerun.buildNum} ${rerunIcon}  \n`;
       md += `> [ExtentReport Run #${fj.buildNum}](${extUrl}) | [Re-run #${fj.rerun.buildNum}](${buildLink(fj.jobName, fj.rerun.buildNum)}ExtentReport/)  \n\n`;
@@ -220,38 +302,38 @@ const buildDetailedSection = (failedJobs, failureLog) => {
     if (jobFailures.length === 0) {
       md += `> _Failure details could not be extracted from ExtentReport._\n\n`;
     } else {
-      md += `| TC ID | Test Name | Failure Type | Failed Step | Last Failed | Recurring |\n`;
-      md += `|-------|-----------|--------------|-------------|-------------|-----------|\n`;
+      // Summary mini-table per job
+      const hasAnalysis = jobFailures.some(e => e.screenshotAnalysis != null);
+
+      if (hasAnalysis) {
+        md += `| TC ID | Test Name | Failure Type | Failed Step | AI Verdict | Last Failed | Recurring |\n`;
+        md += `|-------|-----------|--------------|-------------|-----------|-------------|----------|\n`;
+      } else {
+        md += `| TC ID | Test Name | Failure Type | Failed Step | Last Failed | Recurring |\n`;
+        md += `|-------|-----------|--------------|-------------|-------------|----------|\n`;
+      }
 
       for (const entry of jobFailures) {
-        const t = entry.testResult || {};
+        const t          = entry.testResult || {};
         const typeLabel  = FAILURE_TYPE_LABELS[entry.failureType] || entry.failureType;
         const lastFailed = entry.lastFailed ? `#${entry.lastFailed}` : '🆕 First';
         const recurring  = entry.isRecurring ? '🔁 Yes' : '—';
-        md += `| ${safe(t.tcId)} | ${safe(t.testName).replace(/\|/g, '\\|')} | ${typeLabel} | ${safe(t.failedStepName)} | ${lastFailed} | ${recurring} |\n`;
+
+        if (hasAnalysis) {
+          const verdict = entry.screenshotAnalysis
+            ? VERDICT_SHORT_LABELS[entry.screenshotAnalysis.verdict] || '—'
+            : '—';
+          md += `| ${safe(t.tcId)} | ${safe(t.testName).replace(/\|/g, '\\|')} | ${typeLabel} | ${safe(t.failedStepName)} | ${verdict} | ${lastFailed} | ${recurring} |\n`;
+        } else {
+          md += `| ${safe(t.tcId)} | ${safe(t.testName).replace(/\|/g, '\\|')} | ${typeLabel} | ${safe(t.failedStepName)} | ${lastFailed} | ${recurring} |\n`;
+        }
       }
 
       md += `\n`;
 
-      // Expandable details block per failing test
+      // Expandable details blocks — one per test
       for (const entry of jobFailures) {
-        const t = entry.testResult || {};
-        if (!t.testName) continue;
-
-        md += `<details>\n<summary>${safe(t.testName)} — Failure Details</summary>\n\n`;
-        md += `**TC ID:** ${safe(t.tcId)}  \n`;
-        if (t.configUrl) {
-          md += `**Config URL:** \`${t.configUrl}\`  \n`;
-        }
-        md += `**Failed Step:** \`${safe(t.failedStepName, 'unknown')}\`  \n`;
-        if (t.failedStepDetails) {
-          const snippet = String(t.failedStepDetails).slice(0, 400);
-          md += `**Details:**\n\`\`\`\n${snippet}\n\`\`\`\n`;
-        }
-        if (entry.rerunNum) {
-          md += `**Re-run Build:** #${entry.rerunNum} (${entry.rerunRes || 'unknown result'})  \n`;
-        }
-        md += `\n</details>\n\n`;
+        md += buildDetailsBlock(entry);
       }
     }
 
@@ -265,36 +347,56 @@ const buildDetailedSection = (failedJobs, failureLog) => {
 // Main report assembly
 // ---------------------------------------------------------------------------
 
-const generateReport = (outputDir, triggerJob, triggerBuild) => {
-  const passedJobs  = loadJson(path.join(outputDir, 'passed_jobs.json'));
-  const failedJobs  = loadJson(path.join(outputDir, 'failed_jobs.json'));
-  const failureLog  = loadJson(path.join(outputDir, 'extent_failures.json'));
+const generateReport = async (outputDir, triggerJob, triggerBuild) => {
+  const passedJobs = loadJson(path.join(outputDir, 'passed_jobs.json'));
+  const failedJobs = loadJson(path.join(outputDir, 'failed_jobs.json'));
+  const rawFailureLog = loadJson(path.join(outputDir, 'extent_failures.json'));
 
-  const total    = passedJobs.length + failedJobs.length;
-  const dateStr  = new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' });
+  // -------------------------------------------------------------------------
+  // Run screenshot analysis (LLM-powered)
+  // -------------------------------------------------------------------------
+  const useLlm = process.env.SCREENSHOT_ANALYSIS_USE_LLM !== 'false';
+  const screenshotCount = rawFailureLog.filter(e => e.failureType === 'screenshot_failure').length;
 
-  // Report header
+  let failureLog = rawFailureLog;
+  if (screenshotCount > 0) {
+    console.log(`[report] 🤖 Running screenshot analysis on ${screenshotCount} screenshot failure(s)... (LLM: ${useLlm})`);
+    try {
+      failureLog = await analyzeAllScreenshotFailures(rawFailureLog, { useLlm });
+      const analyzed = failureLog.filter(e => e.screenshotAnalysis != null);
+      console.log(`[report] ✅ Screenshot analysis complete: ${analyzed.length} analyzed`);
+      analyzed.forEach(e => {
+        const a = e.screenshotAnalysis;
+        console.log(`  • ${e.testResult?.testName || '?'} → ${a.verdict} (${a.confidence}, ${a.source})`);
+      });
+    } catch (err) {
+      console.warn(`[report] ⚠️  Screenshot analysis failed: ${err.message}. Continuing without analysis.`);
+      failureLog = rawFailureLog.map(e => ({ ...e, screenshotAnalysis: null }));
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Build report
+  // -------------------------------------------------------------------------
+  const total   = passedJobs.length + failedJobs.length;
+  const dateStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' });
+
   let md = `# [Android] Library CI Report — ${triggerJob} #${triggerBuild}\n\n`;
   md += `**Generated:** ${dateStr}  \n`;
   md += `**Build:** ${triggerJob} #${triggerBuild}  \n`;
   md += `**Total Jobs:** ${total}  \n`;
   md += `**Pass Rate:** ${pct(passedJobs.length, total)}%  \n`;
+  if (screenshotCount > 0) {
+    md += `**Screenshot Analysis:** 🤖 AI-powered (${useLlm ? 'LLM + Heuristics' : 'Heuristics Only'})  \n`;
+  }
   md += `\n---\n\n`;
 
-  // Section 1: Executive Summary
   md += buildSummarySection(passedJobs, failedJobs);
   md += buildFailureBreakdown(failureLog);
-
-  // Section 2: Failure Summary Table
-  md += buildFailureSummaryTable(failureLog, triggerJob, triggerBuild);
-
-  // Section 3: Passed Jobs
+  md += buildFailureSummaryTable(failureLog);
   md += buildPassedSection(passedJobs);
-
-  // Section 4: Detailed Failures
   md += buildDetailedSection(failedJobs, failureLog);
 
-  // Write output
   const reportName = `${triggerJob}_${triggerBuild}.md`;
   const mdPath = path.join(outputDir, reportName);
   fs.writeFileSync(mdPath, md, 'utf8');
@@ -309,7 +411,9 @@ const generateReport = (outputDir, triggerJob, triggerBuild) => {
 const args = process.argv.slice(2);
 if (args.length >= 3) {
   const [outputDir, triggerJob, triggerBuild] = args;
-  generateReport(outputDir, triggerJob, triggerBuild);
+  generateReport(outputDir, triggerJob, triggerBuild)
+    .then(() => process.exit(0))
+    .catch(err => { console.error(err); process.exit(1); });
 } else {
   console.error('Usage: node generate_android_report.mjs <outputDir> <triggerJob> <triggerBuild>');
   process.exit(1);
