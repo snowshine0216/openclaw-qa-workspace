@@ -1,0 +1,20 @@
+{
+  "name": "android-jenkins-analysis",
+  "version": "1.0.0",
+  "description": "Android CI Jenkins analysis scripts",
+  "main": "pipeline/process_android_build.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "sql.js": "^1.14.0",
+    "yargs": "^17.7.2"
+  },
+  "author": "Atlas Daily",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
