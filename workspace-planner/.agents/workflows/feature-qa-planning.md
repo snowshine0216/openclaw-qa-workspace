@@ -35,5 +35,18 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 ## 4. Publication
 1. Copy the final approved draft to `projects/feature-plan/<feature-id>/qa_plan_final.md`.
 2. Generate an audit trail / changelog explaining what features and test strategies were captured. Save as `changelog.md`.
-3. Use the `confluence create` or `confluence update` skill to deploy `qa_plan_final.md` to Atlassian Confluence idempotently.
-4. Update `task.json` phase to `completed` and mark overall_status as `completed`.
+3. **Convert Markdown to Confluence format** (CRITICAL):
+   ```bash
+   node scripts/confluence/md-to-confluence.js \
+     projects/feature-plan/<feature-id>/qa_plan_final.md \
+     projects/feature-plan/<feature-id>/qa_plan_confluence.html
+   ```
+4. **Publish to Confluence with storage format**:
+   ```bash
+   confluence update <page-id> \
+     --file projects/feature-plan/<feature-id>/qa_plan_confluence.html \
+     --format storage
+   ```
+   **⚠️ NEVER publish raw Markdown** - Confluence requires HTML storage format!
+5. **Verify publication**: Check that page renders correctly with formatted tables and headers.
+6. Update `task.json` phase to `completed` and mark overall_status as `completed`.

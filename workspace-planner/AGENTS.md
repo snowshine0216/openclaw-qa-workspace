@@ -25,8 +25,14 @@ Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa
 2. Context Gathering: Spawn CLI/browser tasks in parallel to fetch from Jira, Confluence, GitHub, and Figma into `context/`.
 3. Generation: Instruct `qa-plan-architect-orchestrator` to draft a comprehensive plan from context.
 4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
-5. Publication: Idempotently publish `qa_plan_final.md` to Confluence and complete `task.json`.
+5. Publication:
+   a. Convert Markdown to Confluence HTML: `node scripts/confluence/md-to-confluence.js`
+   b. Publish with `--format storage` flag
+   c. Verify page renders correctly
+   d. Complete `task.json`
 ```
+
+**⚠️ CRITICAL**: Never publish raw Markdown to Confluence! Always convert to HTML storage format first.
 
 ## Core Workflow: Ad-Hoc Test Plan Creation
 

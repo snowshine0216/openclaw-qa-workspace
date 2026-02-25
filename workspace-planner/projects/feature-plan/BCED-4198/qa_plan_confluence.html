@@ -1,0 +1,571 @@
+<h1>Comprehensive QA Plan: BCED-4198 WebStation Create and Edit Metrics</h1><p /><h2>📊 Summary</h2><p /><table><tbody>
+<tr><th>Field</th><th>Value</th></tr>
+<tr><td><strong>Feature Link</strong></td><td><a href="https://strategyagile.atlassian.net/browse/BCED-4198">BCED-4198</a></td></tr>
+<tr><td><strong>Release Version</strong></td><td>26.03</td></tr>
+<tr><td><strong>QA Owner</strong></td><td>QA Team (WebStation)</td></tr>
+<tr><td><strong>Feature Title</strong></td><td>[WebStation] Create and Edit Metrics in Workstation Web</td></tr>
+<tr><td><strong>UX Design Link</strong></td><td><a href="https://www.figma.com/design/EHmNq6ZFHtMsN6dIp60ffB/Objects-Blade?node-id=1-2">Figma Objects Blade - Metric Editor</a></td></tr>
+<tr><td><strong>Status</strong></td><td><ac:emoticon ac:name="tick" /> Done (Validated)</td></tr>
+<tr><td><strong>Demo Video</strong></td><td><a href="https://microstrategy-my.sharepoint.com/:v:/p/qiwu/IQDCsjzpyrJLRIk_8NgQBwBbAQWujYxV7anIRIQ-FNiD_io">Metric Editor in Webstation.webm</a></td></tr>
+<tr><td><strong>UX Review</strong></td><td><a href="https://microstrategy.atlassian.net/wiki/spaces/TECCTC/pages/5849907462/">Confluence UX Review</a></td></tr>
+<tr><td><strong>Date Generated</strong></td><td>2026-02-25</td></tr>
+<tr><td><strong>Plan Status</strong></td><td>Draft</td></tr>
+</tbody></table><p /><h2>📝 Background</h2><p /><h3>Key Problem Statement</h3><p />WebStation users need the ability to create and edit metrics directly in the web interface without switching to Workstation Desktop. This brings metric authoring capabilities to a cloud-first, web-based experience.<p /><h3>Solution</h3><p />Port the Metric Editor from Workstation Desktop to Workstation Web with full UI parity, including:
+<ul>
+<li>Formula editor with auto-complete and syntax validation</li>
+<li>Function catalog and object browser</li>
+<li>Advanced metric features (levels, conditions, transformations)</li>
+<li>Nested metric support</li>
+<li>Base formula integration</li>
+<li>Data type configuration and formatting</li>
+</ul><p /><h3>Business Context</h3><p /><ul>
+<li><strong>User Impact</strong>: Enables web-first workflows for data modelers and analysts. Critical for cloud adoption.</li>
+<li><strong>Technical Scope</strong>: Web UI implementation of metric editor, parallel to existing desktop feature</li>
+<li><strong>Dependencies</strong>: </li>
+</ul>
+  - Workstation Web platform
+  - Metric Editor API/backend services
+  - Base Formula objects
+  - Function catalog metadata
+<ul>
+<li><strong>Related Features</strong>: Part of "Objects Blade" initiative (Filter Editor BCED-85, Attribute Editor BCGM-5070, Fact Editor BCGM-5072)</li>
+</ul><p /><h2>🎯 QA Goals</h2><p /><h3>E2E (End-to-End Testing)</h3>
+<strong>Goal</strong>: Validate complete create/edit metric workflows from web UI<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><h3>FUN (Functional Testing)</h3>
+<strong>Goal</strong>: Verify formula editor functionality (validation, auto-complete, syntax)<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><h3>UX (User Experience)</h3>
+<strong>Goal</strong>: Confirm UI parity with Desktop Workstation<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><h3>INT (Integration Testing)</h3>
+<strong>Goal</strong>: Verify integration with base formulas, functions catalog, objects<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><h3>CERT (Certification Testing)</h3>
+<strong>Goal</strong>: Browser compatibility (Chrome, Firefox, Safari, Edge)<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><h3>ACC (Accessibility Testing)</h3>
+<strong>Goal</strong>: Accessibility compliance (WCAG 2.1 AA)<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> Medium<p /><h3>PERF (Performance Testing)</h3>
+<strong>Goal</strong>: Performance with complex formulas and large catalogs<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> Medium<p /><h3>AUTO (Automation)</h3>
+<strong>Goal</strong>: Regression test automation coverage<br />
+<strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> Medium<p /><h2>🔍 Test Key Points</h2><p /><h3>1. Metric Creation Workflow</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>New Metric</strong></td><td>File menu → New Metric, environment/project selection, metric editor opens</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Naming</strong></td><td>Click name field, type new name, press Enter, validate persistence</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Data Type</strong></td><td>Select from dropdown (Default, Binary, Decimal, etc.), verify formatting options appear</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Description</strong></td><td>Type description, validate character limit and special chars</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Save</strong></td><td>Click Save, verify metric persists, can be reopened and edited</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+</tbody></table><p /><h3>2. Formula Editor - Guided Experience</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Functions Pane</strong></td><td>Search functions, browse by category, view syntax/description</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Objects Pane</strong></td><td>Search objects, browse folders, view base formulas/facts/metrics/attributes</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Double-Click Add</strong></td><td>Double-click function → adds to formula pane with syntax popup</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Double-Click Object</strong></td><td>Double-click object → adds to formula pane at cursor</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Syntax Help</strong></td><td>Function popup shows parameters, example, Details link</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>3. Formula Editor - Direct Typing</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Auto-Complete</strong></td><td>Type text, dropdown shows matching objects/functions</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Function Selection</strong></td><td>Select function from dropdown, syntax popup appears</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Parameter Copy</strong></td><td>Copy/paste parameter syntax from popup into formula</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Level Prompts</strong></td><td>Type <code>?{prompt_name}</code> syntax, validate prompt reference</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Operators</strong></td><td>Type +, -, *, / operators, validate formula parsing</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+</tbody></table><p /><h3>4. Formula Validation</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Validate Button</strong></td><td>Click Validate, formula checked for syntax errors</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Auto-Fill Parameters</strong></td><td>Validation auto-fills missing parameters (NTile example)</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Report Level</strong></td><td>Validation adds report level <code>{...}</code> notation</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Error Messages</strong></td><td>Invalid syntax shows clear error message with line/column</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Formula Repair</strong></td><td>Edit formula after validation error, re-validate</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h3>5. Breakdown Tab - Levels</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Add Level</strong></td><td>Click Level button, select target attribute, level added</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Nested Metric Levels</strong></td><td>Expand Base Formula → inner formula, add level to inner formula</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Filtering Options</strong></td><td>Select Standard/Absolute/Ignore/None filtering</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Aggregation Options</strong></td><td>Select Standard/None aggregation</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Reset Levels</strong></td><td>Click Reset, all levels removed, report level restored</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Multiple Levels</strong></td><td>Add multiple levels to same metric, validate calculation</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>6. Breakdown Tab - Conditions</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Add Condition</strong></td><td>Click Condition, search/navigate to filter, select</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Nested Metric Conditions</strong></td><td>Apply condition to inner formula in nested metric</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Multiple Conditions</strong></td><td>Add multiple conditions, verify AND/OR logic</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Advanced Options</strong></td><td>Configure filter interaction options</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>7. Breakdown Tab - Transformations</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Add Transformation</strong></td><td>Click Transformation, search/navigate, select</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Time-Based Transforms</strong></td><td>Apply "last year", "4 months ago" transformations</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Nested Metric Transforms</strong></td><td>Apply transformation to inner formula</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Multiple Transforms</strong></td><td>Add multiple transformations, verify chaining</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>8. Nested Metrics</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Create Nested Metric</strong></td><td>Build formula with function inside function (e.g., RunningAvg(Sum(Revenue)))</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Expand Base Formula</strong></td><td>Expand Base Formula node to show inner formulas</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Inner Formula Settings</strong></td><td>Apply separate level/condition/transformation to inner formula</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Validation</strong></td><td>Validate nested metric, verify parameter auto-fill</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h3>9. Base Formula Integration</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Browse Base Formulas</strong></td><td>Objects pane shows base formulas, can browse</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Add Base Formula</strong></td><td>Double-click or select base formula, adds to metric</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Reusable Definitions</strong></td><td>Verify base formula references work correctly in metric calculation</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+</tbody></table><p /><h3>10. Formatting</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Column Header Format</strong></td><td>Configure column header formatting options</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Value Format</strong></td><td>Configure value formatting (decimal places, currency, etc.)</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Number Format</strong></td><td>Set precision, scale for Decimal data type</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h3>11. Metric Options</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Subtotal Functions</strong></td><td>Select functions for totaling on report</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Dynamic Aggregation</strong></td><td>Configure dynamic aggregation function</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Joins</strong></td><td>Specify metric join type</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>VLDB Properties</strong></td><td>Set null checking and other VLDB properties</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>12. Edit Existing Metric</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Find Metric</strong></td><td>Search/browse to existing metric, double-click</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Load Formula</strong></td><td>Metric editor opens with formula, name, description loaded</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Edit Formula</strong></td><td>Modify formula, validate, save</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Edit Breakdown</strong></td><td>Modify levels/conditions/transformations, save</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Versioning</strong></td><td>Verify metric version history (if applicable)</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>13. UI/UX - Web-Specific</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Responsive Design</strong></td><td>Test on 1920px, 1366px, 1024px screen widths</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Sidebar Collapse</strong></td><td>Collapse/expand Functions and Objects panes</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Tab Navigation</strong></td><td>Tab between formula editor, breakdown tab, formatting tab, options tab</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Keyboard Shortcuts</strong></td><td>Test common shortcuts (Ctrl+S save, Ctrl+Enter validate)</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Loading States</strong></td><td>Verify loading spinners for functions/objects load</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Error Feedback</strong></td><td>Clear error messages with actionable guidance</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+</tbody></table><p /><h3>14. Browser Compatibility</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Chrome</strong></td><td>Full workflow on latest Chrome</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Firefox</strong></td><td>Full workflow on latest Firefox</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Safari</strong></td><td>Full workflow on latest Safari</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Edge</strong></td><td>Full workflow on latest Edge</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Browser-Specific Issues</strong></td><td>Test auto-complete dropdowns, syntax popups, modals</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h3>15. Accessibility</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Keyboard Navigation</strong></td><td>Navigate entire editor with keyboard only</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Screen Reader</strong></td><td>Test with NVDA/JAWS, verify ARIA labels</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Focus Indicators</strong></td><td>Visible focus outline on all interactive elements</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Color Contrast</strong></td><td>WCAG 2.1 AA contrast ratios (4.5:1 text, 3:1 UI)</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Alt Text</strong></td><td>Icons and images have descriptive alt text</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>16. Performance</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Editor Load Time</strong></td><td>p50 < 1s, p95 < 2s, p99 < 3s (from click to fully interactive)</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Formula Validation</strong></td><td>p50 < 500ms, p95 < 1s, p99 < 2s for complex formulas</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Auto-Complete Latency</strong></td><td>p50 < 200ms, p95 < 300ms, p99 < 500ms for suggestions to appear</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Large Object Catalog</strong></td><td>Browse/scroll through 1000+ functions/objects with <16ms frame time (60 FPS)</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Memory Usage</strong></td><td>Monitor for leaks during 1-hour editing session; <50MB increase acceptable</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Concurrent Users</strong></td><td>Performance targets maintained under 50 concurrent metric editors</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>17. Integration</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Use on Report</strong></td><td>Create metric, add to report, verify calculation</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Use in Dashboard</strong></td><td>Create metric, add to dashboard, verify visualization</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Use in Filter</strong></td><td>Create metric, use in metric-based filter</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Use in Other Metrics</strong></td><td>Create metric A, reference in metric B formula</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Cross-Environment</strong></td><td>Create metric in Dev, deploy to UAT/Prod, verify</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+</tbody></table><p /><h3>18. Security</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>SQL Injection</strong></td><td>Metric name/description with <code>'; DROP TABLE metrics;--</code>, verify sanitization</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>XSS in Names</strong></td><td>Metric name/description with <code><script>alert('xss')</script></code>, verify HTML escaping</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>XSS in Formulas</strong></td><td>Formula with HTML/JavaScript, verify sandbox/sanitization</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Authorization</strong></td><td>User A tries to edit User B's private metric, verify 403 Forbidden</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Formula Injection</strong></td><td>Malicious formula like <code>System.exit()</code> or <code> DROP TABLE</code>, verify validation rejects</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Path Traversal</strong></td><td>Metric name with <code>../../config</code>, verify no file system access</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h3>19. Error Recovery & Resilience</h3><p /><table><tbody>
+<tr><th>Test Area</th><th>Key Points</th><th>Risk Level</th></tr>
+<tr><td><strong>Network Loss During Save</strong></td><td>Disconnect network mid-save, verify error message and draft preservation</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Browser Crash Recovery</strong></td><td>Close browser during edit (no save), reopen, verify auto-save/draft recovery</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Server Error (500)</strong></td><td>Mock 500 error during validation, verify graceful error display with retry option</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Partial Save Failure</strong></td><td>Save fails after metric created but before formula saved, verify rollback/consistency</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>API Timeout</strong></td><td>Mock slow API response (>30s), verify loading state and timeout handling</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Invalid Session</strong></td><td>Session expires during editing, verify re-authentication without data loss</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h2><ac:emoticon ac:name="warning" /> Risk & Mitigation</h2><p /><table><tbody>
+<tr><th>Risk Area</th><th>Description</th><th>Mitigation</th><th>Priority</th></tr>
+<tr><td><strong>Formula Parsing Differences</strong></td><td>Web parser may differ from desktop, causing formula errors</td><td>Compare parsing behavior between web and desktop; test edge cases (nested functions, complex operators)</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Auto-Complete Performance</strong></td><td>Large catalogs may cause dropdown lag or browser freeze</td><td>Load test with 1000+ objects; implement pagination/virtualization; monitor memory</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Browser Inconsistencies</strong></td><td>Formula editor may behave differently across browsers (caret position, syntax highlighting)</td><td>Test all major browsers early; isolate browser-specific issues</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Accessibility Gaps</strong></td><td>Complex nested metric UI may be hard to navigate with keyboard/screen reader</td><td>Conduct accessibility audit; test with assistive tech; ensure ARIA labels</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>Base Formula Synchronization</strong></td><td>Base formula changes may not propagate to metrics using them</td><td>Test base formula update scenarios; verify metric recalculation</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+<tr><td><strong>UX Review Issues</strong></td><td>UX review document lists several UI issues identified post-development</td><td>Address UX review findings before release; re-test affected areas</td><td><ac:emoticon ac:name="red_flag" /> Critical</td></tr>
+<tr><td><strong>Nested Metric Complexity</strong></td><td>UI for applying levels/conditions/transformations to inner formulas may be confusing</td><td>Usability testing; clear visual hierarchy; tooltips/help text</td><td><ac:emoticon ac:name="yellow_flag" /> Medium</td></tr>
+<tr><td><strong>Validation Auto-Fill</strong></td><td>Auto-filled parameters may be incorrect for certain function signatures</td><td>Test all function categories; verify parameter defaults; allow manual override</td><td><ac:emoticon ac:name="yellow_flag" /> High</td></tr>
+</tbody></table><p /><h2>📋 QA Summary Table</h2><p /><table><tbody>
+<tr><th>Category</th><th>Details</th></tr>
+<tr><td><strong>Code Changes</strong></td><td>N/A (Development complete)</td></tr>
+<tr><td><strong>New Files</strong></td><td>Metric Editor web UI components</td></tr>
+<tr><td><strong>Modified Files</strong></td><td>N/A</td></tr>
+<tr><td><strong>Deleted Files</strong></td><td>N/A</td></tr>
+<tr><td><strong>Test Coverage</strong></td><td>TBD - Automation coverage to be determined</td></tr>
+<tr><td><strong>Testing Status</strong></td><td><ac:emoticon ac:name="tick" /> Feature marked as "Validated" by development team on 2026-02-24</td></tr>
+<tr><td><strong>Known Issues</strong></td><td>UX review identified several UI issues (see UX Review link)</td></tr>
+</tbody></table><p /><h2>🧪 Test Scenarios</h2><p /><h3>Scenario 1: Create Simple Metric (Happy Path)</h3><p /><strong>Goal</strong>: Verify end-to-end creation of a simple metric<p /><strong>Steps</strong>:
+<li>Open Workstation Web</li>
+<li>File menu → New Metric</li>
+<li>Select environment and project</li>
+<li>Name metric: "Total Revenue"</li>
+<li>Data type: Default</li>
+<li>Description: "Sum of all revenue"</li>
+<li>Functions pane → Search "Sum"</li>
+<li>Double-click Sum function</li>
+<li>Objects pane → Search "Revenue" (fact)</li>
+<li>Double-click Revenue</li>
+<li>Formula should read: <code>Sum(Revenue)</code></li>
+<li>Click Validate</li>
+<li>Verify validation success, report level added</li>
+<li>Click Save</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric created successfully</li>
+<li>Can reopen metric and see formula</li>
+<li>Metric appears in project object list</li>
+<li>Metric can be added to report and calculates correctly</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 2: Create Compound Metric</h3><p /><strong>Goal</strong>: Verify metric with multiple metrics in formula<p /><strong>Steps</strong>:
+<li>Create new metric: "Total Profit"</li>
+<li>Formula: <code>Sum(Revenue - Cost)</code></li>
+<li>Validate and save</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Formula validates successfully</li>
+<li>Metric calculates: sum of (Revenue minus Cost) per row, then aggregate</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 3: Create Metric with Level</h3><p /><strong>Goal</strong>: Verify level metric (regional revenue regardless of report attributes)<p /><strong>Steps</strong>:
+<li>Create new metric: "Regional Revenue"</li>
+<li>Formula: <code>Sum(Revenue)</code></li>
+<li>Validate</li>
+<li>Breakdown tab → Click Level</li>
+<li>Add New → Select "Region" attribute</li>
+<li>Filtering: Standard</li>
+<li>Aggregation: Standard</li>
+<li>Save</li>
+<li>Add to report with City attribute</li>
+<li>Verify metric shows regional totals, not city-level</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric calculates at Region level even on City report</li>
+<li>Contribution metrics can use this to calculate city % of regional total</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 4: Create Conditional Metric</h3><p /><strong>Goal</strong>: Verify metric with filter condition<p /><strong>Steps</strong>:
+<li>Create new metric: "Q1 Revenue"</li>
+<li>Formula: <code>Sum(Revenue)</code></li>
+<li>Validate</li>
+<li>Breakdown tab → Click Condition</li>
+<li>Add New → Search "Q1 Filter"</li>
+<li>Select Q1 Filter</li>
+<li>Save</li>
+<li>Add to report</li>
+<li>Verify metric only includes Q1 data</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric filtered to Q1 only</li>
+<li>Other metrics on report not affected by filter</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 5: Create Transformation Metric</h3><p /><strong>Goal</strong>: Verify metric with time transformation<p /><strong>Steps</strong>:
+<li>Create new metric: "Last Year Revenue"</li>
+<li>Formula: <code>Sum(Revenue)</code></li>
+<li>Validate</li>
+<li>Breakdown tab → Click Transformation</li>
+<li>Add New → Search "Last Year" transformation</li>
+<li>Select transformation</li>
+<li>Save</li>
+<li>Add to report with current year filter</li>
+<li>Verify metric shows last year's values</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric displays revenue from one year ago</li>
+<li>Can compare current year vs last year in same report</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 6: Create Nested Metric</h3><p /><strong>Goal</strong>: Verify nested metric with multiple function layers<p /><strong>Steps</strong>:
+<li>Create new metric: "Running Average Revenue"</li>
+<li>Formula: <code>RunningAvg(Sum(Revenue))</code></li>
+<li>Validate (should auto-fill parameters)</li>
+<li>Expand Base Formula to see inner Sum(Revenue)</li>
+<li>Click on inner formula → Click Level</li>
+<li>Add Region level to inner Sum</li>
+<li>Save</li>
+<li>Add to report</li>
+<li>Verify running average calculated correctly</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Nested formula validated</li>
+<li>Inner formula level applied correctly</li>
+<li>Running average calculation correct</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 7: Edit Existing Metric</h3><p /><strong>Goal</strong>: Verify editing and re-saving metric<p /><strong>Steps</strong>:
+<li>Search for existing metric "Total Revenue"</li>
+<li>Double-click to open</li>
+<li>Verify formula loads: <code>Sum(Revenue)</code></li>
+<li>Change formula to: <code>Sum(Revenue) * 1.1</code> (10% markup)</li>
+<li>Validate</li>
+<li>Save</li>
+<li>Reopen metric</li>
+<li>Verify updated formula persists</li>
+<li>Add to report, verify calculation includes 10% markup</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric opens with existing formula</li>
+<li>Edit saves successfully</li>
+<li>Reports using metric reflect updated calculation</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 8: Auto-Complete Functions</h3><p /><strong>Goal</strong>: Verify auto-complete during typing<p /><strong>Steps</strong>:
+<li>Create new metric</li>
+<li>Type in formula pane: "Su"</li>
+<li>Verify dropdown appears with Sum, Subtract, etc.</li>
+<li>Select Sum from dropdown</li>
+<li>Verify syntax popup appears showing Sum(expression)</li>
+<li>Type "Reven"</li>
+<li>Verify dropdown shows Revenue (fact)</li>
+<li>Select Revenue</li>
+<li>Formula should read: <code>Sum(Revenue)</code></li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Auto-complete suggestions accurate</li>
+<li>Syntax help popup helpful</li>
+<li>Dropdown performance smooth</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 9: Formula Validation Error</h3><p /><strong>Goal</strong>: Verify validation error handling<p /><strong>Steps</strong>:
+<li>Create new metric</li>
+<li>Type invalid formula: <code>Sum(Revenue</code>  (missing closing parenthesis)</li>
+<li>Click Validate</li>
+<li>Verify error message displays</li>
+<li>Error should indicate missing ")"</li>
+<li>Add closing parenthesis</li>
+<li>Validate again</li>
+<li>Verify validation success</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Clear error message with position</li>
+<li>User can fix formula based on error</li>
+<li>Re-validation works after fix</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 10: Browser Compatibility - Chrome vs Firefox</h3><p /><strong>Goal</strong>: Verify metric editor works identically in different browsers<p /><strong>Steps</strong>:
+<li>Create metric in Chrome: <code>Sum(Revenue)</code> with Region level</li>
+<li>Save</li>
+<li>Open same metric in Firefox</li>
+<li>Verify formula displays correctly</li>
+<li>Edit formula in Firefox, save</li>
+<li>Open in Safari, verify edit persisted</li>
+<li>Add to report in Edge, verify calculation</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric editor UI consistent across browsers</li>
+<li>Formula editing works in all browsers</li>
+<li>Saved metrics portable across browsers</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 11: Accessibility - Keyboard Navigation</h3><p /><strong>Goal</strong>: Verify metric editor accessible via keyboard only<p /><strong>Steps</strong>:
+<li>Open metric editor</li>
+<li>Use Tab key to navigate all fields (name, data type, description, formula pane)</li>
+<li>Use arrow keys in Functions pane</li>
+<li>Press Enter to select function</li>
+<li>Tab to Objects pane, navigate with arrows</li>
+<li>Press Enter to add object</li>
+<li>Tab to Validate button, press Enter</li>
+<li>Tab to Save button, press Enter</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>All interactive elements reachable via keyboard</li>
+<li>Focus indicators visible</li>
+<li>No keyboard traps</li>
+<li>Logical tab order</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 12: Performance - Large Catalog</h3><p /><strong>Goal</strong>: Verify editor performance with 1000+ objects<p /><strong>Steps</strong>:
+<li>Connect to project with 1000+ metrics/facts</li>
+<li>Open metric editor</li>
+<li>Time editor load</li>
+<li>Type in formula pane, trigger auto-complete</li>
+<li>Measure dropdown response time</li>
+<li>Browse Objects pane, scroll through list</li>
+<li>Measure scroll lag/memory usage</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Editor loads in < 3 seconds</li>
+<li>Auto-complete appears in < 500ms</li>
+<li>Scrolling smooth (no lag)</li>
+<li>Memory usage stable</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> Medium<p /><hr /><p /><h3>Scenario 13: Integration - Use Metric on Report</h3><p /><strong>Goal</strong>: Verify metric created in web editor works on report<p /><strong>Steps</strong>:
+<li>Create metric in web editor: <code>Sum(Revenue)</code></li>
+<li>Save metric</li>
+<li>Create new report</li>
+<li>Add Region attribute</li>
+<li>Add "Sum(Revenue)" metric</li>
+<li>Run report</li>
+<li>Verify metric calculates correctly</li>
+<li>Compare to desktop-created metric</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Web-created metric available in report</li>
+<li>Calculation matches expected values</li>
+<li>No difference from desktop-created metric</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 14: Data Type Formatting</h3><p /><strong>Goal</strong>: Verify data type configuration options<p /><strong>Steps</strong>:
+<li>Create new metric</li>
+<li>Data Type → Select "Decimal"</li>
+<li>Click More Settings (three dots)</li>
+<li>Set Precision: 10</li>
+<li>Set Scale: 2</li>
+<li>Formula: <code>Sum(Revenue)</code></li>
+<li>Save</li>
+<li>Add to report</li>
+<li>Verify metric displays with 2 decimal places</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Decimal formatting options available</li>
+<li>Precision and scale applied correctly</li>
+<li>Report respects data type settings</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 15: Base Formula in Metric</h3><p /><strong>Goal</strong>: Verify base formula can be used in metric<p /><strong>Steps</strong>:
+<li>Assume base formula exists: "Profit Margin" = <code>(Revenue - Cost) / Revenue</code></li>
+<li>Create new metric: "Average Profit Margin"</li>
+<li>Objects pane → Search "Profit Margin" (base formula)</li>
+<li>Double-click to add</li>
+<li>Formula: <code>Avg([Profit Margin])</code></li>
+<li>Validate and save</li>
+<li>Add to report</li>
+<li>Verify calculation correct</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Base formula appears in Objects pane</li>
+<li>Can be added to metric formula</li>
+<li>Calculation uses base formula definition</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 16: Base Formula Update Propagation</h3><p /><strong>Goal</strong>: Verify metrics using base formulas update when base formula changes<p /><strong>Steps</strong>:
+<li>Create base formula "Profit" with definition: <code>Revenue - Cost</code></li>
+<li>Create new metric "Average Profit"</li>
+<li>Formula: <code>Avg([Profit])</code>  (references base formula)</li>
+<li>Validate and save</li>
+<li>Add "Average Profit" metric to report</li>
+<li>Note calculated values (e.g., Avg = $150)</li>
+<li>Edit base formula "Profit" to new definition: <code>(Revenue - Cost) * 0.9</code> (10% reduction)</li>
+<li>Save base formula</li>
+<li>Reopen report with "Average Profit" metric</li>
+<li>Verify metric recalculates automatically (e.g., Avg now = $135)</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Metric automatically uses updated base formula definition</li>
+<li>No manual metric edit required</li>
+<li>Report values reflect new calculation</li>
+<li>No data integrity issues</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 17: Formula Length and Complexity Limits</h3><p /><strong>Goal</strong>: Verify editor handles very long/complex formulas<p /><strong>Steps</strong>:
+<li>Create new metric "Complex Calculation"</li>
+<li>Build deeply nested formula with 20+ function layers:</li>
+   ``<code>
+   Sum(
+     Avg(
+       RunningSum(
+         Rank(
+           NTile(...
+           )
+         )
+       )
+     )
+   )
+   </code>`<code>
+<li>Continue adding nesting until formula exceeds 1000 characters</li>
+<li>Attempt to validate</li>
+<li>Attempt to save</li>
+<li>Monitor browser console for errors</li>
+<li>Monitor browser memory usage</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Editor doesn't freeze or crash</li>
+<li>Either:</li>
+</ul>
+  - Formula validates and saves successfully (if supported), OR
+  - Clear error message: "Formula too complex" or "Maximum nesting depth exceeded"
+<ul>
+<li>Browser remains responsive</li>
+<li>Memory usage stable</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h3>Scenario 18: Special Characters in Object Names</h3><p /><strong>Goal</strong>: Verify formula editor handles objects with special characters<p /><strong>Steps</strong>:
+<li>Assume test environment has objects with special char names:</li>
+   - Fact: </code>Revenue (USD)<code>
+   - Fact: </code>Cost/Unit<code>
+   - Metric: </code>Year's Total<code>
+   - Attribute: </code>Region [Primary]<code>
+<li>Create new metric</li>
+<li>Type "Reven" in formula pane</li>
+<li>Verify auto-complete shows </code>Revenue (USD)<code> correctly</li>
+<li>Select from dropdown</li>
+<li>Verify formula displays object correctly (with escaping if needed)</li>
+<li>Add operator and second object with special chars</li>
+<li>Formula example: </code>Sum([Revenue (USD)]) / Avg([Cost/Unit])<code></li>
+<li>Validate formula</li>
+<li>Save and test on report</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>Objects with special characters appear in auto-complete</li>
+<li>Formula parser correctly handles parentheses, slashes, apostrophes, brackets</li>
+<li>Validation succeeds</li>
+<li>Metric calculates correctly on report</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High<p /><hr /><p /><h3>Scenario 19: Concurrent Edit Conflict</h3><p /><strong>Goal</strong>: Verify behavior when multiple users edit same metric<p /><strong>Steps</strong>:
+<li>User A logs in, opens metric "Total Revenue"</li>
+<li>User B logs in (different browser/session), opens same metric "Total Revenue"</li>
+<li>User A edits formula to: </code>Sum(Revenue) * 1.1<code></li>
+<li>User A saves successfully</li>
+<li>User B (still has old version open) edits formula to: </code>Sum(Revenue) - Cost<code></li>
+<li>User B attempts to save</li>
+<li>Observe behavior</li><p /><strong>Expected Result</strong> (depends on product requirements):
+<ul>
+<li><strong>Option A (Optimistic Locking)</strong>: User B sees warning: "Metric modified by another user. Reload to see latest version?"</li>
+<li><strong>Option B (Last-Write-Wins)</strong>: User B's save succeeds, overwrites User A's changes (with or without warning)</li>
+<li><strong>Option C (Pessimistic Locking)</strong>: User B sees "Metric locked by User A" when attempting to edit</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="yellow_flag" /> High  
+<strong>Note</strong>: Clarify expected behavior with product team before testing<p /><hr /><p /><h3>Scenario 20: Security - SQL Injection and XSS</h3><p /><strong>Goal</strong>: Verify metric editor sanitizes malicious input<p /><strong>Steps</strong>:<p /><strong>SQL Injection Test</strong>:
+<li>Create new metric</li>
+<li>Metric name: </code>Test'; DROP TABLE metrics; --<code></li>
+<li>Description: </code>1' OR '1'='1<code></li>
+<li>Formula: </code>Sum(Revenue)<code></li>
+<li>Save</li>
+<li>Verify database not corrupted</li>
+<li>Verify metric saves safely with escaped name</li><p /><strong>XSS Test</strong>:
+<li>Create new metric</li>
+<li>Metric name: </code><script>alert('XSS')</script><code></li>
+<li>Description: </code><img src=x onerror=alert('XSS')><code></li>
+<li>Save</li>
+<li>View metric in object browser</li>
+<li>View metric on report</li>
+<li>Verify no JavaScript executes</li>
+<li>Verify HTML is escaped (displays as text)</li><p /><strong>Formula Injection Test</strong>:
+<li>Create new metric</li>
+<li>Attempt malicious formula: </code>System.exit(); DROP TABLE users;`</li>
+<li>Validate formula</li>
+<li>Verify validation rejects malicious code</li>
+<li>Verify no server-side execution</li><p /><strong>Expected Result</strong>:
+<ul>
+<li>SQL injection attempts safely escaped/sanitized</li>
+<li>XSS payloads displayed as plain text (HTML escaped)</li>
+<li>Malicious formulas rejected by validation</li>
+<li>No security vulnerabilities exploitable</li>
+</ul><p /><strong>Priority</strong>: <ac:emoticon ac:name="red_flag" /> Critical<p /><hr /><p /><h2>📌 Additional Notes</h2><p /><h3>Demo Video Available</h3><p />Development team provided a demo video showing the feature in action:
+<a href="https://microstrategy-my.sharepoint.com/:v:/p/qiwu/IQDCsjzpyrJLRIk_8NgQBwBbAQWujYxV7anIRIQ-FNiD_io">Metric Editor in Webstation.webm</a><p /><strong>Recommendation</strong>: Review demo video before testing to understand expected behavior and UI flow.<p /><h3>UX Review Findings</h3><p />A UX review was completed on 2026-02-10 identifying several UI issues:
+<a href="https://microstrategy.atlassian.net/wiki/spaces/TECCTC/pages/5849907462/">UX Review Document</a><p /><strong>Recommendation</strong>: 
+<li>Obtain access to UX review document</li>
+<li>Incorporate UX issues into test cases</li>
+<li>Verify all UX issues resolved before release</li><p /><h3>Test Data Requirements</h3><p /><strong>Required Test Objects</strong>:
+<ul>
+<li><ac:emoticon ac:name="tick" /> Facts: Revenue, Cost, Quantity (minimum)</li>
+<li><ac:emoticon ac:name="tick" /> Attributes: Region, Category, Year, Quarter, Month, City (minimum)</li>
+<li><ac:emoticon ac:name="tick" /> Existing Metrics: (for reference/comparison)</li>
+<li><ac:emoticon ac:name="tick" /> Base Formulas: (for integration testing)</li>
+<li><ac:emoticon ac:name="tick" /> Filters: Q1 Filter, Region Filter (for conditional metrics)</li>
+<li><ac:emoticon ac:name="tick" /> Transformations: Last Year, Last Quarter, Month Ago (for transformation metrics)</li>
+</ul><p /><strong>Test Environments</strong>:
+<ul>
+<li>Development: For initial testing</li>
+<li>UAT: For integration and E2E testing</li>
+<li>Production: For smoke testing post-deployment</li>
+</ul><p /><h3>Testing Tools</h3><p /><strong>Recommended</strong>:
+<ul>
+<li>Browser DevTools (for performance monitoring)</li>
+<li>Accessibility Checker (axe DevTools, WAVE)</li>
+<li>Screen Reader (NVDA for Windows, VoiceOver for Mac)</li>
+<li>BrowserStack / Sauce Labs (for cross-browser testing)</li>
+<li>JMeter / K6 (for performance/load testing if needed)</li>
+</ul><p /><h3>Automation Considerations</h3><p /><strong>High-Priority Automation</strong>:
+<li>Create simple metric (Scenario 1)</li>
+<li>Edit existing metric (Scenario 7)</li>
+<li>Formula validation success/error (Scenarios 1, 9)</li>
+<li>Auto-complete basic test (Scenario 8)</li>
+<li>Use metric on report (Scenario 13)</li><p /><strong>Medium-Priority Automation</strong>:
+<ul>
+<li>Level/Condition/Transformation scenarios (Scenarios 3-5)</li>
+<li>Nested metric creation (Scenario 6)</li>
+<li>Browser compatibility smoke tests (Scenario 10)</li>
+</ul><p /><strong>Low-Priority Automation</strong> (manual recommended):
+<ul>
+<li>Accessibility testing (Scenario 11)</li>
+<li>Performance testing (Scenario 12)</li>
+<li>UX/visual regression testing</li>
+</ul><p /><h3>Definition of Done</h3><p /><strong>Feature is considered fully tested when</strong>:
+<ul>
+<li><ac:emoticon ac:name="tick" /> All <ac:emoticon ac:name="red_flag" /> Critical test scenarios pass</li>
+<li><ac:emoticon ac:name="tick" /> All <ac:emoticon ac:name="yellow_flag" /> High-priority test scenarios pass</li>
+<li><ac:emoticon ac:name="tick" /> All identified UX review issues resolved and verified</li>
+<li><ac:emoticon ac:name="tick" /> Browser compatibility confirmed (Chrome, Firefox, Safari, Edge)</li>
+<li><ac:emoticon ac:name="tick" /> Accessibility audit passed (WCAG 2.1 AA)</li>
+<li><ac:emoticon ac:name="tick" /> Performance benchmarks met (editor load < 2s, validation < 1s)</li>
+<li><ac:emoticon ac:name="tick" /> Integration verified (metrics work on reports/dashboards)</li>
+<li><ac:emoticon ac:name="tick" /> Automation coverage for critical paths implemented</li>
+<li><ac:emoticon ac:name="tick" /> No P1/P2 bugs open</li>
+</ul><p /><h3>Timeline Estimate</h3><p /><strong>Assuming 2 QA engineers</strong>:
+<ul>
+<li>Context gathering & test plan review: 1 day</li>
+<li>Functional testing (Scenarios 1-15): 3-4 days</li>
+<li>Browser compatibility: 1 day</li>
+<li>Accessibility testing: 1 day</li>
+<li>Integration testing: 1 day</li>
+<li>Performance testing: 0.5 day</li>
+<li>Bug fixing and retesting: 2-3 days</li>
+<li><strong>Total: ~10-12 days</strong></li>
+</ul><p /><strong>Risks to Timeline</strong>:
+<ul>
+<li>UX review issues require significant rework</li>
+<li>Base formula integration issues</li>
+<li>Browser-specific bugs difficult to reproduce/fix</li>
+<li>Accessibility gaps require UI redesign</li>
+</ul><p /><hr /><p /><strong>Plan prepared by</strong>: QA Planner Agent (Atlas)  
+<strong>Review required by</strong>: QA Lead, WebStation Team Lead  
+<strong>Next steps</strong>: Review plan → Approval → Test execution → Bug triage → Sign-off

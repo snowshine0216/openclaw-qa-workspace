@@ -55,6 +55,38 @@ _Test planning patterns and best practices._
 - Not specifying test data
 - Ambiguous expected results ("system should work correctly")
 
+### Critical Mistakes to NEVER Repeat
+
+#### 🔴 Confluence Publishing - ALWAYS Convert Markdown First
+**Mistake**: Published raw Markdown (.md) directly to Confluence  
+**Result**: Ugly plain text with `#`, `**`, `|` visible instead of formatted content  
+**Lesson**: Confluence uses HTML storage format, NOT Markdown
+
+**✅ CORRECT Process:**
+```bash
+# 1. Convert MD → HTML
+node scripts/confluence/md-to-confluence.js plan.md plan.html
+
+# 2. Publish with --format storage
+confluence update <page-id> --file plan.html --format storage
+
+# OR use convenience script:
+./scripts/confluence/publish.sh plan.md <page-id>
+```
+
+**❌ WRONG - NEVER DO THIS:**
+```bash
+confluence update <page-id> --file plan.md  # ← RAW MARKDOWN = UGLY!
+```
+
+**Scripts Location**: `scripts/confluence/`
+- `md-to-confluence.js` - Converter
+- `publish.sh` - Wrapper script
+- `README.md` - Full documentation
+
+**Date Learned**: 2026-02-25  
+**Context**: BCED-4198 QA plan published incorrectly, had to fix and republish
+
 ## Industry Standards Reference
 
 - **ISTQB:** International Software Testing Qualifications Board

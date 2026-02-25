@@ -1,0 +1,38 @@
+
+  ⭐ Feature  ✅ Done  ⌛ Tue, 24 Feb 26  👷 Qiong Wu  🔑️ BCED-4198  💭 2 comments  🧵 0 linked                      
+                                                                                                                      
+  # [WebStation] Create and Edit Metrics in Workstation Web                                                           
+                                                                                                                      
+  ⏱️  Tue, 30 Dec 25  🔎 Qiong Wu  🚀 Highest  📦 None  🏷️  Webstation, Webstation_Owner_Release_Confirmed  👀 0      
+  watchers                                                                                                            
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  Preview in 26.03                                                                                                    
+                                                                                                                      
+  ------------------------ 2 Comments ------------------------                                                        
+                                                                                                                      
+  Qiong Wu • Tue, 24 Feb 26 • Latest comment                                                                          
+                                                                                                                      
+  We have finished all the development and testing work for this feature. Mark it as Validated.                       
+                                                                                                                      
+  Here is the demo video: Metric Editor in Webstation.webm https://microstrategy-                                     
+  my.sharepoint.com/:v:/p/qiwu/IQDCsjzpyrJLRIk_8NgQBwBbAQWujYxV7anIRIQ-                                               
+  FNiD_io?e=lMTwjs&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+                                                                                                                      
+  Xiaodi (River) Zhong • Tue, 10 Feb 26                                                                               
+                                                                                                                      
+  Hi @@Qiong Wu                                                                                                       
+                                                                                                                      
+  I have completed a review of the implemented UX/UI and have identified several UI issues and potential enhancements 
+  ( link                                                                                                              
+  https://microstrategy.atlassian.net/wiki/spaces/TECCTC/pages/5849907462/UX+Review+for+WebStation+Create+and+Edit+   
+  Metrics+in+Workstation+Web                                                                                          
+  ). Could you please take a moment to review? Thank you!                                                             
+                                                                                                                      
+  I have also moved the UX Status to “Completed”.                                                                     
+                                                                                                                      
+  CC @@Abdul Rahman  @@Yingchun Mei  @@Mengru Gao  @@Jialiang Ying  @@Xue Yin  @@Qingling Dong                        
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-4198[0m                                       
+
