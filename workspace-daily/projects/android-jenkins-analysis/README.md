@@ -92,6 +92,25 @@ pm2 startup && pm2 save
 Configure Jenkins to POST to `http://<server>:9091/webhook` on build completion
 for jobs in `ANDROID_WATCHED_JOBS` (currently: `Trigger_Library_Jobs`).
 
+#### Testing Webhook via cURL
+
+You can test the webhook server manually by sending a simulated Jenkins build payload:
+
+```bash
+curl -X POST http://localhost:9091/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Trigger_Library_Jobs",
+    "build": {
+      "number": 89,
+      "status": "SUCCESS",
+      "phase": "COMPLETED"
+    }
+  }'
+```
+
+*(Note: The job name in the payload must match an entry in `ANDROID_WATCHED_JOBS` in `scripts/server/config.js` for the analysis script to be triggered).*
+
 ---
 
 ### ② Full Trigger Run (Production)
