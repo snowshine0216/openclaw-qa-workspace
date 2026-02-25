@@ -4,6 +4,7 @@
   "description": "Android CI Jenkins analysis scripts",
   "main": "pipeline/process_android_build.js",
   "scripts": {
+    "start": "node server/index.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },

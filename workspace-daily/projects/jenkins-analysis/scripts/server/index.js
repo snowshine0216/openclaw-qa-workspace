@@ -12,11 +12,9 @@ const path = require('path');
 const {
   PORT,
   ANALYSIS_SCRIPT,
-  ANDROID_ANALYSIS_SCRIPT,
   LOG_DIR,
   LOG_FILE,
-  WATCHED_JOBS,
-  ANDROID_WATCHED_JOBS
+  WATCHED_JOBS
 } = require('./config');
 
 // Ensure logs directory exists
@@ -35,19 +33,17 @@ function log(message) {
   fs.appendFileSync(LOG_FILE, logMessage);
 }
 
-function triggerAnalysis(jobName, buildNumber, scriptType = 'web') {
-  log(`Triggering ${scriptType.toUpperCase()} analysis for ${jobName} #${buildNumber}`);
+function triggerAnalysis(jobName, buildNumber) {
+  log(`Triggering analysis for ${jobName} #${buildNumber}`);
   
-  const targetScript = scriptType === 'android' ? ANDROID_ANALYSIS_SCRIPT : ANALYSIS_SCRIPT;
-  
-  const child = spawn('bash', [targetScript, jobName, buildNumber], {
+  const child = spawn('bash', [ANALYSIS_SCRIPT, jobName, buildNumber], {
     detached: true,
     stdio: 'ignore',
     env: { ...process.env }
   });
   
   child.unref();
-  log(`${scriptType.toUpperCase()} Analysis spawned for ${jobName} #${buildNumber} (PID: ${child.pid})`);
+  log(`Analysis spawned for ${jobName} #${buildNumber} (PID: ${child.pid})`);
 }
 
 const server = http.createServer((req, res) => {
@@ -79,11 +75,8 @@ const server = http.createServer((req, res) => {
       // Check if this is a completion event for watched jobs
       if (buildPhase === 'COMPLETED' || buildPhase === 'FINALIZED') {
         if (WATCHED_JOBS.includes(jobName)) {
-          log(`✓ Watched WEB job completed: ${jobName} #${buildNumber} (${buildStatus})`);
-          triggerAnalysis(jobName, buildNumber, 'web');
-        } else if (ANDROID_WATCHED_JOBS.includes(jobName)) {
-          log(`✓ Watched ANDROID job completed: ${jobName} #${buildNumber} (${buildStatus})`);
-          triggerAnalysis(jobName, buildNumber, 'android');
+          log(`✓ Watched job completed: ${jobName} #${buildNumber} (${buildStatus})`);
+          triggerAnalysis(jobName, buildNumber);
         } else {
           log(`✗ Ignoring non-watched job: ${jobName}`);
         }
