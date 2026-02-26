@@ -29,3 +29,9 @@ JIRA_BASE_URL=<jira-base-url>
 npm install -g confluence-cli
 ```
 3. run `confluence init` to setup environment
+
+### Openclaw web configuration
+```bash
+openclaw configure --section web
+openclaw gateway restart
+```
