@@ -65,39 +65,9 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
 
 ---
 
-## 0a. Release Discovery (if release version given)
+## 0a. Project Discovery (Always Run)
 
-*Goal: Fetch feature keys. **STOP and confirm with user before defect analysis.***
-
-1. Run JQL with pagination:
-   ```bash
-   scripts/retry.sh 3 2 jira issue list \
-     --jql '"QA Owner[User Picker (single user)]" = currentUser() AND "Release[Version Picker (single version)]" = <VERSION> AND type = Feature' \
-     --format json --paginate 50 \
-     > projects/defects-analysis/release_<VERSION>/context/features_raw.json
-   ```
-2. Parse the feature list. For each feature key, run `scripts/check_resume.sh <FEATURE_KEY>` and collect the `REPORT_STATE` output.
-3. **STOP. Present the feature state matrix and ask user:**
-   ```
-   Feature State Summary for Release <VERSION>:
-
-   | Feature    | State           | Last Report    | Default Action       |
-   |------------|-----------------|----------------|----------------------|
-   | BCIN-5809  | ✅ Final         | 2026-01-28     | Skip (use existing)  |
-   | BCIN-5810  | 📝 Draft only    | 2026-02-10     | Resume to approval   |
-   | BCIN-5811  | 🔄 Context only  | 2026-02-12     | Generate from cache  |
-   | BCIN-5812  | 🆕 Fresh         | —              | Full analysis        |
-   ...
-   Plan: X skipped, Y resumed, Z from cache, N fresh. Estimated API calls: ~A Jira + ~B GitHub.
-   ```
-   > *"Proceed with the default plan, regenerate all, or customize per-feature?"*
-4. **Do NOT run Phase 1 until user explicitly confirms.**
-
----
-
-## 0b. Project Discovery (Always Run)
-
-*Goal: Fetch all accessible Jira projects and cache their keys. Used by Phase 1 JQL to ensure no projects are missed.*
+*Goal: Fetch all accessible Jira projects and cache their keys. Used by Phase 0b and Phase 1 JQL to ensure no projects are missed.*
 
 1. Check cache freshness:
    ```bash
@@ -122,16 +92,58 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
 
 ---
 
+## 0b. Release Discovery (if release version given)
+
+*Goal: Fetch feature keys. **STOP and confirm with user before defect analysis.***
+
+1. **Scope Selection Prompt:** Ask the user:
+   > *"This is a release-level run. Fetch features for: (A) Only my features — `"QA Owner" = currentUser()` [DEFAULT] or (B) ALL features in this release — omit QA Owner filter?"*
+   > The default (no input/Enter) MUST apply `currentUser()`. Only omit the `QA Owner` filter if option B or "all features" is explicitly chosen. Document this default prominently.
+
+2. Run JQL with pagination (using project keys from Phase 0a cache):
+   See `skills/jira-cli/references/issue-search.md` for cross-project JQL patterns.
+   ```bash
+   PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | awk '{printf "\"%s\",", $0}' | sed 's/,$//')
+
+   # Option A (default): "QA Owner" = currentUser()
+   # Option B (if user chose "ALL features"): omit QA Owner filter
+   scripts/retry.sh 3 2 jira issue list \
+     --jql "project in ($PROJECT_KEYS) AND \"QA Owner[User Picker (single user)]\" = currentUser() AND \"Release[Version Picker (single version)]\" = <VERSION> AND type = Feature" \
+     --format json --paginate 50 \
+     > projects/defects-analysis/release_<VERSION>/context/features_raw.json
+
+   # If user chose option B (ALL features), use this JQL instead (omit QA Owner):
+   # --jql "project in ($PROJECT_KEYS) AND \"Release[Version Picker (single version)]\" = <VERSION> AND type = Feature"
+   ```
+3. Parse the feature list. For each feature key, run `scripts/check_resume.sh <FEATURE_KEY>` and collect the `REPORT_STATE` output.
+4. **STOP. Present the feature state matrix and ask user:**
+   ```
+   Feature State Summary for Release <VERSION>:
+
+   | Feature    | State           | Last Report    | Default Action       |
+   |------------|-----------------|----------------|----------------------|
+   | BCIN-5809  | ✅ Final         | 2026-01-28     | Skip (use existing)  |
+   | BCIN-5810  | 📝 Draft only    | 2026-02-10     | Resume to approval   |
+   | BCIN-5811  | 🔄 Context only  | 2026-02-12     | Generate from cache  |
+   | BCIN-5812  | 🆕 Fresh         | —              | Full analysis        |
+   ...
+   Plan: X skipped, Y resumed, Z from cache, N fresh. Estimated API calls: ~A Jira + ~B GitHub.
+   ```
+   > *"Proceed with the default plan, regenerate all, or customize per-feature?"*
+5. **Do NOT run Phase 1 until user explicitly confirms.**
+
+---
+
 ## 1. Jira Extraction (Scalable)
 
 *Goal: Fetch all defects associated with the feature(s).*
 
-**Prerequisite:** Source Jira credentials from workspace `.env` before any jira-cli call. See `skills/jira-cli/references/issue-search.md`. Phase 0b must have run to populate `project_keys.txt`.
+**Prerequisite:** Source Jira credentials from workspace `.env` before any jira-cli call. See `skills/jira-cli/references/issue-search.md`. Phase 0a must have run to populate `project_keys.txt`. If `project_keys.txt` is empty or missing, **halt and re-run Phase 0a** before continuing.
 
 **Single-feature mode:**
 1. Load project keys from cache, then run with retry (page size 50). Use cross-project JQL (linkedIssues fails across projects — see jira-cli references):
    ```bash
-   # Load all project keys from Phase 0b cache
+   # Load all project keys from Phase 0a cache
    PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | tr '\n' ',' | sed 's/,$//')
 
    scripts/retry.sh 3 2 jira issue list \
@@ -209,7 +221,10 @@ For each extracted PR URL (batch max 5 at a time):
 3. **Hybrid Auto-fix Protocol**:
    - **Objective errors**: If missing sections or mismatching defect counts, auto-fix the draft and regenerate (max 1-2 retries).
    - **Subjective warnings**: Do NOT auto-fix. Emit warnings to the `_REVIEW_SUMMARY.md`.
-4. Update `task.json` → `current_phase: approval`.
+4. **On pass/successful review:**
+   - Archive any existing `_REPORT_FINAL.md`: `scripts/archive_report.sh <FEATURE_KEY> FINAL || true`
+   - Promote draft to final: `cp projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md`
+   - Update `task.json` → `current_phase: approval`, `report_final_at: <ISO timestamp>`.
 
 ---
 
@@ -217,8 +232,8 @@ For each extracted PR URL (batch max 5 at a time):
 
 *Goal: Human-in-the-loop sign-off before publishing.*
 
-1. Pause execution and present the user with the paths to the draft and the review summary:
-   > `"✅ Draft report is ready at: projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`
+1. Pause execution and present the user with the paths to the final report and the review summary:
+   > `"✅ Final report (AI-reviewed) is ready at: projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md`
    > `🔍 Self-review summary is at: projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REVIEW_SUMMARY.md`
    > `Please review and reply with: APPROVE to publish to Confluence, or REJECT to send via Feishu."`
 2. **Wait for user response.** Do not proceed without approval.
@@ -233,7 +248,7 @@ For each extracted PR URL (batch max 5 at a time):
 1. Convert to Confluence storage format:
    ```bash
    node scripts/confluence/md-to-confluence.js \
-     projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md \
+     projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md \
      projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_confluence.html
    ```
 2. Publish:
@@ -243,20 +258,20 @@ For each extracted PR URL (batch max 5 at a time):
      --format storage
    ```
    ⚠️ **NEVER publish raw Markdown** — Confluence requires HTML storage format.
+3. **Post-Update Confluence Formatting Self-Check:**
+   - Immediately read back the page to verify structural formatting:
+     ```bash
+     confluence read <page-id> --format storage > /tmp/defect_confluence_readback.html
+     ```
+   - Verify section headings are present, no raw Markdown leaked through, and well-formed tables.
+   - On pass: Log `✅ Confluence formatting self-check passed.`
+   - On fail: Present issue to user. Ask: *(A) Attempt auto-fix and re-publish, or (B) Notify me to fix manually?*
 
 **If REJECTED / Alternative:**
 1. Use the `message` skill to broadcast the Executive Summary section + local file link to the Feishu team channel.
 
 **Final Steps (regardless of path):**
-2. Archive any existing final report, then copy draft to final:
-   ```bash
-   # Archive old final if it exists (exit 2 = not found, that's fine)
-   scripts/archive_report.sh <FEATURE_KEY> FINAL || true
-
-   cp projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md \
-      projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md
-   ```
-3. Update `task.json`:
+2. Update `task.json`:
    ```json
    {
      "overall_status": "completed",

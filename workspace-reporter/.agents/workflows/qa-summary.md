@@ -20,7 +20,14 @@ Builds on top of the Defect Analysis Agent. Automates generation, self-review, a
    - If missing: ask user to provide URL or title. Use `confluence` skill (`confluence find "<title>"`) to resolve. Never proceed without an exact ID.
    - Save ID to `run.json`.
 
-2. **Workspace State Classification:**
+2. **Final Report Prerequisite Check:**
+   - If running for a release version (e.g. 26.03), first ask scope: *"Fetch features for: (A) Only my features (default) or (B) ALL features?"* Pass the choice to the sub-agent.
+   - For each feature, check if `projects/defects-analysis/<KEY>/<KEY>_REPORT_FINAL.md` exists.
+   - If missing: halt and **require `defect-analysis` to run first**. No bypass allowed.
+   - If exists: Verify `task.json` → `report_approved_at` is NOT null. If missing/null, halt and block with: *"The defect analysis is awaiting human approval. Please approve it first."*
+   - If approved but stale (>7 days), recommend a refresh.
+
+3. **Workspace State Classification:**
    Check for `projects/qa-summaries/<FEATURE_KEY>/` artifacts:
    - `<KEY>_QA_SUMMARY_FINAL.md` present → Ask: Use Existing / Smart Refresh / Full Regenerate
    - `<KEY>_QA_SUMMARY_DRAFT.md` present → Ask: Resume to Approval / Smart Refresh / Full Regenerate
@@ -39,7 +46,7 @@ Builds on top of the Defect Analysis Agent. Automates generation, self-review, a
 
 ## 1. Sub-Agent Spawning & Data Gathering
 
-*(Skip if "Use Existing" or "Resume" was selected)*
+*(Skip sub-agent spawn ONLY if `_REPORT_FINAL.md` exists and was confirmed fresh by user in Phase 0. You must still verify the report exists before proceeding.)*
 
 1. Spawn the `defect-analysis` sub-agent for `<FEATURE_KEY>`.
    - Run workflow `.agents/workflows/defect-analysis.md`.
@@ -50,20 +57,26 @@ Builds on top of the Defect Analysis Agent. Automates generation, self-review, a
 
 ## 2. Summary Generation
 
-1. Use gathered data from `projects/defects-analysis/<FEATURE_KEY>/` to construct the QA Summary.
+1. Apply the `qa-summary` skill. Follow its section template, data source mapping, placeholder policy, and formatting rules to construct the draft section-by-section.
+   - Input: `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md` (never `_REPORT_DRAFT.md`).
+   - Structure: `## 🔍 QA Summary` with subsections `### 1.` through `### 9.` (local 1-based numbering, no `5.x`).
+   - Tables required only for: Code Changes Summary, Defect Status Summary, Resolved Defects Detail.
+   - All other sections use bullet lists or plain prose.
+   - Resolved Defects table: P0/P1 issues only; append trailing count line for omitted P2/P3 items.
 2. Output file: `projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_DRAFT.md`
-3. **MANDATORY Placeholders Policy:**
-   - The draft MUST contain subsections 5.1 through 5.9.
-   - If data is unavailable for a section, use a `[PENDING — <reason>]` placeholder. Never omit the section.
+3. **MANDATORY Placeholders Policy:** All 9 subsections must be present. Use `[PENDING — <reason>]` for any section with missing data. Never omit a section.
 
 ---
 
 ## 3. Self-Review
 
-1. Apply the `summary-review` skill against `<FEATURE_KEY>_QA_SUMMARY_DRAFT.md`.
-2. Criteria enforce presence of 5.1-5.9, correct defect counts, logical risk assessment, full open defects table, hyperlinks, and no empty sections.
-3. If FAILS: auto-apply minor fixes. Log actionable fixes for major gaps and return to Phase 2.
-4. **Crucial Step:** Once self-review PASSES, you MUST explicitly write down (render) the final summarized version into the chat/console so the user can read the content without having to open the file.
+1. Apply the `qa-summary-review` skill against `<FEATURE_KEY>_QA_SUMMARY_DRAFT.md`.
+   - **Coverage checks:** All 9 subsections present, defect counts match `_REPORT_FINAL.md`, risk assessment coherent, open defects table complete, PR coverage reflected.
+   - **Formatting checks:** Emoji heading, 1-based subsection numbering, table/bullet-list compliance, Resolved Defects P0/P1 filter, hyperlink completeness, no raw Markdown in tables.
+2. Review output saved to `projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_REVIEW.md`.
+3. Auto-fixes are applied inline for eligible checks. Checks requiring Phase 2 return are logged as actionable failures.
+4. If FAILS (Phase 2 return required): log the actionable fix list and return to Phase 2. Do NOT render to console.
+5. **Crucial Step:** Once self-review PASSES, you MUST explicitly write down (render) the final summarized version into the chat/console so the user can read the content without having to open the file. Surface any warnings from the review in the rendered output.
 
 ---
 
@@ -74,7 +87,7 @@ Builds on top of the Defect Analysis Agent. Automates generation, self-review, a
 📋 QA Summary draft is ready for review.
 
   Feature:         <FEATURE_KEY>
-  Sections:        5.1–5.9 (all present)
+  Sections:        1–9 (all present)
   Open defects:    <N>
   Risk:            <Level>
   Confluence page: "<Title>" (ID: <ID>)
@@ -97,15 +110,20 @@ Never publish without explicit `APPROVE`.
 
 Surgical update of `QA Summary` section only.
 1. Read current page: `confluence read <page-id>` (use `confluence` skill).
-2. Locate `QA Summary` section.
+2. Locate `QA Summary` section (if the existing page has a `5. QA Summary` numeric heading, replace it heavily with the `🔍 QA Summary` emoji heading).
 3. **Merge Rules:**
-   - Add/replace sub-sections 5.1-5.9.
+   - Add/replace sub-sections 1-9.
    - Preserve all content outside of `QA Summary`.
    - Preserve existing subsection data if the new draft only has a `[PENDING]` placeholder for it.
 4. Convert merged content to Confluence storage format and execute update:
    `confluence update <page-id> --file qa_summary_section.html --format storage` (Or use skill).
-5. On success, save `run.json` with `output_generated_at` and `confluence_published_at`.
-6. Copy draft to `projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_FINAL.md`. Archive old final.
+5. **Post-Update Confluence Formatting Self-Check:**
+   - Immediately read back the page to verify structural formatting: `confluence read <page-id> --format storage > /tmp/qa_confluence_readback.html`
+   - Verify all 9 sections present, tables well-formed (at least 1 data row, no empty shells), no raw Markdown leakage.
+   - On pass: Log `✅ Confluence formatting self-check passed.` proceed.
+   - On fail: Present issue to user and ask: *(A) Attempt auto-fix and re-publish, or (B) Notify me to fix manually?*
+6. On success, save `run.json` with `output_generated_at` and `confluence_published_at`.
+7. Copy draft to `projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_FINAL.md`. Archive old final.
 
 ---
 
@@ -118,7 +136,8 @@ Surgical update of `QA Summary` section only.
   Page:      <Title>
   URL:       <URL>
   Updated:   <UTC TIME>
-  Sections:  5.1–5.9 (⚠️ <List with placeholders> have placeholders)
+  Sections:  1–9 (⚠️ <List with placeholders> have placeholders)
 Published by QA Summary Agent.
 ```
+*(If the formatting self-check failed and user chose manual fix, append: `⚠️ Confluence formatting check failed. Manual adjustments needed on the page.`)*
 2. If Feishu fails, log to `run.json` -> `notification_pending`.

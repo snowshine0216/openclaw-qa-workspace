@@ -31,6 +31,17 @@ The agent **must** resolve the exact Confluence page before any work begins. Thi
 4. **Never assume or default a page.** Do not proceed until the page ID is confirmed.
 5. Persist the confirmed `confluence_page_id` to `run.json`.
 
+#### 0a.5. Final Report Prerequisite Check (Before Workspace Classification)
+
+Before classifying workspace state (0b), verify that defect-analysis has produced an approved final report:
+
+1. Check if `projects/defects-analysis/<KEY>/<KEY>_REPORT_FINAL.md` exists.
+2. If **missing**: halt and require `defect-analysis` to run first. No bypass allowed.
+3. If **exists**: Verify `task.json` → `report_approved_at` is NOT null. If null, halt: *"The defect analysis is awaiting human approval. Please approve it first."*
+4. If approved but **stale** (>7 days or user's threshold), recommend a refresh before proceeding.
+
+The "Use Existing" and "Resume" options in 0b apply only to QA summary artifacts — they never skip this prerequisite.
+
 #### 0b. Workspace State Classification
 
 Classify the current workspace state for the given **run key** (Feature Key, e.g. `BCIN-789`):
@@ -83,7 +94,7 @@ Please choose A, B, or C.
 
 ### Phase 1 — Sub-Agent Spawning & Data Gathering
 
-*(Skip if "Use Existing" or "Resume" selected in Phase 0.)*
+*(Skip sub-agent spawn only when `_REPORT_FINAL.md` exists and was confirmed fresh by the user in Phase 0. Always verify the report exists before proceeding.)*
 
 - Initialize and spawn the `defect-analysis` sub-agent for the confirmed Feature Key.
 - The sub-agent fetches all raw context: Jira issues, PR diffs, code changes, statuses.
@@ -109,39 +120,46 @@ Please choose A, B, or C.
 
 ### Phase 2 — Summary Generation
 
-Construct the QA Summary document using gathered data. Output: `<KEY>_QA_SUMMARY_DRAFT.md`.
+Apply the `qa-summary` skill to construct the QA Summary draft section-by-section. Output: `<KEY>_QA_SUMMARY_DRAFT.md`.
+
+**Confluence Section Formatting Policy (MANDATORY):**
+
+1. Section headings: use emoji prefix for the top-level QA Summary heading (`## 🔍 QA Summary`). Sub-sections use local numeric order starting at 1 (`### 1. Overall QA Status`, `### 2. Code Changes Summary`, …). Never use `5.x` numbering.
+2. The following sections MUST use Markdown tables in the draft:
+   - Code Changes Summary
+   - Defect Status Summary
+   - Resolved Defects Detail
+3. ALL other sections MUST use bullet lists (`- item`) or plain prose. No tables allowed.
+4. Resolved Defects Detail table: include ONLY P0/Critical and P1/High priority resolved issues. Append a count line for omitted lower-priority items after the table.
 
 **Placeholder policy — MANDATORY:**
-- Every sub-section (5.1 through 5.9) **must** be present in the draft.
-- If data is unavailable for a section, write a clearly labeled sample/placeholder — **never skip or omit the section**.
-- Placeholder format:
+- All 9 subsections must be present. Use `[PENDING — <specific reason>]` for any section with missing data. Never omit or leave blank.
+- `[PENDING]` in table cells must not break table structure — place in the `Notes` column or as a note below the table.
 
-```markdown
-### 5.3 Performance
-| | |
-|---|---|
-| **Status** | [PENDING — No performance test results available. Sample: ✅ Pass — No regressions observed in load tests.] |
-| **Notes** | [PENDING — Add performance test summary here.] |
-```
-
-Refer to the [Target Structure](#target-structure-confluence-template) below for all required subsections.
+Refer to the `qa-summary` skill and the [Target Structure](#target-structure-confluence-template) below for all required subsections and data source mapping.
 
 ---
 
 ### Phase 3 — Self-Review
 
-Apply the `summary-review` skill against the draft. Criteria enforced:
+Apply the `qa-summary-review` skill against the draft. Review output saved to `<KEY>_QA_SUMMARY_REVIEW.md`.
 
-1. **All 9 subsections present** (5.1–5.9), populated or placeholdered.
-2. **Defect counts accurate** — "Totally Logged defects" and "Currently Open Defects" match the `defect-analysis` output exactly.
-3. **Risk Assessment logical** — rationale aligns with defect severity distribution.
-4. **Open Defects table complete** — columns: `Defect ID`, `Summary`, `Status`, `Notes`.
-5. **All Jira/GitHub references hyperlinked.**
-6. **No empty sections** — every section has at minimum a placeholder.
+**Coverage checks enforced:**
+1. **All 9 subsections present** (`### 1.`–`### 9.`), populated or placeholdered.
+2. **Defect counts accurate** — Total logged, currently open, and resolved counts match `_REPORT_FINAL.md` exactly.
+3. **Risk Assessment coherent** — risk level consistent with open defect priority distribution.
+4. **Open Defects table complete** — columns: `Defect ID`, `Summary`, `Status`, `Priority`, `Notes`; all entries hyperlinked.
+5. **PR coverage reflected** — every PR in analysis context appears in Code Changes Summary.
 
-If review **FAILS**: auto-apply minor fixes. For major gaps, log actionable fixes and return to Phase 2.
+**Formatting checks enforced:**
+6. **Top-level heading format** — `## 🔍 QA Summary` (emoji, no numeric prefix).
+7. **Subsection numbering** — `### 1.` through `### 9.` (1-based local; no `5.x`).
+8. **Table usage compliant** — tables only for sections 2, 3, 4; bullet lists for all others.
+9. **Resolved Defects P0/P1 only** — no P2/P3 rows in table; trailing count line present for omitted items.
 
-**Crucial Step:** After a successful self-review, the agent MUST explicitly write down (render/output) the final summarized version into the chat/console so the user can read the content directly without having to open the file.
+Auto-fixes applied for eligible checks. Checks requiring structural rework return to Phase 2 with an actionable fix list.
+
+**Crucial Step:** After a successful self-review, the agent MUST explicitly write down (render/output) the final summarized version into the chat/console so the user can read the content directly without having to open the file. Surface any warnings from `_QA_SUMMARY_REVIEW.md` in the rendered output.
 
 ---
 
@@ -153,13 +171,13 @@ If review **FAILS**: auto-apply minor fixes. For major gaps, log actionable fixe
 📋 QA Summary draft is ready for review.
 
   Feature:         BCIN-789
-  Sections:        5.1–5.9 (all present)
+  Sections:        1–9 (all present)
   Open defects:    3
   Risk:            Medium
   Confluence page: "BCIN-789 Release QA Report" (ID: 12345678)
   Draft file:      projects/qa-summaries/BCIN-789/BCIN-789_QA_SUMMARY_DRAFT.md
 
-⚠️  Sections with placeholders: 5.3 Performance, 5.8 Automation
+⚠️  Sections with placeholders: 3 Performance, 8 Automation
     These will be published as [PENDING] markers unless you provide data now.
 
 Please review the draft, then reply:
@@ -184,23 +202,23 @@ This phase performs a **surgical update** of the `QA Summary` section only. It n
 confluence read <page-id>
 ```
 
-Parse the existing page content to locate the `QA Summary` (or equivalent `5. QA Summary`) section.
+Parse the existing page content to locate the `QA Summary` section (search for `🔍 QA Summary` or legacy `5. QA Summary`).
 
 #### 5b. Section Presence Decision
 
 | Condition | Action |
 |---|---|
-| Section **not found** | Insert the full `QA Summary` section at the correct position (after section 4, or at the end of the page if structure is ambiguous). Log: *"Section '5. QA Summary' not found — inserting."* |
-| Section **found** | Merge/update content field by field. **Never delete existing sub-sections unless the user explicitly approves removal.** Preserve all content not covered by the new summary. Log: *"Section '5. QA Summary' found — updating in place."* |
+| Section **not found** | Insert the full `QA Summary` section at the correct position (after section 4, or at the end of the page if structure is ambiguous). Log: *"Section '🔍 QA Summary' not found — inserting."* |
+| Section **found** | Merge/update content field by field. **Never delete existing sub-sections unless the user explicitly approves removal.** Preserve all content not covered by the new summary. Log: *"Section '🔍 QA Summary' found — updating in place."* |
 
 #### 5c. Merge Rules
 
-- **Add** any subsection (5.1–5.9) that is missing from the current page.
+- **Add** any subsection (1–9) that is missing from the current page.
 - **Replace** any subsection that exists with the newly generated content.
 - **Preserve** any content in the page **outside** the `QA Summary` section — untouched.
 - **Preserve** any subsection already on the page that is **not** covered by the new summary draft, unless the user explicitly removes it.
 - If the current page has a subsection with data and the new summary has only a `[PENDING]` placeholder for that same subsection, **keep the existing data** and log a warning:
-  > *"⚠️ Section 5.3 already has content on Confluence; new draft has only a placeholder. Keeping existing Confluence content for 5.3."*
+  > *"⚠️ Section 3 already has content on Confluence; new draft has only a placeholder. Keeping existing Confluence content for 3."*
 
 #### 5d. Execute Update
 
@@ -243,7 +261,7 @@ After successful Confluence update, send a notification via the `feishu` skill:
   Page:      BCIN-789 Release QA Report
   URL:       https://company.atlassian.net/wiki/spaces/.../pages/12345678/...
   Updated:   2026-02-24 12:01 UTC
-  Sections:  5.1–5.9 (⚠️ 5.3, 5.8 have placeholders — manual update needed)
+  Sections:  1–9 (⚠️ 3, 8 have placeholders — manual update needed)
 
 Published by QA Summary Agent.
 ```
@@ -256,9 +274,9 @@ If Feishu is unavailable, attempt WhatsApp via the `wacli` skill as fallback. If
 
 Every generated summary **must** contain all of the following. Sections may be placeholdered but never omitted.
 
-### 5. QA Summary
+### 🔍 QA Summary
 
-#### 5.1 Code Changes Summary
+#### 1. Code Changes Summary
 A table with columns: `Repository`, `PR`, `Files Changed`, `Status`, `Notes`.
 
 *Sample placeholder:*
@@ -268,7 +286,7 @@ A table with columns: `Repository`, `PR`, `Files Changed`, `Status`, `Notes`.
 | [repo-name](url) | [PR-441](url) | 12 | ✅ Merged | [PENDING — fill in notes] |
 ```
 
-#### 5.2 E2E Testing & Functionality
+#### 2. E2E Testing & Functionality
 - **Status**: Pass / Fail / Blocked
 - **Totally Logged Defects**: Integer (from `defect-analysis` output)
 - **Risk Assessment**: Low / Medium / High + written rationale
@@ -282,43 +300,43 @@ subject to change before release. Sample rationale: All open defects are in non-
 paths. No blocker-level issues.]
 ```
 
-#### 5.3 Performance
+#### 3. Performance
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
 | **Notes** | Summary of performance test results or justification for N/A |
 
-#### 5.4 Security
+#### 4. Security
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
 | **Notes** | Summary of security scan results |
 
-#### 5.5 Platform Certifications
+#### 5. Platform Certifications
 | | |
 |---|---|
 | **Status** | Pass / Fail / Partial |
 | **Platforms Tested** | e.g., Chrome 121, Safari 17, Firefox 122, Windows 11, macOS 14 |
 
-#### 5.6 Upgrade and Compatibility
+#### 6. Upgrade and Compatibility
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
 | **Notes** | Upgrade path testing results or N/A justification |
 
-#### 5.7 Internationalization
+#### 7. Internationalization
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
 | **Notes** | i18n/l10n testing summary |
 
-#### 5.8 Automation
+#### 8. Automation
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
 | **Notes** | Automation test suite coverage and results |
 
-#### 5.9 Accessibility
+#### 9. Accessibility
 | | |
 |---|---|
 | **Status** | Pass / Fail / N/A |
@@ -365,9 +383,9 @@ Defect analysis context lives under `projects/defects-analysis/<FEATURE_KEY>/` (
 - [ ] Phase 0 confirms the exact Confluence page ID before any external call
 - [ ] Phase 0 classifies workspace state and displays data freshness
 - [ ] Phase 0c audits and surfaces all missing artifacts to the user
-- [ ] All sections 5.1–5.9 are present in the draft (placeholders acceptable, blanks not)
+- [ ] All sections 1–9 are present in the draft (placeholders acceptable, blanks not)
 - [ ] `[PENDING]` placeholders are used for any section with missing data
-- [ ] Self-review via `summary-review` skill passes before user approval gate
+- [ ] Self-review via `qa-summary-review` skill passes before user approval gate
 - [ ] User explicitly types `APPROVE` before any Confluence write
 - [ ] Confluence update is surgical — only the `QA Summary` section is modified
 - [ ] Existing Confluence content outside the QA Summary section is never touched
@@ -387,7 +405,8 @@ Defect analysis context lives under `projects/defects-analysis/<FEATURE_KEY>/` (
 | `jira-cli` | 1 | Paginated JQL, issue details |
 | `github` | 1 | PR diffs, file counts, statuses |
 | `defect-analysis` (sub-agent) | 1 | Core data processor |
-| `summary-review` | 3 | Structural + accuracy self-review |
+| `qa-summary` | 2 | Draft generation guide: section template, data source mapping, formatting rules |
+| `qa-summary-review` | 3 | Quality gate: Coverage + Formatting review of the drafted QA Summary |
 | `confluence` | 0a, 5 | Page ID resolution, read, update |
 | `feishu` | 6 | Post-publish notification |
 | `wacli` | 6 | Notification fallback |
@@ -402,7 +421,7 @@ All skills in `skills/`. State managed via `run.json` per feature key.
 - **Never publish to Confluence without explicit `APPROVE`.**
 - **Never overwrite existing page content outside the `QA Summary` section.**
 - **Never delete existing Confluence content within `QA Summary` unless the user explicitly approves.**
-- **Never skip a subsection (5.1–5.9)** — use a `[PENDING]` placeholder if data is unavailable.
+- **Never skip a subsection (1–9)** — use a `[PENDING]` placeholder if data is unavailable.
 - **Never assume a Confluence page** — confirm with the user if not stored in `run.json`.
 - Raise clarifying questions for ambiguous input. Never assume.
 
