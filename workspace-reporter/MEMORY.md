@@ -101,6 +101,25 @@ Edge cases:
 - Data loss → Always Critical
 - Typos in user-facing text → Low (unless offensive)
 
+## Jira Authentication
+
+**CRITICAL: Always load credentials from .env file**
+
+When running jira-cli commands, ALWAYS source credentials from workspace .env:
+```bash
+cd /Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-reporter
+export JIRA_API_TOKEN="<token-from-.env>"
+export JIRA_SERVER="https://strategyagile.atlassian.net"
+jira issue view ISSUE-KEY
+```
+
+**Why this matters:**
+- System bash_profile may not have current token
+- .env file in workspace-reporter/ contains the working token
+- Credentials are: JIRA_SERVER, JIRA_EMAIL, JIRA_API_TOKEN
+
+**Lesson learned (2026-02-26):** Failed to fetch BCDE-4198 initially because I relied on bash_profile instead of workspace .env. Always check workspace-reporter/.env first.
+
 ## Jira CLI Tips
 
 ### Batch Operations
