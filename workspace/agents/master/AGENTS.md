@@ -33,7 +33,7 @@ Identify required agents:
   - qa-daily: Daily checks (Jira, CI)
   - qa-plan: Test planning
   - qa-test: Test execution
-  - qa-report: Reporting & Jira updates
+  - qa-report: Reporting, Defect Analysis, & Jira updates (Includes PR Deep Dive & HIL publishing)
   - openclaw-config: OpenClaw configuration
 
 Determine dependencies:
@@ -155,7 +155,7 @@ Record to `agents/master/MEMORY.md`:
 | qa-daily | Daily checks | Sonnet 4.5 | Jira updates, CI failures |
 | qa-plan | Test planning | Opus 4.5 | Detailed test plans |
 | qa-test | Test execution | GPT-5.1 Codex Max | Browser automation, test runs |
-| qa-report | Reporting | Sonnet 4.5 | Reports, Jira updates |
+| qa-report | Reporting | Sonnet 4.5 | Defect Analysis, PR Deep Dives, Reports, Jira updates |
 | openclaw-config | Config expert | Opus 4.6 | OpenClaw configuration |
 
 ## Error Handling

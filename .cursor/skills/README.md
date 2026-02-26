@@ -40,6 +40,33 @@ Focus:
 - Unit/integration coverage strategy
 - Flakiness prevention and quality gates
 
+### `robust-agent-design`
+
+Use when:
+- Designing new agents or orchestrator workflows
+- Implementing tasks involving >30 items (e.g., Jira defects, PRs)
+- Building multi-step APIs with external interactions
+
+Focus:
+- Scalability & parallel execution
+- Progress monitoring (task.json) and heartbeats
+- Checkpointing and intermediate artifacts
+- Human-in-the-loop (HIL) approval gates
+
+### `agent-idempotency`
+
+Use when:
+- An agent may be re-invoked for the same input it has already processed
+- Designing Phase 0 of any workflow that produces output files
+- A user asks to "re-run", "refresh", or "regenerate" an existing analysis
+- Deciding what to re-fetch vs. reuse from a previous run
+
+Focus:
+- Tiered existence check (final → draft → context-only → fresh)
+- Cache freshness display and Smart Refresh logic
+- Report versioning via archive/ subfolder (no timestamp in active filenames)
+- Error handling: API down, corrupted task.json, partial PR cache, release mixed states
+
 ## Project-Specific Skill (jenkins-analysis)
 
 ### `jenkins-runtime-entrypoints`
