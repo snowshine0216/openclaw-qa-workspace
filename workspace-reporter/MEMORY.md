@@ -118,7 +118,30 @@ jira issue view ISSUE-KEY
 - .env file in workspace-reporter/ contains the working token
 - Credentials are: JIRA_SERVER, JIRA_EMAIL, JIRA_API_TOKEN
 
-**Lesson learned (2026-02-26):** Failed to fetch BCDE-4198 initially because I relied on bash_profile instead of workspace .env. Always check workspace-reporter/.env first.
+**Lesson learned (2026-02-26):** Failed to fetch BCED-4198 initially because I relied on bash_profile instead of workspace .env. Always check workspace-reporter/.env first.
+
+## Jira Cross-Project Linked Issues
+
+**CRITICAL: jira-cli linkedIssues() function doesn't work across projects**
+
+**Problem:** When a feature (e.g., BCED-4198) has defects linked from different projects (CIAD, CGWS, CGAD), the standard JQL fails:
+```bash
+# ❌ FAILS: Returns "No result found"
+jira issue list --jql 'issuetype = Defect AND (parent="BCED-4198" OR issue in linkedIssues("BCED-4198"))'
+```
+
+**Solution:** Search across multiple projects with text search:
+```bash
+# ✅ WORKS: Returns all linked defects across projects
+jira issue list --jql 'project in (BCED, CIAD, CGWS, CGAD) AND issuetype = Defect AND (parent="BCED-4198" OR text ~ "BCED-4198")'
+```
+
+**Why this matters:**
+- Features often have defects filed in different projects (BCED=Backend, CIAD=i18n, CGWS=WebStation, CGAD=Admin)
+- `linkedIssues()` and `issueFunction` don't work reliably in jira-cli
+- Must manually list relevant projects and use text search
+
+**Lesson learned (2026-02-26):** BCED-4198 had 7 defects, but only found 3 initially. Missing CIAD-169, CGWS-4847, CGWS-4824, CGAD-3476 because they were in different projects. Always search across project families.
 
 ## Jira CLI Tips
 
