@@ -296,6 +296,14 @@ jira issue move BUG-123 "In Progress"
 | `jira issue list --raw` | JSON for parsing |
 | `jira issue list --csv` | Export to spreadsheet |
 
+## Defect Analysis Context
+
+When running defect analysis workflows, see `references/issue-search.md` for:
+- **Credential loading** — always source from workspace `.env` (not system profile)
+- **Cross-project JQL** — `linkedIssues()` fails across projects; use project list + text search
+
+---
+
 ## Limitations
 
 - Requires prior `jira init` configuration

@@ -3,6 +3,8 @@
 **Last Updated:** 2026-02-26  
 **Scope:** Defect Analysis Workflow (used as a sub-workflow by the Feature Summary Workflow)
 
+> **Enhancement Design:** See `REPORTER_ENHANCEMENT_DESIGN.md` for self-evolution items (archive strategy, AI self-review phase).
+
 ---
 
 ## 1. Overview
@@ -162,21 +164,49 @@ When dealing with large-scale queries (e.g., releases with >30 defects and numer
    > *"I found N features in <VERSION>. State summary above. Proceed with the default plan, regenerate all, or customize per-feature?"*
 5. **Do not fetch defects** until the user explicitly approves.
 
+### 4.2b Phase 0b: Project Discovery (Always Run)
+
+*Goal: Fetch all accessible Jira projects and cache their keys for use in cross-project JQL.*
+
+1. Check cache freshness (`projects/defects-analysis/.cache/project_keys.txt`). If stale (> 24h) or missing:
+   ```bash
+   mkdir -p projects/defects-analysis/.cache
+   scripts/retry.sh 3 2 jira project list --format json > "$CACHE_JSON"
+   jq -r '.[].key' "$CACHE_JSON" > "$CACHE_FILE"
+   ```
+2. Verify `project_keys.txt` is non-empty. If empty, check credentials and retry.
+3. Load keys for use in Phase 1 JQL:
+   ```bash
+   PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | tr '\n' ',' | sed 's/,$//')
+   ```
+
+**Cache location:** `projects/defects-analysis/.cache/` — shared across all analyses, gitignored.  
+**TTL:** 24 hours. **Force refresh:** `rm "$CACHE_FILE"`.
+
+**Rationale:** `linkedIssues()` is unreliable across Jira projects. A project-scoped search using the full project list ensures complete coverage as the org grows.
+
 ### 4.3 Phase 1: Context Gathering & Jira Extraction (Scalable)
 
 *Goal: Identify all relevant defect issues. For release-scoped mode, fetch defects **in parallel** for up to 3–5 features at a time.*
 
+**Prerequisite:** Phase 0b must have run to populate `project_keys.txt`.
+
 **Single-feature mode:**
-1. Run defect JQL with pagination:
-   ```
-   issuetype = Defect AND (issue in linkedIssues("<FEATURE_KEY>") OR parent="<FEATURE_KEY>")
+1. Load project keys from cache, then run with retry:
+   ```bash
+   PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | tr '\n' ',' | sed 's/,$//')
+
+   scripts/retry.sh 3 2 jira issue list \
+     --jql "project in ($PROJECT_KEYS) AND issuetype = Defect AND (parent=\"<FEATURE_KEY>\" OR text ~ \"<FEATURE_KEY>\")" \
+     --format json --paginate 50 \
+     > projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json
    ```
 2. Save to `projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json`.
 
 **Release-scoped mode (parallel fetch):**
 1. For each feature key (batch of max 3–5 features concurrently):
-   - Run: `issuetype = Defect AND (issue in linkedIssues("<FEATURE_KEY>") OR parent="<FEATURE_KEY>")` with `--paginate 50`
-   - Save to `projects/defects-analysis/release_<VERSION>/<FEATURE_KEY>/context/jira_raw.json`
+   - Run the same JQL with `<FEATURE_KEY>` substituted.
+   - Save to `projects/defects-analysis/release_<VERSION>/<FEATURE_KEY>/context/jira_raw.json`.
 2. **After each feature's defects are fetched**, optionally confirm progress with the user if the batch is large (e.g., >10 features).
 
 3. **Scalability Guard**: Use `--paginate` flag (page size 50). Wrap all Jira calls in `scripts/retry.sh 3 2 jira issue list ...`.
@@ -206,9 +236,24 @@ When dealing with large-scale queries (e.g., releases with >30 defects and numer
 1. **Data Aggregation**: Collect all `context/prs/*.md` artifacts, merge with Jira issue list.
 2. **Invoke `defect-analysis-reporter` Skill**: Pass aggregated data to the skill, which generates the report using the standardized output format.
 3. Save draft to `<FEATURE_KEY>_REPORT_DRAFT.md`.
+4. Update `task.json` → `current_phase: self_review`.
+
+### 4.6 Phase 4a: AI Self-Review (Quality Gate)
+
+*Goal: The agent reviews the draft report against quality criteria to catch gaps before human review.*
+
+1. **Self-Review Checklist**:
+   - **Section completeness**: All 12 sections present; no placeholders.
+   - **Defect count**: Totals match `jira_raw.json` exactly.
+   - **20/80 identification**: Identify the top 2-3 functional areas, or any area containing >30% of total defects, or any area containing unresolved High priority defects.
+   - **Risk rating coherence**: Appropriate rating given the open defect priority levels.
+2. **Output**: Generate a separate review summary file: `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REVIEW_SUMMARY.md`.
+3. **Hybrid Auto-fix Protocol**:
+   - **Objective errors**: If missing sections or mismatching defect counts, auto-fix the draft and regenerate (max 1-2 retries).
+   - **Subjective warnings**: Do NOT auto-fix. Emit warnings to the `_REVIEW_SUMMARY.md`.
 4. Update `task.json` → `current_phase: approval`.
 
-### 4.6 Phase 4: User Approval & Publishing
+### 4.7 Phase 5: User Approval & Publishing
 
 *Goal: Secure user sign-off before making external updates. Never publish without explicit approval.*
 
@@ -244,6 +289,7 @@ All data is persisted locally to enable graceful recovery from crashes or API ti
 | Individual Defect JSONs | `context/jira_issues/<KEY>.json` | Per-issue triage data |
 | PR Impact Summaries | `context/prs/<PR_ID>_impact.md` | Sub-agent results (idempotent) |
 | Task State | `task.json` | Current phase, progress counters, resume point, freshness timestamps |
+| Review Summary | `<KEY>_REVIEW_SUMMARY.md` | Persistent quality gate log prior to user approval |
 | Archived Reports | `archive/<KEY>_REPORT_*_<YYYYMMDD>.md` | Previous report versions (never deleted) |
 
 If interrupted, the agent reads `task.json` and resumes from the saved `current_phase`, re-using already-computed intermediate artifacts instead of re-calling APIs.
@@ -434,8 +480,12 @@ For each PR: github skill → Fix Risk Analysis → context/prs/<PR_ID>_impact.m
 ## 4. Report Generation (per feature)
 Invoke defect-analysis-reporter. Save <FEATURE_KEY>_REPORT_DRAFT.md per feature.
 
+## 4a. AI Self-Review (per feature)
+Review <FEATURE_KEY>_REPORT_DRAFT.md against checklist.
+Auto-fix objective errors (1-2 retries). Save summary to <FEATURE_KEY>_REVIEW_SUMMARY.md.
+
 ## 5. User Approval
-Pause and ask user to review draft(s). Confirm before publish.
+Pause and ask user to review draft(s) and any _REVIEW_SUMMARY.md files. Confirm before publish.
 
 ## 6. Publish
 If approved: confluence/message skill. Copy to REPORT_FINAL.md. Update task.json.
@@ -467,9 +517,10 @@ This modular design ensures the Reporter Agent can run standalone for ad-hoc def
 
 | Skill / Tool | Phase Used | Purpose |
 |---|---|---|
-| `jira-cli` | Phase 1 | Paginated JQL execution, issue status/priority/assignee/resolution date |
+| `jira-cli` | Phase 0b, 1 | Project list fetch, paginated JQL execution, issue status/priority/assignee/resolution date |
 | `github` | Phase 2 | PR diff analysis → Fix Risk Analysis column data |
 | `defect-analysis-reporter` | Phase 3 | Standardized Markdown report generation (Section 6 format) |
+| `report-quality-reviewer` | Phase 4a | Quality gate: section completeness, defect count, 20/80 focus, risk coherence, PR coverage |
 | `confluence` | Phase 4 | Publish final report to Confluence space |
 | `message` (Feishu) | Phase 4 | Team channel notification if Confluence publish skipped |
 | `clawddocs` | Any | Agent self-navigation within workspace |
@@ -492,6 +543,10 @@ The generated report and the workflow execution are considered **complete and va
 - [ ] In Progress and To Do tables include all 4 columns: ID, Summary, Priority, Assignee.
 - [ ] Risk Analysis by Functional Area covers all meaningful groupings with Risk Level and Testing Focus.
 - [ ] Recommended QA Focus Areas are actionable and tied to open defects.
+
+### AI Self-Review
+- [ ] Separate `_REVIEW_SUMMARY.md` is correctly generated containing quality checklist results and focus areas.
+- [ ] Modulo objective fixes, no agent subjective modifications are made to the draft automatically without user confirmation.
 
 ### Scalability
 - [ ] Handles >50 defects via paginated Jira API calls without data loss.

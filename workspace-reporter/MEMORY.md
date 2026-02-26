@@ -101,72 +101,6 @@ Edge cases:
 - Data loss → Always Critical
 - Typos in user-facing text → Low (unless offensive)
 
-## Jira Authentication
-
-**CRITICAL: Always load credentials from .env file**
-
-When running jira-cli commands, ALWAYS source credentials from workspace .env:
-```bash
-cd /Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-reporter
-export JIRA_API_TOKEN="<token-from-.env>"
-export JIRA_SERVER="https://strategyagile.atlassian.net"
-jira issue view ISSUE-KEY
-```
-
-**Why this matters:**
-- System bash_profile may not have current token
-- .env file in workspace-reporter/ contains the working token
-- Credentials are: JIRA_SERVER, JIRA_EMAIL, JIRA_API_TOKEN
-
-**Lesson learned (2026-02-26):** Failed to fetch BCED-4198 initially because I relied on bash_profile instead of workspace .env. Always check workspace-reporter/.env first.
-
-## Jira Cross-Project Linked Issues
-
-**CRITICAL: jira-cli linkedIssues() function doesn't work across projects**
-
-**Problem:** When a feature (e.g., BCED-4198) has defects linked from different projects (CIAD, CGWS, CGAD), the standard JQL fails:
-```bash
-# ❌ FAILS: Returns "No result found"
-jira issue list --jql 'issuetype = Defect AND (parent="BCED-4198" OR issue in linkedIssues("BCED-4198"))'
-```
-
-**Solution:** Search across multiple projects with text search:
-```bash
-# ✅ WORKS: Returns all linked defects across projects
-jira issue list --jql 'project in (BCED, CIAD, CGWS, CGAD) AND issuetype = Defect AND (parent="BCED-4198" OR text ~ "BCED-4198")'
-```
-
-**Why this matters:**
-- Features often have defects filed in different projects (BCED=Backend, CIAD=i18n, CGWS=WebStation, CGAD=Admin)
-- `linkedIssues()` and `issueFunction` don't work reliably in jira-cli
-- Must manually list relevant projects and use text search
-
-**Lesson learned (2026-02-26):** BCED-4198 had 7 defects, but only found 3 initially. Missing CIAD-169, CGWS-4847, CGWS-4824, CGAD-3476 because they were in different projects. Always search across project families.
-
-## Jira CLI Tips
-
-### Batch Operations
-```bash
-# Create multiple bugs from a list
-for bug in bug-TC-02.md bug-TC-07.md; do
-  jira issue create --project BCIN --type Bug --description "$(cat $bug)"
-done
-
-# Link multiple bugs to parent
-for key in BCIN-1235 BCIN-1236; do
-  jira issue link $key "is caused by" BCIN-1234
-done
-```
-
-### Query for Recent Bugs
-```bash
-# Bugs filed today
-jira issue list --jql "project = BCIN AND issuetype = Bug AND created >= startOfDay()"
-
-# Bugs filed by me
-jira issue list --jql "project = BCIN AND issuetype = Bug AND reporter = currentUser()"
-```
-
 ## Attachment Guidelines
 
 ### What to Attach
@@ -183,17 +117,11 @@ jira issue list --jql "project = BCIN AND issuetype = Bug AND reporter = current
 
 ## Report Archive Strategy
 
-Keep reports organized:
-- `projects/test-reports/<issue-key>/summary-report.md`
-- `projects/test-reports/<issue-key>/bugs/` (individual bug reports)
-- `projects/test-reports/daily/` (daily summaries)
+**Defect analysis reports:** See `projects/docs/REPORTER_AGENT_DESIGN.md` Section 3 — per-feature `archive/` inside each `defects-analysis/<FEATURE_KEY>/`.
 
-Archive old reports:
-```bash
-# Move old reports to archive (quarterly)
-mkdir -p projects/archive/2026-Q1
-mv projects/test-reports/BCIN-1[0-9][0-9][0-9] projects/archive/2026-Q1/
-```
+**Test reports:** See `WORKSPACE_RULES.md` — `projects/test-reports/<issue-key>/` with quarterly archive to `projects/archive/`.
+
+**Gap reconciliation:** See `projects/docs/REPORTER_ENHANCEMENT_DESIGN.md` Section 3.
 
 ---
 

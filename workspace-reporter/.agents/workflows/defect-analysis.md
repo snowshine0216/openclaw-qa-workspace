@@ -17,8 +17,9 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
 
 1. Accept from the user: a Feature ID (e.g., `BCIN-1234`), JQL query, or **release version** (e.g., `26.03`).
 2. **Confirm with user** before proceeding — raise questions if anything is unclear. **Do not proceed without approval.**
-3. Set working directory: `projects/defects-analysis/<FEATURE_KEY>/` (single) or `projects/defects-analysis/release_<VERSION>/` (release-scoped).
-4. **Report Status Check + Resume Check** — run before any API call:
+3. **Load Jira credentials** from workspace `.env` before any jira-cli call (see `skills/jira-cli/references/issue-search.md`). System profile may not have the current token.
+4. Set working directory: `projects/defects-analysis/<FEATURE_KEY>/` (single) or `projects/defects-analysis/release_<VERSION>/` (release-scoped).
+5. **Report Status Check + Resume Check** — run before any API call:
    ```bash
    scripts/check_resume.sh <FEATURE_KEY>
    # or
@@ -31,7 +32,7 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
    | `FINAL_EXISTS` | **STOP.** Present freshness info. Ask: **(A) Use Existing — (B) Smart Refresh — (C) Full Regenerate** |
    | `DRAFT_EXISTS` | **STOP.** Present draft date. Ask: **(A) Resume to Approval — (B) Smart Refresh — (C) Full Regenerate** |
    | `CONTEXT_ONLY` | **STOP.** Present data age + PR count. Ask: **(A) Generate from Cache — (B) Re-fetch Jira + Regenerate** |
-   | `FRESH` | Proceed normally to step 5 |
+   | `FRESH` | Proceed normally to step 6 |
 
    **If user picks an option that involves archiving** (Smart Refresh, Full Regenerate, Generate from Cache):
    ```bash
@@ -40,7 +41,7 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
    ```
    **Guard**: If data age is < 1 hour and user picks Full Regenerate, warn and require explicit re-confirmation.
 
-5. If starting fresh or after a Full Regenerate:
+6. If starting fresh or after a Full Regenerate:
    - **Single-feature:** Create `projects/defects-analysis/<FEATURE_KEY>/context/jira_issues/`, `context/prs/`, and `archive/`
    - **Release-scoped:** Create `projects/defects-analysis/release_<VERSION>/context/` and initialize `batch_task.json` with `feature_keys[]`, `completed_features[]`; create per-feature dirs after user confirms list in Phase 0a
    - Initialize `task.json` (or `batch_task.json`):
@@ -94,15 +95,47 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
 
 ---
 
+## 0b. Project Discovery (Always Run)
+
+*Goal: Fetch all accessible Jira projects and cache their keys. Used by Phase 1 JQL to ensure no projects are missed.*
+
+1. Check cache freshness:
+   ```bash
+   CACHE_FILE="projects/defects-analysis/.cache/project_keys.txt"
+   CACHE_JSON="projects/defects-analysis/.cache/jira_projects.json"
+
+   if [ -f "$CACHE_FILE" ] && [ $(( $(date +%s) - $(date -r "$CACHE_FILE" +%s) )) -lt 86400 ]; then
+     echo "✅ Using cached project list (< 24h old)"
+   else
+     echo "🔄 Fetching project list from Jira..."
+     mkdir -p projects/defects-analysis/.cache
+     scripts/retry.sh 3 2 jira project list --format json \
+       > "$CACHE_JSON"
+     jq -r '.[].key' "$CACHE_JSON" > "$CACHE_FILE"
+     echo "✅ Cached $(wc -l < "$CACHE_FILE") projects to $CACHE_FILE"
+   fi
+   ```
+2. Verify `project_keys.txt` is non-empty. If empty, check Jira credentials and retry.
+3. The cache lives at `projects/defects-analysis/.cache/` (shared across all analyses, gitignored).
+
+**Note:** Re-fetch the cache if you suspect new projects have been added, or if the cache is stale. Run `rm "$CACHE_FILE"` to force a refresh.
+
+---
+
 ## 1. Jira Extraction (Scalable)
 
 *Goal: Fetch all defects associated with the feature(s).*
 
+**Prerequisite:** Source Jira credentials from workspace `.env` before any jira-cli call. See `skills/jira-cli/references/issue-search.md`. Phase 0b must have run to populate `project_keys.txt`.
+
 **Single-feature mode:**
-1. Run with retry (page size 50):
+1. Load project keys from cache, then run with retry (page size 50). Use cross-project JQL (linkedIssues fails across projects — see jira-cli references):
    ```bash
+   # Load all project keys from Phase 0b cache
+   PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | tr '\n' ',' | sed 's/,$//')
+
    scripts/retry.sh 3 2 jira issue list \
-     --jql 'issuetype = Defect AND (issue in linkedIssues("<FEATURE_KEY>") OR parent="<FEATURE_KEY>")' \
+     --jql "project in ($PROJECT_KEYS) AND issuetype = Defect AND (parent=\"<FEATURE_KEY>\" OR text ~ \"<FEATURE_KEY>\")" \
      --format json \
      --paginate 50 \
      > projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json
@@ -161,16 +194,22 @@ For each extracted PR URL (batch max 5 at a time):
 2. Invoke the `defect-analysis-reporter` skill:
    - Input: `context/jira_raw.json` + all `context/prs/*.md` files
    - Output: `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`
-3. Verify the draft contains all required sections:
-   - [ ] Executive Summary with defect distribution table
-   - [ ] Risk Rating with reason
-   - [ ] Completed Defects table (5 columns including Fix Risk Analysis)
-   - [ ] In Progress Defects table (4 columns)
-   - [ ] To Do Defects table (4 columns)
-   - [ ] Risk Analysis by Functional Area
-   - [ ] Recommended QA Focus Areas
-   - [ ] Conclusion
-4. Update `task.json` → `current_phase: approval`, `report_generated_at: <ISO timestamp>`.
+3. Update `task.json` → `current_phase: self_review`, `report_generated_at: <ISO timestamp>`.
+
+---
+
+## 4a. AI Self-Review
+
+*Goal: Act as a preliminary quality gate before the human reviews.*
+
+1. **Invoke the `report-quality-reviewer` skill** to evaluate the draft report:
+   - Input: `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`
+   - Context Inputs: `context/jira_raw.json` + `context/prs/*.md`
+2. **Output**: Generate `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REVIEW_SUMMARY.md` based on the skill's evaluation format.
+3. **Hybrid Auto-fix Protocol**:
+   - **Objective errors**: If missing sections or mismatching defect counts, auto-fix the draft and regenerate (max 1-2 retries).
+   - **Subjective warnings**: Do NOT auto-fix. Emit warnings to the `_REVIEW_SUMMARY.md`.
+4. Update `task.json` → `current_phase: approval`.
 
 ---
 
@@ -178,9 +217,10 @@ For each extracted PR URL (batch max 5 at a time):
 
 *Goal: Human-in-the-loop sign-off before publishing.*
 
-1. Pause execution and present the user with the path to the draft:
+1. Pause execution and present the user with the paths to the draft and the review summary:
    > `"✅ Draft report is ready at: projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`
-   > `Please review it and reply with: APPROVE to publish to Confluence, or REJECT to send via Feishu."`
+   > `🔍 Self-review summary is at: projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REVIEW_SUMMARY.md`
+   > `Please review and reply with: APPROVE to publish to Confluence, or REJECT to send via Feishu."`
 2. **Wait for user response.** Do not proceed without approval.
 
 ---
