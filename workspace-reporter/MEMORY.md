@@ -125,4 +125,31 @@ Edge cases:
 
 ---
 
-*Last updated: 2026-02-23*
+## Defect Analysis Workflow - Phase 4a: AI Self-Review (NEW - 2026-02-26)
+
+**CRITICAL: Always run AI self-review before presenting to user**
+
+After generating draft report in Phase 4, IMMEDIATELY invoke `report-quality-reviewer` skill:
+
+**Process:**
+1. Read `skills/report-quality-reviewer/SKILL.md`
+2. Review draft against 6 criteria:
+   - Section completeness (all 12 sections present)
+   - Defect count consistency (match with jira_raw.json)
+   - 20/80 risk identification (top 2-3 areas)
+   - Risk rating coherence
+   - PR coverage completeness
+   - Subjective warnings (open issues, flaky tests, stale PRs)
+3. Generate `<FEATURE_KEY>_REVIEW_SUMMARY.md`
+4. **Auto-fix objective errors** (missing sections, count mismatches) - regenerate draft max 2 times
+5. **Do NOT auto-fix subjective warnings** - emit to review summary for human judgment
+
+**Output:** Two files for human review:
+- `<FEATURE_KEY>_REPORT_DRAFT.md` (the report)
+- `<FEATURE_KEY>_REVIEW_SUMMARY.md` (the quality assessment)
+
+**Lesson learned (2026-02-26):** User requested self-review before presenting. This catches errors early and provides context for human approval decision.
+
+---
+
+*Last updated: 2026-02-26*

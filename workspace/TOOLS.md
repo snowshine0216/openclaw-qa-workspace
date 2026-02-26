@@ -3,7 +3,7 @@
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
 ## Feishu
-- chat_id: oc_dd7a5e9afb38197566c7a55c5f7df2b0
+- chat_id (Snow): oc_fe98ade7c9491c260cd2d958e534c9b7
 
 
 ## What Goes Here
