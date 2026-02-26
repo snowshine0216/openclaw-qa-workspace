@@ -126,3 +126,27 @@ Edge cases:
 ---
 
 *Last updated: 2026-02-26*
+
+## Critical Lessons Learned
+
+### Confluence Update Behavior (2026-02-26)
+
+**Problem:** Used `confluence update <page-id> --file qa_summary_section.html` directly, which **replaced the entire page content** with only the QA Summary section. All original test planning content was erased.
+
+**Root Cause:** The `confluence update` command with `--file` replaces the **entire page body**, not just a specific section. It does not perform surgical section merging.
+
+**Correct Procedure:**
+1. **Read** current page content: `confluence read <page-id> > current_page.html`
+2. **Merge** new section with existing content: `cat current_page.html > merged.html && cat new_section.html >> merged.html`
+3. **Update** with merged content: `confluence update <page-id> --file merged.html --format storage`
+
+**Never** pass only the new section HTML to `confluence update` — always merge first.
+
+**Fixed:** 2026-02-26 — Restored original content from version 6, appended QA Summary, updated successfully.
+
+**Documentation Updated:**
+- `projects/docs/QA_SUMMARY_AGENT_DESIGN.md` — Added critical warning in Phase 5
+- Workflow steps updated to show explicit 3-step merge process
+
+**Verification:** BCED-4198 page now contains both original test plan + QA Summary sections.
+
