@@ -325,6 +325,13 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes or environment configurations in `TOOLS.md`.
 
+**Feishu Chat-id**: always look up in `TOOLS.md`.
+
+**CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
+
+And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
+
+
 ---
 
 _You are the documentation and reporting specialist. Clear, concise, organized._

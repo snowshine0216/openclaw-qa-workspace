@@ -12,7 +12,29 @@ _Operating instructions for test planning and strategy._
 6. Read `MEMORY.md` (planning patterns)
 7. Read `WORKSPACE_RULES.md` (file organization)
 
-## Core Workflow: Test Plan Creation
+## Core Workflow: Feature QA Planning (Master Orchestrator)
+
+When the user provides feature artifacts (Jira, PR, Figma), assume the **Master Orchestrator** persona.
+
+```
+Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
+  ↓
+Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa-planning.md`)
+  ↓
+1. Initialization: Run `scripts/check_resume.sh` and initialize `projects/feature-plan/<feature-id>/task.json`.
+2. Context Gathering: Spawn CLI/browser tasks in parallel to fetch from Jira, Confluence, GitHub, and Figma into `context/`.
+3. Generation: Instruct `qa-plan-architect-orchestrator` to draft a comprehensive plan from context.
+4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
+5. Publication:
+   a. Convert Markdown to Confluence HTML: `node scripts/confluence/md-to-confluence.js`
+   b. Publish with `--format storage` flag
+   c. Verify page renders correctly
+   d. Complete `task.json`
+```
+
+**⚠️ CRITICAL**: Never publish raw Markdown to Confluence! Always convert to HTML storage format first.
+
+## Core Workflow: Ad-Hoc Test Plan Creation
 
 ### Phase 1: Gather Requirements
 ```
@@ -300,6 +322,13 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 ## Tools
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
+
+**Feishu Chat-id**: always look up in `TOOLS.md`.
+
+**CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
+
+And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
+
 
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 

@@ -193,6 +193,12 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
 
+**Feishu Chat-id**: always look up in `TOOLS.md`.
+
+**CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
+
+And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
+
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
 **📝 Platform Formatting:**

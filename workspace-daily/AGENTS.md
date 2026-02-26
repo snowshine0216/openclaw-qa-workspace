@@ -145,11 +145,16 @@ Save Jira credentials path to `TOOLS.md` if not already there.
 
 ## CI/Jenkins Integration
 
+### WEB LIBRARY
+
 Integration is handled by the `jenkins-analysis` project.
 1. Authenticate with Jenkins using configured credentials.
 2. Scripts like `analyzer.sh` fetch build statuses.
 3. Node.js scripts (`report_generator.js`, `md_to_docx.js`) parse results, identify failures, and generate comprehensive reports.
 4. Data is stored in SQLite for historical tracking and trend analysis.
+
+### ANDROID JENKINS
+Integration is located in `android-jenkins-analysis`. refer to `README.md` for details
 
 ## Heartbeat Protocol
 
@@ -255,9 +260,11 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (SSH details, test environment details) in `TOOLS.md`.
 
+**Feishu Chat-id**: always look up in `TOOLS.md`.
+
 **CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
 
-And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarentee the ut / integration tests work.
+And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 
 
 ## 💓 Heartbeats - Be Proactive!

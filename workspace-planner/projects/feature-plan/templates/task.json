@@ -1,0 +1,132 @@
+{
+    "task_id": "",
+    "feature_id": "",
+    "feature_name": "",
+    "created_at": "",
+    "updated_at": "",
+    "overall_status": "pending",
+    "current_phase": "context_gathering",
+    "resume_from": null,
+    "degradation_policy": {
+        "jira_extract": {
+            "required": true,
+            "fallback": "abort"
+        },
+        "confluence_extract": {
+            "required": false,
+            "fallback": "skip_with_warning"
+        },
+        "github_pr_extract": {
+            "required": false,
+            "fallback": "skip_with_warning"
+        },
+        "figma_browse": {
+            "required": false,
+            "fallback": "skip_with_warning"
+        }
+    },
+    "phases": {
+        "context_gathering": {
+            "status": "pending",
+            "started_at": null,
+            "completed_at": null,
+            "subtasks": {
+                "jira_extract": {
+                    "status": "pending",
+                    "started_at": null,
+                    "completed_at": null,
+                    "duration_s": null,
+                    "output": null,
+                    "error": null
+                },
+                "confluence_extract": {
+                    "status": "pending",
+                    "started_at": null,
+                    "completed_at": null,
+                    "duration_s": null,
+                    "output": null,
+                    "error": null
+                },
+                "github_pr_extract": {
+                    "status": "pending",
+                    "started_at": null,
+                    "completed_at": null,
+                    "duration_s": null,
+                    "output": null,
+                    "error": null
+                },
+                "figma_browse": {
+                    "status": "pending",
+                    "started_at": null,
+                    "completed_at": null,
+                    "duration_s": null,
+                    "output": null,
+                    "error": null
+                }
+            }
+        },
+        "plan_generation": {
+            "status": "pending",
+            "started_at": null,
+            "completed_at": null,
+            "subtasks": {
+                "cross_reference": {
+                    "status": "pending"
+                },
+                "draft_plan": {
+                    "status": "pending",
+                    "output": null
+                },
+                "tavily_supplement": {
+                    "status": "pending"
+                }
+            }
+        },
+        "review_refactor": {
+            "status": "pending",
+            "started_at": null,
+            "completed_at": null,
+            "iteration": 0,
+            "max_iterations": 2,
+            "circuit_breaker": {
+                "quality_threshold": 0.80,
+                "minimum_improvement": 0.05,
+                "absolute_hard_maximum": 3
+            },
+            "subtasks": {
+                "self_review": {
+                    "status": "pending",
+                    "score": null,
+                    "output": null
+                },
+                "refactor": {
+                    "status": "pending",
+                    "output": null
+                }
+            }
+        },
+        "publication": {
+            "status": "pending",
+            "started_at": null,
+            "completed_at": null,
+            "subtasks": {
+                "generate_markdown": {
+                    "status": "pending",
+                    "output": null
+                },
+                "publish_confluence": {
+                    "status": "pending",
+                    "confluence_page_id": null
+                }
+            }
+        }
+    },
+    "degradation": {
+        "skipped_sources": [],
+        "warnings": [],
+        "confidence_level": null
+    },
+    "errors": [],
+    "heartbeat_interval_s": 240,
+    "last_heartbeat_at": null
+}
