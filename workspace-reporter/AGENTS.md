@@ -1,6 +1,6 @@
-# AGENTS.md - QA Reporter Agent
+# AGENTS.md - QA Reporter & QA Summary Agents
 
-_Defect analysis, PR deep dives, and QA risk reporting._
+_Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary publishing._
 
 ## Session Start
 
@@ -26,7 +26,7 @@ Full design: `projects/docs/REPORTER_AGENT_DESIGN.md`
 | **3. PR Analysis** | Spawn parallel sub-agents (max 5). Fetch diffs via `github` skill. Save Fix Risk Analysis to `context/prs/<PR_ID>_impact.md`. Heartbeat every 60s. |
 | **4. Report Generation** | Invoke `defect-analysis-reporter` skill. Save draft to `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`. |
 | **5. Approval** | **STOP. Ask user to review draft. Wait for APPROVE or REJECT.** |
-| **6. Publish** | APPROVE → convert MD→HTML → publish via `confluence` skill. REJECT → broadcast via `message` (Feishu). Copy draft → `_REPORT_FINAL.md`. |
+| **6. Publish** | APPROVE → convert MD→HTML → publish via `confluence` skill. REJECT → broadcast via `message` (Feishu). Final report already exists (promoted in Phase 4a). |
 
 ### ⚠️ Mandatory Rules
 
@@ -36,10 +36,30 @@ Full design: `projects/docs/REPORTER_AGENT_DESIGN.md`
 
 ---
 
+## Core Workflow: QA Summary
+
+Full design: `projects/docs/QA_SUMMARY_AGENT_DESIGN.md`
+
+Built on top of the Defect Analysis Agent, this acts as the orchestrator to publish targeted summary sections to Confluence. It replaces the concept of a "Feature Summary Workflow" referenced in some earlier designs.
+
+### Phases (summary)
+
+| Phase | Action |
+|-------|--------|
+| **0. Pre-Flight** | Check idempotency, identify Confluence page ID, check codebase state (Final / Draft / Cache / Fresh). Prompt user for refresh strategy. |
+| **1. Sub-Agent** | Spawn the `defect-analysis` sub-agent (see Core Workflow above) to fetch and aggregate Jira/PR data. |
+| **2. Generation** | Apply `qa-summary` skill. Construct the QA Summary draft (`<KEY>_QA_SUMMARY_DRAFT.md`) following the emoji-heading + 1-based subsection template. Use `[PENDING]` placeholders for missing data. |
+| **3. Self-Review** | Apply `qa-summary-review` skill. Coverage + Formatting quality gate. Auto-apply minor fixes. MUST explicitly render final version to user console upon pass. |
+| **4. Approval Gate** | **STOP. Ask user to APPROVE or REJECT.** Render summary entirely to chat. |
+| **5. Confluence Update**| Surgical merge on Confluence using ID. Preserve all sections outside `QA Summary`. |
+| **6. Notification** | Feishu (or Wacli fallback). |
+
+---
+
 ## File Organization
 
 ```
-projects/defects-analysis/
+projects/defects-analysis/           ← Managed by Defect Analysis sub-agent
 ├── <FEATURE_KEY>/
 │   ├── task.json                    ← includes jira_fetched_at, pr_analysis_timestamps, archive_log
 │   ├── context/
@@ -49,11 +69,16 @@ projects/defects-analysis/
 │   ├── archive/                     ← previous reports (never deleted)
 │   │   └── <KEY>_REPORT_FINAL_<YYYYMMDD>.md
 │   ├── <FEATURE_KEY>_REPORT_DRAFT.md
+│   ├── <FEATURE_KEY>_REVIEW_SUMMARY.md
 │   └── <FEATURE_KEY>_REPORT_FINAL.md
 └── release_<VERSION>/
-    ├── batch_task.json
-    ├── context/features_raw.json
-    └── <FEATURE_KEY>/  (same structure as above)
+
+projects/qa-summaries/               ← Managed by QA Summary orchestrator
+└── <FEATURE_KEY>/
+    ├── run.json
+    ├── archive/
+    ├── <FEATURE_KEY>_QA_SUMMARY_DRAFT.md
+    └── <FEATURE_KEY>_QA_SUMMARY_FINAL.md
 ```
 
 ---
@@ -65,8 +90,12 @@ projects/defects-analysis/
 | `jira-cli` | 1–2 | Paginated JQL, issue details |
 | `github` | 3 | PR diffs → Fix Risk Analysis |
 | `defect-analysis-reporter` | 4 | Standardized Markdown report |
-| `confluence` | 6 | Publish approved report |
-| `message` (Feishu) | 6 | Notify team if Confluence skipped |
+| `report-quality-reviewer` | 4a | Quality gate review on Defect Analysis report |
+| `qa-summary` | 2 (QA Sum) | Draft generation guide: section template, data source mapping, formatting rules |
+| `qa-summary-review` | 3 (QA Sum) | Quality gate: Coverage + Formatting review of the drafted QA Summary |
+| `confluence` | 6 | Publish approved report / Surgical section update |
+| `feishu` | 6 | Notify team if Confluence skipped, or post-publish (QA Sum) |
+| `wacli` | 6 | Notification fallback |
 
 All skills in `skills/`. Scripts in `scripts/` (see `scripts/README.md`).
 
