@@ -6,11 +6,13 @@ description: Central orchestration workflow for the QA Planner Agent to generate
 
 Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, GitHub PRs, and Figma designs) and act as the Master Orchestrator to generate, review, and publish a Test Plan.
 
-## 0. Preparation
+## 0. Preparation and Information Confirmation
 1. Accept the target Feature ID (e.g. `BCIN-1234`) and related artifacts from the user.
+2. Based on the provided artifects, double confirm with user the requirements, and raise questions if you have doubts. ONLY proceed with user approval
 2. Ensure the working directory is `projects/feature-plan/<feature-id>`.
 3. Run `scripts/check_resume.sh <feature-id>` to determine if there is an in-progress `task.json` that you can resume. If so, skip directly to the `resume_from` phase.
 4. If starting fresh, initialize `projects/feature-plan/<feature-id>/task.json` with overall_status `in_progress` and current_phase `context_gathering`.
+
 
 ## 1. Information Gathering & Context Extraction
 *Run the CLI tools (these should ideally run in parallel) and save outputs to `projects/feature-plan/<feature-id>/context/`.*
@@ -49,4 +51,4 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
    ```
    **⚠️ NEVER publish raw Markdown** - Confluence requires HTML storage format!
 5. **Verify publication**: Check that page renders correctly with formatted tables and headers.
-6. Update `task.json` phase to `completed` and mark overall_status as `completed`.
+6. Update `task.json` phase to `completed` and mark overall_status as `completed`
