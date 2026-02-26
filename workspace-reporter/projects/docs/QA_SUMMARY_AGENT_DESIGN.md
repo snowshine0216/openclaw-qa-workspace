@@ -194,6 +194,17 @@ Please review the draft, then reply:
 
 ### Phase 5 — Confluence Section Update
 
+**⚠️ CRITICAL WARNING ⚠️**
+
+**The `confluence update` command REPLACES the entire page content by default.** It does **NOT** perform surgical section merging. To preserve existing content:
+
+1. **MUST** read the current page content first via `confluence read <page-id>`
+2. **MUST** manually merge the new QA Summary HTML into the existing page HTML
+3. **MUST** save the merged HTML to a temporary file
+4. **ONLY THEN** run `confluence update <page-id> --file merged_content.html --format storage`
+
+**Never** call `confluence update` with only the new section HTML — this will erase all existing content.
+
 This phase performs a **surgical update** of the `QA Summary` section only. It never touches the rest of the page.
 
 #### 5a. Read Current Page
@@ -222,10 +233,20 @@ Parse the existing page content to locate the `QA Summary` section (search for `
 
 #### 5d. Execute Update
 
-Convert the merged content and apply it:
-
+**Step 1: Read current page content**
 ```bash
-confluence update <page-id> --file qa_summary_section.html --format storage
+confluence read <page-id> > current_page.html
+```
+
+**Step 2: Merge new QA Summary with existing content**
+```bash
+cat current_page.html > merged_content.html
+cat qa_summary_section.html >> merged_content.html
+```
+
+**Step 3: Update with merged content**
+```bash
+confluence update <page-id> --file merged_content.html --format storage
 ```
 
 On success, record in `run.json`:
