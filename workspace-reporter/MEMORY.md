@@ -101,30 +101,6 @@ Edge cases:
 - Data loss → Always Critical
 - Typos in user-facing text → Low (unless offensive)
 
-## Jira CLI Tips
-
-### Batch Operations
-```bash
-# Create multiple bugs from a list
-for bug in bug-TC-02.md bug-TC-07.md; do
-  jira issue create --project BCIN --type Bug --description "$(cat $bug)"
-done
-
-# Link multiple bugs to parent
-for key in BCIN-1235 BCIN-1236; do
-  jira issue link $key "is caused by" BCIN-1234
-done
-```
-
-### Query for Recent Bugs
-```bash
-# Bugs filed today
-jira issue list --jql "project = BCIN AND issuetype = Bug AND created >= startOfDay()"
-
-# Bugs filed by me
-jira issue list --jql "project = BCIN AND issuetype = Bug AND reporter = currentUser()"
-```
-
 ## Attachment Guidelines
 
 ### What to Attach
@@ -141,17 +117,11 @@ jira issue list --jql "project = BCIN AND issuetype = Bug AND reporter = current
 
 ## Report Archive Strategy
 
-Keep reports organized:
-- `projects/test-reports/<issue-key>/summary-report.md`
-- `projects/test-reports/<issue-key>/bugs/` (individual bug reports)
-- `projects/test-reports/daily/` (daily summaries)
+**Defect analysis reports:** See `projects/docs/REPORTER_AGENT_DESIGN.md` Section 3 — per-feature `archive/` inside each `defects-analysis/<FEATURE_KEY>/`.
 
-Archive old reports:
-```bash
-# Move old reports to archive (quarterly)
-mkdir -p projects/archive/2026-Q1
-mv projects/test-reports/BCIN-1[0-9][0-9][0-9] projects/archive/2026-Q1/
-```
+**Test reports:** See `WORKSPACE_RULES.md` — `projects/test-reports/<issue-key>/` with quarterly archive to `projects/archive/`.
+
+**Gap reconciliation:** See `projects/docs/REPORTER_ENHANCEMENT_DESIGN.md` Section 3.
 
 ---
 
