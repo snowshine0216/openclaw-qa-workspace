@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test",
+    "test:reportUndoRedo": "npx playwright test tests/specs/reportEditor/reportUndoRedo/ --project=reportUndoRedo",
+    "test:reportUndoRedo:list": "npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@types/node": "^25.3.2"
+    "@types/node": "^25.3.2",
+    "dotenv": "^17.3.1"
   }
 }

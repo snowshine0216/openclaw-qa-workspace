@@ -1,8 +1,8 @@
 ---
 name: test-case-generator
-description: Generate comprehensive test cases from requirements, user stories, or feature descriptions. Creates functional, edge case, boundary, and UI test cases. Use when designing tests for new features, writing test documentation, or preparing test plans.
+description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed JSON-formatted test cases intended for the tester-agent to consume, generating them one by one in projects/testcase-plan/<feature-id>.
 homepage: https://github.com/naodeng/awesome-qa-prompt
-metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":["jira-cli"]}}}
+metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":[]}}}
 ---
 
 # Test Case Generator Skill
@@ -43,28 +43,40 @@ Paste any documentation, specs, or descriptions about the feature.
 | **Integration** | System interactions | API calls, database operations |
 | **Security** | Authentication/authorization | SQL injection, XSS, permissions |
 
-## Test Case Template
+## Test Case Template (JSON)
 
-```markdown
-### TC-[ID]: [Test Case Name]
-**Priority**: P0/P1/P2/P3
-**Type**: Functional/UI/Integration/Security
+Generate each test case as a discrete `.json` file that can be read by the Tester Agent. Save them sequentially to `projects/testcase-plan/<feature-id>/`.
 
-**Preconditions:**
-- Precondition 1
-- Precondition 2
-
-**Steps:**
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-**Expected Result:**
-[What should happen]
-
-**Test Data:**
-- Username: [data]
-- Password: [data]
+```json
+{
+  "testCaseId": "TC-[ID]",
+  "name": "[Test Case Name]",
+  "priority": "P0|P1|P2|P3",
+  "type": "Functional|UI|Integration|Security",
+  "preconditions": [
+    "Precondition 1",
+    "Precondition 2"
+  ],
+  "steps": [
+    {
+      "stepNumber": 1,
+      "action": "[Step 1]"
+    },
+    {
+      "stepNumber": 2,
+      "action": "[Step 2]"
+    },
+    {
+      "stepNumber": 3,
+      "action": "[Step 3]"
+    }
+  ],
+  "expectedResult": "[What should happen]",
+  "testData": {
+    "Username": "[data]",
+    "Password": "[data]"
+  }
+}
 ```
 
 ## Generation Process
@@ -273,21 +285,9 @@ Requirements:
 
 ## Test Case Management
 
-### Export to Jira Format
-```bash
-# Generate JIRA-compatible test cases
-jira issue create --summary "TC-LOGIN-001: Successful Login" \
-  --type Test \
-  --priority P0 \
-  --description "**Preconditions:**\n- User exists\n\n**Steps:**\n1. Navigate to login\n2. Enter credentials\n3. Click Login\n\n**Expected:** Dashboard loads"
-```
+## Test Case Management
 
-### CSV Export Template
-```csv
-ID,Name,Priority,Type,Preconditions,Steps,Expected Result
-TC-001,Login Success,P0,Functional,User exists,3 steps,Dashboard loads
-TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
-```
+All generated test cases must be saved logically as JSON files under the `projects/testcase-plan/<feature-id>/` directory. Ensure each test case is correctly parsed and isolated so the executor script can reliably ingest them.
 
 ## Priority Guidelines
 
@@ -301,16 +301,16 @@ TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
 ## Use Cases
 
 ### 1. New Feature Testing
-1. Get feature requirements
-2. Run `test-case-generator`
-3. Review and refine test cases
-4. Export to Jira/test management
+1. Look up the existing QA plan / feature requirements
+2. Run `test-case-generator` to identify scenarios
+3. Serialize detailed JSON test cases one by one under `projects/testcase-plan/<feature-id>/`
+4. Handoff context to Tester Agent to run the scripts
 
 ### 2. Regression Testing
-1. Identify features to test
-2. Generate test suite
+1. Identify features to test against existing coverage
+2. Generate additional or missing test cases incrementally
 3. Prioritize by P0/P1
-4. Execute and track in Jira
+4. Handoff to Tester Agent
 
 ### 3. Test Coverage Analysis
 1. Input: Current test suite
@@ -321,7 +321,7 @@ TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
 ## Integration Points
 
 - **qa-daily-workflow**: Use generated test cases in daily testing
-- **jira-cli**: Export test cases to Jira
+- **tester-agent**: Strictly consumes the generated JSON test cases
 - **playwright-cli**: Execute UI test cases
 - **microstrategy-testing**: Generate tests for MicroStrategy features
 

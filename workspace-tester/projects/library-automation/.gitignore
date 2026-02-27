@@ -1,4 +1,8 @@
 
+# Env (credentials - never commit)
+.env.report
+.env.report.*
+
 # Playwright
 node_modules/
 /test-results/
