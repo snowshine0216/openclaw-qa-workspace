@@ -1,0 +1,97 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "99C2CE88B7E44B51916ABB50020440A9",
+            "n": "Call Center"
+          },
+          {
+            "cate": "FC25C5C71A2D402B8CDCA96DAD407423",
+            "n": "Category"
+          },
+          {
+            "cate": "2BC93159CE2D468F9368991B4298D52A",
+            "n": "Month"
+          },
+          {
+            "cate": "1561D634FA4C44FCA74CB831D758F5AD",
+            "n": "Quarter"
+          },
+          {
+            "cate": "1EC5AEB454D14596942ADD2216A0ABC1",
+            "n": "Region"
+          }
+        ],
+        "chat_col": [
+          {
+            "chat_id": "00000000000000000000000000000000",
+            "chat_timestamp": {
+              "day": 30,
+              "day_of_week": 6,
+              "do": 0,
+              "dt": -100,
+              "dtm": 0,
+              "hour": 0,
+              "ig": false,
+              "minute": 0,
+              "month": 12,
+              "sec": 0,
+              "srs": 0,
+              "tms": 0,
+              "week": 5,
+              "year": 1899
+            },
+            "chat_type": 1
+          }
+        ],
+        "endtime": {
+          "day": 1,
+          "day_of_week": 4,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 9,
+          "ig": true,
+          "minute": 35,
+          "month": 5,
+          "sec": 33,
+          "srs": 0,
+          "tms": 988,
+          "week": 1,
+          "year": 2025
+        }
+      },
+      "did": "19E903D40D4E93F23411B781FBA9DB0C",
+      "img": true,
+      "lcl": 1033,
+      "nct": "2023-12-08T09:35:33.988Z",
+      "nmdt": "2023-12-08T09:35:35.558Z",
+      "owid": "4CF544F00D40D7E84AFC6BA4FD55ECE5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "4CF544F00D40D7E84AFC6BA4FD55ECE5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "AFA0ADE192448A1DE5C644BC72550A8A"
+    }
+  ]
+}

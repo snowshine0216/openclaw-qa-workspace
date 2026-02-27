@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomAppSpecificSAML.spec.js'>
+        <TC>TC86336</TC>
+    </TestSuite>
+</root>
+
+
+

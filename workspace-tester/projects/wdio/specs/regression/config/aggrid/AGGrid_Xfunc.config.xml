@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AgGrid_InfoWindow.spec.js'>
+        <TC>TC81929</TC>
+        <TC>BCIN-6501</TC>
+    </TestSuite>
+    <TestSuite id='2' name='CustomNoDataStr.spec.js'>
+        <TC>TC99138</TC>
+    </TestSuite>
+    <TestSuite id='3' name='AGGrid_Xfunc_OP.spec.js'>
+        <TC>BCED-2391</TC>
+        <TC>BCED-3720</TC>
+        <TC>BCED-6359</TC>
+        <TC>BCIN-5877</TC>
+    </TestSuite>
+</root>

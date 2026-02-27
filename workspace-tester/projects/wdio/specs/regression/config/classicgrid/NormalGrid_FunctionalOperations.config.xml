@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_FunctionalOperations.spec.js'>
+        <TC>TC22703_01</TC>
+        <TC>TC22703_02</TC>
+        <TC>TC22703_03</TC>
+        <TC>TC22703_04</TC>
+        <TC>TC22703_05</TC>
+    </TestSuite>
+</root>

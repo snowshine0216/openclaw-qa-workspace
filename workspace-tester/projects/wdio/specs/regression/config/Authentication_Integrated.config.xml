@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='authentication_Integrated.spec.js'>
+        <TC>TC65242</TC>
+        <TC>TC86306</TC>
+    </TestSuite>
+</root>
+

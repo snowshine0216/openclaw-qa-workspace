@@ -1,0 +1,178 @@
+[
+  {
+    "case_id": "1",
+    "dataset": "OLAP_simple",
+    "dataset_id": "3A3E65FCC64D7663645CB2B612E66AF1",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: What is the profit for the subcategory of Business?",
+    "expected_keyword1": "Business;89273",
+    "question2": "X7Vw50KfC2KdPzGY: What is the total revenue generated for the category Books?",
+    "expected_keyword2": "Books;2640094"
+  },
+  {
+    "case_id": "02",
+    "dataset": "OLAP_CompoundMetric",
+    "dataset_id": "F570CCCA2F483CAA0A6763BA3B4EC783",
+    "rename_bject": "Year",
+    "metric_for_DM": "Markup",
+    "question1": "X7Vw50KfC2KdPzGY: show me the total markup in the year of 2012",
+    "expected_keyword1": "2012;0.7247",
+    "question2": "X7Vw50KfC2KdPzGY: what is the markup in the quarter of 2010 Q1?",
+    "expected_keyword2": "0.2147"
+  },
+  {
+    "case_id": "03",
+    "dataset": "OLAP_level_metric",
+    "dataset_id": "725CE09E5641910AFE0C2993E922993C",
+    "rename_bject": "Category",
+    "metric_for_DM": "Revenue-level",
+    "question1": "X7Vw50KfC2KdPzGY: What is the total Revenue-level for the category of 'Books'?",
+    "expected_keyword1": "Books;2,640,094",
+    "question2": "X7Vw50KfC2KdPzGY: list all the 'Subcategory (DESC)' begins with 'P'",
+    "expected_keyword2": "Pop"
+  },
+  {
+    "case_id": "04",
+    "dataset": "OLAP_smart_metric",
+    "dataset_id": "41C99BB2094E4C34057EBDB58D154F32",
+    "rename_bject": "Category",
+    "metric_for_DM": "Markup-smart",
+    "question1": "X7Vw50KfC2KdPzGY: What is the markup-smart value for the Art & Architecture subcategory?",
+    "expected_keyword1": "29.72%",
+    "question2": "X7Vw50KfC2KdPzGY: What is the markup-smart for the category of Books",
+    "expected_keyword2": "books;27.49%"
+  },
+  {
+    "case_id": "05",
+    "dataset": "OLAP_with_filter",
+    "dataset_id": "357EB3D46F4C2FB00D69C58C23FCF11B",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: list all category",
+    "expected_keyword1": "Movies",
+    "question2": "X7Vw50KfC2KdPzGY: list all subcategory",
+    "expected_keyword2": "Action;Comedy;Drama;Horror;Kids / Family;Special Interests"
+  },
+  {
+    "case_id": "06",
+    "dataset": "MTDI_local_file",
+    "dataset_id": "EDA538F4944AC175377D3086EA849740",
+    "rename_bject": "Category",
+    "metric_for_DM": "Average Price (USD)",
+    "question1": "X7Vw50KfC2KdPzGY: Which category of dog has lowest average lifespan",
+    "expected_keyword1": "Working",
+    "question2": "X7Vw50KfC2KdPzGY: Which Breed has the most expensive price",
+    "expected_keyword2": "French Bulldog;3000"
+  },
+  {
+    "case_id": "07",
+    "dataset": "MTDI_sample_airline",
+    "dataset_id": "407899187E4BC1E8B7B8BEB8F5D3A8B9",
+    "rename_bject": "Year",
+    "metric_for_DM": "On-Time",
+    "question1": "X7Vw50KfC2KdPzGY: show me the 'Avg Delay (min)' for the Year of 2010",
+    "expected_keyword1": "2010;32.09",
+    "question2": "X7Vw50KfC2KdPzGY: Which 'Origin Airport (ID)' has the highest number of 'flights cancelled'?",
+    "expected_keyword2": "DCA;5296"
+  },
+  {
+    "case_id": "08",
+    "dataset": "subset_simple",
+    "dataset_id": "AFB551A3B3420EB601B028A5AFD4662B",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: What is the profit for the subcategory of Business?",
+    "expected_keyword1": "Business;89273",
+    "question2": "X7Vw50KfC2KdPzGY: What is the total revenue generated for the category Books?",
+    "expected_keyword2": "2640094"
+  },
+  {
+    "case_id": "09",
+    "dataset": "subset_DM",
+    "dataset_id": "A59887E6464A4B529A41E7898B5CC69C",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: show me the markup for the subcategory of horror",
+    "expected_keyword1": "6.60%",
+    "question2": "X7Vw50KfC2KdPzGY: show me the total markup for the category of 'Books'",
+    "expected_keyword2": "27.49%"
+  },
+  {
+    "case_id": "10",
+    "dataset": "subset_level_metric",
+    "dataset_id": "3A3E65FCC64D7663645CB2B612E66AF1",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: What is the total cost on category for the category of 'Books'?",
+    "expected_keyword1": "Books;2070816",
+    "question2": "X7Vw50KfC2KdPzGY: directly show me the 'Cost' for Subcategory of Action, never use any visualization!",
+    "expected_keyword2": "579819"
+  },
+  {
+    "case_id": "11",
+    "dataset": "subset_smart_metric",
+    "dataset_id": "97C1C0AD8A451B3E9AC6D7B56B300EB5",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: What is the markup-smart value for the Art & Architecture subcategory?",
+    "expected_keyword1": "29.720%",
+    "question2": "X7Vw50KfC2KdPzGY: What is the markup-smart for the category of Books",
+    "expected_keyword2": "27.491%"
+  },
+  {
+    "case_id": "12",
+    "dataset": "subset_pageBy",
+    "dataset_id": "C1A2E432CA4BA65956EC9DBF73C19AFC",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: show me the profit for the category of Movies",
+    "expected_keyword1": "254698",
+    "question2": "X7Vw50KfC2KdPzGY: show me the cost for the subcategory of Business",
+    "expected_keyword2": "Business;311579"
+  },
+  {
+    "case_id": "13",
+    "dataset": "subset_view_filter_category",
+    "dataset_id": "CADEF1AB4A5A1FB291A15184FD1B25D1",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: show me the category and cost",
+    "expected_keyword1": "Music;3713323",
+    "question2": "X7Vw50KfC2KdPzGY: List all subcategory",
+    "expected_keyword2": "alternative;country;music - miscellaneous;pop;rock;soul / r&b"
+  },
+  {
+    "case_id": "14",
+    "dataset": "subset_view_filter_cost",
+    "dataset_id": "26C450DE3E4696A55D3C0681E22C9AF8",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: List the subcategory belongs to the category of 'Books'",
+    "expected_keyword1": "Science & Technology",
+    "question2": "X7Vw50KfC2KdPzGY: Show me the total cost for 'Books' category",
+    "expected_keyword2": "463369"
+  },
+  {
+    "case_id": "15",
+    "dataset": "subset_view_filter_category_cost",
+    "dataset_id": "E0F7FBD4E64E79DB5150E7A32D3B3089",
+    "rename_bject": "Category",
+    "metric_for_DM": "Cost",
+    "question1": "X7Vw50KfC2KdPzGY: show me the category and cost directly",
+    "expected_keyword1": "Music;3713323",
+    "question2": "X7Vw50KfC2KdPzGY: List all subcategory",
+    "expected_keyword2": "Alternative;Country"
+  },
+  {
+    "case_id": "16",
+    "dataset": "subset_both_cube_view_filter",
+    "dataset_id": "",
+    "rename_bject": "Category",
+    "metric_for_DM": "Profit",
+    "question1": "X7Vw50KfC2KdPzGY: directly show me the category and Profit, never use any visualization!",
+    "expected_keyword1": "Movies;113365",
+    "question2": "X7Vw50KfC2KdPzGY: List all subcategory",
+    "expected_keyword2": "Action;Comedy;Drama"
+  }
+]

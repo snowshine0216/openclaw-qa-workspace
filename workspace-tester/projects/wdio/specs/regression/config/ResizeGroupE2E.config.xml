@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='E2E_resizeGroup.spec.js'>
+        <TC>TC99454_01</TC>
+        <TC>TC99454_02</TC>
+    </TestSuite>
+</root>

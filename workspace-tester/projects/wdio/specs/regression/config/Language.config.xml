@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Language_UI.spec.js'>
+        <TC>TC86630</TC>
+        <TC>TC84516</TC>
+    </TestSuite>
+    <TestSuite id='01' name='Language_HelpLink.spec.js'>
+        <TC>TC87345_01</TC>
+        <TC>TC87345_02</TC>
+        <TC>TC87345_03</TC>
+    </TestSuite>
+    <TestSuite id='01' name='Language_CustomerIssue.spec.js'>
+        <TC>TC88166</TC>
+        <TC>TC89144</TC>
+        <TC>TC96526</TC>
+    </TestSuite>
+</root>

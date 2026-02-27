@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LibraryAdminPageAuthenticationBasic.spec.js'>
+    	<TC>TC78247</TC>
+    </TestSuite>
+</root>

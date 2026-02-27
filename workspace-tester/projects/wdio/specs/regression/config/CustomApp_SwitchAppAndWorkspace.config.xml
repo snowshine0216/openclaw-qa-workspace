@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomApp_SwitchAppAndWorkspace.spec.js'>
+        <TC>TC97287_01</TC>
+        <TC>TC97287_02</TC>
+        <TC>TC97287_03</TC>
+        <TC>TC97287_04</TC>
+        <TC>TC97288_01</TC>
+        <TC>TC97288_02</TC>
+        <TC>TC97288_03</TC>
+        <TC>TC97288_04</TC>
+        <TC>TC97288_05</TC>
+        <TC>TC76719_01</TC>
+        <TC>TC76719_02</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CustomApp_DefaultApp_no_acl.spec.js'>
+        <TC>TC99496_01</TC>
+        <TC>TC99496_02</TC>
+    </TestSuite>
+</root>

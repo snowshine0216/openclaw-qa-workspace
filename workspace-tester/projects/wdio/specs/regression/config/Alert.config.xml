@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Alert_CreateAlert.spec.js'>
+        <TC>TC98547_01</TC>
+        <TC>TC98547_02</TC>
+        <TC>TC98547_03</TC>
+        <TC>TC98547_04</TC>
+        <TC>TC98547_05</TC>
+        <!-- <TC>TC98547_06</TC> -->
+        <TC>TC98547_07</TC>
+        <TC>TC98547_08</TC>
+        <TC>TC98547_09</TC>
+        <TC>TC98547_10</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Alert_OtherFunctions.spec.js'>
+        <TC>TC98552_01</TC>
+        <TC>TC98552_02</TC>
+        <TC>TC98552_03</TC>
+    </TestSuite>  
+</root>

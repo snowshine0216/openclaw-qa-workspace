@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ProjectAlias.spec.js'>
+        <TC>TC97830_01</TC>
+        <TC>TC97830_02</TC>
+        <TC>TC97830_03</TC>
+        <TC>TC97830_04</TC>
+        <TC>TC97830_05</TC>
+        <!-- <TC>TC97830_06</TC> -->
+    </TestSuite>
+</root>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <TestSuite id='01' name='getSessions.spec.js' description='GET /api/sessions API Tests'>
+        <!-- Basic Session Information Tests -->
+        <TC id='TC99539_1' priority='high'>TC99539_1</TC>
+        <TC id='TC99539_2' priority='high'>TC99539_2</TC>
+        
+        <!-- Data Type and Value Validation Tests -->
+        <TC id='TC99539_3' priority='medium'>TC99539_3</TC>
+        <TC id='TC99539_4' priority='medium'>TC99539_4</TC>
+        
+        <!-- UserConnections Array Validation Tests -->
+        <TC id='TC99539_5' priority='medium'>TC99539_5</TC>
+        <TC id='TC99539_6' priority='medium'>TC99539_6</TC>
+        
+        <!-- Parameter Validation Tests -->
+        <TC id='TC99539_7' priority='medium'>TC99539_7</TC>
+        <TC id='TC99539_8' priority='high'>TC99539_8</TC>
+        <TC id='TC99539_9' priority='medium'>TC99539_9</TC>
+        <TC id='TC99539_10' priority='medium'>TC99539_10</TC>
+        
+        <!-- Boolean Logic Tests -->
+        <TC id='TC99539_11' priority='medium'>TC99539_11</TC>
+        <TC id='TC99539_12' priority='low'>TC99539_12</TC>
+    </TestSuite>
+</root>

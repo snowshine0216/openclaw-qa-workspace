@@ -1,0 +1,113 @@
+{   "baseUrl": "https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/",
+    "sender": {
+        "name": "mstr1",
+        "pwd": "123456",
+        "id": "998B0AE44C508F4C0481B485D7CEF781"
+    },
+    "receiver": {
+        "name": "pla_xuyin",
+        "pwd": "",
+        "id": "653668374C79A523B09CF3A5B63FA82E"
+    },
+    "bookmarks": [{
+        "project": {
+            "id": "E8DCF814A44EEC23C5EB77A32C59716B",
+            "name":"a"
+        },
+        "content": {
+            "id": "13108DAC4A4F518D001194A6696812C5",
+            "name": "1.1 Snapshot, city, report based dashboard shutest"
+        }
+    },
+    {
+        "project": {
+            "id": "7D9A3816BD46C9CF82639996A26CDE83",
+            "name":"b"
+        },
+        "content": {
+            "id": "67C581FCA24B0B7742CD588C8FA52AE3",
+            "name": "Big Document, automation result"
+        }
+    },
+    {
+        "project": {
+            "id": "BEAB2373A24E07733CE2D78E06146BB2",
+            "name": "Cezary"
+        },
+        "content": {
+            "id": "E21E95353A4FF3BA74C62AA701D6937D",
+            "name": "airline"
+        }
+    },
+    {
+        "project": {
+            "id": "CE52831411E696C8BD2F0080EFD5AF44",
+            "name":"Consolidated Education Project"
+        },
+        "content": {
+            "id": "8D6EEA79A64EC4E1454D0F9E33121F28",
+            "name": "New Dossier"
+        }
+    },
+    {
+        "project": {
+            "id": "B3FEE61A11E696C8BD0F0080EFC58F44",
+            "name":"Hierarchies Project"
+        },
+        "content": {
+            "id": "F6559342F24E77655750C3ACAE8FDFF9",
+            "name": "constant label"
+        }
+    },
+    {
+        "project": {
+            "id": "4BAE16A340B995CAD24193AA3AC15D29",
+            "name":"Human Resources Analysis Module"
+        },
+        "content": {
+            "id": "7B5C0F934E2A055D039FCD81868E9EB1",
+            "name": "Attrition Scorecard"
+        }
+    },
+    {
+        "project": {
+            "id": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+            "name":"MicroStrategy Tutorial"
+        },
+        "content": {
+            "id": "8099C7394822D775B266A3A19D36D075",
+            "name": "OOTBLibrary"
+        }
+    },
+    {
+        "project": {
+            "id": "61ABA574CA453CCCF398879AFE2E825F",
+            "name": "Platform Analytics"
+        },
+        "content": {
+            "id": "DFDBFAF89E4F684E32AA879378B84161",
+            "name": "PA analysis"
+        }
+    },
+    {
+        "project": {
+            "id": "4C09350211E69712BAEE0080EFB56D41",
+            "name": "Relationships Project"
+        },
+        "content": {
+            "id": "D01F9244724EB449E256F99E6B9A780A",
+            "name": "New Dashboard"
+        }
+    },
+    {
+        "project": {
+            "id": "61251758974928558D77B1B5A3CB2A4C",
+            "name": "Saurabh Snow"
+        },
+        "content": {
+            "id": "2251857B134706DC507297B210558E6B",
+            "name": "New Dashboard"
+        }
+    }
+]
+}

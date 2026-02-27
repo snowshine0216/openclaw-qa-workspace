@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportExecution.spec.js'>
+        <TC>TC84709_1</TC>
+        <TC>TC84709_2</TC>
+        <TC>TC84709_3</TC>
+        <TC>TC84709_4</TC>
+        <TC>TC84709_5</TC>
+        <TC>TC84709_6</TC>
+        <TC>TC84709_7</TC>
+        <TC>TC84709_8</TC>
+        <TC>TC84709_9</TC>
+        <TC>TC84709_10</TC>
+        <!-- <TC>TC84709_11</TC> -->
+        <TC>TC84709_12</TC>
+        <TC>TC84709_13</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_Subtotals.spec.js'>
+        <TC>TC55031_1</TC>
+        <TC>TC55031_2</TC>
+        <TC>TC55031_3</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_SharePanel.spec.js'>
+        <TC>TC56914</TC>
+    </TestSuite>
+</root>

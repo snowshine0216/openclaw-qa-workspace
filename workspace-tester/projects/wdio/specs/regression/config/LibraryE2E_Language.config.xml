@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryE2E_Language.spec.js'>
+      <TC>TC84487_01</TC>
+      <TC>TC84487_02</TC>
+   </TestSuite>
+</root>

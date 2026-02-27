@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CollaborationE2E_m2021_PrivilegeTest.spec.js'>
+        <TC>TC20908_01</TC>
+        <TC>TC20908_02</TC>
+        <TC>TC20908_03</TC>
+        <TC>TC20908_04</TC>  
+        <TC>TC20908_05</TC>
+        <TC>TC20908_06</TC>
+   </TestSuite>
+</root>

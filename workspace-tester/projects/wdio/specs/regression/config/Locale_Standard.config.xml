@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Locale_Standard.spec.js'>
+    	<TC>TC86642</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='E2E_radius.spec.js'>
+        <TC>TC99550_1</TC>
+        <TC>TC99550_2</TC>
+        <TC>TC99550_3</TC>
+        <TC>TC99550_4</TC>
+        <TC>TC99550_5</TC>
+        <TC>TC99550_6</TC>
+        <TC>TC99550_7</TC>
+    </TestSuite>
+</root>

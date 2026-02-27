@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Report_consumption_cancel_execution.spec.js'>
+        <TC>TC99427_01</TC>
+        <TC>TC99427_02</TC>
+        <TC>TC99427_03</TC>
+        <TC>TC99427_04</TC>
+        <TC>TC99427_05</TC>
+        <TC>TC99427_06</TC>
+        <TC>TC99427_07</TC>
+        <TC>TC99427_08</TC>
+        <TC>TC99427_09</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Report_authoring_cancel_execution.spec.js'>
+        <TC>TC99428_01</TC>
+        <TC>TC99428_02</TC>
+        <TC>TC99428_03</TC>
+        <TC>TC99428_04</TC>
+        <TC>TC99428_05</TC>
+        <TC>TC99428_06</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_AdvancedFilter.spec.js'>
+        <TC>TC17730_1</TC>
+        <TC>TC17730_2</TC>
+        <TC>TC59997</TC>
+        <TC>TC55955</TC>
+        <TC>TC41285</TC>
+        <TC>TC73572</TC>
+    </TestSuite>
+</root>

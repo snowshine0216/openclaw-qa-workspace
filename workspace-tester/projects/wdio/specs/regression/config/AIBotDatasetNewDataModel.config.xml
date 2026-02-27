@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoDataModelUI.spec.js'>
+        <TC>TC95289</TC>
+        <TC>TC95290</TC>
+        <TC>TC94872</TC>
+        <TC>TC95288</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AutoDataModelNoACL.spec.js'>
+        <TC>TC96425</TC>
+    </TestSuite>
+    <TestSuite id='03' name='AutoDataModelReplace.spec.js'>
+        <TC>TC94875</TC>
+        <TC>TC95334</TC>
+        <TC>TC95336</TC>
+        <TC>TC95337</TC>
+    </TestSuite>
+    <TestSuite id='04' name='AutoDataModelScroll.spec.js'>
+        <TC>TC94874</TC>
+    </TestSuite>
+    <TestSuite id='05' name='AutoDataModelSearch.spec.js'>
+        <TC>TC95299</TC>
+        <TC>TC95343</TC>
+        <TC>TC95344</TC>
+        <TC>TC95345</TC>
+    </TestSuite>
+    <TestSuite id='06' name='AutoDataModelSelect.spec.js'>
+        <TC>TC94873</TC>
+        <TC>TC95304</TC>
+        <TC>TC95305</TC>
+        <TC>TC95338</TC>
+        <TC>TC95342</TC>
+    </TestSuite>
+    <TestSuite id='07' name='AutoDataModelNoPrivileges.spec.js'>
+        <TC>TC96426</TC>
+        <TC>TC96427</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='authentication_Standard.spec.js'>
+        <TC>TC74331</TC>
+        <TC>TC65185</TC>
+        <TC>TC74334</TC>
+        <TC>TC24651</TC>
+        <TC>TC87673</TC>
+    </TestSuite>
+</root>
+

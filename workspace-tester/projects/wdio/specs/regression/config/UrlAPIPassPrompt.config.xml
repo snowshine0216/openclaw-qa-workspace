@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='UrlAPIPassPrompt.spec.js'>
+        <!-- <TC>TC96789</TC> -->
+        <TC>TC96789_02</TC>
+        <!-- <TC>TC96789_03</TC> -->
+        <TC>TC96789_04</TC>
+        <!-- <TC>TC96789_05</TC> -->
+        <TC>TC96789_06</TC>
+        <TC>TC97696</TC>
+        <TC>TC97696_02</TC>
+        <!-- <TC>TC97696_03</TC> -->
+   </TestSuite>
+   <TestSuite id='02' name='UrlAPIPassPromptandFilter.spec.js'>
+        <!-- <TC>TC97704</TC> -->
+        <!-- <TC>TC97704_02</TC> -->
+        <TC>TC97704_03</TC>
+        <TC>TC97704_04</TC>
+        <TC>TC97704_05</TC>
+        <TC>TC97704_06</TC>
+        <TC>TC97704_07</TC>
+   </TestSuite>
+   <TestSuite id='03' name='UrlAPIPassPromptXFun.spec.js'>
+        <TC>TC97705</TC>
+        <!-- <TC>TC97705_02</TC>
+        <TC>TC97705_03</TC> -->
+   </TestSuite>
+   <TestSuite id='04' name='UrlAPIPassPromptGenerateLink.spec.js'>
+        <!-- <TC>TC97814</TC> -->
+        <TC>TC97814_02</TC>
+        <TC>TC97814_03</TC>
+        <!-- <TC>TC97814_04</TC> -->
+        <TC>TC97814_05</TC>
+   </TestSuite>
+   <TestSuite id='05' name='UrlAPIPassElementListPrompt.spec.js'>
+        <TC>TC97814_06</TC>
+        <TC>TC97814_07</TC>
+        <TC>TC97814_08</TC>
+        <TC>TC97814_09</TC>
+        <TC>TC97814_11</TC>
+   </TestSuite>
+</root>

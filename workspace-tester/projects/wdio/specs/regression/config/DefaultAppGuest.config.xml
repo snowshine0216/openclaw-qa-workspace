@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DefaultAppGuest.spec.js'>
+        <TC>TC86305</TC>
+        <TC>TC86304</TC>
+    </TestSuite>
+</root>
+
+
+

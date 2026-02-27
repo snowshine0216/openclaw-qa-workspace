@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryE2E_Group.spec.js'>
+        <TC>TC70853_01</TC>
+        <TC>TC70853_02</TC>
+        <TC>TC70853_03</TC>
+        <TC>TC70853_04</TC>
+        <TC>TC70853_05</TC>
+   </TestSuite>
+</root>

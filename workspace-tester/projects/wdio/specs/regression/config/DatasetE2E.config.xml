@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='datasetManipulationsE2E.spec.js'>
+        <TC>TC99170</TC>
+        <TC>TC99170_01</TC>
+        <TC>TC99170_02</TC>
+        <TC>TC99170_03</TC>
+        <TC>TC99170_04</TC>
+        <TC>TC99170_05</TC>
+        <TC>TC99170_06</TC>
+        <TC>TC99170_07</TC>
+        <TC>TC99170_08</TC>
+        <TC>TC99170_09</TC>
+        <TC>TC99170_10</TC>
+        <TC>TC99170_11</TC>
+        <TC>TC99170_12</TC>
+        <TC>TC99170_13</TC>
+        <TC>TC99170_14</TC>
+        <TC>TC99170_15</TC>
+    </TestSuite>
+</root>

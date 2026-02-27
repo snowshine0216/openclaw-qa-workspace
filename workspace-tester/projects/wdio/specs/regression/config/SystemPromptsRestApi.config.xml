@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <TestSuite id='01' name='SystemPromptsRestApi.spec.js'>
+        <TC>BR-2217-01</TC>
+        <TC>BR-2217-02</TC>
+        <TC>BR-2217-03</TC>
+        <TC>BR-2217-04</TC>
+    </TestSuite>
+</root>

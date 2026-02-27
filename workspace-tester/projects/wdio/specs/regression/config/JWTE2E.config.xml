@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <TestSuite id='01' name='JWTE2E.spec.js'>
+        <TC>TC99524_01</TC>
+        <TC>TC99524_02</TC>
+        <TC>TC99524_03</TC>
+        <TC>BCSA-3324_1</TC>
+    </TestSuite>
+</root>

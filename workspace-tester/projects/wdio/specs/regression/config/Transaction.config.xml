@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='E2E_RSD_Transaction.spec.js'>
+        <TC>TC65588_01</TC>
+    </TestSuite>
+</root>

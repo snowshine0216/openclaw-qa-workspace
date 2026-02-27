@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SAMLConfig.spec.js'>
+        <TC>TC76948_01</TC>
+        <TC>TC76948_02</TC>
+        <TC>TC76948_03</TC>
+        <TC>TC76948_04</TC>
+        <TC>TC76948_05</TC>
+        <TC>TC76948_06</TC>
+    </TestSuite>
+</root>

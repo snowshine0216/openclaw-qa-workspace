@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_DuplicateCopyMove.spec.js'>
+        <TC>TC6434_01</TC>
+        <TC>TC6434_02</TC>
+        <TC>TC6434_03</TC>
+    </TestSuite>
+</root>
+

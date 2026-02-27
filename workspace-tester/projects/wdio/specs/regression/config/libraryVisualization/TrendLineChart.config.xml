@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='TrendLineChart_T001_Sanity.spec.js'>
+        <TC>TC98438</TC>
+    </TestSuite>
+    <TestSuite id='02' name='TrendLineChart_T002_Editor.spec.js'>
+        <TC>TC98439</TC>
+    </TestSuite>
+    <TestSuite id='03' name='TrendLineChart_T003_Format.spec.js'>
+        <TC>TC98440_01</TC>
+        <TC>TC98440_02</TC>
+        <TC>TC98440_03</TC>
+        <TC>TC98440_04</TC>
+        <TC>TC98440_05</TC>
+        <TC>TC98440_06</TC>
+        <TC>TC98440_07</TC>
+        <TC>TC98440_08</TC>
+        <TC>TC98440_09</TC>
+        <TC>TC98440_10</TC>
+        <TC>TC98440_11</TC>
+    </TestSuite>
+    <TestSuite id='04' name='TrendLineChart_T004_XFunction.spec.js'>
+        <TC>TC98441_01</TC>
+        <TC>TC98441_02</TC>
+        <TC>TC98441_03</TC>
+        <TC>TC98441_04</TC>
+        <TC>TC98441_05</TC>
+        <TC>TC98441_06</TC>
+        <TC>TC98441_07</TC>
+        <TC>TC98441_08</TC>   
+    </TestSuite>
+    <TestSuite id='05' name='TrendLineChart_T005_I18N.spec.js'>
+        <TC>TC98442_01</TC>
+        <TC>TC98442_02</TC>
+        <TC>TC98442_03</TC>
+    </TestSuite>
+
+</root>

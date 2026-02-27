@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<TestSuite id='03' name='URLLinkOpenInNewTab.spec.js'>
+		<TC>TC97765_01</TC>
+		<TC>TC97765_02</TC>
+		<TC>TC97765_03</TC>
+    </TestSuite>
+</root>

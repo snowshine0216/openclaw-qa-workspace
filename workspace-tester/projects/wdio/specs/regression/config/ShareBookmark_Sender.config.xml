@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ShareBookmark_Sender.spec.js'>
+        <TC>TC63557</TC>
+        <TC>TC63558</TC>
+        <TC>TC68462</TC>
+        <TC>TC68551</TC>
+    	<TC>TC68568</TC>
+        <TC>TC69557</TC>
+    </TestSuite>
+</root>

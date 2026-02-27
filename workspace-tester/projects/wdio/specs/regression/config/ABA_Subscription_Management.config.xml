@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ABA_Subscription_Management.spec.js'>
+        <TC>TC98741_1</TC> 
+        <TC>TC98741_2</TC>
+        <TC>TC98741_3</TC> 
+        <TC>TC98741_4</TC> 
+        <TC>TC98741_5</TC>
+    </TestSuite>
+</root>

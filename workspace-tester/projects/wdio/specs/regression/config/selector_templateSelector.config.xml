@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='TemplateSelector.spec.js'>
+        <TC>TC80405</TC>
+        <TC>TC80406</TC>
+        <TC>TC80408</TC>
+        <TC>TC80407</TC>
+        <TC>TC80409</TC>
+    </TestSuite>
+</root>

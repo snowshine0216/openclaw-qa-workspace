@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoSummary_FUN.spec.js'>
+        <TC>F43676_1</TC>
+        <TC>F43676_2</TC>
+        <TC>F43676_3</TC>
+    </TestSuite>
+    <TestSuite id='01' name='AutoSummary_ACC.spec.js'>
+        <TC>F43676_4</TC>
+    </TestSuite>
+
+</root>

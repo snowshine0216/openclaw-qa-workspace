@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AGGridWithMDX.spec.js'>
+        <TC>TC99340_01</TC>
+        <TC>TC99340_02</TC>
+        <TC>TC99340_03</TC>
+        <TC>TC99340_04</TC>
+        <TC>TC99340_05</TC>
+        <TC>TC99340_06</TC>
+    </TestSuite>
+    <TestSuite id='02' name='MDXFilterInPauseMode.spec.js'>
+        <TC>TC80663_06</TC>
+        <TC>TC80663_07</TC>
+        <TC>TC80663_08</TC>
+    </TestSuite>
+</root>

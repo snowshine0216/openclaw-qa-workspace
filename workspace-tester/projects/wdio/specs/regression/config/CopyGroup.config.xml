@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='copyGroup.spec.js'>
+        <TC>TC99450_01</TC>
+        <TC>TC99450_02</TC>
+        <TC>TC99450_03</TC>
+    </TestSuite>
+</root>

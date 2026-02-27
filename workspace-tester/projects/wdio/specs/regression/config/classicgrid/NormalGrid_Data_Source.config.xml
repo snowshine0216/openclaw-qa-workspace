@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_Data_Source.spec.js'>
+        <TC>TC64466_1</TC>
+        <TC>TC64466_2</TC>
+        <TC>TC64466_3</TC>
+    </TestSuite>
+</root>

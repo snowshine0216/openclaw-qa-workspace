@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Template_T001_CreateDossierPanel.spec.js'>
+        <TC>TC82897_01</TC>
+        <TC>TC82897_02</TC>
+        <TC>TC82897_03</TC>
+        <TC>TC82897_04</TC>
+    </TestSuite>  
+    <TestSuite id='02' name='Template_T002_CreateDossierPanelE2E.spec.js'>
+        <TC>TC99020_01</TC>
+        <TC>TC99020_02</TC>
+        <TC>TC99020_03</TC>
+        <TC>TC99020_04</TC>
+        <TC>TC99020_05</TC>
+        <TC>TC99020_06</TC>
+        <TC>TC99020_07</TC>
+        <TC>TC99020_08</TC>
+        <TC>TC99020_09</TC>
+        <TC>TC99020_10</TC>
+        <TC>TC99020_11</TC>
+        <TC>TC99020_12</TC>
+    </TestSuite>  
+    <TestSuite id='03' name='Template_T003_PrivilageAndAcl.spec.js'>
+        <TC>TC99021_01</TC>
+        <TC>TC99021_02</TC>
+        <TC>TC99021_03</TC>
+        <TC>TC99021_04</TC>
+        <TC>TC99021_05</TC>
+        <TC>TC99021_06</TC>
+    </TestSuite>  
+    <TestSuite id='04' name='Template_T004_XFunc.spec.js'>
+        <TC>TC82908_01</TC>
+        <TC>TC82908_02</TC>
+        <TC>TC82908_03</TC>
+        <TC>TC82908_04</TC>
+        <TC>TC82908_05</TC>
+    </TestSuite>  
+    <TestSuite id='05' name='Template_T005_i18n.spec.js'>
+        <TC>TC99022_01</TC>
+        <TC>TC99022_02</TC>
+        <TC>TC99022_03</TC>
+        <TC>TC99022_04</TC>
+    </TestSuite>  
+</root>

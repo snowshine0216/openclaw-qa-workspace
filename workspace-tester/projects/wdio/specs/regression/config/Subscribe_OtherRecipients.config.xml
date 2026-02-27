@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Library_Subscribe_OtherRecipients.spec.js'>
+        <TC>TC79872</TC>
+        <TC>TC79891</TC>
+        <TC>TC79892</TC>
+    </TestSuite>
+</root>

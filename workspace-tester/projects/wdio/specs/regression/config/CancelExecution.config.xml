@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CancelExecution.spec.js'>
+        <TC>TC56654_01</TC>
+        <TC>TC56654_02</TC>
+        <TC>TC56654_03</TC>
+        <TC>TC56654_04</TC>
+    </TestSuite>
+</root>
+

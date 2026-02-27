@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SessionTimeoutGuestOnly.spec.js'>
+    	<TC>TC91419</TC>
+        <TC>TC91470</TC>
+        <TC>TC91472</TC>
+    </TestSuite>
+</root>

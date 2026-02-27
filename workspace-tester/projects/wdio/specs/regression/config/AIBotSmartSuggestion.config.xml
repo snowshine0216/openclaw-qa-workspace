@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelSmartSuggestion.spec.js'>
+        <TC>TC94506_1</TC>
+        <!-- <TC>TC94506_2</TC> -->
+        <TC>TC94506_3</TC>
+        <TC>TC94506_4</TC>
+        <TC>TC94506_6</TC>
+        <TC>TC94506_7</TC>
+        <TC>TC94506_9</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ChatPanelSmartSuggestion_I18N.spec.js'>
+        <TC>TC94506_5</TC>
+    </TestSuite>
+</root>

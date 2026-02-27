@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_Subtotals.spec.js'>
+        <TC>TC76157</TC>
+        <TC>TC76159_1</TC>
+        <TC>TC76159_2</TC>
+        <TC>TC76159_3</TC>
+        <TC>TC76159_4</TC>
+        <TC>TC76159_5</TC>
+        <TC>TC76159_6</TC>
+        <TC>TC76159_7</TC>
+        <TC>TC76159_8</TC>
+        <TC>TC76159_9</TC>
+        <TC>BCIN-6387</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Bot2_UnstructuredData_Authoring.spec.js'>
+        <TC>TC99515_1</TC>
+        <TC>TC99515_2</TC>
+        <TC>TC99515_3</TC>
+        <TC>TC99515_14</TC>
+        <TC>TC99515_15</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Bot2_UnstructuredData_Integration.spec.js'>
+        <TC>TC99515_4</TC>
+        <TC>TC99515_5</TC>
+        <TC>TC99515_6</TC>
+        <TC>TC99515_7</TC>
+        <TC>TC99515_8</TC>
+        <TC>TC99515_9</TC>
+        <TC>TC99515_10</TC>
+        <TC>TC99515_11</TC>
+        <TC>TC99515_12</TC>
+        <TC>TC99515_13</TC>
+    </TestSuite>
+</root>

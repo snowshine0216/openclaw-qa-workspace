@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='welcomeGreetingInTeams.spec.js'>
+    	<TC>TC95620_01</TC>
+    	<TC>TC95620_02</TC>
+        <TC>TC95620_03</TC>
+    	<TC>TC95620_04</TC>
+        <TC>TC95620_05</TC>
+        <TC>TC95620_06</TC>
+    </TestSuite>
+    <TestSuite id='02' name='welcomeACLInTeams.spec.js'>
+    	<TC>TC96672_01</TC>
+    	<TC>TC96672_02</TC>
+        <TC>TC96672_03</TC>
+    </TestSuite>
+    <TestSuite id='03' name='followUpInTeams.spec.js'>
+    	<TC>TC95621_01</TC>
+    	<TC>TC95621_02</TC>
+        <TC>TC95621_03</TC>
+        <TC>TC95621_04</TC>
+        <TC>TC95621_05</TC>
+        <TC>TC95621_06</TC>
+        <TC>TC95621_07</TC>
+        <TC>TC95621_08</TC>
+    </TestSuite>
+</root>

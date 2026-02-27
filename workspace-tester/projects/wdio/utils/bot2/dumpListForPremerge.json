@@ -1,0 +1,24 @@
+{
+    "projects": [
+        {
+            "name": "MicroStrategy Tutorial",
+            "id": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+            "datasets": [
+                {
+                    "name": "AUTO_MTDI",
+                    "id": "76BDF5558E40EDE7B074978962EE082B"
+                },
+                {
+                    "name": "AUTO_OLAP",
+                    "id": "1E4CBF2CFC4CADF8911EF9BB25F1D298"
+                }
+            ],
+            "reports": [
+                {
+                    "name": "AUTO_SubsetReport",
+                    "id": "B9EB6C575A470413CA5DFFABE445B41C"
+                }
+            ]
+        }
+    ]
+}

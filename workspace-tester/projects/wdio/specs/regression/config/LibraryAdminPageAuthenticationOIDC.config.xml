@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LibraryAdminPageAuthenticationOIDC.spec.js'>
+    	<TC>TC75976</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='PendoGuide.spec.js'>
+        <TC>TC92973_01</TC>
+        <TC>TC92973_02</TC>
+        <TC>TC93036</TC>
+    </TestSuite>
+</root>

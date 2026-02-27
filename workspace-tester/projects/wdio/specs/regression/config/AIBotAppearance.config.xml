@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Palette.spec.js'>
+        <TC>TC91729_02</TC>
+        <TC>TC91729_03</TC>
+        <TC>TC91729_04</TC>
+        <TC>TC91729_05</TC>
+        <TC>TC91729_06</TC>
+        <TC>TC91729_07</TC>
+        <TC>TC91729_08</TC>
+    </TestSuite>
+    <TestSuite id='03' name='BotPalettePremergeTest.spec.js'>
+        <TC>TC91729_01</TC>
+    </TestSuite> 
+</root>

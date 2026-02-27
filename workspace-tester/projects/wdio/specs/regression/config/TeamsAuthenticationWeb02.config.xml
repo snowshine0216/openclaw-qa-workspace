@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='WebPinNewDossierTeamsAuthentication.spec.js'>
+    	<TC>TC92170</TC>
+        <TC>TC92171</TC>
+        <TC>TC92172</TC>
+        <TC>TC92173</TC>
+        <TC>TC92174</TC>
+        <TC>TC92175</TC>
+    </TestSuite>
+</root>

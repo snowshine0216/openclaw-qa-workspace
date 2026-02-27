@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AQ_PullDown.spec.js'>
+        <TC>TC58007</TC>
+        <TC>TC58008</TC>
+        <TC>TC58009</TC>
+        <TC>TC58010</TC>
+        <TC>TC58956</TC>
+        <TC>TC58957</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AQ_ShoppingCart.spec.js'>
+        <TC>TC58922</TC>
+        <TC>TC58923</TC>
+        <TC>TC58925</TC>
+        <TC>TC58927</TC>
+        <TC>TC67985</TC>
+        <TC>TC63940</TC>
+        <TC>TC80238</TC>
+        <TC>TC80253</TC>
+    </TestSuite>
+    <TestSuite id='03' name='AQ_Textbox.spec.js'>
+        <TC>TC58953</TC>
+        <TC>TC58954</TC>
+    </TestSuite>
+    <TestSuite id='04' name='AQ_CustomerIssue.spec.js'>
+        <TC>TC79197</TC>
+        <TC>TC76805</TC>
+        <TC>TC87658_01</TC>
+        <TC>TC87658_02</TC>
+    </TestSuite>
+</root>

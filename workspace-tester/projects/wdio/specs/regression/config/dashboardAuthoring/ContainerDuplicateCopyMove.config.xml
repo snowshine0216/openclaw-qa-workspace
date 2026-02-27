@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='ContainerDuplicateCopyMove.spec.js'>
+        <TC>TC65325_01</TC>
+        <TC>TC65325_02</TC>
+        <TC>TC65325_03</TC>
+        <TC>TC65325_04</TC>
+        <TC>TC65325_05</TC>
+        <TC>TC65325_06</TC>
+        <TC>TC65325_07</TC>
+        <TC>TC65325_08</TC>
+        <TC>TC65325_09</TC>
+        <TC>TC65325_10</TC>
+        <TC>TC65325_11</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoNarratives_ML_Basic.spec.js'>
+        <TC>TC96067_1</TC>
+        <TC>TC96067_2</TC>
+        <TC>TC96067_3</TC>
+        <TC>TC96067_4</TC>
+        <TC>TC96067_5</TC>
+        <TC>TC96067_6</TC>
+        <TC>TC96067_7</TC>
+        <TC>TC96067_8</TC>
+        <TC>TC96067_9</TC>
+        <TC>TC96067_10</TC>
+        <TC>TC96067_11</TC>
+        <TC>TC96067_12</TC>
+        <TC>TC96067_13</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AutoNarratives_ML_Advanced.spec.js'>
+        <TC>TC97089_1</TC>
+        <TC>TC97089_2</TC>
+        <TC>TC97089_3</TC> 
+    </TestSuite>
+    <TestSuite id='03' name='AutoNarratives_ML_Subtotal.spec.js'>
+        <TC>TC97090_1</TC>
+        <TC>TC97090_2</TC>
+        <TC>TC97090_3</TC>
+        <TC>TC97090_4</TC>
+    </TestSuite>
+</root>

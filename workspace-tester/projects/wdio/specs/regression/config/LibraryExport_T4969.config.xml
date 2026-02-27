@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='libraryExportToExcel_checkExportSettings.spec.js'>
+        <TC>TC93946_1</TC>
+        <TC>TC93946_2</TC>
+        <TC>TC93946_3</TC>
+        <TC>TC93946_4</TC>
+        <TC>TC93946_5</TC>
+        <TC>TC93946_8</TC>
+        <TC>TC93946_9</TC>
+    </TestSuite>
+    <TestSuite id='02' name='libraryExportToPDF_checkExportSettings.spec.js'>
+        <TC>TC94328_1</TC>
+        <TC>TC94328_2</TC>
+        <TC>TC94328_3</TC>
+        <TC>TC94328_4</TC>
+        <TC>TC94328_5</TC>
+        <TC>TC94328_6</TC>
+        <TC>TC94328_7</TC>
+    </TestSuite> 
+    <TestSuite id='03' name='librarySubscription.spec.js'>
+        <TC>TC94908_1</TC>
+        <TC>TC94908_2</TC>
+        <TC>TC94908_3</TC>
+        <TC>TC94908_5</TC>
+    </TestSuite>
+    <TestSuite id='04' name='LibraryExportToPDF_checkDefaultSettings_Sanity.spec.js'>
+        <TC>TC95175_0</TC>
+        <TC>TC95175_1</TC>
+        <TC>TC95175_2</TC>
+        <TC>TC95175_3</TC>
+        <TC>TC95175_4</TC>
+        <TC>TC95175_5</TC>
+    </TestSuite>
+    <TestSuite id='05' name='LibraryExportToPDF_checkDefaultSettings_Mix.spec.js'>
+        <TC>TC95175_6</TC>
+        <TC>TC95175_7</TC>
+        <TC>TC95175_8</TC>
+        <TC>TC95175_9</TC>
+        <TC>TC95175_10</TC>
+    </TestSuite> 
+    <TestSuite id='06' name='LibraryExportToPDF_checkDefaultSettings_xFunction.spec.js'>
+        <TC>TC95175_11</TC>
+        <TC>TC95175_12</TC>
+        <TC>TC95175_13</TC>
+        <TC>TC95175_14</TC>
+        <TC>TC95175_15</TC>
+        <TC>TC95175_16</TC>
+    </TestSuite>
+</root>

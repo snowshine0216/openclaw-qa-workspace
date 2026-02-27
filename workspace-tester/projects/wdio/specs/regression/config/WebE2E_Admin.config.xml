@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='WebE2E_Admin.spec.js'>
+        <TC>TC58941_01</TC>
+        <TC>TC58941_02</TC>
+        <TC>TC58941_03</TC>
+   </TestSuite>
+</root>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='02' name='ReportEditor_sqlView_1.spec.js'>
+        <TC>TC81200_1</TC>
+    </TestSuite>
+    <!-- <TestSuite id='03' name='ReportEditor_sqlView_2.spec.js'>
+        <TC>TC81200_2</TC>
+    </TestSuite>
+    <TestSuite id='04' name='ReportEditor_sqlView_3.spec.js'>
+        <TC>TC81200_3</TC>
+    </TestSuite> -->
+    <!-- <TestSuite id='05' name='ReportEditor_sqlView_4.spec.js'>
+        <TC>TC81200_4</TC>
+    </TestSuite> -->
+    <!-- <TestSuite id='06' name='ReportEditor_sqlView_5.spec.js'>
+        <TC>TC81200_5</TC>
+    </TestSuite> -->
+</root>

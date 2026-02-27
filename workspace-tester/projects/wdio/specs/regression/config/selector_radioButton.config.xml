@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='RadioButton.spec.js'>
+        <TC>TC80369</TC>
+        <TC>TC80370</TC>
+        <TC>TC80371</TC>
+        <TC>TC80372</TC>
+    </TestSuite>
+</root>

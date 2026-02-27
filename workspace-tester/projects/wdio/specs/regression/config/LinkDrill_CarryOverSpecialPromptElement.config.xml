@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CarryOverSpecialPromptElement.spec.js'>
+        <TC>TC66642</TC>
+        <TC>TC66635</TC>
+        <TC>TC66637</TC>
+        <TC>TC66655</TC>
+        <TC>TC66639</TC>
+        <TC>TC66654</TC>
+        <TC>TC66638</TC>
+        <TC>TC79756</TC>
+    </TestSuite>
+</root>

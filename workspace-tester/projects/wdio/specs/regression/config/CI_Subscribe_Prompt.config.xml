@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_Prompt.spec.js'>
+        <TC>F43156_ReportWithPrompt</TC> 
+        <TC>F43156_RSDWithPrompt</TC>
+        <TC>F43156_DashboardWithPrompt</TC> 
+    </TestSuite>
+</root>

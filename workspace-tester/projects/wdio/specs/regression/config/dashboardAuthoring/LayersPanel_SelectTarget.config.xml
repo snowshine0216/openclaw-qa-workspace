@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='LayersPanel_SelectTarget.spec.js'>
+        <TC>TC60401_01</TC>
+        <TC>TC60401_02</TC>
+        <TC>TC60401_03</TC>
+        <TC>TC60401_04</TC>
+        <TC>TC60401_05</TC>
+        <TC>TC60401_06</TC>
+        <TC>TC60401_07</TC>
+        <TC>TC65318</TC>
+        <TC>TC60904</TC>
+        <TC>TC60904_2</TC>
+    </TestSuite>
+</root>

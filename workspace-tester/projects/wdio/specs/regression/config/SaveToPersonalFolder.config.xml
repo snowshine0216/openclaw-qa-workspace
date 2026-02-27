@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SaveToMyReports.spec.js'>
+        <TC>TC98195_01</TC>
+        <TC>TC98195_02</TC>
+        <TC>TC98195_03</TC>
+        <TC>TC98195_04</TC>
+        <TC>TC98195_05</TC>
+        <TC>TC98195_06</TC>
+        <TC>TC98195_07</TC>
+        <TC>TC98195_08</TC>
+        <TC>TC98195_09</TC>
+        <TC>TC98195_10</TC>
+    </TestSuite>
+</root>
+

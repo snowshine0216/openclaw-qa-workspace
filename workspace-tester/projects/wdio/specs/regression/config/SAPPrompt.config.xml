@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SAP_HierarchyNodeVariable.spec.js'>
+    	<TC>TC85329</TC>
+    	<TC>TC84903_01</TC>
+    	<TC>TC84903_02</TC>
+        <TC>TC84903_03</TC>
+    </TestSuite>
+    <TestSuite id='02' name='SAP_CharacteristicValueVariable.spec.js'>
+    	<TC>TC85325</TC>
+    	<TC>TC85326_01</TC>
+        <TC>TC85326_02</TC>
+    </TestSuite>
+    <TestSuite id='03' name='SAP_FormulaVariable.spec.js'>
+    	<TC>TC85327</TC>
+    </TestSuite>
+    <TestSuite id='04' name='SAP_DateVariable.spec.js'>
+    	<TC>TC85328</TC>
+    </TestSuite>
+    <TestSuite id='05' name='SAP_HierarchyNodeVariableXFun.spec.js'>
+    	<TC>TC85330</TC>
+        <TC>TC85372</TC>
+    </TestSuite>
+</root>

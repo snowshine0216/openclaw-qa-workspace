@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite name='Bot2Premerge_Consumption.spec.js'>
+        <TC>TC99012_1</TC>
+        <TC>TC99012_2</TC>
+        <TC>TC99012_3</TC>
+    </TestSuite>
+    <TestSuite name='Bot2Premerge_Authoring.spec.js'>
+        <TC>TC99011_1</TC>
+        <TC>TC99011_2</TC>
+        <TC>TC99011_3</TC>
+        <TC>TC99011_4</TC>
+        <TC>TC99011_5</TC>
+        <TC>TC99011_6</TC>
+        <TC>TC99011_7</TC>
+        <TC>TC99011_8</TC>
+        <!-- <TC>TC99011_9</TC> to be removed to other spec due to shared ADC will be impacted-->
+    </TestSuite>
+    <TestSuite name='Bot2Premerge_CreateBot.spec.js'>
+        <TC>TC99013_1</TC>
+        <TC>TC99013_2</TC>
+    </TestSuite>
+</root>

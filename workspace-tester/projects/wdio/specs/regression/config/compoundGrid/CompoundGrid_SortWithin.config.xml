@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_SortWithin.spec.js'>
+        <TC>TC6514_01</TC>
+        <TC>TC6514_02</TC>
+        <TC>TC41276_01</TC>
+        <TC>TC41276_02</TC>
+    </TestSuite>
+</root>

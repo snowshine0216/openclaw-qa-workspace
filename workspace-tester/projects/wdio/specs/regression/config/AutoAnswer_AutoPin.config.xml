@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_AutoPin.spec.js'>
+        <TC>TC95410_1</TC>
+        <TC>TC95410_2</TC>
+        <TC>TC95410_3</TC>
+        <TC>TC95411_1</TC>
+        <TC>TC95411_2</TC>
+        <TC>TC95411_3</TC>
+        <TC>TC95412_1</TC>
+        <TC>TC95412_2</TC>
+    </TestSuite>
+</root>

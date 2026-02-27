@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Bookmark.spec.js'>
+    	<TC>TC56654</TC>
+    	<TC>TC56656</TC>
+    	<TC>TC56657</TC> 
+    	<TC>TC56658</TC>
+		<TC>TC59232</TC>
+		<TC>TC59359</TC>
+    	<TC>TC56659</TC> 
+    </TestSuite>
+</root>

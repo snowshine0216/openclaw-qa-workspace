@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryE2E_GlobalSearch.spec.js'>
+        <TC>TC78618_01</TC>
+        <TC>TC78618_02</TC>
+        <TC>TC78618_03</TC>
+        <TC>TC78618_04</TC>
+        <TC>TC78618_05</TC>
+   </TestSuite>
+</root>

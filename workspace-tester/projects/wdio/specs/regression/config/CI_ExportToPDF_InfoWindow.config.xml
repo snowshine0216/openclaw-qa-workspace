@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_InfoWindow.spec.js'>
+        <TC>TC56909</TC>
+        <TC>TC56910</TC>
+        <TC>TC56911</TC>
+        <TC>TC56912</TC> 
+    </TestSuite>
+</root>

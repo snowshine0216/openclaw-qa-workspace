@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomAppNotification.spec.js'>
+        <TC>TC80265_1</TC>
+        <TC>TC80265_2</TC>
+        <TC>TC80265_3</TC>
+   </TestSuite>
+</root>

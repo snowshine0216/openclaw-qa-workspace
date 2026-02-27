@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Value_Date.spec.js'>
+    	<TC>TC60348</TC>
+    	<TC>TC60349</TC>
+     	<TC>TC60350</TC>
+       	<TC>TC65944</TC>
+    </TestSuite>
+	<TestSuite id='02' name='Value_Numeric.spec.js'>
+    	<TC>TC66079</TC>
+    	<TC>TC66081</TC>
+    	<TC>TC66082</TC>
+    	<TC>TC66083</TC>
+    	<TC>TC66084</TC>
+    </TestSuite>
+    <TestSuite id='03' name='Value_Text.spec.js'>
+    	<TC>TC60351</TC>
+    </TestSuite>
+	<TestSuite id='04' name='Value_BigDecimal.spec.js'>
+    	<TC>TC66200</TC>
+    </TestSuite>
+</root>

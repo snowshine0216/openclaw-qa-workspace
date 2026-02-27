@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_AttributeForms.spec.js'>
+        <TC>TC2699</TC>
+        <TC>TC80521_01</TC>
+        <TC>TC80521_02</TC>
+        <TC>TC19943</TC>
+    </TestSuite>
+</root>

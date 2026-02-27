@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CheckboxFilter.spec.js'>
+    	<TC>TC56114</TC>
+    </TestSuite>
+    <TestSuite id='02' name='FilterRCA.spec.js'>
+    	<TC>TC99386_01</TC>
+    	<TC>TC99386_02</TC>
+    </TestSuite>
+    
+</root>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomizableTitleBar.spec.js'>
+        <TC>TC99559_1</TC>
+        <TC>TC99559_2</TC>
+        <TC>TC99559_3</TC>
+        <TC>TC99559_4</TC>
+        <TC>TC99559_5</TC>
+        <TC>TC99559_6</TC>
+        <TC>TC99559_7</TC>
+        <TC>TC99559_8</TC>
+        <TC>TC99559_9</TC>
+        <TC>TC99559_10</TC>
+        <TC>TC99559_11</TC>
+        <TC>TC99559_12</TC>
+    </TestSuite>
+</root>

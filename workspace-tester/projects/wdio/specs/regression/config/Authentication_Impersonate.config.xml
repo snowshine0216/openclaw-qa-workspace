@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='impersonateLogin.spec.js'>
+    	<TC>BCSA-2578_01</TC>
+    </TestSuite>
+    <TestSuite id='02' name='impersonateStandardLogin.spec.js'>
+    	<TC>BCSA-2578_02</TC>
+    </TestSuite>
+    <TestSuite id='03' name='impersonatePersisteDisable.spec.js'>
+    	<TC>BCSA-2578_03</TC>
+    </TestSuite>
+    <TestSuite id='04' name='impersonatePersisteStandardDisable.spec.js'>
+    	<TC>BCSA-2578_04</TC>
+    </TestSuite>
+    <TestSuite id='05' name='impersonateStandardLogin192Disabled.spec.js'>
+    	<TC>BCSA-2578_05</TC>
+    </TestSuite>
+    <TestSuite id='06' name='impersonateStandardLogin193Disabled.spec.js'>
+    	<TC>BCSA-2578_06</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ShareWithACL.spec.js'>
+        <TC>TC90987_01</TC>
+        <TC>TC90987_02</TC>
+        <TC>TC90987_03</TC>
+        <TC>TC90987_04</TC>
+        <TC>TC90990_01</TC>
+        <TC>TC90990_02</TC>
+        <TC>TC90990_03</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_Viz.spec.js'>
+    	<TC>TC90175_01</TC>
+        <TC>TC90175_02</TC>
+        <TC>TC90175_03</TC>
+        <TC>TC90175_04</TC>
+        <TC>TC90175_05</TC>
+        <TC>TC91995</TC>
+        <TC>TC91993</TC>
+        <TC>TC92051</TC>
+        <TC>TC92896</TC>
+    </TestSuite>
+</root>

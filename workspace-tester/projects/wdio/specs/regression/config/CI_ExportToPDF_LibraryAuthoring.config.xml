@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_LibraryAuthoring.spec.js'>
+        <TC>F43170_01</TC>
+        <TC>F43170_02</TC>
+        <TC>F43170_03</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CI_ExportToPDF_XFunction.spec.js'>
+        <TC>BCVE-5272_01</TC>
+        <TC>BCVE-5272_02</TC>
+    </TestSuite>
+</root>

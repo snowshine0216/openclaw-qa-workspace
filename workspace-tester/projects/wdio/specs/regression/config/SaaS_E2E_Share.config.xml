@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LibraryE2E_SaaS_Share.spec.js'>
+        <TC>TC93406</TC>
+    </TestSuite>	
+</root>

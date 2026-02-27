@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DynamicFilter.spec.js'>
+		<TC>TC56660</TC>
+		<TC>TC56662</TC>
+		<TC>TC56663</TC>
+		<TC>TC56666</TC>
+		<TC>TC56667</TC>
+		<TC>TC56668</TC>
+		<TC>TC56669</TC>
+		<TC>TC56670</TC>
+		<TC>TC66180</TC>
+		<TC>TC73767</TC>
+		<TC>TC18661</TC>
+    </TestSuite>
+</root>

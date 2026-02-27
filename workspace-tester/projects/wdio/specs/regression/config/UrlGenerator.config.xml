@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='UrlGenerator.spec.js'>
+        <TC>TC97794</TC>
+        <TC>TC97663_01</TC>
+        <TC>TC97663_02</TC>
+        <TC>TC97664_01</TC>
+        <TC>TC97664_02</TC>
+        <TC>TC97826_01</TC>
+        <TC>TC97660_01</TC>
+        <TC>TC97660_02</TC>
+        <TC>TC97660_03</TC>
+        <TC>TC97660_04</TC>
+        <TC>TC97659</TC>
+    </TestSuite>
+    <TestSuite id='01' name='UrlGenerator_Xfunc.spec.js'>
+        <TC>TC96806_01</TC>
+        <TC>TC96806_02</TC>
+        <TC>TC96806_03</TC>
+        <TC>TC96806_04</TC>
+        <TC>TC96806_05</TC>
+        <TC>TC96806_06</TC>
+    </TestSuite>
+</root>

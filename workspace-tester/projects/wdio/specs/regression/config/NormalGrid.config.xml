@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='NormalGrid_E2E.spec.js'>
+        <TC>TC99177</TC>
+        <TC>TC99177_01</TC>
+        <TC>TC99177_02</TC>
+        <TC>TC99177_03</TC>
+        <TC>TC99177_04</TC>
+        <TC>TC99177_05</TC>
+        <TC>TC99177_06</TC>
+        <TC>TC99177_07</TC>
+    </TestSuite>
+</root>

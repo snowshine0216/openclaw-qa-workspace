@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='oidc_Tanzu.spec.js'>
+    	<TC>TC80230</TC>
+    </TestSuite>
+    <TestSuite id='02' name='changePassword_Tanzu.spec.js'>
+    	<TC>TC82050</TC>
+    </TestSuite>
+</root>

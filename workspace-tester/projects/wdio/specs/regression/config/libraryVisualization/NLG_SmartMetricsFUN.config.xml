@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoNarratives_SmartMetrics_FunOn.spec.js'>
+        <TC>SM_FUNOn_00</TC>
+        <TC>SM_FUNOn_01</TC>
+        <TC>SM_FUNOn_02</TC>
+        <TC>SM_FUNOn_03</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AutoNarratives_SmartMetrics_FunOff.spec.js'>
+        <TC>SM_FUNOff_00</TC>
+        <TC>SM_FUNOff_01</TC>
+        <TC>SM_FUNOff_02</TC>
+        <TC>SM_FUNOff_03</TC>
+        <TC>SM_FUNOff_04</TC>
+        <TC>SM_FUNOff_05</TC>
+        <TC>SM_FUNOff_06</TC>
+        <TC>SM_FUNOff_07</TC>
+        <TC>SM_FUNOff_08</TC>
+        <TC>SM_FUNOff_09</TC>  
+    </TestSuite>
+</root>

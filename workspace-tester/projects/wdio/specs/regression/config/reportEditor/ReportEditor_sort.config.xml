@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportEditor_sort.spec.js'>
+        <TC>TC85322</TC>
+    </TestSuite>
+</root>

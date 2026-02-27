@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_E2E.spec.js'>
+        <TC>TC95016_01</TC>
+        <TC>TC95016_02</TC>
+        <TC>TC95016_03</TC>
+        <TC>TC95016_04</TC>
+        <TC>TC95016_06</TC>
+        <TC>TC95016_07</TC>
+        <TC>TC95016_08</TC>
+        <TC>TC91719</TC>
+    </TestSuite>
+</root>

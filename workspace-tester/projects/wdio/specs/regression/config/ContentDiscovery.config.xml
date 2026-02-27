@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='ContentDiscovery.spec.js'>
+      <TC>TC89173_01</TC>
+      <TC>TC89173_02</TC>
+      <TC>TC89173_03</TC>
+      <TC>TC89173_04</TC>
+      <TC>TC89173_05</TC>
+      <TC>TC90368</TC>
+      <TC>TC89180</TC>
+      <TC>TC90013</TC>
+      <TC>TC89181</TC>
+   </TestSuite>
+   <TestSuite id='02' name='ContentDiscovery_XFunc.spec.js'>
+      <TC>TC90671</TC>
+      <TC>TC90672</TC>
+      <TC>TC90673</TC>
+      <TC>TC92112</TC>
+   </TestSuite>
+</root>

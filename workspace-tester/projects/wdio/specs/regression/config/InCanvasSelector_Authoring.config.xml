@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Incanvas_authoring.spec.js'>
+    	<TC>TC80605_01</TC>
+        <TC>TC80605_02</TC>
+        <TC>TC80605_03</TC>
+        <TC>TC80605_04</TC>
+    </TestSuite>
+    
+</root>

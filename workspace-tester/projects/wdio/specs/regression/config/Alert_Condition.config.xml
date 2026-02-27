@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Alert_Condition.spec.js'>
+    	<TC>TC98628</TC>
+        <TC>TC98628_01</TC>
+        <TC>TC98679</TC>
+        <TC>TC98712</TC>
+        <TC>TC98721</TC>
+        <TC>TC98734</TC>
+    	<TC>TC98738</TC>
+    	<TC>TC98744</TC>
+        <TC>TC98744_01</TC>
+        <TC>TC98936</TC>
+        <TC>TC98936_01</TC>
+    </TestSuite>
+    
+</root>

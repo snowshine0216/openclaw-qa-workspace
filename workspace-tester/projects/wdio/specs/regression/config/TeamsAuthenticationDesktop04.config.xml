@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='04' name='LibraryAuthentication.spec.js'>
+        <TC>TC91310</TC>
+        <TC>TC93034</TC>
+        <TC>TC91459</TC>
+    </TestSuite>
+    <TestSuite id='05' name='TeamsSSO.spec.js'>
+        <TC>TC91311</TC>
+        <TC>TC93032</TC>
+        <TC>TC93033</TC>
+        <TC>TC91317</TC>
+    </TestSuite>
+</root>

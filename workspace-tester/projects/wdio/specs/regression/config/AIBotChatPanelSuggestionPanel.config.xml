@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelMultiWordMatching.spec.js'>
+        <TC>TC96757_1</TC>
+        <TC>TC96757_2</TC>
+        <TC>TC96757_3</TC>
+        <TC>TC96757_4</TC>
+        <TC>TC96757_5</TC>
+        <TC>TC96757_6</TC>
+        <TC>TC96757_7</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_DragAndDrop.spec.js'>
+        <TC>BCIN-6663</TC>
+    </TestSuite>
+</root>

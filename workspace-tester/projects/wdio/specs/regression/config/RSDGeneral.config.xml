@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='RSD_General.spec.js'>
+    	<TC>TC71359_01</TC>
+        <TC>TC71359_02</TC>
+        <TC>TC71359_03</TC>
+        <TC>TC71359_04</TC>
+        <TC>TC71359_05</TC>
+        <TC>TC71359_06</TC>
+        <!-- <TC>TC71359_07</TC> -->
+        <TC>TC71359_08</TC>
+        <TC>TC71359_09</TC>
+        <TC>TC88510</TC>
+    </TestSuite>
+	<TestSuite id='02' name='RSD_FilterPanel.spec.js'>
+    	<TC>TC71360_01</TC>
+        <TC>TC71360_02</TC>
+        <TC>TC80300</TC>
+        <TC>TC80301</TC>
+        <TC>TC80302</TC>
+        <TC>TC80302_01</TC>
+    </TestSuite>
+    <TestSuite id='03' name='RSD_InformationWindow.spec.js'>
+    	<TC>TC74248_01</TC>
+        <TC>TC74248_02</TC>
+        <TC>TC74248_03</TC>
+        <TC>TC74248_04</TC>
+        <TC>TC74248_05</TC>
+        <TC>TC74248_06</TC>
+        <TC>TC74248_07</TC>
+        <TC>TC74248_08</TC>
+        <TC>TC74248_09</TC>
+        <TC>TC74248_10</TC>
+        <TC>TC74248_11</TC>
+        <TC>TC74248_12</TC>
+    </TestSuite>
+	<TestSuite id='04' name='RSD_PanelStack.spec.js'>
+    	<TC>TC74249_01</TC>
+        <TC>TC74249_02</TC>
+        <TC>TC74249_03</TC>
+        <TC>TC74249_04</TC>
+        <TC>TC80303</TC>
+    </TestSuite>
+    <TestSuite id='05' name='RSD_DerivedObjects.spec.js'>
+    	<TC>TC80435</TC>
+        <TC>TC80438</TC>
+        <TC>TC80439</TC>
+        <TC>TC80441</TC>
+        <TC>TC80440</TC>
+    </TestSuite>
+</root>

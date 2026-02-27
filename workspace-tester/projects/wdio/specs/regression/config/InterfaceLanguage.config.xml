@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='InterfaceLanguage_ReportFilter.spec.js'>
+    	<TC>TC90417</TC>
+    	<TC>TC90418</TC>
+    	<TC>TC90419</TC>
+    </TestSuite>
+	<TestSuite id='02' name='InterfaceLanguage.spec.js'>
+		<TC>TC89840_01</TC>
+		<TC>TC89840_02</TC>
+		<TC>TC89840_03</TC>
+		<TC>TC89840_04</TC>
+   </TestSuite>
+</root>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='DossierGeneral.spec.js'>
+        <TC>TC66305</TC>
+        <TC>TC68122</TC> 
+        <TC>TC66308</TC>
+   </TestSuite>
+</root>

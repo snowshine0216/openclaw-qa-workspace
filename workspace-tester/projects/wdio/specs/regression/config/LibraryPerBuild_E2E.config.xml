@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryPerBuild_LibraryHome.spec.js'>
+        <TC>TC77736_01</TC>
+        <TC>TC77736_02</TC>
+        <TC>TC77736_03</TC>
+        <TC>TC77736_05</TC>
+        <TC>TC77736_06</TC>
+        <!-- <TC>TC77736_07</TC> -->
+        <TC>TC77736_08</TC>
+        <TC>TC77736_09</TC>
+        <TC>TC77736_10</TC>
+   </TestSuite>
+   <TestSuite id='02' name='LibraryPerBuild_DossierContent.spec.js'>
+        <TC>TC80590_01</TC>
+        <TC>TC80590_02</TC>
+        <TC>TC80590_03</TC>
+        <TC>TC80590_04</TC>
+        <TC>TC80590_05</TC>
+        <TC>TC80590_06</TC>
+        <TC>TC80590_07</TC>
+        <TC>TC80590_08</TC>
+   </TestSuite>
+   <TestSuite id='03' name='LibraryPerBuild_ContentGroup.spec.js'>
+        <TC>TC82140</TC>
+        <TC>TC82141_01</TC>
+        <TC>TC82141_02</TC>
+        <TC>TC82141_03</TC>
+   </TestSuite>
+</root>

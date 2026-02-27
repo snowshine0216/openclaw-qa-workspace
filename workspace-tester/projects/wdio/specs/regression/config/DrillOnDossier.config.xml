@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DrillOnDossier.spec.js'>
+        <TC>TC68191_01</TC>
+        <TC>TC68191_02</TC>
+        <TC>TC68192</TC>
+        <TC>TC68193</TC>
+    </TestSuite>
+</root>

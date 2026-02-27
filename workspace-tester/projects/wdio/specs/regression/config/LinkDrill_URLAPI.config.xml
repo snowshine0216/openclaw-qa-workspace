@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='URLAPI.spec.js'>
+        <TC>TC78915</TC>
+        <TC>TC78916</TC>
+    </TestSuite>
+</root>

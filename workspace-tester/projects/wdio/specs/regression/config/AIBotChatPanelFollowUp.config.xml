@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelFollowUpQuotedQuestion.spec.js'>
+        <TC>TC96447_1</TC>
+        <TC>TC96447_2</TC>
+        <TC>TC96447_3</TC>
+        <TC>TC96447_4</TC>
+        <TC>TC96447_5</TC>
+        <TC>TC96447_6</TC>
+        <TC>TC96447_7</TC>
+        <TC>TC96447_8</TC>
+        <TC>TC96447_9</TC>
+        <TC>TC96447_10</TC>
+    </TestSuite>
+</root>

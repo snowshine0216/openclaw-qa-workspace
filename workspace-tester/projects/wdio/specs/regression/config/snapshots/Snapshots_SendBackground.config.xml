@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Snapshots_SendBackground.spec.js'>
+        <TC>TC99396_7</TC>
+        <TC>TC99396_8</TC>
+        <TC>TC99396_9</TC>
+        <TC>TC99396_10</TC>
+        <TC>TC99396_11</TC>
+        <TC>TC99396_12</TC>
+    </TestSuite>
+</root>

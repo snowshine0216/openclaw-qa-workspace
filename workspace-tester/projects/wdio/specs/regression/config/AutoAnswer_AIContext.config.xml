@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AIContext_Grid.spec.js'>
+    	<TC>TC91240</TC>
+    	<TC>TC91241</TC>
+    	<TC>TC91242</TC>
+        <TC>TC91141</TC>
+        <TC>TC91258</TC>
+    	<TC>TC91243</TC>
+    	<TC>TC91244</TC>
+        <TC>TC91245</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AIContext_Viz.spec.js'>
+    	<TC>TC91139</TC>
+    	<TC>TC91140</TC>
+    	<TC>TC91256</TC>
+    	<TC>TC91142</TC>
+    	<TC>TC94994</TC>
+    </TestSuite>
+</root>

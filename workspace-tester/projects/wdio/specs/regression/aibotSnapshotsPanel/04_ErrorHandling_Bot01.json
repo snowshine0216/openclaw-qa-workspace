@@ -1,0 +1,135 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "3D73913384DB40EC8360F6EADF438BE4",
+            "n": "Geographical Region"
+          },
+          {
+            "cate": "083CF5BC1B40455FB83AF8CFE4AD7C15",
+            "n": "Employee Performance"
+          },
+          {
+            "cate": "A7B20BA94E83479BB790508A1F568FC1",
+            "n": "Financial Analysis"
+          },
+          {
+            "cate": "58B0F29E195D4823A68A8AD53FD8221D",
+            "n": "Sales Performance"
+          },
+          {
+            "cate": "04AD5C97373B4D8D95C6649BC87E254B",
+            "n": "Time Analysis"
+          }
+        ],
+        "chat_col": [
+          {
+            "chat_id": "00000000000000000000000000000000",
+            "chat_timestamp": {
+              "day": 8,
+              "day_of_week": 2,
+              "do": 0,
+              "dt": -100,
+              "dtm": 0,
+              "hour": 12,
+              "ig": false,
+              "minute": 2,
+              "month": 4,
+              "sec": 26,
+              "srs": 0,
+              "tms": 847,
+              "week": 2,
+              "year": 2025
+            },
+            "chat_type": 1,
+            "message_col": [
+              {
+                "category_id": "04AD5C97373B4D8D95C6649BC87E254B",
+                "message_id": "8F122C45CC234D0999F24F9F0C5F4D0B",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"What is the discount percentage for each month?\",\"type\":\"text\",\"content\":{\"text\":\"What is the discount percentage for each month?\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "{\"text\":\"The discount percentage varies across the months from January 2014 to December 2016. The highest discount percentage is **8.1%** in December 2015, while the lowest is **0.0%**, occurring in several months such as January 2014. Notable months with higher discounts include November and December of each year, with percentages generally above 7%. Months like April and July also show moderate discounts around 5-6%. The discount percentage is consistently **0.0%** in the first quarter of each year.\",\"interpretationStash\":{\"approach\":\"sql\",\"userQuestion\":\"What is the discount percentage for each month?\",\"sql\":\"SELECT `Month@DESC`, `Discount %` FROM `SnapshotPanelDisabled` GROUP BY `Month@ID`, `Month@DESC`\",\"actions\":[{\"act\":\"addPanel\",\"nodeKey\":\"8F122C45CC234D0999F24F9F0C5F4D0B\",\"titlePattern\":1,\"parentKey\":\"K34\",\"index\":0},{\"act\":\"setCurrentPanel\",\"unitKey\":\"8F122C45CC234D0999F24F9F0C5F4D0B\"},{\"act\":\"copyUnit\",\"unitKey\":\"K51\",\"unitType\":521,\"newKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"toKey\":\"8F122C45CC234D0999F24F9F0C5F4D0B\",\"partialRetrieval\":{\"nodes\":[\"AutoAI_54890050147111F088D1A5518630AFD4\"]},\"tableGuides\":[{\"table\":\"Document\"}]},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"actions\":[{\"act\":\"createDefaultDropZones\",\"nodeKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"treeType\":1,\"datasetType\":3,\"widgetType\":1,\"partialUpdate\":{\"nodes\":[\"AutoAI_54890050147111F088D1A5518630AFD4\"]}}]},{\"act\":\"format\",\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"unitType\":521,\"formatType\":1,\"format\":{\"Visualization\":{\"VisualizationsEnabled\":-1,\"ViewMode\":51,\"SelectedVisualization\":\"GraphMatrixVisualizationStyle\",\"VisualizationList\":\"GraphMatrixVisualizationStyle\",\"IPhoneVisualization\":\"\",\"IPadVisualization\":\"IPadGraphMatrix2Style\",\"APhoneVisualization\":\"\",\"ATabletVisualization\":\"\"},\"FormattingWidget\":{\"ClassName\":\"com.microstrategy.flex.viewer.GraphMatrixViewer\",\"Enable\":1,\"WidgetProps\":\"<props ><widgetProps ><fmt ><visStyle value=\\\"GraphMatrixVisualizationStyle\\\" ></visStyle><Shape value=\\\"Line\\\" ></Shape><Subtype value=\\\"Automatic\\\" ></Subtype><metricShapes value=\\\"{}\\\" ></metricShapes><visType value=\\\"72\\\" ></visType><userVisType value=\\\"72\\\" ></userVisType><pdlll value=\\\"1\\\" ></pdlll><pnsr value=\\\"1\\\" ></pnsr><oxalr value=\\\"1\\\" ></oxalr><xAxLbWrapText value=\\\"true\\\" ></xAxLbWrapText><pso value=\\\"4\\\" ></pso><bdlp value=\\\"0\\\" ></bdlp><xAxLbNestedLabel value=\\\"true\\\" ></xAxLbNestedLabel><opt1132 value=\\\"true\\\" ></opt1132><yAxLnStyle value=\\\"99\\\" ></yAxLnStyle><yAxLnThk value=\\\"0\\\" ></yAxLnThk><xAxLnStyle value=\\\"99\\\" ></xAxLnStyle><xAxLnThk value=\\\"0\\\" ></xAxLnThk><majorGridLnStyle value=\\\"1\\\" ></majorGridLnStyle><minerGridLnStyle value=\\\"1\\\" ></minerGridLnStyle><ftFgGrpA value=\\\"8191\\\" ></ftFgGrpA></fmt></widgetProps></props>\"}},\"partialRetrieval\":{\"nodes\":[\"AutoAI_54890050147111F088D1A5518630AFD4\"]}},{\"act\":\"format\",\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"unitType\":521,\"formatType\":1,\"format\":{\"FormattingIncrementalFetch\":{\"EnableIFOnGrid\":0}},\"partialRetrieval\":{\"nodes\":[\"AutoAI_54890050147111F088D1A5518630AFD4\"]}},{\"act\":\"changeGridDisplayMode\",\"nodeKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"displayMode\":2},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"partialRetrieval\":{\"nodes\":[\"AutoAI_54890050147111F088D1A5518630AFD4\"],\"filters\":{\"AutoAI_54890050147111F088D1A5518630AFD4\":{\"data\":{},\"defn\":{}}}},\"partialUpdate\":{},\"actions\":[{\"act\":\"addDropZoneUnit\",\"zoneId\":3,\"unitId\":\"8D679D4411D3E4981000E787EC6DE8A4\",\"unitType\":12,\"unitPos\":1,\"datasetId\":\"95C113424F0DBA3971CE15AE256BFC03\",\"datasetType\":\"3\",\"tableGuide\":{\"table\":\"Document\"}},{\"act\":\"addDropZoneUnit\",\"zoneId\":4,\"unitId\":\"0263797F4D6D4E8AC5B8E482E8ECD26B\",\"unitType\":4,\"unitPos\":1,\"datasetId\":\"95C113424F0DBA3971CE15AE256BFC03\",\"datasetType\":\"3\",\"ax\":0,\"tableGuide\":{\"table\":\"Document\"}},{\"act\":\"formatGridZone\",\"nodeKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"props\":{},\"units\":[{\"unitId\":\"0263797F4D6D4E8AC5B8E482E8ECD26B\",\"unitType\":4,\"regions\":[\"g\"]}],\"axis\":[]}]},{\"act\":\"editNode\",\"nodeKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"datasetId\":\"95C113424F0DBA3971CE15AE256BFC03\"},{\"act\":\"format\",\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":1,\"format\":{\"FormattingView\":{\"Title\":\"discount percentage for each month\"}}},{\"act\":\"setProperty\",\"nodeKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"prs\":\"FormattingWidget\",\"pri\":4,\"v\":\"&lt;props&gt;&lt;widgetProps&gt;&lt;fmt&gt;&lt;visStyle value=&quot;GraphMatrixVisualizationStyle&quot;&gt;&lt;/visStyle&gt;&lt;Shape value=&quot;Line&quot;&gt;&lt;/Shape&gt;&lt;Subtype value=&quot;Automatic&quot;&gt;&lt;/Subtype&gt;&lt;metricShapes value=&quot;{}&quot;&gt;&lt;/metricShapes&gt;&lt;visType value=&quot;72&quot;&gt;&lt;/visType&gt;&lt;userVisType value=&quot;72&quot;&gt;&lt;/userVisType&gt;&lt;pdlll value=&quot;1&quot;&gt;&lt;/pdlll&gt;&lt;pnsr value=&quot;1&quot;&gt;&lt;/pnsr&gt;&lt;oxalr value=&quot;1&quot;&gt;&lt;/oxalr&gt;&lt;xAxLbWrapText value=&quot;true&quot;&gt;&lt;/xAxLbWrapText&gt;&lt;pso value=&quot;4&quot;&gt;&lt;/pso&gt;&lt;bdlp value=&quot;0&quot;&gt;&lt;/bdlp&gt;&lt;xAxLbNestedLabel value=&quot;true&quot;&gt;&lt;/xAxLbNestedLabel&gt;&lt;opt1132 value=&quot;true&quot;&gt;&lt;/opt1132&gt;&lt;ftFgGrpA value=&quot;8191&quot;&gt;&lt;/ftFgGrpA&gt;&lt;th value=&quot;1&quot; /&gt;&lt;bgFillClr value=&quot;16382457&quot; /&gt;&lt;allTxtFntClr value=&quot;3879209&quot; /&gt;&lt;xAxTtFntStyle value=&quot;1&quot; /&gt;&lt;yAxTtFntStyle value=&quot;1&quot; /&gt;&lt;dlFntClr value=&quot;3879209&quot; /&gt;&lt;lgdBgFillClr value=&quot;16185078&quot; /&gt;&lt;lgdBgFillTrans value=&quot;0&quot; /&gt;&lt;allMatrixLnClr value=&quot;14737632&quot; /&gt;&lt;rwHdrFillClr value=&quot;16777215&quot; /&gt;&lt;colHdrFillClr value=&quot;16777215&quot; /&gt;&lt;majorGridLnClr value=&quot;15461355&quot; /&gt;&lt;minerGridLnClr value=&quot;15461355&quot; /&gt;&lt;outBdrClr value=&quot;13553358&quot; /&gt;&lt;trdRefLnThk value=&quot;1&quot; /&gt;&lt;trdRefLnClr value=&quot;5066061&quot; /&gt;&lt;trdRefLnStyle value=&quot;0&quot; /&gt;&lt;rfLnFntClr value=&quot;5066061&quot; /&gt;&lt;xAxTtFntClr value=&quot;3879209&quot; /&gt;&lt;yAxTtFntClr value=&quot;3879209&quot; /&gt;&lt;xAxLbFntClr value=&quot;3879209&quot; /&gt;&lt;yAxLbFntClr value=&quot;3879209&quot; /&gt;&lt;xAxLnClr value=&quot;15461355&quot; /&gt;&lt;yAxLnClr value=&quot;15461355&quot; /&gt;&lt;/fmt&gt;&lt;/widgetProps&gt;&lt;/props&gt;\"},{\"act\":\"format\",\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":1,\"format\":{\"FormattingPatterns\":{\"FillColor\":16382457,\"FillStyle\":0,\"FillOpacity\":100},\"FormattingBorder\":{\"TopStyle\":0,\"RightStyle\":0,\"BottomStyle\":0,\"LeftStyle\":0}}},{\"act\":\"format\",\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":2,\"format\":{\"FormattingPatterns\":{\"FillColor\":16382457,\"FillStyle\":0,\"FillOpacity\":100},\"FormattingFont\":{\"Color\":3879209,\"Name\":\"Open Sans\",\"Size\":12,\"Bold\":0,\"Italic\":0,\"Underline\":0,\"Strikeout\":0},\"FormattingAlignment\":{\"Horizontal\":2}}},{\"act\":\"format\",\"formatType\":1,\"format\":{\"FormattingView\":{\"ShowTitleBar\":0,\"ShowWidgetTitleBar\":0}},\"unitKey\":\"AutoAI_54890050147111F088D1A5518630AFD4\"},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"actions\":[{\"act\":\"numberFormat\",\"unitType\":4,\"c\":4,\"f\":\"0.0%;(0.0%)\",\"ndp\":1,\"nth\":true,\"ncs\":\"$\",\"ncp\":0,\"nnn\":3,\"unitId\":\"0263797F4D6D4E8AC5B8E482E8ECD26B\"}]},{\"act\":\"fetchData\",\"keyContext\":\"AutoAI_54890050147111F088D1A5518630AFD4\",\"dataLimit\":1000,\"showDataSummary\":true}],\"viewFilters\":{},\"viewLimits\":{},\"applyDefaultSorts\":{},\"hasFilter\":false,\"idObjectMapping\":{\"AutoAI_54890050147111F088D1A5518630AFD4\":{\"name\":\"discount percentage for each month\",\"type\":\"visualization\"},\"95C113424F0DBA3971CE15AE256BFC03\":{\"name\":\"Intelligent Cube - Geography\",\"type\":\"dataset\"},\"8D679D3511D3E4981000E787EC6DE8A4\":{\"name\":\"Call Center\",\"type\":\"attribute\"},\"8D679D3811D3E4981000E787EC6DE8A4\":{\"name\":\"Country\",\"type\":\"attribute\"},\"8D679D3F11D3E4981000E787EC6DE8A4\":{\"name\":\"Employee\",\"type\":\"attribute\"},\"8D679D4311D3E4981000E787EC6DE8A4\":{\"name\":\"Manager\",\"type\":\"attribute\"},\"8D679D4411D3E4981000E787EC6DE8A4\":{\"name\":\"Month\",\"type\":\"attribute\"},\"8D679D4511D3E4981000E787EC6DE8A4\":{\"name\":\"Month of Year\",\"type\":\"attribute\"},\"8D679D4A11D3E4981000E787EC6DE8A4\":{\"name\":\"Quarter\",\"type\":\"attribute\"},\"8D679D4B11D3E4981000E787EC6DE8A4\":{\"name\":\"Region\",\"type\":\"attribute\"},\"8D679D5111D3E4981000E787EC6DE8A4\":{\"name\":\"Year\",\"type\":\"attribute\"},\"7FD5B69611D5AC76C000D98A4CC5F24F\":{\"name\":\"Cost\",\"type\":\"metric\"},\"381980B211D40BC8C000C8906B98494F\":{\"name\":\"Discount\",\"type\":\"metric\"},\"0263797F4D6D4E8AC5B8E482E8ECD26B\":{\"name\":\"Discount %\",\"type\":\"metric\"},\"225D969B11D5C4AAC000068B4CC5F24F\":{\"name\":\"Employee Headcount\",\"type\":\"metric\"},\"4C051DB611D3E877C000B3B2D86C964F\":{\"name\":\"Profit\",\"type\":\"metric\"},\"1FAF96994873E7CEFC71BDB269522636\":{\"name\":\"Profit Forecast\",\"type\":\"metric\"},\"2680DF9E11D5C3FEC0000B881FDA1A4F\":{\"name\":\"Profit Margin\",\"type\":\"metric\"},\"36A871D6408731EA1A8B4BA8906D8EAC\":{\"name\":\"Profit per Employee\",\"type\":\"metric\"},\"4C05177011D3E877C000B3B2D86C964F\":{\"name\":\"Revenue\",\"type\":\"metric\"},\"8D7D59C144AB891C57FEFA873ABE1C92\":{\"name\":\"Revenue Forecast\",\"type\":\"metric\"},\"9195B93741304224849D4998D6C4356B\":{\"name\":\"Revenue per Employee\",\"type\":\"metric\"},\"4C05190A11D3E877C000B3B2D86C964F\":{\"name\":\"Units Sold\",\"type\":\"metric\"}},\"derivedObjectDefinition\":{},\"selectedViz\":null,\"vizType\":\"lineChart\",\"inCanvasSelectors\":[],\"nuggetsCollections\":[{\"id\":\"3B0E7FCBC6CB45E386EE6CAFE03042B0\",\"name\":\"4CF544F00D40D7E84AFC6BA4FD55ECE5\",\"type\":2,\"contents\":[{\"id\":\"624f3d39-5505-4fd4-a2ac-fbe45665380f\",\"content\":\"I prefer to assess which Category sells best by Order Count.\",\"score\":0.8074042}],\"applicationId\":\"C2B2023642F6753A2EF159A75E0CFF29\"}],\"disableSQLReused\":false,\"messageID\":\"390D39EDB64486D4F45FB0A41B448C04\",\"vizDescription\":{\"vd\":{},\"shapes\":{},\"dz\":{}},\"selectedVizMap\":{},\"isVizSpecifiedByUser\":false,\"addedNAAs\":{\"AutoAI_54890050147111F088D1A5518630AFD4\":[]},\"resultCount\":36},\"questionAssessment\":{\"type\":\"precise\",\"followUp\":false,\"reason\":\"This question is precise. No ambiguity type is provided by LLM.\",\"rawResult\":{\"questionType\":\"precise\",\"ambiguousTypes\":[],\"hasMetric\":true},\"rawType\":\"precise\"}}",
+                    "text_type": 2,
+                    "uri": "335751822FCE45A689D6E0922DF7B9D2"
+                  },
+                  {
+                    "text_content": "[]",
+                    "text_type": 9
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 2,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 12,
+                  "ig": false,
+                  "minute": 2,
+                  "month": 4,
+                  "sec": 26,
+                  "srs": 0,
+                  "tms": 847,
+                  "week": 2,
+                  "year": 2025
+                }
+              }
+            ]
+          }
+        ],
+        "endtime": {
+          "day": 1,
+          "day_of_week": 4,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 9,
+          "ig": true,
+          "minute": 30,
+          "month": 5,
+          "sec": 13,
+          "srs": 0,
+          "tms": 232,
+          "week": 1,
+          "year": 2025
+        }
+      },
+      "did": "D935D154ED488DB05A3C07AC3CF4CA2A",
+      "img": true,
+      "lcl": 1033,
+      "nct": "2023-12-08T09:30:13.232Z",
+      "nmdt": "2025-04-08T12:02:44.083Z",
+      "owid": "4CF544F00D40D7E84AFC6BA4FD55ECE5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "4CF544F00D40D7E84AFC6BA4FD55ECE5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "D9FE7613CA4EA06C98F725B4D2013210"
+    }
+  ]
+}

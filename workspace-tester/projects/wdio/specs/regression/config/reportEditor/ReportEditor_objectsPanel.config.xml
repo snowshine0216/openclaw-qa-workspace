@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportEditor_objectsPanel.spec.js'>
+        <TC>TC85824_1</TC>
+        <TC>TC85824_2</TC>
+        <TC>TC85824_3</TC>
+        <!-- <TC>TC81132_1</TC>
+        <TC>TC81132_2</TC> -->
+    </TestSuite>
+    <TestSuite id='02' name='ReportEditor_folderBrowser.spec.js'>
+        <TC>TC99129_01</TC>
+        <TC>TC99129_02</TC>
+    </TestSuite>
+</root>

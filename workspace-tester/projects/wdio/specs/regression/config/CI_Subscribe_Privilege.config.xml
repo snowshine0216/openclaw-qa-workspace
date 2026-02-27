@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_Privilege.spec.js'>
+        <TC>F43156_fullPrivilege</TC> 
+        <TC>F43156_noPrivilege</TC>
+        <TC>F43156_Privilege1</TC> 
+        <TC>F43156_Privilege2</TC> 
+    </TestSuite>
+</root>

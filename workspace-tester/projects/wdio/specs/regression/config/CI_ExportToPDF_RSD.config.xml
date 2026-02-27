@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_RSD.spec.js'>
+        <TC>TC58930</TC>
+        <TC>TC58931</TC>
+        <TC>TC61449</TC>
+        <TC>TC20889</TC> 
+        <TC>TC20650</TC>   
+    </TestSuite>
+</root>

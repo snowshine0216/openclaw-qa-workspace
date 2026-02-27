@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_Mix.spec.js'>
+        <TC>F43156_15</TC> 
+    </TestSuite>
+</root>

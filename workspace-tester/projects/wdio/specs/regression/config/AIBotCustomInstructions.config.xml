@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomInstructions.spec.js'>
+    	<TC>TC91801_01</TC>
+        <TC>TC91801_02</TC>
+    </TestSuite>
+</root>
