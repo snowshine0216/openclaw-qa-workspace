@@ -6,6 +6,8 @@ description: Central orchestration workflow for the QA Planner Agent to generate
 
 Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, GitHub PRs, and Figma designs) and act as the Master Orchestrator to generate, review, and publish a Test Plan.
 
+**Global rule:** All phases (0–5) must be executed in order; none may be silently skipped. Notify the user after each phase before advancing.
+
 ## 0. Preparation and Information Confirmation
 1. Accept the target Feature ID (e.g. `BCIN-1234`) and related artifacts from the user.
 2. Based on the provided artifacts, double confirm with user the requirements, and raise questions if you have doubts. ONLY proceed with user approval.
@@ -36,67 +38,59 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
    )
    ```
 3. **Figma Context**: Use `agent-browser` (CLI) or `browser-use` with the `qa-plan-figma` skill to extract image contexts and UX expectations (if a Figma URL is provided). Save output to `context/figma.md`.
-*(Note: Steps 2 and 3 should be executed via concurrent agent tool calls or subagents while the bash script runs).*
 4. **Update Freshness**: Update `task.json` with `data_fetched_at` (ISO timestamp) and update `subtask_timestamps` for each fetched source (e.g., `jira`, `confluence`, `github`, `figma`).
 5. Update `task.json` phase to `plan_generation`.
+6. **Notify the user** when context gathering is complete. Do not silently skip to the next phase.
 
-## 2a. Parallel Source Analysis
+## 2a. Parallel Domain Analysis (Spawn Sessions)
 1. Determine which sources exist (Jira and Confluence are always required, Figma/GitHub are optional if not provided).
-2. **Sub-Task Staleness Check**: Check `task.json` for completed sub-tasks. Only re-run domain analyses whose output is missing or whose source data has changed (e.g., re-run `qa-plan-atlassian` only if Jira/Confluence fetched data changed).
-3. Spawn parallel tasks to run domain-specific skills for missing/stale analyses. **Do not force structural mirroring in output**:
-   - `qa-plan-atlassian` -> `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature-id>.md`
-   - `qa-plan-figma` -> `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature-id>.md` (if Figma URL is present)
-   - `qa-plan-github` -> `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature-id>.md` (if GitHub PR is present)
-   *(To spawn in parallel, execute multiple task tool calls or use `sessions_spawn` if supported).*
-4. Wait for all spawned analysis tasks to complete. If any task fails, abort and notify the user. 
-5. Update `task.json` with `subtask_timestamps` for each completed domain analysis (`qa-plan-atlassian`, `qa-plan-figma`, `qa-plan-github`) and update phase to `plan_synthesize`.
+2. **Sub-Task Staleness Check**: Check `task.json` for completed sub-tasks. Only re-run domain analyses whose output is missing or whose source data has changed.
+3. **Spawn 2 (or more) Sessions for Parallel Analysis**: *Do not spawn sub-agents.* Spawn separate sessions with tasks such as:
+   - Session A task: "Follow `qa-plan-atlassian` skill, analyze `context/jira.json` + `context/confluence.md`, output to `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature-id>.md`"
+   - Session B task: "Follow `qa-plan-github` skill, analyze `context/github_diff.md` + `context/github_pr.json`, output to `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature-id>.md`" (if PR is present)
+4. Wait for all spawned sessions to complete. If any session fails, abort and notify the user. 
+5. Update `task.json` with `subtask_timestamps` for each completed domain analysis (`qa-plan-atlassian`, `qa-plan-github`, etc.) and update phase to `plan_synthesize`.
+6. **Notify the user** when parallel domain analysis is complete. Do not silently skip.
 
 ## 2b. Synthesize QA Plan
-1. Call the `qa-plan-synthesize` skill, passing the paths of the generated domain summaries in the `context/` folder.
-2. Direct the skill to synthesize the specific domain summaries into a single comprehensive Test Plan following the exact 9-section layout. Map Jira ACs to GitHub Code Changes to build the final `Test Key Points` table.
-3. Use dynamic versioning for drafts: Determine the latest draft number `<N>`. Save the generated draft to `projects/feature-plan/<feature-id>/drafts/qa_plan_v<N+1>.md` (e.g., `v1` if starting fresh).
+1. Read the `qa-plan-synthesize` SKILL.md and follow it explicitly.
+2. Merge all domain summaries from `context/` into a single comprehensive QA plan following the exact 9-section layout. Map Jira ACs to GitHub Code Changes to build the final `Test Key Points` table.
+3. Use dynamic versioning for drafts: Determine the latest draft number `<N>`. Save the generated draft to `projects/feature-plan/<feature-id>/drafts/qa_plan_v<N+1>.md`.
 4. Track `latest_draft_version` in `task.json` and update phase to `review_refactor`.
+5. **Notify the user** when synthesis is complete. Do not silently skip.
 
-## 3. Review & Refactor Loop
-1. Spawn a sub-agent strictly using the `qa-plan-review` skill. Feed it the latest draft `drafts/qa_plan_v<N>.md` (determined from `task.json`), and below intermediate artifacts generated in phase 2:
-   - `projects/feature-plan/<feature-id>/context/jira.json`
-   - `projects/feature-plan/<feature-id>/context/github_pr.json`
-   - `projects/feature-plan/<feature-id>/context/github_diff.md`
-   - `projects/feature-plan/<feature-id>/qa_plan_final.md` (if exists from previous runs)
-2. Ask the reviewer sub-agent to find any logical gaps, missing edge cases, or untouched requirements. Produce a `review_feedback.md`.
-3. If issues are found, optionally archive the old draft to `archive/qa_plan_draft_<YYYYMMDD>_v<N>.md` and amend the latest draft to a new version `drafts/qa_plan_v<N+1>.md` based on review results. Update `latest_draft_version` in `task.json`.
+## 3. Pre-Publish Review & Refactor Loop
+1. **Spawn a session for review**: *Do not spawn a sub-agent.* Spawn a new session with the task: "Follow `qa-plan-review` skill, review `drafts/qa_plan_v<N>.md` against context artifacts, output `projects/feature-plan/<feature-id>/drafts/review_feedback.md`". 
+   - Feed it `jira.json`, `github_pr.json`, `github_diff.md`, and any existing `qa_plan_final.md`.
+2. Wait for the review session to complete and produce `review_feedback.md`.
+3. If issues are found, optionally archive the old draft and amend the latest draft to a new version `drafts/qa_plan_v<N+1>.md` based on review results. Update `latest_draft_version` in `task.json`.
 4. Update `task.json` phase to `publication`.
+5. **Notify the user** with the review results before proceeding to Publication. Wait for confirmation. Do not silently skip.
 
 ## 4. Publication
-1. Before writing, if `projects/feature-plan/<feature-id>/qa_plan_final.md` already exists, move it to `archive/qa_plan_final_<YYYYMMDD-HHMMSS>.md` to avoid silent overwrites.
+1. **Archive existing content**: Before writing, if `projects/feature-plan/<feature-id>/qa_plan_final.md` already exists, move it to `archive/qa_plan_final_<YYYYMMDD-HHMMSS>.md` to avoid silent overwrites.
 2. Copy the final approved draft (`qa_plan_v<N>.md`) to `projects/feature-plan/<feature-id>/qa_plan_final.md`.
-3. Generate an audit trail / changelog explaining what features and test strategies were captured. Append to `changelog.md` with an idempotency check (only append if current phase changes aren't already recorded), or explicitly overwrite per run.
-4. **Convert Markdown to Confluence format** (CRITICAL): Run from workspace-planner root:
+3. Generate an audit trail / changelog explaining what features and test strategies were captured. Append to `changelog.md` with an idempotency check, or explicitly overwrite per run.
+4. **Convert Markdown to Confluence HTML** (CRITICAL): Run from workspace-planner root:
    ```bash
    node scripts/confluence/md-to-confluence.js \
      projects/feature-plan/<feature-id>/qa_plan_final.md \
      projects/feature-plan/<feature-id>/qa_plan_confluence.html
    ```
-5. **Publish to Confluence with storage format**:
+5. **Publish to Confluence**: Update the existing page using storage format:
    ```bash
    confluence update <page-id> \
      --file projects/feature-plan/<feature-id>/qa_plan_confluence.html \
      --format storage
    ```
    **⚠️ NEVER publish raw Markdown** - Confluence requires HTML storage format!
-6. **Verify publication**: Check that page renders correctly with formatted tables and headers.
-7. Update `task.json` with `output_generated_at` (ISO timestamp) and phase to `confluence_review`. **Schema**: Include `data_fetched_at`, `output_generated_at`, `subtask_timestamps`, `latest_draft_version` — see `projects/feature-plan/docs/DESIGN_ENHANCEMENTS.md` §3.2.
+6. Verify publication: Check that page renders correctly. Update `task.json` phase to `confluence_review` and record `output_generated_at`.
+7. **Notify the user** when publication is done. Do not silently skip.
 
-## 5. Confluence Content Review
-1. Spawn a sub-agent using the `qa-plan-confluence-review` skill. Pass it:
-   - The Confluence page ID (from `task.json` or `run.json`)
-   - `projects/feature-plan/<feature-id>/context/jira.json`
-   - `projects/feature-plan/<feature-id>/context/github_pr.json`
-   - `projects/feature-plan/<feature-id>/context/github_diff.md`
-   - `projects/feature-plan/<feature-id>/qa_plan_final.md`
-2. The skill will review the live Confluence page across three axes: **Formatting**, **Structure**, and **Cross-Artifact Accuracy**.
-3. Save the review output using versioning: `projects/feature-plan/<feature-id>/qa_plan_confluence_review_v<N>.md` (or append to a single file with timestamps) to ensure iterative improvements are traceable. If cached data was used due to API failure earlier, embed a staleness warning in the review output header.
-4. **If FAIL (generation fix required):** Explicitly update `task.json` phase to `review_refactor` and return to Phase 3 (Review & Refactor) with the specific fix list from the review file. Re-run subsequent phases after fixes.
-5. **If FAIL (Confluence-side manual fixes):** Present the corrected text to the user. Wait for confirmation before proceeding.
-6. **If PASS:** Surface any warnings to the user for awareness (do not block).
-7. Update `task.json` phase to `completed` and mark overall_status as `completed`.
+## 5. Post-Publish Confluence Content Review
+1. **Spawn a session for Confluence review**: *Do not spawn a sub-agent.* Spawn a new session with the task: "Follow `qa-plan-confluence-review` skill, review live page `<page-id>` against artifacts". Pass it the existing contexts.
+2. Save the review output using versioning: `projects/feature-plan/<feature-id>/qa_plan_confluence_review_v<N>.md`.
+3. **If FAIL (generation fix required):** Explicitly update `task.json` phase to `review_refactor`, fix the draft, and republish.
+4. **If FAIL (Confluence-side manual fixes):** Present the corrected text to the user. Wait for confirmation.
+5. **If PASS:** Update `task.json` phase to `completed` and mark overall_status as `completed`.
+6. **Notify the user** with the final result. Do not silently skip.
