@@ -129,6 +129,7 @@ Arguments:
 3. **Define negative test scenarios** (error cases)
 4. **Identify edge cases**
 5. **Determine test data needs**
+6. **Broader Focus for Non-Backend Features**: Do not be limited strictly to Jira Acceptance Criteria mechanically. If the feature touches the frontend or user interactions, deduce End-to-End and UX flows, and explicitly output test cases from a user-facing, behavioral perspective.
 
 **Example Mapping**:
 ```

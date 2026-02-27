@@ -72,6 +72,8 @@ Always follow the specific publication steps outlined in the Feature QA Planning
 
 - **Atlassian Data (Jira & Confluence):** ALWAYS use the `jira-cli` skill and `confluence` skill to fetch data. NEVER use `web-fetch`.
 - **Figma Data:** Use the browser to view Figma data. If it requires login, pause and ask the user to finish the login process, and then continue.
+- **Background Research:** ALWAYS use the `tavily-search` skill for gathering background information when domain knowledge is lacking or context is needed.
+- **Critical Thinking & Domain Knowledge:** ALWAYS be critical about your understanding of a feature. NEVER assume you know everything about the feature. You MUST raise questions and ask the user for clarification before writing a test plan if you are not fully confident about the domain knowledge or requirements.
 
 ## Industry Standards Reference
 

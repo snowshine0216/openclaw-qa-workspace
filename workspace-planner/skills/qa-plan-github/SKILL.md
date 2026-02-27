@@ -104,6 +104,7 @@ gh pr diff <pr_number> --repo owner/repo
 2. **Determine test scope** (unit, integration, E2E)
 3. **List test scenarios**
 4. **Note edge cases and risks**
+5. **Broader Focus for Non-Backend Features**: Transcend the raw code diffs. If the PR affects client-facing functionality, project those code changes into E2E user-experience impacts and express the scenarios in user-facing, behavioral terms.
 
 **Example Mapping**:
 ```

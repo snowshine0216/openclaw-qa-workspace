@@ -20,6 +20,7 @@ At least ONE of the following domain summaries should exist:
 - `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature_id>.md`
+- `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature_id>.md` (Optional)
 
 ## Workflow
 
@@ -39,6 +40,7 @@ Read each available domain summary file:
 1. **Figma summary**: UI components, visual tests, E2E workflows
 2. **GitHub summary**: Code changes, risk areas, technical considerations
 3. **Atlassian summary**: Requirements, acceptance criteria, business context
+4. **Background summary** (Optional): Additional domain knowledge gathered via web search
 
 **Extract key data from each**:
 - Summary metadata (URLs, dates, priorities)
@@ -46,6 +48,7 @@ Read each available domain summary file:
 - Risk assessments
 - Reference data
 - Coverage metrics
+- Domain context (to inform comprehensive generation and gap analysis)
 
 ### Step 3: Consolidate Information
 

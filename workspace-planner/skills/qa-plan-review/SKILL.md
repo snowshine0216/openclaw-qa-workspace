@@ -20,6 +20,7 @@ Perform rigorous, professional review of QA plans to ensure technical excellence
 - Comprehensive QA plan file (from orchestrator or manual creation)
 
 **Optional Context**:
+- Background context (Tavily search outputs)
 - Design documents (Confluence)
 - Code changes (GitHub PR)
 - Requirements (Jira issues)
@@ -131,10 +132,11 @@ Code Reference: src/api/auth/login.ts:45-67
 
 1. **Extract all requirements** from Jira/Confluence references
 2. **Extract all test scenarios** from QA plan
-3. **Identify gaps**:
+3. **Cross-reference with Background Context**: If `qa_plan_background_<feature-id>.md` exists, use this comprehensive domain knowledge to verify that no holistic test scenarios, edge cases, or broader context items were missed in the synthesized plan.
+4. **Identify gaps**:
    - Requirements without test scenarios
    - Test scenarios without requirement references
-   - Edge cases mentioned but not tested
+   - Edge cases mentioned (including from background context) but not tested
 
 **Example Gap Detection**:
 ```
