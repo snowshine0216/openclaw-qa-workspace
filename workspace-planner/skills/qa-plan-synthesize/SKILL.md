@@ -1,44 +1,44 @@
 ---
-name: qa-plan-architect-orchestrator
-description: Orchestrates and consolidates QA plans from Figma, GitHub, and Atlassian sources into a comprehensive user-facing QA plan. Use when the user asks to "consolidate QA plans", "merge QA analysis", or "create final QA plan" after running individual analysis skills.
+name: qa-plan-synthesize
+description: Synthesizes QA domain summaries from Figma, GitHub, and Atlassian sources into a single comprehensive user-facing QA plan. Generates the final test points table by mapping ACs to Code Changes. Use when the user asks to "consolidate QA plans", "merge QA analysis", or "create final QA plan" after running individual analysis skills.
 ---
 
-# QA Plan Architect Orchestrator
+# QA Plan Synthesize
 
-Consolidate QA plans from Figma design analysis, GitHub PR analysis, and Atlassian requirements analysis into a comprehensive, user-facing QA plan document.
+Consolidate QA domain summaries from Figma design analysis, GitHub PR analysis, and Atlassian requirements analysis into a comprehensive, user-facing QA plan document.
 
 ## When to Use
 
-- User has run multiple QA plan generation skills (figma, github, atlassian)
+- User has run multiple QA domain analysis skills (figma, github, atlassian)
 - User asks to "consolidate QA plans" or "merge QA analysis"
 - User wants a "comprehensive QA plan" combining all sources
-- All partial QA plans are ready for integration
+- All domain summaries are ready for integration
 
 ## Prerequisites
 
-At least ONE of the following partial plans should exist:
-- `qa_plan_figma_<feature_id>_<date>.md`
-- `qa_plan_github_<feature_id>_<date>.md`
-- `qa_plan_atlassian_<feature_id>_<date>.md`
+At least ONE of the following domain summaries should exist:
+- `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature_id>.md`
+- `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature_id>.md`
+- `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature_id>.md`
 
 ## Workflow
 
-### Step 1: Gather Input Plans
+### Step 1: Gather Input Summaries
 
-**Locate existing partial plans**:
+**Locate existing domain summaries**:
 ```bash
 # Check default location
-ls /Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_*
+ls projects/feature-plan/<feature-id>/context/qa_plan_*
 ```
 
-Ask user which plans to consolidate if multiple exist, or auto-detect the most recent set based on `<feature_id>` and `<date>`.
+Ask user which summaries to consolidate if multiple exist, or auto-detect the most recent set based on `<feature_id>`.
 
-### Step 2: Read and Parse All Plans
+### Step 2: Read and Parse All Summaries
 
-Read each available plan file:
-1. **Figma plan**: UI components, visual tests, E2E workflows
-2. **GitHub plan**: Code changes, risk areas, test scenarios
-3. **Atlassian plan**: Requirements, acceptance criteria, business context
+Read each available domain summary file:
+1. **Figma summary**: UI components, visual tests, E2E workflows
+2. **GitHub summary**: Code changes, risk areas, technical considerations
+3. **Atlassian summary**: Requirements, acceptance criteria, business context
 
 **Extract key data from each**:
 - Summary metadata (URLs, dates, priorities)
@@ -54,15 +54,17 @@ Read each available plan file:
 | Section | Consolidation Approach |
 |---------|------------------------|
 | **Summary** | Combine all sources into one table |
-| **Background** | Use Atlassian (requirements) as primary, add context from others |
-| **QA Goals** | Merge all goals, deduplicate, categorize by type (E2E, FUN, UX, PERF, SEC, ACC, CERT, UPG, INT, AUTO) |
-| **Test Key Points** | Combine tables from all sources, organize by category |
-| **Risk & Mitigation** | Merge risk tables, cross-reference code and design |
-| **QA Summary** | Aggregate code changes, testing status, and results |
+| **Background** | Use Atlassian (requirements) as primary; number subsections |
+| **QA Goals** | Merge all goals, deduplicate; use numbered sub-categories (1. E2E, 2. FUN, … 10. AUTO) with bullet items |
+| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. Columns MUST BE: Priority | Related Code Change | Test Key Points | Expected Results. |
+| **Risk & Mitigation** | Merge risk tables; use numbered sub-sections (1. Technical, 2. Data, 3. UX); keep tables |
+| **Consolidated Reference Data** | Aggregate source docs, stakeholders, test data, dependencies; bullets only (no tables) |
+| **Sign-off Checklist** | Checklists per team; use numbered subsections |
+| **QA Summary** | Code Changes table only (columns: PR, Files Changed, PR Summary); placed at end of document |
 
 ### Step 4: Generate Comprehensive Plan
 
-Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
+**Dynamic versioning**: Determine the latest draft number N by reading `task.json` (`latest_draft_version`) or scanning `drafts/qa_plan_v*.md`. If no drafts exist, N=0. Write the new draft to `projects/feature-plan/<feature_id>/drafts/qa_plan_v<N+1>.md` (e.g., `qa_plan_v1.md` if starting fresh). Update `task.json` with `latest_draft_version: <N+1>`.
 
 ```markdown
 # Comprehensive QA Plan: [Feature Name]
@@ -82,15 +84,15 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 
 ## 📝 Background
 
-### Key Problem Statement
+### 1. Key Problem Statement
 
 [From Atlassian requirements - What problem are we solving?]
 
-### Solution
+### 2. Solution
 
 [High-level solution approach combining design, implementation, and requirements]
 
-### Business Context
+### 3. Business Context
 
 - **User Impact**: [Who benefits and how]
 - **Technical Scope**: [What systems/components affected]
@@ -98,89 +100,89 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 
 ## 🎯 QA Goals
 
-### E2E: End to End
+### 1. E2E: End to End
 
-1. Verify complete user workflows from entry to completion
-2. Validate data flow across all system layers
-3. Test integration between frontend, backend, and external services
-4. Confirm session management and state persistence
+- Verify complete user workflows from entry to completion
+- Validate data flow across all system layers
+- Test integration between frontend, backend, and external services
+- Confirm session management and state persistence
 
-### FUN: Functionality
+### 2. FUN: Functionality
 
-1. Validate all functional requirements from [Jira issue]
-2. Verify business logic correctness
-3. Test API endpoints with various inputs
-4. Confirm database operations (CRUD)
-5. Validate error handling and edge cases
+- Validate all functional requirements from [Jira issue]
+- Verify business logic correctness
+- Test API endpoints with various inputs
+- Confirm database operations (CRUD)
+- Validate error handling and edge cases
 
-### UX: User Experience
+### 3. UX: User Experience
 
-1. Verify UI matches Figma designs with pixel-perfect accuracy
-2. Test responsive design across devices (mobile, tablet, desktop)
-3. Validate interactive elements (hover, focus, active states)
-4. Test loading states and transitions
-5. Verify error messages are user-friendly
-6. Confirm accessibility features (keyboard navigation, screen readers)
+- Verify UI matches Figma designs with pixel-perfect accuracy
+- Test responsive design across devices (mobile, tablet, desktop)
+- Validate interactive elements (hover, focus, active states)
+- Test loading states and transitions
+- Verify error messages are user-friendly
+- Confirm accessibility features (keyboard navigation, screen readers)
 
-### PERF: Performance
+### 4. PERF: Performance
 
-1. Measure page load time (target: < 3s)
-2. Test API response times (target: < 2s for critical endpoints)
-3. Validate rendering performance (60fps for animations)
-4. Load test concurrent users (target: [X] CCU)
-5. Monitor memory usage and potential leaks
+- Measure page load time (target: < 3s)
+- Test API response times (target: < 2s for critical endpoints)
+- Validate rendering performance (60fps for animations)
+- Load test concurrent users (target: [X] CCU)
+- Monitor memory usage and potential leaks
 
-### SEC: Security
+### 5. SEC: Security
 
-1. Verify authentication and authorization mechanisms
-2. Test input validation and sanitization
-3. Check for XSS, CSRF, SQL injection vulnerabilities
-4. Validate secure data transmission (HTTPS)
-5. Test session timeout and invalidation
-6. Verify sensitive data encryption
+- Verify authentication and authorization mechanisms
+- Test input validation and sanitization
+- Check for XSS, CSRF, SQL injection vulnerabilities
+- Validate secure data transmission (HTTPS)
+- Test session timeout and invalidation
+- Verify sensitive data encryption
 
-### ACC: Accessibility
+### 6. ACC: Accessibility
 
-1. Validate WCAG 2.1 Level AA compliance
-2. Test keyboard-only navigation
-3. Verify screen reader compatibility
-4. Check color contrast ratios
-5. Test focus indicators
-6. Validate ARIA labels and roles
+- Validate WCAG 2.1 Level AA compliance
+- Test keyboard-only navigation
+- Verify screen reader compatibility
+- Check color contrast ratios
+- Test focus indicators
+- Validate ARIA labels and roles
 
-### CER: Platform Certifications
+### 7. CER: Platform Certifications
 
-1. [If applicable: Verify compliance with platform standards]
-2. [E.g., Apple App Store guidelines, Google Play policies]
-3. [Browser compatibility: Chrome, Firefox, Safari, Edge]
+- [If applicable: Verify compliance with platform standards]
+- [E.g., Apple App Store guidelines, Google Play policies]
+- [Browser compatibility: Chrome, Firefox, Safari, Edge]
 
-### UPG: Upgrade and Compatibility
+### 8. UPG: Upgrade and Compatibility
 
-1. Test database migration scripts (up and down)
-2. Verify backward compatibility with previous version
-3. Test rollback procedures
-4. Validate data migration integrity
-5. Check API version compatibility
+- Test database migration scripts (up and down)
+- Verify backward compatibility with previous version
+- Test rollback procedures
+- Validate data migration integrity
+- Check API version compatibility
 
-### INT: Internationalization
+### 9. INT: Internationalization
 
-1. Verify all user-facing text is translatable
-2. Test RTL language support (if applicable)
-3. Validate date/time formatting for different locales
-4. Test currency formatting
-5. Verify timezone handling
+- Verify all user-facing text is translatable
+- Test RTL language support (if applicable)
+- Validate date/time formatting for different locales
+- Test currency formatting
+- Verify timezone handling
 
-### AUTO: Automation
+### 10. AUTO: Automation
 
-1. Create automated unit tests (target: 80%+ coverage)
-2. Develop integration test suite
-3. Build E2E test automation for critical paths
-4. Set up CI/CD pipeline tests
-5. Configure regression test suite
+- Create automated unit tests (target: 80%+ coverage)
+- Develop integration test suite
+- Build E2E test automation for critical paths
+- Set up CI/CD pipeline tests
+- Configure regression test suite
 
-## 🧪 QA Plan: Test Key Points
+## 🧪 Test Key Points
 
-### UI Testing (from Figma)
+### 1. UI Testing (from Figma)
 
 #### Visual Components
 
@@ -199,7 +201,7 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | P0 | `src/components/Modal.tsx` | Modal open/close | Modal opens on trigger, closes on X click or overlay click |
 | P1 | `src/components/Dropdown.tsx` | Dropdown selection | Options display, selection highlights, value updates |
 
-### Backend Testing (from GitHub)
+### 2. Backend Testing (from GitHub)
 
 #### API Endpoints
 
@@ -226,7 +228,7 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | P0 | `src/services/auth.ts:validatePassword()` | Password validation with incorrect password | Returns false |
 | P0 | `src/services/email.ts:sendPasswordReset()` | Send password reset email | Email sent with reset link, link expires in 24h |
 
-### E2E Workflow Testing (from Figma + GitHub)
+### 3. E2E Workflow Testing (from Figma + GitHub)
 
 #### User Registration & Login Flow
 
@@ -244,17 +246,17 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | P0 | Full flow: Email + UI + API | User clicks reset link | Redirected to reset form, token validated |
 | P0 | Full flow: UI + API + DB | User submits new password | Password updated, auto-login, redirect to dashboard |
 
-### Functional Requirements Testing (from Atlassian)
+### 4. Functional Requirements Testing (from Atlassian)
 
 #### Acceptance Criteria from [JIRA-123]
 
-| Priority | Acceptance Criteria | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | Given valid credentials, when user logs in, then redirect to dashboard | Login flow with test user | User redirected to `/dashboard`, session active |
-| P0 | Given invalid credentials, when user logs in, then show error | Login with wrong password | Error message displayed, no redirect |
-| P1 | Given user is logged in, when accessing login page, then redirect to dashboard | Navigate to `/login` while logged in | Auto-redirect to `/dashboard` |
+| Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|----------|---------------------|---------------------|-----------------|------------------|
+| P0 | `src/api/auth/login.ts` | Given valid credentials, when user logs in, then redirect to dashboard | Login flow with test user | User redirected to `/dashboard`, session active |
+| P0 | `src/api/auth/login.ts` | Given invalid credentials, when user logs in, then show error | Login with wrong password | Error message displayed, no redirect |
+| P1 | `src/middleware/auth.ts` | Given user is logged in, when accessing login page, then redirect to dashboard | Navigate to `/login` while logged in | Auto-redirect to `/dashboard` |
 
-### Performance Testing
+### 5. Performance Testing
 
 | Priority | Test Key Points | Expected Results | Measurement Method |
 |----------|-----------------|------------------|-------------------|
@@ -262,7 +264,7 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | P1 | Page load time (dashboard) | < 3 seconds (p95) | Lighthouse CI |
 | P1 | Database query time (user lookup) | < 100ms (p95) | APM monitoring |
 
-### Security Testing
+### 6. Security Testing
 
 | Priority | Test Key Points | Expected Results | Reference |
 |----------|-----------------|------------------|-----------|
@@ -271,7 +273,7 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | P0 | XSS prevention | Input sanitized, output escaped | Code: `src/utils/sanitize.ts` |
 | P1 | CSRF protection | CSRF token validated | Code: `src/middleware/csrf.ts` |
 
-### Accessibility Testing
+### 7. Accessibility Testing
 
 | Priority | Test Key Points | Expected Results | WCAG Criterion |
 |----------|-----------------|------------------|----------------|
@@ -281,7 +283,7 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 
 ## ⚠️ Risk & Mitigation
 
-### Technical Risks
+### 1. Technical Risks
 
 | Risk | Impact | Likelihood | Mitigation Strategy | Code/Design Reference |
 |------|--------|------------|---------------------|----------------------|
@@ -291,128 +293,23 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 | UI breaks on older browsers | Medium | Medium | Cross-browser testing, polyfills | [Figma: Browser Support] |
 | API rate limit bypass | High | Medium | Implement rate limiting with Redis | `src/middleware/rateLimit.ts`, [PROJ-125] |
 
-### Data Risks
+### 2. Data Risks
 
 | Risk | Impact | Likelihood | Mitigation Strategy | Code/Design Reference |
 |------|--------|------------|---------------------|----------------------|
 | User enumeration via error messages | Medium | Medium | Use generic error messages | `src/api/auth/login.ts:67`, [Design Doc §5.1] |
 | Sensitive data in logs | High | Low | Sanitize logs, audit log configuration | `src/utils/logger.ts` |
 
-### UX Risks
+### 3. UX Risks
 
 | Risk | Impact | Likelihood | Mitigation Strategy | Design Reference |
 |------|--------|------------|---------------------|------------------|
 | Confusing error messages | Medium | High | UX review of all error states | [Figma: Error States] |
 | Slow page load on mobile | High | Medium | Performance optimization, lazy loading | [Design Doc: Performance] |
 
-## 📊 QA Summary
-
-### Code Changes Summary
-
-| File Path | Change Type | Lines Changed | Risk Level | Test Status |
-|-----------|-------------|---------------|------------|-------------|
-| `src/api/auth/login.ts` | New Feature | +120, -5 | High | ✅ Tested |
-| `src/components/LoginForm.tsx` | New Feature | +78, -0 | Medium | ✅ Tested |
-| `db/migrations/001_add_users.sql` | New Schema | +45, -0 | High | ✅ Tested |
-| `src/middleware/session.ts` | Modified | +23, -12 | High | ⬜ Pending |
-| `src/utils/validation.ts` | New Utility | +34, -0 | Low | ⬜ Pending |
-
-### E2E Testing & Functionality
-
-**Status**: ✅ In Progress
-
-| Test Category | Total Tests | Passed | Failed | Blocked | Coverage |
-|---------------|-------------|--------|--------|---------|----------|
-| UI Components | 15 | 12 | 2 | 1 | 80% |
-| API Endpoints | 20 | 18 | 0 | 2 | 90% |
-| E2E Workflows | 8 | 5 | 1 | 2 | 62% |
-| Acceptance Criteria | 10 | 8 | 1 | 1 | 80% |
-
-**Currently Open Defects**:
-- [BUG-789]: Login button disabled state not showing correctly (Priority: P1)
-- [BUG-790]: Reset email not sent for non-existent users (Priority: P2)
-
-**Limitations**:
-- Social login (Google, GitHub) not implemented in this release
-- Multi-factor authentication deferred to future release
-- Password strength meter not included
-
-### Performance
-
-**Status**: ✅ Passed
-
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Login API response time (p95) | < 2s | 1.2s | ✅ Pass |
-| Dashboard page load (p95) | < 3s | 2.5s | ✅ Pass |
-| Database query time (p95) | < 100ms | 65ms | ✅ Pass |
-| Concurrent users supported | 1000 | 1200 | ✅ Pass |
-
-**Load Testing Summary**:
-- Tested with 1200 concurrent users
-- No errors under normal load
-- Response time degrades at >2000 users (acceptable)
-
-### Security
-
-**Status**: ✅ Passed
-
-1. ✅ Password hashing: Bcrypt with 10 rounds
-2. ✅ SQL injection: Parameterized queries used throughout
-3. ✅ XSS prevention: Input sanitization and output escaping
-4. ✅ CSRF protection: Token-based protection enabled
-5. ✅ HTTPS enforcement: All endpoints require HTTPS
-6. ⬜ Security audit: Scheduled for next sprint
-
-### Platform Certifications
-
-**Status**: ✅ Passed
-
-1. ✅ Browser compatibility: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
-2. ✅ Mobile compatibility: iOS 14+, Android 10+
-3. N/A App store compliance (not applicable for web app)
-
-### Upgrade and Compatibility
-
-**Status**: ✅ Passed
-
-1. ✅ Database migration tested: Up and down migrations work
-2. ✅ Backward compatibility: New API version maintains old endpoints
-3. ✅ Rollback plan: Tested rollback procedure on staging
-4. ✅ Data integrity: No data loss during migration
-
-### Internationalization
-
-**Status**: ⬜ Pending
-
-1. ⬜ Translation files: Awaiting localization team
-2. ⬜ RTL support: Not tested yet
-3. ✅ Date/time formatting: Using i18n library
-4. ✅ Timezone handling: UTC stored, local display
-
-### Automation
-
-**Status**: ✅ In Progress
-
-1. ✅ Unit tests: 85% coverage (target: 80%+)
-2. ✅ Integration tests: 12 tests covering critical paths
-3. ⬜ E2E automation: 5 tests automated (target: 8)
-4. ✅ CI/CD pipeline: Tests run on every PR
-5. ✅ Regression suite: 30 tests running nightly
-
-### Accessibility
-
-**Status**: ⬜ Pending
-
-1. ⬜ WCAG 2.1 AA compliance: Audit scheduled
-2. ✅ Keyboard navigation: All interactive elements accessible
-3. ✅ Screen reader labels: All forms properly labeled
-4. ⬜ Color contrast: Some areas need improvement
-5. ✅ Focus indicators: Visible focus states implemented
-
 ## 📎 Consolidated Reference Data
 
-### Source Documents
+### 1. Source Documents
 
 **Design & Requirements**:
 - [Figma Design](figma-url)
@@ -428,17 +325,15 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 - [User Story: PROJ-123](jira-url)
 - [Related Issues](jira-filter-url)
 
-### Stakeholders
+### 2. Stakeholders
 
-| Role | Name | Responsibility | Contact |
-|------|------|----------------|---------|
-| Product Owner | [Name] | Requirements approval | @username |
-| Tech Lead | [Name] | Technical design | @username |
-| QA Lead | [Name] | Test strategy | @username |
-| UX Designer | [Name] | Design validation | @username |
-| Security | [Name] | Security review | @username |
+- **Product Owner**: [Name] — Requirements approval (@username)
+- **Tech Lead**: [Name] — Technical design (@username)
+- **QA Lead**: [Name] — Test strategy (@username)
+- **UX Designer**: [Name] — Design validation (@username)
+- **Security**: [Name] — Security review (@username)
 
-### Test Data
+### 3. Test Data
 
 **User Accounts** (Test Environment):
 - Test User: `testuser@example.com` / `TestPass123!`
@@ -449,25 +344,23 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 - Base URL: `https://staging.example.com/api`
 - Auth: JWT token in `Authorization: Bearer <token>` header
 
-### Dependencies
+### 4. Dependencies
 
-| Dependency | Version | Status | Notes |
-|------------|---------|--------|-------|
-| Node.js | 22.x | ✅ | Required runtime |
-| PostgreSQL | 15.x | ✅ | Database |
-| Redis | 7.x | ✅ | Session store |
-| Email Service | Sendgrid v3 | ✅ | Email delivery |
+- **Node.js** 22.x ✅ — Required runtime
+- **PostgreSQL** 15.x ✅ — Database
+- **Redis** 7.x ✅ — Session store
+- **Email Service** Sendgrid v3 ✅ — Email delivery
 
 ## 🎯 Sign-off Checklist
 
-### Development Team
+### 1. Development Team
 
 - [x] All code reviewed and merged
 - [x] Unit tests passing (85% coverage)
 - [x] Documentation updated
 - [x] No high-severity linter errors
 
-### QA Team
+### 2. QA Team
 
 - [ ] All P0 tests executed and passed
 - [ ] All P1 tests executed (90%+ passed)
@@ -475,20 +368,20 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 - [ ] Regression testing completed
 - [ ] Performance benchmarks met
 
-### Product Team
+### 3. Product Team
 
 - [ ] All acceptance criteria validated
 - [ ] UX reviewed and approved
 - [ ] Documentation reviewed
 - [ ] Release notes drafted
 
-### Security Team
+### 4. Security Team
 
 - [ ] Security scan completed
 - [ ] No critical vulnerabilities
 - [ ] Penetration testing passed (if required)
 
-### Release Readiness
+### 5. Release Readiness
 
 - [ ] Deployment plan reviewed
 - [ ] Rollback plan documented
@@ -497,29 +390,38 @@ Create a markdown file: `qa_plan_comprehensive_<feature_id>_<date>.md`
 
 ## 📝 Notes
 
-**Generated by**: QA Plan Architect Orchestrator  
+**Generated by**: QA Plan Synthesize Agent  
 **Sources**: Figma + GitHub + Atlassian  
 **Last Updated**: [Timestamp]  
 **Version**: 1.0
 
 **Next Steps**:
-1. Complete pending automation tests
-2. Address internationalization gaps
-3. Schedule accessibility audit
-4. Final security review
-5. Obtain stakeholder sign-offs
+- Complete pending automation tests
+- Address internationalization gaps
+- Schedule accessibility audit
+- Final security review
+- Obtain stakeholder sign-offs
+
+## 📊 QA Summary
+
+### 1. Code Changes
+
+| PR | Files Changed | PR Summary |
+|----|---------------|------------|
+| [PR #NNN](url) | `path/to/file1.ts`, `path/to/file2.ts` | Brief description of what the PR changes |
+| [PR #NNN](url) | `path/to/file3.ts` | Brief description of what the PR changes |
 ```
 
 ## Output File Handling
 
-**Default Location**: Confirm with user or use:
+**Default Location**: Write to the drafts folder of the feature plan:
 ```
-/Users/xuyin/Documents/FeatureTest/QAPlans/
+projects/feature-plan/<feature_id>/drafts/
 ```
 
 **Naming Convention**:
 ```
-qa_plan_comprehensive_<feature_id>_<YYYY-MM-DD>.md
+qa_plan_v<N>.md (use latest version per task.json or drafts/ scan)
 ```
 
 ## Consolidation Best Practices
@@ -618,14 +520,14 @@ Code: "Password sent in plain text"
 > "Consolidate all QA plans for the login feature"
 
 **Skill Actions**:
-1. Find all QA plan files with "login" in name
-2. Read `qa_plan_figma_login_2026-01-29.md`
-3. Read `qa_plan_github_login_2026-01-29.md`
-4. Read `qa_plan_atlassian_login_2026-01-29.md`
-5. Extract and merge all test scenarios
+1. Find all domain summary files in `projects/feature-plan/<feature-id>/context/`
+2. Read `qa_plan_figma_<feature-id>.md`
+3. Read `qa_plan_github_<feature-id>.md`
+4. Read `qa_plan_atlassian_<feature-id>.md`
+5. Extract and merge all test scenarios, building the Test Key Points tables with mapping.
 6. Consolidate risks and mitigations
 7. Create summary tables with aggregate data
-8. Generate `qa_plan_comprehensive_login_2026-01-29.md`
+8. Generate `drafts/qa_plan_v<N+1>.md` (determine N from task.json or drafts/ scan)
 9. Present summary to user
 
 ## Notes

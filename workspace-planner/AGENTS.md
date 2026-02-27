@@ -22,8 +22,8 @@ Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
 Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa-planning.md`)
   ↓
 1. Initialization: Run `scripts/check_resume.sh` and initialize `projects/feature-plan/<feature-id>/task.json`.
-2. Context Gathering: Spawn CLI/browser tasks in parallel to fetch from Jira, Confluence, GitHub, and Figma into `context/`.
-3. Generation: Instruct `qa-plan-architect-orchestrator` to draft a comprehensive plan from context.
+2. Context Gathering & Analysis: Spawn parallel tasks (e.g., `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`) to fetch artifacts and generate domain summaries into `context/`.
+3. Generation: Instruct `qa-plan-synthesize` to synthesize a comprehensive Test Plan from the domain summaries.
 4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
 5. Publication:
    a. Convert Markdown to Confluence HTML: `node scripts/confluence/md-to-confluence.js`

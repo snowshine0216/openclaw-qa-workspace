@@ -1,18 +1,18 @@
 ---
 name: qa-plan-github
-description: Generate QA test plans by analyzing GitHub pull request diffs to identify code changes and risk areas. Use when the user asks to create QA plans from PR, analyze code changes for testing, or mentions "QA plan from GitHub", "PR testing", or "code change analysis".
+description: Generate QA domain summaries by analyzing GitHub pull request diffs to identify code changes and risk areas. Use when the user asks to extract QA findings from PR, analyze code changes for testing, or mentions "QA summary from GitHub", "PR testing", or "code change analysis".
 ---
 
-# QA Plan Generator from GitHub Pull Requests
+# QA Plan Domain Summary Generator from GitHub Pull Requests
 
-Generate comprehensive QA test plans by analyzing GitHub PR diffs, identifying code changes, risk areas, and testing requirements.
+Generate comprehensive QA domain summaries by analyzing GitHub PR diffs, identifying code changes, risk areas, and testing context.
 
 ## When to Use
 
 - User provides a GitHub PR URL or PR number
-- User asks to "create QA plan from GitHub PR"
+- User asks to "extract QA context from GitHub PR"
 - User mentions "analyze code changes for testing" or "PR risk analysis"
-- Creating test plans based on code implementation
+- Creating test findings based on code implementation
 
 ## Prerequisites
 
@@ -116,12 +116,14 @@ Change: Added email validation in src/utils/validation.ts
 → Risk: Email validation may block legitimate addresses
 ```
 
-### Step 5: Generate QA Plan Structure
+### Step 5: Generate QA Domain Summary
 
-Create a markdown file: `qa_plan_github_<feature_id>_<date>.md`
+Create a markdown file containing free-form findings: `projects/feature-plan/<feature_id>/context/qa_plan_github_<feature_id>.md`
+
+*Note: You do NOT need to follow a strict 9-section template layout. Output the extracted code changes, technical risks, and scenario mappings freely so it can be merged by `qa-plan-synthesize` later.*
 
 ```markdown
-# QA Plan: [Feature Name] - GitHub PR Analysis
+# GitHub Domain Summary: [Feature Name] - PR Analysis
 
 ## 📊 Summary
 
@@ -332,14 +334,14 @@ function createUser(email: string, role?: UserRole): User
 
 ## Output File Handling
 
-**Default Location**: Confirm with user or use:
+**Default Location**: Write to the feature context folder:
 ```
-/Users/xuyin/Documents/FeatureTest/QAPlans/
+projects/feature-plan/<feature_id>/context/
 ```
 
 **Naming Convention**:
 ```
-qa_plan_github_<feature_id>_<YYYY-MM-DD>.md
+qa_plan_github_<feature_id>.md
 ```
 
 ## Advanced Analysis Techniques
@@ -377,7 +379,7 @@ Flag security-sensitive changes:
 ## Integration with Other Skills
 
 This skill outputs data consumed by:
-- `qa-plan-architect-orchestrator`: Merges with design and Jira analysis
+- `qa-plan-synthesize`: Merges with design and Jira analysis
 - `qa-plan-review`: Reviews test coverage completeness
 - `xmind-generator`: Visualizes code change impact in mind map
 
@@ -445,8 +447,8 @@ If the PR description is vague, document:
 4. Analyze remaining code changes
 5. Map changes to test scenarios
 6. Identify risk areas
-7. Generate `qa_plan_github_user-auth_2026-01-29.md`
-8. Save reference data for orchestrator
+7. Generate `projects/feature-plan/user-auth/context/qa_plan_github_user-auth.md`
+8. Save reference data for synthesize agent
 
 ## Notes
 

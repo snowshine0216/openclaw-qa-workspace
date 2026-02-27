@@ -60,32 +60,18 @@ _Test planning patterns and best practices._
 #### 🔴 Confluence Publishing - ALWAYS Convert Markdown First
 **Mistake**: Published raw Markdown (.md) directly to Confluence  
 **Result**: Ugly plain text with `#`, `**`, `|` visible instead of formatted content  
-**Lesson**: Confluence uses HTML storage format, NOT Markdown
+**Lesson**: Confluence uses HTML storage format, NOT Markdown. NEVER publish raw `.md` files directly.
 
-**✅ CORRECT Process:**
-```bash
-# 1. Convert MD → HTML
-node scripts/confluence/md-to-confluence.js plan.md plan.html
-
-# 2. Publish with --format storage
-confluence update <page-id> --file plan.html --format storage
-
-# OR use convenience script:
-./scripts/confluence/publish.sh plan.md <page-id>
-```
-
-**❌ WRONG - NEVER DO THIS:**
-```bash
-confluence update <page-id> --file plan.md  # ← RAW MARKDOWN = UGLY!
-```
-
-**Scripts Location**: `scripts/confluence/`
-- `md-to-confluence.js` - Converter
-- `publish.sh` - Wrapper script
-- `README.md` - Full documentation
+**✅ Correct Process:**
+Always follow the specific publication steps outlined in the Feature QA Planning Workflow (`.agents/workflows/feature-qa-planning.md`).
 
 **Date Learned**: 2026-02-25  
 **Context**: BCED-4198 QA plan published incorrectly, had to fix and republish
+
+## Tool & Task Execution Rules
+
+- **Atlassian Data (Jira & Confluence):** ALWAYS use the `jira-cli` skill and `confluence` skill to fetch data. NEVER use `web-fetch`.
+- **Figma Data:** Use the browser to view Figma data. If it requires login, pause and ask the user to finish the login process, and then continue.
 
 ## Industry Standards Reference
 

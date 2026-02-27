@@ -26,27 +26,47 @@ Before generating the draft, the agent must have access to:
 
 ## Section Template
 
-The draft must use the following heading structure. **No `5.x` numeric prefixes. No tables except where explicitly specified below.**
+The draft represents the sections the reporter **appends** to the existing Confluence QA Summary section. Section 1 (`Code Changes`) already exists on the Confluence page from the QA plan and must **not** be regenerated.
+
+**No `5.x` numeric prefixes. No tables except where explicitly specified below.**
 
 ```markdown
-## 🔍 QA Summary
+## 📊 QA Summary
+(Note: Section 1 "Code Changes" already exists on the Confluence page from the QA plan.
+This draft contains sections 2–10 to be appended after it.)
 
-### 1. Overall QA Status
-### 2. Code Changes Summary        ← TABLE REQUIRED
-### 3. Defect Status Summary       ← TABLE REQUIRED
-### 4. Resolved Defects Detail     ← TABLE REQUIRED (P0/P1 only)
-### 5. Test Coverage
-### 6. Performance
-### 7. Security / Compliance
-### 8. Regression Testing
-### 9. Automation Coverage
+### 2. Defects Code Changes        ← TABLE REQUIRED
+### 3. Overall QA Status
+### 4. Defect Status Summary       ← TABLE REQUIRED
+### 5. Resolved Defects Detail     ← TABLE REQUIRED (P0/P1 only)
+### 6. Test Coverage
+### 7. Performance
+### 8. Security / Compliance
+### 9. Regression Testing
+### 10. Automation Coverage
 ```
 
 ---
 
 ## Section-by-Section Generation Guide
 
-### 1. Overall QA Status
+### 2. Defects Code Changes
+
+**Data source:** PR impact files in `context/prs/` — filter to PRs that fix defects (linked Jira issues with type Bug/Defect). Fall back to PR links from defect issues in `jira_raw.json`.
+
+**Format:** Markdown table. Columns: `Repository`, `PR`, `Defects Fixed`, `Risk Level`, `Notes`.
+
+**Rules:**
+- One row per defect-fixing PR.
+- `Defects Fixed`: comma-separated hyperlinked Jira IDs (e.g. `[ISSUE-101](url), [ISSUE-102](url)`).
+- Risk Level: HIGH / MEDIUM / LOW (from `_impact.md` fix risk rating).
+- Notes: one-line summary of the fix scope.
+- If a PR impact file is missing: use `[PENDING — PR analysis not available]` in the Notes cell.
+- If there are no defect-fixing PRs: include a single row with `—` in all data columns and a note: `No defect-fixing PRs identified in this release.`
+
+---
+
+### 3. Overall QA Status
 
 **Data source:** Risk rating and open defect summary from `_REPORT_FINAL.md`.
 
@@ -60,21 +80,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 2. Code Changes Summary
-
-**Data source:** PR impact files in `context/prs/`. Fall back to PR links in `jira_raw.json`.
-
-**Format:** Markdown table. Columns: `Repository`, `PR`, `Files Changed`, `Risk Level`, `Notes`.
-
-**Rules:**
-- One row per merged PR.
-- Risk Level: HIGH / MEDIUM / LOW (from `_impact.md` fix risk rating).
-- Notes: one-line summary of the change scope.
-- If a PR impact file is missing: use `[PENDING — PR analysis not available]` in the Notes cell.
-
----
-
-### 3. Defect Status Summary
+### 4. Defect Status Summary
 
 **Data source:** Defect counts from `_REPORT_FINAL.md` and `jira_raw.json`.
 
@@ -86,7 +92,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 4. Resolved Defects Detail
+### 5. Resolved Defects Detail
 
 **Data source:** Resolved issues from `jira_raw.json` filtered to P0/P1 only.
 
@@ -101,7 +107,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 5. Test Coverage
+### 6. Test Coverage
 
 **Data source:** Testing notes and functional area breakdown from `_REPORT_FINAL.md`.
 
@@ -114,7 +120,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 6. Performance
+### 7. Performance
 
 **Data source:** PR notes or dedicated performance test results if available.
 
@@ -127,7 +133,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 7. Security / Compliance
+### 8. Security / Compliance
 
 **Data source:** Security-related defects or review notes in `_REPORT_FINAL.md`.
 
@@ -141,7 +147,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 8. Regression Testing
+### 9. Regression Testing
 
 **Data source:** Regression scope from `_REPORT_FINAL.md` or Jira labels/components.
 
@@ -155,7 +161,7 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
-### 9. Automation Coverage
+### 10. Automation Coverage
 
 **Data source:** Automation labels or notes in Jira issues and PR descriptions.
 
@@ -169,9 +175,20 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 ---
 
+## Confluence Merge Strategy (MANDATORY)
+
+This draft is appended to the existing Confluence QA Summary section — it does **NOT** replace the full section. During Phase 5 (Confluence Update):
+
+1. **Locate** the `## 📊 QA Summary` section on the Confluence page, which should be located at the **very end** of the document.
+2. **Preserve** the existing `### 1. Code Changes` subsection (from the QA plan) — do not overwrite it.
+3. **Append** sections 2–10 from this draft immediately after the existing Code Changes table (since it's at the end of the document, this naturally appends to the end of the page).
+4. **Do not duplicate** any subsection already present on the page.
+
+---
+
 ## Placeholder Policy (MANDATORY)
 
-- Every section (1–9) **must** be present in the draft, even if data is missing.
+- Every section (2–10) **must** be present in the draft, even if data is missing.
 - If data is unavailable for a section, write: `[PENDING — <specific reason>]`.
 - Never leave a section blank or omit it.
 - `[PENDING]` in table cells must not break table structure — place in the `Notes` column or as a full-row note below the table.
@@ -182,12 +199,12 @@ The draft must use the following heading structure. **No `5.x` numeric prefixes.
 
 | Rule | Requirement |
 |---|---|
-| Top-level heading | `## 🔍 QA Summary` — emoji prefix, no numeric prefix |
-| Subsection headings | `### 1.` through `### 9.` — local 1-based numbering, no `5.x` |
-| Tables | ONLY for sections 2, 3, 4 (Code Changes, Defect Status, Resolved Defects) |
+| Top-level heading | `## 📊 QA Summary` — emoji prefix, no numeric prefix |
+| Subsection headings | `### 2.` through `### 10.` — numbering starts at 2 (section 1 is plan's Code Changes) |
+| Tables | ONLY for sections 2, 4, 5 (Defects Code Changes, Defect Status Summary, Resolved Defects) |
 | All other sections | Bullet lists (`-`) or plain prose — no tables |
 | Hyperlinks | All Jira issue IDs and GitHub PR numbers must be markdown hyperlinks |
-| Raw Markdown in tables | Not allowed — no `**bold**` or `` ` `` ` `` in table cell content |
+| Raw Markdown in tables | Not allowed — no `**bold**` or backtick spans in table cell content |
 
 ---
 

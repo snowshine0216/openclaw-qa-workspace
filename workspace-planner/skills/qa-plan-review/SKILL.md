@@ -41,11 +41,12 @@ Based on `@.cursor/commands/qa-plan-review.md`, review against these criteria:
 
 ### Step 1: Read QA Plan
 
-Read the QA plan file to review:
+Read the QA plan file to review. Use the path provided by the orchestrator, or determine the latest draft from `task.json` (`latest_draft_version`) or by scanning `drafts/qa_plan_v*.md`:
 
 ```bash
-# User provides file path
-/Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_comprehensive_login_2026-01-29.md
+# Orchestrator provides path, or resolve from task.json / drafts/
+projects/feature-plan/<feature-id>/drafts/qa_plan_v<N>.md   # N = latest version
+# or: projects/feature-plan/<feature-id>/qa_plan_final.md
 ```
 
 ### Step 2: Gather Context (Optional but Recommended)
@@ -84,14 +85,18 @@ Check if all required sections exist:
 
 **Required Sections** (from qa-plan-architect.md):
 - [ ] Summary table with all fields
-- [ ] Background (Problem Statement, Solution)
-- [ ] QA Goals (E2E, FUN, UX, PERF, SEC, ACC, CERT, UPG, INT, AUTO)
-- [ ] QA Plan with Test Key Points tables
-- [ ] Risk & Mitigation table
-- [ ] QA Summary (Code Changes, E2E, Performance, Security, etc.)
+- [ ] Background (numbered subsections: 1. Key Problem Statement, 2. Solution, 3. Business Context)
+- [ ] QA Goals (numbered sub-categories with bullets: 1. E2E, 2. FUN, 3. UX, 4. PERF, 5. SEC, 6. ACC, 7. CER, 8. UPG, 9. INT, 10. AUTO)
+- [ ] Test Key Points (numbered subsections, tables allowed)
+- [ ] Risk & Mitigation (numbered subsections, tables allowed)
+- [ ] Consolidated Reference Data (numbered subsections, bullets only — no tables)
+- [ ] Sign-off Checklist (numbered subsections)
+- [ ] QA Summary — Code Changes table only (columns: PR, Files Changed, PR Summary); placed at end
 
 **Check formatting**:
-- [ ] Tables are properly formatted
+- [ ] Main section headers have emoji prefix, NO numeric prefix (e.g., `## 🎯 QA Goals`, NOT `## 2. QA Goals`)
+- [ ] Sub-category/subsection headers are numbered (e.g., `### 1. E2E`, `### 2. FUN`)
+- [ ] Tables used ONLY in: Summary, Test Key Points, Risk & Mitigation, QA Summary Code Changes — all other sections use bullets
 - [ ] Priority labels consistent (P0, P1, P2)
 - [ ] Status indicators used (✅, ⬜, ❌)
 - [ ] Code references include file paths and line numbers

@@ -1,18 +1,18 @@
 ---
 name: qa-plan-atlassian
-description: Generate QA test plans by analyzing Atlassian Confluence design documents and Jira issues to understand requirements and background. Use when the user asks to create QA plans from Confluence, analyze Jira tickets for testing, or mentions "QA plan from requirements", "Confluence analysis", or "Jira issue testing".
+description: Generate QA domain summaries by analyzing Atlassian Confluence design documents and Jira issues to understand requirements and background. Use when the user asks to extract QA findings from Confluence, analyze Jira tickets for testing, or mentions "QA summary from requirements", "Confluence analysis", or "Jira issue testing".
 ---
 
-# QA Plan Generator from Atlassian (Confluence & Jira)
+# QA Plan Domain Summary Generator from Atlassian (Confluence & Jira)
 
-Generate comprehensive QA test plans by analyzing Confluence design documents and Jira issues to understand requirements, acceptance criteria, and project context.
+Generate comprehensive QA domain summaries by analyzing Confluence design documents and Jira issues to understand requirements, acceptance criteria, and project context.
 
 ## When to Use
 
 - User provides Confluence page URL or Jira issue key
-- User asks to "create QA plan from requirements"
+- User asks to "extract requirements for QA plan"
 - User mentions "analyze design doc for testing" or "Jira ticket QA"
-- Creating test plans based on product specifications
+- Creating test findings based on product specifications
 
 ## Prerequisites
 
@@ -146,12 +146,14 @@ Requirement: User can reset password via email
   - Reset during active session
 ```
 
-### Step 6: Generate QA Plan Structure
+### Step 6: Generate QA Domain Summary
 
-Create a markdown file: `qa_plan_atlassian_<feature_id>_<date>.md`
+Create a markdown file containing free-form findings: `projects/feature-plan/<feature_id>/context/qa_plan_atlassian_<feature_id>.md`
+
+*Note: You do NOT need to follow the strict 9-section template layout. Output the extracted requirements, testing scenarios, and data freely so it can be merged by `qa-plan-synthesize` later.*
 
 ```markdown
-# QA Plan: [Feature Name] - Requirements Analysis
+# Atlassian Domain Summary: [Feature Name]
 
 ## 📊 Summary
 
@@ -442,14 +444,14 @@ Create a markdown file: `qa_plan_atlassian_<feature_id>_<date>.md`
 
 ## Output File Handling
 
-**Default Location**: Confirm with user or use:
+**Default Location**: Write the domain summary to the feature context folder:
 ```
-/Users/xuyin/Documents/FeatureTest/QAPlans/
+projects/feature-plan/<feature_id>/context/
 ```
 
 **Naming Convention**:
 ```
-qa_plan_atlassian_<feature_id>_<YYYY-MM-DD>.md
+qa_plan_atlassian_<feature_id>.md
 ```
 
 ## Advanced Analysis Techniques
@@ -492,7 +494,7 @@ If Confluence page is very large:
 ## Integration with Other Skills
 
 This skill outputs data consumed by:
-- `qa-plan-architect-orchestrator`: Merges with Figma and GitHub analysis
+- `qa-plan-synthesize`: Merges with Figma and GitHub analysis
 - `qa-plan-review`: Reviews requirements coverage completeness
 - `xmind-generator`: Visualizes requirement dependencies in mind map
 
@@ -562,8 +564,8 @@ If requirements are unclear:
 4. Extract requirements, acceptance criteria
 5. Map to test scenarios
 6. Identify dependencies and risks
-7. Generate `qa_plan_atlassian_user-auth_2026-01-29.md`
-8. Save reference data for orchestrator
+7. Generate `projects/feature-plan/user-auth/context/qa_plan_atlassian_user-auth.md`
+8. Save reference data for synthesize agent
 
 ## Notes
 

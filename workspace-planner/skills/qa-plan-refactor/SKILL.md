@@ -40,9 +40,10 @@ Based on `@.cursor/commands/qa-plan-refactor.md`, follow this systematic approac
 
 ### Step 1: Read Files
 
-**Read QA Plan**:
+**Read QA Plan**. Use the path provided by the orchestrator, or resolve from `task.json` (`latest_draft_version`) or `drafts/qa_plan_v*.md`:
 ```bash
-/Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_comprehensive_login_2026-01-29.md
+projects/feature-plan/<feature-id>/drafts/qa_plan_v<N>.md   # N = latest version
+# or: projects/feature-plan/<feature-id>/qa_plan_final.md
 ```
 
 **Read Provided Materials**:
@@ -51,12 +52,12 @@ Based on `@.cursor/commands/qa-plan-refactor.md`, follow this systematic approac
 - use `figma` MCP to read the associated figma design
 **Read Review Findings**:
 ```bash
-/Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_review_login_2026-01-29.md
+projects/feature-plan/<feature-id>/qa_plan_review_<feature-id>_<date>.md
 ```
 
 **Read Reference Materials** (if available):
 ```bash
-/Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_review_login_2026-01-29_references.md
+projects/feature-plan/<feature-id>/qa_plan_review_<feature-id>_<date>_references.md
 ```
 
 ### Step 2: Extract Action Items
@@ -371,7 +372,7 @@ After implementing all action items, update the review findings file:
 
 **Input from**:
 - `qa-plan-review`: Review findings and action items
-- `qa-plan-architect-orchestrator`: Original comprehensive plan
+- `qa-plan-synthesize`: Original comprehensive plan
 - Design/code sources: For verification when needed
 
 **Output to**:
