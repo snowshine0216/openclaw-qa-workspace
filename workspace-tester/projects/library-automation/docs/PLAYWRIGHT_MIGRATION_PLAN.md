@@ -54,3 +54,5 @@ Leveraging the principles of "Frontier UI Automation" (detailed in the `dstekano
 
 ## Summary 
 By orchestrating **AST Migration Tools** with **Agent-Native CLI capabilities**, this plan offsets the heavy lifting of manual syntactical refactoring, allowing the team to invest directly into establishing a modern, self-healing Playwright framework. The 5 files within `reportUndoRedo` are pristine candidates for this pilot implementation.
+
+**Full reportEditor migration:** See [PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md](./PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md) for the complete plan covering all 80 remaining reportEditor specs (reportUndoRedo done; others phased by feature).
