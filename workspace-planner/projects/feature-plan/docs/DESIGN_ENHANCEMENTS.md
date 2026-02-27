@@ -334,6 +334,18 @@ This file is **read and updated at every phase transition** and serves as the ch
   "created_at": "2026-02-25T17:06:18+08:00",
   "updated_at": "2026-02-25T17:08:42+08:00",
   "overall_status": "in_progress",
+  "data_fetched_at": "2026-02-25T17:06:30+08:00",
+  "output_generated_at": null,
+  "latest_draft_version": 1,
+  "subtask_timestamps": {
+    "jira": "2026-02-25T17:06:23+08:00",
+    "confluence": "2026-02-25T17:06:26+08:00",
+    "github": "2026-02-25T17:06:28+08:00",
+    "figma": "2026-02-25T17:06:30+08:00",
+    "qa-plan-atlassian": "2026-02-25T17:10:00+08:00",
+    "qa-plan-github": "2026-02-25T17:10:05+08:00",
+    "qa-plan-figma": "2026-02-25T17:10:08+08:00"
+  },
   "current_phase": "context_gathering",
   "resume_from": null,
   "phases": {
@@ -423,6 +435,10 @@ This file is **read and updated at every phase transition** and serves as the ch
 |-------|---------|----------------|
 | Orchestrator workflow | Phase transition | `current_phase`, phase `status`, `started_at` |
 | Each extraction step | Step completion | Subtask `status`, `completed_at`, `output`, `duration_s` |
+| Phase 1 (Context fetch) | After fetch complete | `data_fetched_at`, `subtask_timestamps.jira|confluence|github|figma` |
+| Phase 2a (Domain analysis) | Each analysis complete | `subtask_timestamps.qa-plan-atlassian|qa-plan-github|qa-plan-figma` |
+| Phase 2b (Synthesize) | Draft written | `latest_draft_version` |
+| Phase 4 (Publication) | `qa_plan_final.md` written | `output_generated_at` |
 | Error handler | Any failure | `errors[]` array, subtask `error` field |
 | Heartbeat poll | Every 4 minutes | `updated_at`, `last_heartbeat_at` |
 | Recovery logic | Agent restart | Reads `task.json`, sets `resume_from` |

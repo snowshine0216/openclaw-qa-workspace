@@ -1,18 +1,18 @@
 ---
 name: qa-plan-figma
-description: Generate QA test plans from Figma designs focusing on UI testing and E2E workflow testing. Use when the user asks to create QA plans from Figma, analyze Figma designs for testing, or mentions "QA plan from design", "Figma testing", or "UI test plan".
+description: Generate QA domain summaries from Figma designs focusing on UI testing and E2E workflow testing. Use when the user asks to create QA plans from Figma, analyze Figma designs for testing, or mentions "QA summary from design", "Figma testing", or "UI test summary".
 ---
 
-# QA Plan Generator from Figma Designs
+# QA Plan Domain Summary Generator from Figma Designs
 
-Generate comprehensive QA test plans by analyzing Figma designs, focusing on UI testing and end-to-end workflow testing.
+Generate comprehensive QA domain summaries by analyzing Figma designs, focusing on UI findings and end-to-end workflow context.
 
 ## When to Use
 
 - User provides a Figma URL or file key for QA planning
-- User asks to "create QA plan from Figma design"
+- User asks to "extract UI testing context from Figma design"
 - User mentions "UI testing from design" or "E2E workflow from Figma"
-- Creating test plans based on design specifications
+- Creating test findings based on design specifications
 
 ## Prerequisites
 
@@ -29,14 +29,14 @@ Generate comprehensive QA test plans by analyzing Figma designs, focusing on UI 
 
 **0.2: Create Reference Directory** ⚠️ MANDATORY
 
-Create `_references/` subfolder in the same directory as the QA plan:
+Create `figma/` subfolder in the context directory:
 ```bash
-<qa-plan-directory>/_references/
+projects/feature-plan/<feature-id>/context/figma/
 ```
 
 **0.3: Save Reference Materials** ⚠️ MANDATORY
 
-Create the following file in `_references/` subfolder:
+Create the following file in `figma/` subfolder:
 
 **Filename**: `figma_metadata_<feature_id>_<YYYY-MM-DD>.md`
 
@@ -102,7 +102,7 @@ Add this section to the QA plan:
 ```markdown
 ## 📎 Reference Materials
 
-**Metadata**: `_references/figma_metadata_<feature_id>_<YYYY-MM-DD>.md`
+**Metadata**: `figma/figma_metadata_<feature_id>_<YYYY-MM-DD>.md`
 **Design File**: [Figma URL]
 **Analysis Date**: [YYYY-MM-DD]
 ```
@@ -203,12 +203,14 @@ For EACH test scenario, you MUST include:
 
 ---
 
-### Step 2: Generate QA Plan Structure
+### Step 2: Generate QA Domain Summary
 
-Create a markdown file: `qa_plan_figma_<feature_id>_<date>.md`
+Create a markdown file containing free-form findings: `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature-id>.md`
+
+*Note: You do NOT need to follow a strict 9-section template layout. Output the extracted UI/UX findings, workflow scenarios, and data freely so it can be merged by `qa-plan-synthesize` later.*
 
 ```markdown
-# QA Plan: [Feature Name] (Figma) — [Feature ID]
+# Figma Domain Summary: [Feature Name] ([Feature ID])
 
 ## 📊 Summary
 
@@ -219,7 +221,6 @@ Create a markdown file: `qa_plan_figma_<feature_id>_<date>.md`
 | **Node ID** | [Node ID] |
 | **File Key** | [File Key] |
 | **Framework** | [Detected Framework] |
-| **Related Docs** | [Links to other QA plans] |
 
 ---
 
@@ -375,7 +376,7 @@ Before marking the QA plan complete, verify:
 - [ ] **Accessibility**: Keyboard navigation flows documented for major components
 - [ ] **Cross-Browser**: Browser compatibility matrix completed
 - [ ] **Performance**: Performance benchmarks defined for key interactions
-- [ ] **References**: Metadata file created in `_references/` subfolder with proper naming
+- [ ] **References**: Metadata file created in `figma/` subfolder with proper naming
 - [ ] **Line Count**: QA plan is ≥500 lines for complex designs (target 500-1000+ lines)
 - [ ] **Edge Cases**: At least 2 edge cases documented per major feature
 - [ ] **Expected Results**: All test scenarios include concrete, measurable outcomes
@@ -386,19 +387,19 @@ Before marking the QA plan complete, verify:
 
 ## Output File Handling
 
-**Default Location**: Confirm with user or use:
+**Default Location**: Write to the feature context folder:
 ```
-<project-root>/grimoire/qas/features/<feature_id>/qa_plan_figma_<feature_id>_<YYYY-MM-DD>.md
+projects/feature-plan/<feature_id>/context/
 ```
 
 **Naming Convention**:
 ```
-qa_plan_figma_<feature_id>_<YYYY-MM-DD>.md
+qa_plan_figma_<feature_id>.md
 ```
 
 **Reference Materials Location**:
 ```
-<project-root>/grimoire/qas/features/<feature_id>/_references/figma_metadata_<feature_id>_<YYYY-MM-DD>.md
+projects/feature-plan/<feature_id>/context/figma/figma_metadata_<feature_id>_<YYYY-MM-DD>.md
 ```
 
 ---
@@ -472,7 +473,7 @@ Save critical information for downstream skills (orchestrator, review):
 ## Integration with Other Skills
 
 This skill outputs data consumed by:
-- `qa-plan-architect-orchestrator`: Merges with code and Jira analysis
+- `qa-plan-synthesize`: Merges with code and Jira analysis
 - `qa-plan-review`: Reviews completeness of UI test coverage
 - `xmind-generator`: Visualizes test scenarios in mind map format
 
@@ -486,11 +487,11 @@ This skill outputs data consumed by:
 **Skill Actions**:
 1. Extract fileKey: `abc123`, nodeId: `1:2`
 2. Call Figma MCP `get_design_context`
-3. Create `_references/` directory
+3. Create `figma/` directory in context
 4. Save `figma_metadata_login_2026-01-29.md`
 5. Analyze UI components (form inputs, buttons, validation)
 6. Document E2E login flow with comprehensive test scenarios
-7. Generate `qa_plan_figma_login_2026-01-29.md` (target 500+ lines)
+7. Generate `projects/feature-plan/login/context/qa_plan_figma_login.md` (target 500+ lines)
 8. Run quality checklist before completion
 
 ---
