@@ -55,10 +55,10 @@ You can put the env file in **either** of these locations:
 | Purpose | Description |
 |---------|-------------|
 | **Loads** `.env.report` (or `.env.report.{REPORT_ENV}`) | Injects `reportTestUrl`, `reportTestUser`, `reportTestPassword` into `process.env`. |
-| **Provides** `getReportEnv()` | Returns `{ reportTestUrl, reportTestUser, reportTestPassword }` plus optional reportCreator users (`reportCubePrivUser`, `reportSubsetUser`, `reportTemplateNoExecuteUser`, `reportTemplateUser`). |
+| **Provides** `getReportEnv()` | Returns `{ reportTestUrl, reportTestUser, reportTestPassword }` plus optional report-creator users (`reportCubePrivUser`, `reportSubsetUser`, `reportTemplateNoExecuteUser`, `reportTemplateUser`). |
 | **Parse base URL** | Normalizes URLs (removes fragments, ensures trailing slash). |
 
-**Optional reportCreator users:** See [docs/ENV_MANAGEMENT.md](docs/ENV_MANAGEMENT.md) for adding new users and spec usage pattern.
+**Optional report-creator users:** See [docs/ENV_MANAGEMENT.md](docs/ENV_MANAGEMENT.md) for adding new users and spec usage pattern.
 
 #### Where to Put Future `.env` Files
 
@@ -95,18 +95,18 @@ All `.env*` files with secrets should be in `.gitignore` — **never commit cred
    | `reportTestUrl` | Yes | Base URL for MicroStrategy Library | `https://mci-xxx-dev.../MicroStrategyLibrary` |
    | `reportTestUser` | Yes | Default test user for login | `tqmsuser` |
    | `reportTestPassword` | Yes | Password (shared for all users; empty if SSO) | `` |
-   | `reportCubePrivUser` | No | reportCreator: createByCubePrivilege | `re_nic` |
-   | `reportSubsetUser` | No | reportCreator: createByCube | `re_ss` |
-   | `reportTemplateNoExecuteUser` | No | reportCreator: reportTemplateSecurity | `ret_ne` |
-   | `reportTemplateUser` | No | reportCreator: reportTemplateSecurity | `re_template` |
+   | `reportCubePrivUser` | No | report-creator: createByCubePrivilege | `re_nic` |
+   | `reportSubsetUser` | No | report-creator: createByCube | `re_ss` |
+   | `reportTemplateNoExecuteUser` | No | report-creator: reportTemplateSecurity | `ret_ne` |
+   | `reportTemplateUser` | No | report-creator: reportTemplateSecurity | `re_template` |
 
    See [docs/ENV_MANAGEMENT.md](docs/ENV_MANAGEMENT.md) for spec usage and adding new users.
 
 ### Step 3: Verify
 
 ```bash
-npm run test:reportUndoRedo:list
-# or: npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list
+npm run test:report-undo-redo:list
+# or: npx playwright test tests/specs/report-editor/report-undo-redo/ --list
 ```
 
 If env is correct, tests are listed. If `.env.report` is missing or empty, `baseURL` will be unset and navigation will fail at runtime.
@@ -120,33 +120,34 @@ If env is correct, tests are listed. If `.env.report` is missing or empty, `base
 | Command | Description |
 |---------|-------------|
 | `npm run test` | Run all Playwright tests. |
-| `npm run test:reportUndoRedo` | Run **only** migrated reportUndoRedo specs (uses chromium, fastest). |
-| `npm run test:reportUndoRedo:list` | List reportUndoRedo tests (no network, no browser). |
-| `npm run test:reportShortcutMetrics` | Run reportShortcutMetrics specs (Phase 2a). |
-| `npm run test:reportEditor:list` | List all reportEditor tests. |
+| `npm run test:report-undo-redo` | Run **only** migrated report-undo-redo specs (uses chromium, fastest). |
+| `npm run test:report-undo-redo:list` | List report-undo-redo tests (no network, no browser). |
+| `npm run test:report-shortcut-metrics` | Run report-shortcut-metrics specs (Phase 2a). |
+| `npm run test:report-page-by-sorting` | Run report-page-by-sorting specs (Phase 2b). |
+| `npm run test:report-editor:list` | List all report-editor tests. |
 
 ```bash
 cd workspace-tester/projects/library-automation
 
 # List migrated tests (quick check)
-npm run test:reportUndoRedo:list
-npm run test:reportEditor:list
+npm run test:report-undo-redo:list
+npm run test:report-editor:list
 
 # Run migrated tests (requires MicroStrategy env)
-npm run test:reportUndoRedo
-npm run test:reportShortcutMetrics
+npm run test:report-undo-redo
+npm run test:report-shortcut-metrics
 ```
 
 ### Run all report undo/redo specs (all browsers)
 
 ```bash
-npx playwright test tests/specs/reportEditor/reportUndoRedo/
+npx playwright test tests/specs/report-editor/report-undo-redo/
 ```
 
 ### Run a specific file
 
 ```bash
-npx playwright test tests/specs/reportEditor/reportUndoRedo/authoringClear.spec.ts
+npx playwright test tests/specs/report-editor/report-undo-redo/authoringClear.spec.ts
 ```
 
 ### Run a specific test (by title)
@@ -166,8 +167,8 @@ npx playwright test -g "@tc97485_20"
 # By TC ID substring
 npx playwright test -g "TC97485_20"
 
-# With project filter (reportUndoRedo only)
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ --project=reportUndoRedo -g "TC97485_20"
+# With project filter (report-undo-redo only)
+npx playwright test tests/specs/report-editor/report-undo-redo/ --project=report-undo-redo -g "TC97485_20"
 ```
 
 ### Run with trace enabled (for debugging failures)
@@ -176,13 +177,13 @@ Traces capture DOM snapshots, screenshots, and network at each action. Use when 
 
 ```bash
 # Trace on every run (generates trace.zip per test)
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ --trace=on
+npx playwright test tests/specs/report-editor/report-undo-redo/ --trace=on
 
 # Trace only on first retry (default in config for retries)
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ --trace=on-first-retry
+npx playwright test tests/specs/report-editor/report-undo-redo/ --trace=on-first-retry
 
 # Run a single TC with trace
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ -g "TC97485_20" --trace=on
+npx playwright test tests/specs/report-editor/report-undo-redo/ -g "TC97485_20" --trace=on
 ```
 
 After a failure, open the trace:
@@ -196,20 +197,20 @@ The CLI prints the exact path when a test fails.
 ### Use a different environment
 
 ```bash
-REPORT_ENV=qa npm run test:reportUndoRedo
+REPORT_ENV=qa npm run test:report-undo-redo
 # Loads .env.report.qa from the same directory as .env.report
 ```
 
 ### Run in headed mode (see the browser)
 
 ```bash
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ --headed
+npx playwright test tests/specs/report-editor/report-undo-redo/ --headed
 ```
 
 ### Run in debug mode (step through)
 
 ```bash
-npx playwright test tests/specs/reportEditor/reportUndoRedo/ --debug
+npx playwright test tests/specs/report-editor/report-undo-redo/ --debug
 ```
 
 ### Run with UI
@@ -370,7 +371,7 @@ library-automation/
 ├── playwright.config.ts        # Config (baseURL from env)
 ├── .env.report.example         # Example env file
 ├── specs/                      # Markdown test plans (Planner output, Generator input)
-│   └── reportEditor/reportUndoRedo/
+│   └── report-editor/report-undo-redo/
 │       └── *.md               # authoringClear.md, consumption.md, ...
 ├── tests/
 │   ├── seed.spec.ts            # Required for Playwright Planner (fixtures, auth)
@@ -387,7 +388,7 @@ library-automation/
 │   ├── test-data/
 │   │   └── reportUndoRedo.ts
 │   └── specs/                  # Executable .spec.ts (Generator output)
-│       └── reportEditor/reportUndoRedo/
+│       └── report-editor/report-undo-redo/
 └── docs/                       # Migration docs (internal)
 ```
 

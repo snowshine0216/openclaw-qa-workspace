@@ -11,7 +11,6 @@ const { projects, switchProjectMessage } = reportCreatorData;
 test.describe('Create Report by Cube', () => {
   test.beforeEach(async ({ page, libraryPage, loginPage, dossierCreator }) => {
     await libraryPage.logout();
-    await page.goto('/');
     const env = getReportEnv();
     await loginPage.login({
       username: env.reportSubsetUser || reportCreatorData.reportSubsetTestUser.username,

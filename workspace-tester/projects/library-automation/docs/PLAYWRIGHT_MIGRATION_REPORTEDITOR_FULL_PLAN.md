@@ -1,6 +1,6 @@
 # ReportEditor Full Migration Plan — WDIO to Playwright
 
-This document outlines the complete migration plan for all `reportEditor` specs from `workspace-tester/projects/wdio/specs/regression/reportEditor` to Playwright, building on [PLAYWRIGHT_MIGRATION_PLAN.md](./PLAYWRIGHT_MIGRATION_PLAN.md) and [PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md](./PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md). **Skipped:** reportUndoRedo (already migrated). **Final step:** Run migrated tests to ensure all pass before sign-off.
+This document outlines the complete migration plan for all `report-editor` specs from `workspace-tester/projects/wdio/specs/regression/report-editor` to Playwright, building on [PLAYWRIGHT_MIGRATION_PLAN.md](./PLAYWRIGHT_MIGRATION_PLAN.md) and [PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md](./PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md). **Skipped:** report-undo-redo (already migrated). **Final step:** Run migrated tests to ensure all pass before sign-off.
 
 **Main entry for Playwright scripts:** `workspace-tester/projects/library-automation`
 
@@ -10,20 +10,20 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 
 | Phase | Feature | Status | Tests | Last Run |
 |-------|---------|--------|-------|----------|
-| — | reportUndoRedo | ✅ Done (Phase 1) | 5 files | — |
-| **2a** | **reportShortcutMetrics** | **🔄 Migrated, fixes in progress** | 6 files | 2 pass, 4 fail (locator/network) |
-| **2b** | **reportPageBySorting** | **🔄 Migrated, 1 fail** | 8/8 | pageBySorting3: Sort context menu locator |
-| **2c** | **reportCreator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
-| 2d | reportSubset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
-| **2e** | **reportPageBy** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
-| **2f** | **reportThreshold** | **🔄 Migrated, fixes in progress** | 0 pass, 1 fail, 1 skipped | Login timeout (reportTestUrl); TC85267_2 skipped |
-| **2g** | **reportTheme** | **✅ Migrated** | 3/3 | themeApply, themeGeneral, themeSecurity; Run: `npm run test:reportTheme` |
-| **2h** | **reportScopeFilter** | **✅ Migrated** | 4/4 | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: `npm run test:reportScopeFilter` |
-| **2i** | **reportFormatting** | **✅ Migrated** | 8/8 | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: `npm run test:reportFormatting` |
-| **2j** | **reportCancel** | **✅ Migrated** | 2/2 | consumptionCancelExecution, authoringCancelExecution; Run: `npm run test:reportCancel` |
+| — | report-undo-redo | ✅ Done (Phase 1) | 5 files | — |
+| **2a** | **report-shortcut-metrics** | **🔄 Migrated, fixes in progress** | 6 files | 2 pass, 4 fail (locator/network) |
+| **2b** | **report-page-by-sorting** | **🔄 Migrated, 1 fail** | 8/8 | pageBySorting3: Sort context menu locator |
+| **2c** | **report-creator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
+| 2d | report-subset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
+| **2e** | **report-page-by** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
+| **2f** | **report-threshold** | **🔄 Migrated, fixes in progress** | 0 pass, 1 fail, 1 skipped | Login timeout (reportTestUrl); TC85267_2 skipped |
+| **2g** | **report-theme** | **✅ Migrated** | 3/3 | themeApply, themeGeneral, themeSecurity; Run: `npm run test:report-theme` |
+| **2h** | **report-scope-filter** | **✅ Migrated** | 4/4 | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: `npm run test:report-scope-filter` |
+| **2i** | **report-formatting** | **✅ Migrated** | 8/8 | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: `npm run test:report-formatting` |
+| **2j** | **report-cancel** | **✅ Migrated** | 2/2 | consumptionCancelExecution, authoringCancelExecution; Run: `npm run test:report-cancel` |
 | 2k–2o | … | ⬜ Pending | 52 | — |
 
-### Phase 2a Test Results (reportShortcutMetrics)
+### Phase 2a Test Results (report-shortcut-metrics)
 
 | Spec | Result | Notes |
 |------|--------|-------|
@@ -34,7 +34,7 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 | createTransformationMetrics | ❌ Fail | Timeout/network (ERR_ABORTED, ERR_NAME_NOT_RESOLVED) |
 | metricEditor | ❌ Fail | Timeout/network (ERR_NAME_NOT_RESOLVED) |
 
-**Run:** `npm run test:reportShortcutMetrics`
+**Run:** `npm run test:report-shortcut-metrics`
 
 ---
 
@@ -44,11 +44,11 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 
 | WDIO Source | Playwright Output | Status |
 |-------------|-------------------|--------|
-| `reportUndoRedo/Report_undoredo_authoringClear.spec.js` | `tests/specs/reportEditor/reportUndoRedo/authoringClear.spec.ts` | ✅ Done |
-| `reportUndoRedo/Report_undoredo_authoringEditReport.spec.js` | `tests/specs/reportEditor/reportUndoRedo/authoringEditReport.spec.ts` | ✅ Done |
-| `reportUndoRedo/Report_undoredo_authoringNewReport.spec.js` | `tests/specs/reportEditor/reportUndoRedo/authoringNewReport.spec.ts` | ✅ Done |
-| `reportUndoRedo/Report_undoredo_consumption.spec.js` | `tests/specs/reportEditor/reportUndoRedo/consumption.spec.ts` | ✅ Done |
-| `reportUndoRedo/Report_undoredo_consumptionClear.spec.js` | `tests/specs/reportEditor/reportUndoRedo/consumptionClear.spec.ts` | ✅ Done |
+| `report-undo-redo/Report_undoredo_authoringClear.spec.js` | `tests/specs/report-editor/report-undo-redo/authoringClear.spec.ts` | ✅ Done |
+| `report-undo-redo/Report_undoredo_authoringEditReport.spec.js` | `tests/specs/report-editor/report-undo-redo/authoringEditReport.spec.ts` | ✅ Done |
+| `report-undo-redo/Report_undoredo_authoringNewReport.spec.js` | `tests/specs/report-editor/report-undo-redo/authoringNewReport.spec.ts` | ✅ Done |
+| `report-undo-redo/Report_undoredo_consumption.spec.js` | `tests/specs/report-editor/report-undo-redo/consumption.spec.ts` | ✅ Done |
+| `report-undo-redo/Report_undoredo_consumptionClear.spec.js` | `tests/specs/report-editor/report-undo-redo/consumptionClear.spec.ts` | ✅ Done |
 
 **Total skipped:** 5 files (15 tests)
 
@@ -58,27 +58,27 @@ Grouped by feature for phased execution:
 
 | Phase | Feature | WDIO Path | File Count |
 |-------|---------|-----------|------------|
-| 2a | reportShortcutMetrics | `reportShortcutMetrics/` | 6 |
-| 2b | reportPageBySorting | `reportPageBySorting/` | 8 |
-| 2c | reportCreator | `reportCreator/` | 6 |
-| 2d | reportSubset | `reportSubset/` | 3 |
-| 2e | reportPageBy | `reportPageBy/` | 3 |
-| 2f | reportThreshold | `reportThreshold/` | 2 |
-| 2g | reportTheme | `reportTheme/` | 3 |
-| 2h | reportScopeFilter | `reportScopeFilter/` | 4 |
-| **2i** | **reportFormatting** | **reportFormatting/** | **8** |
-| **2j** | **reportCancel** | **reportCancel/** | **2** |
-| 2k | reportSqlView | `reportSqlView/` | 5 |
+| 2a | report-shortcut-metrics | `report-shortcut-metrics/` | 6 |
+| 2b | report-page-by-sorting | `report-page-by-sorting/` | 8 |
+| 2c | report-creator | `report-creator/` | 6 |
+| 2d | report-subset | `report-subset/` | 3 |
+| 2e | report-page-by | `report-page-by/` | 3 |
+| 2f | report-threshold | `report-threshold/` | 2 |
+| 2g | report-theme | `report-theme/` | 3 |
+| 2h | report-scope-filter | `report-scope-filter/` | 4 |
+| **2i** | **report-formatting** | **report-formatting/** | **8** |
+| **2j** | **report-cancel** | **report-cancel/** | **2** |
+| 2k | report-sql-view | `report-sql-view/` | 5 |
 | 2l | mdx | `mdx/` | 5 |
-| 2m | reportUICheck | `reportUICheck/` | 8 |
-| 2n | reportFolderBrowsing | `reportFolderBrowsing/` | 1 |
+| 2m | report-ui-check | `report-ui-check/` | 8 |
+| 2n | report-folder-browsing | `report-folder-browsing/` | 1 |
 | 2o | Root-level / Other | (root) | 16 |
 
 ---
 
 ## 2. Target File Inventory (Per Phase)
 
-### Phase 2a: reportShortcutMetrics (6) ✅ Migrated
+### Phase 2a: report-shortcut-metrics (6) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Test |
 |---|-----------|-------------------|------|
@@ -89,7 +89,7 @@ Grouped by feature for phased execution:
 | 5 | `ReportEditor_MetricEditor.spec.js` | `metricEditor.spec.ts` | ❌ network |
 | 6 | `ReportEditor_createPageGrandPercentToTotalMetrics.spec.js` | `createPageGrandPercentToTotalMetrics.spec.ts` | ✅ |
 
-### Phase 2b: reportPageBySorting (8) ✅ Migrated
+### Phase 2b: report-page-by-sorting (8) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Result | Notes |
 |---|-----------|-------------------|--------|-------|
@@ -102,11 +102,11 @@ Grouped by feature for phased execution:
 | 7 | `ReportEditor_PageBySorting7.spec.js` | `pageBySorting7.spec.ts` | — | Pending run |
 | 8 | `ReportEditor_PageBySorting8.spec.js` | `pageBySorting8.spec.ts` | — | Pending run |
 
-**Run:** `npm run test:reportPageBySorting`
+**Run:** `npm run test:report-page-by-sorting`
 
 **POMs:** `ReportPageBySorting`, `ReportPageBy.clickContextMenuOption`, `ReportEditorPanel.removeObjectInDropzone`, `ReportDatasetPanel.removeItemInReportTab`.
 
-### Phase 2c: reportCreator (6)
+### Phase 2c: report-creator (6)
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|------------------|--------|
@@ -128,7 +128,7 @@ Grouped by feature for phased execution:
 
 **Note:** BCIN-6908_09 un-skipped. Remaining POMs (ReportMenubar, ReportPage, SaveAsDialog, AdvancedReportProperties) still needed for template/security tests.
 
-### Phase 2d: reportSubset (3)
+### Phase 2d: report-subset (3)
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|-------------------|--------|
@@ -136,7 +136,7 @@ Grouped by feature for phased execution:
 | 2 | `ReportEditor_create_embedded_prompt.spec.js` | `createEmbeddedPrompt.spec.ts` | ✅ Migrated (BCIN-6468_01–08) |
 | 3 | `ReportEditor_add_prompt_to_viewfilter.spec.js` | `addPromptToViewfilter.spec.ts` | ✅ Migrated (BCIN-6460_01–08) |
 
-### Phase 2e: reportPageBy (3) ✅ Migrated
+### Phase 2e: report-page-by (3) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Result | Notes |
 |---|-----------|-------------------|--------|-------|
@@ -144,22 +144,22 @@ Grouped by feature for phased execution:
 | 2 | `ReportPageBy2.spec.js` | `pageBy2.spec.ts` | ❌ Fail | Timeout (~1.5m); editReportByUrl flow |
 | 3 | `ReportPageBy3.spec.js` | `pageBy3.spec.ts` | ❌ Fail | Subcategory assertion—expect.poll(15s) added for refresh; may need report config check |
 
-**Run:** `npm run test:reportPageBy`
+**Run:** `npm run test:report-page-by`
 
 **POMs:** `ReportPageBy` (clickChecklistElementInContextMenu, getSelectedChecklistElementInContextMenu, saveAndCloseContextMenu, getSelectorByIdx, getIndexForElementFromPopupList), `ReportGridView` (openGridColumnHeaderContextMenu, getContextMenuOption, getDisabledContextMenuOption), `ReportEditorPanel` (contextMenuContainsOption). Test data: `tests/test-data/reportPageBy.ts`.
 
-### Phase 2f: reportThreshold (2) ✅ Migrated
+### Phase 2f: report-threshold (2) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Result | Notes |
 |---|-----------|-------------------|--------|-------|
 | 1 | `ReportEditor_threshold.spec.js` | `threshold.spec.ts` | ❌ Fail | TC85267_1: login timeout; TC85267_2 skipped (complex) |
 | 2 | `ReportEditor_threshold_TC86548.spec.js` | `thresholdTC86548.spec.ts` | — | Migrated; run blocked by env |
 
-**Run:** `npm run test:reportThreshold`
+**Run:** `npm run test:report-threshold`
 
 **Before run:** Ensure `tests/config/.env.report` exists (`./migration/ensure_env.sh`). Set `reportTestUrl`, `reportTestUser`, `reportTestPassword` to a valid Library instance.
 
-### Phase 2g: reportTheme (3) ✅ Migrated
+### Phase 2g: report-theme (3) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|-------------------|--------|
@@ -167,11 +167,11 @@ Grouped by feature for phased execution:
 | 2 | `ReportEditor_theme_general.spec.js` | `themeGeneral.spec.ts` | ✅ Migrated |
 | 3 | `ReportEditor_theme_security.spec.js` | `themeSecurity.spec.ts` | ✅ Migrated |
 
-**Run:** `npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme`
+**Run:** `npx playwright test tests/specs/report-editor/report-theme/ --project=report-theme`
 
 **POMs:** `ReportThemePanel`, `ReportMenubar`, `ReportTOC.switchToThemePanel`, `NewFormatPanelForGrid` (selectGridSegment, selectGridColumns, expandSpacingSection). Test data: `tests/test-data/reportTheme.ts`.
 
-### Phase 2h: reportScopeFilter (4) ✅ Migrated
+### Phase 2h: report-scope-filter (4) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|-------------------|--------|
@@ -180,13 +180,13 @@ Grouped by feature for phased execution:
 | 3 | `ReportEditor_scopeFilterInAuthoring.spec.js` | `scopeFilterInAuthoring.spec.ts` | ✅ Migrated |
 | 4 | `ReportEditor_scopeFilterOfDatetime.spec.js` | `scopeFilterOfDatetime.spec.ts` | ✅ Migrated |
 
-**Run:** `npm run test:reportScopeFilter`
+**Run:** `npm run test:report-scope-filter`
 
 **POMs:** ReportFilter (open, close, waitForViewFilterPanelLoading, openFilterByHeader, apply), FilterPanel, ReportSummary, AttributeFilter, CustomInputbox, InlineFilterItem (enterValue, enterValueToDateTimePicker, setOperator, selectDateTime, etc.), ReportFilterPanel (toggleViewSelected). Test data: `tests/test-data/reportScopeFilter.ts`.
 
 **Env:** Set `reportScopeFilterUser` (default: resfc) in `tests/config/.env.report` for scope filter user.
 
-### Phase 2i: reportFormatting (8) ✅ Migrated
+### Phase 2i: report-formatting (8) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|-------------------|--------|
@@ -199,24 +199,24 @@ Grouped by feature for phased execution:
 | 7 | `ReportEditor_advancedPadding.spec.js` | `advancedPadding.spec.ts` | ✅ Migrated |
 | 8 | `ReportEditor_fontPicker.spec.js` | `fontPicker.spec.ts` | ✅ Migrated (4 skipped: mock/Threshold) |
 
-**Run:** `npm run test:reportFormatting`
+**Run:** `npm run test:report-formatting`
 
 **POMs:** ReportPage (getMissingFontPopup, dismissMissingFontPopup), ReportFormatPanel (clickCheckBoxForOption, enableOutlineMode, enableBanding, etc.), ReportGridView (getGridCellByPos, scrollGridToBottom, scrollGridHorizontally, getGridCellStyleByRows/Cols, clickOutlineIconFromCH, collapseOutlineFromCell), NewFormatPanelForGrid (fontPicker, enableWrapText, selectCellPadding, etc.), FontPicker. Test data: `tests/test-data/reportFormatting.ts`.
 
-### Phase 2j: reportCancel (2) ✅ Migrated
+### Phase 2j: report-cancel (2) ✅ Migrated
 
 | # | WDIO File | Playwright Output | Status |
 |---|-----------|-------------------|--------|
 | 1 | `Report_consumption_cancel_execution.spec.js` | `consumptionCancelExecution.spec.ts` | ✅ Migrated |
 | 2 | `Report_authoring_cancel_execution.spec.js` | `authoringCancelExecution.spec.ts` | ✅ Migrated (TC99428_02 skipped) |
 
-**Run:** `npm run test:reportCancel`
+**Run:** `npm run test:report-cancel`
 
 **POMs:** DossierPage, Bookmark, ReportPage (clickCancelButtonInTopLoadingBar, isInPauseMode, etc.), ReportToolbar (actionOnToolbar), ReportGridView (sortByOption, openContextualLinkFromCellByPos, moveGridHeaderToPageBy), LibraryPage (openDossierNoWait, waitForCurtainDisappear). Test data: `tests/test-data/reportCancel.ts`.
 
 **Env:** Set `reportCancelUser` (default: cre) in `tests/config/.env.report`.
 
-### Phase 2k: reportSqlView (5)
+### Phase 2k: report-sql-view (5)
 
 | # | WDIO File |
 |---|-----------|
@@ -232,7 +232,7 @@ Grouped by feature for phased execution:
 | 4 | `ReportEditor_runMDXReportInConsumption.spec.js` |
 | 5 | `ReportEditor_createMDXReport.spec.js` |
 
-### Phase 2m: reportUICheck (8)
+### Phase 2m: report-ui-check (8)
 
 | # | WDIO File |
 |---|-----------|
@@ -245,7 +245,7 @@ Grouped by feature for phased execution:
 | 7 | `ReportEditor_UICheck_authoring_subset.spec.js` |
 | 8 | `ReportEditor_UICheck_authoring_privileges.spec.js` |
 
-### Phase 2n: reportFolderBrowsing (1)
+### Phase 2n: report-folder-browsing (1)
 
 | # | WDIO File |
 |---|-----------|
@@ -280,28 +280,28 @@ Mirrors the Phase 1 layout. Playwright output under `library-automation`:
 
 ```
 library-automation/
-├── specs/reportEditor/                    # Markdown plans
-│   ├── reportUndoRedo/                    # ✅ Done
-│   ├── reportShortcutMetrics/
-│   ├── reportPageBySorting/
-│   ├── reportCreator/
-│   ├── reportSubset/
-│   ├── reportPageBy/
-│   ├── reportThreshold/
-│   ├── reportTheme/
-│   ├── reportScopeFilter/
-│   ├── reportFormatting/
-│   ├── reportCancel/
-│   ├── reportSqlView/
+├── specs/report-editor/                    # Markdown plans
+│   ├── report-undo-redo/                    # ✅ Done
+│   ├── report-shortcut-metrics/
+│   ├── report-page-by-sorting/
+│   ├── report-creator/
+│   ├── report-subset/
+│   ├── report-page-by/
+│   ├── report-threshold/
+│   ├── report-theme/
+│   ├── report-scope-filter/
+│   ├── report-formatting/
+│   ├── report-cancel/
+│   ├── report-sql-view/
 │   ├── mdx/
-│   ├── reportUICheck/
-│   ├── reportFolderBrowsing/
+│   ├── report-ui-check/
+│   ├── report-folder-browsing/
 │   └── _root/                             # Root-level specs
 ├── tests/
-│   ├── specs/reportEditor/                # Executable specs
-│   │   ├── reportUndoRedo/                # ✅ Done
-│   │   ├── reportShortcutMetrics/
-│   │   ├── reportPageBySorting/
+│   ├── specs/report-editor/                # Executable specs
+│   │   ├── report-undo-redo/                # ✅ Done
+│   │   ├── report-shortcut-metrics/
+│   │   ├── report-page-by-sorting/
 │   │   └── … (mirror specs/ structure)
 │   ├── page-objects/report/               # Shared POMs (extend existing)
 │   ├── test-data/                         # Per-feature JSON/TS as needed
@@ -331,7 +331,7 @@ For each spec in the phase:
 
 For each spec:
 
-1. Create `specs/reportEditor/<feature>/<name>.md`.
+1. Create `specs/report-editor/<feature>/<name>.md`.
 2. Extract scenarios, steps, expected outcomes from analysis.
 3. Include: `**Seed:** \`tests/seed.spec.ts\``.
 
@@ -352,7 +352,7 @@ For each spec:
 For each spec:
 
 1. Call `migrate_to_playwright` with WDIO content, analysis result, `filePath`, `outputFormat: "typescript"`.
-2. Write output to `tests/specs/reportEditor/<feature>/<name>.spec.ts`.
+2. Write output to `tests/specs/report-editor/<feature>/<name>.spec.ts`.
 3. Post-process:
    - Replace `page.locator('#...')` with semantic locators (`getByRole`, `getByText`, etc.).
    - Replace `since()` with `expect(..., 'message')`.
@@ -409,7 +409,7 @@ For drag-and-drop, context menus, custom dialogs:
 **Required:** When replacing a snapshot with an assertion, document it in the migration plan (per-phase or per-spec appendix) with:
 1. **Previous snapshot in WDIO** — e.g. `takeScreenshotByElement(reportPageBy.getSelector('Year'), 'TC0000_2', 'page_by_selector_year')`
 2. **Assertion method** — e.g. `expect(yearSelector).toBeVisible()` or `expect(await reportPageBy.getPageBySelectorText('Year')).toBeTruthy()`
-3. **File path** — e.g. `tests/specs/reportEditor/reportPageBySorting/pageBySorting1.spec.ts:42`
+3. **File path** — e.g. `tests/specs/report-editor/report-page-by-sorting/pageBySorting1.spec.ts:42`
 
 This enables review and traceability.
 
@@ -426,7 +426,7 @@ After **all phases (2a–2o)** are migrated:
 
 ### 5.2 UI Mode / Trace Review
 
-- Run `npx playwright test tests/specs/reportEditor/ --ui`.
+- Run `npx playwright test tests/specs/report-editor/ --ui`.
 - Spot-check representative flows per feature.
 - Use trace viewer (`--trace=on`) for failures.
 
@@ -447,30 +447,30 @@ npx tsc --noEmit
 
 ## 6. Final Step: Run Migrated Tests
 
-**Required before sign-off.** Execute all migrated reportEditor specs to ensure they reach final steps (no early exits, no environment blockers).
+**Required before sign-off.** Execute all migrated report-editor specs to ensure they reach final steps (no early exits, no environment blockers).
 
 ### 6.1 List All Tests
 
 ```bash
 cd workspace-tester/projects/library-automation
-npx playwright test tests/specs/reportEditor/ --list
+npx playwright test tests/specs/report-editor/ --list
 ```
 
-Expected: 5 (reportUndoRedo) + N (new phases) = total reportEditor tests.
+Expected: 5 (report-undo-redo) + N (new phases) = total report-editor tests.
 
-### 6.2 Run Full reportEditor Suite
+### 6.2 Run Full report-editor Suite
 
 ```bash
 cd workspace-tester/projects/library-automation
-npx playwright test tests/specs/reportEditor/
+npx playwright test tests/specs/report-editor/
 ```
 
 Or, if projects are split:
 
 ```bash
 # Run each project/feature group
-npx playwright test tests/specs/reportEditor/reportUndoRedo/
-npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
+npx playwright test tests/specs/report-editor/report-undo-redo/
+npx playwright test tests/specs/report-editor/report-shortcut-metrics/
 # … etc. for each feature
 ```
 
@@ -482,7 +482,7 @@ npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
   - Fail with a clear, actionable message (e.g. "REPORT_ENV not set").
 - [ ] No test exits early due to missing fixtures, imports, or syntax errors.
 - [ ] Failures are due to application behavior or flakiness, not migration artifacts (e.g. wrong locators, missing POM methods).
-- [ ] At least `reportUndoRedo` passes when env is valid (baseline sanity check).
+- [ ] At least `report-undo-redo` passes when env is valid (baseline sanity check).
 
 ### 6.4 Phase-by-Phase Validation Results
 
@@ -490,24 +490,24 @@ After each phase migration, run the phase suite and record results here.
 
 | Phase | Suite | Last Run | Pass | Fail | Notes |
 |-------|-------|----------|------|------|-------|
-| — | reportUndoRedo | — | — | — | Baseline (5 tests) |
-| 2a | reportShortcutMetrics | — | 2 | 4 | createPercentToTotalForMetrics, createRankMetrics: locator/flow; 3 network |
-| 2b | reportPageBySorting | — | 0 | 1 | pageBySorting3: Sort menu locator; 7 pending run |
-| 2c | reportCreator | 2026-02-28 | 9/9 run | — | BCIN-6908_09 un-skipped; createByCube beforeAll→beforeEach fix |
-| 2d | reportSubset | 2026-02-28 | 1 run | — | replaceCube BCIN-6422_01; 9 skipped (replaceObjectDialog, etc.) |
-| 2e | reportPageBy | 2026-02-28 | 0 | 3 | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory—expect.poll added (15s) for data refresh |
-| 2f | reportThreshold | 2026-02-28 | 0 | 1 | TC85267_1: login timeout; TC85267_2 skipped; ensure reportTestUrl in .env.report |
-| 2g | reportTheme | 2026-02-28 | 3/3 | — | themeApply, themeGeneral, themeSecurity; Run: npm run test:reportTheme |
-| 2h | reportScopeFilter | 2026-02-28 | 4/4 | — | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: npm run test:reportScopeFilter |
-| 2i | reportFormatting | 2026-02-28 | 8/8 | — | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: npm run test:reportFormatting |
-| 2j | reportCancel | 2026-02-28 | 2/2 | — | consumptionCancelExecution (9), authoringCancelExecution (6, 1 skipped); Run: npm run test:reportCancel |
+| — | report-undo-redo | — | — | — | Baseline (5 tests) |
+| 2a | report-shortcut-metrics | — | 2 | 4 | createPercentToTotalForMetrics, createRankMetrics: locator/flow; 3 network |
+| 2b | report-page-by-sorting | — | 0 | 1 | pageBySorting3: Sort menu locator; 7 pending run |
+| 2c | report-creator | 2026-02-28 | 9/9 run | — | BCIN-6908_09 un-skipped; createByCube beforeAll→beforeEach fix |
+| 2d | report-subset | 2026-02-28 | 1 run | — | replaceCube BCIN-6422_01; 9 skipped (replaceObjectDialog, etc.) |
+| 2e | report-page-by | 2026-02-28 | 0 | 3 | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory—expect.poll added (15s) for data refresh |
+| 2f | report-threshold | 2026-02-28 | 0 | 1 | TC85267_1: login timeout; TC85267_2 skipped; ensure reportTestUrl in .env.report |
+| 2g | report-theme | 2026-02-28 | 3/3 | — | themeApply, themeGeneral, themeSecurity; Run: npm run test:report-theme |
+| 2h | report-scope-filter | 2026-02-28 | 4/4 | — | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: npm run test:report-scope-filter |
+| 2i | report-formatting | 2026-02-28 | 8/8 | — | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: npm run test:report-formatting |
+| 2j | report-cancel | 2026-02-28 | 2/2 | — | consumptionCancelExecution (9), authoringCancelExecution (6, 1 skipped); Run: npm run test:report-cancel |
 
 ### 6.5 Recommended npm Scripts (Add to package.json)
 
 ```json
 {
-  "test:reportEditor": "npx playwright test tests/specs/reportEditor/",
-  "test:reportEditor:list": "npx playwright test tests/specs/reportEditor/ --list"
+  "test:report-editor": "npx playwright test tests/specs/report-editor/",
+  "test:report-editor:list": "npx playwright test tests/specs/report-editor/ --list"
 }
 ```
 
@@ -528,11 +528,11 @@ After each phase migration, run the phase suite and record results here.
 ## 8. Execution Order Summary
 
 ```
-1. Skip reportUndoRedo (already migrated)
+1. Skip report-undo-redo (already migrated)
 2. For each phase 2a–2o:
    a. register_custom_commands (if new commands)
    b. analyze_wdio_test (per file)
-   c. Create specs/reportEditor/<feature>/*.md
+   c. Create specs/report-editor/<feature>/*.md
    c'. Create/migrate required POMs FIRST (before specs) — POM precedes spec migration
    d. migrate_to_playwright (per file)
    e. Post-process for semantic locators
@@ -548,7 +548,7 @@ After each phase migration, run the phase suite and record results here.
    d. Lint / type check
 4. Final: Run migrated tests
    a. --list to confirm count
-   b. Full run of tests/specs/reportEditor/
+   b. Full run of tests/specs/report-editor/
    c. Fix any blocking issues until all tests reach final steps
 ```
 
@@ -605,5 +605,5 @@ When a WDIO `takeScreenshotByElement` (or similar) is replaced with an assertion
 - [PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md](./PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md) — Step-by-step execution
 - [PLAYWRIGHT_MIGRATION_QA.md](./PLAYWRIGHT_MIGRATION_QA.md) — Design constraints
 - [TESTER_AGENT_DESIGN.md](../../../docs/TESTER_AGENT_DESIGN.md) — Tester / Healer workflows
-- **WDIO source:** `workspace-tester/projects/wdio/specs/regression/reportEditor/`
+- **WDIO source:** `workspace-tester/projects/wdio/specs/regression/report-editor/`
 - **Playwright output:** `workspace-tester/projects/library-automation/`

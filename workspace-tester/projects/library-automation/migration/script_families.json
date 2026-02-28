@@ -1,7 +1,7 @@
 {
   "_description": "Script family config for WDIO→Playwright migration quality checks. Paths are relative to library-automation project root. This file is the single source of truth for migration phase status and progress (task.json removed).",
   "families": {
-    "reportEditor": {
+    "report-editor": {
       "status": "active",
       "specsBase": "tests/specs/report-editor/",
       "pomBase": "tests/page-objects/report/",
@@ -14,8 +14,8 @@
       "workflow": ".agents/workflows/script-migration.md",
       "phases": {
         "2a": {
-          "feature": "reportShortcutMetrics",
-          "wdioSubfolder": "reportShortcutMetrics/",
+          "feature": "report-shortcut-metrics",
+          "wdioSubfolder": "report-shortcut-metrics/",
           "fileCount": 6,
           "status": "done",
           "progress": {
@@ -29,8 +29,8 @@
           "snapshotMapping": []
         },
         "2b": {
-          "feature": "reportPageBySorting",
-          "wdioSubfolder": "reportPageBySorting/",
+          "feature": "report-page-by-sorting",
+          "wdioSubfolder": "report-page-by-sorting/",
           "fileCount": 8,
           "status": "done",
           "progress": {
@@ -38,8 +38,9 @@
             "pass": 8,
             "fail": 0,
             "self_healed": false,
-            "quality_checked": false,
-            "notes": null
+            "quality_checked": true,
+            "notes": null,
+            "quality_report": "migration/quality_report_report-editor_2b.md"
           },
           "snapshotMapping": [
             {
@@ -87,8 +88,8 @@
               "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
               "strategy": "assertion",
               "assertionMethod": "expect(yearText).toBeTruthy()",
-              "assertionAdequate": null,
-              "justification": "toBeTruthy() only checks non-empty — consider toHaveText() for content fidelity"
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
             },
             {
               "wdioCall": "~30 screenshots (Year, Custom Categories, Sort dialog, Order, Total Position, Parent Position)",
@@ -119,16 +120,16 @@
               "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-5.spec.ts",
               "strategy": "assertion",
               "assertionMethod": "expect(monthText or categoryText).toBeTruthy()",
-              "assertionAdequate": null,
-              "justification": "toBeTruthy() only checks non-empty — consider toHaveText() for content fidelity"
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
             },
             {
               "wdioCall": "takeScreenshotByElement(reportPageBy.getSelectorPulldownTextBox, ...), grid",
               "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-6.spec.ts",
               "strategy": "assertion",
               "assertionMethod": "expect(yearText).toBeTruthy()",
-              "assertionAdequate": null,
-              "justification": "toBeTruthy() only checks non-empty — consider toHaveText() for content fidelity"
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
             },
             {
               "wdioCall": "takeScreenshotByElement(reportGridView.grid, ...), pageBySorting.dialog",
@@ -149,8 +150,8 @@
           ]
         },
         "2c": {
-          "feature": "reportCreator",
-          "wdioSubfolder": "reportCreator/",
+          "feature": "report-creator",
+          "wdioSubfolder": "report-creator/",
           "fileCount": 6,
           "status": "done",
           "progress": {
@@ -181,8 +182,8 @@
           ]
         },
         "2d": {
-          "feature": "reportSubset",
-          "wdioSubfolder": "reportSubset/",
+          "feature": "report-subset",
+          "wdioSubfolder": "report-subset/",
           "fileCount": 3,
           "status": "in_progress",
           "progress": {
@@ -196,8 +197,8 @@
           "snapshotMapping": []
         },
         "2e": {
-          "feature": "reportPageBy",
-          "wdioSubfolder": "reportPageBy/",
+          "feature": "report-page-by",
+          "wdioSubfolder": "report-page-by/",
           "fileCount": 3,
           "status": "done",
           "progress": {
@@ -211,8 +212,8 @@
           "snapshotMapping": []
         },
         "2f": {
-          "feature": "reportThreshold",
-          "wdioSubfolder": "reportThreshold/",
+          "feature": "report-threshold",
+          "wdioSubfolder": "report-threshold/",
           "fileCount": 2,
           "status": "done",
           "progress": {
@@ -221,13 +222,13 @@
             "fail": 1,
             "self_healed": false,
             "quality_checked": false,
-            "notes": "TC85267_1: login timeout (reportTestUrl/page); TC85267_2 skipped; TC86548 run; Run: npm run test:reportThreshold"
+            "notes": "TC85267_1: login timeout (reportTestUrl/page); TC85267_2 skipped; TC86548 run; Run: npm run test:report-threshold"
           },
           "snapshotMapping": []
         },
         "2g": {
-          "feature": "reportTheme",
-          "wdioSubfolder": "reportTheme/",
+          "feature": "report-theme",
+          "wdioSubfolder": "report-theme/",
           "fileCount": 3,
           "status": "done",
           "progress": {
@@ -275,8 +276,8 @@
           ]
         },
         "2h": {
-          "feature": "reportScopeFilter",
-          "wdioSubfolder": "reportScopeFilter/",
+          "feature": "report-scope-filter",
+          "wdioSubfolder": "report-scope-filter/",
           "fileCount": 4,
           "status": "done",
           "progress": {
@@ -290,8 +291,8 @@
           "snapshotMapping": []
         },
         "2i": {
-          "feature": "reportFormatting",
-          "wdioSubfolder": "reportFormatting/",
+          "feature": "report-formatting",
+          "wdioSubfolder": "report-formatting/",
           "fileCount": 8,
           "status": "done",
           "progress": {
@@ -305,8 +306,8 @@
           "snapshotMapping": []
         },
         "2j": {
-          "feature": "reportCancel",
-          "wdioSubfolder": "reportCancel/",
+          "feature": "report-cancel",
+          "wdioSubfolder": "report-cancel/",
           "fileCount": 2,
           "status": "done",
           "progress": {
@@ -320,8 +321,8 @@
           "snapshotMapping": []
         },
         "2k": {
-          "feature": "reportSqlView",
-          "wdioSubfolder": "reportSqlView/",
+          "feature": "report-sql-view",
+          "wdioSubfolder": "report-sql-view/",
           "fileCount": 5,
           "status": "pending",
           "progress": {
@@ -338,16 +339,16 @@
           "snapshotMapping": []
         },
         "2m": {
-          "feature": "reportUICheck",
-          "wdioSubfolder": "reportUICheck/",
+          "feature": "report-ui-check",
+          "wdioSubfolder": "report-ui-check/",
           "fileCount": 8,
           "status": "pending",
           "progress": null,
           "snapshotMapping": []
         },
         "2n": {
-          "feature": "reportFolderBrowsing",
-          "wdioSubfolder": "reportFolderBrowsing/",
+          "feature": "report-folder-browsing",
+          "wdioSubfolder": "report-folder-browsing/",
           "fileCount": 1,
           "status": "pending",
           "progress": null,
@@ -363,7 +364,7 @@
         }
       }
     },
-    "customApp": {
+    "custom-app": {
       "status": "planned",
       "specsBase": "tests/specs/custom-app/",
       "pomBase": "tests/page-objects/custom-app/",

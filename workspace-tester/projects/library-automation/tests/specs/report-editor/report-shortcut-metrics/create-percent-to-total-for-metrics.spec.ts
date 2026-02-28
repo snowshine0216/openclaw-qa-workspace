@@ -12,7 +12,7 @@ test.describe('Report Editor Shortcut Metrics', () => {
 
   test(
     '[TC85613_4] Creating percent to total metrics (rows and columns)',
-    { tag: ['@tc85613_4'], timeout: 360000 },
+    { tag: ['@tc85613_4']},
     async ({ page, libraryPage, reportToolbar, reportEditorPanel, reportGridView, reportDerivedMetricEditor }) => {
       const d = reportShortcutMetricsData.dossiers.ReportGridShortcutMxAttrInCols;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });

@@ -33,14 +33,14 @@ Run a quality check in any of these situations:
 Workflow file: [.agents/workflows/script-migration-quality-check.md](../.agents/workflows/script-migration-quality-check.md)
 
 Accepts:
-- `family`: `reportEditor` | `customApp` | `dashboard` | `all`
+- `family`: `report-editor` | `custom-app` | `dashboard` | `all`
 - `phase`: `all` | `2a` | `2a,2h,2i` (comma-separated for multi-phase)
 
 ### 0.3 Skill Entry Point (Intent-Triggered)
 
 Invoke the **`migration-quality-check`** skill when the user uses natural language like:
 
-> "check migration quality for reportEditor 2a", "audit customApp migration", "validate wdio migration phase 2h"
+> "check migration quality for report-editor 2a", "audit custom-app migration", "validate wdio migration phase 2h"
 
 Skill file: [`workspace-tester/skills/migration-quality-check/SKILL.md`](../../../skills/migration-quality-check/SKILL.md)
 
@@ -74,15 +74,15 @@ For each migrated phase within a script family, the quality check verifies:
 
 ## 1.5 Script Family Configuration
 
-A **Script Family** is a migration target (e.g. `reportEditor`, `customApp`, `dashboard`). Each family has its own configuration in [`migration/script_families.json`](../migration/script_families.json). The same 8 dimensions apply; only paths, env, and doc references vary.
+A **Script Family** is a migration target (e.g. `report-editor`, `custom-app`, `dashboard`). Each family has its own configuration in [`migration/script_families.json`](../migration/script_families.json). The same 8 dimensions apply; only paths, env, and doc references vary.
 
 ### 1.5.1 Configuration Schema
 
-| Config Key | Description | Example (reportEditor) |
+| Config Key | Description | Example (report-editor) |
 |------------|-------------|------------------------|
-| **specsBase** | Playwright specs directory | `tests/specs/reportEditor/` |
-| **pomBase** | Page Object Model directory | `tests/page-objects/reportEditor/` |
-| **specMdBase** | Spec MD plans directory | `specs/reportEditor/` |
+| **specsBase** | Playwright specs directory | `tests/specs/report-editor/` |
+| **pomBase** | Page Object Model directory | `tests/page-objects/report-editor/` |
+| **specMdBase** | Spec MD plans directory | `specs/report-editor/` |
 | **designDoc** | Family design doc path | `docs/PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md` |
 | **envFile** | Env file name | `.env.report` |
 | **envConfigInterface** | Env config in `env.ts` | `ReportEnvConfig` |
@@ -94,8 +94,8 @@ A **Script Family** is a migration target (e.g. `reportEditor`, `customApp`, `da
 
 | Key | Description | Example |
 |-----|-------------|---------|
-| **feature** | Playwright feature folder name | `reportShortcutMetrics` |
-| **wdioSubfolder** | WDIO source subfolder | `reportShortcutMetrics/` |
+| **feature** | Playwright feature folder name | `report-shortcut-metrics` |
+| **wdioSubfolder** | WDIO source subfolder | `report-shortcut-metrics/` |
 | **fileCount** | Expected WDIO spec count | `6` |
 | **status** | Phase status | `done` \| `in_progress` \| `pending` \| `skipped` |
 | **snapshotMapping** | Array of WDIO snapshot → Playwright records | `[]` (empty if no snapshots) |
@@ -117,8 +117,8 @@ A **Script Family** is a migration target (e.g. `reportEditor`, `customApp`, `da
 
 | Family | specsBase | specMdBase | pomBase | envFile | npmScriptPrefix | Status |
 |--------|-----------|------------|---------|---------|-----------------|--------|
-| **reportEditor** | `tests/specs/reportEditor/` | `specs/reportEditor/` | `tests/page-objects/reportEditor/` | `.env.report` | `test:report` | Active |
-| **customApp** | `tests/specs/customApp/` | `specs/customApp/` | `tests/page-objects/customApp/` | `.env.customapp` | `test:customapp` | Planned |
+| **report-editor** | `tests/specs/report-editor/` | `specs/report-editor/` | `tests/page-objects/report-editor/` | `.env.report` | `test:report` | Active |
+| **custom-app** | `tests/specs/custom-app/` | `specs/custom-app/` | `tests/page-objects/custom-app/` | `.env.customapp` | `test:customapp` | Planned |
 | **dashboard** | `tests/specs/dashboard/` | `specs/dashboard/` | `tests/page-objects/dashboard/` | (TBD) | `test:dashboard` | Planned |
 
 **Config loading step (mandatory before any dimension):**
@@ -162,14 +162,14 @@ Use **`migration/script_families.json`** to resolve the phase-to-feature mapping
 | Phase | Feature | WDIO Path | Expected Playwright Output |
 |-------|---------|-----------|----------------------------|
 | (from JSON `phases` key) | (from `feature` field) | (from `wdioSubfolder`) | `{specsBase}<feature>/*.spec.ts` |
-| *Example: 2a* | *reportShortcutMetrics* | *reportShortcutMetrics/* | *tests/specs/reportEditor/reportShortcutMetrics/*.spec.ts* |
+| *Example: 2a* | *report-shortcut-metrics* | *report-shortcut-metrics/* | *tests/specs/report-editor/report-shortcut-metrics/*.spec.ts* |
 | … | … | … | … |
 
 ### 2.2 Checklist Per Phase
 
 - [ ] Phase entry exists in `script_families.json` with correct `feature`, `wdioSubfolder`, and `fileCount`
 - [ ] `fileCount` in `script_families.json` matches actual `{specsBase}<feature>/*.spec.ts`
-- [ ] `package.json` has `{npmScriptPrefix}<Feature>` script (e.g. `test:reportScopeFilter` for reportEditor)
+- [ ] `package.json` has `{npmScriptPrefix}<Feature>` script (e.g. `test:report-scope-filter` for report-editor)
 - [ ] All POMs referenced by phase specs exist in `{pomBase}/`
 - [ ] No POM method uses WDIO-only APIs (`$`, `$$`, `browser.*`, `waitForDisplayed`)
 
@@ -339,8 +339,8 @@ If Step 5 count > `snapshotMapping` array length: there are WDIO snapshots not y
 ls -1 {specsBase}<feature>/*.spec.ts
 
 # Step 2: For each spec, derive the expected MD path
-#   reportEditor: ReportEditor_foo.spec.ts → {specMdBase}<feature>/foo.md
-#   customApp:    CustomApp_foo.spec.ts    → {specMdBase}<feature>/foo.md
+#   report-editor: ReportEditor_foo.spec.ts → {specMdBase}<feature>/foo.md
+#   custom-app:    CustomApp_foo.spec.ts    → {specMdBase}<feature>/foo.md
 
 # Step 3: Check each expected MD exists
 for spec in {specsBase}<feature>/*.spec.ts; do
@@ -359,7 +359,7 @@ grep -l "TC[0-9]" {specMdBase}<feature>/*.md
 
 ### 5.3 File Naming Convention
 
-**reportEditor:** WDIO `ReportEditor_foo.spec.js` or `Report_foo.spec.js` → Spec MD: `foo.md`.
+**report-editor:** WDIO `ReportEditor_foo.spec.js` or `Report_foo.spec.js` → Spec MD: `foo.md`.
 
 **Other families:** Map WDIO file naming to spec MD per family convention (e.g. `CustomApp_foo.spec.js` → `foo.md`).
 
@@ -375,8 +375,8 @@ grep -l "TC[0-9]" {specMdBase}<feature>/*.md
 
 | Family | Required Keys (example) | Env File | Config Interface |
 |--------|-------------------------|----------|------------------|
-| reportEditor | `reportTestUrl`, `reportTestUser`, `reportTestPassword` | `.env.report` | `ReportEnvConfig`, `getReportEnv()` |
-| customApp | (TBD: e.g. `customAppUrl`, API creds) | `.env.customapp` | (TBD) `CustomAppEnvConfig` |
+| report-editor | `reportTestUrl`, `reportTestUser`, `reportTestPassword` | `.env.report` | `ReportEnvConfig`, `getReportEnv()` |
+| custom-app | (TBD: e.g. `customAppUrl`, API creds) | `.env.customapp` | (TBD) `CustomAppEnvConfig` |
 
 ### 6.2 Agent Steps
 
@@ -449,7 +449,7 @@ Must index:
 
 ### 7.3 Feature-Level README
 
-**`{specMdBase}README.md`** (e.g. `specs/reportEditor/README.md`, `specs/customApp/README.md`) — Must include:
+**`{specMdBase}README.md`** (e.g. `specs/report-editor/README.md`, `specs/custom-app/README.md`) — Must include:
 
 | Section | Content |
 |---------|---------|
@@ -595,7 +595,7 @@ File: [`.agents/workflows/script-migration-quality-check.md`](../.agents/workflo
 
 File: [`workspace-tester/skills/migration-quality-check/SKILL.md`](../../../skills/migration-quality-check/SKILL.md)
 
-**Triggers:** "check migration quality", "audit migrated scripts", "validate wdio migration", "quality check customApp migration"
+**Triggers:** "check migration quality", "audit migrated scripts", "validate wdio migration", "quality check custom-app migration"
 
 **Behavior:** Resolve family + phase from user intent → invoke workflow → return report summary.
 
@@ -630,7 +630,7 @@ Before marking a phase "quality-checked":
 
 - [migration/script_families.json](../migration/script_families.json) — Script Families Registry (machine-readable)
 - [script-migration.md](../.agents/workflows/script-migration.md) — Generalized migration workflow
-- [PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md](./PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md) — reportEditor design doc
+- [PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md](./PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md) — report-editor design doc
 - [PLAYWRIGHT_MIGRATION_PLAN.md](./PLAYWRIGHT_MIGRATION_PLAN.md) — Overall migration strategy
 - [PLAYWRIGHT_MIGRATION_QA.md](./PLAYWRIGHT_MIGRATION_QA.md) — QA constraints
 - [ENV_MANAGEMENT.md](./ENV_MANAGEMENT.md) — Env patterns

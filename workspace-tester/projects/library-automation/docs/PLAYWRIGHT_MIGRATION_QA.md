@@ -113,7 +113,7 @@ workspace-tester/projects/
 │       └── reportEditor.md
 └── library-automation/             # Main entry for Playwright scripts
     └── tests/
-        ├── specs/                  # Feature specs (reportEditor/reportUndoRedo/, etc.)
+        ├── specs/                  # Feature specs (report-editor/report-undo-redo/, etc.)
         ├── page-objects/           # POM with co-located locators (report/, library/)
         ├── test-data/              # JSON test data
         │   └── reportUndoRedo.json

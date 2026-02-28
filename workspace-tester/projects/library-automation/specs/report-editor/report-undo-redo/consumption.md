@@ -10,4 +10,4 @@ Report Editor Undo/Redo functionality in consumption mode.
 
 ### Scenarios
 
-See corresponding executable test `tests/specs/reportEditor/reportUndoRedo/consumption.spec.ts` for full step-by-step scenarios.
+See corresponding executable test `tests/specs/report-editor/report-undo-redo/consumption.spec.ts` for full step-by-step scenarios.

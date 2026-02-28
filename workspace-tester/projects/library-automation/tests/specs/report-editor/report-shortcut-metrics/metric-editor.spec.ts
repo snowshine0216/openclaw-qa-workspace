@@ -12,7 +12,7 @@ test.describe('Report Editor Metric Editor', () => {
 
   test(
     '[TC85613_6] Metric Editor - Create and edit derived metric',
-    { tag: ['@tc85613_6'], timeout: 360000 },
+    { tag: ['@tc85613_6']},
     async ({
       libraryPage,
       reportToolbar,

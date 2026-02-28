@@ -12,7 +12,7 @@ test.describe('Report Editor Shortcut Metrics', () => {
 
   test(
     '[TC85613_3] Creating percent to total for each attribute',
-    { tag: ['@tc85613_3'], timeout: 360000 },
+    { tag: ['@tc85613_3']},
     async ({ libraryPage, reportToolbar, reportEditorPanel, reportGridView }) => {
       const d = reportShortcutMetricsData.dossiers.ReportGridShortcutMxAttrInCols;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
@@ -25,8 +25,10 @@ test.describe('Report Editor Shortcut Metrics', () => {
       ).toBe(true);
 
       await reportEditorPanel.clickSubMenuItem('Subcategory');
-      const metrics = await reportEditorPanel.getMetricsObjects();
-      expect(metrics.some((m) => m.includes('Percent to Total')), 'Metrics should have Percent to Total (Cost)').toBe(true);
+      await expect.poll(async () => {
+        const metrics = await reportEditorPanel.getMetricsObjects();
+        return metrics.some((m) => m.includes('Percent to Total'));
+      }, 'Metrics should have Percent to Total (Cost)').toBe(true);
 
       await reportToolbar.switchToDesignMode();
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid cell (0,0)').toBe('Year');

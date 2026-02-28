@@ -33,11 +33,11 @@ Executable specs live in `tests/specs/report-editor/`. This README documents pag
 
 | Suite | Path | Tests | Dossier/Data |
 |-------|------|-------|---------------|
-| **reportUndoRedo** | `tests/specs/report-editor/report-undo-redo/` | 5 files | `reportUndoRedoData` |
-| **reportShortcutMetrics** | `tests/specs/report-editor/report-shortcut-metrics/` | 6 files | `reportShortcutMetricsData` |
-| **reportPageBySorting** | `tests/specs/report-editor/report-page-by-sorting/` | 8 files | `reportPageBySortingData` |
-| **reportPageBy** | `tests/specs/report-editor/report-page-by/` | 3 files | `reportPageByData` |
-| **reportCreator** | `tests/specs/report-editor/report-creator/` | 6 files | `reportCreatorData` |
+| **report-undo-redo** | `tests/specs/report-editor/report-undo-redo/` | 5 files | `reportUndoRedoData` |
+| **report-shortcut-metrics** | `tests/specs/report-editor/report-shortcut-metrics/` | 6 files | `reportShortcutMetricsData` |
+| **report-page-by-sorting** | `tests/specs/report-editor/report-page-by-sorting/` | 8 files | `reportPageBySortingData` |
+| **report-page-by** | `tests/specs/report-editor/report-page-by/` | 3 files | `reportPageByData` |
+| **report-creator** | `tests/specs/report-editor/report-creator/` | 6 files | `reportCreatorData` |
 
 ---
 
@@ -45,17 +45,17 @@ Executable specs live in `tests/specs/report-editor/`. This README documents pag
 
 ```bash
 # Single suite
-npm run test:reportUndoRedo
-npm run test:reportShortcutMetrics
-npm run test:reportPageBySorting
-npm run test:reportPageBy
-npm run test:reportCreator
+npm run test:report-undo-redo
+npm run test:report-shortcut-metrics
+npm run test:report-page-by-sorting
+npm run test:report-page-by
+npm run test:report-creator
 
-# All reportEditor tests
-npm run test:reportEditor
+# All report-editor tests
+npm run test:report-editor
 
 # List tests
-npm run test:reportEditor:list
+npm run test:report-editor:list
 ```
 
 ---
@@ -66,6 +66,6 @@ Configure `tests/config/.env.report` with:
 
 - `reportTestUrl` — Base URL (e.g. MicroStrategy Library)
 - `reportTestUser` / `reportTestPassword` — Default login (shared password for all users)
-- **Optional reportCreator users:** `reportCubePrivUser`, `reportSubsetUser`, `reportTemplateNoExecuteUser`, `reportTemplateUser` — used by createByCubePrivilege, createByCube, reportTemplateSecurity. If unset, specs fall back to `reportCreatorData` usernames.
+- **Optional report-creator users:** `reportCubePrivUser`, `reportSubsetUser`, `reportTemplateNoExecuteUser`, `reportTemplateUser` — used by createByCubePrivilege, createByCube, reportTemplateSecurity. If unset, specs fall back to `reportCreatorData` usernames.
 
 See [docs/ENV_MANAGEMENT.md](../../docs/ENV_MANAGEMENT.md) for full env config and adding new users.

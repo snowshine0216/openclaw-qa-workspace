@@ -20,7 +20,7 @@ This document describes how to execute Phase 1 of the Playwright migration, inco
 
 ## 2. Target Files and Scope
 
-**WDIO source (wdio project):** `workspace-tester/projects/wdio/specs/regression/reportEditor/reportUndoRedo/`
+**WDIO source (wdio project):** `workspace-tester/projects/wdio/specs/regression/report-editor/report-undo-redo/`
 
 **5 WDIO spec files:**
 
@@ -39,8 +39,8 @@ workspace-tester/projects/library-automation/
 ├── playwright.config.ts              # testDir: './tests'
 ├── package.json
 ├── specs/                            # Markdown test plans (Planner output, Generator input)
-│   └── reportEditor/
-│       └── reportUndoRedo/
+│   └── report-editor/
+│       └── report-undo-redo/
 │           ├── reportUndoRedo.md      # Combined plan OR per-spec .md files
 │           ├── authoringClear.md
 │           ├── authoringEditReport.md
@@ -50,8 +50,8 @@ workspace-tester/projects/library-automation/
 ├── tests/
 │   ├── seed.spec.ts                  # REQUIRED: fixtures, auth — input for Playwright Planner
 │   ├── specs/                        # Executable .spec.ts (Generator output)
-│   │   └── reportEditor/
-│   │       └── reportUndoRedo/
+│   │   └── report-editor/
+│   │       └── report-undo-redo/
 │   │           ├── authoringClear.spec.ts
 │   │           ├── authoringEditReport.spec.ts
 │   │           ├── authoringNewReport.spec.ts
@@ -104,7 +104,7 @@ Ensure Phase 0 (detect_project_state or equivalent setup) is complete before pro
 
 Before migration, register WDIO custom commands with their Playwright equivalents. Use the Migration MCP tool with a JSON mapping.
 
-**Commands to register (from reportUndoRedo specs):**
+**Commands to register (from report-undo-redo specs):**
 
 | WDIO Pattern | Playwright Equivalent | Notes |
 |--------------|----------------------|-------|
@@ -153,12 +153,12 @@ For each of the 5 spec files:
 
 ### Step 3.2b: Create Markdown Test Plans (specs/*.md)
 
-**Required for migration.** For each WDIO spec, create a corresponding `.md` plan under `library-automation/specs/reportEditor/reportUndoRedo/`.
+**Required for migration.** For each WDIO spec, create a corresponding `.md` plan under `library-automation/specs/report-editor/report-undo-redo/`.
 
 1. Use the analysis from Step 3.2 to extract scenarios, steps, and expected outcomes.
 2. Write human-readable Markdown with clear headings, numbered steps, and expected results.
 3. Include seed reference: `**Seed:** \`tests/seed.spec.ts\``.
-4. Save to `specs/reportEditor/reportUndoRedo/<name>.md` (one .md per .spec.ts).
+4. Save to `specs/report-editor/report-undo-redo/<name>.md` (one .md per .spec.ts).
 
 **Example structure for `authoringClear.md`:**
 
@@ -181,7 +181,7 @@ For each of the 5 spec files:
 
 **File mapping (specs/**/*.md):**
 
-| WDIO Source | Markdown plan (under `specs/reportEditor/reportUndoRedo/`) |
+| WDIO Source | Markdown plan (under `specs/report-editor/report-undo-redo/`) |
 |-------------|-----------------------------------------------------------|
 | `Report_undoredo_authoringClear.spec.js` | `authoringClear.md` |
 | `Report_undoredo_authoringEditReport.spec.js` | `authoringEditReport.md` |
@@ -200,10 +200,10 @@ For each spec:
 1. Call `migrate_to_playwright` with:
    - `testContent`: full WDIO spec content
    - `analysisResult`: optional JSON from Step 3.2
-   - `filePath`: e.g. `workspace-tester/projects/wdio/specs/regression/reportEditor/reportUndoRedo/Report_undoredo_authoringClear.spec.js`
+   - `filePath`: e.g. `workspace-tester/projects/wdio/specs/regression/report-editor/report-undo-redo/Report_undoredo_authoringClear.spec.js`
    - `outputFormat`: `"typescript"`
 
-2. Write the output to `library-automation/tests/specs/reportEditor/reportUndoRedo/<name>.spec.ts` (rename per mapping below).
+2. Write the output to `library-automation/tests/specs/report-editor/report-undo-redo/<name>.spec.ts` (rename per mapping below).
 
 3. Post-process for QA constraints:
    - Replace any `page.locator('#...')` or CSS with semantic locators.
@@ -212,7 +212,7 @@ For each spec:
 
 **File mapping:**
 
-| WDIO Source | Output (under `library-automation/tests/specs/reportEditor/reportUndoRedo/`) |
+| WDIO Source | Output (under `library-automation/tests/specs/report-editor/report-undo-redo/`) |
 |-------------|---------------------------------------------------------------------------|
 | `Report_undoredo_authoringClear.spec.js` | `authoringClear.spec.ts` |
 | `Report_undoredo_authoringEditReport.spec.js` | `authoringEditReport.spec.ts` |
@@ -228,7 +228,7 @@ For each migrated spec from Step 3.3:
 
 1. Call `refactor_to_pom` with:
    - `testContent`: content of the migrated spec
-   - `filePath`: e.g. `library-automation/tests/specs/reportEditor/reportUndoRedo/authoringClear.spec.ts`
+   - `filePath`: e.g. `library-automation/tests/specs/report-editor/report-undo-redo/authoringClear.spec.ts`
    - `existingPageObjects`: optional JSON of previously created POMs to reuse
 
 2. Apply POM layout per QA doc:
@@ -355,7 +355,7 @@ Optional:
 1. register_custom_commands (once, with full command map)
 2. For each of 5 files:
    a. analyze_wdio_test
-   b. Create specs/reportEditor/reportUndoRedo/<name>.md (Markdown plan)
+   b. Create specs/report-editor/report-undo-redo/<name>.md (Markdown plan)
    c. migrate_to_playwright
    d. Post-process for semantic locators
 3. refactor_to_pom (per file, passing existing POMs for reuse)
@@ -369,23 +369,23 @@ Optional:
 
 ## 6. Success Criteria
 
-- [x] Markdown plans created under `library-automation/specs/reportEditor/reportUndoRedo/*.md` (5 files).
-- [x] All 5 specs migrated to TypeScript under `library-automation/tests/specs/reportEditor/reportUndoRedo/`.
+- [x] Markdown plans created under `library-automation/specs/report-editor/report-undo-redo/*.md` (5 files).
+- [x] All 5 specs migrated to TypeScript under `library-automation/tests/specs/report-editor/report-undo-redo/`.
 - [x] `tests/seed.spec.ts` exists with fixtures/auth (required for Playwright Planner).
 - [x] POMs under `library-automation/tests/page-objects/` with locators at the top, semantic only.
 - [x] No `page.locator('#id')` or fragile CSS; only `getByRole`, `getByText`, etc.
 - [x] Test data in `library-automation/tests/test-data/reportUndoRedo.ts`.
 - [x] `since()` replaced by `expect(..., 'message')`.
 - [x] `browser.pause` replaced by semantic waits or `waitForTimeout` where necessary.
-- [x] `cd library-automation && npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list` runs.
+- [x] `cd library-automation && npx playwright test tests/specs/report-editor/report-undo-redo/ --list` runs.
 - [ ] playwright-cli used to validate at least one dnd flow (blocked until baseURL/env ready).
 
 ### Run Migrated Tests
 
 ```bash
 cd workspace-tester/projects/library-automation
-npm run test:reportUndoRedo        # Run reportUndoRedo specs (chromium)
-npm run test:reportUndoRedo:list  # List tests only
+npm run test:report-undo-redo        # Run report-undo-redo specs (chromium)
+npm run test:report-undo-redo:list  # List tests only
 ```
 
 Env is loaded from `tests/config/.env.report` when `.env.report` is not in project root.
@@ -398,18 +398,18 @@ Env is loaded from `tests/config/.env.report` when `.env.report` is not in proje
 
 | Artifact | Path |
 |----------|------|
-| Markdown plans | `specs/reportEditor/reportUndoRedo/*.md` (5 files) |
-| Executable specs | `tests/specs/reportEditor/reportUndoRedo/*.spec.ts` (5 files) |
+| Markdown plans | `specs/report-editor/report-undo-redo/*.md` (5 files) |
+| Executable specs | `tests/specs/report-editor/report-undo-redo/*.spec.ts` (5 files) |
 | Seed test | `tests/seed.spec.ts` (fixtures, auth — required for Planner) |
 | POMs | `tests/page-objects/report/*.ts`, `tests/page-objects/library/*.ts` |
 | Test data | `tests/test-data/reportUndoRedo.ts` |
 | Fixtures | `tests/fixtures/index.ts` |
 
-**Verification:** `npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list` ✓ (15 tests in 5 files)
+**Verification:** `npx playwright test tests/specs/report-editor/report-undo-redo/ --list` ✓ (15 tests in 5 files)
 
 ### Resolved Blockers (Post-Phase 1)
 
-1. **baseURL / environment:** ✅ Per-env config via `tests/config/env.ts` + `.env.report` (or `.env.report.{REPORT_ENV}`). Mapping: `reportTestUrl`, `reportTestUser`, `reportTestPassword`, plus optional reportCreator users. See [ENV_MANAGEMENT.md](./ENV_MANAGEMENT.md) and `.env.report.example`.
+1. **baseURL / environment:** ✅ Per-env config via `tests/config/env.ts` + `.env.report` (or `.env.report.{REPORT_ENV}`). Mapping: `reportTestUrl`, `reportTestUser`, `reportTestPassword`, plus optional report-creator users. See [ENV_MANAGEMENT.md](./ENV_MANAGEMENT.md) and `.env.report.example`.
 
 2. **Login with empty/none password:** ✅ When `reportTestPassword` is empty or `"none"`, LoginPage skips `fill()` and clicks the password field instead (satisfies form focus requirements). Password locator fixed to `input#password[type="password"]` to avoid matching "Set a new password" h2 (`getByLabel(/password/i)` was resolving to the wrong element).
 
@@ -421,7 +421,7 @@ Env is loaded from `tests/config/.env.report` when `.env.report` is not in proje
 
 6. **ReportEditorPanel updateAttributeFormsForAttributeInPageByDropZone:** Aligned with WDIO `template-editor-content-pageby` + attribute element; uses context menu and attribute-forms dialog. May need playwright-cli validation for env-specific DOM.
 
-7. **Test timeout:** reportUndoRedo project timeout increased to 360s.
+7. **Test timeout:** report-undo-redo project timeout increased to 360s.
 
 8. **updateAttributeFormsForAttributeInPageByDropZone:** Refined locators using `[aria-label="Page By"]`, `.template-editor-content-pageby`, `.report-editor-editor` with `div, span, li` containing the attribute name. If the test still times out at this step, run `npx playwright show-trace test-results/.../trace.zip` (with `--trace=on`) or `scripts/debug-pageby-dom.ts` to inspect the live DOM.
 

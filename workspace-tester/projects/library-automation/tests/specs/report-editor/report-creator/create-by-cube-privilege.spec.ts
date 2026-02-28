@@ -9,18 +9,14 @@ import { getReportEnv } from '../../../config/env';
 const { projects } = reportCreatorData;
 
 test.describe('Create Report by Cube Security', () => {
-  test.beforeAll(async ({ page, libraryPage, loginPage }) => {
+  test.beforeEach(async ({ page, loginPage, dossierCreator, libraryPage }) => {
     await libraryPage.logout();
-    await page.goto('/');
     const env = getReportEnv();
     await loginPage.login({
       username: env.reportCubePrivUser || reportCreatorData.reportTestUserWithoutDefineCubePrivilege.username,
       password: env.reportTestPassword,
     });
     await page.waitForURL(/Library|Home|Dashboard/i, { timeout: 15000 }).catch(() => {});
-  });
-
-  test.beforeEach(async ({ dossierCreator, libraryPage }) => {
     await dossierCreator.resetLocalStorage();
     await libraryPage.openDefaultApp();
   });

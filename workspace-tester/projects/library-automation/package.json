@@ -5,20 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
-    "test:reportUndoRedo": "npx playwright test tests/specs/report-editor/report-undo-redo/ --project=reportUndoRedo",
-    "test:reportUndoRedo:list": "npx playwright test tests/specs/report-editor/report-undo-redo/ --list",
-    "test:reportEditor": "npx playwright test tests/specs/report-editor/",
-    "test:reportEditor:list": "npx playwright test tests/specs/report-editor/ --list",
-    "test:reportShortcutMetrics": "npx playwright test tests/specs/report-editor/report-shortcut-metrics/ --project=reportShortcutMetrics",
-    "test:reportPageBySorting": "npx playwright test tests/specs/report-editor/report-page-by-sorting/ --project=reportPageBySorting",
-    "test:reportPageBy": "npx playwright test tests/specs/report-editor/report-page-by/ --project=reportPageBy",
-    "test:reportCreator": "npx playwright test tests/specs/report-editor/report-creator/ --project=reportCreator",
-    "test:reportSubset": "npx playwright test tests/specs/report-editor/report-subset/ --project=reportSubset",
-    "test:reportThreshold": "npx playwright test tests/specs/report-editor/report-threshold/ --project=reportThreshold",
-    "test:reportTheme": "npx playwright test tests/specs/report-editor/report-theme/ --project=reportTheme",
-    "test:reportScopeFilter": "npx playwright test tests/specs/report-editor/report-scope-filter/ --project=reportScopeFilter",
-    "test:reportFormatting": "npx playwright test tests/specs/report-editor/report-formatting/ --project=reportFormatting",
-    "test:reportCancel": "npx playwright test tests/specs/report-editor/report-cancel/ --project=reportCancel"
+    "test:report-undo-redo": "npx playwright test tests/specs/report-editor/report-undo-redo/ --project=report-undo-redo",
+    "test:report-undo-redo:list": "npx playwright test tests/specs/report-editor/report-undo-redo/ --list",
+    "test:report-editor": "npx playwright test tests/specs/report-editor/",
+    "test:report-editor:list": "npx playwright test tests/specs/report-editor/ --list",
+    "test:report-shortcut-metrics": "npx playwright test tests/specs/report-editor/report-shortcut-metrics/ --project=report-shortcut-metrics",
+    "test:report-page-by-sorting": "npx playwright test tests/specs/report-editor/report-page-by-sorting/ --project=report-page-by-sorting",
+    "test:report-page-by": "npx playwright test tests/specs/report-editor/report-page-by/ --project=report-page-by",
+    "test:report-creator": "npx playwright test tests/specs/report-editor/report-creator/ --project=report-creator",
+    "test:report-subset": "npx playwright test tests/specs/report-editor/report-subset/ --project=report-subset",
+    "test:report-threshold": "npx playwright test tests/specs/report-editor/report-threshold/ --project=report-threshold",
+    "test:report-theme": "npx playwright test tests/specs/report-editor/report-theme/ --project=report-theme",
+    "test:report-scope-filter": "npx playwright test tests/specs/report-editor/report-scope-filter/ --project=report-scope-filter",
+    "test:report-formatting": "npx playwright test tests/specs/report-editor/report-formatting/ --project=report-formatting",
+    "test:report-cancel": "npx playwright test tests/specs/report-editor/report-cancel/ --project=report-cancel",
+    "ts-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,8 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.2",
-    "dotenv": "^17.3.1"
+    "dotenv": "^17.3.1",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3"
   }
 }

@@ -10,4 +10,4 @@ Report Editor Undo/Redo functionality for consumption clear flows.
 
 ### Scenarios
 
-See corresponding executable test `tests/specs/reportEditor/reportUndoRedo/consumptionClear.spec.ts` for full step-by-step scenarios.
+See corresponding executable test `tests/specs/report-editor/report-undo-redo/consumptionClear.spec.ts` for full step-by-step scenarios.

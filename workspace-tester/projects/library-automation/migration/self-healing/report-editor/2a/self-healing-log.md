@@ -1,7 +1,7 @@
-# Self-Healing Log: reportEditor Phase 2a
+# Self-Healing Log: report-editor Phase 2a
 
 **Date:** 2026-02-28
-**Phase:** 2a (reportShortcutMetrics)
+**Phase:** 2a (report-shortcut-metrics)
 
 ## Fixes Applied
 

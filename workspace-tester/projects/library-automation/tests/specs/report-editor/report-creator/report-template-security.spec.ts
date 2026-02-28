@@ -26,7 +26,6 @@ test.describe('Report Creator Security Test', () => {
     dossierCreator,
   }) => {
     await libraryPage.logout();
-    await page.goto('/');
     const env = getReportEnv();
     await loginPage.login({
       username: env.reportTemplateNoExecuteUser || reportCreatorData.reportTemplateNoExecuteAclUser.username,
@@ -45,7 +44,6 @@ test.describe('Report Creator Security Test', () => {
 
     await libraryPage.logout();
     await libraryPage.openDefaultApp();
-    await page.goto('/');
     const reportEnv = getReportEnv();
     await loginPage.login({
       username: reportEnv.reportTemplateUser || reportCreatorData.reportTemplateTestUser.username,

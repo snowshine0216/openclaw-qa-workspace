@@ -12,7 +12,7 @@ test.describe('Report Editor Shortcut Metrics', () => {
 
   test(
     '[TC85613_2] Creating page and grand percent to total metrics',
-    { tag: ['@tc85613_2'], timeout: 360000 },
+    { tag: ['@tc85613_2']},
     async ({ libraryPage, reportToolbar, reportEditorPanel, reportGridView }) => {
       const d = reportShortcutMetricsData.dossiers.ReportGridShortcutMxAttrInCols;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
@@ -33,8 +33,10 @@ test.describe('Report Editor Shortcut Metrics', () => {
       ).toBe('Percent to Grand Total (Cost)');
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Page Total');
-      const metrics = await reportEditorPanel.getMetricsObjects();
-      expect(metrics.some((m) => m.includes('Percent to Page Total')), 'Metrics should have Page Total').toBe(true);
+      await expect.poll(async () => {
+        const metrics = await reportEditorPanel.getMetricsObjects();
+        return metrics.some((m) => m.includes('Percent to Page Total'));
+      }, 'Metrics should have Page Total').toBe(true);
     }
   );
 });

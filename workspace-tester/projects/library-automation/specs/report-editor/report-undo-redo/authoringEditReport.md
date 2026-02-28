@@ -10,4 +10,4 @@ Report Editor Undo/Redo functionality for editing existing reports.
 
 ### Scenarios
 
-See corresponding executable test `tests/specs/reportEditor/reportUndoRedo/authoringEditReport.spec.ts` for full step-by-step scenarios.
+See corresponding executable test `tests/specs/report-editor/report-undo-redo/authoringEditReport.spec.ts` for full step-by-step scenarios.

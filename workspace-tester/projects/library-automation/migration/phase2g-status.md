@@ -1,4 +1,4 @@
-# Phase 2g (reportTheme) — Self-Healing Run Status
+# Phase 2g (report-theme) — Self-Healing Run Status
 
 **Date:** 2026-02-28  
 **Specs:** themeApply.spec.ts, themeGeneral.spec.ts, themeSecurity.spec.ts  
@@ -7,8 +7,8 @@
 ## Run Command
 
 ```bash
-npm run test:reportTheme
-# or: npx playwright test tests/specs/report-editor/report-theme/ --project=reportTheme
+npm run test:report-theme
+# or: npx playwright test tests/specs/report-editor/report-theme/ --project=report-theme
 ```
 
 ## Status Summary
@@ -27,7 +27,7 @@ npm run test:reportTheme
 
 ## Self-Healing Run (2026-02-28)
 
-- **Initiated:** Full suite run started (`npm run test:reportTheme`)
+- **Initiated:** Full suite run started (`npm run test:report-theme`)
 - **Output:** Run in progress (~15+ min for 23 tests); × and F seen in terminal (possible failures)
 - **task.json:** 3 pass, 0 fail (3 spec files)
 - **Action:** If failures detected, run `npx playwright show-report` after completion and fix locators/flows per failing spec

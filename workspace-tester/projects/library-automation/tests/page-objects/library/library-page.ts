@@ -11,10 +11,12 @@ export class LibraryPage {
 
   /** Logout by navigating to logout URL */
   async logout(): Promise<void> {
+    if (this.page && this.page.context) {
+      await this.page.context().clearCookies();
+    }
     const base = this.getBaseUrl();
     if (!base || base === '/') return;
-    const logoutUrl = base.endsWith('/') ? `${base}logout` : `${base}/logout`;
-    await this.page.goto(logoutUrl, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+    await this.page.goto(base, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
     await this.page.waitForTimeout(1000);
   }
 

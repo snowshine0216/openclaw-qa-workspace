@@ -84,7 +84,7 @@ export const test = base.extend<{
   authenticatedPage: async ({ page }, use) => {
     const env = getReportEnv();
     if (env.reportTestUrl && env.reportTestUser) {
-      await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto(env.reportTestUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
       // Fail fast if Library shows configuration error (Intelligence Server not connected)
       const configError = page.getByText(/Configuration Error|Intelligence Server is not connected/i);
       if (await configError.isVisible().catch(() => false)) {
@@ -99,6 +99,7 @@ export const test = base.extend<{
         password: env.reportTestPassword,
       });
       await page.waitForURL(/Library|Home|Dashboard|app/i, { timeout: 30000 }).catch(() => {});
+      await page.waitForLoadState('domcontentloaded');
     }
     await use(page);
   },

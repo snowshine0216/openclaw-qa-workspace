@@ -12,7 +12,7 @@ test.describe('Report Editor Shortcut Metrics', () => {
 
   test(
     '[TC85613_1] Creating rank metrics',
-    { tag: ['@tc85613_1'], timeout: 360000 },
+    { tag: ['@tc85613_1']},
     async ({ libraryPage, reportToolbar, reportEditorPanel, reportGridView }) => {
       const d = reportShortcutMetricsData.dossiers.ReportGridShortcutMx;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });

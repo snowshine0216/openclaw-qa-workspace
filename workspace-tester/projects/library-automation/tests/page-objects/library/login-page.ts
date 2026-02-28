@@ -13,8 +13,17 @@ export class LoginPage {
 
   /** WDIO: waitForLoginView - wait for creds login container before filling */
   async waitForLoginView(timeout = 60000): Promise<void> {
-    const container = this.page.locator('.credsLoginContainer, #username').first();
-    await container.waitFor({ state: 'visible', timeout });
+    const container = this.page.locator('.credsLoginContainer, #username, #StandardModeLabel, .login-modes-row').first();
+    try {
+      await container.waitFor({ state: 'visible', timeout });
+    } catch (e) {
+      const fs = require('fs');
+      await this.page.screenshot({ path: '/tmp/test_timeout.png' }).catch(() => {});
+      const html = await this.page.content().catch(() => '');
+      fs.writeFileSync('/tmp/test_timeout.html', html);
+      fs.writeFileSync('/tmp/test_timeout_url.txt', this.page.url());
+      throw e;
+    }
   }
 
   /** WDIO: switchToStandardTab - click Standard mode if LDAP/SAML is default */

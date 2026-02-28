@@ -1,6 +1,6 @@
 # Environment Management for ReportEditor Tests
 
-This document describes how env config works for `library-automation` reportEditor specs and how to add new users when migrating additional specs.
+This document describes how env config works for `library-automation` report-editor specs and how to add new users when migrating additional specs.
 
 ---
 
@@ -31,10 +31,10 @@ reportTestUser=tqmsuser
 reportTestPassword=
 ```
 
-**Optional (reportCreator suite):** Add when your environment uses different users. If unset, specs use `reportCreatorData` usernames.
+**Optional (report-creator suite):** Add when your environment uses different users. If unset, specs use `reportCreatorData` usernames.
 
 ```bash
-# Optional: reportCreator suite users (WDIO: constants/report.js)
+# Optional: report-creator suite users (WDIO: constants/report.js)
 # createByCubePrivilege, createByCube, reportTemplateSecurity use these when set.
 # If unset, specs fall back to reportCreatorData usernames.
 # reportCubePrivUser=re_nic

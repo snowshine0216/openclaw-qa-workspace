@@ -4,7 +4,7 @@ description: Generalized orchestration workflow for Playwright migration. Execut
 
 # Generalized Script Migration Workflow
 
-Use this workflow to migrate a single phase of specs from WDIO to Playwright for any script family (e.g., `reportEditor`, `customApp`). The agent follows the steps without needing reminders.
+Use this workflow to migrate a single phase of specs from WDIO to Playwright for any script family (e.g., `report-editor`, `custom-app`). The agent follows the steps without needing reminders.
 
 **Working directory:** `workspace-tester/projects/library-automation` (relative to repo root).
 

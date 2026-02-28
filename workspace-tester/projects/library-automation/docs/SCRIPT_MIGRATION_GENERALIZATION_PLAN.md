@@ -1,7 +1,7 @@
 # Refactoring Plan: Generalize Playwright Migration Workflow
 
 ## Goal Description
-The objective is to generalize the reportEditor-specific migration workflow (`playwright-reporteditor-migration.md`) into a unified `script-migration.md` workflow. This workflow will handle any script family (`reportEditor`, `customApp`, `dashboard`, etc.) by dynamically loading properties from `migration/script_families.json`. Furthermore, all state tracking and progress metrics previously stored in `task.json` are now consolidated into `script_families.json`, establishing it as the absolute single source of truth.
+The objective is to generalize the report-editor-specific migration workflow (`playwright-reporteditor-migration.md`) into a unified `script-migration.md` workflow. This workflow will handle any script family (`report-editor`, `custom-app`, `dashboard`, etc.) by dynamically loading properties from `migration/script_families.json`. Furthermore, all state tracking and progress metrics previously stored in `task.json` are now consolidated into `script_families.json`, establishing it as the absolute single source of truth.
 
 > [!NOTE]
 > **Data migration completed (2026-02-28):** All `task.json` progress data (`pass`, `fail`, `notes`, `self_healed`, `last_run`) has been merged into the `progress` field of each phase in `script_families.json`. `task.json` can be safely deleted.
@@ -49,8 +49,8 @@ The objective is to generalize the reportEditor-specific migration workflow (`pl
 - **Expected phase schema:**
   ```json
   "2d": {
-    "feature": "reportSubset",
-    "wdioSubfolder": "reportSubset/",
+    "feature": "report-subset",
+    "wdioSubfolder": "report-subset/",
     "fileCount": 3,
     "status": "in_progress",
     "progress": {
@@ -89,9 +89,9 @@ The objective is to generalize the reportEditor-specific migration workflow (`pl
 
 ### Automated Tests
 - Validate `script_families.json` syntax: `jq . migration/script_families.json`
-- Dry-run the input guard against a valid phase (`reportEditor/2k`) and an invalid one (`fakefamily/99`) to confirm correct exit behavior.
+- Dry-run the input guard against a valid phase (`report-editor/2k`) and an invalid one (`fakefamily/99`) to confirm correct exit behavior.
 - Run `update-phase-progress.sh` against a pending phase and verify JSON integrity afterward.
 
 ### Manual Verification
-- Execute a dry-run of `script-migration.md` against `reportEditor/2k` (next pending phase) to confirm paths like `{specsBase}<feature>` resolve accurately from the config.
+- Execute a dry-run of `script-migration.md` against `report-editor/2k` (next pending phase) to confirm paths like `{specsBase}<feature>` resolve accurately from the config.
 - Verify that `task.json` is deleted and no remaining workflow/skill references point to it.

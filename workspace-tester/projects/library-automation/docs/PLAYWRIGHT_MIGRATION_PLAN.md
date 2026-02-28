@@ -1,10 +1,10 @@
 # Playwright AI-Native Migration Plan
 
 ## 1. Executive Summary
-This document outlines a structured plan to transition the existing WebdriverIO (WDIO) automation test cases in the `reportUndoRedo` suite to Playwright. The primary objective is to modernize the automation architecture by utilizing Playwright's cutting-edge AI capabilities for **Frontier UI Automation**, specifically enabling self-healing locators and dynamic test-step creation. The end state will be a robust, Page Object Model (POM) driven architecture that is "Agent-Native," meaning it fully supports CLI/MCP-based coding agent executions.
+This document outlines a structured plan to transition the existing WebdriverIO (WDIO) automation test cases in the `report-undo-redo` suite to Playwright. The primary objective is to modernize the automation architecture by utilizing Playwright's cutting-edge AI capabilities for **Frontier UI Automation**, specifically enabling self-healing locators and dynamic test-step creation. The end state will be a robust, Page Object Model (POM) driven architecture that is "Agent-Native," meaning it fully supports CLI/MCP-based coding agent executions.
 
 ## 2. Current State Analysis
-Based on a deep review of the target directory (`tests/wdio/specs/regression/reportEditor/reportUndoRedo`):
+Based on a deep review of the target directory (`tests/wdio/specs/regression/report-editor/report-undo-redo`):
 *   **Suite Size:** 5 test files (`Report_undoredo_authoringClear.spec.js`, `Report_undoredo_authoringEditReport.spec.js`, etc.)
 *   **Structure:** Heavy reliance on global POM objects (`browsers.pageObj1`) containing deeply nested operations (e.g., `reportDatasetPanel.addObjectToRows('Category')`).
 *   **Complexity:** Advanced UI interactions like drag-and-drop (`dndMetricsFromColumnsToRows`), custom verification utilities (`since('...').expect().toBe()`), and explicit waits (`browser.pause()`).
@@ -28,7 +28,7 @@ The future state will leverage the materials provided (`lucad87/mcp-server-tests
 Using the `lucad87/mcp-server-tests-migration` tools to rapidly transform the baseline code:
 1.  **`analyze_wdio_test`:** Extract imports, custom commands (e.g., `dndFromObjectBrowserToReportFilter`), and object bindings.
 2.  **`register_custom_commands`:** Translate legacy WDIO UI custom assertions (like `since(...).expect()`) into native standard Playwright `expect` calls instead of maintaining custom assertion wrappers. Also map generic login sequences.
-3.  **`migrate_to_playwright`:** Run AST migration on the 5 files in the `workspace-tester/projects/wdio/specs/regression/reportEditor` directory. This translates the `.spec.js` bodies from WebDriver syntax to native Playwright syntax.
+3.  **`migrate_to_playwright`:** Run AST migration on the 5 files in the `workspace-tester/projects/wdio/specs/regression/report-editor` directory. This translates the `.spec.js` bodies from WebDriver syntax to native Playwright syntax.
 4.  **`refactor_to_pom`:** Execute the POM refactoring component, extracting inline scripts into Playwright Page-Object classes, preserving the abstraction.
 
 ### Phase 2: Agent-Native Workflow & Self-Healing Capabilities
@@ -39,7 +39,7 @@ Leveraging the principles of "Frontier UI Automation" (detailed in the `dstekano
 
 ### Phase 3: Validation and Verification
 1.  **`compare_frameworks`**: Use the migration tool to surface edge-cases not properly covered during AST refactoring.
-2.  **UI Mode Execution:** Run `npx playwright test --ui` and trace viewer to manually certify the migration fidelity of the 5 complex `reportUndoRedo` flows.
+2.  **UI Mode Execution:** Run `npx playwright test --ui` and trace viewer to manually certify the migration fidelity of the 5 complex `report-undo-redo` flows.
 3.  **`generate_migration_report`**: Export a markdown dashboard verifying all tags and cases successfully migrated to Playwright.
 
 ## 5. Cost & Difficulty Assessment
@@ -53,6 +53,6 @@ Leveraging the principles of "Frontier UI Automation" (detailed in the `dstekano
     *   **Total Estimated Time:** 2.5 - 3.5 Developer Days to establish a bulletproof, reusable Playwright AI-native framework tailored for this suite.
 
 ## Summary 
-By orchestrating **AST Migration Tools** with **Agent-Native CLI capabilities**, this plan offsets the heavy lifting of manual syntactical refactoring, allowing the team to invest directly into establishing a modern, self-healing Playwright framework. The 5 files within `reportUndoRedo` are pristine candidates for this pilot implementation.
+By orchestrating **AST Migration Tools** with **Agent-Native CLI capabilities**, this plan offsets the heavy lifting of manual syntactical refactoring, allowing the team to invest directly into establishing a modern, self-healing Playwright framework. The 5 files within `report-undo-redo` are pristine candidates for this pilot implementation.
 
-**Full reportEditor migration:** See [PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md](./PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md) for the complete plan covering all 80 remaining reportEditor specs (reportUndoRedo done; others phased by feature).
+**Full report-editor migration:** See [PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md](./PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md) for the complete plan covering all 80 remaining report-editor specs (report-undo-redo done; others phased by feature).
