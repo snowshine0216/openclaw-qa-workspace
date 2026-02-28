@@ -109,7 +109,20 @@ To implement this design, the following files will be updated:
 
 ---
 
-## 7. Resolved Questions
+## 7. Implementation Status
+
+| File | Status | Notes |
+|------|--------|-------|
+| `workspace-reporter/scripts/fetch-defects-for-feature.sh` | ✅ Implemented | New script: Phase 0a cache + Phase 1 JQL, loads `.env`, prints `DEFECT_COUNT=N` |
+| `workspace-reporter/.agents/workflows/defect-analysis.md` | ✅ Implemented | Phase 1 refactored to call `scripts/fetch-defects-for-feature.sh` |
+| `workspace-reporter/scripts/README.md` | ✅ Implemented | Added `fetch-defects-for-feature.sh` to script table |
+| `workspace-planner/.agents/workflows/feature-qa-planning.md` | ✅ Implemented | Phase 0: `defect_analysis: "not_applicable"`; Phase 2a: idempotency, auto-detect, spawn, copy, non-fatal handling; Phase 2b: pass defect file to synthesize |
+| `workspace-planner/skills/qa-plan-synthesize/SKILL.md` | ✅ Implemented | Defect Analysis prerequisite, Step 2 item 5, merge table row, Background/Test Key Points mapping rules |
+| `workspace-planner/projects/feature-plan/scripts/check_resume.sh` | ✅ Implemented | Defect analysis state tracking: `in_progress`/`pending` → probe `_REPORT_FINAL.md`; bifurcate on `report_approved_at`; copy or prompt per §5 |
+
+---
+
+## 8. Resolved Questions
 
 1. **Wait State:** Does the current orchestration platform support blocking the master planner elegantly while the Reporter agent waits for a human to approve the defect analysis? 
    - **Resolution:** Yes.
@@ -120,7 +133,7 @@ To implement this design, the following files will be updated:
 
 ---
 
-## 8. References
+## 9. References
 
 | Reference | Purpose |
 |----------|---------|

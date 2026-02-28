@@ -17,6 +17,10 @@ readonly FEATURE_ID="${1:?Usage: check_resume.sh <feature-id>}"
 readonly BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 readonly FEATURE_DIR="$BASE_DIR/$FEATURE_ID"
 readonly TASK_FILE="$FEATURE_DIR/task.json"
+readonly PLANNER_ROOT="$(cd "$BASE_DIR/../.." && pwd)"
+readonly REPORTER_ROOT="$PLANNER_ROOT/../workspace-reporter"
+readonly DEFECT_REPORT_SRC="${REPORTER_ROOT}/projects/defects-analysis/${FEATURE_ID}/${FEATURE_ID}_REPORT_FINAL.md"
+readonly REPORTER_TASK_FILE="${REPORTER_ROOT}/projects/defects-analysis/${FEATURE_ID}/task.json"
 
 print_status() {
   local label="$1"
@@ -143,6 +147,40 @@ STATUS=$(jq -r '.overall_status // "unknown"' "$TASK_FILE")
 FEATURE_NAME=$(jq -r '.feature_name // "unknown"' "$TASK_FILE")
 UPDATED_AT=$(jq -r '.updated_at // "unknown"' "$TASK_FILE")
 ERROR_COUNT=$(jq -r '.errors // [] | length' "$TASK_FILE")
+DEFECT_ANALYSIS=$(jq -r '.defect_analysis // "not_applicable"' "$TASK_FILE")
+
+# ─── DEFECT ANALYSIS RESUME (Phase 2a recovery) ───────────────────────────────
+if [ "$DEFECT_ANALYSIS" = "in_progress" ] || [ "$DEFECT_ANALYSIS" = "pending" ]; then
+  echo ""
+  echo "============================================"
+  echo " Defect Analysis Recovery"
+  echo "============================================"
+  if [ -f "$DEFECT_REPORT_SRC" ]; then
+    REPORT_APPROVED_AT=$(jq -r '.report_approved_at // ""' "$REPORTER_TASK_FILE" 2>/dev/null || echo "")
+    if [ -n "$REPORT_APPROVED_AT" ] && [ "$REPORT_APPROVED_AT" != "null" ]; then
+      # (c) Report exists and approved: copy to context, update task.json, proceed
+      mkdir -p "$FEATURE_DIR/context"
+      cp "$DEFECT_REPORT_SRC" "$FEATURE_DIR/context/qa_plan_defect_analysis_${FEATURE_ID}.md"
+      if command -v jq >/dev/null 2>&1; then
+        jq '.defect_analysis = "completed"' "$TASK_FILE" > "${TASK_FILE}.tmp" && mv "${TASK_FILE}.tmp" "$TASK_FILE"
+      fi
+      print_status "DEFECT_ANALYSIS_RESUME" "COMPLETED"
+      echo "  Report copied to context/qa_plan_defect_analysis_${FEATURE_ID}.md. Proceed to Phase 2b."
+    else
+      # (d) Report exists but not approved: prompt user
+      print_status "DEFECT_ANALYSIS_RESUME" "AWAITING_APPROVAL"
+      echo "  Defect report is AI-reviewed but not yet approved."
+      echo "  Options: (A) Open for approval  (B) Skip defect analysis"
+    fi
+  else
+    # (e) Report does not exist: prompt user
+    print_status "DEFECT_ANALYSIS_RESUME" "NOT_FOUND"
+    echo "  Defect report does not exist."
+    echo "  Options: Resume defect analysis from scratch, or skip entirely."
+  fi
+  echo "============================================"
+  echo ""
+fi
 
 # Print summary
 echo "============================================"
@@ -152,6 +190,7 @@ print_status "Feature ID" "$FEATURE_ID"
 print_status "Feature Name" "$FEATURE_NAME"
 print_status "Overall Status" "$STATUS"
 print_status "Current Phase" "$CURRENT_PHASE"
+print_status "Defect Analysis" "$DEFECT_ANALYSIS"
 print_status "Last Updated" "$UPDATED_AT"
 print_status "Errors" "$ERROR_COUNT"
 echo "--------------------------------------------"

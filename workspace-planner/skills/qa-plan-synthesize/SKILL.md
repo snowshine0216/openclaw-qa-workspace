@@ -21,6 +21,7 @@ At least ONE of the following domain summaries should exist:
 - `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature_id>.md` (Optional)
+- `projects/feature-plan/<feature-id>/context/qa_plan_defect_analysis_<feature_id>.md` (Optional — from defect analysis sub-agent)
 
 ## Workflow
 
@@ -41,6 +42,7 @@ Read each available domain summary file:
 2. **GitHub summary**: Code changes, risk areas, technical considerations
 3. **Atlassian summary**: Requirements, acceptance criteria, business context
 4. **Background summary** (Optional): Additional domain knowledge gathered via web search
+5. **Defect Analysis summary** (Optional): Read after Atlassian if `qa_plan_defect_analysis_<feature-id>.md` exists. Extract: Executive Summary, Risk Analysis by Functional Area, Recommended QA Focus Areas, Affected Customers field.
 
 **Extract key data from each**:
 - Summary metadata (URLs, dates, priorities)
@@ -57,10 +59,11 @@ Read each available domain summary file:
 | Section | Consolidation Approach |
 |---------|------------------------|
 | **Summary** | Combine all sources into one table |
-| **Background** | Use Atlassian (requirements) as primary; number subsections |
+| **Background** | Use Atlassian (requirements) as primary; number subsections. **Defect Analysis:** If `Affected Customers` non-empty → inject `### 📢 Business Context`; if internal-only → inject `### 🩺 Defect Health`. If both apply, include both subheadings. |
 | **QA Goals** | Merge all goals, deduplicate; use numbered sub-categories (1. E2E, 2. FUN, … 10. AUTO) with bullet items |
-| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. Columns MUST BE: Priority | Related Code Change | Test Key Points | Expected Results. |
-| **Risk & Mitigation** | Merge risk tables; use numbered sub-sections (1. Technical, 2. Data, 3. UX); keep tables |
+| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. **Merge all defect-derived content here** (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus checklists). Do **not** map defect findings to Risk & Mitigation. Columns MUST BE: Priority | Related Code Change | Test Key Points | Expected Results. Mark defect-derived rows with `[Regression]` or `[Defect Fix Verification]` in Related Code Change/AC column. |
+| **Risk & Mitigation** | Merge risk tables; use numbered sub-sections (1. Technical, 2. Data, 3. UX); keep tables. Do **not** merge defect analysis findings into this section. |
+| **Defect Analysis** | Merge all findings (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus) into `## 🧪 Test Key Points` only. Do **not** map to Risk & Mitigation. See mapping rules below. |
 | **Consolidated Reference Data** | Aggregate source docs, stakeholders, test data, dependencies; bullets only (no tables) |
 | **Sign-off Checklist** | Checklists per team; use numbered subsections |
 | **QA Summary** | Code Changes table only (columns: PR, Files Changed, PR Summary); placed at end of document |

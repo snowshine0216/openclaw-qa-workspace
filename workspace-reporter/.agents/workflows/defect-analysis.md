@@ -138,23 +138,17 @@ Use this workflow to ingest a Jira feature issue key, JQL query, or **release ve
 
 *Goal: Fetch all defects associated with the feature(s).*
 
-**Prerequisite:** Source Jira credentials from workspace `.env` before any jira-cli call. See `skills/jira-cli/references/issue-search.md`. Phase 0a must have run to populate `project_keys.txt`. If `project_keys.txt` is empty or missing, **halt and re-run Phase 0a** before continuing.
+**Prerequisite:** Phase 0a must have run to populate `project_keys.txt`. The shared script `scripts/fetch-defects-for-feature.sh` encapsulates credential loading (from `.env`), Phase 0a cache logic, and cross-project JQL — use it as the single source of truth.
 
 **Single-feature mode:**
-1. Load project keys from cache, then run with retry (page size 50). Use cross-project JQL (linkedIssues fails across projects — see jira-cli references):
+1. From `workspace-reporter` root, invoke:
    ```bash
-   # Load all project keys from Phase 0a cache
-   PROJECT_KEYS=$(cat projects/defects-analysis/.cache/project_keys.txt | tr '\n' ',' | sed 's/,$//')
-
-   scripts/retry.sh 3 2 jira issue list \
-     --jql "project in ($PROJECT_KEYS) AND issuetype = Defect AND (parent=\"<FEATURE_KEY>\" OR text ~ \"<FEATURE_KEY>\")" \
-     --format json \
-     --paginate 50 \
-     > projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json
+   scripts/fetch-defects-for-feature.sh <FEATURE_KEY>
    ```
+   The script writes to `projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json` and prints `DEFECT_COUNT=N`. Parse the count from the output if needed.
 
 **Release-scoped mode (parallel, max 3–5 features at a time):**
-For each confirmed feature key, run the same JQL with `<FEATURE_KEY>` substituted. Save to `projects/defects-analysis/release_<VERSION>/<FEATURE_KEY>/context/jira_raw.json`.
+For each confirmed feature key, run `scripts/fetch-defects-for-feature.sh <FEATURE_KEY>`. The script writes to `projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json`. If the release layout uses `release_<VERSION>/<FEATURE_KEY>/`, copy the output there or run the script with the appropriate working directory.
 
 2. Verify output files are non-empty. If empty, check the JQL with the user.
 3. Update `task.json` → `current_phase: issue_triage`, `total_defects: <N>`, `jira_fetched_at: <ISO timestamp>`.
