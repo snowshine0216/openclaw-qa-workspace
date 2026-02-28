@@ -35,11 +35,11 @@
           "status": "done",
           "progress": {
             "last_run": "2026-02-28",
-            "pass": 8,
-            "fail": 0,
+            "pass": 0,
+            "fail": 8,
             "self_healed": false,
             "quality_checked": true,
-            "notes": null,
+            "notes": "8 fail: TimeoutError waitForURL in authenticatedPage (env/connectivity); not locator bug",
             "quality_report": "migration/quality_report_report-editor_2b.md"
           },
           "snapshotMapping": [

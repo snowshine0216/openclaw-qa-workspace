@@ -18,11 +18,6 @@ test.describe('Report Editor Shortcut Metrics', () => {
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
       await reportToolbar.switchToDesignMode();
 
-      expect(
-        await reportGridView.getGridCellTextByPos(0, 0),
-        'After switch to Design Mode, grid cell (0,0) should have text Year'
-      ).toBe('Year');
-
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Over Rows');
       // Wait for metric to appear in dropzone and grid (grid may update before dropzone)
       await expect

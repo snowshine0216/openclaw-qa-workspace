@@ -22,7 +22,7 @@ require('dotenv').config({ path: 'tests/config/.env.report' });
   await page.click('#loginButton');
   
   await page.waitForURL(/app/i, { timeout: 30000 });
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(30000);
 
   const fs = require('fs');
   fs.writeFileSync('/tmp/app_home.html', await page.content());

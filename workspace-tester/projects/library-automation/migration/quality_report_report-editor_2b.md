@@ -10,7 +10,7 @@
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | 1. Phase & Script Inventory | ✅ Pass | 8 specs match fileCount; npm script exists; no WDIO APIs in POMs |
-| 2. Execution | ⚠️ Partial | Session run: failures observed (× in Playwright output). Prior: 8 pass, 0 fail |
+| 2. Execution | ❌ Fail | 0 pass, 8 fail — TimeoutError in authenticatedPage (env/connectivity) |
 | 3. Snapshot Strategy | ✅ Pass | 13 mappings, all reviewed; no takeScreenshotByElement |
 | 4. Spec MD | ✅ Pass | 8 spec MDs created in specs/report-editor/report-page-by-sorting/ |
 | 5. Env Handling | ✅ Pass | ReportEnvConfig in env.ts; .env.report.example exists; .gitignore ✓ |
@@ -18,7 +18,7 @@
 | 7. Code Quality | ⚠️ Partial | TypeScript + tsconfig + ts-check added; tsc has pre-existing project-wide errors; Playwright runs |
 | 8. Self-Healing | N/A | Self-healing log created; no locator fixes applied (failures may be env-dependent) |
 
-## Overall: ⚠️ Partial — Re-run Tests in Your Env
+## Overall: ❌ Needs Fixes (env/connectivity)
 
 ## Fixes Applied This Session
 
@@ -43,18 +43,18 @@ Each includes **Migrated from WDIO**, **Seed**, and TC-numbered scenarios with e
 
 ## Test Execution Results
 
-| Spec | Prior (script_families) | Session Run | Notes |
-|------|-------------------------|-------------|-------|
-| page-by-sorting-1 | pass | × (failure observed) | |
-| page-by-sorting-2 | pass | (running) | |
-| page-by-sorting-3 | pass | (running) | |
-| page-by-sorting-4 | pass | × (failure observed) | |
-| page-by-sorting-5 | pass | (running) | |
-| page-by-sorting-6 | pass | (running) | |
-| page-by-sorting-7 | pass | (running) | |
-| page-by-sorting-8 | pass | (running) | |
+| Spec | Status | Failure |
+|------|--------|---------|
+| page-by-sorting-1 | ❌ fail | TimeoutError: page.waitForURL 60s exceeded |
+| page-by-sorting-2 | ❌ fail | (same) |
+| page-by-sorting-3 | ❌ fail | (same) |
+| page-by-sorting-4 | ❌ fail | (same) |
+| page-by-sorting-5 | ❌ fail | (same) |
+| page-by-sorting-6 | ❌ fail | (same) |
+| page-by-sorting-7 | ❌ fail | (same) |
+| page-by-sorting-8 | ❌ fail | (same) |
 
-**×** = failure in Playwright dot reporter during session. Full run did not complete within session; exact pass/fail counts require re-run in your environment.
+**Root cause:** `fixtures/index.ts:101` — `authenticatedPage` fixture: post-login never reached `/(\/app|\/Home|\/Dashboard)/i`. **Env/connectivity** (reportTestUrl, credentials, or Library unreachable). Not a locator bug — self-healing N/A.
 
 ### If Tests Fail
 1. Run `npm run test:report-page-by-sorting -- --reporter=list` for detailed failure output
@@ -65,6 +65,8 @@ Each includes **Migrated from WDIO**, **Seed**, and TC-numbered scenarios with e
 
 ## Action Items
 
-- [ ] Re-run `npm run test:report-page-by-sorting` in your environment and capture final pass/fail
-- [ ] If failures persist: run self-healing per above; update script_families progress
+- [x] 1. Re-run tests — done (0 pass, 8 fail)
+- [x] 2. Self-healing — N/A; failure is env/connectivity (login timeout), not locator
+- [x] 3. Update script_families — done (pass: 0, fail: 8, notes)
+- [ ] Fix env: verify `reportTestUrl` reachable, credentials valid; re-run tests
 - [ ] (Optional) Fix tsc errors project-wide for stricter Code Quality

@@ -85,7 +85,15 @@ export class DossierCreator {
 
   /** Click Add → Create Report to open the Create New Report dialog */
   async createNewReport(): Promise<void> {
-    await this.addButton.waitFor({ state: 'visible', timeout: 10000 });
+    try {
+      await this.addButton.waitFor({ state: 'visible', timeout: 30000 });
+    } catch (e) {
+      const fs = require('fs');
+      await this.page.screenshot({ path: '/tmp/add_button_timeout.png' }).catch(() => {});
+      const html = await this.page.content().catch(() => '');
+      fs.writeFileSync('/tmp/add_button_timeout.html', html);
+      throw e;
+    }
     await this.addButton.click();
     await this.page.waitForTimeout(500);
     await this.createNewReportItem.waitFor({ state: 'visible', timeout: 5000 });
@@ -216,12 +224,21 @@ export class DossierCreator {
 
   /** Reset localStorage for dossier creator state */
   async resetLocalStorage(): Promise<void> {
-    await this.page.evaluate(() => {
-      localStorage.removeItem('/MicroStrategyLibrary/mstrProjectSelection');
-      localStorage.removeItem('/MicroStrategyLibrary/mstrDossierCreateSourceTab');
-      localStorage.removeItem('/MicroStrategyLibrary/mstrReportCreateSourceTab');
-      localStorage.removeItem('/MicroStrategyLibrary/mstrReportViewMode');
-    });
+    for (let i = 0; i < 3; i++) {
+      try {
+        await this.page.evaluate(() => {
+          localStorage.removeItem('/MicroStrategyLibrary/mstrProjectSelection');
+          localStorage.removeItem('/MicroStrategyLibrary/mstrDossierCreateSourceTab');
+          localStorage.removeItem('/MicroStrategyLibrary/mstrReportCreateSourceTab');
+          localStorage.removeItem('/MicroStrategyLibrary/mstrReportViewMode');
+        });
+        break; // Success
+      } catch (e: any) {
+        if (i === 2) throw e;
+        // If execution context was destroyed by navigation, wait and retry
+        await this.page.waitForTimeout(1000);
+      }
+    }
   }
 
   /** Open template info panel for template */

@@ -6,8 +6,6 @@ description: End-to-end quality check for WDIO→Playwright script migration. Ve
 
 Use this workflow to run a full quality check on one or more migrated phases for a script family.
 
-**CRITICAL DIRECTIVE:** You MUST automatically fix all defects, missing files, and mismatches encountered. Playback scripts and self-healing are mandatory. Resolve all issues without a human-in-the-loop. The final report must have 100% of action items completed with no unchecked boxes.
-
 **Spec reference:** [`docs/SCRIPT_MIGRATION_QUALITY_CHECK_PLAN.md`](../../docs/SCRIPT_MIGRATION_QUALITY_CHECK_PLAN.md)
 
 **Working directory:** `workspace-tester/projects/library-automation` for all commands.
@@ -19,7 +17,7 @@ Use this workflow to run a full quality check on one or more migrated phases for
 ### 0.1 Accept Inputs
 
 Accept from user or calling skill:
-- **family**: `report-editor` | `custom-app` | `dashboard` | `all`
+- **family**: `reportEditor` | `customApp` | `dashboard` | `all`
 - **phase**: `all` | `2a` | `2b,2h` (comma-separated)
 
 If not provided, ask: _"Which family and phase(s) would you like to quality-check?"_
@@ -34,10 +32,9 @@ cat migration/script_families.json
 ```
 
 Extract for the selected family:
-- `specsBase` — e.g. `tests/specs/report-editor/`
-- `pomBase` — e.g. `tests/page-objects/report/`
-- `specMdBase` — e.g. `specs/report-editor/`
-- `testDataBase` — e.g. `tests/test-data/report-editor/`
+- `specsBase` — e.g. `tests/specs/reportEditor/`
+- `pomBase` — e.g. `tests/page-objects/reportEditor/`
+- `specMdBase` — e.g. `specs/reportEditor/`
 - `designDoc` — e.g. `docs/PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md`
 - `envFile` — e.g. `.env.report`
 - `envConfigInterface` — e.g. `ReportEnvConfig`
@@ -47,27 +44,20 @@ Use these resolved values in all steps below (replace `{specsBase}`, `{pomBase}`
 
 ### 0.3 Resolve Phase Feature Name
 
-Look up the phase directly from `migration/script_families.json` — no need to read the design doc:
+Read the family design doc **Section 0 (Migration Progress)** to resolve phase → feature name mapping. Example for `reportEditor`:
 
-```bash
-cat migration/script_families.json | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-phases = data['families']['FAMILY_NAME']['phases']
-phase = phases.get('PHASE_ID')
-if phase:
-    print('feature:', phase['feature'])
-    print('wdioSubfolder:', phase['wdioSubfolder'])
-    print('fileCount:', phase['fileCount'])
-    print('status:', phase['status'])
-else:
-    print('Phase not found in config')
-"
-```
-
-For `phase=all`, iterate over all keys in `phases` whose `status` is not `"skipped"`.
-
-**Status values:** `done` | `pending` | `in_progress` | `skipped`
+| Phase | Feature |
+|-------|---------|
+| 2a | reportShortcutMetrics |
+| 2b | reportPageBySorting |
+| 2c | reportCreator |
+| 2d | reportSubset |
+| 2e | reportPageBy |
+| 2f | reportThreshold |
+| 2g | reportTheme |
+| 2h | reportScopeFilter |
+| 2i | reportFormatting |
+| 2j | reportCancel |
 
 ---
 
@@ -84,11 +74,11 @@ grep "{npmScriptPrefix}<Feature>" package.json
 grep -rn '\$(\|browser\.\|waitForDisplayed' {pomBase}/
 ```
 
-**Check (Auto-fix any failures immediately before proceeding):**
-- [ ] Spec count matches `fileCount` in `script_families.json` (Auto-create missing specs)
-- [ ] npm script `{npmScriptPrefix}<Feature>` exists (Auto-inject into package.json if missing)
-- [ ] No WDIO-only APIs in POMs (zero hits on 1c) (Auto-refactor POMs if found)
-- [ ] All POMs referenced by specs exist in `{pomBase}/` (Auto-create/migrate if missing)
+**Check:**
+- [ ] Spec count matches design doc Section 2 file list
+- [ ] npm script `{npmScriptPrefix}<Feature>` exists
+- [ ] No WDIO-only APIs in POMs (zero hits on 1c)
+- [ ] All POMs referenced by specs exist in `{pomBase}/`
 
 ---
 
@@ -103,69 +93,48 @@ npm run {npmScriptPrefix}<Feature>
 ```
 
 **On failure:**
-- If error is a **migration artifact** (missing method, wrong locator): fix immediately by updating the script or POM.
-- If error is **env missing**: auto-generate the required environment variables based on `.env.example` and retry.
-- If error is **app behavior/flakiness**: apply self-healing automatically to adjust the script to the current app behavior. You MUST run playback scripts and perform self-healing loops until all specs pass. Tag with `test.fixme()` ONLY if it's a confirmed product bug. Do not ask for user permission.
+- If error is a **migration artifact** (missing method, wrong locator): fix immediately.
+- If error is **env missing**: log and skip running; note in report.
+- If error is **app behavior/flakiness**: tag with `test.fixme()` and log `flakiness_reason` in task.json.
 
-**Record in `migration/script_families.json`** using the atomic update script:
-```bash
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE pass <n>
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE fail <n>
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE last_run '"YYYY-MM-DD"'
+**Record in `migration/task.json`:**
+```json
+{
+  "phases": {
+    "<phase>": {
+      "pass": <n>,
+      "fail": <n>,
+      "last_run": "YYYY-MM-DD"
+    }
+  }
+}
 ```
+
+Also update design doc **Section 6.4** (Phase-by-Phase Validation Results).
 
 ---
 
 ## 3. Dimension 3: Snapshot Strategy
 
-> **Source of truth:** `phases.<phase>.snapshotMapping` in `migration/script_families.json`
-
 ```bash
-# 3a. Load snapshotMapping and check for unreviewed entries
-cat migration/script_families.json | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-mapping = data['families']['FAMILY_NAME']['phases']['PHASE_ID'].get('snapshotMapping', [])
-unreviewed = [e for e in mapping if e.get('assertionAdequate') is None]
-inadequate = [e for e in mapping if e.get('assertionAdequate') is False]
-screenshot = [e for e in mapping if e.get('strategy') == 'toHaveScreenshot']
-print(f'Total mappings: {len(mapping)}')
-print(f'Unreviewed (assertionAdequate=null): {len(unreviewed)}')
-print(f'Inadequate (assertionAdequate=false): {len(inadequate)}')
-print(f'Visual screenshot retained: {len(screenshot)}')
-for e in unreviewed:
-    print('  REVIEW:', e['wdioCall'], '->', e['assertionMethod'])
-"
+# 3a. Find all snapshot calls in WDIO source
+grep -rn "takeScreenshotByElement" workspace-tester/projects/wdio/specs/regression/<family>/<feature>/
 
-# 3b. Verify no takeScreenshotByElement remains in Playwright output
+# 3b. Verify none remain in Playwright output
 grep -rn "takeScreenshotByElement" {specsBase}<feature>/
 
-# 3c. Find unregistered toHaveScreenshot (not tracked in snapshotMapping)
-grep -rn "toHaveScreenshot" {specsBase}<feature>/
-
-# 3d. Count WDIO snapshot calls in source to detect unmapped entries
-grep -rn "takeScreenshotByElement" workspace-tester/projects/wdio/specs/regression/<family>/<feature>/ | wc -l
+# 3c. Check for orphan visual assertions
+grep -rn "toHaveScreenshot\|Spectre" {specsBase}<feature>/
 ```
 
-**For each unreviewed entry (`assertionAdequate: null`) — agent must evaluate:**
-1. Read the original `wdioCall` — what was the screenshot verifying? (visual layout? element presence? text content?)
-2. Read the `assertionMethod` in the Playwright spec
-3. Judge adequacy:
-   - **`true`** — assertion captures the same intent (element visible, text correct, state valid) → update JSON
-   - **`false`** — assertion is weaker (e.g. `toBeTruthy()` when text content matters; visual layout that can't be expressed semantically) → update JSON, upgrade `strategy` to `"toHaveScreenshot"`, add `justification`, commit a baseline with `playwright-cli screenshot`
-
-**After reviewing all entries:** write updated `assertionAdequate` values back to `migration/script_families.json`.
-
-**For unmapped WDIO snapshots** (Step 3d count > snapshotMapping length): add missing entries with `strategy: "pending"` and `assertionAdequate: null` then review.
+For each hit in 3a: read the corresponding Playwright spec and verify a semantic assertion (`toBeVisible`, `toHaveText`, etc.) replaces it.
 
 **Check:**
 - [ ] 3b returns 0 hits
-- [ ] 3c hits all exist in `snapshotMapping` with `strategy: "toHaveScreenshot"` + `justification`
-- [ ] No `assertionAdequate: null` entries remain after review
-- [ ] No `assertionAdequate: false` entries without an associated `toHaveScreenshot` baseline
+- [ ] Any `toHaveScreenshot` in 3c has documented justification in design doc Section 10
+- [ ] Design doc Section 10 has a row for every replaced snapshot
 
 ---
-
 
 ## 4. Dimension 4: Spec MD Comprehensiveness
 
@@ -185,9 +154,9 @@ grep -l "TC[0-9]" {specMdBase}<feature>/*.md
 
 **Agent must also read** each `.md` to confirm scenarios have enumerated steps (not just headings).
 
-**Check (Auto-fix failures immediately before proceeding):**
-- [ ] Every `.spec.ts` has a corresponding `.md` (Auto-generate missing MD files based on the `.spec.ts` content)
-- [ ] Each `.md` has `**Seed:**`, `Migrated from WDIO:`, and TC-numbered scenarios with steps (Auto-update MD files if sections are missing)
+**Check:**
+- [ ] Every `.spec.ts` has a corresponding `.md`
+- [ ] Each `.md` has `**Seed:**`, `Migrated from WDIO:`, and TC-numbered scenarios with steps
 
 ---
 
@@ -230,10 +199,10 @@ grep -n "SCRIPT_MIGRATION_QUALITY_CHECK_PLAN" docs/README.md 2>/dev/null || echo
 
 **Agent must also read** `{specMdBase}README.md` to verify it has: Page Objects table, Test Suite Scopes table, How to Run commands, and ENV link.
 
-**Check (Auto-fix failures immediately before proceeding):**
-- [ ] Root README has `{npmScriptPrefix}<Feature>` command (Auto-add to README if missing)
-- [ ] `{specMdBase}README.md` exists with all required sections (Auto-create or update if missing)
-- [ ] `docs/README.md` references this plan (Auto-update docs/README.md if missing)
+**Check:**
+- [ ] Root README has `{npmScriptPrefix}<Feature>` command
+- [ ] `{specMdBase}README.md` exists with all required sections
+- [ ] `docs/README.md` references this plan
 
 ---
 
@@ -250,10 +219,10 @@ npx eslint {specsBase}<feature>/ {pomBase}/
 grep -rn '\$(\|browser\.\|waitForDisplayed\|waitForExist' {specsBase}<feature>/ {pomBase}/
 ```
 
-**Check (Auto-fix failures immediately before proceeding):**
-- [ ] `tsc --noEmit` exits with code 0 (Auto-fix type errors)
-- [ ] ESLint exits with code 0 (Auto-fix lint errors)
-- [ ] 7c returns 0 hits (Auto-refactor WDIO-only APIs)
+**Check:**
+- [ ] `tsc --noEmit` exits with code 0
+- [ ] ESLint exits with code 0
+- [ ] 7c returns 0 hits
 
 ---
 
@@ -272,18 +241,18 @@ grep -rn "\$('css=\|xpath=\|waitForDisplayed" {specsBase}<feature>/
 npx playwright test {specsBase}<feature>/<name>.spec.ts
 ```
 
-**If 8b has hits, or if any tests failed in Dimension 2:** Activate the `playwright-cli` skill without asking the user:
+**If 8b has hits:** Activate the `playwright-cli` skill:
 1. `playwright-cli open <appUrl>`
 2. `playwright-cli goto <target page URL>`
 3. `playwright-cli snapshot` — derive semantic locator
 4. Update POM method with new locator
-5. Repeat 8c until the spec passes
+5. Repeat 8c until spec passes
 
-**Check (Auto-fix failures immediately before proceeding):**
-- [ ] 8b returns 0 hits after self-healing (Mandatory)
+**Check:**
+- [ ] 8b returns 0 hits after self-healing
 - [ ] Self-healing log written to `migration/self-healing/<family>/<phase>/`
-- [ ] `script_families.json` has `progress.self_healed: true` (if healing was needed)
-- [ ] Spec passes after healing (Mandatory)
+- [ ] `task.json` has `phases.<phase>.self_healed: true` (if healing was needed)
+- [ ] Spec passes after healing
 
 ---
 
@@ -312,18 +281,23 @@ Write report to `migration/quality_report_<family>_<phase>.md`:
 | 7. Code Quality | ✅ Pass / ❌ Fail | <tsc/eslint errors> |
 | 8. Self-Healing | ✅ Pass / N/A / ❌ Fail | <healed count> |
 
-## Overall: ✅ Quality-Checked
+## Overall: ✅ Quality-Checked / ❌ Needs Fixes
 
 ## Action Items
-*(All action items must be automatically completed during the run. Ensure no unchecked action items remain.)*
-- [x] All missing files and defects were automatically fixed without human intervention.
+- [ ] <item 1>
 ```
 
-Then update `migration/script_families.json`:
-```bash
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE quality_checked true
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE quality_report '"migration/quality_report_<family>_<phase>.md"'
-./migration/scripts/update-phase-progress.sh $FAMILY $PHASE quality_date '"YYYY-MM-DD"'
+Then update `migration/task.json`:
+```json
+{
+  "phases": {
+    "<phase>": {
+      "quality_checked": true,
+      "quality_report": "migration/quality_report_<family>_<phase>.md",
+      "quality_date": "YYYY-MM-DD"
+    }
+  }
+}
 ```
 
 Present the report summary to the user.

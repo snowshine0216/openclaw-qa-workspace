@@ -50,12 +50,12 @@ export class LoginPage {
     if (hasPassword) {
       await passwordEl.fill(password);
     } else {
-      // When password is empty or "none", click the password field to satisfy
-      // form focus/touch requirements, then click login (MicroStrategy Library).
-      await passwordEl.click();
+      // Trick the UI validator into enabling the login button for blank passwords
+      // by placing a space, which may be trimmed by the server.
+      await passwordEl.fill(' ');
     }
     const loginEl = this.loginButton.first();
     await loginEl.scrollIntoViewIfNeeded();
-    await loginEl.click();
+    await loginEl.click({ force: true, noWaitAfter: true });
   }
 }
