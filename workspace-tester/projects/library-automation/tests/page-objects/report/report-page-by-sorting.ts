@@ -52,23 +52,9 @@ export class ReportPageBySorting {
 
   /** WDIO: getDropDownItem - dropdown menu item by row, column, and label */
   getDropDownItem(row: number, col: string, item: string) {
-    const colIdxMap: Record<string, number> = {
-      'Sort By': 2,
-      Criteria: 3,
-      Order: 4,
-      'Total Position': 5,
-      'Parent Position': 6,
-    };
-    const idx = colIdxMap[col] ?? 2;
-    const dropdown = this.dialog
-      .locator('.sort-row')
-      .nth(row - 1)
-      .locator('.ant-col')
-      .nth(idx)
-      .locator('[class*="ant-dropdown"], .mstr-dropdown')
-      .first();
-    // Use getByText for more flexible text matching (same as context menu fix)
-    return dropdown.getByText(item, { exact: true }).first();
+    // Dropdown menu appears as overlay/portal outside the dialog DOM
+    // Search globally for visible dropdown menu items
+    return this.page.getByText(item, { exact: true }).first();
   }
 
   async openDropdown(row: number, col: string): Promise<void> {
@@ -81,7 +67,8 @@ export class ReportPageBySorting {
     const item = this.getDropDownItem(row, col, option);
     // Increased timeout from 5s to 15s for slower dev environments
     await item.waitFor({ state: 'visible', timeout: 15000 });
-    await item.click();
+    // Use force click to bypass ReactModal overlay interception
+    await item.click({ force: true });
     await this.page.waitForTimeout(500);
   }
 

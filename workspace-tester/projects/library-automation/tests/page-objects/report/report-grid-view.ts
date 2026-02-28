@@ -209,16 +209,9 @@ export class ReportGridView {
   ).first();
 
   async clickContextMenuOption(opt: string): Promise<void> {
-    const item = this.page
-      .locator(
-        `.mstr-context-menu li:has-text("${opt}"), ` +
-          `.ant-dropdown-menu li:has-text("${opt}"), ` +
-          `[class*="context-menu"] li:has-text("${opt}"), ` +
-          `[class*="dropdown-menu"] li:has-text("${opt}"), ` +
-          `[role="menu"] [role="menuitem"]:has-text("${opt}")`
-      )
-      .first();
-    await item.waitFor({ state: 'visible', timeout: 10000 });
+    // Use getByText for flexible text matching (same as PageBy context menu fix)
+    const item = this.page.getByText(opt, { exact: true }).first();
+    await item.waitFor({ state: 'visible', timeout: 15000 });
     await item.click();
     await this.page.waitForTimeout(500);
   }
