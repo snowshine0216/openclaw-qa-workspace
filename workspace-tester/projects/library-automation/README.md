@@ -122,15 +122,19 @@ If env is correct, tests are listed. If `.env.report` is missing or empty, `base
 | `npm run test` | Run all Playwright tests. |
 | `npm run test:reportUndoRedo` | Run **only** migrated reportUndoRedo specs (uses chromium, fastest). |
 | `npm run test:reportUndoRedo:list` | List reportUndoRedo tests (no network, no browser). |
+| `npm run test:reportShortcutMetrics` | Run reportShortcutMetrics specs (Phase 2a). |
+| `npm run test:reportEditor:list` | List all reportEditor tests. |
 
 ```bash
 cd workspace-tester/projects/library-automation
 
 # List migrated tests (quick check)
 npm run test:reportUndoRedo:list
+npm run test:reportEditor:list
 
 # Run migrated tests (requires MicroStrategy env)
 npm run test:reportUndoRedo
+npm run test:reportShortcutMetrics
 ```
 
 ### Run all report undo/redo specs (all browsers)

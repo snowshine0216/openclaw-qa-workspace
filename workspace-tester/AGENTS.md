@@ -84,12 +84,12 @@ Handoff to qa-report:
 When the user asks to migrate reportEditor specs (e.g. "migrate reportEditor phase 2c" or "migrate next pending phase"):
 
 1. **Trigger** the workflow file:
-   `projects/library-automation/.agents/workflows/playwright-reporteditor-migration.md`
+   `projects/library-automation/.agents/workflows/script-migration.md`
 2. **Follow** the workflow step-by-step. It defines:
-   - Phase 0: Preparation (run `migration/check_resume.sh`, initialize `migration/task.json`)
+   - Phase 0: Preparation (load config from `migration/script_families.json` and initialize state)
    - Phase 1: Per-phase execution (4.1–4.9: register commands, analyze, create specs, migrate, refactor to POM, extract test data, validate, fixtures, snapshot mapping)
    - Phase 2: Validation (MCP `compare_frameworks`, run phase suite, record results)
-   - Phase 3: Update design doc (Section 0, 6.4, 10) and `migration/task.json`
+   - Phase 3: Update design doc (Section 0, 6.4, 10) and `migration/script_families.json`
 3. **Use MCP** `user-tests-migration` tools: `analyze_wdio_test`, `migrate_to_playwright`, `refactor_to_pom`, `register_custom_commands`, `compare_frameworks`.
 4. **Working directory:** `projects/library-automation`.
 

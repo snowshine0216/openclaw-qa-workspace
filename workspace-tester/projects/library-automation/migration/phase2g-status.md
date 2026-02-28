@@ -8,7 +8,7 @@
 
 ```bash
 npm run test:reportTheme
-# or: npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme
+# or: npx playwright test tests/specs/report-editor/report-theme/ --project=reportTheme
 ```
 
 ## Status Summary
@@ -35,4 +35,4 @@ npm run test:reportTheme
 ## POMs / Test Data
 
 - **POMs:** ReportThemePanel, ReportMenubar, ReportTOC.switchToThemePanel, NewFormatPanelForGrid
-- **Test data:** tests/test-data/reportTheme.ts
+- **Test data:** tests/test-data/report-editor/report-theme.ts
