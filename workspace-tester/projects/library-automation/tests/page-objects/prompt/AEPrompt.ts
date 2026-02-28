@@ -23,5 +23,26 @@ export class AEPrompt {
       await addBtn.click();
       await this.page.waitForTimeout(300);
     },
+    /** Add all elements from available list to selected (double-arrow add) */
+    addAll: async (promptElement: Locator): Promise<void> => {
+      const addAllBtn = promptElement
+        .locator('.mstrListCartCellAddRemoveButtons .mstrBGIcon_tbAddAll, [class*="add-all"]')
+        .first();
+      await addAllBtn.waitFor({ state: 'visible', timeout: 5000 });
+      await addAllBtn.click();
+      await this.page.waitForTimeout(500);
+    },
+    /** Get selected list text values */
+    getSelectedObjectListText: async (promptElement: Locator): Promise<string[]> => {
+      const selectedList = promptElement.locator('.mstrListCartCellSelectedView .mstrListBlockItemName');
+      await selectedList.first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      const count = await selectedList.count();
+      const texts: string[] = [];
+      for (let i = 0; i < count; i++) {
+        const t = await selectedList.nth(i).textContent();
+        if (t) texts.push(t.trim());
+      }
+      return texts;
+    },
   };
 }

@@ -35,6 +35,15 @@ import { reportCreatorData } from '../test-data/reportCreator';
 import { reportPageByData } from '../test-data/reportPageBy';
 import { reportThresholdData } from '../test-data/reportThreshold';
 import { reportThemeData } from '../test-data/reportTheme';
+import { reportScopeFilterData } from '../test-data/reportScopeFilter';
+import { reportFormattingData } from '../test-data/reportFormatting';
+import { reportCancelData } from '../test-data/reportCancel';
+import { DossierPage } from '../page-objects/library/DossierPage';
+import { Bookmark } from '../page-objects/dossier/Bookmark';
+import { FilterPanel } from '../page-objects/report/FilterPanel';
+import { ReportSummary } from '../page-objects/report/ReportSummary';
+import { AttributeFilter } from '../page-objects/report/AttributeFilter';
+import { CustomInputbox } from '../page-objects/report/CustomInputbox';
 
 export const test = base.extend<{
   authenticatedPage: import('@playwright/test').Page;
@@ -61,10 +70,16 @@ export const test = base.extend<{
   reportPage: ReportPage;
   reportThemePanel: ReportThemePanel;
   reportMenubar: ReportMenubar;
+  filterPanel: FilterPanel;
+  reportSummary: ReportSummary;
+  attributeFilter: AttributeFilter;
+  customInputbox: CustomInputbox;
   promptEditor: PromptEditor;
   aePrompt: AEPrompt;
   valuePrompt: ValuePrompt;
   dossierCreator: DossierCreator;
+  dossierPage: DossierPage;
+  bookmark: Bookmark;
 }>({
   authenticatedPage: async ({ page }, use) => {
     const env = getReportEnv();
@@ -156,6 +171,18 @@ export const test = base.extend<{
   reportMenubar: async ({ authenticatedPage }, use) => {
     await use(new ReportMenubar(authenticatedPage));
   },
+  filterPanel: async ({ authenticatedPage }, use) => {
+    await use(new FilterPanel(authenticatedPage));
+  },
+  reportSummary: async ({ authenticatedPage }, use) => {
+    await use(new ReportSummary(authenticatedPage));
+  },
+  attributeFilter: async ({ authenticatedPage }, use) => {
+    await use(new AttributeFilter(authenticatedPage));
+  },
+  customInputbox: async ({ authenticatedPage }, use) => {
+    await use(new CustomInputbox(authenticatedPage));
+  },
   promptEditor: async ({ authenticatedPage }, use) => {
     await use(new PromptEditor(authenticatedPage));
   },
@@ -167,6 +194,12 @@ export const test = base.extend<{
   },
   dossierCreator: async ({ authenticatedPage }, use) => {
     await use(new DossierCreator(authenticatedPage));
+  },
+  dossierPage: async ({ authenticatedPage }, use) => {
+    await use(new DossierPage(authenticatedPage));
+  },
+  bookmark: async ({ authenticatedPage }, use) => {
+    await use(new Bookmark(authenticatedPage));
   },
 });
 
@@ -180,4 +213,7 @@ export {
   reportPageByData,
   reportThresholdData,
   reportThemeData,
+  reportScopeFilterData,
+  reportFormattingData,
+  reportCancelData,
 };

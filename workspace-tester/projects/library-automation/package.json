@@ -15,7 +15,10 @@
     "test:reportCreator": "npx playwright test tests/specs/reportEditor/reportCreator/ --project=reportCreator",
     "test:reportSubset": "npx playwright test tests/specs/reportEditor/reportSubset/ --project=reportSubset",
     "test:reportThreshold": "npx playwright test tests/specs/reportEditor/reportThreshold/ --project=reportThreshold",
-    "test:reportTheme": "npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme"
+    "test:reportTheme": "npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme",
+    "test:reportScopeFilter": "npx playwright test tests/specs/reportEditor/reportScopeFilter/ --project=reportScopeFilter",
+    "test:reportFormatting": "npx playwright test tests/specs/reportEditor/reportFormatting/ --project=reportFormatting",
+    "test:reportCancel": "npx playwright test tests/specs/reportEditor/reportCancel/ --project=reportCancel"
   },
   "keywords": [],
   "author": "",

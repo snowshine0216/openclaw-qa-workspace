@@ -73,6 +73,24 @@ export default defineConfig({
       timeout: 360000,
     },
     {
+      name: 'reportScopeFilter',
+      testMatch: /reportEditor\/reportScopeFilter\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportFormatting',
+      testMatch: /reportEditor\/reportFormatting\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportCancel',
+      testMatch: /reportEditor\/reportCancel\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },

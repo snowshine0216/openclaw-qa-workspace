@@ -40,6 +40,10 @@ export interface ReportEnvConfig {
   reportTemplateNoExecuteUser: string;
   /** reportTemplateSecurity (WDIO: reportTemplateTestUser) */
   reportTemplateUser: string;
+  /** reportScopeFilter (WDIO: reportScopeFilterUser) */
+  reportScopeFilterUser: string;
+  /** reportCancel (WDIO: cancelReportExecutionUser) */
+  reportCancelUser: string;
 }
 
 function parseBaseUrl(url: string): string {
@@ -65,5 +69,7 @@ export function getReportEnv(): ReportEnvConfig {
     reportTemplateNoExecuteUser:
       process.env.reportTemplateNoExecuteUser || process.env.REPORT_TEMPLATE_NO_EXEC_USER || 'ret_ne',
     reportTemplateUser: process.env.reportTemplateUser || process.env.REPORT_TEMPLATE_USER || 're_template',
+    reportScopeFilterUser: process.env.reportScopeFilterUser || process.env.REPORT_SCOPE_FILTER_USER || 'resfc',
+    reportCancelUser: process.env.reportCancelUser || process.env.REPORT_CANCEL_USER || 'cre',
   };
 }

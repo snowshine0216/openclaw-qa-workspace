@@ -75,6 +75,29 @@ export class LibraryPage {
     await this.page.waitForTimeout(1500);
   }
 
+  /** Get page title (Library, dossier name, etc.) */
+  async title(): Promise<string> {
+    await this.page.waitForTimeout(1000);
+    return this.page.title();
+  }
+
+  /** Open dossier by name without waiting for load (WDIO: openDossierNoWait) */
+  async openDossierNoWait(name: string): Promise<void> {
+    const item = this.page
+      .getByRole('link', { name })
+      .or(this.page.locator(`[title="${name}"]`))
+      .or(this.page.getByText(name, { exact: true }))
+      .first();
+    await item.click({ timeout: 15000 });
+  }
+
+  /** Wait for curtain/loading overlay to disappear */
+  async waitForCurtainDisappear(timeout = 60000): Promise<void> {
+    const curtain = this.page.locator('.mstrd-LoadingIcon-content--visible, .mstrmojo-Editor.mstrWaitBox.modal');
+    await curtain.waitFor({ state: 'hidden', timeout }).catch(() => {});
+    await this.page.waitForTimeout(1000);
+  }
+
   async openReportByUrl(params: {
     projectId: string;
     documentId?: string;

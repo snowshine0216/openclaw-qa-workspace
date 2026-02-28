@@ -35,7 +35,36 @@ export class PromptEditor {
     await this.page.waitForTimeout(2000);
   }
 
+  /** Click Apply/Run without waiting for load (for cancel scenarios) */
+  async runNoWait(): Promise<void> {
+    const btn = this.promptContainer
+      .locator('.mstrPromptEditorButtons, .ant-modal-footer, [class*="footer"]')
+      .getByRole('button', { name: /apply|run|ok/i })
+      .or(this.promptContainer.getByText('Apply', { exact: true }))
+      .first();
+    await btn.click({ timeout: 15000 });
+  }
+
+  /** Wait for prompt editor to be visible */
+  async waitForEditor(): Promise<void> {
+    await this.promptContainer.waitFor({ state: 'visible', timeout: 15000 });
+  }
+
+  /** Close prompt editor (X or Close button) */
+  async closeEditor(): Promise<void> {
+    const closeBtn = this.promptContainer
+      .locator('.icon-pnl_close, [aria-label="Close"], button:has-text("Close")')
+      .first();
+    await closeBtn.click({ timeout: 5000 }).catch(() => {});
+  }
+
+  /** Click Re-prompt button */
   async reprompt(): Promise<void> {
-    throw new Error('TODO: trigger reprompt');
+    const btn = this.page
+      .locator('.mstrd-NavBar, [class*="toolbar"]')
+      .getByRole('button', { name: /re-prompt|reprompt|prompt/i })
+      .or(this.promptContainer.getByText(/re-prompt|reprompt/i))
+      .first();
+    await btn.click({ timeout: 5000 }).catch(() => {});
   }
 }

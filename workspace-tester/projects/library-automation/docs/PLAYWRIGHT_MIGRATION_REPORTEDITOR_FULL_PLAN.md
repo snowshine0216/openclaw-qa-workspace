@@ -6,7 +6,7 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 
 ---
 
-## 0. Migration Progress (Last Updated)
+## 0. Migration Progress (Last Updated: 2026-02-28)
 
 | Phase | Feature | Status | Tests | Last Run |
 |-------|---------|--------|-------|----------|
@@ -18,7 +18,10 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 | **2e** | **reportPageBy** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
 | **2f** | **reportThreshold** | **🔄 Migrated, fixes in progress** | 0 pass, 1 fail, 1 skipped | Login timeout (reportTestUrl); TC85267_2 skipped |
 | **2g** | **reportTheme** | **✅ Migrated** | 3/3 | themeApply, themeGeneral, themeSecurity; Run: `npm run test:reportTheme` |
-| 2h–2o | … | ⬜ Pending | 66 | — |
+| **2h** | **reportScopeFilter** | **✅ Migrated** | 4/4 | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: `npm run test:reportScopeFilter` |
+| **2i** | **reportFormatting** | **✅ Migrated** | 8/8 | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: `npm run test:reportFormatting` |
+| **2j** | **reportCancel** | **✅ Migrated** | 2/2 | consumptionCancelExecution, authoringCancelExecution; Run: `npm run test:reportCancel` |
+| 2k–2o | … | ⬜ Pending | 52 | — |
 
 ### Phase 2a Test Results (reportShortcutMetrics)
 
@@ -63,8 +66,8 @@ Grouped by feature for phased execution:
 | 2f | reportThreshold | `reportThreshold/` | 2 |
 | 2g | reportTheme | `reportTheme/` | 3 |
 | 2h | reportScopeFilter | `reportScopeFilter/` | 4 |
-| 2i | reportFormatting | `reportFormatting/` | 8 |
-| 2j | reportCancel | `reportCancel/` | 2 |
+| **2i** | **reportFormatting** | **reportFormatting/** | **8** |
+| **2j** | **reportCancel** | **reportCancel/** | **2** |
 | 2k | reportSqlView | `reportSqlView/` | 5 |
 | 2l | mdx | `mdx/` | 5 |
 | 2m | reportUICheck | `reportUICheck/` | 8 |
@@ -168,34 +171,50 @@ Grouped by feature for phased execution:
 
 **POMs:** `ReportThemePanel`, `ReportMenubar`, `ReportTOC.switchToThemePanel`, `NewFormatPanelForGrid` (selectGridSegment, selectGridColumns, expandSpacingSection). Test data: `tests/test-data/reportTheme.ts`.
 
-### Phase 2h: reportScopeFilter (4)
+### Phase 2h: reportScopeFilter (4) ✅ Migrated
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_scopeFilterOfAttributeQualification.spec.js` |
-| 2 | `ReportEditor_scopeFilterOfAttributeElement.spec.js` |
-| 3 | `ReportEditor_scopeFilterInAuthoring.spec.js` |
-| 4 | `ReportEditor_scopeFilterOfDatetime.spec.js` |
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `ReportEditor_scopeFilterOfAttributeQualification.spec.js` | `scopeFilterOfAttributeQualification.spec.ts` | ✅ Migrated |
+| 2 | `ReportEditor_scopeFilterOfAttributeElement.spec.js` | `scopeFilterOfAttributeElement.spec.ts` | ✅ Migrated |
+| 3 | `ReportEditor_scopeFilterInAuthoring.spec.js` | `scopeFilterInAuthoring.spec.ts` | ✅ Migrated |
+| 4 | `ReportEditor_scopeFilterOfDatetime.spec.js` | `scopeFilterOfDatetime.spec.ts` | ✅ Migrated |
 
-### Phase 2i: reportFormatting (8)
+**Run:** `npm run test:reportScopeFilter`
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_outlineMode.spec.js` |
-| 2 | `ReportEditor_wrapText.spec.js` |
-| 3 | `ReportEditor_formatPanelChanges.spec.js` |
-| 4 | `ReportEditor_advancedBanding.spec.js` |
-| 5 | `ReportEditor_minimumColumnWidth.spec.js` |
-| 6 | `ReportEditor_lockHeaders.spec.js` |
-| 7 | `ReportEditor_advancedPadding.spec.js` |
-| 8 | `ReportEditor_fontPicker.spec.js` |
+**POMs:** ReportFilter (open, close, waitForViewFilterPanelLoading, openFilterByHeader, apply), FilterPanel, ReportSummary, AttributeFilter, CustomInputbox, InlineFilterItem (enterValue, enterValueToDateTimePicker, setOperator, selectDateTime, etc.), ReportFilterPanel (toggleViewSelected). Test data: `tests/test-data/reportScopeFilter.ts`.
 
-### Phase 2j: reportCancel (2)
+**Env:** Set `reportScopeFilterUser` (default: resfc) in `tests/config/.env.report` for scope filter user.
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `Report_consumption_cancel_execution.spec.js` |
-| 2 | `Report_authoring_cancel_execution.spec.js` |
+### Phase 2i: reportFormatting (8) ✅ Migrated
+
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `ReportEditor_outlineMode.spec.js` | `outlineMode.spec.ts` | ✅ Migrated |
+| 2 | `ReportEditor_wrapText.spec.js` | `wrapText.spec.ts` | ✅ Migrated |
+| 3 | `ReportEditor_formatPanelChanges.spec.js` | `formatPanelChanges.spec.ts` | ✅ Migrated (TC86199 skipped) |
+| 4 | `ReportEditor_advancedBanding.spec.js` | `advancedBanding.spec.ts` | ✅ Migrated |
+| 5 | `ReportEditor_minimumColumnWidth.spec.js` | `minimumColumnWidth.spec.ts` | ✅ Migrated |
+| 6 | `ReportEditor_lockHeaders.spec.js` | `lockHeaders.spec.ts` | ✅ Migrated |
+| 7 | `ReportEditor_advancedPadding.spec.js` | `advancedPadding.spec.ts` | ✅ Migrated |
+| 8 | `ReportEditor_fontPicker.spec.js` | `fontPicker.spec.ts` | ✅ Migrated (4 skipped: mock/Threshold) |
+
+**Run:** `npm run test:reportFormatting`
+
+**POMs:** ReportPage (getMissingFontPopup, dismissMissingFontPopup), ReportFormatPanel (clickCheckBoxForOption, enableOutlineMode, enableBanding, etc.), ReportGridView (getGridCellByPos, scrollGridToBottom, scrollGridHorizontally, getGridCellStyleByRows/Cols, clickOutlineIconFromCH, collapseOutlineFromCell), NewFormatPanelForGrid (fontPicker, enableWrapText, selectCellPadding, etc.), FontPicker. Test data: `tests/test-data/reportFormatting.ts`.
+
+### Phase 2j: reportCancel (2) ✅ Migrated
+
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `Report_consumption_cancel_execution.spec.js` | `consumptionCancelExecution.spec.ts` | ✅ Migrated |
+| 2 | `Report_authoring_cancel_execution.spec.js` | `authoringCancelExecution.spec.ts` | ✅ Migrated (TC99428_02 skipped) |
+
+**Run:** `npm run test:reportCancel`
+
+**POMs:** DossierPage, Bookmark, ReportPage (clickCancelButtonInTopLoadingBar, isInPauseMode, etc.), ReportToolbar (actionOnToolbar), ReportGridView (sortByOption, openContextualLinkFromCellByPos, moveGridHeaderToPageBy), LibraryPage (openDossierNoWait, waitForCurtainDisappear). Test data: `tests/test-data/reportCancel.ts`.
+
+**Env:** Set `reportCancelUser` (default: cre) in `tests/config/.env.report`.
 
 ### Phase 2k: reportSqlView (5)
 
@@ -479,6 +498,9 @@ After each phase migration, run the phase suite and record results here.
 | 2e | reportPageBy | 2026-02-28 | 0 | 3 | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory—expect.poll added (15s) for data refresh |
 | 2f | reportThreshold | 2026-02-28 | 0 | 1 | TC85267_1: login timeout; TC85267_2 skipped; ensure reportTestUrl in .env.report |
 | 2g | reportTheme | 2026-02-28 | 3/3 | — | themeApply, themeGeneral, themeSecurity; Run: npm run test:reportTheme |
+| 2h | reportScopeFilter | 2026-02-28 | 4/4 | — | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: npm run test:reportScopeFilter |
+| 2i | reportFormatting | 2026-02-28 | 8/8 | — | outlineMode, wrapText, formatPanelChanges, advancedBanding, minimumColumnWidth, lockHeaders, advancedPadding, fontPicker; Run: npm run test:reportFormatting |
+| 2j | reportCancel | 2026-02-28 | 2/2 | — | consumptionCancelExecution (9), authoringCancelExecution (6, 1 skipped); Run: npm run test:reportCancel |
 
 ### 6.5 Recommended npm Scripts (Add to package.json)
 
