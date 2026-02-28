@@ -27,10 +27,45 @@ export class ReportDatasetPanel {
 
   async openObjectContextMenu(objectName: string): Promise<void> {
     await this.closeContextMenuIfOpen();
-    // WDIO getObjectInObjectsPanel: object in report tab or object browser
-    const obj = this.datasetPanel.locator('.object-item-text').filter({ hasText: new RegExp(`^${objectName}$`, 'i') }).first();
+    
+    // Use same progressive scroll logic as selectItemInObjectList
+    const container = this.page.locator('.objectBrowserContainer');
+    let obj = this.getItemInObjectBrowser(objectName);
+    let count = await obj.count();
+    
+    if (count === 0) {
+      console.log(`[Dataset Panel Context Menu] "${objectName}" not visible, progressive scrolling...`);
+      let previousScrollTop = -1;
+      let attempts = 0;
+      const maxAttempts = 20;
+      
+      while (count === 0 && attempts < maxAttempts) {
+        const currentScrollTop = await container.evaluate((node) => node.scrollTop);
+        if (currentScrollTop === previousScrollTop && previousScrollTop > 0) {
+          console.log(`[Dataset Panel Context Menu] Reached bottom, "${objectName}" not found`);
+          break;
+        }
+        
+        await container.evaluate((node) => {
+          node.scrollTop += 150;
+        });
+        await this.page.waitForTimeout(300);
+        
+        previousScrollTop = currentScrollTop;
+        attempts++;
+        
+        obj = this.getItemInObjectBrowser(objectName);
+        count = await obj.count();
+        
+        if (count > 0) {
+          console.log(`[Dataset Panel Context Menu] "${objectName}" found after ${attempts} scroll attempts`);
+          break;
+        }
+      }
+    }
+    
     await obj.scrollIntoViewIfNeeded();
-    await obj.click({ button: 'right' });
+    await obj.click({ button: 'right', force: true });
     await this.page.waitForTimeout(1000);
     await this.contextMenu.first().waitFor({ state: 'visible', timeout: 8000 }).catch(() => {});
   }
@@ -70,10 +105,9 @@ export class ReportDatasetPanel {
   }
 
   private getItemInObjectBrowser(itemName: string) {
-    return this.datasetPanel
-      .locator('.object-item-text')
-      .filter({ hasText: new RegExp(`^${itemName}$`, 'i') })
-      .first();
+    // Use .objectBrowserContainer and getByText for nested span support
+    const container = this.page.locator('.objectBrowserContainer');
+    return container.getByText(itemName, { exact: true }).first();
   }
 
   private get folderUpIcon() {
@@ -83,7 +117,62 @@ export class ReportDatasetPanel {
   }
 
   async selectItemInObjectList(name: string): Promise<void> {
-    const el = this.getItemInObjectBrowser(name);
+    const container = this.page.locator('.objectBrowserContainer');
+    
+    // Try to find item with progressive scrolling
+    let el = this.getItemInObjectBrowser(name);
+    let count = await el.count();
+    
+    if (count === 0) {
+      console.log(`[Dataset Panel] "${name}" not visible, progressive scrolling...`);
+      
+      // Progressive scroll: scroll down in increments until found or bottom reached
+      let previousScrollTop = -1;
+      let attempts = 0;
+      const maxAttempts = 20;
+      
+      while (count === 0 && attempts < maxAttempts) {
+        const currentScrollTop = await container.evaluate((node) => node.scrollTop);
+        
+        // Check if we've reached the bottom (scrollTop no longer changes)
+        if (currentScrollTop === previousScrollTop && previousScrollTop > 0) {
+          console.log(`[Dataset Panel] Reached bottom, "${name}" not found`);
+          break;
+        }
+        
+        // Scroll down by 150px
+        await container.evaluate((node) => {
+          node.scrollTop += 150;
+        });
+        await this.page.waitForTimeout(300);
+        
+        previousScrollTop = currentScrollTop;
+        attempts++;
+        
+        // Check if item is now visible
+        el = this.getItemInObjectBrowser(name);
+        count = await el.count();
+        
+        if (count > 0) {
+          console.log(`[Dataset Panel] "${name}" found after ${attempts} scroll attempts`);
+          break;
+        }
+      }
+      
+      if (count === 0) {
+        console.log(`[Dataset Panel] "${name}" not found after ${attempts} attempts, scrolling to top...`);
+        await container.evaluate((node) => {
+          node.scrollTop = 0;
+        });
+        await this.page.waitForTimeout(500);
+        
+        // Final check at top
+        el = this.getItemInObjectBrowser(name);
+        count = await el.count();
+        console.log(`[Dataset Panel] "${name}" count at top: ${count}`);
+      }
+    }
+    
     // Increased timeout from 10s to 60s for slower dev environments with dataset loading
     await el.waitFor({ state: 'attached', timeout: 60000 });
     await el.scrollIntoViewIfNeeded();
