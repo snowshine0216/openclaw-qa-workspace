@@ -60,14 +60,15 @@ export class ReportPageBySorting {
       'Parent Position': 6,
     };
     const idx = colIdxMap[col] ?? 2;
-    return this.dialog
+    const dropdown = this.dialog
       .locator('.sort-row')
       .nth(row - 1)
       .locator('.ant-col')
       .nth(idx)
       .locator('[class*="ant-dropdown"], .mstr-dropdown')
-      .locator(`span.ant-dropdown-menu-title-content:has-text("${item}"), [class*="menu-title"]:has-text("${item}")`)
       .first();
+    // Use getByText for more flexible text matching (same as context menu fix)
+    return dropdown.getByText(item, { exact: true }).first();
   }
 
   async openDropdown(row: number, col: string): Promise<void> {
@@ -78,7 +79,8 @@ export class ReportPageBySorting {
 
   async selectFromDropdown(row: number, col: string, option: string): Promise<void> {
     const item = this.getDropDownItem(row, col, option);
-    await item.waitFor({ state: 'visible', timeout: 5000 });
+    // Increased timeout from 5s to 15s for slower dev environments
+    await item.waitFor({ state: 'visible', timeout: 15000 });
     await item.click();
     await this.page.waitForTimeout(500);
   }

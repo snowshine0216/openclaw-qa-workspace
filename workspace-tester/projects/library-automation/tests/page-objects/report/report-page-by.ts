@@ -84,16 +84,9 @@ export class ReportPageBy {
 
   /** Click context menu option (e.g. Sort, Move) when menu is open from Page-by selector right-click */
   async clickContextMenuOption(opt: string): Promise<void> {
-    const item = this.page
-      .locator(
-        '.mstr-context-menu li:has-text("' +
-          opt +
-          '"), .ant-dropdown-menu li:has-text("' +
-          opt +
-          '")'
-      )
-      .first();
-    await item.waitFor({ state: 'visible', timeout: 8000 });
+    // Use getByText for more flexible text matching
+    const item = this.page.getByText(opt, { exact: true }).first();
+    await item.waitFor({ state: 'visible', timeout: 15000 });
     await item.click();
     await this.page.waitForTimeout(500);
   }

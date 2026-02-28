@@ -14,26 +14,43 @@ export class ReportToolbar {
   }
 
   async switchToDesignMode(inAuthoring?: boolean): Promise<void> {
+    // Wait for initial page load
     await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
     
     // Click the resume/design mode button to switch from view mode to design mode
-    // The button has classes: mstr-ws-icons, single-icon-library-resume
+    // Exact button selector from user: mstr-ws-icons single-icon-library-resume
     const designModeBtn = this.page.locator(
+      'span.mstr-ws-icons.single-icon-library-resume[role="button"], ' +
+      'span.mstr-ws-icons[class*="single-icon-library-resume"][role="button"], ' +
       '[class*="single-icon-library-resume"][role="button"], ' +
       '.mstr-ws-icons[class*="resume"][role="button"], ' +
-      '[class*="pause"][role="button"], ' +
-      'span[class*="resume"][tabindex="0"]'
+      '[class*="pause"][role="button"]'
     ).first();
     
     const isVisible = await designModeBtn.isVisible({ timeout: 5000 }).catch(() => false);
     if (isVisible) {
       await designModeBtn.click();
-      // Wait for design mode UI to load
+      console.log('[switchToDesignMode] Design mode button clicked');
+      
+      // Wait for report to reload in design mode (like WDIO)
+      // 1. Wait for loading indicators to appear and disappear
+      await this.page.waitForTimeout(1000);
+      await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});
+      
+      // 2. Wait for design mode indicators (grid, toolbar, or pageby area)
+      await Promise.race([
+        this.page.locator('.ag-root, [class*="grid"], [role="grid"]').waitFor({ state: 'attached', timeout: 30000 }),
+        this.page.locator('[aria-label="Page By"], [class*="pageby"], [class*="page-by"]').waitFor({ state: 'attached', timeout: 30000 }),
+      ]).catch(() => {
+        console.log('[switchToDesignMode] Warning: Design mode indicators not found within 30s');
+      });
+      
+      // 3. Additional wait for report stabilization
       await this.page.waitForTimeout(2000);
-      // Wait for any loading indicators to disappear
-      await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+      console.log('[switchToDesignMode] Design mode ready');
     } else {
-      // Already in design mode or button not available
+      console.log('[switchToDesignMode] Design mode button not visible - may already be in design mode');
       await this.page.waitForTimeout(2000);
     }
     
