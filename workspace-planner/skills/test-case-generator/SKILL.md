@@ -1,6 +1,6 @@
 ---
 name: test-case-generator
-description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed Markdown (`.md`) specs in Playwright-compatible format for the Tester Agent to consume and auto-heal. Output in projects/testcase-plan/<feature-id>/ or specs/<feature>/.
+description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed Markdown (`.md`) specs in Playwright-compatible format for the Tester Agent to consume and auto-heal. Output in specs/<domain>/<feature>/ per TEST_CASE_GENERATION_DESIGN.md.
 homepage: https://github.com/naodeng/awesome-qa-prompt
 metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":[]}}}
 ---
@@ -45,12 +45,12 @@ Paste any documentation, specs, or descriptions about the feature.
 
 ## Output Format: Markdown (Playwright-Compatible)
 
-Generate each test case as a discrete `.md` file consumable by the Playwright Generator and Healer. Save to `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`.
+Generate each test case as a discrete `.md` file consumable by the Playwright Generator and Healer. Save to `specs/<domain>/<feature>/<scenario>.md` (e.g. `specs/report-editor/report-undo-redo/authoringClear.md`) per [TEST_CASE_GENERATION_DESIGN.md](../../docs/TEST_CASE_GENERATION_DESIGN.md).
 
 **Required structure:** See `workspace-planner/docs/TEST_CASE_GENERATION_DESIGN.md` for full schema.
 
 ```markdown
-# [Feature] — [Scenario] Test Plan
+# [Application/Feature] — [Scenario Name]
 
 **Seed:** `tests/seed.spec.ts`
 
@@ -285,7 +285,9 @@ Requirements:
 
 ## Test Case Management
 
-All generated test cases must be saved as Markdown files under `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`. Each spec must include `**Seed:** \`tests/seed.spec.ts\`` and use semantic step phrasing so the Tester Agent can translate to Playwright and the Healer can auto-fix locators.
+All generated test cases must be saved as Markdown files under `specs/<domain>/<feature>/` (e.g. `specs/report-editor/report-undo-redo/`). Each spec must include `**Seed:** \`tests/seed.spec.ts\`` and use semantic step phrasing so the Tester Agent can translate to Playwright and the Healer can auto-fix locators.
+
+**State tracking:** Use `testcase_task.json` (not `task.json`) to track generation progress. Update `subtask_timestamps["spec:<scenario>"]` after each file is written. Task file lives at: `projects/feature-plan/<feature-id>/testcase_task.json`.
 
 ## Priority Guidelines
 
@@ -299,10 +301,11 @@ All generated test cases must be saved as Markdown files under `projects/testcas
 ## Use Cases
 
 ### 1. New Feature Testing
-1. Look up the existing QA plan / feature requirements (use `clawddocs` for project context)
-2. Run `test-case-generator` to identify scenarios
-3. Serialize detailed Markdown specs one by one under `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`
-4. Handoff specs to Tester Agent to generate scripts and run
+1. Look up the existing QA plan / feature requirements. Use `tavily-search` or `confluence` for project context. Use `clawddocs` only for OpenClaw-specific plans.
+2. **Never assume detailed steps** — when steps or flows are unclear, research first: `tavily-search` for official docs, `confluence` for internal product docs.
+3. Run `test-case-generator` to identify scenarios
+4. Serialize detailed Markdown specs one by one under `specs/<domain>/<feature>/` (e.g. `specs/report-editor/report-undo-redo/`). Use **only** these action verbs: `Click`, `Type`, `Fill`, `Select`, `Check`, `Uncheck`, `Press`, `Hover`, `Drag`, `Verify`, `Wait for`, `Navigate to`. Steps referencing IDs or CSS classes break auto-healing.
+5. Handoff specs to Tester Agent to generate scripts and run (via Playwright CLI and Playwright Generator)
 
 ### 2. Regression Testing
 1. Identify features to test against existing coverage
@@ -318,10 +321,11 @@ All generated test cases must be saved as Markdown files under `projects/testcas
 
 ## Integration Points
 
+- **test-case-generation workflow**: This skill is invoked by `.agents/workflows/test-case-generation.md` Phase 4. Do not invoke it standalone outside that workflow unless the user explicitly requests ad-hoc generation.
 - **qa-daily-workflow**: Use generated specs in daily testing
-- **tester-agent**: Consumes Markdown specs, translates to `tests/specs/**/*.spec.ts`, runs via `npx playwright test`
+- **tester-agent**: Consumes Markdown specs, translates to `tests/specs/**/*.spec.ts` via Playwright Generator, runs via `npx playwright test`. Uses **Playwright CLI** (not MCP) — see [playwright-cli](https://github.com/microsoft/playwright-cli), [Playwright Test Agents](https://playwright.dev/docs/test-agents)
 - **playwright-cli**: Execute UI tests; Healer uses `playwright-cli snapshot` to derive semantic locators for auto-healing
-- **clawddocs**: Enrich context from project docs and API references before generating
+- **tavily-search** / **confluence**: Research exact steps when uncertain. Never assume. `clawddocs` only for OpenClaw-specific plans.
 
 ## Tips for Best Results
 
