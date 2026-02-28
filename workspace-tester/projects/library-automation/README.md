@@ -55,10 +55,10 @@ You can put the env file in **either** of these locations:
 | Purpose | Description |
 |---------|-------------|
 | **Loads** `.env.report` (or `.env.report.{REPORT_ENV}`) | Injects `reportTestUrl`, `reportTestUser`, `reportTestPassword` into `process.env`. |
-| **Provides** `getReportEnv()` | Returns `{ reportTestUrl, reportTestUser, reportTestPassword }` for `playwright.config.ts` (baseURL) and fixtures (login). |
+| **Provides** `getReportEnv()` | Returns `{ reportTestUrl, reportTestUser, reportTestPassword }` plus optional reportCreator users (`reportCubePrivUser`, `reportSubsetUser`, `reportTemplateNoExecuteUser`, `reportTemplateUser`). |
 | **Parse base URL** | Normalizes URLs (removes fragments, ensures trailing slash). |
 
-**You do not need to modify `env.ts`** unless you add new env variables.
+**Optional reportCreator users:** See [docs/ENV_MANAGEMENT.md](docs/ENV_MANAGEMENT.md) for adding new users and spec usage pattern.
 
 #### Where to Put Future `.env` Files
 
@@ -90,11 +90,17 @@ All `.env*` files with secrets should be in `.gitignore` — **never commit cred
 
 3. **Environment variables** (what they mean):
 
-   | Variable             | Description                       | Example                              |
-   |----------------------|-----------------------------------|--------------------------------------|
-   | `reportTestUrl`      | Base URL for MicroStrategy Library | `https://mci-xxx-dev.../MicroStrategyLibrary` |
-   | `reportTestUser`     | Test user for login               | `tqmsuser` / `undo`                  |
-   | `reportTestPassword` | Password (empty if SSO/trusted)   | ``                                   |
+   | Variable | Required | Description | Example |
+   |----------|----------|-------------|---------|
+   | `reportTestUrl` | Yes | Base URL for MicroStrategy Library | `https://mci-xxx-dev.../MicroStrategyLibrary` |
+   | `reportTestUser` | Yes | Default test user for login | `tqmsuser` |
+   | `reportTestPassword` | Yes | Password (shared for all users; empty if SSO) | `` |
+   | `reportCubePrivUser` | No | reportCreator: createByCubePrivilege | `re_nic` |
+   | `reportSubsetUser` | No | reportCreator: createByCube | `re_ss` |
+   | `reportTemplateNoExecuteUser` | No | reportCreator: reportTemplateSecurity | `ret_ne` |
+   | `reportTemplateUser` | No | reportCreator: reportTemplateSecurity | `re_template` |
+
+   See [docs/ENV_MANAGEMENT.md](docs/ENV_MANAGEMENT.md) for spec usage and adding new users.
 
 ### Step 3: Verify
 

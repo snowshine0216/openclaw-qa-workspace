@@ -409,7 +409,7 @@ Env is loaded from `tests/config/.env.report` when `.env.report` is not in proje
 
 ### Resolved Blockers (Post-Phase 1)
 
-1. **baseURL / environment:** ✅ Per-env config via `tests/config/env.ts` + `.env.report` (or `.env.report.{REPORT_ENV}`). Mapping: `reportTestUrl`, `reportTestUser`, `reportTestPassword`. See `.env.report.example`.
+1. **baseURL / environment:** ✅ Per-env config via `tests/config/env.ts` + `.env.report` (or `.env.report.{REPORT_ENV}`). Mapping: `reportTestUrl`, `reportTestUser`, `reportTestPassword`, plus optional reportCreator users. See [ENV_MANAGEMENT.md](./ENV_MANAGEMENT.md) and `.env.report.example`.
 
 2. **Login with empty/none password:** ✅ When `reportTestPassword` is empty or `"none"`, LoginPage skips `fill()` and clicks the password field instead (satisfies form focus requirements). Password locator fixed to `input#password[type="password"]` to avoid matching "Set a new password" h2 (`getByLabel(/password/i)` was resolving to the wrong element).
 

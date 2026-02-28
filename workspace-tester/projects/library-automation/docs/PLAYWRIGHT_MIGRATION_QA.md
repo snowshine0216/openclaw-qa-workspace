@@ -140,13 +140,30 @@ workspace-tester/projects/
 
 ---
 
+## Q6: POM-First Migration – When Specs Depend on Missing POMs
+
+**Question:** What if specs call POM methods or APIs that do not yet exist?
+
+**Rule:** **POM precedes spec migration.** When analysis reveals that specs depend on POMs or APIs not yet in `tests/page-objects/report/` or `tests/page-objects/library/`, create or migrate those POMs first before migrating the specs.
+
+| Step | Action |
+|------|--------|
+| 1 | From analysis, identify page objects used and methods called by the specs |
+| 2 | Create or extend the required POM classes |
+| 3 | Only then run `migrate_to_playwright` on the specs |
+
+This ensures all specs can be migrated successfully without waiting on missing POMs/APIs.
+
+---
+
 ## Summary: Design Principles for Migration
 
 1. **Semantic locators only** – `getByRole`, `getByText`, etc., aligned with playwright-cli output
 2. **POM with co-located locators** – One Page per screen, locators at top, token-efficient for Healer
-3. **JSON for data** – Test data in `data/*.json`
-4. **MD plans in `specs/`** – Planner writes plans; Tester converts to `.spec.ts`; Healer does not edit plans
-5. **playwright-cli for browser** – MCP (mcp-server-tests-migration) for Phase 1 AST conversion only
+3. **POM precedes spec migration** – Create required POMs before migrating specs that call them
+4. **JSON for data** – Test data in `data/*.json`
+5. **MD plans in `specs/`** – Planner writes plans; Tester converts to `.spec.ts`; Healer does not edit plans
+6. **playwright-cli for browser** – MCP (mcp-server-tests-migration) for Phase 1 AST conversion only
 
 ---
 

@@ -6,6 +6,33 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 
 ---
 
+## 0. Migration Progress (Last Updated)
+
+| Phase | Feature | Status | Tests | Last Run |
+|-------|---------|--------|-------|----------|
+| — | reportUndoRedo | ✅ Done (Phase 1) | 5 files | — |
+| **2a** | **reportShortcutMetrics** | **🔄 Migrated, fixes in progress** | 6 files | 2 pass, 4 fail (locator/network) |
+| **2b** | **reportPageBySorting** | **🔄 Migrated, 1 fail** | 8/8 | pageBySorting3: Sort context menu locator |
+| **2c** | **reportCreator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
+| 2d | reportSubset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
+| **2e** | **reportPageBy** | **✅ Migrated** | 3/3 | pageBy1, pageBy2, pageBy3 |
+| 2f–2o | … | ⬜ Pending | 71 | — |
+
+### Phase 2a Test Results (reportShortcutMetrics)
+
+| Spec | Result | Notes |
+|------|--------|-------|
+| createPercentToTotalForAttribute | ✅ Pass | |
+| createPageGrandPercentToTotalMetrics | ✅ Pass | |
+| createPercentToTotalForMetrics | ❌ Fail | Locator for "Percent to Total By Rows (Cost)" in metrics dropzone not found after create; may need different selector or wait |
+| createRankMetrics | ❌ Fail | Rank submenu uses dropdown (sorts/breakBy) + OK, not direct "Ascending" li; needs WDIO flow |
+| createTransformationMetrics | ❌ Fail | Timeout/network (ERR_ABORTED, ERR_NAME_NOT_RESOLVED) |
+| metricEditor | ❌ Fail | Timeout/network (ERR_NAME_NOT_RESOLVED) |
+
+**Run:** `npm run test:reportShortcutMetrics`
+
+---
+
 ## 1. Scope Overview
 
 ### 1.1 Already Migrated (SKIP)
@@ -46,47 +73,73 @@ Grouped by feature for phased execution:
 
 ## 2. Target File Inventory (Per Phase)
 
-### Phase 2a: reportShortcutMetrics (6)
+### Phase 2a: reportShortcutMetrics (6) ✅ Migrated
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_createPercentToTotalForMetrics.spec.js` |
-| 2 | `ReportEditor_createRankMetrics.spec.js` |
-| 3 | `ReportEditor_createTransformationMetrics.spec.js` |
-| 4 | `ReportEditor_createPercentToTotalForAttribute.spec.js` |
-| 5 | `ReportEditor_MetricEditor.spec.js` |
-| 6 | `ReportEditor_createPageGrandPercentToTotalMetrics.spec.js` |
+| # | WDIO File | Playwright Output | Test |
+|---|-----------|-------------------|------|
+| 1 | `ReportEditor_createPercentToTotalForMetrics.spec.js` | `createPercentToTotalForMetrics.spec.ts` | ❌ locator |
+| 2 | `ReportEditor_createRankMetrics.spec.js` | `createRankMetrics.spec.ts` | ❌ Rank submenu flow |
+| 3 | `ReportEditor_createTransformationMetrics.spec.js` | `createTransformationMetrics.spec.ts` | ❌ network |
+| 4 | `ReportEditor_createPercentToTotalForAttribute.spec.js` | `createPercentToTotalForAttribute.spec.ts` | ✅ |
+| 5 | `ReportEditor_MetricEditor.spec.js` | `metricEditor.spec.ts` | ❌ network |
+| 6 | `ReportEditor_createPageGrandPercentToTotalMetrics.spec.js` | `createPageGrandPercentToTotalMetrics.spec.ts` | ✅ |
 
-### Phase 2b: reportPageBySorting (8)
+### Phase 2b: reportPageBySorting (8) ✅ Migrated
 
-| # | WDIO File |
-|---|-----------|
-| 1-8 | `ReportEditor_PageBySorting1.spec.js` … `ReportEditor_PageBySorting8.spec.js` |
+| # | WDIO File | Playwright Output | Result | Notes |
+|---|-----------|-------------------|--------|-------|
+| 1 | `ReportEditor_PageBySorting1.spec.js` | `pageBySorting1.spec.ts` | — | Pending run |
+| 2 | `ReportEditor_PageBySorting2.spec.js` | `pageBySorting2.spec.ts` | — | Pending run |
+| 3 | `ReportEditor_PageBySorting3.spec.js` | `pageBySorting3.spec.ts` | ❌ Fail | Sort context menu option not found (ReportGridView.clickContextMenuOption) |
+| 4 | `ReportEditor_PageBySorting4.spec.js` | `pageBySorting4.spec.ts` | — | Pending run |
+| 5 | `ReportEditor_PageBySorting5.spec.js` | `pageBySorting5.spec.ts` | — | Pending run |
+| 6 | `ReportEditor_PageBySorting6.spec.js` | `pageBySorting6.spec.ts` | — | Pending run |
+| 7 | `ReportEditor_PageBySorting7.spec.js` | `pageBySorting7.spec.ts` | — | Pending run |
+| 8 | `ReportEditor_PageBySorting8.spec.js` | `pageBySorting8.spec.ts` | — | Pending run |
+
+**Run:** `npm run test:reportPageBySorting`
+
+**POMs:** `ReportPageBySorting`, `ReportPageBy.clickContextMenuOption`, `ReportEditorPanel.removeObjectInDropzone`, `ReportDatasetPanel.removeItemInReportTab`.
 
 ### Phase 2c: reportCreator (6)
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_reportCreator.spec.js` |
-| 2 | `ReportEditor_createByCubePrivilege.spec.js` |
-| 3 | `ReportEditor_templateByExecutionMode.spec.js` |
-| 4 | `ReportEditor_template.spec.js` |
-| 5 | `ReportEditor_createByCube.spec.js` |
-| 6 | `ReportEditor_reportTemplateSecurity.spec.js` |
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|------------------|--------|
+| 1 | `ReportEditor_reportCreator.spec.js` | `reportCreator.spec.ts` | ✅ Migrated |
+| 2 | `ReportEditor_createByCubePrivilege.spec.js` | `createByCubePrivilege.spec.ts` | ✅ Migrated |
+| 3 | `ReportEditor_templateByExecutionMode.spec.js` | `templateByExecutionMode.spec.ts` | ✅ Migrated (3 run, 8 skipped) |
+| 4 | `ReportEditor_template.spec.js` | `template.spec.ts` | ✅ Migrated (6 run, 5 skipped) |
+| 5 | `ReportEditor_createByCube.spec.js` | `createByCube.spec.ts` | ✅ Migrated (8 run, 1 skipped) |
+| 6 | `ReportEditor_reportTemplateSecurity.spec.js` | `reportTemplateSecurity.spec.ts` | ✅ Migrated (1 run, 3 skipped) |
+
+#### Phase 2c: Current Skipped Tests — Required POMs (Backlog)
+
+| Skipped test(s) | Required POM(s) | Status |
+|-----------------|-----------------|--------|
+| **BCIN-6908_09** (folder mode) | DossierCreator: `switchToTreeMode`, `waitTemplateLoading`, `expandTreeView`, `doubleClickOnTreeView`, `doubleClickOnAgGrid`, `getRowDataInAddDataTab`, `getActiveTab`, `dismissTooltipsByClickTitle` | ✅ Un-skipped (POMs added) |
+| **BCIN-3749_05, 06, 09–11** (template) | `reportMenubar`, `advancedReportProperties`, `reportPage.saveAsDialog` | ⬜ Backlog |
+| **BCIN-7306_04–11** (execution mode) | `promptObject`, `aePrompt` (shopping cart), `reportTOC`, `reportFilterPanel` | ⬜ Backlog |
+| **BCIN-3844_02–04** (security) | `reportMenubar`, `reportPage` (confirm/template icons, saveAs dialog) | ⬜ Backlog |
+
+**Note:** BCIN-6908_09 un-skipped. Remaining POMs (ReportMenubar, ReportPage, SaveAsDialog, AdvancedReportProperties) still needed for template/security tests.
 
 ### Phase 2d: reportSubset (3)
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_replace_cube.spec.js` |
-| 2 | `ReportEditor_create_embedded_prompt.spec.js` |
-| 3 | `ReportEditor_add_prompt_to_viewfilter.spec.js` |
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `ReportEditor_replace_cube.spec.js` | `replaceCube.spec.ts` | ✅ Migrated (BCIN-6422_01–10) |
+| 2 | `ReportEditor_create_embedded_prompt.spec.js` | `createEmbeddedPrompt.spec.ts` | ✅ Migrated (BCIN-6468_01–08) |
+| 3 | `ReportEditor_add_prompt_to_viewfilter.spec.js` | `addPromptToViewfilter.spec.ts` | ✅ Migrated (BCIN-6460_01–08) |
 
-### Phase 2e: reportPageBy (3)
+### Phase 2e: reportPageBy (3) ✅ Migrated
 
-| # | WDIO File |
-|---|-----------|
-| 1-3 | `ReportPageBy1.spec.js`, `ReportPageBy2.spec.js`, `ReportPageBy3.spec.js` |
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `ReportPageBy1.spec.js` | `pageBy1.spec.ts` | ✅ Migrated |
+| 2 | `ReportPageBy2.spec.js` | `pageBy2.spec.ts` | ✅ Migrated |
+| 3 | `ReportPageBy3.spec.js` | `pageBy3.spec.ts` | ✅ Migrated |
+
+**POMs:** `ReportPageBy` (clickChecklistElementInContextMenu, getSelectedChecklistElementInContextMenu, saveAndCloseContextMenu, getSelectorByIdx, getIndexForElementFromPopupList), `ReportGridView` (openGridColumnHeaderContextMenu, getContextMenuOption, getDisabledContextMenuOption), `ReportEditorPanel` (contextMenuContainsOption). Test data: `tests/test-data/reportPageBy.ts`.
 
 ### Phase 2f: reportThreshold (2)
 
@@ -253,6 +306,16 @@ For each spec:
 
 **File mapping convention:** `ReportEditor_foo.spec.js` → `foo.md` (or `Report_foo.spec.js` → `foo.md`).
 
+### Step 4.3a: POM-First Migration (Strictly Required)
+
+**Rule:** If a spec needs dependency POMs or APIs that do not yet exist in `tests/page-objects/report/` or `tests/page-objects/library/`, **you MUST migrate or create those POMs first** before migrating the specs themselves.
+
+- Identify from analysis all underlying page objects and methods called.
+- Create or extend the required POM classes **before** running `migrate_to_playwright` on the specs.
+- This ensures all specs can be migrated successfully without waiting on missing POMs/APIs.
+
+**POM precedes spec migration** — never attempt to migrate specs that call POM methods that do not yet exist.
+
 ### Step 4.4: Migrate to Playwright (MCP: migrate_to_playwright)
 
 For each spec:
@@ -285,11 +348,39 @@ For drag-and-drop, context menus, custom dialogs:
 2. Use `playwright-cli snapshot` to derive semantic locators.
 3. Refine POM methods with validated locators.
 
-### Step 4.8: Fixtures and Config
+### Step 4.8: Fixtures and Environment Config
 
 1. Add project to `playwright.config.ts` if feature has unique timeout/env needs.
 2. Extend `tests/fixtures/index.ts` with feature-specific fixtures.
 3. Ensure `tests/seed.spec.ts` covers shared auth/setup.
+4. **Environment Credentials:** If the spec needs new credentials for the report, you MUST update `tests/config/.env.report`, `tests/config/.env.report.example`, and `tests/config/env.ts` accordingly. Ensure the env files are ONLY put under the `config` folder. Use fallback pattern in specs: `env.reportXxxUser || reportCreatorData.xxx.username`. See [ENV_MANAGEMENT.md](./ENV_MANAGEMENT.md) for patterns.
+
+### Step 4.9: Execution & Self-Healing (Per-Spec)
+
+1. For each spec finished migration, **run the test locally**.
+2. If the test fails, **perform self-healing immediately** before moving to the next spec. Use `playwright-cli` (or standard tools) to inspect the DOM, update locators, or adjust logic to try your best to make all the migrated tests pass.
+3. Mark the test result (pass/fail/skipped) in your tracking once self-healing is exhausted.
+
+### Step 4.10: Screenshot / Spectre Handling
+
+**WDIO behavior:** Specs use `takeScreenshotByElement(elem, testCase, imageName, tolerance)` which calls Spectre (a hosted image-comparison service). Screenshots are compared against baselines stored on the Spectre server.
+
+**Playwright migration options:**
+
+| Option | Approach | When to Use |
+|--------|----------|-------------|
+| **A. Replace with assertions** *(default)* | Replace `takeScreenshotByElement(x, 'TC', 'name')` with `expect(x).toBeVisible()`, `expect(x).toHaveText()`, etc. | When the screenshot mainly verified presence/content. No baseline maintenance. |
+| **B. Playwright `toHaveScreenshot()`** | `await expect(locator).toHaveScreenshot('name.png')`. Baselines stored in project. | When visual regression is required. Playwright-native, no Spectre. |
+| **C. Spectre + Playwright** | Custom adapter: capture screenshot, POST to Spectre API, assert result. | Only if Spectre integration is mandatory for your org. |
+
+**Recommendation:** Use **Option A** for migration. Replace screenshot steps with semantic assertions. If specific flows need visual regression later, add `toHaveScreenshot()`.
+
+**Required:** When replacing a snapshot with an assertion, document it in the migration plan (per-phase or per-spec appendix) with:
+1. **Previous snapshot in WDIO** — e.g. `takeScreenshotByElement(reportPageBy.getSelector('Year'), 'TC0000_2', 'page_by_selector_year')`
+2. **Assertion method** — e.g. `expect(yearSelector).toBeVisible()` or `expect(await reportPageBy.getPageBySelectorText('Year')).toBeTruthy()`
+3. **File path** — e.g. `tests/specs/reportEditor/reportPageBySorting/pageBySorting1.spec.ts:42`
+
+This enables review and traceability.
 
 ---
 
@@ -362,7 +453,20 @@ npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
 - [ ] Failures are due to application behavior or flakiness, not migration artifacts (e.g. wrong locators, missing POM methods).
 - [ ] At least `reportUndoRedo` passes when env is valid (baseline sanity check).
 
-### 6.4 Recommended npm Scripts (Add to package.json)
+### 6.4 Phase-by-Phase Validation Results
+
+After each phase migration, run the phase suite and record results here.
+
+| Phase | Suite | Last Run | Pass | Fail | Notes |
+|-------|-------|----------|------|------|-------|
+| — | reportUndoRedo | — | — | — | Baseline (5 tests) |
+| 2a | reportShortcutMetrics | — | 2 | 4 | createPercentToTotalForMetrics, createRankMetrics: locator/flow; 3 network |
+| 2b | reportPageBySorting | — | 0 | 1 | pageBySorting3: Sort menu locator; 7 pending run |
+| 2c | reportCreator | 2026-02-28 | 9/9 run | — | BCIN-6908_09 un-skipped; createByCube beforeAll→beforeEach fix |
+| 2d | reportSubset | 2026-02-28 | 1 run | — | replaceCube BCIN-6422_01; 9 skipped (replaceObjectDialog, etc.) |
+| 2e | reportPageBy | 2026-02-28 | 3 specs | — | pageBy1, pageBy2, pageBy3 migrated; run: npm run test:reportPageBy |
+
+### 6.5 Recommended npm Scripts (Add to package.json)
 
 ```json
 {
@@ -379,6 +483,7 @@ npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
 |------------|-------------|
 | Semantic locators only | No `page.locator('#id')`; use `getByRole`, `getByText`, `getByLabel`, `getByPlaceholder` |
 | POM with co-located locators | Locators as readonly props at top of Page classes |
+| **POM precedes spec migration** | When specs depend on missing POMs/APIs, create or migrate those POMs first before migrating the specs. Ensures all specs can be migrated successfully. |
 | JSON/TS for data | Extract test data to `tests/test-data/<feature>.ts` |
 | playwright-cli for validation | Use for complex dnd, context menus, dialogs |
 
@@ -392,12 +497,14 @@ npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
    a. register_custom_commands (if new commands)
    b. analyze_wdio_test (per file)
    c. Create specs/reportEditor/<feature>/*.md
+   c'. Create/migrate required POMs FIRST (before specs) — POM precedes spec migration
    d. migrate_to_playwright (per file)
    e. Post-process for semantic locators
    f. refactor_to_pom
    g. Extract test data
    h. playwright-cli validation (complex flows)
-   i. Fixtures/config
+   i. Fixtures/environment config
+   j. Execution & self-healing (per-spec)
 3. Validation and Verification:
    a. compare_frameworks
    b. UI mode / trace review
@@ -416,17 +523,43 @@ npx playwright test tests/specs/reportEditor/reportShortcutMetrics/
 Use this for each 2a–2o phase:
 
 - [ ] Markdown plans created
+- [ ] Required POMs created or migrated FIRST (before specs) — POM precedes spec migration
 - [ ] Specs migrated to `.spec.ts`
 - [ ] POMs created/updated
 - [ ] Test data extracted
 - [ ] Semantic locators enforced
 - [ ] Fixtures wired
+- [ ] Execution & self-healing performed per-spec to maximize pass rate
 - [ ] `--list` succeeds
 - [ ] Local run (with env) reaches final steps or fails with clear message
 
 ---
 
-## 10. References
+## 10. Appendix: Snapshot → Assertion Mapping
+
+When a WDIO `takeScreenshotByElement` (or similar) is replaced with an assertion, record it here for review.
+
+| Phase | WDIO Snapshot | Assertion Method | File Path |
+|-------|---------------|------------------|-----------|
+| 2b | `takeScreenshotByElement(reportEditorPanel.columnsDropzone, 'TC0000_1', 'attribute_year')` | `expect(yearSelector).toBeVisible()` | `pageBySorting1.spec.ts` (Year selector visible) |
+| 2b | `takeScreenshotByElement(reportPageBy.getSelector('Year'), 'TC0000_2', 'page_by_selector_year')` | `expect(yearSelector).toBeVisible()` | `pageBySorting1.spec.ts` |
+| 2b | `takeScreenshotByElement(reportPageBy.getSelector('Region'), ...)` | `expect(regionSelector).toBeVisible()` | `pageBySorting1.spec.ts` |
+| 2b | `takeScreenshotByElement(reportPageBySorting.dialog, 'TC0000_11', ...)` | `expect(reportPageBySorting.dialog).toBeVisible()` | `pageBySorting1.spec.ts` |
+| 2b | `takeScreenshotByElement(reportPageBySorting.dialog, 'TC0000_33', ...)` (dialog closed) | `expect(reportPageBySorting.dialog).not.toBeVisible()` | `pageBySorting1.spec.ts` |
+| 2b | `takeScreenshotByElement(reportPageBy.getSelectorPulldownTextBox('Year'), ...)` (year text) | `expect(yearText).toBeTruthy()` | `pageBySorting1.spec.ts` |
+| 2b | PageBySorting2: ~30 screenshots (Year, Custom Categories, Sort dialog, Order, Total Position, Parent Position) | `expect(selector).toBeVisible()`, `expect(dialog).toBeVisible()` | `pageBySorting2.spec.ts` |
+| 2b | PageBySorting3: no screenshots (WDIO used since/expect) | — | `pageBySorting3.spec.ts` |
+| 2b | PageBySorting4: `takeScreenshotByElement(reportGridView.grid, ...)`, `reportPageBySorting.dialog` | `expect(placeholder).toContainText()`, `expect(dialog).toBeVisible()` | `pageBySorting4.spec.ts` |
+| 2b | PageBySorting5: `takeScreenshotByElement(reportEditorPanel.columnsDropzone, ...)` | `expect(monthText or categoryText).toBeTruthy()` | `pageBySorting5.spec.ts` |
+| 2b | PageBySorting6: `takeScreenshotByElement(reportPageBy.getSelectorPulldownTextBox, ...)`, grid | `expect(yearText).toBeTruthy()` | `pageBySorting6.spec.ts` |
+| 2b | PageBySorting7: `takeScreenshotByElement(reportGridView.grid, ...)`, `pageBySorting.dialog` | `expect(dialog).toBeVisible()`, `expect(dialog).not.toBeVisible()` | `pageBySorting7.spec.ts` |
+| 2b | PageBySorting8: `takeScreenshotByElement(reportEditorPanel.pageByDropzone, ...)`, sorting dialog | `expect(dialog).toBeVisible()`, `expect(defaultItem).toBeVisible()` | `pageBySorting8.spec.ts` |
+| 2c | BCIN-6908_09: `takeScreenshotByElement(dossierCreator.getActiveTab(), ...)` | `expect(activeTab).toBeVisible()` | `createByCube.spec.ts` |
+| 2c | BCIN-6908_09: `takeScreenshotByElement(reportPage.getContainer(), ...)` | `reportGridView.grid.waitFor({ state: 'visible' })` | `createByCube.spec.ts` |
+
+---
+
+## 11. References
 
 - [PLAYWRIGHT_MIGRATION_PLAN.md](./PLAYWRIGHT_MIGRATION_PLAN.md) — Overall migration strategy
 - [PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md](./PLAYWRIGHT_MIGRATION_PHASE1_EXECUTION.md) — Step-by-step execution

@@ -9,6 +9,15 @@ export class LibraryPage {
     return env.reportTestUrl || '/';
   }
 
+  /** Logout by navigating to logout URL */
+  async logout(): Promise<void> {
+    const base = this.getBaseUrl();
+    if (!base || base === '/') return;
+    const logoutUrl = base.endsWith('/') ? `${base}logout` : `${base}/logout`;
+    await this.page.goto(logoutUrl, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+    await this.page.waitForTimeout(1000);
+  }
+
   async openDefaultApp(): Promise<void> {
     if (!this.page) return;
     const base = this.getBaseUrl();
@@ -47,6 +56,21 @@ export class LibraryPage {
     await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
     await this.handleError();
     // Wait for report editor and dataset panel to be ready
+    await this.page.waitForSelector('.report-editor-dataset, .report-objects, .dataset-panel', { timeout: 45000 }).catch(() => {});
+    await this.page.waitForTimeout(1500);
+  }
+
+  /** Create new report from template (WDIO: createNewReportByUrl) */
+  async createNewReportByUrl(params: { projectId?: string } = {}): Promise<void> {
+    const base = this.getBaseUrl();
+    if (!base || base === '/') {
+      throw new Error('reportTestUrl not set. Configure tests/config/.env.report with reportTestUrl.');
+    }
+    const projectId = params.projectId ?? 'B628A31F11E7BD953EAE0080EF0583BD';
+    const path = `app/${projectId}/05B202B9999F4C1AB960DA6208CADF3D/K53--K46/edit?isNew=true&continue`;
+    const url = base.endsWith('/') ? `${base}${path}` : `${base}/${path}`;
+    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await this.handleError();
     await this.page.waitForSelector('.report-editor-dataset, .report-objects, .dataset-panel', { timeout: 45000 }).catch(() => {});
     await this.page.waitForTimeout(1500);
   }

@@ -6,7 +6,14 @@
   "scripts": {
     "test": "npx playwright test",
     "test:reportUndoRedo": "npx playwright test tests/specs/reportEditor/reportUndoRedo/ --project=reportUndoRedo",
-    "test:reportUndoRedo:list": "npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list"
+    "test:reportUndoRedo:list": "npx playwright test tests/specs/reportEditor/reportUndoRedo/ --list",
+    "test:reportEditor": "npx playwright test tests/specs/reportEditor/",
+    "test:reportEditor:list": "npx playwright test tests/specs/reportEditor/ --list",
+    "test:reportShortcutMetrics": "npx playwright test tests/specs/reportEditor/reportShortcutMetrics/ --project=reportShortcutMetrics",
+    "test:reportPageBySorting": "npx playwright test tests/specs/reportEditor/reportPageBySorting/ --project=reportPageBySorting",
+    "test:reportPageBy": "npx playwright test tests/specs/reportEditor/reportPageBy/ --project=reportPageBy",
+    "test:reportCreator": "npx playwright test tests/specs/reportEditor/reportCreator/ --project=reportCreator",
+    "test:reportSubset": "npx playwright test tests/specs/reportEditor/reportSubset/ --project=reportSubset"
   },
   "keywords": [],
   "author": "",

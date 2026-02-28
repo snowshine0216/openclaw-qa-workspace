@@ -2,7 +2,12 @@
  * Per-environment config. Load from .env.report (or .env.report.{REPORT_ENV}) with mapping:
  *   reportTestUrl  -> base URL for MicroStrategy Library
  *   reportTestUser -> test user
- *   reportTestPassword -> test password (empty allowed)
+ *   reportTestPassword -> test password (shared for all users; empty allowed per WDIO)
+ *
+ * Optional reportCreator suite users (WDIO: constants/report.js):
+ *   reportCubePrivUser, reportSubsetUser, reportTemplateNoExecuteUser, reportTemplateUser
+ * When unset, getReportEnv() returns fallbacks (re_nic, re_ss, etc.); specs may also use
+ * reportCreatorData as fallback for new users.
  *
  * Usage: REPORT_ENV=dev npx playwright test  # loads .env.report.dev
  *        npx playwright test                 # loads .env.report
@@ -27,6 +32,14 @@ export interface ReportEnvConfig {
   reportTestUrl: string;
   reportTestUser: string;
   reportTestPassword: string;
+  /** createByCubePrivilege (WDIO: reportTestUserWithoutDefineCubePrivilege) */
+  reportCubePrivUser: string;
+  /** createByCube (WDIO: reportSubsetTestUser) */
+  reportSubsetUser: string;
+  /** reportTemplateSecurity (WDIO: reportTemplateNoExecuteAclUser) */
+  reportTemplateNoExecuteUser: string;
+  /** reportTemplateSecurity (WDIO: reportTemplateTestUser) */
+  reportTemplateUser: string;
 }
 
 function parseBaseUrl(url: string): string {
@@ -47,5 +60,10 @@ export function getReportEnv(): ReportEnvConfig {
     reportTestUrl: parseBaseUrl(url),
     reportTestUser: user,
     reportTestPassword: password,
+    reportCubePrivUser: process.env.reportCubePrivUser || process.env.REPORT_CUBE_PRIV_USER || 're_nic',
+    reportSubsetUser: process.env.reportSubsetUser || process.env.REPORT_SUBSET_USER || 're_ss',
+    reportTemplateNoExecuteUser:
+      process.env.reportTemplateNoExecuteUser || process.env.REPORT_TEMPLATE_NO_EXEC_USER || 'ret_ne',
+    reportTemplateUser: process.env.reportTemplateUser || process.env.REPORT_TEMPLATE_USER || 're_template',
   };
 }

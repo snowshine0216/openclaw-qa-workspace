@@ -31,6 +31,36 @@ export default defineConfig({
       timeout: 360000,
     },
     {
+      name: 'reportShortcutMetrics',
+      testMatch: /reportEditor\/reportShortcutMetrics\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportPageBySorting',
+      testMatch: /reportEditor\/reportPageBySorting\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportPageBy',
+      testMatch: /reportEditor\/reportPageBy\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportCreator',
+      testMatch: /reportEditor\/reportCreator\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportSubset',
+      testMatch: /reportEditor\/reportSubset\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
