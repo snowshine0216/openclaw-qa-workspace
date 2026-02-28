@@ -15,9 +15,28 @@ export class ReportToolbar {
 
   async switchToDesignMode(inAuthoring?: boolean): Promise<void> {
     await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
-    // In Library Playwright, the report already loads into the correct state.
-    // Clicking the pause/resume button manually here causes the template to unload.
-    await this.page.waitForTimeout(2000);
+    
+    // Click the resume/design mode button to switch from view mode to design mode
+    // The button has classes: mstr-ws-icons, single-icon-library-resume
+    const designModeBtn = this.page.locator(
+      '[class*="single-icon-library-resume"][role="button"], ' +
+      '.mstr-ws-icons[class*="resume"][role="button"], ' +
+      '[class*="pause"][role="button"], ' +
+      'span[class*="resume"][tabindex="0"]'
+    ).first();
+    
+    const isVisible = await designModeBtn.isVisible({ timeout: 5000 }).catch(() => false);
+    if (isVisible) {
+      await designModeBtn.click();
+      // Wait for design mode UI to load
+      await this.page.waitForTimeout(2000);
+      // Wait for any loading indicators to disappear
+      await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+    } else {
+      // Already in design mode or button not available
+      await this.page.waitForTimeout(2000);
+    }
+    
     if (inAuthoring) {
       // Wait for prompt editor or report loading
       await Promise.race([

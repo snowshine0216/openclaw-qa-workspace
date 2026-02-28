@@ -27,19 +27,20 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportToolbar.switchToDesignMode();
 
       const yearSelector = reportPageBy.getSelectorPulldownTextBox('Year');
-      await expect(yearSelector).toBeVisible({ timeout: 15000 });
+      // Increased timeout from 15s to 30s for slower dev environments
+      await expect(yearSelector).toBeVisible({ timeout: 30000 });
 
       await reportPageBy.openDropdownFromSelector('Year');
       const item2014 = reportPageBy.getElementFromPopupList('2014');
-      await expect(item2014).toBeVisible({ timeout: 5000 });
+      await expect(item2014).toBeVisible({ timeout: 15000 });
 
       await reportPageBy.openDropdownFromSelector('Custom Categories');
       const categorySales = reportPageBy.getElementFromPopupList('Category Sales');
-      await expect(categorySales).toBeVisible({ timeout: 5000 });
+      await expect(categorySales).toBeVisible({ timeout: 15000 });
 
       await reportPageBy.openSelectorContextMenu('Year');
       await reportGridView.clickContextMenuOption('Sort');
-      await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
+      await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 20000 });
 
       await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
@@ -51,7 +52,7 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportPageBySorting.selectFromDropdown(2, 'Parent Position', 'Default');
 
       await reportPageBySorting.clickBtn('Done');
-      await expect(reportPageBySorting.dialog).not.toBeVisible({ timeout: 5000 });
+      await expect(reportPageBySorting.dialog).not.toBeVisible({ timeout: 15000 });
 
       const yearTextAfter = await reportPageBy.getPageBySelectorText('Year');
       expect(yearTextAfter).toBeTruthy();

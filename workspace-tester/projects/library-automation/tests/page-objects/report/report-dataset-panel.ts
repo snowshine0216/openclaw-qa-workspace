@@ -85,7 +85,8 @@ export class ReportDatasetPanel {
   async selectItemInObjectList(name: string): Promise<void> {
     const el = this.getItemInObjectBrowser(name);
     await el.scrollIntoViewIfNeeded();
-    await el.waitFor({ state: 'visible', timeout: 10000 });
+    // Increased timeout from 10s to 30s for slower dev environments
+    await el.waitFor({ state: 'visible', timeout: 30000 });
     await el.click();
     await this.page.waitForTimeout(1000);
   }

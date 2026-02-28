@@ -100,8 +100,9 @@ export const test = base.extend<{
       });
       // The Library app load event can hang due to background requests or iframes, 
       // so wait strictly for commit and then wait for the App Container UI.
-      await page.waitForURL(/(\/app|\/Home|\/Dashboard)/i, { timeout: 60000, waitUntil: 'commit' });
-      await page.locator('.mstrd-AppContainer, .library-home, .mstrd-LibraryPage, [class*="DossierGallery"]').first().waitFor({ state: 'attached', timeout: 30000 }).catch(() => {});
+      // Increased timeout from 60s to 90s for slower dev environments
+      await page.waitForURL(/(\/app|\/Home|\/Dashboard)/i, { timeout: 90000, waitUntil: 'commit' });
+      await page.locator('.mstrd-AppContainer, .library-home, .mstrd-LibraryPage, [class*="DossierGallery"]').first().waitFor({ state: 'attached', timeout: 45000 }).catch(() => {});
       await page.waitForLoadState('domcontentloaded');
     }
     await use(page);

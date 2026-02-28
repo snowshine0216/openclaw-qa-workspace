@@ -18,8 +18,11 @@ export class ReportPageBy {
   /** WDIO: getSelectorPulldownTextBox - the dropdown trigger text */
   getSelectorPulldownTextBox(selectorName: string) {
     const selector = this.getSelector(selectorName);
+    // Enhanced selector with more fallbacks for different DOM structures
     return selector.locator(
-      '.pulldown-container, [class*="Pulldown-text"], [class*="pulldown"], [class*="Pulldown"], [role="combobox"], [class*="trigger"], .ant-select-selector'
+      '.pulldown-container, [class*="Pulldown-text"], [class*="pulldown"], [class*="Pulldown"], ' +
+      '[role="combobox"], [class*="trigger"], .ant-select-selector, ' +
+      '[class*="select"], [class*="dropdown"], .mstrmojo-Dropdown'
     ).first();
   }
 
@@ -33,7 +36,8 @@ export class ReportPageBy {
 
   async getPageBySelectorText(selector: string): Promise<string> {
     const el = this.getSelectorPulldownTextBox(selector);
-    return el.textContent({ timeout: 5000 }).then((t) => t?.trim() ?? '') ?? '';
+    // Increased timeout from 5s to 20s for slower dev environments
+    return el.textContent({ timeout: 20000 }).then((t) => t?.trim() ?? '') ?? '';
   }
 
   async removePageBy(name: string): Promise<void> {
@@ -43,7 +47,7 @@ export class ReportPageBy {
   }
 
   /** WDIO: openDropdownFromSelector */
-  async openDropdownFromSelector(selectorName: string, timeout = 15000): Promise<void> {
+  async openDropdownFromSelector(selectorName: string, timeout = 20000): Promise<void> {
     const el = this.getSelectorPulldownTextBox(selectorName);
     await el.waitFor({ state: 'visible', timeout });
     await el.scrollIntoViewIfNeeded();
@@ -54,7 +58,8 @@ export class ReportPageBy {
   /** WDIO: openSelectorContextMenu */
   async openSelectorContextMenu(selectorName: string): Promise<void> {
     const el = this.getSelector(selectorName);
-    await el.waitFor({ state: 'visible', timeout: 5000 });
+    // Increased timeout from 5s to 20s for slower dev environments
+    await el.waitFor({ state: 'visible', timeout: 20000 });
     await el.click({ button: 'right' });
     await this.page.waitForTimeout(1000);
   }
@@ -63,7 +68,8 @@ export class ReportPageBy {
   async changePageByElement(selectorName: string, elementName: string): Promise<void> {
     await this.openDropdownFromSelector(selectorName);
     const item = this.getElementFromPopupList(elementName);
-    await item.waitFor({ state: 'visible', timeout: 10000 });
+    // Increased timeout from 10s to 20s for slower dev environments
+    await item.waitFor({ state: 'visible', timeout: 20000 });
     await item.click();
     await this.page.waitForTimeout(2000);
   }

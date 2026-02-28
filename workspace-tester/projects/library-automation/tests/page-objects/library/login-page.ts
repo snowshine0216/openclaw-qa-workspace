@@ -44,16 +44,13 @@ export class LoginPage {
     await usernameEl.fill(credentials.username);
     const password = credentials.password ?? '';
     const hasPassword = password !== '' && password.toLowerCase() !== 'none';
-    const passwordEl = this.passwordInput.first();
-    await passwordEl.scrollIntoViewIfNeeded();
-    await passwordEl.waitFor({ state: 'visible', timeout: 5000 });
     if (hasPassword) {
+      const passwordEl = this.passwordInput.first();
+      await passwordEl.scrollIntoViewIfNeeded();
+      await passwordEl.waitFor({ state: 'visible', timeout: 5000 });
       await passwordEl.fill(password);
-    } else {
-      // Trick the UI validator into enabling the login button for blank passwords
-      // by placing a space, which may be trimmed by the server.
-      await passwordEl.fill(' ');
     }
+    // If password is empty, directly click login button without attempting to type
     const loginEl = this.loginButton.first();
     await loginEl.scrollIntoViewIfNeeded();
     await loginEl.click({ force: true, noWaitAfter: true });
