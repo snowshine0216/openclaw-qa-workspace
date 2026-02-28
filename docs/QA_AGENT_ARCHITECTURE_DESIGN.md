@@ -3,6 +3,8 @@
 ## 1. Overview
 This document outlines the high-level architecture and design of the OpenClaw-based QA Agent ecosystem. The system leverages the **OpenClaw** framework along with **GitHub Copilot models** (primarily **Sonnet-4.5**) to automate the entire QA lifecycle—from monitoring and planning to execution, healing, and reporting. The architecture delegates specific, bounded responsibilities across a suite of specialized agents to ensure a decoupled, scalable, and idempotent workflow.
 
+> **🔮 Future Phase — Agent Evaluation Cycle:** A closed-loop agent self-evaluation cycle is planned as a future phase. This cycle will periodically assess agent output quality, test coverage gaps, prompt effectiveness, and overall system accuracy. It is **not yet started** and will be incorporated once the core five-agent ecosystem is stable.
+
 ## 2. Technology Stack & Foundation
 - **Core Framework:** OpenClaw Agent Framework
 - **Primary AI Model:** Sonnet-4.5 (via GitHub Copilot models)
@@ -85,6 +87,17 @@ The system operates across several distinct scenarios, varying from automated da
 2. **Execution:** The Orchestrator directly invokes the Reporter Agent.
 3. **Action:** The Reporter Agent aggregates existing test results, defect details, and QA plans to synthesize and publish the final QA Summary to Confluence.
 
+### 4.6. Scenario 6: Agent Evaluation Cycle *(🔮 Not Yet Started — Future Phase)*
+> This scenario is **planned** but has not been started. It will be incorporated into the architecture after the core lifecycle (Scenarios 1–5) is stable.
+1. **Trigger:** Scheduled cadence (e.g., weekly cron) or manual invocation after a sprint cycle completes.
+2. **Collection:** Orchestrator gathers structured outputs from all agents — QA plans, test run results, defect reports, Confluence summaries, and script heal logs.
+3. **Evaluation:** A dedicated evaluation pass (via AI model) scores each agent across configurable dimensions:
+   - **Planner:** Requirement coverage, test case relevance, false-positive rate in plans.
+   - **Tester:** Script stability, heal success rate, false-bug noise ratio.
+   - **Reporter:** Report accuracy, Jira/Confluence update completeness, timeliness.
+   - **Daily:** Trigger fatigue, missed event rate, cron reliability.
+4. **Feedback Loop:** Evaluation findings are written back as structured improvement notes, surfaced as Feishu notifications or Confluence evaluation reports, and used to tune agent prompts/skills in the next cycle.
+
 ---
 
 ## 5. Implementation Progress & Roadmap
@@ -98,6 +111,7 @@ The system operates across several distinct scenarios, varying from automated da
 | **Draft Defects Analysis** | Reporter / Planner | Orchestrator | On-Going | Parsing defect severity, risk, and feature impact |
 | **Draft QA Summary** | Reporter | Orchestrator | On-Going | Currently running in block with WDIO script migration |
 | **WDIO -> Playwright Integration** | Tester (Master) | Pipeline/MCP | Planned | Later phase: integrating migrated scripts into full autonomous loop |
+| **Agent Evaluation Cycle** | Orchestrator / All | Scheduled Cron / Manual | Not Started | 🔮 Future phase: periodic self-evaluation of agent output quality, coverage gaps, and prompt effectiveness; feeds improvement loop |
 
 ---
 

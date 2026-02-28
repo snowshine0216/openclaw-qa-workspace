@@ -2,6 +2,16 @@
 
 This directory holds state files for the WDIO→Playwright ReportEditor migration workflow.
 
+## Before Running Tests
+
+Ensure env is configured:
+
+```bash
+./migration/ensure_env.sh   # Creates tests/config/.env.report from example if missing
+```
+
+Then set `reportTestUrl`, `reportTestUser`, `reportTestPassword` in `tests/config/.env.report` to a valid MicroStrategy Library instance.
+
 ## task.json Schema
 
 ```json

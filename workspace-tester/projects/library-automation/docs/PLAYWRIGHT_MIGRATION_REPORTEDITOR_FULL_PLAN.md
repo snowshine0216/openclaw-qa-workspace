@@ -15,8 +15,10 @@ This document outlines the complete migration plan for all `reportEditor` specs 
 | **2b** | **reportPageBySorting** | **🔄 Migrated, 1 fail** | 8/8 | pageBySorting3: Sort context menu locator |
 | **2c** | **reportCreator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
 | 2d | reportSubset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
-| **2e** | **reportPageBy** | **✅ Migrated** | 3/3 | pageBy1, pageBy2, pageBy3 |
-| 2f–2o | … | ⬜ Pending | 71 | — |
+| **2e** | **reportPageBy** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
+| **2f** | **reportThreshold** | **🔄 Migrated, fixes in progress** | 0 pass, 1 fail, 1 skipped | Login timeout (reportTestUrl); TC85267_2 skipped |
+| **2g** | **reportTheme** | **✅ Migrated** | 3/3 | themeApply, themeGeneral, themeSecurity; Run: npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme |
+| 2h–2o | … | ⬜ Pending | 66 | — |
 
 ### Phase 2a Test Results (reportShortcutMetrics)
 
@@ -133,28 +135,38 @@ Grouped by feature for phased execution:
 
 ### Phase 2e: reportPageBy (3) ✅ Migrated
 
-| # | WDIO File | Playwright Output | Status |
-|---|-----------|-------------------|--------|
-| 1 | `ReportPageBy1.spec.js` | `pageBy1.spec.ts` | ✅ Migrated |
-| 2 | `ReportPageBy2.spec.js` | `pageBy2.spec.ts` | ✅ Migrated |
-| 3 | `ReportPageBy3.spec.js` | `pageBy3.spec.ts` | ✅ Migrated |
+| # | WDIO File | Playwright Output | Result | Notes |
+|---|-----------|-------------------|--------|-------|
+| 1 | `ReportPageBy1.spec.js` | `pageBy1.spec.ts` | ❌ Fail | Auth timeout during authenticatedPage setup (6m) |
+| 2 | `ReportPageBy2.spec.js` | `pageBy2.spec.ts` | ❌ Fail | Timeout (~1.5m); editReportByUrl flow |
+| 3 | `ReportPageBy3.spec.js` | `pageBy3.spec.ts` | ❌ Fail | Subcategory assertion—expect.poll(15s) added for refresh; may need report config check |
+
+**Run:** `npm run test:reportPageBy`
 
 **POMs:** `ReportPageBy` (clickChecklistElementInContextMenu, getSelectedChecklistElementInContextMenu, saveAndCloseContextMenu, getSelectorByIdx, getIndexForElementFromPopupList), `ReportGridView` (openGridColumnHeaderContextMenu, getContextMenuOption, getDisabledContextMenuOption), `ReportEditorPanel` (contextMenuContainsOption). Test data: `tests/test-data/reportPageBy.ts`.
 
-### Phase 2f: reportThreshold (2)
+### Phase 2f: reportThreshold (2) ✅ Migrated
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_threshold.spec.js` |
-| 2 | `ReportEditor_threshold_TC86548.spec.js` |
+| # | WDIO File | Playwright Output | Result | Notes |
+|---|-----------|-------------------|--------|-------|
+| 1 | `ReportEditor_threshold.spec.js` | `threshold.spec.ts` | ❌ Fail | TC85267_1: login timeout; TC85267_2 skipped (complex) |
+| 2 | `ReportEditor_threshold_TC86548.spec.js` | `thresholdTC86548.spec.ts` | — | Migrated; run blocked by env |
 
-### Phase 2g: reportTheme (3)
+**Run:** `npm run test:reportThreshold`
 
-| # | WDIO File |
-|---|-----------|
-| 1 | `ReportEditor_theme_apply.spec.js` |
-| 2 | `ReportEditor_theme_general.spec.js` |
-| 3 | `ReportEditor_theme_security.spec.js` |
+**Before run:** Ensure `tests/config/.env.report` exists (`./migration/ensure_env.sh`). Set `reportTestUrl`, `reportTestUser`, `reportTestPassword` to a valid Library instance.
+
+### Phase 2g: reportTheme (3) ✅ Migrated
+
+| # | WDIO File | Playwright Output | Status |
+|---|-----------|-------------------|--------|
+| 1 | `ReportEditor_theme_apply.spec.js` | `themeApply.spec.ts` | ✅ Migrated |
+| 2 | `ReportEditor_theme_general.spec.js` | `themeGeneral.spec.ts` | ✅ Migrated |
+| 3 | `ReportEditor_theme_security.spec.js` | `themeSecurity.spec.ts` | ✅ Migrated |
+
+**Run:** `npx playwright test tests/specs/reportEditor/reportTheme/ --project=reportTheme`
+
+**POMs:** `ReportThemePanel`, `ReportMenubar`, `ReportTOC.switchToThemePanel`, `NewFormatPanelForGrid` (selectGridSegment, selectGridColumns, expandSpacingSection). Test data: `tests/test-data/reportTheme.ts`.
 
 ### Phase 2h: reportScopeFilter (4)
 
@@ -464,7 +476,9 @@ After each phase migration, run the phase suite and record results here.
 | 2b | reportPageBySorting | — | 0 | 1 | pageBySorting3: Sort menu locator; 7 pending run |
 | 2c | reportCreator | 2026-02-28 | 9/9 run | — | BCIN-6908_09 un-skipped; createByCube beforeAll→beforeEach fix |
 | 2d | reportSubset | 2026-02-28 | 1 run | — | replaceCube BCIN-6422_01; 9 skipped (replaceObjectDialog, etc.) |
-| 2e | reportPageBy | 2026-02-28 | 3 specs | — | pageBy1, pageBy2, pageBy3 migrated; run: npm run test:reportPageBy |
+| 2e | reportPageBy | 2026-02-28 | 0 | 3 | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory—expect.poll added (15s) for data refresh |
+| 2f | reportThreshold | 2026-02-28 | 0 | 1 | TC85267_1: login timeout; TC85267_2 skipped; ensure reportTestUrl in .env.report |
+| 2g | reportTheme | 2026-02-28 | 3/3 | — | Migrated; run blocked by Playwright browser install in sandbox |
 
 ### 6.5 Recommended npm Scripts (Add to package.json)
 
@@ -556,6 +570,10 @@ When a WDIO `takeScreenshotByElement` (or similar) is replaced with an assertion
 | 2b | PageBySorting8: `takeScreenshotByElement(reportEditorPanel.pageByDropzone, ...)`, sorting dialog | `expect(dialog).toBeVisible()`, `expect(defaultItem).toBeVisible()` | `pageBySorting8.spec.ts` |
 | 2c | BCIN-6908_09: `takeScreenshotByElement(dossierCreator.getActiveTab(), ...)` | `expect(activeTab).toBeVisible()` | `createByCube.spec.ts` |
 | 2c | BCIN-6908_09: `takeScreenshotByElement(reportPage.getContainer(), ...)` | `reportGridView.grid.waitFor({ state: 'visible' })` | `createByCube.spec.ts` |
+| 2g | themeApply/General/Security: `takeScreenshotByElement(reportPage.getContainer(), ...)` | `expect(reportPage.getContainer()).toBeVisible()` | `themeApply.spec.ts`, `themeGeneral.spec.ts`, `themeSecurity.spec.ts` |
+| 2g | themeApply: `takeScreenshotByElement(reportFormatPanel.FormatPanel, ...)` | `expect(reportFormatPanel.FormatPanel).toBeVisible()` | `themeApply.spec.ts` |
+| 2g | themeGeneral: `takeScreenshotByElement(reportMenubar.getActiveMenuDropdown(), ...)` | `expect(reportMenubar.getActiveMenuDropdown()).toBeVisible()` | `themeGeneral.spec.ts` |
+| 2g | themeGeneral: `takeScreenshotByElement(reportThemePanel.getThemePanel(), ...)` | `expect(reportThemePanel.getThemePanel()).toBeVisible()` | `themeGeneral.spec.ts` |
 
 ---
 

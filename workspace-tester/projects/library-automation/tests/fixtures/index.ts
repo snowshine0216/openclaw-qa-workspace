@@ -18,18 +18,23 @@ import { ReportPromptEditor } from '../page-objects/report/ReportPromptEditor';
 import { NewFormatPanelForGrid } from '../page-objects/report/NewFormatPanelForGrid';
 import { ReportFormatPanel } from '../page-objects/report/ReportFormatPanel';
 import { ThresholdEditor } from '../page-objects/report/ThresholdEditor';
+import { AdvancedFilter } from '../page-objects/report/AdvancedFilter';
 import { ReportSubtotalsEditor } from '../page-objects/report/ReportSubtotalsEditor';
 import { BaseContainer } from '../page-objects/report/BaseContainer';
 import { ReportContextualLinkingDialog } from '../page-objects/report/ReportContextualLinkingDialog';
 import { ReportDerivedMetricEditor } from '../page-objects/report/ReportDerivedMetricEditor';
 import { ReportPageBySorting } from '../page-objects/report/ReportPageBySorting';
 import { ReportPage } from '../page-objects/report/ReportPage';
+import { ReportThemePanel } from '../page-objects/report/ReportThemePanel';
+import { ReportMenubar } from '../page-objects/report/ReportMenubar';
 import { PromptEditor } from '../page-objects/common/PromptEditor';
 import { AEPrompt } from '../page-objects/prompt/AEPrompt';
 import { ValuePrompt } from '../page-objects/prompt/ValuePrompt';
 import { DossierCreator } from '../page-objects/library/DossierCreator';
 import { reportCreatorData } from '../test-data/reportCreator';
 import { reportPageByData } from '../test-data/reportPageBy';
+import { reportThresholdData } from '../test-data/reportThreshold';
+import { reportThemeData } from '../test-data/reportTheme';
 
 export const test = base.extend<{
   authenticatedPage: import('@playwright/test').Page;
@@ -47,12 +52,15 @@ export const test = base.extend<{
   newFormatPanelForGrid: NewFormatPanelForGrid;
   reportFormatPanel: ReportFormatPanel;
   thresholdEditor: ThresholdEditor;
+  advancedFilter: AdvancedFilter;
   reportSubtotalsEditor: ReportSubtotalsEditor;
   baseContainer: BaseContainer;
   reportContextualLinkingDialog: ReportContextualLinkingDialog;
   reportDerivedMetricEditor: ReportDerivedMetricEditor;
   reportPageBySorting: ReportPageBySorting;
   reportPage: ReportPage;
+  reportThemePanel: ReportThemePanel;
+  reportMenubar: ReportMenubar;
   promptEditor: PromptEditor;
   aePrompt: AEPrompt;
   valuePrompt: ValuePrompt;
@@ -121,6 +129,9 @@ export const test = base.extend<{
   thresholdEditor: async ({ authenticatedPage }, use) => {
     await use(new ThresholdEditor(authenticatedPage));
   },
+  advancedFilter: async ({ authenticatedPage }, use) => {
+    await use(new AdvancedFilter(authenticatedPage));
+  },
   reportSubtotalsEditor: async ({ authenticatedPage }, use) => {
     await use(new ReportSubtotalsEditor(authenticatedPage));
   },
@@ -138,6 +149,12 @@ export const test = base.extend<{
   },
   reportPage: async ({ authenticatedPage }, use) => {
     await use(new ReportPage(authenticatedPage));
+  },
+  reportThemePanel: async ({ authenticatedPage }, use) => {
+    await use(new ReportThemePanel(authenticatedPage));
+  },
+  reportMenubar: async ({ authenticatedPage }, use) => {
+    await use(new ReportMenubar(authenticatedPage));
   },
   promptEditor: async ({ authenticatedPage }, use) => {
     await use(new PromptEditor(authenticatedPage));
@@ -161,4 +178,6 @@ export {
   reportCreatorData,
   reportSubsetData,
   reportPageByData,
+  reportThresholdData,
+  reportThemeData,
 };

@@ -22,11 +22,13 @@ test.describe('Report Page By - Part 3', () => {
       });
 
       await reportPageBy.changePageByElement('Category', 'Total');
-
-      const subcategoryText = await reportPageBy.getPageBySelectorText('Subcategory');
-      expect(subcategoryText, 'After select total for Category, 2nd page-by should be Art & Architecture').toBe(
-        'Art & Architecture'
-      );
+      // Wait for report to refresh and Subcategory selector to update (data load delay)
+      await expect
+        .poll(
+          async () => await reportPageBy.getPageBySelectorText('Subcategory'),
+          { timeout: 15000 }
+        )
+        .toBe('Art & Architecture');
 
       await reportPageBy.changePageByElement('Subcategory', 'Business');
 

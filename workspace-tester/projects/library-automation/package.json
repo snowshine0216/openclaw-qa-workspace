@@ -13,7 +13,8 @@
     "test:reportPageBySorting": "npx playwright test tests/specs/reportEditor/reportPageBySorting/ --project=reportPageBySorting",
     "test:reportPageBy": "npx playwright test tests/specs/reportEditor/reportPageBy/ --project=reportPageBy",
     "test:reportCreator": "npx playwright test tests/specs/reportEditor/reportCreator/ --project=reportCreator",
-    "test:reportSubset": "npx playwright test tests/specs/reportEditor/reportSubset/ --project=reportSubset"
+    "test:reportSubset": "npx playwright test tests/specs/reportEditor/reportSubset/ --project=reportSubset",
+    "test:reportThreshold": "npx playwright test tests/specs/reportEditor/reportThreshold/ --project=reportThreshold"
   },
   "keywords": [],
   "author": "",

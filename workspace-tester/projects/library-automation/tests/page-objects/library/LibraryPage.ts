@@ -88,5 +88,10 @@ export class LibraryPage {
     const url = base.endsWith('/') ? `${base}${path}` : `${base}/${path}`;
     await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await this.handleError();
+    // Wait for report/content to render (consumption view)
+    await this.page.waitForSelector('.mstrmojo-ReportPageBySelector, .ag-root, [role="grid"], [class*="report"]', {
+      timeout: 30000,
+    }).catch(() => {});
+    await this.page.waitForTimeout(3000);
   }
 }

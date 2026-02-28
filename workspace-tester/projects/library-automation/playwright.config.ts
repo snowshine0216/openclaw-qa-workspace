@@ -61,6 +61,18 @@ export default defineConfig({
       timeout: 360000,
     },
     {
+      name: 'reportThreshold',
+      testMatch: /reportEditor\/reportThreshold\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
+      name: 'reportTheme',
+      testMatch: /reportEditor\/reportTheme\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 360000,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
