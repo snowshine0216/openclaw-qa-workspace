@@ -1,6 +1,6 @@
 ---
 name: test-case-generator
-description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed JSON-formatted test cases intended for the tester-agent to consume, generating them one by one in projects/testcase-plan/<feature-id>.
+description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed Markdown (`.md`) specs in Playwright-compatible format for the Tester Agent to consume and auto-heal. Output in projects/testcase-plan/<feature-id>/ or specs/<feature>/.
 homepage: https://github.com/naodeng/awesome-qa-prompt
 metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":[]}}}
 ---
@@ -43,41 +43,41 @@ Paste any documentation, specs, or descriptions about the feature.
 | **Integration** | System interactions | API calls, database operations |
 | **Security** | Authentication/authorization | SQL injection, XSS, permissions |
 
-## Test Case Template (JSON)
+## Output Format: Markdown (Playwright-Compatible)
 
-Generate each test case as a discrete `.json` file that can be read by the Tester Agent. Save them sequentially to `projects/testcase-plan/<feature-id>/`.
+Generate each test case as a discrete `.md` file consumable by the Playwright Generator and Healer. Save to `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`.
 
-```json
-{
-  "testCaseId": "TC-[ID]",
-  "name": "[Test Case Name]",
-  "priority": "P0|P1|P2|P3",
-  "type": "Functional|UI|Integration|Security",
-  "preconditions": [
-    "Precondition 1",
-    "Precondition 2"
-  ],
-  "steps": [
-    {
-      "stepNumber": 1,
-      "action": "[Step 1]"
-    },
-    {
-      "stepNumber": 2,
-      "action": "[Step 2]"
-    },
-    {
-      "stepNumber": 3,
-      "action": "[Step 3]"
-    }
-  ],
-  "expectedResult": "[What should happen]",
-  "testData": {
-    "Username": "[data]",
-    "Password": "[data]"
-  }
-}
+**Required structure:** See `workspace-planner/docs/TEST_CASE_GENERATION_DESIGN.md` for full schema.
+
+```markdown
+# [Feature] — [Scenario] Test Plan
+
+**Seed:** `tests/seed.spec.ts`
+
+## Application Overview
+[Brief scope and behaviors]
+
+## Test Scenarios
+
+### N. [Scenario Label]
+
+**Steps:**
+1. [Semantic action — use role/label/text, not IDs/CSS]
+2. ...
+3. ...
+
+**Expected Results:**
+- [Measurable outcome]
 ```
+
+### Semantic Step Phrasing (Critical for Auto-Healing)
+
+| Do | Don't |
+|----|-------|
+| Click the "Submit" button | Click #submit-btn |
+| Type "user@test.com" in the Email field | Enter email |
+| Verify the heading "Success" is visible | Verify success |
+| Select "Q1 2024" from the Date dropdown | Use date picker |
 
 ## Generation Process
 
@@ -285,9 +285,7 @@ Requirements:
 
 ## Test Case Management
 
-## Test Case Management
-
-All generated test cases must be saved logically as JSON files under the `projects/testcase-plan/<feature-id>/` directory. Ensure each test case is correctly parsed and isolated so the executor script can reliably ingest them.
+All generated test cases must be saved as Markdown files under `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`. Each spec must include `**Seed:** \`tests/seed.spec.ts\`` and use semantic step phrasing so the Tester Agent can translate to Playwright and the Healer can auto-fix locators.
 
 ## Priority Guidelines
 
@@ -301,10 +299,10 @@ All generated test cases must be saved logically as JSON files under the `projec
 ## Use Cases
 
 ### 1. New Feature Testing
-1. Look up the existing QA plan / feature requirements
+1. Look up the existing QA plan / feature requirements (use `clawddocs` for project context)
 2. Run `test-case-generator` to identify scenarios
-3. Serialize detailed JSON test cases one by one under `projects/testcase-plan/<feature-id>/`
-4. Handoff context to Tester Agent to run the scripts
+3. Serialize detailed Markdown specs one by one under `projects/testcase-plan/<feature-id>/` or `specs/<feature>/`
+4. Handoff specs to Tester Agent to generate scripts and run
 
 ### 2. Regression Testing
 1. Identify features to test against existing coverage
@@ -320,10 +318,10 @@ All generated test cases must be saved logically as JSON files under the `projec
 
 ## Integration Points
 
-- **qa-daily-workflow**: Use generated test cases in daily testing
-- **tester-agent**: Strictly consumes the generated JSON test cases
-- **playwright-cli**: Execute UI test cases
-- **microstrategy-testing**: Generate tests for MicroStrategy features
+- **qa-daily-workflow**: Use generated specs in daily testing
+- **tester-agent**: Consumes Markdown specs, translates to `tests/specs/**/*.spec.ts`, runs via `npx playwright test`
+- **playwright-cli**: Execute UI tests; Healer uses `playwright-cli snapshot` to derive semantic locators for auto-healing
+- **clawddocs**: Enrich context from project docs and API references before generating
 
 ## Tips for Best Results
 
