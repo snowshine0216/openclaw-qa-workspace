@@ -31,7 +31,9 @@ test.describe('Page-by Sorting in report editor', () => {
       const metricsText = await reportPageBy.getPageBySelectorText('Metrics');
       expect(metricsText, 'Page-by Metrics should contain Profit Margin').toContain('Profit Margin');
 
-      // 4. Change Page By Year to 2015
+      // 4. Open Year dropdown and verify it is visible before selecting 2015
+      await reportPageBy.openDropdownFromSelector('Year');
+      await expect(reportPageBy.getVisiblePopupListLocator()).toBeVisible({ timeout: 10000 });
       await reportPageBy.changePageByElement('Year', '2015');
 
       // 5. Open Year context menu → Sort

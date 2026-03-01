@@ -15,10 +15,13 @@ Tester Agent (workspace-tester)
 ```
 
 **Key constraints:**
-- Output is always **Markdown (`.md`)**, never JSON. The Playwright Generator and Healer are Markdown-native.
+- Output is always **Markdown (`.md`)**, never JSON. The Playwright Generator consumes Markdown plans.
+- The Healer consumes failing Playwright `.spec.ts` tests plus debug context/logs, not plan Markdown as its primary input.
 - Steps must use **role/label/text** phrasing so the Generator can map to `getByRole`, `getByText`, and the Healer can correlate with `playwright-cli snapshot` output.
 - Every spec must reference `**Seed:** \`tests/seed.spec.ts\`` for authenticated context bootstrap.
-- Use **Playwright CLI** (`playwright-cli open`, `snapshot`, `screenshot`) — not Playwright MCP — for browser inspection.
+- Browser tooling policy:
+  - Default browser inspection/execution uses **Playwright CLI** (`playwright-cli open`, `snapshot`, `screenshot`).
+  - If using Playwright MCP in Tester workflows, it must be integrated via the installed `mcporter` skill (no direct ad-hoc MCP usage outside skill guidance).
 
 ---
 
@@ -136,9 +139,9 @@ attribute form updates, and reprompt flows.
 ### 2. Attribute form undo/redo
 
 **Steps:**
-7. Update attribute forms for "Customer" in Page By drop zone to "Show attribute name once"
-8. Click Undo
-9. Click Redo
+1. Update attribute forms for "Customer" in Page By drop zone to "Show attribute name once"
+2. Click Undo
+3. Click Redo
 
 **Expected Results:**
 - After Undo: attribute form for "Customer" reverts to default
@@ -245,7 +248,7 @@ Update `testcase_task.json`: `current_phase: context_research`, `data_fetched_at
 | Feature-specific context is in the QA plan | QA plan context files | Re-read `context/` artifacts (don't re-fetch unless Smart Refresh) |
 
 **⛔ User Permission Gate (before any external call):**
-If any `tavily-search` or `confluence` calls are needed, **pause and summarize** which steps are unclear and which tools will be used. Present to the user:
+If any `tavily-search`, `confluence`, or remote `clawddocs` fetch calls are needed, **pause and summarize** which steps are unclear and which tools will be used. Present to the user:
 ```
 I plan to look up N unclear step(s) via <tool>:
   - "<unclear step or flow>"
@@ -253,6 +256,7 @@ I plan to look up N unclear step(s) via <tool>:
 Proceed with research? (Y / Skip — generate from QA plan only)
 ```
 Only call external tools after the user confirms. If the user skips, generate specs from existing QA plan context only and note any assumptions inline.
+`clawddocs` local cache/index reads are allowed without this gate; only remote fetches need confirmation.
 
 Update `testcase_task.json`: `current_phase: prerequisite_confirmation`.
 
@@ -341,6 +345,20 @@ If any specs were **skipped or partially written** (e.g. due to interruption), a
 
 #### 5.2 Tester Handoff
 
+**⛔ Human Approval Gate (mandatory):**
+- Before notifying or invoking Tester, present a handoff summary and wait for explicit user approval.
+- Do not hand off automatically after spec generation.
+
+```text
+Proposed tester handoff:
+  Feature: <FEATURE_ID>
+  Path: workspace-planner/projects/feature-plan/<feature-id>/specs/<domain>/<feature>/
+  Files: <scenario1>.md, <scenario2>.md, ...
+  Chain: playwright-test-generator -> playwright-test-healer
+
+Proceed with tester handoff? (Y / No)
+```
+
 Notify the Tester Agent with:
 - **Feature ID** (e.g. `BCIN-1234`)
 - **Domain & feature** (e.g. `report-editor`, `report-undo-redo`)
@@ -348,6 +366,28 @@ Notify the Tester Agent with:
 - **List of generated spec files**
 
 The Tester reads the `.md` files, generates `tests/specs/<domain>/<feature>/*.spec.ts` via the Playwright Generator, and runs them via `npx playwright test`.
+
+**Mandatory handoff payload (machine-readable):**
+
+```json
+{
+  "feature_id": "<FEATURE_ID>",
+  "domain": "<domain>",
+  "feature": "<feature>",
+  "specs_path": "workspace-planner/projects/feature-plan/<feature-id>/specs/<domain>/<feature>/",
+  "spec_files": ["<scenario1>.md", "<scenario2>.md"],
+  "seed": "tests/seed.spec.ts",
+  "requested_chain": ["playwright-test-generator", "playwright-test-healer"]
+}
+```
+
+**Tester acknowledgment contract (required):**
+- Tester must return an ack containing:
+  - `status: received`
+  - `read_path_ok: true|false`
+  - `detected_spec_count: <N>`
+  - `next_step: generation_started | blocked`
+- If `read_path_ok=false`, planner switches to Option B copy flow (or asks user to approve copy) before retrying handoff.
 
 ---
 
@@ -434,6 +474,10 @@ Implements the **agent-idempotency** tiered existence check for the test case ge
 
 Pass the specs path to the Tester. No file duplication.
 
+**Precondition check (required before Option A):**
+- Perform a read-probe in handoff: tester must confirm `read_path_ok=true` and report `detected_spec_count`.
+- If probe fails, fallback to Option B copy flow; do not proceed with a blind path-only handoff.
+
 Include in the handoff:
 - Feature ID (e.g. `BCIN-1234`)
 - Specs path: `workspace-planner/projects/feature-plan/<feature-id>/specs/<domain>/<feature>/`
@@ -461,6 +505,7 @@ Use Option B only if the Tester cannot cross-read the Planner's workspace.
 | Skill | When to use |
 |-------|-------------|
 | `test-case-generator` | Step synthesis during Markdown generation. Drives scenario coverage. |
+| `mcporter` | Required bridge when Tester uses Playwright MCP server tooling; use skill-mediated integration only. |
 | `feishu` | Send completion DM and per-phase progress notifications to user |
 | `clawddocs` | Look up existing OpenClaw QA plans or product-specific docs before assuming steps |
 | `tavily-search` | Research UI flows, official docs, or user guides when steps are unclear |
@@ -504,6 +549,7 @@ Before finalizing this design or workflow implementation:
 - [x] AGENTS.md: "Core Workflow: Test Case Generation" section added after Feature QA Planning
 - [x] AGENTS.md: `test-case-generator` skill sub-section updated per design
 - [x] `test-case-generator` SKILL.md: state file clarification (3a), workflow cross-reference (3b), action verb constraint in Use Cases (3c)
+- [x] **Implementation sync completed (2026-03-01):** Workflow handoff approval gate + tester ack contract and AGENTS Phase 5 wording aligned to this design
 
 ---
 
@@ -569,6 +615,7 @@ description: Generate Playwright-compatible Markdown spec files from an existing
   clawddocs → OpenClaw-specific lookup only
   tavily-search → external UI flows / product docs
   confluence → internal product docs / selectors
+  Optional UI ambiguity branch: use playwright-test-planner only as a subagent for discovery notes, then normalize back into canonical Markdown spec format
   Skip if all steps are clear from QA plan
 
 ## Phase 3 — Pre-requisite Confirmation (BLOCKING — wait for user)
@@ -581,7 +628,7 @@ description: Generate Playwright-compatible Markdown spec files from an existing
 
 ## Phase 5 — Notification & Tester Handoff
   5.1 Feishu DM via feishu skill (with fallback to notification_pending in testcase_task.json)
-  5.2 Tester handoff via Option A (path notification, no file copy)
+  5.2 Tester handoff only after explicit human approval (Option A with read-probe by default)
 ```
 
 **Task file ownership** (to avoid conflict with `/feature-qa-planning`):
@@ -614,7 +661,7 @@ Key phases:
   2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
   3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
   4. Generate Markdown specs — one .md per scenario via test-case-generator skill
-  5. Feishu DM + Tester Agent handoff
+  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
 
 State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
 Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md

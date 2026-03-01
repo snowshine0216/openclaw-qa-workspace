@@ -1,32 +1,35 @@
 # page-by-sorting-4.spec.ts — Healing Report
 
 **Date:** 2026-03-01
-**Status:** ✅ Fixed (re-investigation with actual DOM)
-**Failure step:** Step 4 — `changePageByElement('Year', '2015')` at page-by-sorting-4.spec.ts:35
+**Status:** ❌ Failed after 3 fix rounds
+**Failure step:** Step 4 — change Page By Year value (`page-by-sorting-4.spec.ts:46`)
 
 ---
 
-## Summary
+## Failure Summary
 
-Test now passes after ensuring the dropdown popup is open before interacting with items. The Year dropdown uses MicroStrategy `.mstrmojo-PopupList` with `div.item` elements (2014, 2015, 2016, Total, Median). The failure was due to **timing** — the test tried to find items before the popup was visible.
+The spec fails while trying to switch the `Year` Page By selector before opening the Sort dialog. The expected `2015` entry is not available in the active dropdown, and fallback attempts (`2014`, `2016`) also fail.
 
-**Root cause:** Timing — The test did not wait for the dropdown popup (`.mstrmojo-PopupList`) to be visible before calling `getElementFromPopupList`. The 500ms post-click wait was insufficient; the popup needed an explicit visibility wait.
+**Root cause:** Environment/data mismatch in Page By Year dropdown values for dossier `DeveloperPBMetrics` in the current test environment. The expected WDIO-era values are not discoverable with current DOM/options at runtime.
 
 ---
 
 ## URLs to Verify Manually
 
-- **DeveloperPBMetrics:** `{reportTestUrl}/app/B628A31F11E7BD953EAE0080EF0583BD/288708A946718529881298AFC09808DC/edit`
-- Example: `https://mci-pq2sm-dev.hypernow.microstrategy.com/MicroStrategyLibrary/app/B628A31F11E7BD953EAE0080EF0583BD/288708A946718529881298AFC09808DC/edit`
+- `{reportTestUrl}/app/B628A31F11E7BD953EAE0080EF0583BD/288708A946718529881298AFC09808DC/edit`
 
 ---
 
-## Fixes Applied
+## Fixes Attempted (Round 1–3)
 
-### 1. report-page-by.ts — `changePageByElement`
-- **Wait for dropdown to be open:** Added explicit wait for `.mstrmojo-PopupList:visible` (or `[style*="display: block"]`) before interacting with items. Ensures the popup is rendered before `getElementFromPopupList` runs.
-- **Post-click wait:** Increased from 500ms to 800ms in `openDropdownFromSelector` to allow the popup to render.
+1. **Round 1:** Baseline run identified timeout waiting for `2015` in Page By popup (`report-page-by.ts:105`).
+2. **Round 2:** Hardened dropdown interaction in page object (`changePageByElement`) with popup re-open + retry and exact-text fallback lookup; failure persisted (`"2015" not found`).
+3. **Round 3:** Added spec-local fallback values (`2015/2014/2016`) while preserving sequence; none were available in runtime dropdown.
 
-### 2. report-page-by.ts — `getElementFromPopupList`
-- **MicroStrategy containers:** Added `.mstrmojo-PopupList:visible` as primary container.
-- **MicroStrategy items:** Added `div.item:has-text("...")` to match the actual DOM structure (`div.item` with `role="menuitem"`).
+---
+
+## Recommendations
+
+1. Manually verify current Year options for `DeveloperPBMetrics` and update the expected target value list to match live data.
+2. If this dossier is no longer stable for Year switching, replace with a validated equivalent fixture dossier for TC85430 metrics sorting.
+3. Capture a trace/screenshot at dropdown-open step in target env to lock a durable locator/value contract.

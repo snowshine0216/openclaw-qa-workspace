@@ -10,12 +10,13 @@
 1. Edit report by URL (dossier DeveloperPBMetrics)
 2. Switch to design mode
 3. Verify Metrics text contains "Profit Margin"
-4. Change Page By Year to 2015
-5. Open Year context menu → Sort
-6. Verify Sort dialog is visible
-7. Verify Placeholder column contains "Select" or "object"
-8. Open Sort By dropdown, select Year
-9. Select Criteria: ID, Order: Descending
-10. Click Done
-11. Verify Sort dialog closes
-12. Verify Metrics text still contains "Profit Margin"
+4. Open Year Page By dropdown and verify the dropdown is visible
+5. Select Year value `2015`
+6. Open Year context menu → Sort
+7. Verify Sort dialog is visible
+8. Verify Placeholder column contains "Select" or "object"
+9. Open Sort By dropdown, select Year
+10. Select Criteria: ID, Order: Descending
+11. Click Done
+12. Verify Sort dialog closes
+13. Verify Metrics text still contains "Profit Margin"

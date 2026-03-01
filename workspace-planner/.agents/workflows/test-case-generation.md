@@ -119,6 +119,9 @@ Update `testcase_task.json`: `current_phase: context_research`, `data_fetched_at
 | OpenClaw-specific QA plan lookup | `clawddocs` | Look up existing plans or product docs in the OpenClaw knowledge base |
 | Feature-specific context is in the QA plan | QA plan context files | Re-read `context/` artifacts (don't re-fetch unless Smart Refresh) |
 
+Optional branch:
+- If UI behavior remains ambiguous after docs/context review, use `playwright-test-planner` only as a discovery subagent and normalize findings back into canonical Markdown spec format.
+
 **⛔ User Permission Gate (before any external call):**
 If any `tavily-search` or `confluence` calls are needed, **pause and summarize** which steps are unclear and which tools will be used. Present to the user:
 ```
@@ -238,6 +241,18 @@ If any specs were **skipped or partially written**, append:
 
 #### 5.2 Tester Handoff (Option A — Preferred)
 
+**⛔ Human approval gate (mandatory):**
+Before notifying or invoking Tester, present:
+```text
+Proposed tester handoff:
+  Feature: <FEATURE_ID>
+  Path: workspace-planner/projects/feature-plan/<feature-id>/specs/<domain>/<feature>/
+  Files: <scenario1>.md, <scenario2>.md, ...
+  Chain: playwright-test-generator -> playwright-test-healer
+
+Proceed with tester handoff? (Y / No)
+```
+
 Pass the specs path to the Tester Agent (no file duplication):
 
 - **Feature ID** (e.g. `BCIN-1234`)
@@ -246,6 +261,27 @@ Pass the specs path to the Tester Agent (no file duplication):
 - **List of generated spec files**
 
 The Tester reads the `.md` files, generates `tests/specs/<domain>/<feature>/*.spec.ts` via the Playwright Generator, and runs them via `npx playwright test`.
+
+**Mandatory handoff payload (machine-readable):**
+```json
+{
+  "feature_id": "<FEATURE_ID>",
+  "domain": "<domain>",
+  "feature": "<feature>",
+  "specs_path": "workspace-planner/projects/feature-plan/<feature-id>/specs/<domain>/<feature>/",
+  "spec_files": ["<scenario1>.md", "<scenario2>.md"],
+  "seed": "tests/seed.spec.ts",
+  "requested_chain": ["playwright-test-generator", "playwright-test-healer"]
+}
+```
+
+**Tester acknowledgment contract (required):**
+- `status: received`
+- `read_path_ok: true|false`
+- `detected_spec_count: <N>`
+- `next_step: generation_started | blocked`
+
+If `read_path_ok=false`, switch to Option B copy flow (or ask user to approve copy) before retrying handoff.
 
 ---
 

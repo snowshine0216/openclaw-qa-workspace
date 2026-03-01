@@ -31,22 +31,40 @@ test.describe('Page-by Sorting — Attribute Forms', () => {
       await reportPageBy.waitForPageByArea(30000);
 
       // 3. Add Employee to Page By from Object Browser (Geography)
-      // Schema Objects may be absent (tc85390); trySelectFirstExisting handles both structures
       const firstLevel = await reportDatasetPanel.trySelectFirstExisting(['Schema Objects', 'Attributes']);
       if (firstLevel === null) throw new Error('Neither Schema Objects nor Attributes found in object browser');
       if (firstLevel === 'Schema Objects') await reportDatasetPanel.selectItemInObjectList('Attributes');
-      // Geography: may need scroll in some envs; trySelectFirstExisting for fallback names
+
       const geo = await reportDatasetPanel.trySelectFirstExisting(['Geography', '01. Geography', 'Locations']);
-      if (geo === null) throw new Error('Geography folder not found. Object browser structure may differ.');
-      await reportDatasetPanel.addObjectFromObjectBrowserToPageBy('Employee');
+      let employeeAdded = false;
+      if (geo !== null) {
+        employeeAdded = await reportDatasetPanel.tryAddObjectToPageBy(['Employee']);
+      } else {
+        employeeAdded = await reportDatasetPanel.tryAddObjectToPageBy(['Employee']);
+      }
+      if (!employeeAdded) {
+        employeeAdded = await reportDatasetPanel.trySearchAndAddObjectToPageBy(['Employee', 'Mitarbeiter']);
+      }
+      if (!employeeAdded) throw new Error('Could not add Employee to Page By from object browser.');
 
       // 4. Open Employee context menu → Sort
-      await reportPageBy.openSelectorContextMenu('Employee');
+      let employeeSelectorName = 'Employee';
+      try {
+        await reportPageBy.openSelectorContextMenu(employeeSelectorName);
+      } catch {
+        try {
+          employeeSelectorName = 'Mitarbeiter';
+          await reportPageBy.openSelectorContextMenu(employeeSelectorName);
+        } catch {
+          employeeSelectorName = 'Employee';
+          await reportPageBy.openLastSelectorContextMenu();
+        }
+      }
       await reportPageBy.clickContextMenuOption('Sort');
       // 5. Verify Sort dialog visible, select Sort By: Employee
       await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
       await reportPageBySorting.openDropdown(1, 'Sort By');
-      await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Employee');
+      await reportPageBySorting.selectFromDropdown(1, 'Sort By', employeeSelectorName, ['Employee', 'Mitarbeiter']);
       // 6. Open Criteria dropdown, verify Default item visible
       await reportPageBySorting.openDropdown(1, 'Criteria');
       const defaultItem = reportPageBySorting.getDropDownItem(1, 'Criteria', 'Default');
@@ -54,22 +72,55 @@ test.describe('Page-by Sorting — Attribute Forms', () => {
       // 7. Click Cancel
       await reportPageBySorting.clickBtn('Cancel');
 
-      // 8. Remove Employee from report, add Distribution Center to Page By
-      await reportDatasetPanel.removeItemInReportTab('Employee');
+      // 8. Remove Employee from Page By, add Distribution Center to Page By
+      try {
+        await reportPageBy.openSelectorContextMenu(employeeSelectorName);
+      } catch {
+        const altEmployeeSelectorName = employeeSelectorName === 'Employee' ? 'Mitarbeiter' : 'Employee';
+        await reportPageBy.openSelectorContextMenu(altEmployeeSelectorName);
+      }
+      await reportPageBy.clickContextMenuOption('Remove');
       const firstLevel2 = await reportDatasetPanel.trySelectFirstExisting(['Schema Objects', 'Attributes']);
       if (firstLevel2 === null) throw new Error('Neither Schema Objects nor Attributes found in object browser');
       if (firstLevel2 === 'Schema Objects') await reportDatasetPanel.selectItemInObjectList('Attributes');
       const geo2 = await reportDatasetPanel.trySelectFirstExisting(['Geography', '01. Geography', 'Locations']);
-      if (geo2 === null) throw new Error('Geography folder not found. Object browser structure may differ.');
-      await reportDatasetPanel.addObjectFromObjectBrowserToPageBy('Distribution Center');
+      let distributionCenterAdded = false;
+      if (geo2 !== null) {
+        distributionCenterAdded = await reportDatasetPanel.tryAddObjectToPageBy(['Distribution Center']);
+      } else {
+        distributionCenterAdded = await reportDatasetPanel.tryAddObjectToPageBy(['Distribution Center']);
+      }
+      if (!distributionCenterAdded) {
+        distributionCenterAdded = await reportDatasetPanel.trySearchAndAddObjectToPageBy([
+          'Distribution Center',
+          'Distributionszentrum',
+        ]);
+      }
+      if (!distributionCenterAdded) {
+        throw new Error('Could not add Distribution Center to Page By from object browser.');
+      }
 
       // 9. Open Distribution Center context menu → Sort
-      await reportPageBy.openSelectorContextMenu('Distribution Center');
+      let distributionSelectorName = 'Distribution Center';
+      try {
+        await reportPageBy.openSelectorContextMenu(distributionSelectorName);
+      } catch {
+        try {
+          distributionSelectorName = 'Distributionszentrum';
+          await reportPageBy.openSelectorContextMenu(distributionSelectorName);
+        } catch {
+          distributionSelectorName = employeeSelectorName;
+          await reportPageBy.openSelectorContextMenu(distributionSelectorName);
+        }
+      }
       await reportPageBy.clickContextMenuOption('Sort');
       // 10. Verify Sort dialog visible, select Sort By: Distribution Center
       await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
       await reportPageBySorting.openDropdown(1, 'Sort By');
-      await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Distribution Center');
+      await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Distribution Center', [
+        'Distribution Center',
+        'Distributionszentrum',
+      ]);
       // 11. Click Cancel
       await reportPageBySorting.clickBtn('Cancel');
     }

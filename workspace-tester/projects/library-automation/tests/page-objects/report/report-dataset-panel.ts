@@ -138,6 +138,26 @@ export class ReportDatasetPanel {
     return container.getByText(itemName, { exact: true }).first();
   }
 
+  /** Object lookup with broader fallbacks (aria-label/tree nodes/report object item text). */
+  private getObjectCandidate(itemName: string) {
+    const escaped = itemName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const exact = new RegExp(`^\\s*${escaped}\\s*$`, 'i');
+    const browser = this.page
+      .locator('.objectBrowserContainer')
+      .locator(
+        `[aria-label="${itemName}"], .ant-tree-title, .ant-tree-node-content-wrapper, ` +
+        '.object-item-text, .object-item-container, [class*="object-item"], span, div'
+      )
+      .filter({ hasText: exact })
+      .first();
+    const reportObjects = this.page
+      .locator('.reportObjectsContainer, [class*="report-objects"], .report-objects')
+      .locator('.object-item-container[aria-label], .object-item-text, [class*="object-item"], span, div')
+      .filter({ hasText: exact })
+      .first();
+    return browser.or(reportObjects).first();
+  }
+
   /** Object in REPORT OBJECTS panel (e.g. Year after removal from Page By). DOM: .object-item-container or .object-item-text */
   private getItemInReportObjects(itemName: string) {
     return this.page
@@ -159,8 +179,14 @@ export class ReportDatasetPanel {
    * @returns The name that was selected, or null if none found
    */
   async trySelectFirstExisting(names: string[]): Promise<string | null> {
+    const container = this.page.locator('.objectBrowserContainer');
     for (const name of names) {
-      const container = this.page.locator('.objectBrowserContainer');
+      // Reset to top for each candidate so later fallback names are not searched only from the previous bottom position.
+      await container.evaluate((node) => {
+        node.scrollTop = 0;
+      }).catch(() => {});
+      await this.page.waitForTimeout(150);
+
       let el = this.getItemInObjectBrowser(name);
       let count = await el.count();
       if (count === 0) {
@@ -194,17 +220,22 @@ export class ReportDatasetPanel {
   async tryAddObjectToPageBy(names: string[]): Promise<boolean> {
     for (const name of names) {
       const container = this.page.locator('.objectBrowserContainer');
-      let obj = this.getItemInObjectBrowser(name);
+      await container.evaluate((node) => {
+        node.scrollTop = 0;
+      }).catch(() => {});
+      await this.page.waitForTimeout(100);
+
+      let obj = this.getObjectCandidate(name);
       let count = await obj.count();
       if (count === 0) {
         let previousScrollTop = -1;
-        for (let attempts = 0; attempts < 20; attempts++) {
+        for (let attempts = 0; attempts < 60; attempts++) {
           const currentScrollTop = await container.evaluate((node) => node.scrollTop);
           if (currentScrollTop === previousScrollTop && previousScrollTop > 0) break;
           await container.evaluate((node) => { node.scrollTop += 150; });
           await this.page.waitForTimeout(300);
           previousScrollTop = currentScrollTop;
-          obj = this.getItemInObjectBrowser(name);
+          obj = this.getObjectCandidate(name);
           count = await obj.count();
           if (count > 0) break;
         }
@@ -218,6 +249,31 @@ export class ReportDatasetPanel {
         await this.page.waitForTimeout(2000);
         return true;
       }
+    }
+    return false;
+  }
+
+  /** Search object browser and try add object to Page-by by context menu. */
+  async trySearchAndAddObjectToPageBy(names: string[]): Promise<boolean> {
+    const searchInput = this.page
+      .locator('.mstr-object-browser-search input[aria-label*="search" i], .mstr-object-browser-search input')
+      .first();
+    const visible = await searchInput.isVisible().catch(() => false);
+    if (!visible) return false;
+    for (const name of names) {
+      await searchInput.click({ force: true });
+      const editable = await searchInput.isEditable().catch(() => false);
+      if (editable) {
+        await searchInput.fill('');
+        await searchInput.fill(name);
+      } else {
+        await this.page.keyboard.press('Meta+a').catch(() => this.page.keyboard.press('Control+a').catch(() => {}));
+        await this.page.keyboard.type(name);
+      }
+      await this.page.keyboard.press('Enter').catch(() => {});
+      await this.page.waitForTimeout(1200);
+      const added = await this.tryAddObjectToPageBy([name]);
+      if (added) return true;
     }
     return false;
   }
@@ -380,9 +436,21 @@ export class ReportDatasetPanel {
   }
 
   async clickObjectContextMenuItem(label: string): Promise<void> {
-    const item = this.contextMenu.locator('li').filter({ hasText: label }).first();
+    const liItem = this.contextMenu.locator('li').filter({ hasText: label }).first();
+    const aItem = this.page
+      .locator('.mstrmojo-ListBase.mstrmojo-ui-Menu.visible a.mstrmojo-ui-Menu-item')
+      .filter({ hasText: label })
+      .first();
+    let item = liItem.or(aItem).first();
+    const found = await item.isVisible().catch(() => false);
+    if (!found && label === 'Remove from Report') {
+      item = this.page
+        .locator('.mstrmojo-ListBase.mstrmojo-ui-Menu.visible a.mstrmojo-ui-Menu-item, .mstr-context-menu li')
+        .filter({ hasText: /^Remove$/i })
+        .first();
+    }
     await item.waitFor({ state: 'visible', timeout: 5000 });
-    await item.click();
+    await item.click({ force: true });
   }
 
   /** Get object in "In Report" tab - returns locator */

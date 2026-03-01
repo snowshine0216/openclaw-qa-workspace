@@ -53,7 +53,7 @@ Key phases:
   2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
   3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
   4. Generate Markdown specs — one .md per scenario via test-case-generator skill
-  5. Feishu DM + Tester Agent handoff
+  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
 
 State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
 Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md

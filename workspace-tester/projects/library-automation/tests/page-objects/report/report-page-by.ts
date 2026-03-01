@@ -57,6 +57,21 @@ export class ReportPageBy {
       .first();
   }
 
+  private getVisiblePopupList() {
+    return this.page.locator(
+      '.mstrmojo-PopupList:visible, [class*="PopupList"]:visible, [class*="popup-list"]:visible, ' +
+      '.ant-dropdown:visible, .ant-select-dropdown:visible, [role="listbox"]:visible'
+    ).first();
+  }
+
+  private async waitForPopupListVisible(timeout = 10000): Promise<void> {
+    await this.getVisiblePopupList().waitFor({ state: 'visible', timeout });
+  }
+
+  getVisiblePopupListLocator() {
+    return this.getVisiblePopupList();
+  }
+
   async getPageBySelectorText(selector: string): Promise<string> {
     const el = this.getSelectorPulldownTextBox(selector);
     // Increased timeout from 5s to 20s for slower dev environments
@@ -74,36 +89,125 @@ export class ReportPageBy {
     const el = this.getSelectorPulldownTextBox(selectorName);
     await el.waitFor({ state: 'visible', timeout });
     await el.scrollIntoViewIfNeeded();
-    await el.click();
-    // Allow MicroStrategy .mstrmojo-PopupList to render before interacting
-    await this.page.waitForTimeout(800);
+    await el.click({ force: true });
+    try {
+      await this.waitForPopupListVisible(5000);
+      return;
+    } catch {
+      // Retry with keyboard in case click focuses combobox but does not open list.
+      await el.click({ force: true });
+      await this.page.keyboard.press('ArrowDown').catch(() => {});
+      await this.waitForPopupListVisible(10000);
+    }
   }
 
   /** WDIO: openSelectorContextMenu */
   async openSelectorContextMenu(selectorName: string): Promise<void> {
-    const el = this.getSelector(selectorName);
+    const label = this.page.locator(`.mstrmojo-ReportPageBySelector-container .mstrmojo-Label[aria-label="${selectorName}"]`).first();
+    if ((await label.count()) > 0) {
+      await label.waitFor({ state: 'visible', timeout: 20000 });
+      await label.scrollIntoViewIfNeeded();
+      await label.click({ button: 'right', force: true });
+      await this.page.waitForTimeout(800);
+      return;
+    }
+
+    let el = this.page
+      .locator(`.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label[aria-label="${selectorName}"])`)
+      .first();
+    if ((await el.count()) === 0) {
+      el = this.getSelector(selectorName);
+    }
     await el.waitFor({ state: 'visible', timeout: 20000 });
     await el.scrollIntoViewIfNeeded();
-    await el.click({ button: 'right' });
-    await this.page.waitForTimeout(1000);
+    const menu = this.page.locator(
+      '.mstrmojo-ui-Menu.visible, .mstrmojo-ListBase.mstrmojo-ui-Menu.visible, .mstr-context-menu:not(.ant-dropdown-hidden), .ant-dropdown:visible, [role="menu"]'
+    );
+    await el.click({ button: 'right', force: true });
+    if (await menu.first().isVisible().catch(() => false)) return;
+
+    // Retry on combobox element in the selector in case the container swallows right click.
+    const pulldown = this.getSelectorPulldownTextBox(selectorName);
+    await pulldown.click({ button: 'right', force: true }).catch(() => {});
+    if (await menu.first().isVisible().catch(() => false)) return;
+
+    // Keyboard context-menu fallback.
+    await el.click({ force: true });
+    await this.page.keyboard.press('Shift+F10').catch(() => {});
+    await this.page.waitForTimeout(800);
+  }
+
+  async openLastSelectorContextMenu(): Promise<void> {
+    const lastSelector = this.page
+      .locator(
+        '[class*="ReportPageBySelector-container"], [class*="ReportPageBySelector-Box"], .mstrmojo-ReportPageBySelector-container'
+      )
+      .last();
+    await lastSelector.waitFor({ state: 'visible', timeout: 20000 });
+    await lastSelector.scrollIntoViewIfNeeded();
+    await lastSelector.click({ button: 'right', force: true });
+    await this.page.waitForTimeout(800);
   }
 
   /** WDIO: changePageByElement */
   async changePageByElement(selectorName: string, elementName: string): Promise<void> {
+    const popupList = this.getVisiblePopupList();
+    const escaped = elementName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const exactText = new RegExp(`^\\s*${escaped}\\s*$`, 'i');
+    const looseText = new RegExp(`\\b${escaped}\\b`, 'i');
+    const popupItems = popupList.locator(
+      'div.item, [class*="item"], li, [role="option"], [role="menuitem"], .ant-select-item, .ant-tree-treenode, span'
+    );
+    const exactItem = popupItems.filter({ hasText: exactText }).first();
+    const looseItem = popupItems.filter({ hasText: looseText }).first();
+
+    const clickPopupItem = async (timeoutMs: number): Promise<boolean> => {
+      const item = this.getElementFromPopupList(elementName).or(exactItem).or(looseItem).first();
+      try {
+        await item.waitFor({ state: 'visible', timeout: timeoutMs });
+        await item.click({ force: true });
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
     await this.openDropdownFromSelector(selectorName);
-    // Wait for the dropdown popup to be open before interacting with items.
-    // MicroStrategy uses .mstrmojo-PopupList with display:block when visible.
-    await this.page
-      .locator(
-        '.mstrmojo-PopupList:visible, .mstrmojo-PopupList[style*="display: block"], ' +
-        '[class*="PopupList"]:visible, [class*="popup-list"]:visible'
-      )
-      .first()
-      .waitFor({ state: 'visible', timeout: 10000 });
-    const item = this.getElementFromPopupList(elementName);
-    // Increased timeout from 10s to 20s for slower dev environments
-    await item.waitFor({ state: 'visible', timeout: 20000 });
-    await item.click();
+    await this.waitForPopupListVisible(10000);
+
+    // Primary attempt, then one re-open attempt to handle transient stale overlays.
+    const selected = await clickPopupItem(12000);
+    if (!selected) {
+      const availableValues = (await popupItems.allTextContents())
+        .map((t) => t.replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+        .slice(0, 20);
+      await this.page.keyboard.press('Escape').catch(() => {});
+      await this.page.waitForTimeout(300);
+      await this.openDropdownFromSelector(selectorName);
+      await this.waitForPopupListVisible(10000);
+
+      const selectedOnRetry = await clickPopupItem(12000);
+      if (!selectedOnRetry) {
+        // Final fallback: editable combobox path (type value + Enter)
+        const combo = this.getSelectorPulldownTextBox(selectorName);
+        await combo.click({ force: true }).catch(() => {});
+        await combo.fill(elementName).catch(async () => {
+          await combo.press('Meta+a').catch(() => combo.press('Control+a').catch(() => {}));
+          await this.page.keyboard.type(elementName).catch(() => {});
+        });
+        await this.page.keyboard.press('Enter').catch(() => {});
+        await this.page.waitForTimeout(800);
+        const textAfter = await this.getPageBySelectorText(selectorName);
+        if (!new RegExp(escaped, 'i').test(textAfter)) {
+          throw new Error(
+            `Page By value "${elementName}" not found for selector "${selectorName}". ` +
+            `Visible options: ${availableValues.join(' | ')}`
+          );
+        }
+      }
+    }
+
     await this.page.waitForTimeout(2000);
   }
 
@@ -118,12 +222,30 @@ export class ReportPageBy {
   /** Click context menu option (e.g. Sort, Move) when menu is open from Page-by selector right-click.
    * For "Sort", uses exact match to avoid matching "Sort Ascending" or "Sort Descending". */
   async clickContextMenuOption(opt: string): Promise<void> {
+    if (opt === 'Sort') {
+      const exactSort = this.page.locator(
+        '.mstrmojo-ListBase.mstrmojo-ui-Menu.visible a.mnu--page-by-sort, ' +
+        '.mstrmojo-ListBase.mstrmojo-ui-Menu a.mnu--page-by-sort'
+      ).first();
+      const fallbackSort = this.page
+        .locator('.mstr-context-menu li, .ant-dropdown-menu li, [role="menuitem"]')
+        .filter({ hasText: /sort/i })
+        .first();
+      const sortItem = exactSort.or(fallbackSort).first();
+      await sortItem.waitFor({ state: 'attached', timeout: 15000 });
+      await sortItem.click({ force: true });
+      await this.page.waitForTimeout(1200);
+      return;
+    }
+
     const mojoMenu = this.page.locator('.mstrmojo-ui-Menu.visible, .mstrmojo-ListBase.mstrmojo-ui-Menu.visible');
     const inMojoMenu = mojoMenu.locator(
       opt === 'Sort' ? 'a.mnu--page-by-sort' : 'a.mstrmojo-ui-Menu-item:has-text("' + opt + '")'
     );
-    const exactMatch = opt === 'Sort';
-    const textPattern = exactMatch ? /^Sort$/ : new RegExp(opt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const textPattern =
+      opt === 'Sort'
+        ? /sort/i
+        : new RegExp(opt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     const fallback = this.page.locator(
       '.mstr-context-menu li, .ant-dropdown-menu li, [role="menuitem"]'
     ).filter({ hasText: textPattern }).first();
