@@ -129,22 +129,22 @@ export class ReportDatasetPanel {
       // Progressive scroll: scroll down in increments until found or bottom reached
       let previousScrollTop = -1;
       let attempts = 0;
-      const maxAttempts = 20;
+      const maxAttempts = 50; // Increased from 20
       
       while (count === 0 && attempts < maxAttempts) {
         const currentScrollTop = await container.evaluate((node) => node.scrollTop);
         
         // Check if we've reached the bottom (scrollTop no longer changes)
         if (currentScrollTop === previousScrollTop && previousScrollTop > 0) {
-          console.log(`[Dataset Panel] Reached bottom, "${name}" not found`);
+          console.log(`[Dataset Panel] Reached bottom after ${attempts} attempts, "${name}" not found`);
           break;
         }
         
-        // Scroll down by 150px
+        // Scroll down by 200px (increased from 150px)
         await container.evaluate((node) => {
-          node.scrollTop += 150;
+          node.scrollTop += 200;
         });
-        await this.page.waitForTimeout(300);
+        await this.page.waitForTimeout(250); // Reduced wait from 300ms
         
         previousScrollTop = currentScrollTop;
         attempts++;

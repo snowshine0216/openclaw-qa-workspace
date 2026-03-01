@@ -27,16 +27,18 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportToolbar.switchToDesignMode();
       console.log('[TC85390] Test URL:', libraryPage.page.url());
       
-      // Skip "Schema Objects" - confirmed absent
+      // Navigate: Attributes (root) → Time → Year
       await reportDatasetPanel.selectItemInObjectList('Attributes');
-      
-      // Debug: Check what's inside Attributes
       await libraryPage.page.waitForTimeout(2000);
-      const allItems = await libraryPage.page.locator('.objectBrowserContainer .object-item-text').allTextContents();
-      console.log('[TC85390] Folders inside Attributes:', allItems.slice(0, 10));
       
-      // Try "01. Date" instead of "Time"
-      await reportDatasetPanel.selectItemInObjectList('01. Date');
+      // "Time" folder needs scrolling (progressive scroll built into selectItemInObjectList)
+      await reportDatasetPanel.selectItemInObjectList('Time');
+      await libraryPage.page.waitForTimeout(2000);
+      
+      // Debug: Check what's inside Time folder
+      const allItems = await libraryPage.page.locator('.objectBrowserContainer .object-item-text').allTextContents();
+      console.log('[TC85390] Items inside Time folder:', allItems.slice(0, 15));
+      
       await reportDatasetPanel.addObjectFromObjectBrowserToPageBy('Year');
 
       const yearSelector = reportPageBy.getSelector('Year');
