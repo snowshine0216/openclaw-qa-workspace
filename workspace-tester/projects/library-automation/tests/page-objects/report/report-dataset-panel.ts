@@ -28,10 +28,10 @@ export class ReportDatasetPanel {
   async openObjectContextMenu(objectName: string): Promise<void> {
     await this.closeContextMenuIfOpen();
     
-    // Use same progressive scroll logic as selectItemInObjectList
-    const container = this.page.locator('.objectBrowserContainer');
+    // Try object browser first (Schema Objects tree), then report objects (REPORT OBJECTS panel)
     let obj = this.getItemInObjectBrowser(objectName);
     let count = await obj.count();
+    const container = this.page.locator('.objectBrowserContainer');
     
     if (count === 0) {
       console.log(`[Dataset Panel Context Menu] "${objectName}" not visible, progressive scrolling...`);
@@ -42,7 +42,7 @@ export class ReportDatasetPanel {
       while (count === 0 && attempts < maxAttempts) {
         const currentScrollTop = await container.evaluate((node) => node.scrollTop);
         if (currentScrollTop === previousScrollTop && previousScrollTop > 0) {
-          console.log(`[Dataset Panel Context Menu] Reached bottom, "${objectName}" not found`);
+          console.log(`[Dataset Panel Context Menu] Reached bottom, "${objectName}" not found in object browser`);
           break;
         }
         
@@ -62,6 +62,34 @@ export class ReportDatasetPanel {
           break;
         }
       }
+    }
+    
+    // Fallback: look in reportObjectsContainer (REPORT OBJECTS panel, e.g. Year after removal from Page By)
+    if (count === 0) {
+      const reportContainer = this.page.locator('.reportObjectsContainer, [class*="report-objects"]').first();
+      obj = this.getItemInReportObjects(objectName);
+      count = await obj.count();
+      if (count === 0 && (await reportContainer.count()) > 0) {
+        // Progressive scroll in report objects (may be below fold)
+        let prevScroll = -1;
+        for (let i = 0; i < 20; i++) {
+          const curr = await reportContainer.evaluate((n) => n.scrollTop);
+          if (curr === prevScroll && prevScroll > 0) break;
+          await reportContainer.evaluate((n) => { n.scrollTop += 150; });
+          await this.page.waitForTimeout(200);
+          prevScroll = curr;
+          obj = this.getItemInReportObjects(objectName);
+          count = await obj.count();
+          if (count > 0) break;
+        }
+      }
+      if (count > 0) {
+        console.log(`[Dataset Panel Context Menu] "${objectName}" found in report objects`);
+      }
+    }
+    
+    if (count === 0) {
+      throw new Error(`Object "${objectName}" not found in object browser or report objects.`);
     }
     
     await obj.scrollIntoViewIfNeeded();
@@ -110,10 +138,88 @@ export class ReportDatasetPanel {
     return container.getByText(itemName, { exact: true }).first();
   }
 
+  /** Object in REPORT OBJECTS panel (e.g. Year after removal from Page By). DOM: .object-item-container or .object-item-text */
+  private getItemInReportObjects(itemName: string) {
+    return this.page
+      .locator('.reportObjectsContainer, [class*="report-objects"], .report-objects')
+      .locator('.object-item-container[aria-label], .object-item-text, [class*="object-item"]')
+      .filter({ hasText: new RegExp(`^${itemName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') })
+      .first();
+  }
+
   private get folderUpIcon() {
     return this.page.locator(
       '[class*="icon-objects-folder-up"], [class*="icon-parent-folder"], [class*="folder-up"]'
     );
+  }
+
+  /**
+   * Try to select the first item that exists from the given names.
+   * Useful for environment-specific variations (e.g. "Year" vs "Jahr").
+   * @returns The name that was selected, or null if none found
+   */
+  async trySelectFirstExisting(names: string[]): Promise<string | null> {
+    for (const name of names) {
+      const container = this.page.locator('.objectBrowserContainer');
+      let el = this.getItemInObjectBrowser(name);
+      let count = await el.count();
+      if (count === 0) {
+        let previousScrollTop = -1;
+        for (let attempts = 0; attempts < 50; attempts++) {
+          const currentScrollTop = await container.evaluate((node) => node.scrollTop);
+          if (currentScrollTop === previousScrollTop && previousScrollTop > 0) break;
+          await container.evaluate((node) => { node.scrollTop += 200; });
+          await this.page.waitForTimeout(250);
+          previousScrollTop = currentScrollTop;
+          el = this.getItemInObjectBrowser(name);
+          count = await el.count();
+          if (count > 0) break;
+        }
+      }
+      if (count > 0) {
+        await el.waitFor({ state: 'attached', timeout: 10000 });
+        await el.scrollIntoViewIfNeeded();
+        await el.click({ force: true });
+        await this.page.waitForTimeout(1000);
+        return name;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Try to add an object to Page By, using the first name that exists.
+   * @returns true if added, false if none found
+   */
+  async tryAddObjectToPageBy(names: string[]): Promise<boolean> {
+    for (const name of names) {
+      const container = this.page.locator('.objectBrowserContainer');
+      let obj = this.getItemInObjectBrowser(name);
+      let count = await obj.count();
+      if (count === 0) {
+        let previousScrollTop = -1;
+        for (let attempts = 0; attempts < 20; attempts++) {
+          const currentScrollTop = await container.evaluate((node) => node.scrollTop);
+          if (currentScrollTop === previousScrollTop && previousScrollTop > 0) break;
+          await container.evaluate((node) => { node.scrollTop += 150; });
+          await this.page.waitForTimeout(300);
+          previousScrollTop = currentScrollTop;
+          obj = this.getItemInObjectBrowser(name);
+          count = await obj.count();
+          if (count > 0) break;
+        }
+      }
+      if (count > 0) {
+        await obj.scrollIntoViewIfNeeded();
+        await obj.click({ button: 'right', force: true });
+        await this.page.waitForTimeout(1000);
+        await this.contextMenu.first().waitFor({ state: 'visible', timeout: 8000 }).catch(() => {});
+        await this.clickObjectContextMenuItem('Add to Page-by');
+        await this.page.waitForTimeout(2000);
+        return true;
+      }
+    }
+    return false;
   }
 
   async selectItemInObjectList(name: string): Promise<void> {
@@ -126,10 +232,11 @@ export class ReportDatasetPanel {
     if (count === 0) {
       console.log(`[Dataset Panel] "${name}" not visible, progressive scrolling...`);
       
-      // Progressive scroll: scroll down in increments until found or bottom reached
+      // Progressive scroll: scroll down in increments until found or bottom reached.
+      // Schema Objects and other top-level items may be below fold (see tc85390-progressive-scroll-confirmed).
       let previousScrollTop = -1;
       let attempts = 0;
-      const maxAttempts = 50; // Increased from 20
+      const maxAttempts = 80; // Increased for dossiers where Schema Objects is below fold
       
       while (count === 0 && attempts < maxAttempts) {
         const currentScrollTop = await container.evaluate((node) => node.scrollTop);
@@ -140,11 +247,11 @@ export class ReportDatasetPanel {
           break;
         }
         
-        // Scroll down by 200px (increased from 150px)
+        // Scroll down by 250px to reach items below fold (e.g. Schema Objects in ReportWS_PB_YearCategory2)
         await container.evaluate((node) => {
-          node.scrollTop += 200;
+          node.scrollTop += 250;
         });
-        await this.page.waitForTimeout(250); // Reduced wait from 300ms
+        await this.page.waitForTimeout(250);
         
         previousScrollTop = currentScrollTop;
         attempts++;
@@ -170,6 +277,9 @@ export class ReportDatasetPanel {
         el = this.getItemInObjectBrowser(name);
         count = await el.count();
         console.log(`[Dataset Panel] "${name}" count at top: ${count}`);
+        if (count === 0) {
+          throw new Error(`Dataset panel item "${name}" not found. Object browser structure may differ in this environment.`);
+        }
       }
     }
     

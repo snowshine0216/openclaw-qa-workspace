@@ -5,32 +5,55 @@ export class ReportPageBy {
 
   private readonly pageByArea = this.page.locator('[aria-label="Page By"], [class*="pageby"], [class*="page-by"]').first();
 
-  /** WDIO: getSelector(selectorName) - container with label */
+  /** Wait for Page By area to be ready before interacting with selectors */
+  async waitForPageByArea(timeout = 30000): Promise<void> {
+    // Wait for mstrmojo-ReportPageBySelector to appear (actual DOM structure)
+    await this.page
+      .locator('.mstrmojo-ReportPageBySelector-Box, [class*="ReportPageBySelector-container"]')
+      .first()
+      .waitFor({ state: 'visible', timeout })
+      .catch(() => {});
+    await this.page.waitForTimeout(1500);
+  }
+
+  /** WDIO: getSelector(selectorName) - container with label. Matches mstrmojo-ReportPageBySelector-Box structure. */
   getSelector(selectorName: string) {
     return this.page
       .locator(
-        `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
-          `[class*="ReportPageBySelector-container"]:has([class*="Label"]:has-text("${selectorName}"))`
+        `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]), ` +
+          `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
+          `[class*="ReportPageBySelector-Box"]:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
+          `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
+          `[class*="ReportPageBySelector"]:has([class*="Label"]:has-text("${selectorName}"))`
       )
       .first();
   }
 
-  /** WDIO: getSelectorPulldownTextBox - the dropdown trigger text */
+  /** WDIO: getSelectorPulldownTextBox - the dropdown trigger (mstrmojo-ui-Pulldown-text, role=combobox) */
   getSelectorPulldownTextBox(selectorName: string) {
-    const selector = this.getSelector(selectorName);
-    // Enhanced selector with more fallbacks for different DOM structures
-    return selector.locator(
-      '.pulldown-container, [class*="Pulldown-text"], [class*="pulldown"], [class*="Pulldown"], ' +
-      '[role="combobox"], [class*="trigger"], .ant-select-selector, ' +
-      '[class*="select"], [class*="dropdown"], .mstrmojo-Dropdown'
-    ).first();
+    // Direct: container with Label[aria-label="Year"] -> [role="combobox"] (from actual DOM)
+    const direct = this.page.locator(
+      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]) [role="combobox"]`
+    );
+    const viaSelector = this.getSelector(selectorName).locator(
+      '.mstrmojo-ui-Pulldown-text, .pulldown-container [role="combobox"], ' +
+      '[role="combobox"], .pulldown-container, [class*="Pulldown-text"]'
+    );
+    return direct.or(viaSelector).first();
   }
 
   /** WDIO: getElementFromPopupList - item in open dropdown */
   getElementFromPopupList(elementName: string) {
-    return this.page
-      .locator('[class*="PopupList"]:visible, [class*="popup-list"]:visible, .ant-dropdown:visible')
-      .locator(`[class*="item"]:has-text("${elementName}"), li:has-text("${elementName}")`)
+    const containers = this.page.locator(
+      '.mstrmojo-PopupList:visible, [class*="PopupList"]:visible, [class*="popup-list"]:visible, ' +
+      '.ant-dropdown:visible, .ant-select-dropdown:visible, [role="listbox"]:visible'
+    );
+    return containers
+      .locator(
+        `div.item:has-text("${elementName}"), [class*="item"]:has-text("${elementName}"), li:has-text("${elementName}"), ` +
+        `[role="option"]:has-text("${elementName}"), [role="menuitem"]:has-text("${elementName}"), ` +
+        `.ant-select-item:has-text("${elementName}"), .ant-tree-treenode:has-text("${elementName}")`
+      )
       .first();
   }
 
@@ -52,14 +75,15 @@ export class ReportPageBy {
     await el.waitFor({ state: 'visible', timeout });
     await el.scrollIntoViewIfNeeded();
     await el.click();
-    await this.page.waitForTimeout(500);
+    // Allow MicroStrategy .mstrmojo-PopupList to render before interacting
+    await this.page.waitForTimeout(800);
   }
 
   /** WDIO: openSelectorContextMenu */
   async openSelectorContextMenu(selectorName: string): Promise<void> {
     const el = this.getSelector(selectorName);
-    // Increased timeout from 5s to 20s for slower dev environments
     await el.waitFor({ state: 'visible', timeout: 20000 });
+    await el.scrollIntoViewIfNeeded();
     await el.click({ button: 'right' });
     await this.page.waitForTimeout(1000);
   }
@@ -67,6 +91,15 @@ export class ReportPageBy {
   /** WDIO: changePageByElement */
   async changePageByElement(selectorName: string, elementName: string): Promise<void> {
     await this.openDropdownFromSelector(selectorName);
+    // Wait for the dropdown popup to be open before interacting with items.
+    // MicroStrategy uses .mstrmojo-PopupList with display:block when visible.
+    await this.page
+      .locator(
+        '.mstrmojo-PopupList:visible, .mstrmojo-PopupList[style*="display: block"], ' +
+        '[class*="PopupList"]:visible, [class*="popup-list"]:visible'
+      )
+      .first()
+      .waitFor({ state: 'visible', timeout: 10000 });
     const item = this.getElementFromPopupList(elementName);
     // Increased timeout from 10s to 20s for slower dev environments
     await item.waitFor({ state: 'visible', timeout: 20000 });
@@ -82,13 +115,22 @@ export class ReportPageBy {
     return (await this.getSelectorByIdx(idx).getText()) || '';
   }
 
-  /** Click context menu option (e.g. Sort, Move) when menu is open from Page-by selector right-click */
+  /** Click context menu option (e.g. Sort, Move) when menu is open from Page-by selector right-click.
+   * For "Sort", uses exact match to avoid matching "Sort Ascending" or "Sort Descending". */
   async clickContextMenuOption(opt: string): Promise<void> {
-    // Use getByText for more flexible text matching
-    const item = this.page.getByText(opt, { exact: true }).first();
-    await item.waitFor({ state: 'visible', timeout: 15000 });
-    await item.click();
-    await this.page.waitForTimeout(500);
+    const mojoMenu = this.page.locator('.mstrmojo-ui-Menu.visible, .mstrmojo-ListBase.mstrmojo-ui-Menu.visible');
+    const inMojoMenu = mojoMenu.locator(
+      opt === 'Sort' ? 'a.mnu--page-by-sort' : 'a.mstrmojo-ui-Menu-item:has-text("' + opt + '")'
+    );
+    const exactMatch = opt === 'Sort';
+    const textPattern = exactMatch ? /^Sort$/ : new RegExp(opt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const fallback = this.page.locator(
+      '.mstr-context-menu li, .ant-dropdown-menu li, [role="menuitem"]'
+    ).filter({ hasText: textPattern }).first();
+    const item = inMojoMenu.or(fallback);
+    await item.first().waitFor({ state: 'visible', timeout: 15000 });
+    await item.first().click();
+    await this.page.waitForTimeout(1500);
   }
 
   /** WDIO: clickChecklistElementInContextMenu - click checkbox/item in Add Attributes / Show Metrics submenu */

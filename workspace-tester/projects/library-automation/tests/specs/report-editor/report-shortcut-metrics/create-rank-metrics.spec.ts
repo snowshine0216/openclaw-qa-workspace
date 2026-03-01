@@ -18,15 +18,29 @@ test.describe('Report Editor Shortcut Metrics', () => {
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportEditorPanel.createRankForMetricInMetricsDropZone('Cost');
-      const metrics = await reportEditorPanel.getMetricsObjects();
-      expect(metrics.some((m) => m.includes('Rank')), 'Metrics should contain Rank (Cost)').toBe(true);
+      await expect
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => m.includes('Rank'));
+          },
+          { timeout: 15000, message: 'Metrics should contain Rank (Cost)' }
+        )
+        .toBe(true);
 
       await reportToolbar.switchToDesignMode();
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid cell (0,0)').toBe('Subcategory');
 
       await reportEditorPanel.createRankForMetricInMetricsDropZone('Cost', 'Descending');
-      const metrics2 = await reportEditorPanel.getMetricsObjects();
-      expect(metrics2.some((m) => m.includes('Rank')), 'Metrics should contain Rank Descending').toBe(true);
+      await expect
+        .poll(
+          async () => {
+            const metrics2 = await reportEditorPanel.getMetricsObjects();
+            return metrics2.some((m) => m.includes('Rank'));
+          },
+          { timeout: 15000, message: 'Metrics should contain Rank Descending' }
+        )
+        .toBe(true);
     }
   );
 });

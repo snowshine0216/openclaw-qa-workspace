@@ -25,10 +25,15 @@ test.describe('Report Editor Shortcut Metrics', () => {
       ).toBe(true);
 
       await reportEditorPanel.clickSubMenuItem('Subcategory');
-      await expect.poll(async () => {
-        const metrics = await reportEditorPanel.getMetricsObjects();
-        return metrics.some((m) => m.includes('Percent to Total'));
-      }, 'Metrics should have Percent to Total (Cost)').toBe(true);
+      await expect
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => m.includes('Percent to Total'));
+          },
+          { timeout: 15000, message: 'Metrics should have Percent to Total (Cost)' }
+        )
+        .toBe(true);
 
       await reportToolbar.switchToDesignMode();
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid cell (0,0)').toBe('Year');

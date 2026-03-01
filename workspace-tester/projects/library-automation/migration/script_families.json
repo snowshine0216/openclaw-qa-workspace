@@ -34,12 +34,12 @@
           "fileCount": 8,
           "status": "done",
           "progress": {
-            "last_run": "2026-02-28",
-            "pass": 0,
-            "fail": 8,
-            "self_healed": false,
+            "last_run": "2026-03-01",
+            "pass": 1,
+            "fail": 7,
+            "self_healed": true,
             "quality_checked": true,
-            "notes": "8 fail: TimeoutError waitForURL in authenticatedPage (env/connectivity); not locator bug",
+            "notes": "1 pass (page-by-sorting-2); 7 fail: dropdown overlay (.ant-dropdown) not matching; Year selector/Criteria ID/Order Descending",
             "quality_report": "migration/quality_report_report-editor_2b.md"
           },
           "snapshotMapping": [

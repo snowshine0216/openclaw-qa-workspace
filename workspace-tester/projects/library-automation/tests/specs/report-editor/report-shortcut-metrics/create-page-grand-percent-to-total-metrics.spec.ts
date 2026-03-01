@@ -33,10 +33,15 @@ test.describe('Report Editor Shortcut Metrics', () => {
       ).toBe('Percent to Grand Total (Cost)');
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Page Total');
-      await expect.poll(async () => {
-        const metrics = await reportEditorPanel.getMetricsObjects();
-        return metrics.some((m) => m.includes('Percent to Page Total'));
-      }, 'Metrics should have Page Total').toBe(true);
+      await expect
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => m.includes('Percent to Page Total'));
+          },
+          { timeout: 15000, message: 'Metrics should have Page Total' }
+        )
+        .toBe(true);
     }
   );
 });

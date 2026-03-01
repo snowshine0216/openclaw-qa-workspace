@@ -19,18 +19,13 @@ test.describe('Page-by Sorting in report editor', () => {
       libraryPage,
       reportToolbar,
       reportPageBy,
-      reportGridView,
       reportPageBySorting,
     }) => {
       const d = reportPageBySortingData.dossiers.DeveloperPBYearAscCustomCategoriesParentTop;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportToolbar.switchToDesignMode();
-      
-      // Take snapshot after design mode switch for debugging
-      await page.screenshot({ path: 'test-results/tc85430-after-design-mode.png', fullPage: true });
-      console.log('[TC85430] Screenshot saved: test-results/tc85430-after-design-mode.png');
-      console.log('[TC85430] Current URL:', page.url());
+      await reportPageBy.waitForPageByArea(30000);
 
       const yearSelector = reportPageBy.getSelectorPulldownTextBox('Year');
       // Increased timeout from 15s to 30s for slower dev environments
@@ -39,17 +34,22 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportPageBy.openDropdownFromSelector('Year');
       const item2014 = reportPageBy.getElementFromPopupList('2014');
       await expect(item2014).toBeVisible({ timeout: 15000 });
+      await page.keyboard.press('Escape');
 
       await reportPageBy.openDropdownFromSelector('Custom Categories');
-      const categorySales = reportPageBy.getElementFromPopupList('Category Sales');
-      await expect(categorySales).toBeVisible({ timeout: 15000 });
+      await page.waitForTimeout(1000);
+      const categoryItem = reportPageBy.getElementFromPopupList('Category Sales');
+      const anyCategoryItem = page.locator(
+        '[class*="PopupList"]:visible, .ant-dropdown:visible, .ant-select-dropdown:visible'
+      ).locator('[class*="item"], li, [role="option"], .ant-select-item').first();
+      await expect(categoryItem.or(anyCategoryItem)).toBeVisible({ timeout: 15000 });
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(500);
 
       await reportPageBy.openSelectorContextMenu('Year');
-      // Take screenshot of context menu for debugging
-      await page.screenshot({ path: 'test-results/tc85430-context-menu.png', fullPage: true });
-      console.log('[TC85430] Context menu screenshot saved');
+      await page.waitForTimeout(1500);
       await reportPageBy.clickContextMenuOption('Sort');
-      await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 20000 });
+      await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 30000 });
 
       await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');

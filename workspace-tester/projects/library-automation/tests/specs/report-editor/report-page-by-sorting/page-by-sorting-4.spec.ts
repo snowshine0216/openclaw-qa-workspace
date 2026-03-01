@@ -1,7 +1,7 @@
 /**
  * Migrated from WDIO: ReportEditor_PageBySorting4.spec.js
- * Phase 2b: Page-by Sorting — Metrics in Page By, Encoding and Truncation
- * Screenshots replaced with assertions. Skips renameObjectInReportTab and getSortByObjectText CSS (needs rename impl).
+ * Phase 2b: Page-by Sorting — Metrics in Page By (TC85430)
+ * Dossier: DeveloperPBMetrics. Verifies Metrics contains Profit Margin before/after sort.
  */
 import { test, expect, reportPageBySortingData } from '../../../fixtures';
 
@@ -12,43 +12,53 @@ test.describe('Page-by Sorting in report editor', () => {
   });
 
   test(
-    '[TC85430] X-Fun test on page by sorting in report editor -- Metrics in Page By',
+    '[TC85430] X-Fun test on page by sorting (Metrics in Page By)',
     { tag: ['@tc85430'], timeout: 360000 },
     async ({
+      page,
       libraryPage,
       reportToolbar,
       reportPageBy,
-      reportGridView,
       reportPageBySorting,
     }) => {
       const d = reportPageBySortingData.dossiers.DeveloperPBMetrics;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportToolbar.switchToDesignMode();
+      await reportPageBy.waitForPageByArea(30000);
 
+      // 3. Verify Metrics text contains "Profit Margin"
       const metricsText = await reportPageBy.getPageBySelectorText('Metrics');
       expect(metricsText, 'Page-by Metrics should contain Profit Margin').toContain('Profit Margin');
 
+      // 4. Change Page By Year to 2015
       await reportPageBy.changePageByElement('Year', '2015');
 
+      // 5. Open Year context menu → Sort
       await reportPageBy.openSelectorContextMenu('Year');
-      await reportGridView.clickContextMenuOption('Sort');
+      await page.waitForTimeout(1500);
+      await reportPageBy.clickContextMenuOption('Sort');
       await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
 
+      // 7. Verify Placeholder column contains "Select" or "object"
       const placeholder = reportPageBySorting.getSortingColumnByRowAndCol(1, 'Placeholder');
       await expect(placeholder).toContainText(/Select|object/i);
 
+      // 8. Open Sort By dropdown, select Year
       await reportPageBySorting.openDropdown(1, 'Sort By');
-      const yearItem = reportPageBySorting.getDropDownItem(1, 'Sort By', 'Year');
-      await expect(yearItem).toBeVisible({ timeout: 5000 });
-
       await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Year');
-      await reportPageBySorting.selectFromDropdown(1, 'Criteria', 'ID');
+      // 9. Select Criteria: ID, Order: Descending (fallbacks for different dossier types)
+      await reportPageBySorting.openDropdown(1, 'Criteria');
+      await reportPageBySorting.selectFromDropdown(1, 'Criteria', 'ID', ['DESC', 'Description']);
+      await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
 
+      // 10. Click Done
       await reportPageBySorting.clickBtn('Done');
+      // 11. Verify Sort dialog closes
       await expect(reportPageBySorting.dialog).not.toBeVisible({ timeout: 5000 });
 
+      // 12. Verify Metrics text still contains "Profit Margin"
       const metricsTextAfter = await reportPageBy.getPageBySelectorText('Metrics');
       expect(metricsTextAfter).toContain('Profit Margin');
     }

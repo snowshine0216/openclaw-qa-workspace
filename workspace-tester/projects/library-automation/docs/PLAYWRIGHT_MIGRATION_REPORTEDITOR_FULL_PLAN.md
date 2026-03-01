@@ -6,13 +6,13 @@ This document outlines the complete migration plan for all `report-editor` specs
 
 ---
 
-## 0. Migration Progress (Last Updated: 2026-02-28)
+## 0. Migration Progress (Last Updated: 2026-03-01)
 
 | Phase | Feature | Status | Tests | Last Run |
 |-------|---------|--------|-------|----------|
 | — | report-undo-redo | ✅ Done (Phase 1) | 5 files | — |
 | **2a** | **report-shortcut-metrics** | **🔄 Migrated, fixes in progress** | 6 files | 2 pass, 4 fail (locator/network) |
-| **2b** | **report-page-by-sorting** | **🔄 Migrated, 1 fail** | 8/8 | pageBySorting3: Sort context menu locator |
+| **2b** | **report-page-by-sorting** | **🔄 Migrated, 1 pass 7 fail** | 8/8 | page-by-sorting-2 ✅; 1,3,4+ fail (dropdown overlay) |
 | **2c** | **report-creator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
 | 2d | report-subset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
 | **2e** | **report-page-by** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
@@ -93,18 +93,20 @@ Grouped by feature for phased execution:
 
 | # | WDIO File | Playwright Output | Result | Notes |
 |---|-----------|-------------------|--------|-------|
-| 1 | `ReportEditor_PageBySorting1.spec.js` | `pageBySorting1.spec.ts` | — | Pending run |
-| 2 | `ReportEditor_PageBySorting2.spec.js` | `pageBySorting2.spec.ts` | — | Pending run |
-| 3 | `ReportEditor_PageBySorting3.spec.js` | `pageBySorting3.spec.ts` | ❌ Fail | Sort context menu option not found (ReportGridView.clickContextMenuOption) |
-| 4 | `ReportEditor_PageBySorting4.spec.js` | `pageBySorting4.spec.ts` | — | Pending run |
-| 5 | `ReportEditor_PageBySorting5.spec.js` | `pageBySorting5.spec.ts` | — | Pending run |
-| 6 | `ReportEditor_PageBySorting6.spec.js` | `pageBySorting6.spec.ts` | — | Pending run |
-| 7 | `ReportEditor_PageBySorting7.spec.js` | `pageBySorting7.spec.ts` | — | Pending run |
-| 8 | `ReportEditor_PageBySorting8.spec.js` | `pageBySorting8.spec.ts` | — | Pending run |
+| 1 | `ReportEditor_PageBySorting1.spec.js` | `page-by-sorting-1.spec.ts` | ❌ Fail | Year selector; Criteria ID in overlay |
+| 2 | `ReportEditor_PageBySorting2.spec.js` | `page-by-sorting-2.spec.ts` | ✅ Pass | Context menu fix verified |
+| 3 | `ReportEditor_PageBySorting3.spec.js` | `page-by-sorting-3.spec.ts` | ❌ Fail | Order Descending in overlay |
+| 4 | `ReportEditor_PageBySorting4.spec.js` | `page-by-sorting-4.spec.ts` | ❌ Fail | Dropdown overlay |
+| 5 | `ReportEditor_PageBySorting5.spec.js` | `page-by-sorting-5.spec.ts` | ❌ Fail | Dropdown overlay |
+| 6 | `ReportEditor_PageBySorting6.spec.js` | `page-by-sorting-6.spec.ts` | ❌ Fail | Dropdown overlay |
+| 7 | `ReportEditor_PageBySorting7.spec.js` | `page-by-sorting-7.spec.ts` | ❌ Fail | Dropdown overlay |
+| 8 | `ReportEditor_PageBySorting8.spec.js` | `page-by-sorting-8.spec.ts` | ❌ Fail | Dropdown overlay |
 
 **Run:** `npm run test:report-page-by-sorting`
 
 **POMs:** `ReportPageBySorting`, `ReportPageBy.clickContextMenuOption`, `ReportEditorPanel.removeObjectInDropzone`, `ReportDatasetPanel.removeItemInReportTab`.
+
+**Quality report:** [migration/quality_report_report-editor_2b.md](../migration/quality_report_report-editor_2b.md)
 
 ### Phase 2c: report-creator (6)
 

@@ -18,7 +18,6 @@ test.describe('Page-by Sorting in report editor', () => {
       libraryPage,
       reportToolbar,
       reportPageBy,
-      reportGridView,
       reportPageBySorting,
     }) => {
       const d = reportPageBySortingData.dossiers.DeveloperPBConsolidationSubcategory;
@@ -30,11 +29,11 @@ test.describe('Page-by Sorting in report editor', () => {
       expect(seasonsText, 'Page-by Seasons should contain Winter').toContain('Winter');
 
       await reportPageBy.openSelectorContextMenu('Seasons');
-      await reportGridView.clickContextMenuOption('Sort');
+      await reportPageBy.clickContextMenuOption('Sort');
       await reportPageBySorting.openDropdown(1, 'Sort By');
       await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Seasons');
       const sortBySeasons = reportPageBySorting.getCurrentSelectionOnSortingColumnByRowAndCol(1, 'Sort By', 'Seasons');
-      await expect(sortBySeasons).toBeVisible();
+      await expect(sortBySeasons).toBeVisible({ timeout: 10000 });
 
       await reportPageBySorting.clickBtn('Done');
       await reportPageBy.openDropdownFromSelector('Seasons');
@@ -42,11 +41,11 @@ test.describe('Page-by Sorting in report editor', () => {
       await expect(winterItem).toBeVisible();
 
       await reportPageBy.openSelectorContextMenu('Seasons');
-      await reportGridView.clickContextMenuOption('Sort');
+      await reportPageBy.clickContextMenuOption('Sort');
       await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
       const orderDesc = reportPageBySorting.getCurrentSelectionOnSortingColumnByRowAndCol(1, 'Order', 'Descending');
-      await expect(orderDesc).toBeVisible();
+      await expect(orderDesc).toBeVisible({ timeout: 10000 });
 
       await reportPageBySorting.clickBtn('Done');
       await reportPageBy.openDropdownFromSelector('Seasons');

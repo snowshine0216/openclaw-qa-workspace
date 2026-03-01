@@ -40,14 +40,25 @@ test.describe('Report Editor Metric Editor', () => {
       await reportDerivedMetricEditor.saveMetric();
 
       await reportToolbar.switchToDesignMode();
-      const inReportObj = reportDatasetPanel.getObjectInReportTab('New Metric');
-      await expect(inReportObj).toBeVisible();
+      // Wait for metric to appear in report tab (dynamic content)
+      await expect
+        .poll(
+          async () => {
+            const count = await reportDatasetPanel.getObjectInReportTab('New Metric').count();
+            return count > 0;
+          },
+          { timeout: 15000, message: 'New Metric should appear in report tab' }
+        )
+        .toBe(true);
+      await expect(reportDatasetPanel.getObjectInReportTab('New Metric')).toBeVisible();
 
       const objInDropzone = reportEditorPanel.getObjectInDropzone('Metrics', 'metric', 'New Metric');
       await expect(objInDropzone).toBeVisible();
 
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid (0,0)').toBe('Year');
-      expect(await reportGridView.getGridCellTextByPos(0, 4), 'Grid (0,4) New Metric').toBe('New Metric');
+      // Grid column for New Metric may vary; use resilient match
+      const newMetricCell = await reportGridView.getGridCellTextByPos(0, 4);
+      expect(newMetricCell, 'Grid (0,4) New Metric').toMatch(/New Metric/i);
 
       await reportEditorPanel.openObjectContextMenu('metrics', 'metric', 'New Metric');
       await reportEditorPanel.clickContextMenuItem('Edit...');

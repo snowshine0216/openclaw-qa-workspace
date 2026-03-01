@@ -42,9 +42,13 @@ Extract for the selected family:
 
 Use these resolved values in all steps below (replace `{specsBase}`, `{pomBase}`, etc.).
 
-### 0.3 Resolve Phase Feature Name
+### 0.3 Resolve Phase Feature Name and WDIO Path
 
-Read the family design doc **Section 0 (Migration Progress)** to resolve phase → feature name mapping. Example for `reportEditor`:
+Read the family design doc **Section 0 (Migration Progress)** to resolve phase → feature name mapping. Also read `wdioSubfolder` from `script_families.json` for the target phase (`families.<family>.phases.<phase>.wdioSubfolder`).
+
+**WDIO source path** (when WDIO spec exists): `workspace-tester/projects/wdio/specs/regression/<family>/<wdioSubfolder>` (e.g. `report-editor/report-shortcut-metrics/`).
+
+Example for `reportEditor`:
 
 | Phase | Feature |
 |-------|---------|
@@ -93,22 +97,32 @@ npm run {npmScriptPrefix}<Feature>
 ```
 
 **On failure:**
-- If error is a **migration artifact** (missing method, wrong locator): fix immediately.
-- If error is **env missing**: log and skip running; note in report.
-- If error is **app behavior/flakiness**: tag with `test.fixme()` and log `flakiness_reason` in task.json.
+1. **Env missing** (e.g. "REPORT_ENV not set", "reportTestUrl missing"): Log and skip running; note in report. Do NOT invoke healer.
+2. **Tests ran but some failed** (migration artifact, locator, or unknown): Invoke healer loop (max 3 rounds):
+   - **Before first healer invocation:** For each failing spec, resolve the corresponding WDIO source file (by name mapping or spec MD `**Migrated from WDIO:**` field). If the WDIO file exists at `workspace-tester/projects/wdio/specs/regression/<family>/<wdioSubfolder>/`, pass `wdioSourcePath` and per-spec mapping to the healer. If it does not exist, pass `wdioSourcePath: null` or omit; healer skips the original-script check.
+   - **Round 1–3**: Invoke [playwright-test-healer](../../.claude/agents/playwright-test-healer.md) with: family, phase, spec path `{specsBase}<feature>/`, error output, round number, working dir `workspace-tester/projects/library-automation`, npm command `npm run {npmScriptPrefix}<Feature>`, `wdioSourcePath` (path or null), `specMdPath` `{specMdBase}<feature>/`
+   - **Healer constraints (mandatory):** (1) If `wdioSourcePath` is provided and the corresponding WDIO spec file exists, read it and the spec MD before applying any fix; ensure fixes preserve the original test intent and step sequence. If no WDIO spec exists, proceed without this check. (2) Do not remove, skip, or reorder steps without explicit user permission. Do not use `test.fixme()` or similar to skip tests without permission; if a fix would require skipping or altering steps, document the suggestion in the healing report and stop.
+   - After each round: re-run `npm run {npmScriptPrefix}<Feature>`. If all pass → stop and update status.
+   - If still failing after round N (N=1,2): invoke healer again for round N+1.
+   - **Stop after round 3**: Do not invoke healer again. Write healing report (see format below) and update status.
+3. **Healing report** (per failed script, 7 fields): (1) Script path, (2) URL used, (3) Step that failed, (4) Why it fails, (5) Fixes applied, (6) Suggestion to next step, (7) Original step alignment. Output: `migration/self-healing/<family>/<phase>/healing_report.md`
+4. **Update** `migration/script_families.json` under `families.<family>.phases.<phase>.progress`:
+   - `pass`, `fail` from final re-run
+   - `self_healed: true` if healer was invoked
+   - `healer_rounds`: 1–3 (number of rounds attempted)
+   - `healing_report`: path to `migration/self-healing/<family>/<phase>/healing_report.md`
+   - `last_run`, `notes`
 
-**Record in `migration/task.json`:**
-```json
-{
-  "phases": {
-    "<phase>": {
-      "pass": <n>,
-      "fail": <n>,
-      "last_run": "YYYY-MM-DD"
-    }
-  }
-}
-```
+**Healing report format** (each failed script entry):
+| # | Field | Description |
+|---|-------|-------------|
+| 1 | Script | Path to the failing spec |
+| 2 | URL | The URL used to run the test (from env, baseURL, or page.goto) |
+| 3 | Step | Which step/test/line failed |
+| 4 | Why it fails | Root cause (locator, timeout, assertion, etc.) |
+| 5 | Fixes applied | What the healer changed |
+| 6 | Suggestion to next step | Recommended follow-up |
+| 7 | Original step alignment | If WDIO spec existed: whether healer verified against it; any steps that could not be preserved and require user decision. If no WDIO spec: "N/A (no original)" |
 
 Also update design doc **Section 6.4** (Phase-by-Phase Validation Results).
 
@@ -228,7 +242,9 @@ grep -rn '\$(\|browser\.\|waitForDisplayed\|waitForExist' {specsBase}<feature>/ 
 
 ## 8. Dimension 8: Self-Healing
 
-> **Requires `playwright-cli` skill** for any locator updates.
+> **Note:** Dimension 2 now invokes the [playwright-test-healer](../../.claude/agents/playwright-test-healer.md) subagent on execution failure (max 3 rounds). Dimension 8 remains for residual WDIO patterns and self-healing log verification. If healer was invoked in Dimension 2, check `self_healed: true` in `script_families.json` and verify no residual WDIO patterns. **Same constraints apply:** re-check original WDIO spec when it exists; do not change or skip original steps without permission.
+
+> **Requires `playwright-cli` skill** for any manual locator updates when 8b has hits.
 
 ```bash
 # 8a. Check self-healing log
@@ -245,13 +261,15 @@ npx playwright test {specsBase}<feature>/<name>.spec.ts
 1. `playwright-cli open <appUrl>`
 2. `playwright-cli goto <target page URL>`
 3. `playwright-cli snapshot` — derive semantic locator
-4. Update POM method with new locator
-5. Repeat 8c until spec passes
+4. If the spec was migrated from WDIO and the original WDIO file exists, re-read it and the spec MD before updating locators to ensure the fix preserves the original step sequence.
+5. Update POM method with new locator
+6. Repeat 8c until spec passes
 
 **Check:**
 - [ ] 8b returns 0 hits after self-healing
 - [ ] Self-healing log written to `migration/self-healing/<family>/<phase>/`
-- [ ] `task.json` has `phases.<phase>.self_healed: true` (if healing was needed)
+- [ ] `script_families.json` has `phases.<phase>.progress.self_healed: true` (if healing was needed)
+- [ ] Healer did not change or skip original steps without permission; any such suggestions are documented in the healing report
 - [ ] Spec passes after healing
 
 ---
@@ -273,13 +291,13 @@ Write report to `migration/quality_report_<family>_<phase>.md`:
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | 1. Phase & Script Inventory | ✅ Pass / ❌ Fail | |
-| 2. Execution | ✅ Pass / ⚠️ Partial / ❌ Fail | <pass/fail counts> |
+| 2. Execution | ✅ Pass / ⚠️ Partial / ❌ Fail | <pass/fail counts>; if healer invoked: rounds (1–3), outcome (e.g. "healer fixed N specs; M test.fixme()"), link to [healing_report](migration/self-healing/<family>/<phase>/healing_report.md) |
 | 3. Snapshot Strategy | ✅ Pass / ❌ Fail | <count replaced> |
 | 4. Spec MD | ✅ Pass / ❌ Fail | <missing MDs> |
 | 5. Env Handling | ✅ Pass / ❌ Fail | |
 | 6. README Index | ✅ Pass / ❌ Fail | |
 | 7. Code Quality | ✅ Pass / ❌ Fail | <tsc/eslint errors> |
-| 8. Self-Healing | ✅ Pass / N/A / ❌ Fail | <healed count> |
+| 8. Self-Healing | ✅ Pass / N/A / ❌ Fail | <healed count>; if self_healed from Dimension 2, verify no residual WDIO patterns |
 
 ## Overall: ✅ Quality-Checked / ❌ Needs Fixes
 
@@ -287,16 +305,14 @@ Write report to `migration/quality_report_<family>_<phase>.md`:
 - [ ] <item 1>
 ```
 
-Then update `migration/task.json`:
+**If healer was invoked and stopped after round 3:** Include a "Healing Report Summary" section with path to `migration/self-healing/<family>/<phase>/healing_report.md` and summary of remaining failures (scripts still failing, suggestions to next step).
+
+Then update `migration/script_families.json` under `families.<family>.phases.<phase>.progress`:
 ```json
 {
-  "phases": {
-    "<phase>": {
-      "quality_checked": true,
-      "quality_report": "migration/quality_report_<family>_<phase>.md",
-      "quality_date": "YYYY-MM-DD"
-    }
-  }
+  "quality_checked": true,
+  "quality_report": "migration/quality_report_<family>_<phase>.md",
+  "quality_date": "YYYY-MM-DD"
 }
 ```
 

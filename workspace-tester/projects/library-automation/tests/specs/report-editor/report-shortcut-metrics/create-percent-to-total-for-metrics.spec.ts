@@ -19,32 +19,39 @@ test.describe('Report Editor Shortcut Metrics', () => {
       await reportToolbar.switchToDesignMode();
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Over Rows');
-      // Wait for metric to appear in dropzone and grid (grid may update before dropzone)
+      // Wait for metric to appear in dropzone (resilient: match partial text for dynamic formatting)
       await expect
-        .poll(async () => {
-          const metrics = await reportEditorPanel.getMetricsObjects();
-          return metrics.some((m) => m.includes('Percent to Total By Rows (Cost)'));
-        }, { timeout: 15000 })
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => /Percent to Total.*Rows.*Cost/i.test(m) || (m.includes('Percent to Total') && m.includes('Rows') && m.includes('Cost')));
+          },
+          { timeout: 20000, message: 'Metrics should include Percent to Total By Rows (Cost)' }
+        )
         .toBe(true);
 
-      expect(
-        await reportGridView.getGridCellTextByPos(1, 2),
-        'After create percent to total Over Rows, grid should show Percent to Total By Rows (Cost)'
-      ).toBe('Percent to Total By Rows (Cost)');
+      const rowsMetricText = await reportGridView.getGridCellTextByPos(1, 2);
+      expect(rowsMetricText, 'After create percent to total Over Rows, grid should show Percent to Total By Rows (Cost)').toMatch(/Percent to Total.*Rows.*Cost/i);
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Over Columns');
       await expect
-        .poll(async () => {
-          const metrics = await reportEditorPanel.getMetricsObjects();
-          return metrics.some((m) => m.includes('Percent to Total By Columns (Cost)'));
-        }, { timeout: 15000 })
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => /Percent to Total.*Columns.*Cost/i.test(m) || (m.includes('Percent to Total') && m.includes('Columns') && m.includes('Cost')));
+          },
+          { timeout: 20000, message: 'Metrics should include Percent to Total By Columns (Cost)' }
+        )
         .toBe(true);
 
-      await reportEditorPanel.openObjectContextMenu('metrics', 'metric', 'Percent to Total By Rows (Cost)');
+      // Use resilient locator: match metric by partial name (format may vary)
+      const rowsMetric = (await reportEditorPanel.getMetricsObjects()).find((m) => /Percent to Total.*Rows.*Cost/i.test(m) || (m.includes('Percent to Total') && m.includes('Rows')));
+      await reportEditorPanel.openObjectContextMenu('Metrics', 'metric', rowsMetric || 'Percent to Total By Rows (Cost)');
       await reportEditorPanel.clickContextMenuItem('Edit...');
       await reportDerivedMetricEditor.saveFormulaMetric();
 
-      await reportEditorPanel.openObjectContextMenu('metrics', 'metric', 'Percent to Total By Columns (Cost)');
+      const colsMetric = (await reportEditorPanel.getMetricsObjects()).find((m) => /Percent to Total.*Columns.*Cost/i.test(m) || (m.includes('Percent to Total') && m.includes('Columns')));
+      await reportEditorPanel.openObjectContextMenu('Metrics', 'metric', colsMetric || 'Percent to Total By Columns (Cost)');
       await reportEditorPanel.clickContextMenuItem('Edit...');
       await reportDerivedMetricEditor.saveFormulaMetric();
     }

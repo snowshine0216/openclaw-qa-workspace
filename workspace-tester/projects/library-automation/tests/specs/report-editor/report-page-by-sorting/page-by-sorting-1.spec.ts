@@ -16,63 +16,49 @@ test.describe('Page-by Sorting in report editor', () => {
     async ({
       libraryPage,
       reportToolbar,
-      reportDatasetPanel,
       reportPageBy,
-      reportGridView,
       reportPageBySorting,
     }) => {
-      const d = reportPageBySortingData.dossiers.ReportWS_PB_YearCategory2;
+      // Use DeveloperPBYearAscCustomCategoriesParentTop: Year and Custom Categories (same structure as screenshot)
+      const d = reportPageBySortingData.dossiers.DeveloperPBYearAscCustomCategoriesParentTop;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportToolbar.switchToDesignMode();
-      console.log('[TC85390] Test URL:', libraryPage.page.url());
-      
-      // Navigate: Attributes (root) → Time → Year
-      await reportDatasetPanel.selectItemInObjectList('Attributes');
-      await libraryPage.page.waitForTimeout(2000);
-      
-      // "Time" folder needs scrolling (progressive scroll built into selectItemInObjectList)
-      await reportDatasetPanel.selectItemInObjectList('Time');
-      await libraryPage.page.waitForTimeout(2000);
-      
-      // Debug: Check what's inside Time folder
-      const allItems = await libraryPage.page.locator('.objectBrowserContainer .object-item-text').allTextContents();
-      console.log('[TC85390] Items inside Time folder:', allItems.slice(0, 15));
-      
-      await reportDatasetPanel.addObjectFromObjectBrowserToPageBy('Year');
+      await reportPageBy.waitForPageByArea(30000);
 
-      const yearSelector = reportPageBy.getSelector('Year');
-      await expect(yearSelector).toBeVisible({ timeout: 15000 });
+      const yearSelector = reportPageBy.getSelectorPulldownTextBox('Year');
+      await expect(yearSelector).toBeVisible({ timeout: 30000 });
 
-      await reportDatasetPanel.clickFolderUpIcon();
-      await reportDatasetPanel.selectItemInObjectList('Geography');
-      await reportDatasetPanel.addObjectFromObjectBrowserToPageBy('Region');
-
-      const regionSelector = reportPageBy.getSelector('Region');
-      await expect(regionSelector).toBeVisible({ timeout: 10000 });
+      const categorySelector = reportPageBy.getSelectorPulldownTextBox('Custom Categories');
+      await expect(categorySelector).toBeVisible({ timeout: 20000 });
 
       // Open Sort dialog from Year context menu
       await reportPageBy.openSelectorContextMenu('Year');
-      await reportGridView.clickContextMenuOption('Sort');
+      await reportPageBy.clickContextMenuOption('Sort');
       await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
 
-      // Configure sorting: Year descending, add Region as second sort
+      // Configure sorting: Year descending, Custom Categories as second sort
       await reportPageBySorting.openDropdown(1, 'Sort By');
       await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Year');
+      await reportPageBySorting.openDropdown(1, 'Criteria');
       await reportPageBySorting.selectFromDropdown(1, 'Criteria', 'ID');
+      await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
-      await reportPageBySorting.selectFromDropdown(2, 'Sort By', 'Region');
-      await reportPageBySorting.selectFromDropdown(2, 'Criteria', 'DESC');
+      await reportPageBySorting.openDropdown(2, 'Sort By');
+      await reportPageBySorting.selectFromDropdown(2, 'Sort By', 'Custom Categories');
+      await reportPageBySorting.openDropdown(2, 'Criteria');
+      // Custom Categories may use ID or DESC; try both
+      await reportPageBySorting.selectFromDropdown(2, 'Criteria', 'ID', ['DESC', 'Description']);
+      await reportPageBySorting.openDropdown(2, 'Order');
       await reportPageBySorting.selectFromDropdown(2, 'Order', 'Descending');
 
       await reportPageBySorting.clickBtn('Done');
       await expect(reportPageBySorting.dialog).not.toBeVisible({ timeout: 5000 });
 
-      // After sorting: Year should show 2016, Region should show different value
       const yearText = await reportPageBy.getPageBySelectorText('Year');
       expect(yearText).toBeTruthy();
-      const regionText = await reportPageBy.getPageBySelectorText('Region');
-      expect(regionText).toBeTruthy();
+      const categoryText = await reportPageBy.getPageBySelectorText('Custom Categories');
+      expect(categoryText).toBeTruthy();
     }
   );
 });

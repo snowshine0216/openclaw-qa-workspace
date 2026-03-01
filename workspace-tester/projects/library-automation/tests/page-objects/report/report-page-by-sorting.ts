@@ -7,7 +7,12 @@ import type { Page } from '@playwright/test';
 export class ReportPageBySorting {
   constructor(private readonly page: Page) {}
 
-  readonly dialog = this.page.locator('.mstr-rc-dialog.sort-options-dialog, [class*="sort-options-dialog"]');
+  get dialog() {
+    return this.page.locator(
+      '.mstr-rc-dialog.sort-options-dialog, [class*="sort-options-dialog"], ' +
+      '[class*="SortEditor"], [class*="sort-editor"]'
+    );
+  }
 
   private getSortingRow(idx: number) {
     return this.dialog.locator('.sort-row').nth(idx - 1);
@@ -40,9 +45,10 @@ export class ReportPageBySorting {
   getCurrentSelectionOnSortingColumnByRowAndCol(row: number, col: string, txt: string) {
     const rowEl = this.getSortingRow(row);
     if (col === 'Sort By') {
-      return rowEl.locator(`.sort-object-name:has-text("${txt}")`);
+      // Flexible: .sort-object-name or any element in row containing the text
+      return rowEl.locator(`.sort-object-name, .ant-space-item, [class*="sort"]`).filter({ hasText: txt }).first();
     }
-    return rowEl.locator(`.ant-space-item:has-text("${txt}")`);
+    return rowEl.locator(`.ant-space-item:has-text("${txt}"), [class*="sort"]:has-text("${txt}")`).first();
   }
 
   /** WDIO: getSortByObjectText - text element for Sort By column on row */
@@ -50,26 +56,64 @@ export class ReportPageBySorting {
     return this.getSortingRow(row).locator('.sort-object-name');
   }
 
-  /** WDIO: getDropDownItem - dropdown menu item by row, column, and label */
-  getDropDownItem(row: number, col: string, item: string) {
-    // Dropdown menu appears as overlay/portal outside the dialog DOM
-    // Search globally for visible dropdown menu items
-    return this.page.getByText(item, { exact: true }).first();
+  /** WDIO: getDropDownItem - dropdown menu item by row, column, and label.
+   * Scopes to visible Sort dialog overlays to avoid REPORT panel / dataset browser.
+   * Supports partial match when usePartialMatch is true (for hierarchy labels like "Month (Attribute)").
+   */
+  getDropDownItem(row: number, col: string, item: string, usePartialMatch = false) {
+    const textMatcher = usePartialMatch ? new RegExp(item, 'i') : item;
+
+    // Scope to visible dropdown overlays (Sort dialog uses ant-select-dropdown or ant-dropdown)
+    const antSelectItem = this.page
+      .locator('.ant-select-dropdown:visible .ant-select-item, .ant-select-dropdown:visible [role="option"]')
+      .filter({ hasText: textMatcher })
+      .first();
+    const antDropdownItem = this.page
+      .locator('.ant-dropdown:visible .ant-dropdown-menu-item, .ant-dropdown:visible [role="menuitem"]')
+      .filter({ hasText: textMatcher })
+      .first();
+    const popupListItem = this.page
+      .locator('.mstrmojo-PopupList:visible .item, [class*="PopupList"]:visible .item')
+      .filter({ hasText: textMatcher })
+      .first();
+    return antSelectItem.or(antDropdownItem).or(popupListItem);
   }
 
   async openDropdown(row: number, col: string): Promise<void> {
     const cell = this.getSortingColumn(row, col as 'Sort By');
     await cell.click();
+    // Wait for dropdown overlay to render (Sort dialog may use ant-select or PopupList)
+    await this.page
+      .locator(
+        '.ant-select-dropdown:visible, .ant-dropdown:visible, .mstrmojo-PopupList:visible, [class*="PopupList"]:visible'
+      )
+      .first()
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
     await this.page.waitForTimeout(500);
   }
 
-  async selectFromDropdown(row: number, col: string, option: string): Promise<void> {
-    const item = this.getDropDownItem(row, col, option);
-    // Increased timeout from 5s to 15s for slower dev environments
-    await item.waitFor({ state: 'visible', timeout: 15000 });
-    // Use force click to bypass ReactModal overlay interception
-    await item.click({ force: true });
-    await this.page.waitForTimeout(500);
+  async selectFromDropdown(
+    row: number,
+    col: string,
+    option: string,
+    fallbacks?: string[],
+    usePartialMatch = false
+  ): Promise<void> {
+    const optionsToTry = [option, ...(fallbacks ?? [])];
+    let lastError: Error | null = null;
+    for (const opt of optionsToTry) {
+      const item = this.getDropDownItem(row, col, opt, usePartialMatch);
+      try {
+        await item.waitFor({ state: 'visible', timeout: 8000 });
+        await item.click({ force: true });
+        await this.page.waitForTimeout(500);
+        return;
+      } catch (e) {
+        lastError = e as Error;
+      }
+    }
+    throw lastError ?? new Error(`Could not select "${option}" from dropdown`);
   }
 
   async removeRow(idx: number): Promise<void> {
