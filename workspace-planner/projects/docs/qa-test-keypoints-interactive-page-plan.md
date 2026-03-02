@@ -37,8 +37,9 @@ This section is mandatory before implementation starts.
 
 ### 2.3 Required Output/Backup Policy
 
-1. Before write-back, create backup:
-   - `workspace-planner/projects/feature-plan/<feature-id>/archive/qa_plan_final_<YYYYMMDD_HHMMSS>.md`
+1. Backup **only when content changed**:
+   - Path: `workspace-planner/projects/feature-plan/<feature-id>/archive/qa_plan_final_<YYYYMMDD_HHMMSS>.md`
+   - Skip backup when no edits were made (no-op save).
 2. Write-back scope:
    - Replace only the `## 🧪 Test Key Points` block.
    - Do not rewrite other sections.
@@ -95,12 +96,14 @@ Core libraries:
    - Root node: feature id and title
    - Section nodes: Test Key Points subsections
    - Case nodes: one node per table row
+   - **Default visible:** Priority, Test Key Points, Expected Results
+   - **Hidden by default:** Related Code Change (expand detail to reveal)
 4. Editing:
    - Edit `Priority`, `Related Code Change`, `Test Key Points`, `Expected Results`
    - Move case between sections
-5. Save:
+5. Save (auto-save when content changed):
    - deterministic markdown regeneration of target section
-   - backup + write-back
+   - backup only when content changed; write-back on change (debounced)
 
 ### 3.2 Out of Scope (Phase 1)
 
@@ -126,6 +129,7 @@ Core libraries:
    - convert objects to nodes/edges for React Flow
 5. Editor State:
    - local in-memory edits + dirty-state tracking
+   - auto-save: debounced write-back when dirty (no manual save button required)
 6. Serializer:
    - regenerate only the target section in markdown
 7. Writer:
@@ -257,18 +261,18 @@ Exit criteria:
 2. required columns enforced.
 3. deterministic output for repeated runs.
 
-### Phase 2: Interactive SPA (MVP)
+### Phase 2: Interactive SPA (MVP) — App-Only
 
 1. Render section/case graph.
 2. Inline form editing for all required fields.
-3. Save button with validation + diff summary.
+3. Auto-save: debounced write-back when content changed; backup only on change.
 
 Exit criteria:
-1. end-to-end edit/save works on BCIN-6709 sample.
-2. backup file created.
+1. end-to-end edit/auto-save works on BCIN-6709 sample.
+2. backup file created only when content changed.
 3. markdown passes parser re-read.
 
-### Phase 3: OpenClaw Skill Packaging
+### Phase 3: OpenClaw Skill Packaging (After App Stable)
 
 1. Add `skills/qa-test-keypoints-map/SKILL.md`.
 2. Add scripts wrapper (launch/validate/report).
@@ -330,17 +334,23 @@ Exit criteria:
 3. Implement section extraction and table normalization.
 4. Implement section rewrite + backup utility.
 5. Build React Flow page with read-only nodes.
-6. Add edit side panel and save flow.
+6. Add edit side panel and auto-save flow (debounced write-back).
 7. Create skill scaffold `qa-test-keypoints-map`.
 8. Add usage doc and examples for `BCIN-6709`.
 
 ---
 
-## 11. Open Questions Requiring Your Confirmation
+## 11. Open Questions — Resolved
 
-1. Should Phase 1 support only `Test Key Points`, or also `Risk & Mitigation` visualization from day one?
-2. Do you want the first release as:
-   - app-only (faster), then skill packaging, or
-   - app + skill in one milestone?
-3. Do you want write-back to auto-save or manual save with diff preview only?
-4. Should backups be mandatory every save, or only when content changed?
+| # | Question | Decision |
+|---|----------|----------|
+| 1 | Case node display: which columns visible by default? | **Default visible:** Priority, Test Key Points, Expected Results. **Hidden by default:** Related Code Change. **Expand detail** to see Related Code Change. |
+| 2 | App-only first, or app + skill in one milestone? | **App-only first**, then skill packaging |
+| 3 | Write-back: auto-save or manual save with diff preview? | **Auto-save** (write-back on change) |
+| 4 | Backups: every save, or only when content changed? | **Only when content changed** |
+
+### Implications
+
+- **Phase 2 (SPA MVP)** delivers app-only; **Phase 3** adds skill packaging after app is stable.
+- Auto-save requires debounced write-back and clear dirty-state tracking; backup runs only when content actually changed.
+- Case nodes use compact view by default; expand/collapse reveals Related Code Change.
