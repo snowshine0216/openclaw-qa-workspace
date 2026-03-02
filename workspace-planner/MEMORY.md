@@ -57,7 +57,18 @@ _Test planning patterns and best practices._
 
 ### Critical Mistakes to NEVER Repeat
 
-#### 🔴 Confluence Publishing - ALWAYS Convert Markdown First
+#### 🔴 Test Key Points — Organize by Functional Behavior, NOT by Repo/Source
+**Mistake**: Created separate Test Key Points tables per repo (e.g., "Error Dialog UI (from react-report-editor)", "Server-Side API (from biweb)", "Mojo cmdMgr (from mojojs)")  
+**Result**: Fragmented tables that split a single testable scenario across 3+ tables. User had to manually cross-reference to understand full test flow.  
+**Lesson**: Test Key Points tables must be organized by **functional behavior category** (e.g., "Pause Mode Error Recovery", "Prompt Answer Errors"). Each row should integrate ALL relevant cross-repo code changes inline. Never create per-repo or per-source tables.
+
+**✅ Correct Pattern:**
+- Category = what the tester is testing (a functional scenario)
+- Related Code Change column = all repos inline (e.g., `shared-recover-from-error.ts; **biweb**: RWManipulationBuilder.java; **mojojs**: RootController.js`)
+- Absorb UI/API/integration details into the scenario where they're exercised
+
+**Date Learned**: 2026-03-02  
+**Context**: BCIN-6709 QA plan had 9 tables (3 were repo-specific) → refactored to 6 integrated functional tables
 **Mistake**: Published raw Markdown (.md) directly to Confluence  
 **Result**: Ugly plain text with `#`, `**`, `|` visible instead of formatted content  
 **Lesson**: Confluence uses HTML storage format, NOT Markdown. NEVER publish raw `.md` files directly.
@@ -94,4 +105,4 @@ Always follow the specific publication steps outlined in the Feature QA Planning
 
 ---
 
-*Last updated: 2026-02-23*
+*Last updated: 2026-03-02*

@@ -61,7 +61,7 @@ Read each available domain summary file:
 | **Summary** | Combine all sources into one table |
 | **Background** | Use Atlassian (requirements) as primary; number subsections. **Defect Analysis:** If `Affected Customers` non-empty → inject `### 📢 Business Context`; if internal-only → inject `### 🩺 Defect Health`. If both apply, include both subheadings. |
 | **QA Goals** | Merge all goals, deduplicate; use numbered sub-categories (1. E2E, 2. FUN, … 10. AUTO) with bullet items |
-| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. **Merge all defect-derived content here** (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus checklists). Do **not** map defect findings to Risk & Mitigation. Columns MUST BE: Priority | Related Code Change | Test Key Points | Expected Results. Mark defect-derived rows with `[Regression]` or `[Defect Fix Verification]` in Related Code Change/AC column. |
+| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. **Organize by functional behavior category** (e.g., error recovery scenarios, prompt flows, scope/boundary), **NOT by repo or source**. Each table row MUST integrate ALL relevant code changes across repos inline (e.g., `shared-recover-from-error.ts; **biweb**: RWManipulationBuilder.java; **mojojs**: RootController.js`). Add `#` column for numbered row IDs (e.g., 1.1, 1.2). **Merge all defect-derived content here** (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus checklists). Do **not** map defect findings to Risk & Mitigation. Columns MUST BE: # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results. Mark defect-derived rows with `[Regression]` or `[Defect Fix Verification]` in Related Code Change/AC column. **⚠️ ANTI-PATTERN: Do NOT create separate tables per repo** (e.g., "Server-Side API (from biweb)", "Mojo cmdMgr (from mojojs)"). Instead, merge repo-specific code changes into the functional scenario table where they are tested. |
 | **Risk & Mitigation** | Merge risk tables; use numbered sub-sections (1. Technical, 2. Data, 3. UX); keep tables. Do **not** merge defect analysis findings into this section. |
 | **Defect Analysis** | Merge all findings (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus) into `## 🧪 Test Key Points` only. Do **not** map to Risk & Mitigation. See mapping rules below. |
 | **Consolidated Reference Data** | Aggregate source docs, stakeholders, test data, dependencies; bullets only (no tables) |
@@ -188,104 +188,34 @@ Read each available domain summary file:
 
 ## 🧪 Test Key Points
 
-### 1. UI Testing (from Figma)
+> **Organizing principle**: Group by **functional behavior / test scenario category** derived from the design doc (e.g., "Error Recovery — Pause Mode", "Prompt Answer Errors", "Scope & Boundary"). Do NOT group by source (Figma/GitHub/Atlassian) or by repo (react-report-editor/biweb/mojojs). Each row integrates ALL cross-repo code changes relevant to that test point.
 
-#### Visual Components
+### 1. [Functional Scenario Category Name]
 
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | `src/components/LoginForm.tsx` | Login form renders with correct styling | Form matches Figma design: email field, password field, submit button with primary color |
-| P0 | `src/components/Button.tsx` | Button hover state | Background changes to hover color (#1A73E8 → #1557B0) |
-| P0 | `src/components/Input.tsx` | Input validation error state | Red border (#D93025), error message appears below field |
-| P1 | `src/layouts/AppLayout.tsx` | Responsive layout at 768px breakpoint | Layout switches to mobile view, navigation collapses |
+| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|---------------------|---------------------|-----------------|------------------|
+| 1.1 | P0 | `frontend/component.ts` → function(); **backend**: `ApiHandler.java` → method(); **shared-lib**: `util.js` → helper() | Given [precondition], when [action], then [outcome] | [Concrete test steps integrating all repos] | [Observable result covering full stack] |
+| 1.2 | P1 | ... | ... | ... | ... |
 
-#### Interactive Elements
+### 2. [Another Functional Scenario Category]
 
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | `src/components/Form.tsx` | Form submission flow | On submit, loading state → success message → redirect |
-| P0 | `src/components/Modal.tsx` | Modal open/close | Modal opens on trigger, closes on X click or overlay click |
-| P1 | `src/components/Dropdown.tsx` | Dropdown selection | Options display, selection highlights, value updates |
+| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|---------------------|---------------------|-----------------|------------------|
+| 2.1 | P0 | ... | ... | ... | ... |
 
-### 2. Backend Testing (from GitHub)
+### N. Edge Cases & Negative Tests
 
-#### API Endpoints
+| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|---------------------|---------------------|-----------------|------------------|
+| N.1 | P1 | ... | ... | ... | ... |
 
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | `src/api/auth/login.ts` | POST /api/auth/login with valid credentials | 200 OK, JWT token returned, user object in response |
-| P0 | `src/api/auth/login.ts` | POST /api/auth/login with invalid credentials | 401 Unauthorized, error message: "Invalid credentials" |
-| P0 | `src/api/users/create.ts` | POST /api/users with valid data | 201 Created, user ID returned |
-| P1 | `src/api/users/create.ts` | POST /api/users with duplicate email | 409 Conflict, error message: "Email already exists" |
-
-#### Database Operations
-
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | `db/migrations/001_add_users.sql` | Migration up executes | Users table created with correct schema |
-| P0 | `src/models/User.ts` | User.create() with valid data | Record inserted, ID generated, timestamps set |
-| P1 | `src/models/User.ts` | User.findByEmail() | Returns user if exists, null if not |
-
-#### Business Logic
-
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | `src/services/auth.ts:validatePassword()` | Password validation with valid password | Returns true |
-| P0 | `src/services/auth.ts:validatePassword()` | Password validation with incorrect password | Returns false |
-| P0 | `src/services/email.ts:sendPasswordReset()` | Send password reset email | Email sent with reset link, link expires in 24h |
-
-### 3. E2E Workflow Testing (from Figma + GitHub)
-
-#### User Registration & Login Flow
-
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | Full flow: UI + API + DB | User visits signup, fills form, submits | Account created, confirmation email sent, redirect to login |
-| P0 | Full flow: UI + API + DB | User logs in with new credentials | Session created, redirect to dashboard, user data displayed |
-| P0 | Full flow: UI + API + DB | User logs out | Session destroyed, redirect to login page |
-
-#### Password Reset Flow
-
-| Priority | Related Code Change | Test Key Points | Expected Results |
-|----------|---------------------|-----------------|------------------|
-| P0 | Full flow: UI + Email + API | User requests password reset | Reset email sent with valid link |
-| P0 | Full flow: Email + UI + API | User clicks reset link | Redirected to reset form, token validated |
-| P0 | Full flow: UI + API + DB | User submits new password | Password updated, auto-login, redirect to dashboard |
-
-### 4. Functional Requirements Testing (from Atlassian)
-
-#### Acceptance Criteria from [JIRA-123]
-
-| Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
-|----------|---------------------|---------------------|-----------------|------------------|
-| P0 | `src/api/auth/login.ts` | Given valid credentials, when user logs in, then redirect to dashboard | Login flow with test user | User redirected to `/dashboard`, session active |
-| P0 | `src/api/auth/login.ts` | Given invalid credentials, when user logs in, then show error | Login with wrong password | Error message displayed, no redirect |
-| P1 | `src/middleware/auth.ts` | Given user is logged in, when accessing login page, then redirect to dashboard | Navigate to `/login` while logged in | Auto-redirect to `/dashboard` |
-
-### 5. Performance Testing
-
-| Priority | Test Key Points | Expected Results | Measurement Method |
-|----------|-----------------|------------------|-------------------|
-| P0 | Login API response time | < 2 seconds (p95) | Load test with 100 concurrent users |
-| P1 | Page load time (dashboard) | < 3 seconds (p95) | Lighthouse CI |
-| P1 | Database query time (user lookup) | < 100ms (p95) | APM monitoring |
-
-### 6. Security Testing
-
-| Priority | Test Key Points | Expected Results | Reference |
-|----------|-----------------|------------------|-----------|
-| P0 | Password stored securely | Bcrypt hashing, salted | Code: `src/services/auth.ts:42` |
-| P0 | SQL injection prevention | Parameterized queries used | Code: `src/models/User.ts` |
-| P0 | XSS prevention | Input sanitized, output escaped | Code: `src/utils/sanitize.ts` |
-| P1 | CSRF protection | CSRF token validated | Code: `src/middleware/csrf.ts` |
-
-### 7. Accessibility Testing
-
-| Priority | Test Key Points | Expected Results | WCAG Criterion |
-|----------|-----------------|------------------|----------------|
-| P0 | Keyboard navigation | All interactive elements accessible via Tab | 2.1.1 Keyboard |
-| P0 | Screen reader labels | All form fields have labels | 4.1.2 Name, Role, Value |
-| P1 | Color contrast | Text contrast ratio ≥ 4.5:1 | 1.4.3 Contrast |
+> **⚠️ ANTI-PATTERN — Do NOT do this:**
+> ```
+> ### 5. Error Dialog UI & Behavior (from react-report-editor)   ← BAD: per-repo table
+> ### 6. Server-Side API — reCreateInstance (from biweb)          ← BAD: per-repo table
+> ### 7. Mojo cmdMgr Reset Guard (from mojojs)                    ← BAD: per-repo table
+> ```
+> Instead, merge these code changes into the functional scenario tables (e.g., "Error Recovery — Pause Mode") where they are actually tested together.
 
 ## ⚠️ Risk & Mitigation
 
