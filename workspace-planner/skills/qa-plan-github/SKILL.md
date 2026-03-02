@@ -106,6 +106,14 @@ gh pr diff <pr_number> --repo owner/repo
 4. **Note edge cases and risks**
 5. **Broader Focus for Non-Backend Features**: Transcend the raw code diffs. If the PR affects client-facing functionality, project those code changes into E2E user-experience impacts and express the scenarios in user-facing, behavioral terms.
 
+### Multi-Repo Analysis
+
+When analyzing multiple repos/PRs for the same feature:
+- **Group findings by functional scenario**, not by repo. For example, if `react-report-editor`, `biweb`, and `mojojs` all contribute to "error recovery flow", output one scenario section that lists code changes from all three repos together.
+- In the output, prefix cross-repo references with the repo name in bold (e.g., `**biweb**: RWManipulationBuilder.java → reCreateInstance()`).
+- Do NOT create separate top-level sections per repo (e.g., "### biweb Changes", "### mojojs Changes"). Instead, organize by what the user will test (e.g., "### Pause Mode Error Recovery", "### Prompt Answer Error Handling").
+- This ensures the downstream `qa-plan-synthesize` skill can directly map scenarios to integrated test tables without needing to re-merge repo-specific sections.
+
 **Example Mapping**:
 ```
 Change: Added email validation in src/utils/validation.ts
