@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryE2E_Favorites.spec.js'>
+        <TC>TC67828_01</TC>
+        <TC>TC67828_02</TC>
+        <TC>TC67828_03</TC>
+   </TestSuite>
+</root>

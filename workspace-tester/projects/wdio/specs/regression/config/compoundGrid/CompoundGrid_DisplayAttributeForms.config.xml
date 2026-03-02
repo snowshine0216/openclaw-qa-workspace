@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_DisplayAttributeForms.spec.js'>
+        <TC>TC167059_01</TC>
+        <TC>TC167059_02</TC>
+        <TC>TC169258_01</TC>
+        <TC>TC169258_02</TC>
+        <TC>TC169258_03</TC>
+    </TestSuite>
+</root>
+

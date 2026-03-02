@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='LeftsidePanelControl.spec.js'>
+        <TC>TC60259</TC>
+        <TC>TC61678</TC>
+    </TestSuite>
+</root>

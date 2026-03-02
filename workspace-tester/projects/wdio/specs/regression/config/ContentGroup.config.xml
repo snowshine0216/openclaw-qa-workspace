@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ContentGroupBasicInfo.spec.js'>
+    	<TC>TC81426</TC>
+        <TC>TC81427</TC>
+        <TC>TC81428</TC>
+        <TC>TC81429</TC>
+        <TC>TC81590</TC>
+        <TC>TC81602</TC>
+        <TC>TC81430</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ContentGroupStatusSync.spec.js'>
+    	<TC>TC81432</TC>
+        <TC>TC81433</TC>
+        <TC>TC88707</TC>
+    </TestSuite>
+    <TestSuite id='03' name='ContentGroupManipulation.spec.js'>
+    	<TC>TC81434</TC>
+        <TC>TC81435</TC>
+        <TC>TC81436</TC>
+        <TC>TC81437</TC>
+        <TC>TC81438</TC>
+    </TestSuite>
+    <TestSuite id='04' name='ContentGroupX-Func.spec.js'>
+    	<TC>TC75090</TC>
+        <TC>TC81939</TC>
+        <TC>TC81940_01</TC>
+        <TC>TC81940_02</TC>
+        <TC>TC81940_03</TC>
+        <TC>TC81941</TC>
+        <TC>TC81942</TC>
+    </TestSuite>
+    <TestSuite id='05' name='ContentGroupErrorMessage.spec.js'>
+    	<TC>TC81868</TC>
+        <TC>TC81869</TC>
+    </TestSuite>
+</root>

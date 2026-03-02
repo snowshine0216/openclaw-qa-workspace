@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_FTP_Sanity.spec.js'>
+        <TC>BCVE-5242_01</TC> 
+        <TC>BCVE-5242_02</TC>
+        <TC>BCVE-5242_03</TC>
+        <TC>BCVE-5242_04</TC>
+        <TC>BCVE-5242_05</TC>
+    </TestSuite>
+</root>

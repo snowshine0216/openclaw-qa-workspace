@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SAMLOktaLogin.spec.js'>
+        <TC>TC79614</TC>
+    </TestSuite>
+    <TestSuite id='02' name='XContentTypeOption.spec.js'>
+        <TC>TC95014</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SyncDSinAdvancedMode.spec.js'>
+        <TC>TC95826_1</TC>
+        <TC>TC95826_2</TC>
+        <TC>TC95826_3</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ManipulationAdvancedMode.spec.js'>
+        <TC>TC95825_1</TC>
+        <TC>TC95825_2</TC>
+        <TC>TC95827</TC>
+    </TestSuite>
+    <TestSuite id='03' name='PromptForAdvancedMode.spec.js'>
+        <TC>TC95824</TC>
+    </TestSuite>
+</root>

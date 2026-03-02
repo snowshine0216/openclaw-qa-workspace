@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='DossierLevelFilter.spec.js'>
+        <TC>TC67833_01</TC>
+        <TC>TC67833_02</TC>
+        <TC>TC67833_03</TC>
+        <TC>TC67833_04</TC>
+        <TC>TC67833_05</TC>
+        <TC>TC67833_06</TC>
+        <TC>TC67834</TC>
+   </TestSuite>
+   <TestSuite id='02' name='FirstNLastN_Checkbox.spec.js'>
+        <TC>TC69696</TC>
+        <TC>TC63730</TC>
+   </TestSuite>
+</root>

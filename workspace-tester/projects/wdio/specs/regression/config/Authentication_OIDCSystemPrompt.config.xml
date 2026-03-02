@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='userClaimMapping.spec.js'>
+        <TC>TC96783</TC>
+        <TC>TC97681</TC>
+        <TC>TC97682</TC>
+        <TC>TC97685</TC>
+        <TC>TC97686</TC>
+        <TC>TC97687</TC>
+    </TestSuite>
+    <TestSuite id='02' name='oidcLogin.spec.js'>
+        <TC>TC96782</TC>
+        <TC>TC97683</TC>
+    </TestSuite>
+    <TestSuite id='03' name='oidcSystemPromptErrorHandling.spec.js'>
+        <TC>TC96784</TC>
+    </TestSuite>
+</root>

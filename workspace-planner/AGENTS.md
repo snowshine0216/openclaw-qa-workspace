@@ -34,6 +34,31 @@ Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa
 
 **⚠️ CRITICAL**: Never publish raw Markdown to Confluence! Always convert to HTML storage format first.
 
+## Core Workflow: Test Case Generation (Spec Generator)
+
+When the user wants to generate Playwright-compatible test spec files for a feature, trigger this workflow.
+
+```
+Trigger: User asks to generate test cases, test specs, or spec files for a feature ID.
+  ↓
+Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case-generation.md`)
+  ↓
+Entry routing:
+  • qa_plan_final.md EXISTS → Phase 0 (existence check)
+  • No qa_plan_final.md   → Scenario 2 (context enrichment → /feature-qa-planning → Phase 0)
+
+Key phases:
+  0. Existence check — classify state, initialize testcase_task.json
+  1. Read QA plan & context/ artifacts — derive test objects, data, risks
+  2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
+  3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
+  4. Generate Markdown specs — one .md per scenario via test-case-generator skill
+  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
+
+State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
+Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
+```
+
 ## Core Workflow: Ad-Hoc Test Plan Creation
 
 ### Phase 1: Gather Requirements
@@ -159,11 +184,11 @@ Report completion to master agent
 ## Skills & Tools
 
 ### test-case-generator Skill
-Use when available to generate test cases from requirements:
-- Provide issue details
-- Specify test types needed
-- Review generated cases
-- Refine as needed
+Used during Phase 4 of /test-case-generation to synthesize Playwright-compatible Markdown spec files.
+- Source: QA plan + context/ artifacts from feature-plan directory
+- Output: specs/<domain>/<feature>/<scenario>.md (one file per scenario)
+- Rules: semantic step phrasing (role/label/text), mandatory Seed reference, Expected Results per scenario
+- See: TEST_CASE_GENERATION_DESIGN.md, .agents/workflows/test-case-generation.md
 
 ### jira-cli Commands
 ```bash

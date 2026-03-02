@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='BotEditXfunc.spec.js'>
+        <TC>TC92081_08</TC>
+        <TC>TC92081_09</TC>
+        <TC>TC92081_10</TC>
+        <TC>TC92081_11</TC>
+        <!-- <TC>TC92081_12</TC>  -->
+        <TC>TC92081_13</TC> 
+        <TC>TC92081_14</TC>   
+        <TC>TC95159</TC>           
+    </TestSuite>
+</root>

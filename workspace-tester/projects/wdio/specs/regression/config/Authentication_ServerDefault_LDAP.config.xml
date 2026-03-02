@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ServerDefaultLDAP.spec.js'>
+        <TC>TC85530</TC>
+        <TC>TC85552</TC>
+    </TestSuite>
+</root>

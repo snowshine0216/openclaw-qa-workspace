@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_Thresholds.spec.js'>
+        <TC>TC385</TC>
+        <TC>TC10657</TC>
+        <TC>TC2306</TC>
+        <TC>TC2223</TC>
+        <TC>TC2163</TC>
+        <TC>TC18239</TC>
+        <TC>TC7413</TC>
+    </TestSuite>
+</root>

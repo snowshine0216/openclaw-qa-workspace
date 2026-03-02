@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_Report.spec.js'>
+        <TC>F42327_Reportpagebysubscription</TC>
+        <TC>F42327_Reportsubscription</TC> 
+        <TC>F42327_ManipulationsubscriptiontoExcel</TC>
+        <TC>F42327_ManipulationsubscriptiontoCSV</TC>
+    </TestSuite>
+</root>

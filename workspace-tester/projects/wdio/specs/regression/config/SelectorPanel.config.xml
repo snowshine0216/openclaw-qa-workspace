@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SelectorPanel.spec.js'>
+	    <TC>TC68670_01</TC>
+        <TC>TC68670_02</TC>
+        <TC>TC68670_03</TC>
+        <TC>TC68670_04</TC>
+        <TC>TC68670_05</TC>
+        <TC>TC68670_06</TC>
+        <TC>TC68670_07</TC>
+        <TC>TC68670_08</TC>
+        <TC>TC68670_09</TC>
+    </TestSuite>
+</root>

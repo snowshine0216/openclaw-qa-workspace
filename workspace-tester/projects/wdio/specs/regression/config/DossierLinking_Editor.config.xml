@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DossierLinkingEditor.spec.js'>
+    	<TC>TC97765_04</TC>
+        <TC>TC97765_05</TC>
+        <TC>TC97765_06</TC>
+    </TestSuite>
+    
+</root>

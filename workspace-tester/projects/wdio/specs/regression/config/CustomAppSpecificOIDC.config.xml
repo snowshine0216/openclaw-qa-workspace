@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomAppSpecificOIDC.spec.js'>
+        <TC>TC86290</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CustomAppEditAuthMode.spec.js'>
+        <TC>TC86313_01</TC>
+        <TC>TC86313_02</TC>
+    </TestSuite>
+</root>
+
+
+

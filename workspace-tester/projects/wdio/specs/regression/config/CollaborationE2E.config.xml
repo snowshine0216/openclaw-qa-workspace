@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CollabDefects.spec.js'>
+        <TC>BCIN-5286_01</TC>
+        <TC>BCIN-5286_02</TC>
+   </TestSuite>
+</root>

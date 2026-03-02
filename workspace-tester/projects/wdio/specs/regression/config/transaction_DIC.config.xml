@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CalendarDIC.spec.js'>
+        <TC>TC79802</TC>
+        <TC>TC80281</TC>
+    </TestSuite>
+     <TestSuite id='02' name='LikertScale.spec.js'>
+        <TC>TC79807</TC>
+        <TC>TC80282</TC>
+     </TestSuite>
+    <TestSuite id='03' name='List.spec.js'>
+        <TC>TC79809</TC>
+        <TC>TC80283</TC>
+    </TestSuite>
+    <TestSuite id='04' name='SliderDIC.spec.js'>
+        <TC>TC79820</TC>
+        <TC>TC80284</TC>
+    </TestSuite>
+    <TestSuite id='05' name='StarRating.spec.js'>
+        <TC>TC79832</TC>
+        <TC>TC80285</TC>
+    </TestSuite>
+    <TestSuite id='06' name='Stepper.spec.js'>
+        <TC>TC79836</TC>
+        <TC>TC80286</TC>
+        <TC>TC79837</TC>
+    </TestSuite>
+    <TestSuite id='07' name='Switch.spec.js'>
+        <TC>TC79842</TC>
+        <TC>TC80287</TC>
+    </TestSuite>
+    <TestSuite id='08' name='TextArea.spec.js'>
+        <TC>TC79843</TC> 
+        <TC>TC80288</TC>
+    </TestSuite>
+    <TestSuite id='09' name='TextField.spec.js'>
+        <TC>TC79855</TC>
+        <TC>TC80289</TC>
+    </TestSuite>
+    <TestSuite id='10' name='TimePicker.spec.js'>
+        <TC>TC79856</TC>
+        <TC>TC80290</TC>
+    </TestSuite>
+    <TestSuite id='11' name='Toggle.spec.js'>
+        <TC>TC79862</TC>
+        <TC>TC80291</TC>
+    </TestSuite>
+</root>

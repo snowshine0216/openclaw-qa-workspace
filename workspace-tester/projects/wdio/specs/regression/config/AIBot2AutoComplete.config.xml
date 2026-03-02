@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Bot2_AutoComplete.spec.js'>
+        <TC>TC99018_1</TC>
+        <TC>TC99018_2</TC>
+        <TC>TC99018_3</TC>
+        <TC>TC99018_4</TC>
+        <TC>TC99018_5</TC>
+        <TC>TC99018_6</TC>
+        <TC>TC99018_7</TC>
+        <TC>TC99018_8</TC>
+        <TC>TC99018_9</TC>
+        <TC>TC99018_10</TC>
+        <TC>TC99018_11</TC>
+        <TC>TC99018_12</TC>
+        <TC>TC99018_13</TC>
+        <TC>TC99018_14</TC>
+        <TC>TC99018_15</TC>
+    </TestSuite>
+</root>

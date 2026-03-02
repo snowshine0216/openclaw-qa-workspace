@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Searchbox.spec.js'>
+        <TC>TC80373</TC>
+        <TC>TC80374</TC>
+        <TC>TC80375</TC>
+        <TC>TC80376</TC>
+        <TC>TC80377</TC>
+        <TC>TC80378</TC>
+    </TestSuite>
+</root>

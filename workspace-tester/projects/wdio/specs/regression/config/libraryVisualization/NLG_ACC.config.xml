@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoNarratives_E2E.spec.js'>
+        <TC>TC96061</TC>
+        <TC>TC96061_2</TC>
+        <TC>TC96061_3</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AutoNarratives_ACC.spec.js'>
+        <TC>TC96065_1</TC>
+        <TC>TC96065_2</TC>
+        <TC>TC96065_3</TC>
+        <TC>TC96065_4</TC>
+        <TC>TC96065_5</TC>
+    </TestSuite>
+</root>

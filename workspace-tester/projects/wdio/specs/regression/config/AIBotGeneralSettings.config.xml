@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='BotGeneralSettingsPremergeTest.spec.js'>
+        <TC>TC92132_01</TC>
+        <TC>TC92132_02</TC>
+        <TC>TC92132_03</TC>
+        <TC>TC92132_04</TC>
+        <TC>TC92132_05</TC>
+        <TC>TC92132_06</TC>
+    </TestSuite>
+    <TestSuite id='02' name='BotInfoSettings.spec.js'>
+        <TC>TC91744_01</TC>
+        <TC>TC91744_02</TC>
+        <TC>TC91744_03</TC>
+        <TC>TC91744_04</TC>
+        <TC>TC91744_05</TC>
+        <TC>TC91744_06</TC>
+        <TC>TC91744_07</TC>
+        <TC>TC91744_08</TC>
+        <TC>TC91744_09</TC>
+        <TC>TC91744_10</TC>
+        <TC>TC91744_11</TC>
+        <TC>TC91745_01</TC>
+        <TC>TC91745_02</TC>
+        <TC>TC91745_03</TC>
+        <TC>TC91745_04</TC>
+        <TC>TC91745_05</TC>
+        <TC>TC91745_06</TC>
+        <TC>TC95302_01</TC>
+        <TC>TC95302_02</TC>
+    </TestSuite>
+    <TestSuite id='03' name='BotFeatureSettings.spec.js'>
+        <TC>TC91746_01</TC>
+        <TC>TC93238_01</TC>
+        <TC>TC91747_01</TC>
+        <TC>TC91747_02</TC>
+        <TC>TC91747_03</TC>
+        <TC>TC91747_04</TC>
+        <TC>TC91747_05</TC>
+        <TC>TC91747_06</TC>
+        <TC>TC91747_07</TC>
+        <TC>TC91747_08</TC>
+        <TC>TC91747_09</TC>
+        <TC>TC91747_10</TC>
+        <TC>TC91748_01</TC>
+        <TC>TC91748_02</TC>
+        <TC>TC91748_03</TC>
+        <TC>TC91748_04</TC>
+    </TestSuite>
+    <TestSuite id='04' name='BotExternalLinkSettings.spec.js'>
+        <TC>TC91749_01</TC>
+        <TC>TC91749_02</TC>
+        <TC>TC91749_03</TC>
+        <TC>TC91749_04</TC>
+        <TC>TC91749_05</TC>
+        <TC>TC91749_06</TC>
+        <TC>TC91749_07</TC>
+        <TC>TC91749_08</TC>
+        <TC>TC91749_09</TC>
+    </TestSuite>
+    <TestSuite id='05' name='BotSettingsi18N.spec.js'>
+        <TC>TC92521_01</TC>
+        <TC>TC92521_02</TC>
+        <TC>TC92521_03</TC>
+        <TC>TC92521_04</TC>
+        <TC>TC92521_05</TC>
+        <TC>TC92521_06</TC>
+        <TC>TC92521_07</TC>
+        <TC>TC92521_08</TC>
+    </TestSuite>
+    <TestSuite id='06' name='BotQuestionLimitHideOnSaas.spec.js'>
+        <TC>TC93073_01</TC>
+        <TC>TC93073_02</TC>
+    </TestSuite>
+    <TestSuite id='07' name='BotTopics.spec.js'>
+        <TC>TC93320_01</TC>
+        <TC>TC93320_02</TC>
+        <TC>TC93320_03</TC>
+        <TC>TC93320_04</TC>
+    </TestSuite>
+    <TestSuite id='08' name='BotThemeInConfigurationPanel.spec.js'>
+        <TC>TC92349_01</TC>
+        <TC>TC92349_02</TC>
+        <TC>TC92349_03</TC>
+        
+    </TestSuite>
+
+</root>

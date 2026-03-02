@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='RSDThreshold.spec.js'>
+    	<TC>TC82259</TC>
+		<TC>TC82260</TC>
+		<TC>TC82261</TC>
+		<TC>TC82262</TC>
+		<TC>TC82263</TC>
+		<TC>TC82263_02</TC>
+    </TestSuite>	
+</root>

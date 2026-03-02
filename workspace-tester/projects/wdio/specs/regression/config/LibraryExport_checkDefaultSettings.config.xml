@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LibraryExportToPDF_checkDefaultSettings_Sanity.spec.js'>
+        <TC>TC95175_0</TC>
+        <TC>TC95175_1</TC>
+        <TC>TC95175_2</TC>
+        <TC>TC95175_3</TC>
+        <TC>TC95175_4</TC>
+        <TC>TC95175_5</TC>
+    </TestSuite>
+    <TestSuite id='02' name='LibraryExportToPDF_checkDefaultSettings_Mix.spec.js'>
+        <TC>TC95175_6</TC>
+        <TC>TC95175_7</TC>
+        <TC>TC95175_8</TC>
+        <TC>TC95175_9</TC>
+        <TC>TC95175_10</TC>
+    </TestSuite> 
+    <TestSuite id='03' name='LibraryExportToPDF_checkDefaultSettings_xFunction.spec.js'>
+        <TC>TC95175_11</TC>
+        <TC>TC95175_12</TC>
+        <TC>TC95175_13</TC>
+        <TC>TC95175_14</TC>
+        <TC>TC95175_15</TC>
+        <TC>TC95175_16</TC>
+    </TestSuite>
+</root>

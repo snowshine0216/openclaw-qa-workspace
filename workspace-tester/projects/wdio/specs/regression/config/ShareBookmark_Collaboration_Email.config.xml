@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='05' name='ShareBookmark_Collaboration_GuestMode.spec.js'>
+        <TC>TC69697</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomVizHTMLSanity.spec.js'>
+        <TC>TC93604_1</TC>
+        <TC>TC93604_2</TC>
+    </TestSuite>
+</root>

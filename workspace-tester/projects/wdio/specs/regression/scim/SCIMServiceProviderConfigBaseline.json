@@ -1,0 +1,43 @@
+{
+    "meta": {
+        "resourceType": "ServiceProviderConfig",
+        "created": "2025-08-04T07:18:37.925667581",
+        "lastModified": "2025-08-04T07:18:37.925667581",
+        "location": "https://emm3.labs.microstrategy.com:7241/MicroStrategyLibrary/api/scim/v2/ServiceProviderConfig",
+        "version": "K9Y7VQQ4r3AqSw5K3gyc1t9/oSp3SfeOewWdEUFRZB0="
+    },
+    "id": "strategy-scim-service",
+    "externalId": "strategy-scim-service",
+    "patch": {
+        "supported": true
+    },
+    "bulk": {
+        "supported": false,
+        "maxOperations": 0,
+        "maxPayloadSize": 0
+    },
+    "filter": {
+        "supported": true,
+        "maxResults": 1
+    },
+    "changePassword": {
+        "supported": false
+    },
+    "sort": {
+        "supported": false
+    },
+    "etag": {
+        "supported": false
+    },
+    "authenticationSchemes": [
+        {
+            "type": "oauthbearertoken",
+            "name": "OAuth Bearer Token",
+            "description": "Authentication scheme using the OAuth Bearer Token Standard",
+            "specUri": "http://www.rfc-editor.org/info/rfc6750"
+        }
+    ],
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"
+    ]
+}

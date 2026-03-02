@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DatasetPanelUI.spec.js'>
+        <TC>TC92410</TC>
+        <TC>TC92340</TC>
+        <TC>TC92341</TC>
+        <TC>TC91648</TC>
+        <TC>TC91643</TC>
+        <TC>TC92176</TC>
+        <TC>TC92177</TC>
+    </TestSuite>
+    <TestSuite id='02' name='DatasetReplace.spec.js'>
+        <TC>TC92355</TC>
+        <TC>TC92412</TC>
+        <TC>TC92343</TC>
+        <TC>TC92372</TC>
+    </TestSuite>
+    <TestSuite id='03' name='DatasetRefresh.spec.js'>
+        <TC>TC92348</TC>
+        <TC>TC92411</TC>
+        <TC>TC92411_01</TC>
+        <TC>TC97752</TC>
+        <TC>TC92347</TC>
+        <TC>TC92386</TC>
+    </TestSuite>
+    <TestSuite id='04' name='DatasetEdit.spec.js'>
+        <TC>TC92409</TC>
+        <TC>TC92381</TC>
+    </TestSuite>
+    <TestSuite id='02' name='DatasetRename.spec.js'>
+        <TC>TC91646</TC>
+        <TC>TC92369</TC>
+        <TC>TC92370</TC>
+        <TC>TC92371</TC>
+    </TestSuite>
+    <TestSuite id='05' name='DatasetErrorHandling.spec.js'>
+        <TC>TC92350</TC>
+        <TC>TC92351</TC>
+        <TC>TC92352</TC>
+        <TC>TC92353</TC>
+        <TC>TC92354</TC>
+    </TestSuite>
+    <TestSuite id='01' name='DatasetACLError.spec.js'>
+        <TC>TC91879</TC>
+    </TestSuite>
+    <TestSuite id='01' name='DatasetI18N.spec.js'>
+        <TC>TC91620</TC>
+    </TestSuite>
+    <TestSuite id='01' name='DatasetNoPrivilege.spec.js'>
+        <TC>TC91644</TC>
+    </TestSuite>
+</root>

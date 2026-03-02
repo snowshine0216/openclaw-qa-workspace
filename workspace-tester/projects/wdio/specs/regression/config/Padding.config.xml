@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Padding.spec.js'>
+        <TC>TC99563_1</TC>
+        <TC>TC99563_2</TC>
+        <TC>TC99563_3</TC>
+        <TC>TC99563_4</TC>
+        <TC>TC99563_5</TC>
+        <TC>TC99563_6</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ObjectParameter.spec.js'>
+    	<TC>TC99357_01</TC>
+        <TC>TC99357_02</TC>
+        <TC>TC99357_03</TC>
+        <TC>TC99357_04</TC>
+        <TC>TC99357_05</TC>
+        <TC>TC99162</TC>
+        <TC>TC99357_06</TC>
+    </TestSuite>
+    <TestSuite id='01' name='ObjectParameterInConsumption.spec.js'>
+    	<TC>TC99381_01</TC>
+        <TC>TC99381_02</TC>
+        <TC>TC99381_03</TC>
+        <TC>TC99381_04</TC>
+        <TC>TC99381_05</TC>
+        <TC>TC99381_06</TC>
+        <TC>TC99381_07</TC>
+    </TestSuite>
+</root>

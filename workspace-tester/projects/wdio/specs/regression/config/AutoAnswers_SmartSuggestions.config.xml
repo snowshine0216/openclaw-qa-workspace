@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_SmartSuggestions.spec.js'>
+    	<TC>TC94333_1</TC>
+    	<TC>TC94333_2</TC>
+    	<TC>TC94333_3</TC>
+    	<TC>TC94333_4</TC>
+    	<TC>TC94333_5</TC>
+    	<TC>TC94333_6</TC>
+    	<TC>TC94333_7</TC>
+    </TestSuite>
+</root>

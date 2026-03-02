@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='E2E_AGGrid_HideColumnConsumption.spec.js'>
+        <TC>TC99056_1</TC>
+        <TC>TC99056_2</TC>
+        <TC>TC99056_3</TC>
+        <TC>TC99056_4</TC>
+        <TC>TC99056_5</TC>
+        <TC>TC99056_6</TC>
+    </TestSuite>
+</root>

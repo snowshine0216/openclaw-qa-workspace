@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ButtonBar.spec.js'>
+        <TC>TC80312</TC>
+        <TC>TC80320</TC>
+        <TC>TC80321</TC>
+        <TC>TC80322</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Calendar.spec.js'>
+        <TC>TC80323</TC>
+        <TC>TC80324</TC>
+        <TC>TC80325</TC>
+        <TC>TC80326</TC>
+    </TestSuite>
+    <TestSuite id='03' name='Checkbox.spec.js'>
+        <TC>TC80327</TC>
+        <TC>TC80328</TC>
+        <TC>TC80329</TC>
+        <TC>TC80330</TC>
+        <TC>TC80331</TC>
+        <TC>TC80332</TC>
+    </TestSuite>
+    <TestSuite id='04' name='LinkBar.spec.js'>
+        <TC>TC80351</TC>
+        <TC>TC80352</TC>
+        <TC>TC80353</TC>
+        <TC>TC80354</TC>
+    </TestSuite>
+    <TestSuite id='05' name='ListBox.spec.js'>
+        <TC>TC80355</TC>
+        <TC>TC80356</TC>
+        <TC>TC80357</TC>
+        <TC>TC80358</TC>
+    </TestSuite>
+    <TestSuite id='06' name='RadioButton.spec.js'>
+        <TC>TC80369</TC>
+        <TC>TC80370</TC>
+        <TC>TC80371</TC>
+        <TC>TC80372</TC>
+    </TestSuite>
+    <TestSuite id='07' name='Searchbox.spec.js'>
+        <TC>TC80373</TC>
+        <TC>TC80374</TC>
+        <TC>TC80375</TC>
+        <TC>TC80376</TC>
+        <TC>TC80377</TC>
+        <TC>TC80378</TC>
+    </TestSuite>
+    <TestSuite id='08' name='Slider.spec.js'>
+        <TC>TC80401</TC>
+        <TC>TC80402</TC>
+        <TC>TC80403</TC>
+        <TC>TC80404</TC>
+    </TestSuite>
+    <TestSuite id='09' name='Dropdown.spec.js'>
+        <TC>TC80333</TC>
+        <TC>TC80334</TC>
+        <TC>TC80335</TC>
+        <TC>TC80336</TC>
+        <TC>TC80337</TC>
+        <TC>TC80338</TC>
+    </TestSuite>
+    <TestSuite id='10' name='DropdownMultiSelect.spec.js'>
+        <TC>TC80339</TC>
+        <TC>TC80341</TC>
+        <TC>TC80342</TC>
+        <TC>TC80343</TC>
+        <TC>TC80344</TC>
+        <TC>TC80345</TC>
+        <TC>TC80346</TC>
+        <TC>TC80347</TC>
+        <TC>TC80348</TC>
+        <TC>TC80349</TC>
+        <TC>TC80350</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,115 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "C7C3AFB4FB904F0BAF2567233705DD0B",
+            "n": "呼叫中心"
+          },
+          {
+            "cate": "1320CE66149746A1A31AFE6F5B2D63AC",
+            "n": "商品大类"
+          },
+          {
+            "cate": "5C44A6CFCE544724A4D44D16511A4DC8",
+            "n": "商品子类"
+          },
+          {
+            "cate": "5819D0E101954FC999C2980B9B5CADDE",
+            "n": "地区"
+          },
+          {
+            "cate": "5A7DFA99EFBF49E5817E81D04EF44152",
+            "n": "季度"
+          }
+        ],
+        "chat_col": [
+          {
+            "message_col": [
+              {
+                "category_id": "5819D0E101954FC999C2980B9B5CADDE",
+                "message_id": "842360FF09DF4BEA9965D986BD21C9AE",
+                "message_type": 1,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"哪五个地区的收益最高\\n\",\"type\":\"text\",\"content\":{\"text\":\"哪五个地区的收益最高\\n\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "东北, 南, 中, 中-大西洋, Web 是收益最高的五个地区。它们的收益分别为 $8,554,415, $5,389,280, $5,029,366, $4,452,615, $3,902,762。",
+                    "text_type": 2,
+                    "uri": "BC7D90888E71499D98A31E89C71133BE"
+                  }
+                ],
+                "timestamp": {
+                  "day": 11,
+                  "day_of_week": 1,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 3,
+                  "ig": false,
+                  "minute": 4,
+                  "month": 12,
+                  "sec": 20,
+                  "srs": 0,
+                  "tms": 82,
+                  "week": 3,
+                  "year": 2023
+                }
+              }
+            ],
+            "snapshot_sort": "date-"
+          }
+        ],
+        "endtime": {
+          "day": 10,
+          "day_of_week": 3,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 2,
+          "ig": false,
+          "minute": 47,
+          "month": 1,
+          "sec": 32,
+          "srs": 0,
+          "tms": 87,
+          "week": 2,
+          "year": 2024
+        },
+        "question_count": 5
+      },
+      "did": "04655FAD774F181C4025019CABEC118C",
+      "img": true,
+      "lcl": 2052,
+      "nct": "2023-12-11T02:47:32.087Z",
+      "nmdt": "2023-12-12T03:35:18.554Z",
+      "owid": "5845C9EA47B271EED83469B4FD41E263",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "5845C9EA47B271EED83469B4FD41E263"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "D9B4D9AE85452C442E5B119144229D65"
+    }
+  ]
+}

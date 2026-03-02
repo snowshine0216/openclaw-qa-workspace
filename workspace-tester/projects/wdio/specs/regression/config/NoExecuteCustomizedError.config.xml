@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='noExecuteCustomizedError.spec.js'>
+        <TC>TC99201_1</TC>
+        <TC>TC99201_2</TC>
+    </TestSuite>
+</root>

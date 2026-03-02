@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='MandatoryFilter.spec.js'>
+    	<TC>TC92785_01</TC>
+    	<TC>TC92785_02</TC>
+        <TC>TC92785_03</TC>
+    	<TC>TC92785_04</TC>
+        <TC>TC92785_05</TC>
+        <TC>TC92785_06</TC>
+        <TC>TC92785_07</TC>
+        <TC>TC92779</TC>
+        <TC>TC92783</TC>
+    </TestSuite>
+</root>
+<root>
+    <TestSuite id='01' name='MandatoryFilter_XFunc.spec.js'>
+    	<TC>TC97406_01</TC>
+    	<TC>TC97406_02</TC>
+        <TC>TC97406_03</TC>
+    </TestSuite>
+</root>

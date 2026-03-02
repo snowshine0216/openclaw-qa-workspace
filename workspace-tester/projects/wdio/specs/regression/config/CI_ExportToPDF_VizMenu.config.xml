@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_VizMenu.spec.js'>
+        <TC>TC56916</TC>
+        <TC>TC56917</TC>
+        <TC>TC56918</TC>
+    </TestSuite>
+</root>

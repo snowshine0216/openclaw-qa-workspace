@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomPalettes.spec.js'>
+        <TC>TC81474_1</TC>
+        <TC>TC81474_2</TC>      
+        <TC>TC81474_3</TC>
+        <TC>TC81474_4</TC>   
+        <TC>TC81474_5</TC>
+        <TC>TC81474_6</TC>   
+        <TC>TC81475</TC>
+   </TestSuite>
+  
+</root>

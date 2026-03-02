@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportEditor_reportCreator.spec.js'>
+        <TC>BCIN-3809_01</TC>
+        <TC>BCIN-3809_02</TC>
+        <TC>BCIN-3809_03</TC>
+        <TC>BCIN-3809_04</TC>
+        <TC>BCIN-3809_05</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ReportEditor_template.spec.js'>
+        <TC>BCIN-3749_01</TC>
+        <TC>BCIN-3749_02</TC>
+        <TC>BCIN-3749_03</TC>
+        <TC>BCIN-3749_04</TC>
+        <TC>BCIN-3749_05</TC>
+        <TC>BCIN-3749_06</TC>
+        <TC>BCIN-3749_07</TC>
+        <TC>BCIN-3749_08</TC>
+        <TC>BCIN-3749_09</TC>
+        <TC>BCIN-3749_10</TC>
+    </TestSuite>
+    <TestSuite id='03' name='ReportEditor_reportTemplateSecurity.spec.js'>
+        <TC>BCIN-3844_01</TC>
+        <TC>BCIN-3844_02</TC>
+        <TC>BCIN-3844_03</TC>
+        <TC>BCIN-3844_04</TC>
+    </TestSuite>
+    <TestSuite id='04' name='ReportEditor_createByCube.spec.js'>
+        <TC>BCIN-6908_01</TC>
+        <TC>BCIN-6908_02</TC>
+        <TC>BCIN-6908_03</TC>
+        <TC>BCIN-6908_04</TC>
+        <TC>BCIN-6908_05</TC>
+        <TC>BCIN-6908_06</TC>
+        <TC>BCIN-6908_07</TC>
+        <TC>BCIN-6908_08</TC>
+        <TC>BCIN-6908_09</TC>
+    </TestSuite>
+    <TestSuite id='05' name='ReportEditor_createByCubePrivilege.spec.js'>
+        <TC>BCIN-6915_01</TC>
+        <TC>BCIN-6915_02</TC>
+    </TestSuite>
+    <TestSuite id='06' name='ReportEditor_templateByExecutionMode.spec.js'>
+        <TC>BCIN-7306_01</TC>
+        <TC>BCIN-7306_02</TC>
+        <TC>BCIN-7306_03</TC>
+        <TC>BCIN-7306_04</TC>
+        <TC>BCIN-7306_05</TC>
+        <TC>BCIN-7306_06</TC>
+        <TC>BCIN-7306_07</TC>
+        <TC>BCIN-7306_08</TC>
+        <TC>BCIN-7306_09</TC>
+        <TC>BCIN-7306_10</TC>
+        <TC>BCIN-7306_11</TC>
+    </TestSuite>
+</root>

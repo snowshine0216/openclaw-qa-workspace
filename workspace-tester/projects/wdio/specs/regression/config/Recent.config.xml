@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Recent.spec.js'>
+        <TC>TC71915_01</TC>
+        <TC>TC71915_02</TC>
+        <TC>TC71915_03</TC>
+        <TC>TC71915_04</TC>
+        <TC>TC71915_05</TC>
+        <TC>TC71915_06</TC>
+        <TC>TC71915_07</TC>
+        <TC>TC71915_08</TC>
+    </TestSuite>
+    
+</root>
+

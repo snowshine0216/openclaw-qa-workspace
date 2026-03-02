@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='E2E_Padding.spec.js'>
+        <TC>TC99683_1</TC>
+        <TC>TC99683_2</TC>
+        <TC>TC99683_3</TC>
+        <TC>TC99683_4</TC>
+        <TC>TC99683_5</TC>
+        <TC>TC99683_6</TC>
+        <TC>TC99683_7</TC>
+        <TC>TC99683_8</TC>
+    </TestSuite>
+</root>

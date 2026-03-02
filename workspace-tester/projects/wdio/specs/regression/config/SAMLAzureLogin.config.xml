@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SAMLAzureLogin.spec.js'>
+        <TC>TC79615</TC>
+    </TestSuite>
+</root>

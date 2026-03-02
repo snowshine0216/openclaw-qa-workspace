@@ -4,6 +4,10 @@
 
 ### .env setup
 - copy .env.example and update the placeholder value
+- in root folder, create .env file and update the placeholder value
+```bash
+mcp360_token=<mcp360_token>
+```
 ### Jira setup
 1. Skills needed: jira-cli
 2. instal jira-cli for mac os; (for other os, [please refer to github] (https://github.com/ankitpokhrel/jira-cli/wiki/Installation))
@@ -29,3 +33,28 @@ JIRA_BASE_URL=<jira-base-url>
 npm install -g confluence-cli
 ```
 3. run `confluence init` to setup environment
+
+
+### mcporter setup
+1. Skills needed: mcporter
+2. instal mcporter for mac os; (for other os, [please refer to github] (https://github.com/mcporter-dev/mcporter))
+``` bash
+npm install -g mcporter
+```
+3. install playwright mcp server:  ```npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest" ```
+4. list installed servers: ```mcporter list```
+
+## Workspace Planner Skill Linking
+
+Use the sync script at `src/sync-skills.sh` to link missing skills safely.
+
+What it does (`link-missing-only`, no overwrite):
+- Syncs missing entries from `.cursor/skills` into `workspace-planner/skills`.
+- Syncs missing entries from `workspace-planner/skills` into `.agents/skills`.
+- Preserves all existing files/symlinks in both destination folders.
+
+Run from repository root:
+
+```bash
+./src/sync-skills.sh
+```

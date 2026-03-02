@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Bot2_OnDemand.spec.js'>
+        <TC>TC99014_1</TC>
+        <TC>TC99014_2</TC>
+        <TC>TC99014_3</TC>
+        <TC>TC99014_4</TC>
+        <TC>TC99014_5</TC>
+        <TC>TC99014_6</TC>
+        <TC>TC99014_7</TC>
+        <TC>TC99014_8</TC>
+        <TC>TC99014_9</TC>
+    </TestSuite>
+</root>

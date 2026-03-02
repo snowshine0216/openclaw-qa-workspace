@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='MCPRestApi.spec.js'>
+        <TC>TC_BCSA-3602_0</TC>
+        <TC>TC_BCSA-3602_1</TC>
+        <TC>TC_BCSA-3602_2</TC>
+        <TC>TC_BCSA-3602_3</TC>
+        <TC>TC_BCSA-3602_4</TC>
+    </TestSuite>
+</root>

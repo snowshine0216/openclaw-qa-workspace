@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='welcomeInWebTeams.spec.js'>
+    	<TC>TC95620_07</TC>
+    	<TC>TC95620_08</TC>
+    </TestSuite>
+</root>

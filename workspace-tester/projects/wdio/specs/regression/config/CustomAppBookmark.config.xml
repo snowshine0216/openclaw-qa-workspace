@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomAppBookmark.spec.js'>
+      <TC>TC88585_01</TC>
+      <TC>TC88585_02</TC>
+      <TC>TC88585_03</TC>
+      <TC>TC88585_04</TC>
+      <TC>TC88585_05</TC>
+      <TC>TC88585_06</TC>      
+      <TC>TC88585_08</TC>
+      <TC>TC88585_09</TC> 
+      <TC>TC88585_10</TC>
+      <TC>TC88585_11</TC>
+      <TC>TC88585_13</TC>    
+   </TestSuite>
+</root>

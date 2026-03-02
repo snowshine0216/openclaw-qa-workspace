@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_Feedback.spec.js'>
+        <TC>TC94700_01</TC>
+        <TC>TC94700_02</TC>
+        <TC>TC94700_03</TC>
+        <TC>TC94700_04</TC>
+        <TC>TC94700_05</TC>
+        <TC>TC94700_06</TC>
+        <TC>TC94701_01</TC>
+        <TC>TC94701_02</TC>
+    </TestSuite>
+</root>

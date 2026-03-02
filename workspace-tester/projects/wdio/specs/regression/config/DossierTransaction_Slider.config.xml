@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='pyTXN_Slider.spec.js'>
+        <TC>TC99393_1</TC>
+        <TC>TC99393_2</TC>
+    </TestSuite>
+    <TestSuite id='02' name='SQLTXN_Slider.spec.js'>
+        <TC>TC99393_3</TC>
+        <TC>TC99393_4</TC>
+        <TC>TC99393_5</TC>
+        <TC>TC99393_6</TC>
+        <TC>TC99393_7</TC>
+        <TC>TC99393_8</TC>
+        <TC>TC99393_9</TC>
+    </TestSuite>
+</root>

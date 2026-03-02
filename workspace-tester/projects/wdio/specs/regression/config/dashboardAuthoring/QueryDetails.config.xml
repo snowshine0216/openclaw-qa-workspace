@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='QueryDetails.spec.js'>
+        <TC>TC19981</TC>
+        <TC>TC60086_1</TC>
+        <TC>TC60086_2</TC>
+        <TC>TC60086_3</TC>
+        <TC>TC60086_4</TC>
+        <TC>TC60086_5</TC>
+    </TestSuite>
+</root>

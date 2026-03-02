@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_RelatedSuggestions.spec.js'>
+        <TC>TC95422_01</TC>
+        <TC>TC95422_02</TC>
+        <TC>TC95422_03</TC>
+        <TC>TC95422_04</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_HideColumn.spec.js'>
+        <TC>TC98727_1</TC>
+        <TC>TC98727_2</TC>
+        <TC>TC98727_3</TC>
+    </TestSuite>
+    <TestSuite id='2' name='Sanity_AGGrid_HideColumnConsumption.spec.js'>
+        <TC>TC99056_01</TC>
+        <TC>TC99056_02</TC>
+    </TestSuite>
+</root>

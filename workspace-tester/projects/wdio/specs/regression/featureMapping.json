@@ -1,0 +1,353 @@
+{
+  "Bookmark": [
+    "Bookmark.spec.js"
+  ],
+  "ShowData": [
+    "ShowData.spec.js"
+  ],
+  "RSD_LinkDrill": [
+    "CarryOverDifferentPromptTypes.spec.js",
+    "CarryOverSelector.spec.js",
+    "CarryOverSpecialPromptElement.spec.js",
+    "CarryOverValuePromptWithMultiForms.spec.js",
+    "LinkToReport_RWD_Dossier.spec.js",
+    "URLAPI.spec.js"
+  ],
+  "ShareBookmark": [
+    "ShareBookmark_ErrorHandling.spec.js",
+    "ShareBookmark_Recipient.spec.js",
+    "ShareBookmark_Sender.spec.js",
+    "ShareBookmark_X_Func.spec.js"
+  ],
+  "Admin": [
+    "LibraryE2E_ADMIN.spec.js"
+  ],
+  "Filter": {
+    "RAFilter": [
+      "DynamicFilter.spec.js",
+      "SearchOnNDE.spec.js"
+    ],
+    "FirstNLastN": [
+      "FirstNLastN_AttributeSlider.spec.js",
+      "FirstNLastN_Checkbox.spec.js",
+      "FirstNLastN_DisableClearing_XFunc.spec.js",
+      "FirstNLastN_DisableClearing.spec.js",
+      "FirstNLastN_DisableClearingReset.spec.js",
+      "FirstNLastN_Dropdown.spec.js",
+      "FirstNLastN_Radiobutton.spec.js",
+      "FirstNLastN_Searchbox.spec.js"
+    ],
+    "DossierLevelFilter": [
+      "DossierLevelFilter_xfunc.spec.js",
+      "DossierLevelFilter.spec.js"
+    ],
+    "FilterGeneral": [
+      "CheckboxFilter.spec.js",
+      "ClearAllFilters.spec.js",
+      "GDDELimit.spec.js",
+      "XssFilter.spec.js"
+    ],
+    "LockFilter": [
+      "LockFilter_xfun.spec.js",
+      "LockFilter.spec.js"
+    ],
+    "CalendarFilter": [
+      "CalendarFilter.spec.js"
+    ],
+    "FilterSummary": [
+      "FilterSummary.spec.js"
+    ],
+    "ParameterFilter": [
+      "ParameterFilter.spec.js",
+      "ParameterFilter_Xfunc.spec.js",
+      "PushdownFilter.spec.js",
+      "PushdownFilter_Xfunc.spec.js"
+    ],
+    "MandatoryFilter": [
+      "MandatoryFilter.spec.js",
+      "MandatoryFilter_XFunc.spec.js"
+    ],
+    "DossierUrlAPI": [
+      "APIPassFilter.spec.js",
+      "UrlAPIPassSelector.spec.js",
+      "UrlAPIPassPrompt.spec.js",
+      "UrlAPIPassPromptandFilter.spec.js",
+      "UrlAPIPassPromptGenerateLink.spec.js",
+      "UrlAPIPassPromptXFun.spec.js",
+      "UrlAPIPassParameterFilter_Xfunc.spec.js",
+      "UrlAPIPassParameterFilter.spec.js",
+      "UrlGenerator_Xfunc.spec",
+      "UrlGenerator.spec.js"
+    ]
+  },
+  "Dossier": {
+    "DossierRendering": [
+      "DossierGeneral.spec.js",
+      "VizHighlight.spec.js",
+      "ObjectSizing.spec.js",
+      "HtmlContainer.spec.js"
+    ],
+    "DossierPanelStack": [
+      "DossierPanelStack.spec.js"
+    ],
+    "DossierInfoWindow": [
+      "DossierInfoWindow.spec.js"
+    ]
+  },
+  "Reset": [
+    "Reset.spec.js",
+    "ResetFromInfoWindow.spec.js"
+  ],
+  "TOC": [
+    "TOC.spec.js"
+  ],
+  "LibraryHomePage": [
+    "MainPage.spec.js"
+  ],
+  "DefaultView": [
+    "DefaultView.spec.js"
+  ],
+  "OnboardingTutorial": [
+    "OnboardingTutorial.spec.js"
+  ],
+  "Prompt": {
+    "AEPrompt": [
+      "AE_CheckBox.spec.js",
+      "AE_List.spec.js",
+      "AE_PullDown.spec.js",
+      "AE_RadioButton.spec.js",
+      "AE_ShoppingCart.spec.js",
+      "AE_CustomerIssue.spec.js"
+    ],
+    "AQPrompt": [
+      "AQ_PullDown.spec.js",
+      "AQ_ShoppingCart.spec.js",
+      "AQ_Textbox.spec.js",
+      "AQ_CustomerIssue.spec.js"
+    ],
+    "MQPrompt": [
+      "MQ_PullDown.spec.js",
+      "MQ_Textbox.spec.js",
+      "MQ_List.spec.js",
+      "MQ_RadioButton.spec.js",
+      "MQ_ShoppingCart.spec.js"
+    ],
+    "HQPrompt": [
+      "HQ_Tree.spec.js",
+      "HQ_ShoppingCart.spec.js"
+    ],
+    "ValuePrompt": [
+      "Value_Date.spec.js",
+      "Value_Numeric.spec.js",
+      "Value_Text.spec.js",
+      "Value_BigDecimal.spec.js"
+    ],
+    "ObjectPrompt": [
+      "Object_ReportBuilder.spec.js",
+      "Object_Standalone.spec.js",
+      "Object_Filter.spec.js",
+      "ReportWithObjectPrompt.spec.js",
+      "ObjectPromptReportWithDifferentView.spec.js"
+    ],
+    "LevelPrompt": [
+      "Level_ShoppingCart.spec.js"
+    ],
+    "PromptinPrompt": [
+      "PIP_ReportInFilter.spec.js",
+      "PIP_AEInFilter.spec.js",
+      "PIP_ValueInFilter.spec.js"
+    ],
+    "SAPPrompt": [
+      "SAP_HierarchyNodeVariable.spec.js",
+      "SAP_CharacteristicValueVariable.spec.js",
+      "SAP_FormulaVariable.spec.js",
+      "SAP_DateVariable.spec.js",
+      "SAP_HierarchyNodeVariableXFun.spec.js"
+    ],
+    "OtherPrompt": [
+      "FFSQL_value.spec.js",
+      "SystemPrompt.spec.js",
+      "PromptUIIssues.spec.js"
+    ],
+    "PromptAccessibility": [
+      "PromptAccessibility_AEPrompt.spec.js",
+      "PromptAccessibility_AxeScan.spec.js"
+    ]
+  },
+  "Drill": [
+    "DrillCustomerIssue.spec.js",
+    "DrillOnDocument.spec.js",
+    "DrillOnDossier.spec.js",
+    "DrillXFunc.spec.js"
+  ],
+  "RSDGeneral": {
+    "RSDRendering": [
+      "RSD_General.spec.js",
+      "RSD_DerivedObjects.spec.js",
+      "RSDCustomerIssue.spec.js",
+      "RSDText.spec.js",
+      "RSDThreshold.spec.js",
+      "RsdSelector.spec.js",
+      "RSDImage.spec.js"
+    ],
+    "RSDSort": [
+      "E2E_RSD_Sort.spec.js"
+    ],
+    "RSDFilterPanel": [
+      "RSD_FilterPanel.spec.js",
+      "FilterPanelIssue.spec.js"
+    ],
+    "RSDInformationWindow": [
+      "RSD_InformationWindow.spec.js",
+      "RSDInfoWindowIssue.spec.js"
+    ],
+    "RSDPanelStack": [
+      "RSD_PanelStack.spec.js",
+      "PanelStackIssue.spec.js"
+    ]
+  },
+  "ContentGroup": [
+    "ContentGroupBasicInfo.spec.js",
+    "ContentGroupStatusSync.spec.js",
+    "ContentGroupManipulation.spec.js",
+    "ContentGroupX-Func.spec.js",
+    "ContentGroupErrorMessage.spec.js"
+  ],
+  "DossierLinking": {
+    "DossierLinking_Linking": [
+      "DossierLinkingGeneral.spec.js",
+      "DossierLinkingOpenInNewTab.spec.js"
+    ],
+    "DossierLinking_PassPrompt": [
+      "DossierLinkingPassPrompt.spec.js"
+    ],
+    "DossierLinking_PassFilter": [
+      "DossierLinkingPassFilter.spec.js"
+    ],
+    "DossierLinking_PassFilterPanel": [
+      "DossierLinkingPassFilterPanel.spec.js"
+    ],
+    "DossierLinking_SupportBookmark": [
+      "DossierLinkingSupportBookmark.spec.js"
+    ]
+  },
+  "Favorites": [
+    "Favorites.spec.js"
+  ],
+  "GlobalSearch": {
+    "GlobalSearch_Search": [
+      "QuickSearch.spec.js",
+      "FullScreenSearch.spec.js",
+      "SearchbyID.spec.js"
+    ],
+    "GlobalSearch_Filter": [
+      "FilterOnSearch.spec.js",
+      "CalendarOnSearch.spec.js",
+      "DynamicCalendarOnSearch.spec.js"
+    ],
+    "GlobalSearch_Sort": [
+      "SortOnSearch.spec.js"
+    ],
+    "GlobalSearch_InfoWindow": [
+      "InfoWindowOnSearch.spec.js"
+    ]
+  },
+  "PersonalGroup": [
+    "GroupGeneral.spec.js",
+    "GroupMultiSelect.spec.js",
+    "GroupXFunc.spec.js"
+  ],
+  "IncanvasSelector": [
+    "Incanvas_buttonbar.spec.js",
+    "Incanvas_checkbox.spec.js",
+    "Incanvas_linkbar.spec.js",
+    "Incanvas_listbox.spec.js",
+    "Incanvas_radioButton.spec.js",
+    "Incanvas_dropdown.spec.js",
+    "Incanvas_searchbox.spec.js",
+    "Incanvas_slider.spec.js",
+    "Incanvas_firstNLastN.spec.js"
+  ],
+  "RSDSelector": {
+    "RSDSelector_ButtonBar": [
+      "ButtonBar.spec.js"
+    ],
+    "RSDSelector_Calendar": [
+      "Calendar.spec.js"
+    ],
+    "RSDSelector_Checkbox": [
+      "Checkbox.spec.js"
+    ],
+    "RSDSelector_Dropdown": [
+      "Dropdown.spec.js",
+      "DropdownMultiSelect.spec.js"
+    ],
+    "RSDSelector_LinkBar": [
+      "LinkBar.spec.js"
+    ],
+    "RSDSelector_ListBox": [
+      "ListBox.spec.js"
+    ],
+    "RSDSelector_MetricQualification": [
+      "MetricQualification.spec.js"
+    ],
+    "RSDSelector_MetricSlider": [
+      "MetricSlider.spec.js"
+    ],
+    "RSDSelector_RadioButton": [
+      "RadioButton.spec.js"
+    ],
+    "RSDSelector_Searchbox": [
+      "Searchbox.spec.js"
+    ],
+    "RSDSelector_Slider": [
+      "Slider.spec.js"
+    ],
+    "RSDSelector_TemplateSelector": [
+      "TemplateSelector.spec.js"
+    ],
+    "RSDSelector_SelectorXFunc": [
+      "SelectorXFunc.spec.js",
+      "SelectorCustomerIssues.spec.js"
+    ]
+  },
+  "AdvancedSortOnAGGrid": [
+    "AdvancedSort_General.spec.js",
+    "AdvancedSort_XFunc.spec.js"
+  ],
+  "ReportFilter": {
+    "ReportFilterSummary": [
+      "ReportFilterSummary_ReportFilter.spec.js",
+      "ReportFilterSummary_Drill.spec.js",
+      "ReportFilterSummary_Prompt.spec.js"
+    ]
+  },
+  "Language": [
+    "InterfaceLanguage_ReportFilter.spec.js",
+    "InterfaceLanguage.spec.js",
+    "Language_DeAt.spec.js",
+    "Language_HelpLink.spec.js",
+    "Language_UI.spec.js"
+  ],
+  "TimeZone": [
+    "TimeZone.spec.js",
+    "TimeZoneXfunc.spec.js"
+  ],
+  "ContentDiscovery": [
+    "ContentDiscovery.spec.js",
+    "ContentDiscovery_XFunc.spec.js"
+  ],
+  "ManualConfigurationNeededFeatures": {
+    "ReportViewFilter": [
+      "ReportViewFilter_Filter.spec.js",
+      "ReportViewFilter_Group.spec.js",
+      "ReportViewFilter_Setting.spec.js"
+    ],
+    "DossierLinkingPassIncanvasSelector": [
+      "DossierLinkingPassInCanvasSelector.spec.js"
+    ],
+    "PromptCustomization": [
+      "PromptCustomization.spec.js"
+    ]
+  }
+}

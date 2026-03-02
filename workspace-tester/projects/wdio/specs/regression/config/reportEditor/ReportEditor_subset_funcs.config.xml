@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportEditor_replace_cube.spec.js'>
+        <TC>BCIN-6422_01</TC>
+        <TC>BCIN-6422_02</TC>
+        <TC>BCIN-6422_03</TC>
+        <TC>BCIN-6422_04</TC>
+        <TC>BCIN-6422_05</TC>
+        <TC>BCIN-6422_06</TC>
+        <TC>BCIN-6422_07</TC>
+        <TC>BCIN-6422_08</TC>
+        <TC>BCIN-6422_09</TC>
+        <TC>BCIN-6422_10</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ReportEditor_add_prompt_to_viewfilter.spec.js'>
+        <TC>BCIN-6460_01</TC>
+        <TC>BCIN-6460_02</TC>
+        <TC>BCIN-6460_03</TC>
+        <TC>BCIN-6460_04</TC>
+        <TC>BCIN-6460_05</TC>
+        <TC>BCIN-6460_06</TC>
+        <TC>BCIN-6460_07</TC>
+        <TC>BCIN-6460_08</TC>
+    </TestSuite>
+    <TestSuite id='03' name='ReportEditor_create_embedded_prompt.spec.js'>
+        <TC>BCIN-6468_01</TC>
+        <TC>BCIN-6468_02</TC>
+        <TC>BCIN-6468_03</TC>
+        <TC>BCIN-6468_04</TC>
+        <TC>BCIN-6468_05</TC>
+        <TC>BCIN-6468_06</TC>
+        <TC>BCIN-6468_07</TC>
+        <TC>BCIN-6468_08</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_IncrementalFetch.spec.js'>
+        <TC>TC71088_01</TC>
+        <TC>TC71088_02</TC>
+        <TC>TC71088_03</TC>
+        <TC>TC71100_01</TC>
+        <TC>TC71100_02</TC>
+        <TC>TC71100_03</TC>
+        <TC>BCIN-6554</TC>
+    </TestSuite>
+</root>

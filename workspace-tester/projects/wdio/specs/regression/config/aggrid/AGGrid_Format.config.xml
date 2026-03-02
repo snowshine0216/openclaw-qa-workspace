@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_AttributeForms.spec.js'>
+        <TC>TC71087</TC>
+        <TC>TC71087_02</TC>
+        <TC>BCIN-5725</TC>
+        <TC>BCIN-6529</TC>
+        <TC>BCIN-6516</TC>
+        <TC>BCIN-6532</TC>
+        <TC>BCIN-5281</TC>
+        <TC>BCIN-5765</TC>
+    </TestSuite>
+    <TestSuite id='2' name='ColumnUnitFormatting.spec.js'>
+        <TC>TC97778_01</TC>
+        <TC>TC97778_02</TC>
+        <TC>TC97778_03</TC>
+    </TestSuite>
+    <TestSuite id='3' name='AgGrid_NumberFormatting.spec.ts'>
+        <TC>TC80450</TC>
+        <TC>TC54879</TC>
+        <TC>BCIN-6594</TC>
+    </TestSuite>
+    <TestSuite id='4' name='AgGrid_SpecialNumberFormat.spec.ts'>
+        <TC>TC88592</TC>
+        <TC>TC88597</TC>
+    </TestSuite>
+    <TestSuite id='5' name='AGGrid_BorderFormatting.spec.js'>
+        <TC>TC88602</TC>
+        <TC>TC88963_1</TC>
+        <TC>TC88963_2</TC>
+        <TC>BCDA-3069</TC>
+    </TestSuite>
+    <TestSuite id='6' name='AGGrid_BasedColumnWidth.spec.js'>
+        <TC>TC95080</TC>
+        <TC>TC95081_01</TC>
+        <TC>TC95081_02</TC>
+        <TC>TC95081_03</TC>
+        <TC>TC95081_04</TC>
+        <TC>BCIN-7338</TC>
+    </TestSuite>
+    <TestSuite id='7' name='AgGrid_FormatPanel.spec.ts'>
+        <TC>TC71086_1</TC>
+        <TC>TC71086_2</TC>
+        <TC>TC71098_1</TC>
+        <TC>TC71098_2</TC>
+        <TC>TC89552</TC>
+        <TC>TC71098_3</TC>
+        <TC>TC71098_4</TC>
+    </TestSuite>
+</root>

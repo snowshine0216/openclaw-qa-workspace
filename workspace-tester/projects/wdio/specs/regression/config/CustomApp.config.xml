@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomAppCollapsedToolBar.spec.js'>
+        <TC>TC78891</TC>
+        <TC>TC76707</TC>
+        <TC>TC76707_2</TC>   
+        <TC>TC78891_01</TC>
+   </TestSuite>
+    <TestSuite id='02' name='CustomAppDisableToolBar.spec.js'>
+        <TC>TC78890</TC>
+        <TC>TC76715</TC>
+    </TestSuite>
+    <TestSuite id='03' name='CustomAppShowToolBar.spec.js'>
+        <TC>TC76708</TC>
+        <TC>TC76714</TC>
+        <TC>TC78888</TC>
+        <TC>TC76711</TC>
+        <TC>TC76711_2</TC>
+    </TestSuite>
+    <TestSuite id='04' name='CustomAppErrorHandling.spec.js'>
+        <TC>TC76717</TC>
+        <TC>TC78889</TC>
+        <TC>TC78892</TC>
+        <TC>TC78894</TC>
+    </TestSuite>
+    <TestSuite id='05' name='CustomAppUserPreference.spec.js'>
+        <TC>TC80099</TC>
+        <TC>TC80100</TC>
+    </TestSuite>
+    <TestSuite id='06' name='CustomAppCustomizedItems.spec.js'>
+        <TC>TC80057_01</TC>
+        <TC>TC80057_02</TC>
+        <TC>TC80057_03</TC>
+        <TC>TC80057_04</TC>
+        <TC>TC80057_05</TC>
+        <TC>TC80057_06</TC>
+        <TC>TC80057_07</TC>
+        <TC>TC80057_08</TC>
+        <TC>TC80057_09</TC>
+        <TC>TC80057_10</TC>
+        <TC>TC80057_11</TC>
+        <TC>TC80057_12</TC>
+        <TC>TC80057_13</TC>
+        <TC>TC80057_14</TC>
+        <TC>TC80057_15</TC>
+        <TC>TC80057_16</TC>
+        <TC>TC80659</TC>
+    </TestSuite>
+    <TestSuite id='07' name='CustomAppContentBundle.spec.js'>
+        <TC>TC79314_1</TC>
+        <TC>TC79314_2</TC>
+        <TC>TC79314_3</TC>
+        <TC>TC87909_1</TC>
+        <TC>TC87909_2</TC>
+        <TC>TC87909_3</TC>
+        <TC>TC88819_1</TC>
+        <TC>TC88819_2</TC>
+        <TC>TC88819_3</TC>
+        <TC>TC79314_4</TC>
+    </TestSuite>
+    <TestSuite id='08' name='CustomApp_CustomFont.spec.js'>
+        <TC>TC90088_11</TC>
+    </TestSuite>
+</root>

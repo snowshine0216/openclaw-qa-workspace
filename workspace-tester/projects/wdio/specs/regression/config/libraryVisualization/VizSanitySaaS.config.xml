@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='libraryVizSanitySaaS.spec.js'>
+        <TC>TC98366</TC>
+        <TC>TC98367</TC>
+        <TC>TC98368</TC>
+    </TestSuite>
+</root>

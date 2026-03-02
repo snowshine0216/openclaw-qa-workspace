@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoNarratives_SmartMetrics_ACC_ComponentOff.spec.js'>
+        <TC>SM_ACC02_00</TC>
+        <TC>SM_ACC02_01</TC>
+        <TC>SM_ACC02_02</TC>
+        <TC>SM_ACC02_03</TC>
+        <TC>SM_ACC02_04</TC>
+        <TC>SM_ACC02_05</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AutoNarratives_SmartMetrics_ACC_ComponentOn.spec.js'>
+        <TC>SM_ACC01_00</TC>
+        <TC>SM_ACC01_01</TC>
+        <TC>SM_ACC01_02</TC>
+        <TC>SM_ACC01_03</TC>
+        <TC>SM_ACC01_04</TC>
+        <TC>SM_ACC01_05</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_ExportToPDF_Defects.spec.js'>
+        <TC>TC82679</TC>
+        <TC>TC63338</TC>
+    </TestSuite>
+</root>

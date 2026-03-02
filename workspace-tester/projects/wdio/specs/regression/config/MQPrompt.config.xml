@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='MQ_PullDown.spec.js'>
+        <TC>TC59295</TC>
+        <TC>TC59296</TC>
+        <TC>TC59297</TC>
+        <TC>TC59298</TC>
+    </TestSuite>
+    <TestSuite id='02' name='MQ_Textbox.spec.js'>
+        <TC>TC59294</TC>
+    </TestSuite>
+    <TestSuite id='03' name='MQ_List.spec.js'>
+        <TC>TC59423</TC>
+    </TestSuite>
+    <TestSuite id='04' name='MQ_RadioButton.spec.js'>
+        <TC>TC59618</TC>
+    </TestSuite>
+    <TestSuite id='05' name='MQ_ShoppingCart.spec.js'>
+        <TC>TC59619</TC>
+        <TC>TC59622</TC>
+        <TC>TC59624</TC>
+        <TC>TC61393</TC>        
+   </TestSuite>
+</root>

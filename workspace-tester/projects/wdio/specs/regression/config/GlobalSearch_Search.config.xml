@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='QuickSearch.spec.js'>
+        <TC>TC69970</TC>
+        <TC>TC69971</TC>
+        <TC>TC69972</TC>
+        <TC>TC69973</TC>
+        <TC>TC69974</TC>
+        <TC>TC70026</TC>
+        <TC>TC70027</TC>
+        <TC>TC70030</TC>
+        <TC>TC70038</TC>
+        <TC>TC70049</TC>
+        <TC>TC70050</TC>
+    </TestSuite>
+    <TestSuite id='01' name='FullScreenSearch.spec.js'>
+        <TC>TC70051</TC>
+        <TC>TC70058</TC>
+        <TC>TC70059</TC>
+        <TC>TC70103</TC>
+        <TC>TC70108</TC>
+        <TC>TC70287</TC>
+        <TC>TC79821</TC>
+        <TC>TC86608</TC>
+        <TC>TC86808</TC>
+        <TC>TC86837</TC>
+        <TC>TC89466</TC>
+        <TC>TC87727</TC>
+    </TestSuite>
+</root>

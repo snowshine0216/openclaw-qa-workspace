@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='InfoWindowOnSearch.spec.js'>
+        <TC>TC70112</TC>
+        <TC>TC70124</TC>
+        <TC>TC70126</TC>
+        <TC>TC70131</TC>
+        <TC>TC70132</TC>
+        <TC>TC70130</TC>
+        <TC>TC70134</TC>
+        <TC>TC70129</TC>
+        <TC>TC86850</TC>
+        <TC>TC88070</TC>
+    </TestSuite>
+</root>

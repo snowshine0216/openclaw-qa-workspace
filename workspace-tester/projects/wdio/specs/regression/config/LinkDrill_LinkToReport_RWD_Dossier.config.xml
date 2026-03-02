@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LinkToReport_RWD_Dossier.spec.js'>
+        <TC>TC66932</TC>
+        <TC>TC66933</TC>
+        <TC>TC66634</TC>
+        <TC>TC66640</TC>
+        <TC>TC66656</TC>
+        <TC>TC79728</TC>
+        <TC>TC79729</TC>
+    </TestSuite>
+</root>

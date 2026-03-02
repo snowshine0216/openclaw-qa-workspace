@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelVizFunction.spec.js'>
+        <TC>TC92475</TC>
+        <TC>TC92476</TC>
+        <TC>TC92477</TC>
+        <TC>TC92478</TC>
+        <TC>TC91878</TC>
+        <TC>TC91881</TC>
+        <TC>TC91882</TC>
+        <TC>TC91883</TC>
+        <TC>TC91880</TC>
+        <TC>TC91817</TC>
+    </TestSuite>
+    </TestSuite> 
+    <TestSuite id='02' name='ChatPanelVizTheme.spec.js'>
+        <TC>TC92027</TC>
+        <TC>TC92028</TC>
+        <TC>TC92388</TC>
+    </TestSuite> 
+    <TestSuite id='03' name='ChatPanelVizI18N.spec.js'>
+        <TC>TC91818</TC>
+    </TestSuite> 
+</root>
+

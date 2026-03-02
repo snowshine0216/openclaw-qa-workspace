@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AgGrid_Monotype.spec.js'>
+        <TC>TC99424_01</TC>
+        <TC>TC99424_02</TC>
+        <TC>TC99424_03</TC>
+        <TC>TC99424_04</TC>
+        <TC>TC99424_05</TC>
+        <TC>TC99424_06</TC>
+        <TC>TC99424_07</TC>
+        <TC>TC99424_08</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='UrlAPIPassSelector.spec.js'>
+        <TC>TC94178</TC>
+        <TC>TC94179</TC>
+        <TC>TC94180</TC>
+        <TC>TC94181</TC>
+        <TC>TC94182_01</TC>
+        <TC>TC94182_02</TC>
+        <TC>TC94185</TC>
+   </TestSuite>
+   <TestSuite id='02' name='OriginMessageIDPassSelector.spec.js'>
+        <TC>TC94178_01</TC>
+        <TC>TC94178_02</TC>
+   </TestSuite>
+   <TestSuite id='03' name='URLAPI_RSD.spec.js'>
+        <TC>TC94178_03</TC>
+        <TC>TC94178_05</TC>
+        <TC>TC94178_06</TC>
+        <TC>TC94178_07</TC>
+   </TestSuite>
+</root>

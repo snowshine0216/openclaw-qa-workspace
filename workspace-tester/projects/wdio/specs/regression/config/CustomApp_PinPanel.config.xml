@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomApp_PinSideBar.spec.js'>
+        <TC>TC90862_01</TC>
+        <TC>TC90862_02</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CustomApp_PinToc.spec.js'>
+        <TC>TC90863_01</TC>
+        <TC>TC90863_02</TC>
+        <TC>TC90863_03</TC>
+        <TC>TC90863_04</TC>
+    </TestSuite>
+    <TestSuite id='03' name='CustomApp_PinComment.spec.js'>
+        <TC>TC90865_01</TC>
+        <TC>TC90865_02</TC>
+        <TC>TC90865_03</TC>
+        <TC>TC90865_04</TC>
+        <TC>TC90865_05</TC>
+    </TestSuite>
+    <TestSuite id='04' name='CustomApp_PinFilter.spec.js'>
+        <TC>TC90864_01</TC>
+        <TC>TC90864_02</TC>
+        <TC>TC90864_03</TC>
+        <TC>TC90864_04</TC>
+    </TestSuite>
+    <TestSuite id='05' name='CustomApp_FilterLeft.spec.js'>
+        <TC>TC90864_05</TC>
+        <TC>TC90864_06</TC>
+        <TC>TC90864_07</TC>
+        <TC>TC90864_08</TC>
+    </TestSuite>
+    <TestSuite id='06' name='CustomApp_PinAndUrlApi.spec.js'>
+        <TC>TC91044_01</TC>
+        <TC>TC91044_02</TC>
+        <TC>TC91044_03</TC>
+    </TestSuite>
+    <TestSuite id='07' name='CustomApp_Pin1PanelXfunc.spec.js'>
+        <TC>TC90866_01</TC>
+        <TC>TC90866_02</TC>
+    </TestSuite>
+    <TestSuite id='08' name='CustomApp_PinMultiplePanelXfunc.spec.js'>
+        <TC>TC90866_05</TC>
+        <TC>TC90866_06</TC>
+        <TC>TC90866_07</TC>
+        <TC>TC90866_08</TC>
+        <TC>TC90866_09</TC>
+        <TC>TC90866_10</TC>
+        <TC>TC90866_11</TC>
+        <TC>TC90866_12</TC>
+    </TestSuite>
+    <TestSuite id='09' name='CustomApp_Pin2Sides.spec.js'>
+        <TC>TC91591_01</TC>
+        <TC>TC91591_02</TC>
+        <TC>TC91591_04</TC>
+    </TestSuite>
+   <!--  <TestSuite id='10' name='CustomApp_PinAIAssistant.spec.js'>
+        <TC>TC91540_01</TC>
+        <TC>TC91540_02</TC>
+        <TC>TC91540_03</TC>
+        <TC>TC91540_04</TC>
+    </TestSuite>
+    <TestSuite id='11' name='CustomApp_PinMultiplePanelXfuncAI.spec.js'>
+        <TC>TC91592_01</TC>
+        <TC>TC91592_02</TC>
+        <TC>TC91592_03</TC>
+        <TC>TC91592_04</TC>
+        <TC>TC91592_05</TC>
+        <TC>TC91592_06</TC>
+        <TC>TC91592_07</TC>
+        <TC>TC91592_08</TC>
+        <TC>TC91592_09</TC>
+    </TestSuite> -->
+</root>

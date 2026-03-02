@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='GroupGeneral.spec.js'>
+        <TC>TC70842</TC>
+        <TC>TC72230</TC>
+        <TC>TC72231</TC>
+        <TC>TC72232</TC>
+        <TC>TC70845</TC>
+        <TC>TC72233</TC>
+        <TC>TC72234</TC>
+        <TC>TC72235</TC>
+    </TestSuite>
+        <TestSuite id='01' name='GroupMultiSelect.spec.js'>
+        <TC>TC72241</TC>
+        <TC>TC72236</TC>
+        <TC>TC72238</TC>
+        <TC>TC72237</TC>
+        <TC>TC72239</TC>
+        <TC>TC72240</TC>
+        <TC>TC72242</TC>
+        <TC>TC84375</TC>
+    </TestSuite>
+    <TestSuite id='01' name='GroupXFunc.spec.js'>
+        <TC>TC72244</TC>
+        <TC>TC72245</TC>
+        <TC>TC85341</TC>
+        <TC>TC78928</TC>
+    </TestSuite>
+</root>

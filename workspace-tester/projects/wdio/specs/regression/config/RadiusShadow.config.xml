@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Radius.spec.js'>
+        <TC>TC99538_1</TC>
+        <TC>TC99538_2</TC>
+        <TC>TC99538_3</TC>
+        <TC>TC99538_4</TC>
+        <TC>TC99538_5</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Shadow.spec.js'>
+        <TC>TC99538_6</TC>
+        <TC>TC99538_7</TC>
+        <TC>TC99538_8</TC>
+        <TC>TC99538_9</TC>
+    </TestSuite>
+</root>

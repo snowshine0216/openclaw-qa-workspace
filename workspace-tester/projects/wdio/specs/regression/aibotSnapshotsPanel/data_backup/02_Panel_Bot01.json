@@ -1,0 +1,211 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "A09701BB2B04499C9C6F0DB30CB34A70",
+            "n": "Sales by Region"
+          },
+          {
+            "cate": "703CDA556538449485A3B0190BC6E43B",
+            "n": "Inventory by Subcategory"
+          },
+          {
+            "cate": "D80FE4739E814C2D9521589E9310B3B9",
+            "n": "Profit by Supplier"
+          },
+          {
+            "cate": "25C4EF88CB6945B8AA05008625AAF304",
+            "n": "Revenue by Quarter"
+          },
+          {
+            "cate": "5DE367DA92AC4CE1A8062EA6AE3F1872",
+            "n": "Customer Count by Month"
+          }
+        ],
+        "chat_col": [
+          {
+            "message_col": [
+              {
+                "category_id": "D80FE4739E814C2D9521589E9310B3B9",
+                "message_id": "7A157DE8EB1F4498B315788EA55EE091",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Show keydirver of Profit ('Profit' is a metric) by Supplier ('Supplier' is an attribute) \\n\",\"type\":\"token\",\"content\":{\"text\":\"Show keydirver of ###0### by ###1### \\n\",\"extra\":{\"placeholders\":[{\"insertText\":\"Profit\",\"id\":\"4C051DB611D3E877C000B3B2D86C964F\"},{\"insertText\":\"Supplier\",\"id\":\"8D679D5011D3E4981000E787EC6DE8A4\"}],\"usedItemsMap\":{},\"usedItemsObjectString\":\"[[\\\"Profit\\\",{\\\"label\\\":\\\"Profit\\\",\\\"insertText\\\":\\\"Profit\\\",\\\"extra\\\":{\\\"id\\\":\\\"4C051DB611D3E877C000B3B2D86C964F\\\"}}],[\\\"Supplier\\\",{\\\"label\\\":\\\"Supplier\\\",\\\"insertText\\\":\\\"Supplier\\\",\\\"extra\\\":{\\\"id\\\":\\\"8D679D5011D3E4981000E787EC6DE8A4\\\"}}]]\"}}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The overall average of Profit is **$147,045**. The supplier \"**ACS Innovations**\" has the most significant impact on the increase of the overall average of Profit, as it increases the overall average by **+14.6%**, and when excluding this supplier, the overall average of Profit decreases from **$147,045** to **$125,508**. On the other hand, the supplier \"**Columbia House**\" has a large impact on the decrease of the overall average of Profit, as it decreases the overall average by **-2.7%**, and when excluding this supplier, the overall average of Profit increases from **$147,045** to **$150,979**.",
+                    "text_type": 2,
+                    "uri": "065DF4D3BF8B4E028FB79FB357DBFBA2"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 24,
+                  "month": 12,
+                  "sec": 30,
+                  "srs": 0,
+                  "tms": 105,
+                  "week": 2,
+                  "year": 2023
+                }
+              },
+              {
+                "category_id": "25C4EF88CB6945B8AA05008625AAF304",
+                "message_id": "537FE192CE224A55A046E66D2EC6C6D7",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"What are the top 5 categories by revenue? hahahahahahahahahhahahahahahahahahahahahahahahahahahahahahaha\\r\\naaaaaaaaaaaaaaaaaaaaaaaa\\r\\nbbbbbbbbbbbbbbbbbbbbbbbbb\\r\\nccccccccccccccccccccccccccc\\r\\n\",\"type\":\"text\",\"content\":{\"text\":\"What are the top 5 categories by revenue? hahahahahahahahahhahahahahahahahahahahahahahahahahahahahahaha\\r\\naaaaaaaaaaaaaaaaaaaaaaaa\\r\\nbbbbbbbbbbbbbbbbbbbbbbbbb\\r\\nccccccccccccccccccccccccccc\\r\\n\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The top 5 categories by revenue are:\n1. Electronics - Total Revenue: $24,391,303\n2. Movies - Total Revenue: $4,098,943\n3. Music - Total Revenue: $3,893,367\n4. Books - Total Revenue: $2,640,094",
+                    "text_type": 2,
+                    "uri": "FA8673D6F86340B0808E7BFC9315ED20"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 24,
+                  "month": 12,
+                  "sec": 53,
+                  "srs": 0,
+                  "tms": 193,
+                  "week": 2,
+                  "year": 2023
+                }
+              },
+              {
+                "category_id": "D80FE4739E814C2D9521589E9310B3B9",
+                "message_id": "A25202C0A9FB4D4D85188525248F4C55",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Show me grid of Profit , Profit Margin , Revenue by Region \\r\\n\",\"type\":\"text\",\"content\":{\"text\":\"Show me grid of Profit , Profit Margin , Revenue by Region \\r\\n\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "Here is the grid of Profit, Profit Margin, and Revenue by Region:\n\n- Northeast: \n  - Revenue: $8,554,415\n  - Profit Margin: 15.21%\n  - Profit: $1,300,732\n\n- South: \n  - Revenue: $5,389,280\n  - Profit Margin: 14.97%\n  - Profit: $806,956\n\n- Central: \n  - Revenue: $5,029,366\n  - Profit Margin: 15.20%\n  - Profit: $764,323\n\n- Mid-Atlantic: \n  - Revenue: $4,452,615\n  - Profit Margin: 15.12%\n  - Profit: $673,084\n\n- Web: \n\n  - Revenue: $3,902,762\n  - Profit Margin: 14.95%\n  - Profit: $583,538\n\nPlease note that the remaining regions are not listed here.",
+                    "text_type": 2,
+                    "uri": "E3EEB6B118424CCEA11108DF8CD41C18"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 25,
+                  "month": 12,
+                  "sec": 13,
+                  "srs": 0,
+                  "tms": 268,
+                  "week": 2,
+                  "year": 2023
+                }
+              },
+              {
+                "category_id": "A09701BB2B04499C9C6F0DB30CB34A70",
+                "message_id": "4456A237605544D6BBC00B44C824BCE3",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Show heatmap of Profit by Region \\r\\n\",\"type\":\"text\",\"content\":{\"text\":\"Show heatmap of Profit by Region \\r\\n\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The heatmap of Profit by Region shows the distribution of profits across different regions. The regions with the highest profits are:\n- Central: $764,323\n- Mid-Atlantic: $673,084\n- Northeast: $1,300,732\n- Northwest: $266,986\n- South: $806,956\n\n\nThese regions have the highest profits, while the remaining regions are not listed here. The heatmap provides a visual representation of the profit distribution, allowing you to easily identify the regions with the highest and lowest profits.",
+                    "text_type": 2,
+                    "uri": "7DF5E944FEB24E3CBE816AFBB888220E"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 25,
+                  "month": 12,
+                  "sec": 35,
+                  "srs": 0,
+                  "tms": 841,
+                  "week": 2,
+                  "year": 2023
+                }
+              }
+            ],
+            "snapshot_sort": "category-"
+          }
+        ],
+        "endtime": {
+          "day": 7,
+          "day_of_week": 0,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 9,
+          "ig": false,
+          "minute": 22,
+          "month": 1,
+          "sec": 59,
+          "srs": 0,
+          "tms": 201,
+          "week": 2,
+          "year": 2024
+        }
+      },
+      "dfid": "EE9BD70043F0F571B38E43BF19B9301A",
+      "did": "42D45053FB416B4790016693F0F42FBD",
+      "img": true,
+      "lcl": 1033,
+      "nct": "2023-12-08T09:22:59.201Z",
+      "nmdt": "2023-12-13T02:05:09.101Z",
+      "owid": "4CF544F00D40D7E84AFC6BA4FD55ECE5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "4CF544F00D40D7E84AFC6BA4FD55ECE5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "D92FB44CB8403FB27A97559A3F98BDA3"
+    }
+  ]
+}

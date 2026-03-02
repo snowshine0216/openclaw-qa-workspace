@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='BotCreate.spec.js'>
+        <TC>TC92082_01</TC>
+        <TC>TC92082_02</TC>
+        <TC>TC92082_03</TC>
+        <TC>TC92082_04</TC>
+        <TC>TC92082_05</TC>
+        <TC>TC92082_06</TC>
+        <TC>TC92081_01</TC>
+        <TC>TC92081_02</TC>
+        <TC>TC92081_03</TC>
+    </TestSuite>
+</root>

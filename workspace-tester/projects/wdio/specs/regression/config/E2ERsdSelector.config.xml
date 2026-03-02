@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='E2E_RSD_Selector.spec.js'>
+        <TC>TC65590_01</TC>
+        <TC>TC65590_02</TC>
+        <TC>TC65590_03</TC>
+        <TC>TC65590_04</TC>
+        <TC>TC65590_05</TC>
+    </TestSuite>
+</root>

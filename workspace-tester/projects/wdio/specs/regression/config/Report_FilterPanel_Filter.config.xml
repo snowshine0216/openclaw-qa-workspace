@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='ReportViewFilter_Filter.spec.js'>
+       <TC>TC87516</TC>
+       <TC>TC87517</TC>
+       <TC>TC87518</TC>
+       <TC>TC87519</TC>
+       <TC>TC87521</TC>
+       <TC>TC87613</TC>
+       <TC>TC87614</TC>
+       <TC>TC87615</TC>
+       <TC>TC87624</TC>
+       <TC>TC87625</TC>
+       <TC>TC87690</TC>
+       <TC>TC87691</TC>
+       <TC>TC87692</TC>
+       <TC>TC87879</TC>
+       <TC>TC90698</TC>
+       <TC>TC90699</TC>
+   </TestSuite>
+</root>

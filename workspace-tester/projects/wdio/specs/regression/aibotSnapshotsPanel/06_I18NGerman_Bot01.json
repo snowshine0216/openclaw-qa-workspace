@@ -1,0 +1,134 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "9B656595EC034206A53E1E7EA9DCC95B",
+            "n": "Anrufzentrum"
+          },
+          {
+            "cate": "81599615A32241608098FF38B1282541",
+            "n": "Jahr"
+          },
+          {
+            "cate": "2930F1E428E5412C9EE74E30977031C0",
+            "n": "Kategorie"
+          },
+          {
+            "cate": "C131F9D083D34BF7A4DD82D1748D3729",
+            "n": "Monat"
+          },
+          {
+            "cate": "3F723D7FEA5C4D5FAD1853D341FB6805",
+            "n": "Monat im Jahr"
+          }
+        ],
+        "chat_col": [
+          {
+            "chat_id": "00000000000000000000000000000000",
+            "chat_timestamp": {
+              "day": 8,
+              "day_of_week": 2,
+              "do": 0,
+              "dt": -100,
+              "dtm": 0,
+              "hour": 12,
+              "ig": false,
+              "minute": 19,
+              "month": 4,
+              "sec": 19,
+              "srs": 0,
+              "tms": 861,
+              "week": 2,
+              "year": 2025
+            },
+            "chat_type": 1,
+            "message_col": [
+              {
+                "category_id": "2930F1E428E5412C9EE74E30977031C0",
+                "message_id": "75DD5689B51C4D54B4F9765D8323C5E4",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Welche 5 Region hat den höchsten Umsatz?\",\"type\":\"text\",\"content\":{\"text\":\"Welche 5 Region hat den höchsten Umsatz?\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "{\"text\":\"Die fünf Regionen mit dem höchsten Umsatz sind:\\n\\n1. **Nordosten** mit einem Umsatz von  **$8.554.415**.\\n2. **Süden** mit einem Umsatz von  **$5.389.280**.\\n3. **Mitte** mit einem Umsatz von  **$5.029.366**.\\n4. **Mittlere Atlantikküste** mit einem Umsatz von  **$4.452.615**.\\n5. **Web** mit einem Umsatz von  **$3.902.762**.\\n\\n\\nDie Region Nordosten hat den höchsten Umsatz, während die Region Web den niedrigsten Umsatz unter den Top 5 aufweist.\",\"interpretationStash\":{\"approach\":\"sql\",\"userQuestion\":\"Welche 5 Region hat den höchsten Umsatz?\",\"sql\":\"SELECT `Region@DESC`, `Umsatz` AS `Umsatz` FROM `SanityTestSnapshotI18NGerman` GROUP BY `Region@DESC` ORDER BY `Umsatz` DESC LIMIT 5\",\"actions\":[{\"act\":\"addPanel\",\"nodeKey\":\"75DD5689B51C4D54B4F9765D8323C5E4\",\"titlePattern\":1,\"parentKey\":\"K34\",\"index\":0},{\"act\":\"setCurrentPanel\",\"unitKey\":\"75DD5689B51C4D54B4F9765D8323C5E4\"},{\"act\":\"copyUnit\",\"unitKey\":\"K51\",\"unitType\":521,\"newKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"toKey\":\"75DD5689B51C4D54B4F9765D8323C5E4\",\"partialRetrieval\":{\"nodes\":[\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"]},\"tableGuides\":[{\"table\":\"Document\"}]},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"actions\":[{\"act\":\"createDefaultDropZones\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"treeType\":1,\"datasetType\":3,\"widgetType\":1,\"partialUpdate\":{\"nodes\":[\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"]}}]},{\"act\":\"format\",\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"unitType\":521,\"formatType\":1,\"format\":{\"Visualization\":{\"VisualizationsEnabled\":-1,\"ViewMode\":51,\"SelectedVisualization\":\"GraphMatrixVisualizationStyle\",\"VisualizationList\":\"GraphMatrixVisualizationStyle\",\"IPhoneVisualization\":\"\",\"IPadVisualization\":\"IPadGraphMatrix2Style\",\"APhoneVisualization\":\"\",\"ATabletVisualization\":\"\"},\"FormattingWidget\":{\"ClassName\":\"com.microstrategy.flex.viewer.GraphMatrixViewer\",\"Enable\":1,\"WidgetProps\":\"<props ><widgetProps ><fmt ><visStyle value=\\\"GraphMatrixVisualizationStyle\\\" ></visStyle><Shape value=\\\"Bar\\\" ></Shape><Subtype value=\\\"Stacked\\\" ></Subtype><metricShapes value=\\\"{}\\\" ></metricShapes><visType value=\\\"6\\\" ></visType><userVisType value=\\\"6\\\" ></userVisType><pdlll value=\\\"1\\\" ></pdlll><pnsr value=\\\"1\\\" ></pnsr><oxalr value=\\\"1\\\" ></oxalr><xAxLbWrapText value=\\\"true\\\" ></xAxLbWrapText><pso value=\\\"4\\\" ></pso><bdlp value=\\\"0\\\" ></bdlp><xAxLbNestedLabel value=\\\"true\\\" ></xAxLbNestedLabel><opt1132 value=\\\"true\\\" ></opt1132><yAxLnStyle value=\\\"99\\\" ></yAxLnStyle><yAxLnThk value=\\\"0\\\" ></yAxLnThk><xAxLnStyle value=\\\"99\\\" ></xAxLnStyle><xAxLnThk value=\\\"0\\\" ></xAxLnThk><majorGridLnStyle value=\\\"1\\\" ></majorGridLnStyle><minerGridLnStyle value=\\\"1\\\" ></minerGridLnStyle><ftFgGrpA value=\\\"8191\\\" ></ftFgGrpA></fmt></widgetProps></props>\"}},\"partialRetrieval\":{\"nodes\":[\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"]}},{\"act\":\"format\",\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"unitType\":521,\"formatType\":1,\"format\":{\"FormattingIncrementalFetch\":{\"EnableIFOnGrid\":0}},\"partialRetrieval\":{\"nodes\":[\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"]}},{\"act\":\"changeGridDisplayMode\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"displayMode\":2},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"partialRetrieval\":{\"nodes\":[\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"],\"filters\":{\"AutoAI_AFD4D180147311F088D1A5518630AFD4\":{\"data\":{},\"defn\":{}}}},\"partialUpdate\":{},\"actions\":[{\"act\":\"addDropZoneUnit\",\"zoneId\":3,\"unitId\":\"8D679D4B11D3E4981000E787EC6DE8A4\",\"unitType\":12,\"unitPos\":1,\"datasetId\":\"1501C7F44AEFE6B66FE1BDB1954EF12D\",\"datasetType\":\"3\",\"tableGuide\":{\"table\":\"Document\"}},{\"act\":\"addDropZoneUnit\",\"zoneId\":4,\"unitId\":\"4C05177011D3E877C000B3B2D86C964F\",\"unitType\":4,\"unitPos\":1,\"datasetId\":\"1501C7F44AEFE6B66FE1BDB1954EF12D\",\"datasetType\":\"3\",\"ax\":0,\"tableGuide\":{\"table\":\"Document\"}},{\"act\":\"formatGridZone\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"props\":{},\"units\":[{\"unitId\":\"4C05177011D3E877C000B3B2D86C964F\",\"unitType\":4,\"regions\":[\"g\"]}],\"axis\":[]}]},{\"act\":\"editNode\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"datasetId\":\"1501C7F44AEFE6B66FE1BDB1954EF12D\"},{\"act\":\"format\",\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":1,\"format\":{\"FormattingView\":{\"Title\":\"Top 5 regions with highest sales\"}}},{\"act\":\"sortGM\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"subActions\":[{\"sortIndex\":0,\"sortType\":1,\"objType\":4,\"objID\":\"4C05177011D3E877C000B3B2D86C964F\",\"ascending\":false,\"axisIndex\":2,\"subtotalsPosition\":0,\"eIds\":[{\"n\":\"Umsatz\",\"id\":\"CD:4C05177011D3E877C000B3B2D86C964F\",\"oid\":\"4C05177011D3E877C000B3B2D86C964F\",\"otp\":4,\"at\":12,\"prop\":{\"VLDB Select\":[{\"n\":\"Metric Join Type\",\"dt\":3,\"v\":\"1\"}]},\"cds\":\"true\",\"tid\":\"\",\"gvsRI\":0,\"gvsCI\":0,\"axis\":2}],\"formId\":\"\",\"actionId\":26}]},{\"act\":\"submit\"},{\"act\":\"saveViewFilter\",\"messageID\":\"58B3467E3F49F0617BEECFB07468E8D7\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"expr\":\"<exp><nd et=\\\"14\\\" fn=\\\"19\\\" ><nds></nds></nd></exp>\"},{\"act\":\"saveViewFilterLimit\",\"messageID\":\"58B3467E3F49F0617BEECFB07468E8D7\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"limitExp\":\"<exp><nd et=\\\"14\\\" fn=\\\"19\\\" ><nds><nd et=\\\"10\\\" fn=\\\"1\\\" fnt=\\\"2\\\"><m did=\\\"4C05177011D3E877C000B3B2D86C964F\\\" n=\\\"Umsatz\\\"></m><cs><c dtp=\\\"5\\\" v=\\\"5\\\"></c></cs></nd></nds></nd></exp>\",\"limitToRemove\":[]},{\"act\":\"setProperty\",\"nodeKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"prs\":\"FormattingWidget\",\"pri\":4,\"v\":\"&lt;props&gt;&lt;widgetProps&gt;&lt;fmt&gt;&lt;visStyle value=&quot;GraphMatrixVisualizationStyle&quot;&gt;&lt;/visStyle&gt;&lt;Shape value=&quot;Bar&quot;&gt;&lt;/Shape&gt;&lt;Subtype value=&quot;Stacked&quot;&gt;&lt;/Subtype&gt;&lt;metricShapes value=&quot;{}&quot;&gt;&lt;/metricShapes&gt;&lt;visType value=&quot;6&quot;&gt;&lt;/visType&gt;&lt;userVisType value=&quot;6&quot;&gt;&lt;/userVisType&gt;&lt;pdlll value=&quot;1&quot;&gt;&lt;/pdlll&gt;&lt;pnsr value=&quot;1&quot;&gt;&lt;/pnsr&gt;&lt;oxalr value=&quot;1&quot;&gt;&lt;/oxalr&gt;&lt;xAxLbWrapText value=&quot;true&quot;&gt;&lt;/xAxLbWrapText&gt;&lt;pso value=&quot;4&quot;&gt;&lt;/pso&gt;&lt;bdlp value=&quot;0&quot;&gt;&lt;/bdlp&gt;&lt;xAxLbNestedLabel value=&quot;true&quot;&gt;&lt;/xAxLbNestedLabel&gt;&lt;opt1132 value=&quot;true&quot;&gt;&lt;/opt1132&gt;&lt;ftFgGrpA value=&quot;8191&quot;&gt;&lt;/ftFgGrpA&gt;&lt;th value=&quot;1&quot; /&gt;&lt;bgFillClr value=&quot;16382457&quot; /&gt;&lt;allTxtFntClr value=&quot;3879209&quot; /&gt;&lt;xAxTtFntStyle value=&quot;1&quot; /&gt;&lt;yAxTtFntStyle value=&quot;1&quot; /&gt;&lt;dlFntClr value=&quot;3879209&quot; /&gt;&lt;lgdBgFillClr value=&quot;16185078&quot; /&gt;&lt;lgdBgFillTrans value=&quot;0&quot; /&gt;&lt;allMatrixLnClr value=&quot;14737632&quot; /&gt;&lt;rwHdrFillClr value=&quot;16777215&quot; /&gt;&lt;colHdrFillClr value=&quot;16777215&quot; /&gt;&lt;majorGridLnClr value=&quot;15461355&quot; /&gt;&lt;minerGridLnClr value=&quot;15461355&quot; /&gt;&lt;outBdrClr value=&quot;13553358&quot; /&gt;&lt;trdRefLnThk value=&quot;1&quot; /&gt;&lt;trdRefLnClr value=&quot;5066061&quot; /&gt;&lt;trdRefLnStyle value=&quot;0&quot; /&gt;&lt;rfLnFntClr value=&quot;5066061&quot; /&gt;&lt;xAxTtFntClr value=&quot;3879209&quot; /&gt;&lt;yAxTtFntClr value=&quot;3879209&quot; /&gt;&lt;xAxLbFntClr value=&quot;3879209&quot; /&gt;&lt;yAxLbFntClr value=&quot;3879209&quot; /&gt;&lt;xAxLnClr value=&quot;15461355&quot; /&gt;&lt;yAxLnClr value=&quot;15461355&quot; /&gt;&lt;/fmt&gt;&lt;/widgetProps&gt;&lt;/props&gt;\"},{\"act\":\"format\",\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":1,\"format\":{\"FormattingPatterns\":{\"FillColor\":16382457,\"FillStyle\":0,\"FillOpacity\":100},\"FormattingBorder\":{\"TopStyle\":0,\"RightStyle\":0,\"BottomStyle\":0,\"LeftStyle\":0}}},{\"act\":\"format\",\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"unitType\":522,\"formatType\":2,\"format\":{\"FormattingPatterns\":{\"FillColor\":16382457,\"FillStyle\":0,\"FillOpacity\":100},\"FormattingFont\":{\"Color\":3879209,\"Name\":\"Open Sans\",\"Size\":12,\"Bold\":0,\"Italic\":0,\"Underline\":0,\"Strikeout\":0},\"FormattingAlignment\":{\"Horizontal\":2}}},{\"act\":\"format\",\"formatType\":1,\"format\":{\"FormattingView\":{\"ShowTitleBar\":0,\"ShowWidgetTitleBar\":0}},\"unitKey\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\"},{\"act\":\"updateTemplate\",\"keyContext\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"actions\":[{\"act\":\"numberFormat\",\"unitType\":4,\"c\":1,\"f\":\"\\\"$\\\"#,##0\",\"ndp\":0,\"nth\":true,\"ncs\":\"$\",\"ncp\":0,\"nnn\":1,\"unitId\":\"4C05177011D3E877C000B3B2D86C964F\"}]},{\"act\":\"fetchData\",\"keyContext\":\"AutoAI_AFD4D180147311F088D1A5518630AFD4\",\"dataLimit\":1000,\"showDataSummary\":true}],\"viewFilters\":{\"AutoAI_AFD4D180147311F088D1A5518630AFD4\":{}},\"viewLimits\":{\"AutoAI_AFD4D180147311F088D1A5518630AFD4\":{\"leafExpression\":\"Umsatz [Highest 5]\"}},\"applyDefaultSorts\":{},\"hasFilter\":false,\"idObjectMapping\":{\"AutoAI_AFD4D180147311F088D1A5518630AFD4\":{\"name\":\"Top 5 regions with highest sales\",\"type\":\"visualization\"},\"1501C7F44AEFE6B66FE1BDB1954EF12D\":{\"name\":\"Intelligent Cube - Alle Projektsprachen\",\"type\":\"dataset\"},\"8D679D3511D3E4981000E787EC6DE8A4\":{\"name\":\"Call-Center\",\"type\":\"attribute\"},\"8D679D5111D3E4981000E787EC6DE8A4\":{\"name\":\"Jahr\",\"type\":\"attribute\"},\"8D679D3711D3E4981000E787EC6DE8A4\":{\"name\":\"Kategorie\",\"type\":\"attribute\"},\"8D679D4411D3E4981000E787EC6DE8A4\":{\"name\":\"Monat\",\"type\":\"attribute\"},\"8D679D4511D3E4981000E787EC6DE8A4\":{\"name\":\"Monat im Jahr\",\"type\":\"attribute\"},\"8D679D4A11D3E4981000E787EC6DE8A4\":{\"name\":\"Quartal\",\"type\":\"attribute\"},\"8D679D4B11D3E4981000E787EC6DE8A4\":{\"name\":\"Region\",\"type\":\"attribute\"},\"8D679D4F11D3E4981000E787EC6DE8A4\":{\"name\":\"Unterkategorie\",\"type\":\"attribute\"},\"225D969B11D5C4AAC000068B4CC5F24F\":{\"name\":\"Angestelltenanzahl\",\"type\":\"metric\"},\"4C051DB611D3E877C000B3B2D86C964F\":{\"name\":\"Gewinn\",\"type\":\"metric\"},\"36A871D6408731EA1A8B4BA8906D8EAC\":{\"name\":\"Gewinn pro Angestellter\",\"type\":\"metric\"},\"2680DF9E11D5C3FEC0000B881FDA1A4F\":{\"name\":\"Gewinnmarge\",\"type\":\"metric\"},\"1FAF96994873E7CEFC71BDB269522636\":{\"name\":\"Gewinnprognose\",\"type\":\"metric\"},\"7FD5B69611D5AC76C000D98A4CC5F24F\":{\"name\":\"Kosten\",\"type\":\"metric\"},\"8D7D59C144AB891C57FEFA873ABE1C92\":{\"name\":\"Prognose Umsatz\",\"type\":\"metric\"},\"381980B211D40BC8C000C8906B98494F\":{\"name\":\"Rabatt\",\"type\":\"metric\"},\"0263797F4D6D4E8AC5B8E482E8ECD26B\":{\"name\":\"Rabatt %\",\"type\":\"metric\"},\"4C05177011D3E877C000B3B2D86C964F\":{\"name\":\"Umsatz\",\"type\":\"metric\"},\"9195B93741304224849D4998D6C4356B\":{\"name\":\"Umsatz pro Mitarbeiter\",\"type\":\"metric\"},\"4C05190A11D3E877C000B3B2D86C964F\":{\"name\":\"Verkaufte Einheiten\",\"type\":\"metric\"}},\"derivedObjectDefinition\":{},\"selectedViz\":null,\"vizType\":\"barChart\",\"inCanvasSelectors\":[],\"nuggetsCollections\":[],\"disableSQLReused\":true,\"messageID\":\"58B3467E3F49F0617BEECFB07468E8D7\",\"vizDescription\":{\"vd\":{},\"shapes\":{},\"dz\":{}},\"selectedVizMap\":{},\"isVizSpecifiedByUser\":false,\"addedNAAs\":{\"AutoAI_AFD4D180147311F088D1A5518630AFD4\":[]},\"resultCount\":5},\"questionAssessment\":{\"type\":\"precise\",\"followUp\":false,\"reason\":\"This question is precise. No ambiguity type is provided by LLM.\",\"rawResult\":{\"questionType\":\"precise\",\"ambiguousTypes\":[],\"hasMetric\":true},\"rawType\":\"precise\"}}",
+                    "text_type": 2,
+                    "uri": "F3773B7870324CACAE9778FA2D28874A"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 2,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 12,
+                  "ig": false,
+                  "minute": 19,
+                  "month": 4,
+                  "sec": 19,
+                  "srs": 0,
+                  "tms": 861,
+                  "week": 2,
+                  "year": 2025
+                }
+              }
+            ],
+            "snapshot_sort": "date-"
+          }
+        ],
+        "endtime": {
+          "day": 4,
+          "day_of_week": 0,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 3,
+          "ig": true,
+          "minute": 24,
+          "month": 5,
+          "sec": 11,
+          "srs": 0,
+          "tms": 238,
+          "week": 2,
+          "year": 2025
+        },
+        "question_count": 1,
+        "snapshot_sort": "date-"
+      },
+      "did": "DA7BD20D5747648C7CCF83855AF807C6",
+      "img": true,
+      "lcl": 1031,
+      "nct": "2023-12-11T03:24:11.238Z",
+      "nmdt": "2025-04-08T12:57:47.290Z",
+      "owid": "94EE211A40739150E6F972AE90D938E5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "94EE211A40739150E6F972AE90D938E5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "B88C916C3742BD99AFC33DAC78B88B8B"
+    }
+  ]
+}

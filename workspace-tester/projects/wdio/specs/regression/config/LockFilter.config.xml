@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LockFilter.spec.js'>    
+        <TC>TC80914_01</TC>
+        <TC>TC80914_02</TC>
+        <TC>TC80914_03</TC>
+        <TC>TC80914_04</TC>
+        <TC>TC833337</TC>
+    </TestSuite>
+    <TestSuite id='02' name='LockFilter_xfun.spec.js'>
+        <TC>TC83167</TC>
+        <TC>TC83165</TC>    
+        <TC>TC83166</TC>
+    </TestSuite> 
+</root>

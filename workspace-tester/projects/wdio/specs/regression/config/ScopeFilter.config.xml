@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ScopeFilter.spec.js'>
+    	<TC>TC68552_01</TC>
+    	<TC>TC68552_02</TC>
+        <TC>TC68552_03</TC>
+        <TC>TC68552_04</TC>
+        <TC>TC68552_05</TC>
+        <TC>TC68552_06</TC>
+        <TC>TC68552_07</TC>
+    </TestSuite>
+</root>

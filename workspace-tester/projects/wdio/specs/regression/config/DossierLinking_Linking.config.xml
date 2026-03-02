@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	 <TestSuite id='01' name='DossierLinkingGeneral.spec.js'>
+		<TC>TC58908_01</TC>
+		<TC>TC58908_02</TC>
+		<TC>TC58909</TC>
+		<TC>TC58910</TC>
+		<TC>TC58911</TC>
+		<TC>TC58912</TC>
+		<TC>TC58913</TC>
+		<TC>TC58915_01</TC>
+		<TC>TC58915_02</TC>
+		<TC>TC58916</TC>
+        <TC>TC82595</TC>
+        <TC>TC82816</TC>
+		<TC>TC58917</TC>
+        <TC>TC78621</TC>
+    </TestSuite>
+	<TestSuite id='02' name='DossierLinkingOpenInNewTab.spec.js'>
+		<TC>TC69372</TC>
+		<TC>TC69373</TC>
+		<TC>TC69371</TC>
+		<TC>TC69370_01</TC>
+		<TC>TC69370_02</TC>
+		<TC>TC69344_01</TC>
+		<TC>TC69344_02</TC>
+        <TC>TC79672</TC>
+        <TC>TC82138</TC>
+    </TestSuite>
+	<TestSuite id='03' name='PageLinkingGeneral.spec.js'>
+		<TC>TC98700</TC>
+		<TC>TC98700_02</TC>
+		<TC>TC98700_03</TC>
+		<TC>TC98700_04</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='MetricSlider.spec.js'>
+        <TC>TC80363</TC>
+        <TC>TC80364</TC>
+        <TC>TC80365</TC>
+        <TC>TC80366</TC>
+        <TC>TC80367</TC>
+    </TestSuite>
+</root>

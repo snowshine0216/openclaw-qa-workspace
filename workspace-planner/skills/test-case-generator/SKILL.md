@@ -1,8 +1,8 @@
 ---
 name: test-case-generator
-description: Generate comprehensive test cases from requirements, user stories, or feature descriptions. Creates functional, edge case, boundary, and UI test cases. Use when designing tests for new features, writing test documentation, or preparing test plans.
+description: Generate comprehensive test cases from an existing QA plan and requirements. Creates detailed Markdown (`.md`) specs in Playwright-compatible format for the Tester Agent to consume and auto-heal. Output in specs/<domain>/<feature>/ per TEST_CASE_GENERATION_DESIGN.md.
 homepage: https://github.com/naodeng/awesome-qa-prompt
-metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":["jira-cli"]}}}
+metadata: {"clawdbot":{"emoji":"📝","requires":{"bins":[]}}}
 ---
 
 # Test Case Generator Skill
@@ -43,29 +43,41 @@ Paste any documentation, specs, or descriptions about the feature.
 | **Integration** | System interactions | API calls, database operations |
 | **Security** | Authentication/authorization | SQL injection, XSS, permissions |
 
-## Test Case Template
+## Output Format: Markdown (Playwright-Compatible)
+
+Generate each test case as a discrete `.md` file consumable by the Playwright Generator and Healer. Save to `specs/<domain>/<feature>/<scenario>.md` (e.g. `specs/report-editor/report-undo-redo/authoringClear.md`) per [TEST_CASE_GENERATION_DESIGN.md](../../docs/TEST_CASE_GENERATION_DESIGN.md).
+
+**Required structure:** See `workspace-planner/docs/TEST_CASE_GENERATION_DESIGN.md` for full schema.
 
 ```markdown
-### TC-[ID]: [Test Case Name]
-**Priority**: P0/P1/P2/P3
-**Type**: Functional/UI/Integration/Security
+# [Application/Feature] — [Scenario Name]
 
-**Preconditions:**
-- Precondition 1
-- Precondition 2
+**Seed:** `tests/seed.spec.ts`
+
+## Application Overview
+[Brief scope and behaviors]
+
+## Test Scenarios
+
+### N. [Scenario Label]
 
 **Steps:**
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+1. [Semantic action — use role/label/text, not IDs/CSS]
+2. ...
+3. ...
 
-**Expected Result:**
-[What should happen]
-
-**Test Data:**
-- Username: [data]
-- Password: [data]
+**Expected Results:**
+- [Measurable outcome]
 ```
+
+### Semantic Step Phrasing (Critical for Auto-Healing)
+
+| Do | Don't |
+|----|-------|
+| Click the "Submit" button | Click #submit-btn |
+| Type "user@test.com" in the Email field | Enter email |
+| Verify the heading "Success" is visible | Verify success |
+| Select "Q1 2024" from the Date dropdown | Use date picker |
 
 ## Generation Process
 
@@ -273,21 +285,9 @@ Requirements:
 
 ## Test Case Management
 
-### Export to Jira Format
-```bash
-# Generate JIRA-compatible test cases
-jira issue create --summary "TC-LOGIN-001: Successful Login" \
-  --type Test \
-  --priority P0 \
-  --description "**Preconditions:**\n- User exists\n\n**Steps:**\n1. Navigate to login\n2. Enter credentials\n3. Click Login\n\n**Expected:** Dashboard loads"
-```
+All generated test cases must be saved as Markdown files under `specs/<domain>/<feature>/` (e.g. `specs/report-editor/report-undo-redo/`). Each spec must include `**Seed:** \`tests/seed.spec.ts\`` and use semantic step phrasing so the Tester Agent can translate to Playwright and the Healer can auto-fix locators.
 
-### CSV Export Template
-```csv
-ID,Name,Priority,Type,Preconditions,Steps,Expected Result
-TC-001,Login Success,P0,Functional,User exists,3 steps,Dashboard loads
-TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
-```
+**State tracking:** Use `testcase_task.json` (not `task.json`) to track generation progress. Update `subtask_timestamps["spec:<scenario>"]` after each file is written. Task file lives at: `projects/feature-plan/<feature-id>/testcase_task.json`.
 
 ## Priority Guidelines
 
@@ -301,16 +301,17 @@ TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
 ## Use Cases
 
 ### 1. New Feature Testing
-1. Get feature requirements
-2. Run `test-case-generator`
-3. Review and refine test cases
-4. Export to Jira/test management
+1. Look up the existing QA plan / feature requirements. Use `tavily-search` or `confluence` for project context. Use `clawddocs` only for OpenClaw-specific plans.
+2. **Never assume detailed steps** — when steps or flows are unclear, research first: `tavily-search` for official docs, `confluence` for internal product docs.
+3. Run `test-case-generator` to identify scenarios
+4. Serialize detailed Markdown specs one by one under `specs/<domain>/<feature>/` (e.g. `specs/report-editor/report-undo-redo/`). Use **only** these action verbs: `Click`, `Type`, `Fill`, `Select`, `Check`, `Uncheck`, `Press`, `Hover`, `Drag`, `Verify`, `Wait for`, `Navigate to`. Steps referencing IDs or CSS classes break auto-healing.
+5. Handoff specs to Tester Agent to generate scripts and run (via Playwright CLI and Playwright Generator)
 
 ### 2. Regression Testing
-1. Identify features to test
-2. Generate test suite
+1. Identify features to test against existing coverage
+2. Generate additional or missing test cases incrementally
 3. Prioritize by P0/P1
-4. Execute and track in Jira
+4. Handoff to Tester Agent
 
 ### 3. Test Coverage Analysis
 1. Input: Current test suite
@@ -320,10 +321,11 @@ TC-002,Invalid Password,P0,Functional,User exists,4 steps,Error message
 
 ## Integration Points
 
-- **qa-daily-workflow**: Use generated test cases in daily testing
-- **jira-cli**: Export test cases to Jira
-- **playwright-cli**: Execute UI test cases
-- **microstrategy-testing**: Generate tests for MicroStrategy features
+- **test-case-generation workflow**: This skill is invoked by `.agents/workflows/test-case-generation.md` Phase 4. Do not invoke it standalone outside that workflow unless the user explicitly requests ad-hoc generation.
+- **qa-daily-workflow**: Use generated specs in daily testing
+- **tester-agent**: Consumes Markdown specs, translates to `tests/specs/**/*.spec.ts` via Playwright Generator, runs via `npx playwright test`. Uses **Playwright CLI** (not MCP) — see [playwright-cli](https://github.com/microsoft/playwright-cli), [Playwright Test Agents](https://playwright.dev/docs/test-agents)
+- **playwright-cli**: Execute UI tests; Healer uses `playwright-cli snapshot` to derive semantic locators for auto-healing
+- **tavily-search** / **confluence**: Research exact steps when uncertain. Never assume. `clawddocs` only for OpenClaw-specific plans.
 
 ## Tips for Best Results
 

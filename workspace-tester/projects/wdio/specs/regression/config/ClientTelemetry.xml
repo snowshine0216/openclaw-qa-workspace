@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='ActionTypeTelemetry.spec.js'>
+        <TC>TC84923_01</TC>
+        <TC>TC84923_02</TC>
+        <TC>TC84923_03</TC>
+   </TestSuite>
+   <TestSuite id='02' name='DataRecordTelemetry.spec.js'>
+        <TC>TC84924_01</TC>
+        <TC>TC84924_02</TC>
+        <TC>TC84924_03</TC>
+        <!-- <TC>TC84924_04</TC> -->
+        <TC>TC84924_05</TC>
+        <TC>TC84924_06</TC>
+        <TC>TC84924_07</TC>
+        <TC>TC84927_01</TC>
+        <TC>TC84927_02</TC>
+   </TestSuite>
+   <TestSuite id='03' name='ExecutionRecordTelemetry.spec.js'>
+        <TC>TC84925_01</TC>
+        <TC>TC84925_02</TC>
+        <TC>TC84925_03</TC>
+        <TC>TC84926_01</TC>
+        <TC>TC84926_02</TC>
+        <TC>TC84926_03</TC> 
+   </TestSuite>
+   <TestSuite id='04' name='UnDoReDoTelemetry.spec.js'>
+        <TC>TC87880_01</TC>
+        <TC>TC87880_02</TC>
+        <TC>TC87880_03</TC>
+        <TC>TC87880_04</TC>
+        <TC>TC87880_05</TC>
+        <TC>TC87880_06</TC>
+        <TC>TC87880_07</TC>
+        <TC>TC87880_08</TC>
+        <TC>TC87880_09</TC>
+        <TC>TC87880_10</TC>
+   </TestSuite>
+   <TestSuite id='05' name='LinkAndOthersTelemetry.spec.js'>
+        <TC>TC87881_01</TC>
+        <TC>TC87881_02</TC>
+        <TC>TC87881_03</TC>
+        <TC>TC89157_01</TC>
+        <TC>TC89157_02</TC>
+        <TC>TC89157_03</TC>
+        <TC>TC89157_04</TC>
+        <!-- <TC>TC95259</TC>  comment it out since can't create bot from library now-->
+        <TC>TC84922</TC>
+   </TestSuite>  
+
+</root>

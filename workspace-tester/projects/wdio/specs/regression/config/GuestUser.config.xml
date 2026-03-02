@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='GuestUser.spec.js'>
+        <TC>TC66100</TC>
+        <TC>TC70781_11</TC>
+        <TC>TC85251</TC>
+        <TC>TC90450</TC>
+    </TestSuite>
+</root>

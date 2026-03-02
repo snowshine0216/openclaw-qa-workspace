@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='06' name='SidebarTeamsAuthentication.spec.js'>
+    	<TC>TC93989</TC>
+        <TC>TC91408</TC>
+    </TestSuite>
+</root>

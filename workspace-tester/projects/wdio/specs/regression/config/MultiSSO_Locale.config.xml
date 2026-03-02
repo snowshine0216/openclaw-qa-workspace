@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomAppSAMLAppLevelLocale.spec.js'>
+        <TC>BCSA-3078_1</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CustomAppOIDCAppLevelLocale.spec.js'>
+        <TC>BCSA-3331_1</TC>
+    </TestSuite>
+</root>

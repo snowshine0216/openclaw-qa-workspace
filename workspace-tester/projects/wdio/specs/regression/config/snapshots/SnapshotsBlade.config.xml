@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Snapshots_Manipulations.spec.js'>
+        <TC>TC99396_1</TC>
+        <TC>TC99396_2</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Snapshots_Privilege_CustomApp.spec.js'>
+        <TC>TC99396_5</TC>
+        <TC>TC99396_6</TC>
+    </TestSuite>
+    <TestSuite id='03' name='Snapshots_SearchFilter.spec.js'>
+        <TC>TC99396_3</TC>
+        <TC>TC99396_4</TC>
+    </TestSuite>
+</root>

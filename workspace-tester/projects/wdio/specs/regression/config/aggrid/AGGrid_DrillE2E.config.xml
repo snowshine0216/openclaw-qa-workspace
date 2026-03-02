@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='E2E_AGGrid_Drill.spec.js'>
+        <TC>TC99057_1</TC>
+        <TC>TC99057_2</TC>
+    </TestSuite>
+        <TestSuite id='1' name='AGGrid_Drill_DDA.spec.js'>
+        <TC>TC99058_1</TC>
+        <TC>TC99058_2</TC>
+    </TestSuite>
+</root>

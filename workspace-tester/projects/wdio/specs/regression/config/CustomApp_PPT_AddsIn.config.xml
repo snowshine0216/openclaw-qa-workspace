@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomApp_PPT_AddsIn.spec.js'>
+        <TC>TC89557_01</TC>
+        <TC>TC89557_02</TC>
+        <TC>TC89557_03</TC>
+        <TC>TC89557_04</TC>
+        <TC>TC89557_05</TC>
+        <TC>TC89557_06</TC>
+        <TC>TC89557_07</TC>
+        <TC>TC89557_08</TC>
+        <TC>TC89557_09</TC>
+        <TC>TC89557_10</TC>
+        <TC>TC89557_11</TC>
+        <TC>TC89557_12</TC>
+        <TC>TC89557_13</TC>
+        <TC>TC89557_14</TC>
+        <TC>TC89557_15</TC>
+        <TC>TC89557_16</TC>
+        <TC>TC89557_17</TC>
+        <TC>TC89557_18</TC>
+        <TC>TC89557_19</TC>
+        <TC>TC89557_20</TC>
+    </TestSuite>
+</root>

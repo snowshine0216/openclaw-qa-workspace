@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomInstructions_Temperature.spec.js'>
+        <TC>TC99009_1</TC>
+        <TC>TC99009_2</TC>
+        <TC>TC99009_3</TC>
+        <TC>TC99009_4</TC>
+        <TC>TC99009_5</TC>
+        <TC>TC99009_6</TC>
+    </TestSuite>
+</root>

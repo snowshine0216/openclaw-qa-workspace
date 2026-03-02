@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_MetricLabels.spec.js'>
+        <TC>TC25565</TC>
+        <TC>TC25567_01</TC>
+        <TC>TC25567_02</TC>
+        <TC>TC25567_03</TC>
+        <TC>TC25567_04</TC>
+        <TC>TC25567_05</TC>
+        <TC>TC25567_06</TC>
+        <TC>TC25567_07</TC>
+        <TC>TC25567_08</TC>
+        <TC>TC25567_09</TC>
+        <TC>TC25567_10</TC>
+        <TC>TC25567_11</TC>
+        <TC>TC25567_12</TC>
+    </TestSuite>
+</root>

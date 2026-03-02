@@ -1,5 +1,9 @@
 # Tester Agent (workspace-tester) Design Overview
 
+This document aligns with Playwright best practices and the [Playwright Test Agents](https://playwright.dev/docs/test-agents) model: Planner → specs/\*.md, Generator → tests/\*.spec.ts, Healer → fixes failing tests.
+
+---
+
 ## Inspiration finding from the "13 Agents" Article
 To design a robust, self-healing testing system, we are drawing inspiration from Rakesh Kamaraju's "13 AI Agents That Write, Run, and Heal Tests." The article outlines a decoupled ecosystem where each agent has a single, testable responsibility.
 
@@ -33,7 +37,7 @@ The `workspace-tester` Agent focuses on two core capabilities:
 
 ### A. The Execution Runner & Scripter (`test-executor.md`)
 *The `workspace-tester` plays the role of executor and automation scripter, running and saving tests locally.*
-1. **Input:** Receives test plans or execution commands for specific feature or defect scripts.
+1. **Input:** Receives Markdown test plans (`specs/*.md`) or execution commands for specific feature or defect scripts. Uses `tests/seed.spec.ts` for environment setup.
 2. **Process:** Translates test steps into Playwright scripts, saves them to the repository, and runs them.
 3. **Output:** Test passes, OR it captures the `playwright-cli snapshot` and standard error logs when a failure occurs.
 
@@ -79,36 +83,115 @@ One of the key capabilities of the Tester Agent is its dual role during the **Fe
 **How does the Tester both "do the test" and "write scripts for the future"?**
 When the Planner Agent dictates a test case, the Tester Agent doesn't just evaluate the UI visually. Instead, it interacts with the application by writing and driving Playwright code.
 
-1. **Script Generation inside the Workspace:** The Tester translates the natural language steps into a robust `.spec.ts` Playwright file. It saves this file directly into the local repository's `automation/` folder.
+1. **Script Generation inside the Workspace:** The Tester translates the Markdown plan (`specs/*.md`) into a robust `.spec.ts` Playwright file. It saves this file into `tests/specs/<feature>/` (Playwright-flavored layout).
 2. **Execution & Validation:** The Tester executes the newly written file via `npx playwright test`. This actual execution serves as the functional test validation for the feature.
 3. **Re-use for the Future:** Because these generated scripts are saved locally in the repository, they can be committed and pushed to version control. They immediately become part of the baseline regression suite that the Daily CI Agent will run (Scenario 1) without requiring any manual scripting effort.
 4. **WDIO to Playwright Migration / Re-use:** If you are converting existing WebdriverIO (WDIO) scripts, the Tester Agent acts as a translation engine. It reads the legacy WDIO spec file, understands the intent, rewrites it into a modern Playwright `.spec.ts` script, verifies it against the current UI, and saves it to the repo—incrementally modernizing the automation base while proving the feature works.
 
 ---
 
-## 5. Recommended Directory Structure
-This is how `workspace-tester` should be laid out to support these operations:
+## 5. Playwright Best Practices & Directory Structure
+
+### 5.1 Specs vs Tests (Playwright Convention)
+
+| Location | Format | Purpose |
+|----------|--------|---------|
+| `specs/` | Markdown (`.md`) | Human-readable test plans. Planner output. Generator input. Steps, expected outcomes, seed reference. |
+| `tests/` | TypeScript (`.spec.ts`) | Executable Playwright tests. Generator output. Run via `npx playwright test`. |
+| `tests/seed.spec.ts` | TypeScript | **Required** for Playwright Planner. Bootstraps fixtures, auth, setup. |
+
+- **`specs/*.md`** — Plans only; no code. Consumed by Playwright Generator or `test-case-generator`.
+- **`tests/specs/`** — Executable `.spec.ts` organized by feature; mirrors `specs/` path for traceability.
+
+### 5.2 Recommended Directory Structure (Playwright-Flavored)
 
 ```text
 workspace-tester/
-├── MEMORY.md                          # Tester Agent's core instructions and context
+├── MEMORY.md
 ├── docs/
-│   └── TESTER_AGENT_DESIGN.md         # This document
+│   └── TESTER_AGENT_DESIGN.md
 ├── workflows/
-│   ├── test-executor.md               # Executes and writes playwright scripts
-│   └── test-healer.md                 # Diagnoses and fixes broken playwright scripts
+│   ├── test-executor.md
+│   └── test-healer.md
 ├── skills/
-│   ├── test-analyzer/                 # Specific skill to parse DOM snapshots & CLI errors
-│   └── locator-strategist/            # Evaluates the best selectors (CSS/xPath/Text)
-└── automation/                        # The repository of generated executable scripts
-    ├── features/
-    │   └── BCED-4198_checkout.spec.ts 
-    └── defects/                       
-        └── BCED-4200_login_fix.spec.ts
+│   ├── test-analyzer/
+│   └── locator-strategist/
+└── projects/
+    └── library-automation/              # Main Playwright project
+        ├── specs/                       # Markdown plans (Planner output)
+        │   └── reportEditor/
+        │       └── reportUndoRedo/
+        │           ├── authoringClear.md
+        │           └── ...
+        ├── tests/
+        │   ├── seed.spec.ts             # REQUIRED: fixtures, auth — Planner input
+        │   ├── specs/                   # Executable .spec.ts (Generator output)
+        │   │   └── reportEditor/reportUndoRedo/
+        │   │       └── *.spec.ts
+        │   ├── page-objects/
+        │   ├── fixtures/
+        │   └── test-data/
+        └── playwright.config.ts
 ```
 
-## 6. How the Agents Interact
+### 5.3 test-case-generator Output Format
+
+The **`test-case-generator`** skill (used by the Planner Agent) MUST emit **Markdown (`.md`)** — not JSON — for compatibility with the Playwright Generator and human readability.
+
+- **Output path:** `projects/testcase-plan/<feature-id>/*.md` or `specs/<feature>/*.md`.
+- **Format:** Human-readable Markdown with numbered steps, expected results, and a seed reference (`**Seed:** \`tests/seed.spec.ts\``).
+- **Rationale:** Playwright Generator consumes Markdown; `.md` aligns with Playwright conventions and enables direct handoff to the Tester Agent.
+
+### 5.4 tests/seed.spec.ts (Required for Playwright Planner)
+
+`tests/seed.spec.ts` is a **required input** for the Playwright Planner agent:
+
+- Imports from `./fixtures` (auth, setup).
+- Runs a minimal test that reaches the authenticated/app state.
+- The Planner uses it to bootstrap the browser context when exploring and generating plans.
+- Ensures all generated tests share the same environment assumptions.
+
+---
+
+## 6. Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                    OpenClaw Tester Flow with Playwright Agents                        │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                      │
+│  Planner Agent (workspace-planner)                                                   │
+│  ├─ Uses test-case-generator skill                                                   │
+│  └─ Output: specs/<feature>/*.md  (Markdown plans)                                   │
+│     └─ Human-readable steps, expected outcomes, Seed: tests/seed.spec.ts             │
+│                                                                                      │
+│  Playwright Planner (optional, via npx playwright init-agents --loop=claude)         │
+│  ├─ Input: tests/seed.spec.ts + request                                              │
+│  └─ Output: specs/<scenario>.md  (exploration-based plan)                            │
+│                                                                                      │
+│  Tester Agent (workspace-tester)                                                     │
+│  ├─ Input: Markdown plans (from Planner or Playwright Planner)                       │
+│  ├─ Uses Playwright Generator, playwright-cli, or playwright-runner skill            │
+│  └─ Output: tests/specs/<feature>/*.spec.ts  (executable)                             │
+│                                                                                      │
+│  Healer (on failure)                                                                 │
+│  ├─ Input: failing test (from npx playwright test)                                    │
+│  ├─ Uses playwright-cli snapshot + POM co-located locators                           │
+│  └─ Output: patched POM or .spec.ts, GitHub PR                                       │
+│                                                                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Handoff flow:**
+1. Planner → `specs/*.md` (or `projects/testcase-plan/<id>/*.md`)
+2. Tester reads `.md`, generates `tests/specs/**/*.spec.ts`
+3. Healer fixes failures using `playwright-cli snapshot` and POM locators
+
+---
+
+## 7. How the Agents Interact
 Although separated, they collaborate via file handoffs and API tickets, directed by the overarching `workspace` orchestrator:
-1. **Planner (`workspace-planner`):** Writes the QA Plan and outputs detailed, logical test cases.
-2. **Tester (`workspace-tester`):** Acts as the **Executor and Script Writer**. It reads the test cases, writes Playwright specs to the `automation/` folder, and runs them. If the Daily Agent finds a CI failure, the Orchestrator invokes the **Healer** to fix the script, or routes hard bugs to the Reporter.
+
+1. **Planner (`workspace-planner`):** Writes the QA Plan and outputs detailed test cases in **Markdown** (`specs/*.md`) via the `test-case-generator` skill. Compatible with Playwright Generator.
+2. **Tester (`workspace-tester`):** Acts as the **Executor and Script Writer**. It reads `specs/*.md` plans, writes Playwright specs to `tests/specs/`, and runs them. Uses `tests/seed.spec.ts` for environment bootstrap. If the Daily Agent finds a CI failure, the Orchestrator invokes the **Healer** to fix the script, or routes hard bugs to the Reporter.
 3. **Reporter (`workspace-reporter`):** Reads the test execution findings and publishes RC/FC statuses or defect reports to Jira/Confluence.

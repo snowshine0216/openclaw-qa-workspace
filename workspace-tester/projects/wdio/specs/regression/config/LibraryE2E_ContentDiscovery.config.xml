@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='LibraryE2E_ContentDiscovery.spec.js'>
+      <TC>TC88669</TC>
+   </TestSuite>
+</root>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_DerivedObjects_Attributes.spec.js'>
+        <TC>TC62631_02</TC>
+        <TC>TC62631_03</TC>
+        <TC>TC62631_04</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CompoundGrid_DerivedObjects_Calculation.spec.js'>
+        <TC>TC62631_01</TC>
+    </TestSuite>
+    <TestSuite id='03' name='CompoundGrid_DerivedObjects_Metrics.spec.js'>
+        <TC>TC62631_05</TC>
+    </TestSuite>
+</root>

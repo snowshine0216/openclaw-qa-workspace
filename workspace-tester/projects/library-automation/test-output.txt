@@ -1,0 +1,19 @@
+Error: Cannot find module 'json:test-results/report-shortcut-metrics.json'
+Require stack:
+- /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js
+- /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/@playwright/test/cli.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at resolveReporter (/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:363:18)
+    at /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:324:42
+    at Array.map (<anonymous>)
+    at resolveReporterOption (/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:324:30)
+    at overridesFromOptions (/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:283:15)
+    at runTests (/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:196:24)
+    at async i.<anonymous> (/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js:70:7) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/playwright/lib/program.js',
+    '/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-tester/projects/library-automation/node_modules/@playwright/test/cli.js'
+  ]
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ReportEditor_theme_general.spec.js'>
+        <TC>BCIN-6488_01</TC>
+        <TC>BCIN-6488_02</TC>
+        <TC>BCIN-6488_03</TC>
+        <TC>BCIN-6488_04</TC>
+        <TC>BCIN-6488_05</TC>
+        <TC>BCIN-6488_06</TC>
+        <TC>BCIN-6488_07</TC>
+        <TC>BCIN-6488_08</TC>
+        <TC>BCIN-6488_09</TC>
+        <TC>BCIN-6488_10</TC>
+        <TC>BCIN-6488_11</TC>
+        <TC>BCIN-6488_12</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ReportEditor_theme_apply.spec.js'>
+        <TC>BCIN-6490_01</TC>
+        <TC>BCIN-6490_02</TC>
+        <TC>BCIN-6490_03</TC>
+        <TC>BCIN-6490_04</TC>
+        <TC>BCIN-6490_05</TC>
+        <TC>BCIN-6490_06</TC>
+        <TC>BCIN-6490_07</TC>
+        <TC>BCIN-6490_08</TC>
+        <TC>BCIN-6490_09</TC>
+        <TC>BCIN-6490_10</TC>
+    </TestSuite>
+    <TestSuite id='03' name='ReportEditor_theme_security.spec.js'>
+        <TC>BCIN-6493_01</TC>
+    </TestSuite>
+</root>

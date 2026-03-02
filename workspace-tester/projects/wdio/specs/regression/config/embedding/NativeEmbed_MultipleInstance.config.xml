@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='MultipleInstance.spec.ts'>
+        <TC>BCIN-6494_1</TC>
+        <TC>BCIN-6494_2</TC>
+    </TestSuite>
+</root>

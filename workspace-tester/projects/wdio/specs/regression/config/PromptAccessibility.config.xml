@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='PromptAccessibility_AxeScan.spec.js'>
+    	<TC>TC91053</TC>
+    	<!-- <TC>TC91054</TC> -->
+    </TestSuite>
+    <TestSuite id='01' name='PromptAccessibility_AEPrompt.spec.js'>
+    	<TC>TC92085</TC>
+    	<TC>TC89830</TC>
+        <TC>TC89831</TC>
+        <TC>TC89832</TC>
+        <TC>TC89833</TC>
+        <TC>TC92110</TC>
+    </TestSuite>
+</root>

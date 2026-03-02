@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CompoundGrid_Formatting.spec.js'>
+        <TC>TC62631_06</TC>
+        <TC>TC64389_01</TC>
+        <TC>TC64389_02</TC>
+        <TC>TC64389_03</TC>
+        <TC>TC64389_04</TC>
+        <TC>TC64389_05</TC>
+        <TC>TC64389_06</TC>
+    </TestSuite>
+</root>

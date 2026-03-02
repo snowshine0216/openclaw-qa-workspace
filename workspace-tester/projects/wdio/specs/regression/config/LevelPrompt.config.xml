@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Level_ShoppingCart.spec.js'>
+        <TC>TC65001</TC>
+        <TC>TC65002</TC>
+        <TC>TC65003</TC>
+        <TC>TC65004</TC>  
+        <TC>TC65005</TC>  
+   </TestSuite>
+</root>

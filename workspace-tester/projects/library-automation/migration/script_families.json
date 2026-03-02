@@ -1,0 +1,407 @@
+{
+  "_description": "Script family config for WDIO→Playwright migration quality checks. Paths are relative to library-automation project root. This file is the single source of truth for migration phase status and progress (task.json removed).",
+  "families": {
+    "report-editor": {
+      "status": "active",
+      "specsBase": "tests/specs/report-editor/",
+      "pomBase": "tests/page-objects/report/",
+      "specMdBase": "specs/report-editor/",
+      "testDataBase": "tests/test-data/report-editor/",
+      "designDoc": "docs/PLAYWRIGHT_MIGRATION_REPORTEDITOR_FULL_PLAN.md",
+      "envFile": ".env.report",
+      "envConfigInterface": "ReportEnvConfig",
+      "npmScriptPrefix": "test:report",
+      "workflow": ".agents/workflows/script-migration.md",
+      "phases": {
+        "2a": {
+          "feature": "report-shortcut-metrics",
+          "wdioSubfolder": "report-shortcut-metrics/",
+          "fileCount": 6,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-03-02",
+            "pass": 2,
+            "fail": 4,
+            "self_healed": true,
+            "healer_rounds": 1,
+            "quality_checked": false,
+            "notes": "Healer R1 (2026-03-02): library-page editReportByUrl wait for metrics dropzone; report-grid-view waitForGridToContainText; create-percent/rank/page-grand resilient grid assertions. 2–4 pass flaky; 3 network (transformation, metric-editor). Re-run to verify.",
+            "progress_path": "migration/self-healing/report-editor/2a/progress.md"
+          },
+          "snapshotMapping": []
+        },
+        "2b": {
+          "feature": "report-page-by-sorting",
+          "wdioSubfolder": "report-page-by-sorting/",
+          "fileCount": 8,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-03-02",
+            "pass": 4,
+            "fail": 3,
+            "self_healed": true,
+            "healer_rounds": 3,
+            "healing_reports": [
+              "migration/self-healing/report-editor/2b/page-by-sorting-1-healing-report.md",
+              "migration/self-healing/report-editor/2b/page-by-sorting-3-healing-report.md",
+              "migration/self-healing/report-editor/2b/page-by-sorting-4-healing-report.md"
+            ],
+            "notes": "Healer: clickContextMenuOption Sort exact match; waitForPageByArea for 3; relaxed Metrics assertion for 4. 1,3,4 fail (dossier/env: Year, Seasons, Metrics selectors not found).",
+            "quality_report": "migration/quality_report_report-editor_2b.md"
+          },
+          "snapshotMapping": [
+            {
+              "wdioCall": "takeScreenshotByElement(reportEditorPanel.columnsDropzone, 'TC0000_1', 'attribute_year')",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(yearSelector).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBy.getSelector('Year'), 'TC0000_2', 'page_by_selector_year')",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(yearSelector).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBy.getSelector('Region'), ...)",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(regionSelector).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBySorting.dialog, 'TC0000_11', ...)",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportPageBySorting.dialog).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBySorting.dialog, 'TC0000_33', ...) [dialog closed]",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportPageBySorting.dialog).not.toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBy.getSelectorPulldownTextBox('Year'), ...) [year text]",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-1.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(yearText).toBeTruthy()",
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
+            },
+            {
+              "wdioCall": "~30 screenshots (Year, Custom Categories, Sort dialog, Order, Total Position, Parent Position)",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-2.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(selector).toBeVisible(), expect(dialog).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "no screenshots (WDIO used since/expect)",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-3.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "(none — no snapshots in WDIO source)",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportGridView.grid, ...), reportPageBySorting.dialog",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-4.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(placeholder).toContainText(), expect(dialog).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportEditorPanel.columnsDropzone, ...)",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-5.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(monthText or categoryText).toBeTruthy()",
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPageBy.getSelectorPulldownTextBox, ...), grid",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-6.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(yearText).toBeTruthy()",
+              "assertionAdequate": true,
+              "justification": "toBeTruthy() verifies presence; toHaveText() recommended for content fidelity"
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportGridView.grid, ...), pageBySorting.dialog",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-7.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(dialog).toBeVisible(), expect(dialog).not.toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportEditorPanel.pageByDropzone, ...), sorting dialog",
+              "file": "tests/specs/report-editor/report-page-by-sorting/page-by-sorting-8.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(dialog).toBeVisible(), expect(defaultItem).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            }
+          ]
+        },
+        "2c": {
+          "feature": "report-creator",
+          "wdioSubfolder": "report-creator/",
+          "fileCount": 6,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-03-02",
+            "pass": 1,
+            "fail": 25,
+            "self_healed": true,
+            "healer_rounds": 2,
+            "healing_report": "migration/self-healing/report-editor/2c/healing_report.md",
+            "quality_checked": false,
+            "notes": "Round 1–2: dossier-creator selectors, login/library-page auth flow. Dominant failure: page on login view (auth/session); verify .env.report credentials."
+          },
+          "snapshotMapping": [
+            {
+              "wdioCall": "takeScreenshotByElement(dossierCreator.getActiveTab(), ...) [BCIN-6908_09]",
+              "file": "tests/specs/report-editor/report-creator/create-by-cube.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(activeTab).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportPage.getContainer(), ...) [BCIN-6908_09]",
+              "file": "tests/specs/report-editor/report-creator/create-by-cube.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "reportGridView.grid.waitFor({ state: 'visible' })",
+              "assertionAdequate": true,
+              "justification": null
+            }
+          ]
+        },
+        "2d": {
+          "feature": "report-subset",
+          "wdioSubfolder": "report-subset/",
+          "fileCount": 3,
+          "status": "in_progress",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 1,
+            "fail": 0,
+            "self_healed": false,
+            "quality_checked": false,
+            "notes": "replaceCube migrated, BCIN-6422_01 run, 9 skipped"
+          },
+          "snapshotMapping": []
+        },
+        "2e": {
+          "feature": "report-page-by",
+          "wdioSubfolder": "report-page-by/",
+          "fileCount": 3,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-03-01",
+            "pass": 0,
+            "fail": 3,
+            "self_healed": true,
+            "healer_rounds": 3,
+            "healing_report": "migration/self-healing/report-editor/2e/healing_report.md",
+            "quality_checked": true,
+            "quality_report": "migration/quality_report_report-editor_2e.md",
+            "quality_date": "2026-03-01",
+            "notes": "Quality check complete. Healer attempted 3 rounds; unresolved failures remain in page-by-1/2/3 (object browser availability, Drill context menu option visibility, and grid baseline variance)."
+          },
+          "snapshotMapping": []
+        },
+        "2f": {
+          "feature": "report-threshold",
+          "wdioSubfolder": "report-threshold/",
+          "fileCount": 2,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 0,
+            "fail": 1,
+            "self_healed": false,
+            "quality_checked": false,
+            "notes": "TC85267_1: login timeout (reportTestUrl/page); TC85267_2 skipped; TC86548 run; Run: npm run test:report-threshold"
+          },
+          "snapshotMapping": []
+        },
+        "2g": {
+          "feature": "report-theme",
+          "wdioSubfolder": "report-theme/",
+          "fileCount": 3,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 3,
+            "fail": 0,
+            "self_healed": true,
+            "self_healed_at": "2026-02-28T12:33:00Z",
+            "quality_checked": false,
+            "notes": "themeApply, themeGeneral, themeSecurity"
+          },
+          "snapshotMapping": [
+            {
+              "wdioCall": "takeScreenshotByElement(reportPage.getContainer(), ...) [themeApply/General/Security]",
+              "file": "tests/specs/report-editor/report-theme/theme-apply.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportPage.getContainer()).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportFormatPanel.FormatPanel, ...) [themeApply]",
+              "file": "tests/specs/report-editor/report-theme/theme-apply.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportFormatPanel.FormatPanel).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportMenubar.getActiveMenuDropdown(), ...) [themeGeneral]",
+              "file": "tests/specs/report-editor/report-theme/theme-general.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportMenubar.getActiveMenuDropdown()).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            },
+            {
+              "wdioCall": "takeScreenshotByElement(reportThemePanel.getThemePanel(), ...) [themeGeneral]",
+              "file": "tests/specs/report-editor/report-theme/theme-general.spec.ts",
+              "strategy": "assertion",
+              "assertionMethod": "expect(reportThemePanel.getThemePanel()).toBeVisible()",
+              "assertionAdequate": true,
+              "justification": null
+            }
+          ]
+        },
+        "2h": {
+          "feature": "report-scope-filter",
+          "wdioSubfolder": "report-scope-filter/",
+          "fileCount": 4,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 4,
+            "fail": 0,
+            "self_healed": false,
+            "quality_checked": false,
+            "notes": "4 specs migrated; 38 tests"
+          },
+          "snapshotMapping": []
+        },
+        "2i": {
+          "feature": "report-formatting",
+          "wdioSubfolder": "report-formatting/",
+          "fileCount": 8,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 8,
+            "fail": 0,
+            "self_healed": false,
+            "quality_checked": false,
+            "notes": "8 specs migrated; 18 tests"
+          },
+          "snapshotMapping": []
+        },
+        "2j": {
+          "feature": "report-cancel",
+          "wdioSubfolder": "report-cancel/",
+          "fileCount": 2,
+          "status": "done",
+          "progress": {
+            "last_run": "2026-02-28",
+            "pass": 2,
+            "fail": 0,
+            "self_healed": false,
+            "quality_checked": false,
+            "notes": "15 tests (14 run, 1 skipped); requires reportTestUrl, reportCancelUser in .env.report"
+          },
+          "snapshotMapping": []
+        },
+        "2k": {
+          "feature": "report-sql-view",
+          "wdioSubfolder": "report-sql-view/",
+          "fileCount": 5,
+          "status": "pending",
+          "progress": {
+            "notes": "Starting 2k"
+          },
+          "snapshotMapping": []
+        },
+        "2l": {
+          "feature": "mdx",
+          "wdioSubfolder": "mdx/",
+          "fileCount": 5,
+          "status": "pending",
+          "progress": null,
+          "snapshotMapping": []
+        },
+        "2m": {
+          "feature": "report-ui-check",
+          "wdioSubfolder": "report-ui-check/",
+          "fileCount": 8,
+          "status": "pending",
+          "progress": null,
+          "snapshotMapping": []
+        },
+        "2n": {
+          "feature": "report-folder-browsing",
+          "wdioSubfolder": "report-folder-browsing/",
+          "fileCount": 1,
+          "status": "pending",
+          "progress": null,
+          "snapshotMapping": []
+        },
+        "2o": {
+          "feature": "rootLevel",
+          "wdioSubfolder": "(root)",
+          "fileCount": 16,
+          "status": "pending",
+          "progress": null,
+          "snapshotMapping": []
+        }
+      }
+    },
+    "custom-app": {
+      "status": "planned",
+      "specsBase": "tests/specs/custom-app/",
+      "pomBase": "tests/page-objects/custom-app/",
+      "specMdBase": "specs/custom-app/",
+      "testDataBase": "tests/test-data/custom-app/",
+      "designDoc": "docs/PLAYWRIGHT_MIGRATION_CUSTOMAPP_FULL_PLAN.md",
+      "envFile": ".env.customapp",
+      "envConfigInterface": null,
+      "npmScriptPrefix": "test:customapp",
+      "workflow": ".agents/workflows/script-migration.md",
+      "phases": {}
+    },
+    "dashboard": {
+      "status": "planned",
+      "specsBase": "tests/specs/dashboard/",
+      "pomBase": "tests/page-objects/dashboard/",
+      "specMdBase": "specs/dashboard/",
+      "testDataBase": "tests/test-data/dashboard/",
+      "designDoc": null,
+      "envFile": null,
+      "envConfigInterface": null,
+      "npmScriptPrefix": "test:dashboard",
+      "workflow": ".agents/workflows/script-migration.md",
+      "phases": {}
+    }
+  }
+}

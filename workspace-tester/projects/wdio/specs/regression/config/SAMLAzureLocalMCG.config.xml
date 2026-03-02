@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='localMCGSAML.spec.js'>
+        <TC>TC82085_01</TC>
+    </TestSuite>
+    <TestSuite id='02' name='mcgApplication.spec.js'>
+        <TC>TC99662_01</TC>
+        <TC>TC99662_02</TC>
+    </TestSuite>
+</root>

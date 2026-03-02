@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='VizHighlight.spec.js'>
+        <TC>TC66400</TC>
+        <TC>TC66401</TC>
+   </TestSuite>
+</root>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DrillXFunc.spec.js'>
+        <TC>TC68201_01</TC>
+        <TC>TC68201_02</TC>
+        <TC>TC68202_01</TC>
+        <TC>TC68202_02</TC>
+        <TC>TC68202_03</TC>
+        <TC>TC68203_01</TC>
+        <TC>TC68203_02</TC>
+        <TC>TC68204_01</TC>
+        <TC>TC68204_02</TC>
+        <TC>TC68204_03</TC>
+    </TestSuite>
+</root>

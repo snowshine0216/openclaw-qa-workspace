@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='FirstNLastN_Checkbox.spec.js'>
+        <TC>TC69696</TC>
+        <TC>TC63730</TC>
+        <TC>TC63745</TC>
+        <TC>TC69659</TC>
+        <TC>TC69658</TC>
+        <TC>TC67995</TC>
+    </TestSuite>
+    <TestSuite id='02' name='FirstNLastN_Searchbox.spec.js'>
+        <TC>TC63731</TC>
+    </TestSuite>
+    <TestSuite id='03' name='FirstNLastN_Radiobutton.spec.js'>
+        <TC>TC63735</TC>
+        <TC>TC69661</TC>
+   </TestSuite>
+   <TestSuite id='04' name='FirstNLastN_Dropdown.spec.js'>
+        <TC>TC63736</TC>
+        <TC>TC69662</TC>
+        <TC>TC63737</TC>
+   </TestSuite>
+   <TestSuite id='05' name='FirstNLastN_AttributeSlider.spec.js'>
+        <TC>TC69656</TC>
+   </TestSuite>
+</root>

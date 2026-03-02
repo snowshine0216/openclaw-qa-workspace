@@ -10,13 +10,13 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 1. Accept the target Feature ID (e.g. `BCIN-1234`) and related artifacts from the user.
 2. Based on the provided artifacts, double confirm with the user the requirements, and raise questions if you have doubts. ONLY proceed with user approval.
 3. Ensure the working directory is `projects/feature-plan/<feature-id>`. Scripts run from feature dir use `../scripts/` (e.g. `../scripts/check_resume.sh`).
-4. Run `../scripts/check_resume.sh <feature-id>`. Parse `REPORT_STATE` from output:
+4. Run `../scripts/check_resume.sh <feature-id>`. Parse `REPORT_STATE` from output. If `DEFECT_ANALYSIS_RESUME` is emitted (when `defect_analysis` was `in_progress` or `pending`), handle per §5 Resume Capability: `COMPLETED` → proceed to Phase 2b; `AWAITING_APPROVAL` → prompt (A) Open for approval / (B) Skip; `NOT_FOUND` → prompt resume or skip.
    - **FINAL_EXISTS**: Display data/output freshness (from output). STOP and present: (A) Use Existing (B) Smart Refresh (C) Full Regenerate. Wait for user choice. If (C), archive `qa_plan_final.md` to `archive/qa_plan_final_<YYYYMMDD>.md` before proceeding.
    - **DRAFT_EXISTS**: STOP and present: (A) Resume to Approval (B) Smart Refresh (C) Full Regenerate. Wait for user choice.
    - **CONTEXT_ONLY**: STOP and present: (A) Generate from Cache (B) Re-fetch + Regenerate. Wait for user choice.
    - **FRESH**: Proceed to step 5.
 5. Check resume: If output indicates `RESUMABLE`, skip directly to the `resume_from` phase. Otherwise:
-6. If starting fresh, initialize `projects/feature-plan/<feature-id>/task.json` with overall_status `in_progress` and current_phase `context_gathering`.
+6. If starting fresh, initialize `projects/feature-plan/<feature-id>/task.json` with overall_status `in_progress`, current_phase `context_gathering`, and **`defect_analysis: "not_applicable"`** (always present from the start; state machine: `not_applicable` → `pending` → `in_progress` → `completed` or `skipped`).
 
 
 ## 1. Information Gathering & Context Extraction
@@ -45,19 +45,35 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 
 ## 2a. Parallel Source Analysis
 1. Determine which sources exist (Jira and Confluence are always required, Figma/GitHub are optional if not provided).
-2. Spawn parallel tasks to run domain-specific skills. **Do not force structural mirroring in output**:
+2. **Defect Analysis (Conditional):**
+   - **Idempotency:** If `../workspace-reporter/projects/defects-analysis/<feature-id>/<feature-id>_REPORT_FINAL.md` exists, STOP and ask: *"Use existing defect report / Re-run defect analysis / Skip defect analysis."* If user chooses **Use existing**, copy the file to `context/qa_plan_defect_analysis_<feature-id>.md`, set `defect_analysis: "completed"` in `task.json`, and skip spawning. If **Re-run** or **Skip**, proceed accordingly.
+   - **Auto-Detect:** If not using existing, invoke the shared script (guard: script must exist):
+     ```bash
+     if [ ! -f "../workspace-reporter/scripts/fetch-defects-for-feature.sh" ]; then
+       echo "ERROR: fetch-defects-for-feature.sh not found." >&2
+       exit 1
+     fi
+     cd ../workspace-reporter && scripts/fetch-defects-for-feature.sh <feature-id>
+     # Output: DEFECT_COUNT=N
+     ```
+   - **User Confirmation:** Ask before spawning. *If defects found:* "Detected N defects linked to this feature. Invoke Defect Analysis sub-agent? (Y/n)". *If none:* "No defects automatically detected. Do you want to manually invoke Defect Analysis anyway? (y/N)"
+   - **Spawn (if confirmed):** Set `defect_analysis: "pending"` → `in_progress`. Use `sessions_spawn` to launch the Reporter agent with: *"Run the `defect-analysis` workflow for feature `<feature-id>`. Proceed up to and including Phase 5 (User Approval). **Do NOT proceed to Phase 6 (Publish to Confluence).** Exit successfully once the user approves the final report."*
+   - **On success:** Copy `../workspace-reporter/projects/defects-analysis/<feature-id>/<feature-id>_REPORT_FINAL.md` to `context/qa_plan_defect_analysis_<feature-id>.md`. Set `defect_analysis: "completed"`.
+   - **Failure handling (non-fatal):** If the Reporter sub-agent fails or the user rejects indefinitely, set `defect_analysis: "skipped"`, surface a warning, and **proceed to Phase 2b** with the remaining domain summaries. The defect analysis task does **not** trigger Phase 2a abort-on-failure.
+3. Spawn parallel tasks to run domain-specific skills. **Do not force structural mirroring in output**:
    - `qa-plan-atlassian` -> `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature-id>.md`
    - `qa-plan-figma` -> `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature-id>.md` (if Figma url present)
    - `qa-plan-github` -> `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature-id>.md` (if GitHub PR present)
    - `tavily-search` -> `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature-id>.md` (**only if** background research is needed **and** not already executed in Phase 1; check `task.json` `tavily_supplement` or presence of `qa_plan_background_<feature-id>.md`)
    *(To spawn in parallel, execute multiple task tool calls or use `sessions_spawn` if supported).*
-3. Wait for all spawned analysis tasks to complete. If any task fails, abort and notify the user. 
-4. Update `task.json` phase to `plan_synthesize`.
+4. **Wait for all spawned analysis tasks to complete** — including defect analysis approval. Phase 2b synthesis does **not** start until all parallel tasks (including defect) are done.
+5. If any **domain skill** task fails (atlassian, figma, github, tavily), abort and notify the user. Defect analysis failure is handled per step 2 (non-fatal).
+6. Update `task.json` phase to `plan_synthesize`.
 
 ## 2b. Synthesize QA Plan
 1. Update `task.json` current_phase to `strategy_confirmation`.
 2. **Strategy Display**: Before synthesizing, explicitly declare the adopted testing strategy to the user. If the feature is not strictly backend-only, emphasize that the strategy will focus heavily on End-to-End (E2E) workflows, overall test coverage, and User Experience (UX), with user-facing 'Test Key Points'. **ONLY proceed to synthesis upon user approval.**
-3. Call the `qa-plan-synthesize` skill, passing the paths of the generated domain summaries in the `context/` folder, including `qa_plan_background_<feature-id>.md` (if it exists).
+3. Call the `qa-plan-synthesize` skill, passing the paths of the generated domain summaries in the `context/` folder, including `qa_plan_background_<feature-id>.md` (if it exists) and **`qa_plan_defect_analysis_<feature-id>.md`** (if defect analysis completed — see Phase 2a).
 4. Direct the skill to synthesize the specific domain summaries into a single comprehensive Test Plan following the exact 9-section layout. Map Jira ACs to GitHub Code Changes to build the final `Test Key Points` table.
 5. Save the generated draft to `projects/feature-plan/<feature-id>/drafts/qa_plan_v1.md`.
 6. Update `task.json` phase to `review_refactor`.

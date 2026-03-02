@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ConsumptionHorizontalTOC.spec.js'>
+        <TC>BCDA-3070_1</TC>
+        <TC>BCDA-3070_2</TC>
+        <TC>BCDA-3070_3</TC>
+        <TC>BCDA-3070_4</TC>
+        <TC>BCDA-3070_5</TC>
+        <TC>BCDA-3070_6</TC>
+        <TC>BCDA-3070_7</TC>
+    </TestSuite>
+</root>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AutoAnswers_FollowUp.spec.js'>
+    	<TC>TC95538_1</TC>
+    	<TC>TC95538_2</TC>
+    	<TC>TC95538_3</TC>
+    	<TC>TC95538_4</TC>
+    	<TC>TC95538_5</TC>
+    	<TC>TC95538_6</TC>
+    	<TC>TC95538_7</TC>
+        <TC>TC95539_1</TC>
+        <TC>TC95539_2</TC>
+    </TestSuite>
+</root>

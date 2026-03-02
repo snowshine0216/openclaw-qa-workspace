@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='SelectorXFunc.spec.js'>
+        <TC>TC80391</TC>
+        <TC>TC80393</TC>
+        <TC>TC80392</TC>
+        <TC>TC80394</TC>
+        <TC>TC80395</TC>
+        <TC>TC80396</TC>
+        <TC>TC80397</TC>
+        <TC>TC80398</TC>
+        <TC>TC80400</TC>
+        <TC>TC79941</TC>
+    </TestSuite>
+    <TestSuite id='01' name='SelectorCustomerIssues.spec.js'>
+        <TC>TC80379</TC>
+        <TC>TC80380</TC>
+        <TC>TC80381</TC>
+        <TC>TC80382</TC>
+        <TC>TC80383</TC>
+        <TC>TC80384</TC>
+        <TC>TC80385</TC>
+        <TC>TC80387</TC>
+        <TC>TC80388</TC>
+        <TC>TC80389</TC>
+        <TC>TC80386</TC>
+        <TC>TC80390</TC>
+    </TestSuite>
+</root>

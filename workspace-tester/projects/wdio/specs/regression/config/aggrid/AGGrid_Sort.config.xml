@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_Sort.spec.js'>
+        <TC>TC71082_1</TC>
+        <TC>TC71082_2</TC>
+        <TC>TC2710_1</TC>
+        <TC>TC2710_2</TC>
+        <TC>TC65149_1</TC>
+        <TC>TC65149_2</TC>
+        <TC>TC65149_3</TC>
+        <TC>TC65147_1</TC>
+        <TC>TC65147_2</TC>
+        <TC>TC65147_3</TC>
+    </TestSuite>
+</root>

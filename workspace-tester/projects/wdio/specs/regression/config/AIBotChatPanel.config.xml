@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelPreMergeTest.spec.js'>
+        <TC>TC91750</TC>
+        <!-- <TC>TC94914</TC> -->
+        <TC>TC95831</TC>
+    </TestSuite>
+    <TestSuite id='02' name='ChatPanelGeneralDisplay.spec.js'>
+        <TC>TC91750_1</TC>
+        <TC>TC91750_2</TC>
+        <TC>TC91750_3</TC>
+        <TC>TC91750_4</TC>
+        <TC>TC91750_5</TC>
+        <TC>TC91750_6</TC>
+        <!-- <TC>TC91750_7</TC> -->
+        <!-- <TC>TC91750_8</TC> -->
+        <TC>TC91750_9</TC>
+        <TC>TC91750_10</TC>
+        <TC>TC91750_11</TC>
+    </TestSuite>
+    <TestSuite id='03' name='ChatPanelI18N.spec.js'>
+        <TC>TC91753_1</TC>
+        <!-- <TC>TC91753_2</TC> -->
+        <TC>TC91753_3</TC>
+        <TC>TC91753_4</TC>
+        <!-- <TC>TC91753_5</TC> -->
+        <TC>TC91753_6</TC>
+    </TestSuite>
+    <TestSuite id='04' name='ChatPanelResponsiveView.spec.js'>
+        <TC>TC91913_1</TC>
+        <TC>TC91913_2</TC>
+        <TC>TC91913_3</TC>
+        <TC>TC91913_4</TC>
+    </TestSuite>
+    <TestSuite id='05' name='ChatPanelXFunc.spec.js'>
+        <!-- <TC>TC91751_1</TC> create bot1.0 entry is hidden -->
+        <TC>TC91751_2</TC>
+        <TC>TC91751_3</TC>
+        <TC>TC91751_4</TC>
+        <TC>TC91751_5</TC>
+        <TC>TC91751_6</TC>
+        <TC>TC91751_7</TC>
+        <TC>TC91751_8</TC>
+        <TC>TC91751_9</TC>
+        <TC>TC91751_10</TC>
+        <TC>TC91751_11</TC>
+    </TestSuite>
+    <TestSuite id='06' name='ChatPanelQA.spec.js'>
+        <TC>TC92368_1</TC>
+        <TC>TC92368_2</TC>
+        <TC>TC92368_3</TC>
+        <TC>TC92368_4</TC>
+        <TC>TC92368_5</TC>
+        <TC>TC92368_6</TC>
+        <TC>TC92368_7</TC>
+        <TC>TC92368_9</TC>
+    </TestSuite>
+    <!-- <TestSuite id='07' name='ChatPanelAskQuestionHistoryScroll.spec.js'>
+        <TC>TC92549_2</TC>
+    </TestSuite> -->
+    <TestSuite id='08' name='ChatPanelContentDiscovery.spec.js'>
+        <TC>TC92573_1</TC>
+        <TC>TC92573_2</TC>
+    </TestSuite>
+    <TestSuite id='09' name='ChatPanelInterpretation.spec.js'>
+        <TC>TC93344_1</TC>
+        <TC>TC93344_2</TC>
+        <TC>TC93344_3</TC>
+        <TC>TC93344_4</TC>
+        <TC>TC93344_5</TC>
+    </TestSuite>
+    <TestSuite id='10' name='ChatPanelThumbDown.spec.js'>
+        <TC>TC94758_3</TC>
+        <TC>TC94758_4</TC>
+    </TestSuite>
+    <!-- <TestSuite id='11' name='ChatPanelLearning.spec.js'>
+        <TC>TC94914_1</TC>
+        <TC>TC94914_2</TC>
+        <TC>TC94914_3</TC>
+        <TC>TC94914_4</TC>
+        <TC>TC94914_5</TC>
+        <TC>TC94914_6</TC>
+        <TC>TC94914_7</TC>
+        <TC>TC94914_8</TC>
+        <TC>TC94914_9</TC>
+        <TC>TC94914_10</TC>
+        <TC>TC94914_11</TC>
+        <TC>TC94914_13</TC>
+    </TestSuite> -->
+    <TestSuite id='12' name='ChatPanelConfigurationDefaultString.spec.js'>
+        <TC>TC96331_01</TC>
+        <TC>TC96331_02</TC>
+        <TC>TC96331_03</TC>
+    </TestSuite>
+    <TestSuite id='13' name='ChatPanelSuggestionImprovement.spec.js'>
+        <TC>TC96365_1</TC>
+        <TC>TC96365_2</TC>
+        <TC>TC96365_3</TC>
+        <TC>TC96365_4</TC>
+        <TC>TC96365_5</TC>
+        <TC>TC96365_6</TC>
+        <TC>TC96365_7</TC>
+        <TC>TC96365_8</TC>
+        <TC>TC96365_9</TC>
+        <TC>TC96365_10</TC>
+        <TC>TC96365_11</TC>
+        <TC>TC96365_12</TC>
+        <TC>TC96365_13</TC>
+        <TC>TC96365_14</TC>
+        <TC>TC96365_15</TC>
+        <TC>TC96365_16</TC>
+        <TC>TC96365_17</TC>
+    </TestSuite>
+    <TestSuite id='14' name='ChatPanelFollowUpUI.spec.js'>
+        <TC>TC95831_1</TC>
+        <TC>TC95831_2</TC>
+        <TC>TC95831_3</TC>
+        <TC>TC95831_4</TC>
+        <TC>TC95831_5</TC>
+        <TC>TC95831_6</TC>
+    </TestSuite>
+</root>

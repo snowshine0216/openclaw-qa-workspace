@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='01_SnapshotSanity.spec.js'>
+        <TC>TC92413</TC>
+        <TC>TC92413_2</TC>
+    </TestSuite>
+    <TestSuite id='02' name='02_SnapshotsPanel.spec.js'>
+        <TC>TC92414_1</TC>
+        <TC>TC92414_2</TC>
+        <TC>TC92414_3</TC>
+        <TC>TC92414_4</TC>
+    </TestSuite> 
+    <TestSuite id='04' name='04_SnapshotErrorHandling.spec.js'>
+        <TC>TC92416_1</TC>
+        <TC>TC92416_2</TC>
+        <TC>TC92416_3</TC>
+        <TC>TC92416_6</TC>
+    </TestSuite>
+    <TestSuite id='05' name='05_SnapShotI18NChinese.spec.js'>
+        <TC>TC92571_1</TC>
+        <TC>TC92571_2</TC>
+        <TC>TC92571_3</TC>
+    </TestSuite> 
+    <!-- <TestSuite id='06' name='06_SnapshotI18NGerman.spec.js'>
+        <TC>TC92571_4</TC>
+        <TC>TC92571_5</TC>
+        <TC>TC92571_6</TC>
+    </TestSuite> -->
+    <TestSuite id='07' name='07_SnapshotXFunction.spec.js'>
+        <TC>TC92416_4</TC>
+        <TC>TC92416_5</TC>
+    </TestSuite>
+    <TestSuite id='08' name='08_SnapshotInterpretation_NormalUser.spec.js'>
+        <TC>TC93546_1</TC>
+        <TC>TC93546_2</TC>
+        <TC>TC93546_3</TC>
+        <TC>TC93546_4</TC>
+    </TestSuite> 
+    <TestSuite id='09' name='09_SnapshotInterpretation_PowerUser.spec.js'>
+        <TC>TC93553_1</TC>
+        <TC>TC93553_2</TC>
+        <TC>TC93553_3</TC>
+    </TestSuite>
+    <TestSuite id='10' name='10_SnapshotTopic.spec.js'>
+        <TC>TC94986</TC>
+    </TestSuite>
+    <!-- <TestSuite id='11' name='11_SnapshotThumbdown.spec.js'>
+        <TC>TC95332</TC>
+    </TestSuite>
+    <TestSuite id='12' name='12_SnapshotLearningIndicator.spec.js'>
+        <TC>TC97471_1</TC>
+        <TC>TC97471_2</TC>        
+    </TestSuite> -->
+</root>

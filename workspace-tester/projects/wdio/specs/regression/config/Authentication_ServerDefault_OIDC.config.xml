@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ServerDefaultOIDC.spec.js'>
+        <TC>TC86231</TC>
+    </TestSuite>
+</root>

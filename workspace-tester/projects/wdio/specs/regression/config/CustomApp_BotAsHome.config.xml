@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomApp_BotAsHome.spec.js'>
+        <TC>TC92799_01</TC>
+        <TC>TC92799_02</TC>
+        <TC>TC92799_03</TC>   
+        <TC>TC92799_04</TC>
+        <TC>TC92799_05</TC>
+        <TC>TC92799_06</TC>
+        <TC>TC92799_07</TC>
+    </TestSuite>
+    <TestSuite id='02' name='CustomApp_BotAsHome_AclPrivilege.spec.js'>
+        <TC>TC93435_01</TC>
+        <TC>TC93435_02</TC>
+        <TC>TC93435_03</TC>
+    </TestSuite>
+    <TestSuite id='03' name='CustomApp_BotAsHome_ErrorHandling.spec.js'>
+        <TC>TC93417_01</TC>
+        <TC>TC93417_02</TC>
+        <TC>TC93417_03</TC>
+        <TC>TC93417_04</TC>
+    </TestSuite>
+</root>

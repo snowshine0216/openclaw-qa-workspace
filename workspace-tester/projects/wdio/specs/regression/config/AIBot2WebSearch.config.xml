@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Bot2_WebSearch.spec.js'>
+        <TC>TC99032_01</TC>
+        <TC>TC99032_02</TC>
+        <TC>TC99032_03</TC>
+    </TestSuite>
+</root>

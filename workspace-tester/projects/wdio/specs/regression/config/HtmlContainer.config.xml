@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='HtmlContainer.spec.js'>
+       <TC>TC42243</TC>
+       <TC>TC72540</TC>
+       <TC>TC72534</TC>
+       <TC>TC72534_01</TC>
+       <TC>TC72675</TC>
+       <TC>TC72677</TC>
+       <TC>TC72678</TC>
+       <TC>TC82593</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CustomApp_perBuild.spec.js'>
+        <TC>TC82381</TC>
+        <TC>TC82384</TC>
+        <TC>TC82385</TC>
+        <TC>TC82383</TC>   
+   </TestSuite>
+</root>

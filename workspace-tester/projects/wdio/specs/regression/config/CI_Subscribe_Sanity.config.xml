@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CI_Subscribe_Sanity.spec.js'>
+        <TC>F43156_01</TC> 
+        <TC>F43156_02</TC>
+        <TC>F43156_03</TC> 
+        <TC>F43156_04</TC> 
+    </TestSuite>
+</root>

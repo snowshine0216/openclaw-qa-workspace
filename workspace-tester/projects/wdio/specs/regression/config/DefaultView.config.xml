@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='DefaultView.spec.js'>
+        <TC>TC70781_01</TC>
+        <TC>TC70781_02</TC>
+        <TC>TC70781_03</TC>
+        <TC>TC70781_04</TC>
+        <TC>TC70781_05</TC>
+        <!-- <TC>TC70781_06</TC> -->
+        <TC>TC70781_07</TC>
+        <TC>TC70781_08</TC>
+        <TC>TC70781_09</TC>
+        <TC>TC70781_10</TC>
+        <!-- <TC>TC70781_11</TC> -->
+    </TestSuite>
+</root>

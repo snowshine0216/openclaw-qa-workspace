@@ -1,0 +1,175 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "3D73913384DB40EC8360F6EADF438BE4",
+            "n": "Geographical Region"
+          },
+          {
+            "cate": "083CF5BC1B40455FB83AF8CFE4AD7C15",
+            "n": "Employee Performance"
+          },
+          {
+            "cate": "A7B20BA94E83479BB790508A1F568FC1",
+            "n": "Financial Analysis"
+          },
+          {
+            "cate": "58B0F29E195D4823A68A8AD53FD8221D",
+            "n": "Sales Performance"
+          },
+          {
+            "cate": "04AD5C97373B4D8D95C6649BC87E254B",
+            "n": "Time Analysis"
+          }
+        ],
+        "chat_col": [
+          {
+            "message_col": [
+              {
+                "category_id": "00000000000000000000000000000000",
+                "message_id": "14FDF3AF56104622BC85D1AD6B600C5C",
+                "message_type": 1,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Which country has the highest revenue?\",\"type\":\"text\",\"content\":{\"text\":\"Which country has the highest revenue?\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The country with the highest revenue is USA, with a total revenue of $31,120,946.",
+                    "text_type": 3
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 30,
+                  "month": 12,
+                  "sec": 30,
+                  "srs": 0,
+                  "tms": 381,
+                  "week": 2,
+                  "year": 2023
+                }
+              },
+              {
+                "category_id": "00000000000000000000000000000000",
+                "message_id": "B02D5107EE514CF3BCE2E0CB2D82F4DF",
+                "message_type": 1,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Which quarter has the highest discount?\",\"type\":\"text\",\"content\":{\"text\":\"Which quarter has the highest discount?\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The quarter with the highest discount is 2016 Q4, with a total discount of $218,452.",
+                    "text_type": 3
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 30,
+                  "month": 12,
+                  "sec": 48,
+                  "srs": 0,
+                  "tms": 392,
+                  "week": 2,
+                  "year": 2023
+                }
+              },
+              {
+                "category_id": "A7B20BA94E83479BB790508A1F568FC1",
+                "message_id": "8FC81EC27B774EB3A16A3C04520CDF19",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"What is the discount percentage for each month?\",\"type\":\"text\",\"content\":{\"text\":\"What is the discount percentage for each month?\"}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The discount percentage for each month is as follows:\n- Jan 2014: 0.0%\n- Feb 2014: 0.0%\n- Mar 2014: 0.0%\n- Apr 2014: 5.7%\n- May 2014: 5.2%\n- etc.",
+                    "text_type": 2,
+                    "uri": "4B1791D714E741C4AB28E31FD5BE7BD2"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 31,
+                  "month": 12,
+                  "sec": 0,
+                  "srs": 0,
+                  "tms": 299,
+                  "week": 2,
+                  "year": 2023
+                }
+              }
+            ]
+          }
+        ],
+        "endtime": {
+          "day": 7,
+          "day_of_week": 0,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 9,
+          "ig": false,
+          "minute": 30,
+          "month": 1,
+          "sec": 13,
+          "srs": 0,
+          "tms": 232,
+          "week": 2,
+          "year": 2024
+        }
+      },
+      "did": "D935D154ED488DB05A3C07AC3CF4CA2A",
+      "img": true,
+      "lcl": 1033,
+      "nct": "2023-12-08T09:30:13.232Z",
+      "nmdt": "2023-12-08T09:31:02.420Z",
+      "owid": "4CF544F00D40D7E84AFC6BA4FD55ECE5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "4CF544F00D40D7E84AFC6BA4FD55ECE5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "EA14FF908F47A33B7C3E4E8FD0BBCBCF"
+    }
+  ]
+}

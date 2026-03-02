@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AE_CheckBox.spec.js'>
+    	<TC>TC58018</TC>
+    	<TC>TC58019</TC>
+    	<TC>TC58020</TC>
+        <TC>TC58020_02</TC>
+    </TestSuite>
+    <TestSuite id='02' name='AE_List.spec.js'>
+    	<TC>TC58013</TC>
+    	<TC>TC58014</TC>
+    </TestSuite>
+    <TestSuite id='03' name='AE_PullDown.spec.js'>
+    	<TC>TC58829</TC>
+    	<TC>TC58830</TC>
+    	<TC>TC58831</TC>
+        <TC>TC58832</TC>
+        <TC>TC58833</TC>
+        <TC>TC58834</TC>
+    </TestSuite>
+    <TestSuite id='04' name='AE_RadioButton.spec.js'>
+    	<TC>TC58016</TC>
+    	<TC>TC58017</TC>
+    </TestSuite>
+    <TestSuite id='05' name='AE_ShoppingCart.spec.js'>
+    	<TC>TC58011</TC>
+    	<TC>TC58012</TC>
+        <TC>TC80232</TC>
+        <TC>TC80251</TC>
+    </TestSuite>
+    <TestSuite id='06' name='AE_CustomerIssue.spec.js'>
+    	<TC>TC78971_01</TC>
+        <TC>TC78971_02</TC>
+    </TestSuite>
+</root>

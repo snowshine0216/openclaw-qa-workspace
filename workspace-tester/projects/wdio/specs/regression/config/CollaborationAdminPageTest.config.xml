@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='CollaborationAdminPageTest.spec.js'>
+        <TC>TC72080_01</TC>
+        <TC>TC72080_02</TC>
+        <TC>TC72080_03</TC>
+        <TC>TC73216_01</TC>
+   </TestSuite>
+</root>

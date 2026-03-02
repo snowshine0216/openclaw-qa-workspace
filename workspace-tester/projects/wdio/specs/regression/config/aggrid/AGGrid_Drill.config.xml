@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_Drill.spec.js'>
+        <TC>TC76160_1</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='NormalGrid_Subtotals.spec.js'>
+        <TC>TC2696</TC>
+        <TC>TC2711_1</TC>
+        <TC>TC2711_2</TC>
+        <TC>TC2711_3</TC>
+        <TC>TC2711_4</TC>
+        <TC>TC2711_5</TC>
+    </TestSuite>
+</root>

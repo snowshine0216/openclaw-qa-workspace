@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ThumbDownAPI.spec.js'>
+        <TC>TC95101_1</TC>
+        <TC>TC95101_2</TC>
+        <TC>TC95101_3</TC>
+        <TC>TC95101_4</TC>
+    </TestSuite>
+</root>

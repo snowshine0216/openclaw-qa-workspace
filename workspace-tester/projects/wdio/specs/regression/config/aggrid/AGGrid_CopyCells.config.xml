@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='1' name='AGGrid_CopyCells.spec.js'>
+        <TC>TC71089_1</TC>
+        <TC>TC71089_2</TC>
+        <TC>TC71089_3</TC>
+        <TC>TC71089_4</TC>
+        <TC>TC71089_5</TC>
+        <TC>TC71089_6</TC>
+        <TC>TC71089_7</TC>
+        <TC>TC71089_8</TC>
+        <TC>TC71089_9</TC>
+        <TC>TC71089_10</TC>
+        <TC>TC71089_11</TC>
+        <TC>TC71089_12</TC>
+        <TC>TC71089_13</TC>
+        <TC>TC71089_14</TC>
+        <TC>TC71089_15</TC>
+        <TC>TC71089_16</TC>
+        <TC>TC71089_17</TC>
+        <TC>TC71089_18</TC>
+        <TC>TC71089_19</TC>
+        <TC>TC71089_20</TC>
+        <TC>TC71089_21</TC>
+    </TestSuite>
+    <TestSuite id='2' name='AGGridCopyMoveDuplicate.spec.js'>
+        <TC>TC79710_1</TC>
+        <TC>TC79710_2</TC>
+        <TC>TC79710_3</TC>
+        <TC>TC79709_1</TC>
+        <TC>TC79709_2</TC>
+        <TC>TC79709_3</TC>
+        <TC>TC79709_4</TC>
+    </TestSuite> 
+</root>

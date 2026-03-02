@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomAppBookmark.spec.js'>
+        <TC>TC88585_01</TC>
+        <TC>TC88585_02</TC>
+        <TC>TC88585_03</TC>
+        <TC>TC88585_04</TC>
+        <TC>TC88585_05</TC>
+        <TC>TC88585_06</TC>      
+        <TC>TC88585_08</TC>
+        <TC>TC88585_09</TC> 
+        <TC>TC88585_10</TC>
+        <TC>TC88585_11</TC>
+        <TC>TC88585_13</TC>    
+     </TestSuite>
+    <TestSuite id='10' name='CustomAppCollapsedToolBar.spec.js'>
+        <TC>TC78891</TC>
+        <TC>TC76707</TC>
+        <TC>TC76707_2</TC>   
+        <TC>TC78891_01</TC>
+   </TestSuite>
+    <TestSuite id='02' name='CustomAppDisableToolBar.spec.js'>
+        <TC>TC78890</TC>
+        <TC>TC76715</TC>
+    </TestSuite>
+    <TestSuite id='03' name='CustomAppShowToolBar.spec.js'>
+        <TC>TC76708</TC>
+        <TC>TC76714</TC>
+        <TC>TC78888</TC>
+        <TC>TC76711</TC>
+        <TC>TC76711_2</TC>
+    </TestSuite>
+    <TestSuite id='04' name='CustomAppErrorHandling.spec.js'>
+        <TC>TC76717</TC>
+        <TC>TC78889</TC>
+        <TC>TC78892</TC>
+        <TC>TC78894</TC>
+    </TestSuite>
+    <TestSuite id='05' name='CustomAppUserPreference.spec.js'>
+        <TC>TC80099</TC>
+        <TC>TC80100</TC>
+    </TestSuite>
+    <TestSuite id='06' name='CustomAppCustomizedItems.spec.js'>
+        <TC>TC80057_01</TC>
+        <TC>TC80057_02</TC>
+        <TC>TC80057_03</TC>
+        <TC>TC80057_04</TC>
+        <TC>TC80057_05</TC>
+        <TC>TC80057_06</TC>
+        <TC>TC80057_07</TC>
+        <TC>TC80057_08</TC>
+        <TC>TC80057_09</TC>
+        <TC>TC80057_10</TC>
+        <TC>TC80057_11</TC>
+        <TC>TC80057_12</TC>
+        <TC>TC80057_13</TC>
+        <TC>TC80057_14</TC>
+        <TC>TC80057_15</TC>
+        <TC>TC80057_16</TC>
+        <TC>TC80659</TC>
+    </TestSuite>
+    <TestSuite id='07' name='CustomAppContentBundle.spec.js'>
+        <TC>TC79314_1</TC>
+        <TC>TC79314_2</TC>
+        <TC>TC79314_3</TC>
+        <TC>TC87909_1</TC>
+        <TC>TC87909_2</TC>
+        <TC>TC87909_3</TC>
+        <TC>TC88819_1</TC>
+        <TC>TC88819_2</TC>
+        <TC>TC88819_3</TC>
+        <TC>TC79314_4</TC>
+    </TestSuite>
+    <TestSuite id='08' name='CustomAppNotification.spec.js'>
+        <TC>TC80265_1</TC>
+        <TC>TC80265_2</TC>
+        <TC>TC80265_3</TC>
+   </TestSuite>
+   <TestSuite id='09' name='CustomPalettes.spec.js'>
+    <TC>TC81474_1</TC>
+    <TC>TC81474_2</TC>      
+    <TC>TC81474_3</TC>
+    <TC>TC81474_4</TC>   
+    <TC>TC81474_5</TC>
+    <TC>TC81474_6</TC>   
+    <TC>TC81475</TC>
+</TestSuite>
+ <TestSuite id='11' name='CustomApp_SharePanel.spec.js'>
+    <TC>TC90087_01</TC>
+    <TC>TC90087_02</TC>    
+    <TC>TC90087_03</TC>   
+    <TC>TC90087_04</TC>    
+    <TC>TC90087_05</TC> 
+</TestSuite>
+<TestSuite id='12' name='CustomApp_AccountsPanel.spec.js'>
+    <TC>TC90088_01</TC>
+    <TC>TC90088_02</TC>
+    <TC>TC90088_03</TC>
+    <TC>TC90088_04</TC>
+    <TC>TC90088_05</TC>
+    <TC>TC90088_06</TC>
+    <TC>TC90088_07</TC>
+    <TC>TC90088_08</TC>
+    <TC>TC90088_09</TC>
+    <TC>TC90088_10</TC>
+</TestSuite>
+<TestSuite id='13' name='CustomApp_Content_disableUserTime.spec.js'>
+    <TC>TC90145_07</TC>
+    <TC>TC90145_08</TC>
+    <TC>TC90145_09</TC>
+    <TC>TC90145_12</TC>
+</TestSuite>
+<TestSuite id='14' name='CustomApp_Content_disableTime.spec.js'>
+    <TC>TC90145_01</TC>
+    <TC>TC90145_04</TC>
+    <TC>TC90145_05</TC>
+    <TC>TC90145_06</TC>
+    <TC>TC90145_10</TC>
+</TestSuite>
+<TestSuite id='15' name='CustomApp_Content_disableUser.spec.js'>
+    <TC>TC90145_02</TC>
+    <TC>TC90145_03</TC>
+    <TC>TC90145_11</TC>
+</TestSuite>
+<TestSuite id='16' name='CustomApp_FilterSummary.spec.js'>
+    <TC>TC90188_01</TC>
+    <TC>TC90188_02</TC>
+    <TC>TC90188_03</TC>
+    <TC>TC90188_04</TC>
+    <TC>TC90188_05</TC>
+    <TC>TC90188_06</TC>
+</TestSuite>
+<TestSuite id='17' name='CustomApp_Others.spec.js'>
+    <TC>TC90192_01</TC>
+    <TC>TC90192_02</TC>
+    <TC>TC90192_03</TC>
+    <TC>TC90192_04</TC>
+    <TC>TC90192_05</TC>
+</TestSuite>
+<TestSuite id='18' name='CustomApp_PinSideBar.spec.js'>
+    <TC>TC90862_01</TC>
+    <TC>TC90862_02</TC>
+</TestSuite>
+<TestSuite id='19' name='CustomApp_PinToc.spec.js'>
+    <TC>TC90863_01</TC>
+    <TC>TC90863_02</TC>
+    <TC>TC90863_03</TC>
+    <TC>TC90863_04</TC>
+</TestSuite>
+<TestSuite id='20' name='CustomApp_PinComment.spec.js'>
+    <TC>TC90865_01</TC>
+    <TC>TC90865_02</TC>
+    <TC>TC90865_03</TC>
+    <TC>TC90865_04</TC>
+    <TC>TC90865_05</TC>
+</TestSuite>
+<TestSuite id='21' name='CustomApp_PinFilter.spec.js'>
+    <TC>TC90864_01</TC>
+    <TC>TC90864_02</TC>
+    <TC>TC90864_03</TC>
+    <TC>TC90864_04</TC>
+</TestSuite>
+<TestSuite id='22' name='CustomApp_FilterLeft.spec.js'>
+    <TC>TC90864_05</TC>
+    <TC>TC90864_06</TC>
+    <TC>TC90864_07</TC>
+    <TC>TC90864_08</TC>
+</TestSuite>
+<TestSuite id='23' name='CustomApp_PinAndUrlApi.spec.js'>
+    <TC>TC91044_01</TC>
+    <TC>TC91044_02</TC>
+    <TC>TC91044_03</TC>
+</TestSuite>
+<TestSuite id='24' name='CustomApp_Pin1PanelXfunc.spec.js'>
+    <TC>TC90866_01</TC>
+    <TC>TC90866_02</TC>
+</TestSuite>
+<TestSuite id='25' name='CustomApp_PinMultiplePanelXfunc.spec.js'>
+    <TC>TC90866_05</TC>
+    <TC>TC90866_06</TC>
+    <TC>TC90866_08</TC>
+    <TC>TC90866_09</TC>
+    <TC>TC90866_10</TC>
+    <TC>TC90866_12</TC>
+</TestSuite>
+<TestSuite id='26' name='CustomApp_Pin2Sides.spec.js'>
+    <TC>TC91591_01</TC>
+    <TC>TC91591_02</TC>
+    <TC>TC91591_04</TC>
+</TestSuite>
+<TestSuite id='27' name='CustomAppCustomizedEmail.spec.js'>
+    <TC>TC86625_01</TC>
+    <TC>TC86625_02</TC>      
+    <TC>TC86625_03</TC>
+    <TC>TC86625_04</TC>   
+    <TC>TC86625_05</TC>
+</TestSuite>
+</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AQ_PullDown.spec.js'>
+    	<TC>TC58957_01</TC>
+    	<TC>TC58957_02</TC>
+    </TestSuite>
+    <TestSuite id='02' name='Value_Date.spec.js'>
+    	<TC>TC65944_01</TC>
+    	<TC>TC65944_02</TC>
+    </TestSuite>
+</root>

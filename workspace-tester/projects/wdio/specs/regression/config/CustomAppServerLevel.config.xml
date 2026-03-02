@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='CustomAppServerLevel.spec.js'>
+        <TC>TC86287</TC>
+        <TC>TC86292</TC>
+        <TC>TC86293</TC>
+        <TC>TC86295</TC>
+        <TC>TC86334</TC>
+        <TC>TC86343</TC>
+    </TestSuite>
+</root>
+
+
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='Dropdown.spec.js'>
+        <TC>TC80333</TC>
+        <TC>TC80334</TC>
+        <TC>TC80335</TC>
+        <TC>TC80336</TC>
+        <TC>TC80337</TC>
+        <TC>TC80338</TC>
+    </TestSuite>
+    <TestSuite id='01' name='DropdownMultiSelect.spec.js'>
+        <TC>TC80339</TC>
+        <TC>TC80341</TC>
+        <TC>TC80342</TC>
+        <TC>TC80343</TC>
+        <TC>TC80344</TC>
+        <TC>TC80345</TC>
+        <TC>TC80346</TC>
+        <TC>TC80347</TC>
+        <TC>TC80348</TC>
+        <TC>TC80349</TC>
+        <TC>TC80350</TC>
+    </TestSuite>
+</root>

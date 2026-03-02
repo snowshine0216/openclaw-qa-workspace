@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='AttributeMetricSelector.spec.ts'>
+        <TC>TC99387_1</TC>
+        <TC>TC99387_2</TC>
+        <TC>TC99387_3</TC>
+        <TC>TC99387_4</TC>
+    </TestSuite>
+</root>

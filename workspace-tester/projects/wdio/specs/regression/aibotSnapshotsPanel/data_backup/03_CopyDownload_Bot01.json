@@ -1,0 +1,113 @@
+{
+  "save": [
+    {
+      "acg": 255,
+      "cjcmd": {
+        "cmms": []
+      },
+      "def": {
+        "cate_col": [
+          {
+            "cate": "A4B701CF4A3940FABB9838C51410F135",
+            "n": "Emissions by Region"
+          },
+          {
+            "cate": "3EF8A69D49464EF9A9C25BC9DE45BDC8",
+            "n": "Emissions by Year"
+          },
+          {
+            "cate": "4DC2C1FDB5DA4EE686E3E3666ACEF20E",
+            "n": "Emissions by Country"
+          },
+          {
+            "cate": "6B455F0237A8443AA581B82036020D0D",
+            "n": "Coal Emissions"
+          },
+          {
+            "cate": "A789EBC6A3344DD88E3D5D1E831722A2",
+            "n": "Natural Gas Emissions"
+          }
+        ],
+        "chat_col": [
+          {
+            "message_col": [
+              {
+                "category_id": "4DC2C1FDB5DA4EE686E3E3666ACEF20E",
+                "message_id": "9F281EE2FA5643108463E28FF481CE11",
+                "message_type": 3,
+                "text_col": [
+                  {
+                    "text_content": "{\"text\":\"Show me the map of Population (m) ('Population (m)' is a metric) \\n\",\"type\":\"token\",\"content\":{\"text\":\"Show me the map of ###0### \\n\",\"extra\":{\"placeholders\":[{\"insertText\":\"Population (m)\",\"id\":\"C76AD85A1D4C5F25EB6C51BF175BB130\"}],\"usedItemsMap\":{},\"usedItemsObjectString\":\"[[\\\"Population (m)\\\",{\\\"label\\\":\\\"Population (m)\\\",\\\"insertText\\\":\\\"Population (m)\\\",\\\"extra\\\":{\\\"id\\\":\\\"C76AD85A1D4C5F25EB6C51BF175BB130\\\"}}]]\"}}}",
+                    "text_type": 1
+                  },
+                  {
+                    "text_content": "The map shows the population (in millions) of different countries. Here are some examples:\n- Afghanistan: 459.83m\n- Albania: 65.14m\n- Algeria: 634.74m\n- American Samoa: 1.21m\n- Angola: 221.36m\n- Antarctica: (No data available)\n\n\nPlease note that the visualization result includes more countries, but I have only listed a few examples.",
+                    "text_type": 2,
+                    "uri": "1868AE86556D460997637171056FB9C2"
+                  }
+                ],
+                "timestamp": {
+                  "day": 8,
+                  "day_of_week": 5,
+                  "do": 0,
+                  "dt": -100,
+                  "dtm": 0,
+                  "hour": 9,
+                  "ig": false,
+                  "minute": 21,
+                  "month": 12,
+                  "sec": 9,
+                  "srs": 0,
+                  "tms": 46,
+                  "week": 2,
+                  "year": 2023
+                }
+              }
+            ]
+          }
+        ],
+        "endtime": {
+          "day": 7,
+          "day_of_week": 0,
+          "do": 0,
+          "dt": -100,
+          "dtm": 0,
+          "hour": 9,
+          "ig": false,
+          "minute": 19,
+          "month": 1,
+          "sec": 58,
+          "srs": 0,
+          "tms": 248,
+          "week": 2,
+          "year": 2024
+        }
+      },
+      "did": "1290F0ED784FC18701CD7DB99E025F11",
+      "img": true,
+      "lcl": 1033,
+      "nct": "2023-12-08T09:19:58.248Z",
+      "nmdt": "2023-12-08T09:21:32.310Z",
+      "owid": "4CF544F00D40D7E84AFC6BA4FD55ECE5",
+      "parent_id": "EE9BD70043F0F571B38E43BF19B9301A",
+      "pid": "B7CA92F04B9FAE8D941C3E9B7E0CD754",
+      "scu": {
+        "acl": {
+          "it_c": [
+            {
+              "deny": false,
+              "inheritable": false,
+              "rights": 255,
+              "tp": 1,
+              "trustee": "4CF544F00D40D7E84AFC6BA4FD55ECE5"
+            }
+          ]
+        }
+      },
+      "sta": 256,
+      "stp": 22784,
+      "tp": 89,
+      "vr": "9D6C4DC7B7410336E533B1B5280109ED"
+    }
+  ]
+}

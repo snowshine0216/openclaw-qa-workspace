@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='LibraryE2E_Alert.spec.js'>
+        <TC>TC98628_02</TC>
+    </TestSuite>
+</root>
+

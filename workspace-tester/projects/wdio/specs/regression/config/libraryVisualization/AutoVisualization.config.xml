@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='ChatPanelVizDropzoneRule.spec.js'>
+        <TC>TC94921</TC>
+        <TC>TC94922</TC>
+        <TC>TC94923</TC>
+        <TC>TC94924</TC>
+        <TC>TC94925</TC>
+        <TC>TC94926</TC>
+        <TC>TC94927</TC>
+        <TC>TC94940</TC>
+        <TC>TC94941</TC>
+        <TC>TC95923</TC>
+        <TC>TC94529_1</TC>
+        <TC>TC94529_2</TC>
+    </TestSuite>
+     <TestSuite id='02' name='ChatPanelVizNewSubtype.spec.js'>
+        <TC>TC93979_1</TC>
+        <TC>TC93979_2</TC>
+        <TC>TC93979_3</TC>
+        <TC>TC94945_1</TC>
+        <TC>TC94945_2</TC>
+        <TC>TC94945_3</TC>
+        <TC>TC93972_1</TC>
+        <TC>TC93972_2</TC>
+        <TC>TC93982_1</TC>
+        <TC>TC93982_2</TC>
+        <TC>TC93980_1</TC>
+        <TC>TC93980_2</TC>
+    </TestSuite>
+    <TestSuite id='03' name='AutoDashboardVizDropzoneRule.spec.js'>
+        <TC>TC93974_1</TC>
+        <TC>TC93974_2</TC>
+        <TC>TC93974_3</TC>
+        <TC>TC93974_4</TC>
+        <TC>TC93974_5</TC>
+    </TestSuite>
+    <TestSuite id='04' name='AutoAnswers_VizDropzoneRule.spec.js'>
+        <TC>TC93973_1</TC>
+        <TC>TC93973_2</TC>
+        <TC>TC93973_3</TC>
+        <TC>TC93973_4</TC>
+        <TC>TC93973_5</TC>
+        <TC>TC93973_6</TC>
+        <TC>TC93973_7</TC>
+    </TestSuite>
+    <TestSuite id='05' name='AIBarChart.spec.js'>
+        <TC>TC97847_1</TC>
+        <TC>TC97847_2</TC>
+        <TC>TC97847_3</TC>
+        <TC>TC97847_4</TC>
+        <TC>TC97847_5</TC>
+        <TC>TC97847_6</TC>
+        <TC>TC97847_7</TC>
+        <TC>TC97847_8</TC>
+    </TestSuite>
+</root>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+   <TestSuite id='01' name='UrlAPIPassFilter.spec.js'>
+        <TC>TC70060_01</TC>
+        <TC>TC70060_02</TC>
+        <TC>TC70060_03</TC>
+        <TC>TC80298</TC>
+   </TestSuite>
+   <TestSuite id='02' name='UrlAPIPassParameterFilter.spec.js'>
+        <TC>TC95183_01</TC>
+        <TC>TC95183_02</TC>
+        <TC>TC95365</TC>
+        <TC>TC94311</TC>
+        <TC>TC95367_01</TC>
+        <TC>TC95367_02</TC>
+        <TC>TC95366</TC>
+   </TestSuite>
+   <TestSuite id='01' name='UrlAPIPassParameterFilter_Xfunc.spec.js'>
+        <TC>TC95434_01</TC>
+        <TC>TC95434_02</TC>
+        <TC>TC95434_03</TC>
+        <TC>TC95434_04</TC>
+   </TestSuite>
+</root>

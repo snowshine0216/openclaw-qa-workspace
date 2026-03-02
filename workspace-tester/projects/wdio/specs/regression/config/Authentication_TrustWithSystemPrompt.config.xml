@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <TestSuite id='01' name='TrustWithSystemPrompt.spec.js' description='Tests for Trusted Authentication with System Prompts'>
+    	<TC id='BCSA-2440_1' priority='high'>BCSA-2440_1</TC>
+        <TC id='BCSA-2440_2' priority='high'>BCSA-2440_2</TC>
+        <TC id='BCSA-2440_3' priority='high'>BCSA-2440_3</TC>
+        <TC id='BCSA-2440_4' priority='medium'>BCSA-2440_4</TC>
+        <TC id='BCSA-2440_5' priority='medium'>BCSA-2440_5</TC>
+        <TC id='BCSA-2440_6' priority='medium'>BCSA-2440_6</TC>
+        <TC id='BCSA-2440_7' priority='medium'>BCSA-2440_7</TC>
+        <TC id='BCSA-2440_8' priority='medium'>BCSA-2440_8</TC>
+        <TC id='BCSA-2440_9' priority='medium'>BCSA-2440_9</TC>
+        <TC id='BCSA-2440_10' priority='medium'>BCSA-2440_10</TC>
+    </TestSuite>
+    <TestSuite id='02' name='TrustUserImport.spec.js'>
+        <TC>BCSA-3075_1</TC>
+    </TestSuite>
+</root>

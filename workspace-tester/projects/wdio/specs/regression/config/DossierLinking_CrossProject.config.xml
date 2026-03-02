@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	 <TestSuite id='02' name='DossierLinkingCrossProject.spec.js'>
+		<TC>TC97336_01</TC>
+		<TC>TC97336_02</TC>
+		<TC>TC97336_03</TC>
+		<TC>TC97336_04</TC>
+    </TestSuite>
+</root>

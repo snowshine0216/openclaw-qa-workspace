@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<TestSuite id='01' name='DossierLinkingSupportBookmark.spec.js'>
+		<TC>TC88549</TC>
+		<TC>TC89232</TC>
+		<TC>TC89233</TC>
+		<TC>TC89234</TC>
+		<TC>TC89248</TC>
+		<TC>TC89295</TC>
+		<TC>TC89315</TC>
+		<TC>TC89297</TC>
+		<TC>TC89311</TC>
+		<TC>TC89313</TC>
+		<TC>TC89314</TC>
+    </TestSuite>
+</root>
