@@ -16,6 +16,7 @@ import {
   moveCaseToSection,
   removeCase,
   updateCaseFields,
+  updateSectionTitle,
 } from '../shared/graph/fromGraphEdits';
 import { toGraphModel, type GraphNode } from '../shared/graph/toGraphModel';
 import { loadFeatureDocument, saveFeatureDocument } from './api/clientApi';
@@ -26,7 +27,7 @@ import { RootNode } from './components/RootNode';
 import { StepNode } from './components/StepNode';
 import { TouchingBezierEdge } from './components/TouchingBezierEdge';
 
-const DEFAULT_FEATURE = 'BCIN-6709';
+const DEFAULT_FEATURE = (import.meta.env.VITE_DEFAULT_FEATURE as string | undefined) || 'BCIN-6709';
 
 const EDGE_TYPES = {
   straight: TouchingBezierEdge,
@@ -101,6 +102,7 @@ function AppContent() {
   const [saving, setSaving] = useState(false);
   const [draftVersion, setDraftVersion] = useState(0);
   const [savedVersion, setSavedVersion] = useState(0);
+  const [categoryTitleInput, setCategoryTitleInput] = useState('');
 
   const dirty = draftVersion !== savedVersion;
 
@@ -114,10 +116,18 @@ function AppContent() {
       return selectedTarget.sectionId;
     }
     if (selectedTarget.kind === 'case') {
-      return selectedTarget.sectionId;
+      return findSectionIdForCase(document, selectedTarget.caseId) ?? selectedTarget.sectionId;
     }
     return findSectionIdForCase(document, selectedCaseId) ?? document.sections[0]?.id ?? null;
   }, [document, selectedTarget, selectedCaseId]);
+
+  const selectedCategory = useMemo(() => {
+    if (!document || selectedTarget.kind !== 'category') {
+      return null;
+    }
+
+    return document.sections.find((section) => section.id === selectedTarget.sectionId) ?? null;
+  }, [document, selectedTarget]);
 
   const { nodes, edges } = useMemo(() => {
     if (!document) {
@@ -259,6 +269,32 @@ function AppContent() {
     [document, selectedCaseId, applyDocumentEdit],
   );
 
+  const commitCategoryRename = useCallback(() => {
+    if (!document || !selectedCategory) {
+      return;
+    }
+
+    const nextTitle = categoryTitleInput.trim();
+    if (!nextTitle) {
+      setCategoryTitleInput(selectedCategory.title);
+      setError('Category name cannot be empty.');
+      return;
+    }
+
+    if (nextTitle === selectedCategory.title) {
+      setError(null);
+      return;
+    }
+
+    const next = updateSectionTitle(document, selectedCategory.id, nextTitle);
+    applyDocumentEdit(next);
+    setError(null);
+  }, [applyDocumentEdit, categoryTitleInput, document, selectedCategory]);
+
+  useEffect(() => {
+    setCategoryTitleInput(selectedCategory?.title ?? '');
+  }, [selectedCategory]);
+
   const addTopic = useCallback(() => {
     if (!document) {
       return;
@@ -381,14 +417,31 @@ function AppContent() {
         </section>
 
         <aside className="editor-panel">
-          <h2>Case Editor</h2>
-          {!selectedCase || !document ? (
-            <p className="placeholder">
-              Select a checkpoint/step/result node to edit the case details. If nothing is selected, Add Category creates a new
-              top-level category.
-            </p>
-          ) : (
+          {selectedCategory && document ? (
             <form className="editor-form" onSubmit={(event) => event.preventDefault()}>
+              <h2>Category Editor</h2>
+              <label>
+                Category Name
+                <input
+                  type="text"
+                  value={categoryTitleInput}
+                  onChange={(event) => {
+                    setCategoryTitleInput(event.target.value);
+                    setError(null);
+                  }}
+                  onBlur={commitCategoryRename}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      commitCategoryRename();
+                    }
+                  }}
+                />
+              </label>
+            </form>
+          ) : selectedCase && document ? (
+            <form className="editor-form" onSubmit={(event) => event.preventDefault()}>
+              <h2>Case Editor</h2>
               <label>
                 Priority
                 <select
@@ -404,7 +457,13 @@ function AppContent() {
 
               <label>
                 Move To Section
-                <select value={selectedSectionId ?? ''} onChange={(event) => moveSelectedCase(event.target.value)}>
+                <select
+                  value={selectedSectionId ?? ''}
+                  onChange={(event) => {
+                    moveSelectedCase(event.target.value);
+                    setError(null);
+                  }}
+                >
                   {document.sections.map((section) => (
                     <option key={section.id} value={section.id}>
                       {section.title}
@@ -449,6 +508,13 @@ function AppContent() {
                 />
               </label>
             </form>
+          ) : (
+            <>
+              <h2>Case Editor</h2>
+              <p className="placeholder">
+                Select a checkpoint/step/result node to edit the case details. Select a category node to rename it.
+              </p>
+            </>
           )}
         </aside>
       </main>

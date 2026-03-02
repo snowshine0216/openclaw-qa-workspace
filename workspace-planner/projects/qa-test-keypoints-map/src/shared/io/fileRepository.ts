@@ -25,11 +25,26 @@ function assertFeatureId(featureId: string): void {
   }
 }
 
+function parseReadOnlyFeatureIds(rawValue: string | undefined): Set<string> {
+  if (!rawValue) {
+    return new Set();
+  }
+
+  return new Set(
+    rawValue
+      .split(',')
+      .map((item) => item.trim().toUpperCase())
+      .filter((item) => item.length > 0),
+  );
+}
+
 export class QaPlanFileRepository {
   private readonly featurePlanRoot: string;
+  private readonly readOnlyFeatureIds: Set<string>;
 
   constructor(private readonly workspaceRoot: string) {
     this.featurePlanRoot = path.resolve(this.workspaceRoot, 'workspace-planner/projects/feature-plan');
+    this.readOnlyFeatureIds = parseReadOnlyFeatureIds(process.env.QA_KEYPOINTS_READ_ONLY_FEATURE_IDS);
   }
 
   private resolvePlanPath(featureId: string): string {
@@ -56,6 +71,12 @@ export class QaPlanFileRepository {
   }
 
   async save(featureId: string, nextDocument: TestKeyPointsDocument): Promise<SaveResult> {
+    if (this.readOnlyFeatureIds.has(featureId.toUpperCase())) {
+      throw new Error(
+        `Writes are blocked for feature ${featureId}. Remove it from QA_KEYPOINTS_READ_ONLY_FEATURE_IDS to enable writes.`,
+      );
+    }
+
     const current = await this.load(featureId);
 
     const nextMarkdown = rewriteTestKeyPointsSection(current.markdown, current.offsets, nextDocument);

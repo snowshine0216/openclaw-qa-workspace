@@ -140,6 +140,26 @@ export function addSection(document: TestKeyPointsDocument): { document: TestKey
   };
 }
 
+export function updateSectionTitle(
+  document: TestKeyPointsDocument,
+  sectionId: string,
+  nextTitle: string,
+): TestKeyPointsDocument {
+  const next = cloneDocument(document);
+  const target = next.sections.find((section) => section.id === sectionId);
+  if (!target) {
+    return document;
+  }
+
+  const normalizedTitle = nextTitle.trim();
+  if (!normalizedTitle || normalizedTitle === target.title) {
+    return document;
+  }
+
+  target.title = normalizedTitle;
+  return next;
+}
+
 export function removeCase(document: TestKeyPointsDocument, caseId: string): TestKeyPointsDocument {
   const next = cloneDocument(document);
   for (const section of next.sections) {
