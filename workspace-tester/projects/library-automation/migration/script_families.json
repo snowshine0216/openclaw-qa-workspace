@@ -202,12 +202,16 @@
           "fileCount": 3,
           "status": "done",
           "progress": {
-            "last_run": "2026-02-28",
+            "last_run": "2026-03-01",
             "pass": 0,
             "fail": 3,
-            "self_healed": false,
-            "quality_checked": false,
-            "notes": "pageBy1: auth timeout; pageBy2: timeout; pageBy3: expect.poll added for Subcategory"
+            "self_healed": true,
+            "healer_rounds": 3,
+            "healing_report": "migration/self-healing/report-editor/2e/healing_report.md",
+            "quality_checked": true,
+            "quality_report": "migration/quality_report_report-editor_2e.md",
+            "quality_date": "2026-03-01",
+            "notes": "Quality check complete. Healer attempted 3 rounds; unresolved failures remain in page-by-1/2/3 (object browser availability, Drill context menu option visibility, and grid baseline variance)."
           },
           "snapshotMapping": []
         },

@@ -177,6 +177,14 @@ export class ReportEditorPanel {
 
   /** WDIO: contextMenuContainsOption - whether open context menu has the option */
   async contextMenuContainsOption(opt: string): Promise<boolean> {
+    const mojoMenuItem = this.page
+      .locator('.mstrmojo-ui-Menu.visible a.mstrmojo-ui-Menu-item, .mstrmojo-ListBase.mstrmojo-ui-Menu.visible a')
+      .filter({ hasText: new RegExp(`^\\s*${opt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') })
+      .first();
+    if (await mojoMenuItem.isVisible().catch(() => false)) {
+      return true;
+    }
+
     const item = this.page
       .locator(
         '.mstr-context-menu:not(.ant-dropdown-hidden) li, .ant-dropdown-menu:visible li'

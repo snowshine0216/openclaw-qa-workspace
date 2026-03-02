@@ -7,14 +7,35 @@ import type { Page } from '@playwright/test';
 export class DossierCreator {
   constructor(private readonly page: Page) {}
 
+  private async isLoginViewVisible(): Promise<boolean> {
+    if (/\/auth\/login\b/i.test(this.page.url())) return true;
+    return this.page
+      .locator('#loginForm, #username, .LoginViewContainer, .credsLoginContainer')
+      .first()
+      .isVisible()
+      .catch(() => false);
+  }
+
+  private async tryRecoverToAppFromLogin(): Promise<void> {
+    if (!(await this.isLoginViewVisible())) return;
+    const currentUrl = this.page.url();
+    const base = currentUrl.match(/^(https?:\/\/[^/]+\/MicroStrategyLibrary)/i)?.[1];
+    if (!base) return;
+    await this.page.goto(`${base}/app`, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
+    await this.page.waitForTimeout(1000);
+  }
+
   private get addButton() {
     return this.page.locator(
-      '[class*="mstrd-CreateDossierNavItemContainer"], [class*="CreateDossier"], div[class*="create-dossier"]'
+      '.mstrd-NavBarWrapper div[class*="CreateDossierNavItemContainer-ico"], ' +
+      '.mstrd-NavBarWrapper [class*="CreateDossierNavItemContainer"] [class*="-ico"], ' +
+      '[data-feature-id*="create-dossier"], [data-feature-id*="create-report"]'
     ).first();
   }
 
   private get createNewReportItem() {
     return this.page.locator(
+      'li.mstrd-MenuItem[class*="CreateDossierDropdownMenuContainer-create-report"], ' +
       'li[class*="create-report"], [class*="CreateDossierDropdownMenuContainer-create-report"]'
     ).first();
   }
@@ -38,15 +59,20 @@ export class DossierCreator {
   }
 
   private get projectDropdownBtn() {
-    return this.page.locator(
-      '[class*="projectPicker"] [class*="project-selector"], [class*="ant-select-selector"]'
+    return this.getCreateNewDossierPanel().locator(
+      '[class*="projectPicker"] [class*="project-selector"], [class*="projectPicker"] [class*="ant-select-selector"]'
     ).first();
   }
 
   private getProjectDropdownOption(name: string) {
-    return this.page.locator(
-      `[class*="ant-select-item-option-content"] div:has-text("${name}")`
-    ).first();
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const exact = new RegExp(`^\\s*${escaped}\\s*$`, 'i');
+    return this.page
+      .locator('.ant-select-dropdown:visible')
+      .last()
+      .locator('.ant-select-item-option-content div, .ant-select-item-option-content')
+      .filter({ hasText: exact })
+      .first();
   }
 
   private get searchBox() {
@@ -85,8 +111,17 @@ export class DossierCreator {
 
   /** Click Add → Create Report to open the Create New Report dialog */
   async createNewReport(): Promise<void> {
+    if (await this.isLoginViewVisible()) {
+      await this.tryRecoverToAppFromLogin();
+    }
+    if (await this.isLoginViewVisible()) {
+      throw new Error(
+        `Cannot open Report Creator because the page is on login view (${this.page.url()}). ` +
+          'Ensure user authentication succeeded before calling createNewReport().'
+      );
+    }
     try {
-      await this.addButton.waitFor({ state: 'visible', timeout: 30000 });
+      await this.addButton.waitFor({ state: 'visible', timeout: 45000 });
     } catch (e) {
       const fs = require('fs');
       await this.page.screenshot({ path: '/tmp/add_button_timeout.png' }).catch(() => {});
@@ -104,12 +139,22 @@ export class DossierCreator {
 
   /** Switch project by name in the project dropdown */
   async switchProjectByName(projectName: string): Promise<void> {
+    await this.dismissBlockingMessageBoxIfPresent();
     await this.projectDropdownBtn.waitFor({ state: 'visible', timeout: 5000 });
-    await this.projectDropdownBtn.click();
+    await this.projectDropdownBtn.click().catch(async () => {
+      await this.dismissBlockingMessageBoxIfPresent();
+      await this.projectDropdownBtn.click({ force: true });
+    });
+    await this.dismissTooltipsByClickTitle();
+    await this.page.locator('.ant-tooltip, .ant-tooltip-inner').first().waitFor({ state: 'hidden', timeout: 2000 }).catch(() => {});
     await this.page.waitForTimeout(500);
+    await this.page.locator('.ant-select-dropdown:visible').last().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     const option = this.getProjectDropdownOption(projectName);
     await option.waitFor({ state: 'visible', timeout: 8000 });
-    await option.click();
+    await option.click().catch(async () => {
+      await option.click({ force: true });
+    });
+    await this.page.locator('.mstr-rc-loading-dot-icon').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
     await this.page.waitForTimeout(1000);
   }
 
@@ -425,6 +470,28 @@ export class DossierCreator {
     const titleBar = this.getCreateNewDossierPanel().locator('.ant-modal-title').first();
     await titleBar.hover();
     await this.page.waitForTimeout(1000);
+  }
+
+  /**
+   * Some flows leave a blocking message box overlay above dossier creator.
+   * Dismiss it before interacting with project dropdown controls.
+   */
+  private async dismissBlockingMessageBoxIfPresent(): Promise<void> {
+    const dialog = this.page.locator('.mstrd-MessageBox:visible, .mstr-react-message-box:visible').first();
+    const isVisible = await dialog.isVisible().catch(() => false);
+    if (!isVisible) return;
+
+    const actionButton = dialog
+      .locator(
+        'button[class*="confirmation-dialog-action-button"], ' +
+        'button[class*="confirmation-dialog-cancel-button"], ' +
+        'button.mstrd-Button, button'
+      )
+      .first();
+    if (await actionButton.isVisible().catch(() => false)) {
+      await actionButton.click({ force: true }).catch(() => {});
+    }
+    await dialog.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
   }
 
   /** Get row cell values in Add Data tab grid by row index */

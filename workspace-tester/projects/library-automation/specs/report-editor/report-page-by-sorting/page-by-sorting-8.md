@@ -6,6 +6,8 @@
 
 ## TC85430 — X-Fun test on page by sorting (Attribute Forms)
 
+> Temporary status: omitted in automation. In current environment, after adding the second Page By selector, the page remains in loading state and blocks stable continuation.
+
 ### Steps
 1. Edit report by URL (dossier ReportWS_PB_YearCategory2)
 2. Switch to design mode

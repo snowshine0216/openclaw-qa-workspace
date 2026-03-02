@@ -5,6 +5,20 @@ export class ReportPageBy {
 
   private readonly pageByArea = this.page.locator('[aria-label="Page By"], [class*="pageby"], [class*="page-by"]').first();
 
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  private normalizeSelectorText(raw: string): string {
+    const compact = raw.replace(/\s+/g, ' ').trim();
+    if (!compact) return '';
+    const duplicatedPrefix = compact.match(/^(.{2,120}?)\1/);
+    if (duplicatedPrefix?.[1]) {
+      return duplicatedPrefix[1].trim();
+    }
+    return compact;
+  }
+
   /** Wait for Page By area to be ready before interacting with selectors */
   async waitForPageByArea(timeout = 30000): Promise<void> {
     // Wait for mstrmojo-ReportPageBySelector to appear (actual DOM structure)
@@ -18,28 +32,32 @@ export class ReportPageBy {
 
   /** WDIO: getSelector(selectorName) - container with label. Matches mstrmojo-ReportPageBySelector-Box structure. */
   getSelector(selectorName: string) {
-    return this.page
+    const exactLabel = new RegExp(`^\\s*${this.escapeRegExp(selectorName)}\\s*$`, 'i');
+    const byAria = this.page.locator(
+      `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label[aria-label="${selectorName}"]), ` +
+      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"])`
+    );
+    const byExactLabel = this.page
       .locator(
-        `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]), ` +
-          `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
-          `[class*="ReportPageBySelector-Box"]:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
-          `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label:has-text("${selectorName}")), ` +
-          `[class*="ReportPageBySelector"]:has([class*="Label"]:has-text("${selectorName}"))`
+        '.mstrmojo-ReportPageBySelector-container, [class*="ReportPageBySelector-container"], [class*="ReportPageBySelector-Box"]'
       )
-      .first();
+      .filter({
+        has: this.page.locator('.mstrmojo-Label, [class*="Label"]').filter({ hasText: exactLabel }),
+      });
+
+    return byAria.or(byExactLabel).first();
   }
 
   /** WDIO: getSelectorPulldownTextBox - the dropdown trigger (mstrmojo-ui-Pulldown-text, role=combobox) */
   getSelectorPulldownTextBox(selectorName: string) {
-    // Direct: container with Label[aria-label="Year"] -> [role="combobox"] (from actual DOM)
-    const direct = this.page.locator(
+    const inSelector = this.getSelector(selectorName).locator(
+      '.mstrmojo-ui-Pulldown-text, .pulldown-container [role="combobox"], [role="combobox"], .pulldown-container, [class*="Pulldown-text"]'
+    );
+    const directByAria = this.page.locator(
+      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]) .mstrmojo-ui-Pulldown-text, ` +
       `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]) [role="combobox"]`
     );
-    const viaSelector = this.getSelector(selectorName).locator(
-      '.mstrmojo-ui-Pulldown-text, .pulldown-container [role="combobox"], ' +
-      '[role="combobox"], .pulldown-container, [class*="Pulldown-text"]'
-    );
-    return direct.or(viaSelector).first();
+    return inSelector.or(directByAria).first();
   }
 
   /** WDIO: getElementFromPopupList - item in open dropdown */
@@ -73,9 +91,27 @@ export class ReportPageBy {
   }
 
   async getPageBySelectorText(selector: string): Promise<string> {
-    const el = this.getSelectorPulldownTextBox(selector);
-    // Increased timeout from 5s to 20s for slower dev environments
-    return el.textContent({ timeout: 20000 }).then((t) => t?.trim() ?? '') ?? '';
+    const selectorEl = this.getSelector(selector);
+    await selectorEl.waitFor({ state: 'visible', timeout: 20000 });
+
+    const pulldown = this.getSelectorPulldownTextBox(selector);
+    await pulldown.waitFor({ state: 'visible', timeout: 20000 });
+
+    for (const attr of ['aria-valuetext', 'value', 'title', 'aria-label'] as const) {
+      const attrValue = (await pulldown.getAttribute(attr))?.trim();
+      if (attrValue && attrValue.toLowerCase() !== selector.toLowerCase()) {
+        return this.normalizeSelectorText(attrValue);
+      }
+    }
+
+    const candidate = selectorEl
+      .locator(
+        '.mstrmojo-ui-Pulldown-text > .mstrmojo-Label, .mstrmojo-ui-Pulldown-text > span, ' +
+        '.mstrmojo-ui-Pulldown-text, [role="combobox"]'
+      )
+      .first();
+    const raw = (await candidate.textContent({ timeout: 20000 })) ?? '';
+    return this.normalizeSelectorText(raw);
   }
 
   async removePageBy(name: string): Promise<void> {
@@ -138,21 +174,20 @@ export class ReportPageBy {
   }
 
   async openLastSelectorContextMenu(): Promise<void> {
-    const lastSelector = this.page
-      .locator(
-        '[class*="ReportPageBySelector-container"], [class*="ReportPageBySelector-Box"], .mstrmojo-ReportPageBySelector-container'
-      )
-      .last();
-    await lastSelector.waitFor({ state: 'visible', timeout: 20000 });
-    await lastSelector.scrollIntoViewIfNeeded();
-    await lastSelector.click({ button: 'right', force: true });
+    let target = this.page.locator('.mstrmojo-ReportPageBySelector-container .mstrmojo-Label').last();
+    if ((await target.count()) === 0) {
+      target = this.page.locator('.mstrmojo-ReportPageBySelector-container').last();
+    }
+    await target.waitFor({ state: 'visible', timeout: 20000 });
+    await target.scrollIntoViewIfNeeded();
+    await target.click({ button: 'right', force: true });
     await this.page.waitForTimeout(800);
   }
 
   /** WDIO: changePageByElement */
   async changePageByElement(selectorName: string, elementName: string): Promise<void> {
     const popupList = this.getVisiblePopupList();
-    const escaped = elementName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escaped = this.escapeRegExp(elementName);
     const exactText = new RegExp(`^\\s*${escaped}\\s*$`, 'i');
     const looseText = new RegExp(`\\b${escaped}\\b`, 'i');
     const popupItems = popupList.locator(

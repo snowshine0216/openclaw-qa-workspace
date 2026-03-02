@@ -23,3 +23,7 @@ config_file = "agents/playwright-test-generator.toml"
 [agents.playwright-test-healer]
 description = "Debugs and heals failing Playwright tests with bounded fix rounds."
 config_file = "agents/playwright-test-healer.toml"
+
+[agents.wdio-to-playwright-check]
+description = "Runs WDIO-to-Playwright migration quality checks and orchestrates healing progress."
+config_file = "agents/wdio-to-playwright-check.toml"

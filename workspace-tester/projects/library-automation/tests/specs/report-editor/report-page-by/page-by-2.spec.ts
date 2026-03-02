@@ -51,7 +51,7 @@ test.describe('Report Page By - Part 2', () => {
       expect(await reportEditorPanel.contextMenuContainsOption('Move'), 'Move option').toBe(true);
       expect(await reportEditorPanel.contextMenuContainsOption('Add Attributes'), 'Add Attributes option').toBe(true);
       expect(await reportEditorPanel.contextMenuContainsOption('Sort'), 'Sort option').toBe(true);
-      const drillOpt = reportGridView.getContextMenuOption('Drill');
+      const drillOpt = await reportGridView.getContextMenuOption('Drill');
       expect(await drillOpt.isVisible(), 'Drill option').toBe(true);
 
       // Add Attributes Before -> Country

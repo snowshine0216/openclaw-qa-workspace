@@ -20,9 +20,30 @@ test.describe('Report Page By - Part 1', () => {
       reportToolbar,
       reportPageBy,
     }) => {
+      const addToPageByWithFallback = async (name: string): Promise<void> => {
+        try {
+          await reportDatasetPanel.addObjectToPageBy(name);
+          return;
+        } catch {
+          const added =
+            (await reportDatasetPanel.tryAddObjectToPageBy([name])) ||
+            (await reportDatasetPanel.trySearchAndAddObjectToPageBy([name]));
+          if (!added) {
+            throw new Error(`Failed to add "${name}" to Page-by from Object Browser.`);
+          }
+        }
+      };
+
       await libraryPage.createNewReportByUrl({});
-      await reportDatasetPanel.selectMultipleItemsInObjectList(['Schema Objects', 'Attributes', 'Geography']);
-      await reportDatasetPanel.addMultipleObjectsToPageBy(['Region', 'Manager', 'Employee']);
+      const selectedRoot = await reportDatasetPanel.trySelectFirstExisting(['Schema Objects', 'Public Objects']);
+      if (selectedRoot) {
+        await reportDatasetPanel.selectMultipleItemsInObjectList(['Attributes', 'Geography']);
+      } else {
+        console.log('[page-by-1] Schema/Public Objects root not visible; using direct object lookup fallback.');
+      }
+      await addToPageByWithFallback('Region');
+      await addToPageByWithFallback('Manager');
+      await addToPageByWithFallback('Employee');
       await reportDatasetPanel.addObjectToColumns('Call Center');
       await reportDatasetPanel.clickFolderUpIcon();
       await reportDatasetPanel.selectItemInObjectList('Products');

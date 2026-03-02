@@ -15,7 +15,7 @@ This document outlines the complete migration plan for all `report-editor` specs
 | **2b** | **report-page-by-sorting** | **🔄 Migrated, 1 pass 7 fail** | 8/8 | page-by-sorting-2 ✅; 1,3,4+ fail (dropdown overlay) |
 | **2c** | **report-creator** | **✅ Migrated** | 6/6 | BCIN-6908_09 un-skipped; 5 template/security tests still skipped (need ReportMenubar, etc.) |
 | 2d | report-subset | 🔄 In progress | 1/3 | replaceCube migrated (BCIN-6422_01–10 un-skipped) |
-| **2e** | **report-page-by** | **🔄 Migrated, fixes in progress** | 0 pass, 3 fail | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory expect.poll added |
+| **2e** | **report-page-by** | **🔄 Migrated, quality-checked (healing exhausted)** | 0 pass, 3 fail | 3 healer rounds attempted; unresolved: pageBy1 object browser, pageBy2 Drill menu visibility, pageBy3 grid baseline variance |
 | **2f** | **report-threshold** | **🔄 Migrated, fixes in progress** | 0 pass, 1 fail, 1 skipped | Login timeout (reportTestUrl); TC85267_2 skipped |
 | **2g** | **report-theme** | **✅ Migrated** | 3/3 | themeApply, themeGeneral, themeSecurity; Run: `npm run test:report-theme` |
 | **2h** | **report-scope-filter** | **✅ Migrated** | 4/4 | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: `npm run test:report-scope-filter` |
@@ -497,7 +497,7 @@ After each phase migration, run the phase suite and record results here.
 | 2b | report-page-by-sorting | — | 0 | 1 | pageBySorting3: Sort menu locator; 7 pending run |
 | 2c | report-creator | 2026-02-28 | 9/9 run | — | BCIN-6908_09 un-skipped; createByCube beforeAll→beforeEach fix |
 | 2d | report-subset | 2026-02-28 | 1 run | — | replaceCube BCIN-6422_01; 9 skipped (replaceObjectDialog, etc.) |
-| 2e | report-page-by | 2026-02-28 | 0 | 3 | pageBy1: auth timeout; pageBy2: timeout; pageBy3: Subcategory—expect.poll added (15s) for data refresh |
+| 2e | report-page-by | 2026-03-01 | 0 | 3 | Quality-check run + 3 healer rounds; unresolved failures logged in `migration/self-healing/report-editor/2e/healing_report.md` |
 | 2f | report-threshold | 2026-02-28 | 0 | 1 | TC85267_1: login timeout; TC85267_2 skipped; ensure reportTestUrl in .env.report |
 | 2g | report-theme | 2026-02-28 | 3/3 | — | themeApply, themeGeneral, themeSecurity; Run: npm run test:report-theme |
 | 2h | report-scope-filter | 2026-02-28 | 4/4 | — | scopeFilterOfAttributeQualification, scopeFilterOfAttributeElement, scopeFilterInAuthoring, scopeFilterOfDatetime; Run: npm run test:report-scope-filter |

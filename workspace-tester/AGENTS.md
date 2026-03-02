@@ -95,6 +95,19 @@ When the user asks to migrate reportEditor specs (e.g. "migrate reportEditor pha
 
 Do not skip Phase 3 — the design doc must be updated after each phase migration.
 
+## Migration Quality-Check Workflow
+
+When the user asks to quality-check WDIO→Playwright migration (e.g. "check migration quality for reportEditor 2b"):
+
+1. Trigger workflow file:
+   `projects/library-automation/.agents/workflows/script-migration-quality-check.md`
+2. Use the `wdio-to-playwright-check` specialist as the orchestration owner.
+3. If execution fails, `wdio-to-playwright-check` must invoke `playwright-test-healer` with max 3 rounds.
+4. After each healing round, re-run the phase command and update:
+   `projects/library-automation/migration/self-healing/<family>/<phase>/progress.md`
+5. If still failing after round 3, stop and output:
+   `projects/library-automation/migration/self-healing/<family>/<phase>/healing_report.md`
+
 ## File Organization
 
 **All test outputs go to projects/:**

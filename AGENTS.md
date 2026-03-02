@@ -29,6 +29,10 @@ Use these specialists from `.codex/config.toml`:
 - Purpose: debug and fix failing Playwright tests.
 - Canonical workflow: `.cursor/agents/playwright-test-healer.md`.
 
+5. `wdio-to-playwright-check`
+- Purpose: run WDIO→Playwright migration quality checks and orchestrate healing.
+- Canonical workflow: `workspace-tester/projects/library-automation/.agents/workflows/script-migration-quality-check.md`.
+
 ## Orchestration Contract
 
 For test automation work, orchestrate in strict order unless explicitly overridden:
@@ -37,10 +41,20 @@ For test automation work, orchestrate in strict order unless explicitly overridd
 2. `playwright-test-generator` consumes plan and outputs spec(s).
 3. `playwright-test-healer` executes and fixes failing spec(s), with max 3 rounds.
 
+For migration quality-check work:
+
+1. `wdio-to-playwright-check` runs the quality dimensions and execution gate.
+2. On execution failures, `wdio-to-playwright-check` invokes `playwright-test-healer` (max 3 rounds).
+3. `wdio-to-playwright-check` re-runs phase tests after each round and updates progress artifacts.
+
 Handoff rules:
 - Planner must provide exact plan artifact path.
 - Generator must record generated spec path(s).
 - Healer must output pass result or healing report path if max rounds exhausted.
+- WDIO quality-check agent must output:
+  - quality report artifact path
+  - `migration/self-healing/<family>/<phase>/progress.md` path (if healer invoked)
+  - final healer outcome (pass or `healing_report.md` path)
 
 ## Skills Loading Model
 

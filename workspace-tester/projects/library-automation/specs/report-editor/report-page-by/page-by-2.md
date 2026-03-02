@@ -1,28 +1,26 @@
 # Page By - Part 2: Other Context Menus (TC85476)
 
+**Migrated from WDIO:** `specs/regression/reportEditor/reportPageBy/ReportPageBy2.spec.js`
 **Seed:** `tests/seed.spec.ts`
 
-## Scenario: FUN | Report Editor | Page-by | Other Context Menus
+## Scenario TC85476: FUN | Report Editor | Page-by | Other Context Menus
 
-- Edit report by URL (ReportPageByContextMenu dossier)
-- Switch to design mode
-- Verify grid cells (Year, Region, Category, Cost at row 0)
-- Add Subcategory to Page-by from Object Browser
-- Verify page-by selector and grid data for Subcategory "Art & Architecture"
-- Change Subcategory to "Cameras"; verify grid data
-- Open context menu for Subcategory; verify Move, Add Attributes, Sort, Drill options
-- Add Attributes "Before" Subcategory → Country; verify checkbox; save
-- Open Country dropdown; verify USA, Web; select USA; verify grid
-- Add Attributes "After" Country → Call Center; verify checkbox; save; verify Atlanta
-- Move Cost to Page-by from grid column header context menu
-- Add Profit to Page-by from In Report tab
-- Verify Metrics dropdown has Cost, Profit; verify selector indices
-- Show Metrics: uncheck Cost, check Revenue; verify selector and grid
-- Change Call Center to San Diego, Metrics to Revenue; verify grid
-- Move Subcategory Left twice; verify Add Attributes disabled, Move submenu options
-- Move Metrics Left; verify selector order
-- Select Subcategory Business, Country Web, Metrics Profit; verify grid
-- Select Subcategory Pop; verify grid
-- Sort descending Subcategory in PageBy; verify Pop index 7
-- Sort descending Call Center; Move Call Center to Rows; verify grid layout
-- Move Country to Columns; verify grid layout
+1. Edit report by URL (`ReportPageByContextMenu` dossier) and switch to Design mode.
+2. Verify base grid headers (`Year`, `Region`, `Category`, `Cost`).
+3. Add `Subcategory` to Page-by and verify selector/grid baseline values.
+4. Change `Subcategory` to `Cameras` and verify grid values.
+5. Open `Subcategory` context menu and verify options (`Move`, `Add Attributes`, `Sort`, `Drill`).
+6. Add `Country` before `Subcategory`; save and verify dropdown values (`USA`, `Web`).
+7. Select `USA` and verify grid.
+8. Add `Call Center` after `Country`; save and verify selector/grid values.
+9. Move `Cost` to Page-by from grid context menu.
+10. Add `Profit` to Page-by and verify Metrics dropdown/options.
+11. Update Show Metrics (`Cost` off, `Revenue` on) and verify selector/grid values.
+12. Change `Call Center` to `San Diego` and Metrics to `Revenue`; verify grid values.
+13. Move `Subcategory` left twice; verify selector ordering and menu state.
+14. Move `Metrics` left; verify selector ordering.
+15. Select `Subcategory=Business`, `Country=Web`, `Metrics=Profit`; verify grid.
+16. Select `Subcategory=Pop`; verify grid.
+17. Sort `Subcategory` descending and verify `Pop` index.
+18. Sort `Call Center` descending and move to Rows; verify grid layout.
+19. Move `Country` to Columns and verify final grid layout.
