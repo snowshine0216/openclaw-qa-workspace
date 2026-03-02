@@ -1,17 +1,16 @@
 import {
   BaseEdge,
-  getBezierPath,
+  getSmoothStepPath,
   Position,
   type EdgeProps,
 } from '@xyflow/react';
 
-/** Extend path so edge reaches node boundaries */
-const BOUNDARY_OFFSET = 35;
-/** Gentle curvature: keeps curves but reduces cross/overlap */
-const CURVATURE = 0.2;
+/** Smooth-step routes in channels, rounded corners = curved look, no sweep into nodes */
+const BORDER_RADIUS = 16;
+const STEP_OFFSET = 24;
 
 /**
- * Curved edge with enough spacing to avoid crossing or overlapping.
+ * Rounded step edge: curved corners, no overlap with nodes or other lines.
  */
 export function TouchingBezierEdge({
   id,
@@ -24,25 +23,15 @@ export function TouchingBezierEdge({
   targetPosition = Position.Left,
   ...rest
 }: EdgeProps) {
-  const dx = targetX - sourceX;
-  const dy = targetY - sourceY;
-  const len = Math.sqrt(dx * dx + dy * dy);
-  const ux = len > 0 ? dx / len : 0;
-  const uy = len > 0 ? dy / len : 0;
-
-  const adjSourceX = sourceX - ux * BOUNDARY_OFFSET;
-  const adjSourceY = sourceY - uy * BOUNDARY_OFFSET;
-  const adjTargetX = targetX + ux * BOUNDARY_OFFSET;
-  const adjTargetY = targetY + uy * BOUNDARY_OFFSET;
-
-  const [path] = getBezierPath({
-    sourceX: adjSourceX,
-    sourceY: adjSourceY,
+  const [path] = getSmoothStepPath({
+    sourceX,
+    sourceY,
     sourcePosition,
-    targetX: adjTargetX,
-    targetY: adjTargetY,
+    targetX,
+    targetY,
     targetPosition,
-    curvature: CURVATURE,
+    borderRadius: BORDER_RADIUS,
+    offset: STEP_OFFSET,
   });
 
   return (

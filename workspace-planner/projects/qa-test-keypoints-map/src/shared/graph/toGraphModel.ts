@@ -210,8 +210,15 @@ function addCaseHierarchy(
 function layoutGraph(nodes: GraphNode[], edges: Edge[]): GraphNode[] {
   const graph = new dagre.graphlib.Graph();
   graph.setDefaultEdgeLabel(() => ({}));
-  /* Layout: preserve space so curved lines don't cross or overlap nodes */
-  graph.setGraph({ rankdir: 'LR', ranksep: 130, nodesep: 110, marginx: 70, marginy: 56 });
+  /* Layout: ample space so stepped/curved lines stay in channels */
+  graph.setGraph({
+    rankdir: 'LR',
+    ranksep: 200,
+    nodesep: 180,
+    edgesep: 50,
+    marginx: 70,
+    marginy: 56,
+  });
 
   nodes.forEach((node) => {
     graph.setNode(node.id, {
