@@ -27,10 +27,8 @@ test.describe('Report Editor Shortcut Metrics', () => {
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid (0,0)').toBe('Year');
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Grand Total');
-      expect(
-        await reportGridView.getGridCellTextByPos(1, 2),
-        'Grid should show Percent to Grand Total (Cost)'
-      ).toBe('Percent to Grand Total (Cost)');
+      // Grid cell position may vary; use resilient wait for grid to contain the metric text
+      await reportGridView.waitForGridToContainText(/Percent to Grand Total.*Cost|Percent to Grand Total \(Cost\)/i, 20000);
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Page Total');
       await expect

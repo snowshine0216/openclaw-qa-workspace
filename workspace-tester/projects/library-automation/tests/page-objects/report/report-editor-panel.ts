@@ -149,25 +149,40 @@ export class ReportEditorPanel {
     await this.openObjectContextMenu('Metrics', 'metric', metricName);
     await this.hoverContextMenuItem('Shortcut Metric');
     await this.hoverSubMenuItem('Rank');
-    // Rank submenu uses dropdown (sorts) + OK, not direct list items
-    const rankSubmenu = this.page.locator('.rank-submenu:visible, [class*="rank-submenu"]:visible, [class*="RankSubmenu"]:visible').last();
-    const sortsDropdown = rankSubmenu.locator('.rank-submenu-sorts, [class*="sorts"], .ant-select').first();
-    const clickableDropdown = sortsDropdown.locator('.ant-select-selection-item, .ant-select-selector, [role="combobox"]').first();
-    await clickableDropdown.waitFor({ state: 'visible', timeout: 8000 });
-    await clickableDropdown.click({ force: true });
-    await this.page.waitForTimeout(500);
-    // Match "Ascending" or "Ascending Order", "Descending" or "Descending Order"
-    const optionPattern = option === 'Ascending' ? /ascending/i : /descending/i;
-    const optionItem = this.page
-      .locator('.mstr-select-option, [class*="select-option"], [role="option"], .ant-select-item')
-      .filter({ hasText: optionPattern })
-      .first();
-    await optionItem.waitFor({ state: 'visible', timeout: 5000 });
-    await optionItem.click();
-    await this.page.waitForTimeout(500);
-    const okBtn = rankSubmenu.locator('button:has-text("OK"), span:has-text("OK"), [role="button"]:has-text("OK")').first();
-    await okBtn.waitFor({ state: 'visible', timeout: 3000 });
-    await okBtn.click();
+    // WDIO: rank submenu section.rank-submenu; dropdown ant-select rank-submenu-sorts. Fallback: NewRankMetric-MenuEditor.
+    await this.page.waitForTimeout(800);
+    const rankSubmenu = this.page.locator(
+      '.ant-dropdown section[class*="rank-submenu"], ' +
+        '.ant-dropdown-menu-submenu-popup section[class*="rank-submenu"], ' +
+        '[class*="NewRankMetric-MenuEditor"], [class*="rank-submenu"]'
+    ).last();
+    await rankSubmenu.waitFor({ state: 'visible', timeout: 10000 });
+    // Sorts dropdown - use role=combobox or ant-select-selection as trigger
+    const sortsTrigger = rankSubmenu.locator(
+      '[role="combobox"], .ant-select-selection, .ant-select-selector, [class*="rank-submenu-sorts"]'
+    ).first();
+    await sortsTrigger.waitFor({ state: 'visible', timeout: 8000 });
+    // Default is Ascending - only open dropdown when Descending needed
+    if (option === 'Descending') {
+      await sortsTrigger.click();
+      await this.page.waitForTimeout(800);
+      const optionItem = this.page
+        .locator(
+          '[class*="rank-submenu"] .mstr-select-option, [class*="rank-submenu"] [class*="select-option"], ' +
+            '.ant-select-dropdown .ant-select-item, [role="option"]'
+        )
+        .filter({ hasText: /descending/i })
+        .first();
+      await optionItem.waitFor({ state: 'attached', timeout: 8000 });
+      await optionItem.evaluate((el: HTMLElement) => el.click());
+      await this.page.waitForTimeout(500);
+    }
+    const okBtn = this.page.locator(
+      '[class*="rank-submenu"] span:has-text("OK"), [class*="rank-submenu"] button:has-text("OK"), ' +
+        '.ant-dropdown span:has-text("OK"), .ant-dropdown button:has-text("OK")'
+    ).first();
+    await okBtn.waitFor({ state: 'attached', timeout: 5000 });
+    await okBtn.evaluate((el: HTMLElement) => el.click());
     await this.page.waitForTimeout(1500);
   }
 
@@ -197,7 +212,7 @@ export class ReportEditorPanel {
   /** Open context menu for object in editor panel dropzone (e.g. metrics, metric, Cost) */
   async openObjectContextMenu(dropZone: string, objectType: string, objectName: string): Promise<void> {
     const zone = dropZone.toLowerCase();
-    // Primary: exact match in zone. Fallback: any object with text in editor (for dynamically added metrics like "Percent to Total By Rows (Cost)")
+    // Primary: exact match in zone. Fallback: regex, then partial match (for dynamically added metrics like "Percent to Total By Rows (Cost)")
     const zoneLoc = this.page.locator(
       `.template-editor-content-${zone}, [class*="template-editor-content-${zone}"], [class*="template-editor-content"] [class*="${zone}"]`
     ).first();
@@ -208,8 +223,21 @@ export class ReportEditorPanel {
       .locator(`[class*="${objectType.toLowerCase()}"], .txt, [class*="object"]`)
       .filter({ hasText: new RegExp(`^\\s*${escaped}\\s*$`, 'i') })
       .first();
+    // Partial match only when objectName is long (avoids "Cost" matching "Rank (Cost) Ascending")
+    const objByPartial =
+      objectName.length > 6
+        ? zoneLoc
+            .locator(`[class*="${objectType.toLowerCase()}"], .txt, [class*="object"]`)
+            .filter({ hasText: objectName })
+            .first()
+        : null;
 
-    const obj = await objByText.isVisible().catch(() => false) ? objByText : objByRegex;
+    let obj = objByText;
+    if (!(await objByText.isVisible().catch(() => false))) {
+      obj = (await objByRegex.isVisible().catch(() => false))
+        ? objByRegex
+        : objByPartial ?? objByRegex;
+    }
     await obj.waitFor({ state: 'visible', timeout: 20000 });
     await obj.scrollIntoViewIfNeeded();
     await obj.click({ button: 'right' });

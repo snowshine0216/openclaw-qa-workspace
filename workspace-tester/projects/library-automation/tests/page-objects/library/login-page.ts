@@ -53,6 +53,10 @@ export class LoginPage {
     // If password is empty, directly click login button without attempting to type
     const loginEl = this.loginButton.first();
     await loginEl.scrollIntoViewIfNeeded();
-    await loginEl.click({ force: true, noWaitAfter: true });
+    await loginEl.click({ force: true });
+    await Promise.race([
+      this.page.waitForURL((url) => !/\/auth\/(ui\/)?login/i.test(url.href), { timeout: 30000 }),
+      this.page.locator('.mstrd-AppContainer, .library-home, .mstrd-LibraryPage, .mstrd-NavBarWrapper').first().waitFor({ state: 'visible', timeout: 30000 }),
+    ]).catch(() => {});
   }
 }

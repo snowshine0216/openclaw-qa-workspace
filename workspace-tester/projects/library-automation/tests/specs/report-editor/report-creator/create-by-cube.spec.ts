@@ -11,12 +11,13 @@ const { projects, switchProjectMessage } = reportCreatorData;
 test.describe('Create Report by Cube', () => {
   test.beforeEach(async ({ page, libraryPage, loginPage, dossierCreator }) => {
     await libraryPage.logout();
+    await loginPage.waitForLoginView(15000).catch(() => {});
     const env = getReportEnv();
     await loginPage.login({
       username: env.reportSubsetUser || reportCreatorData.reportSubsetTestUser.username,
       password: env.reportTestPassword,
     });
-    await page.waitForURL(/Library|Home|Dashboard/i, { timeout: 15000 }).catch(() => {});
+    await page.waitForURL(/\/(app|Home|Dashboard|Library)/i, { timeout: 25000 }).catch(() => {});
     await dossierCreator.resetLocalStorage();
     await libraryPage.openDefaultApp();
   });

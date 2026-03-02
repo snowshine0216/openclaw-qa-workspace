@@ -27,6 +27,15 @@ export class LibraryPage {
     const url = base.endsWith('/') ? `${base}app` : `${base}/app`;
     await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
     await this.handleError();
+    await this.page.waitForURL((u) => !/\/auth\/(ui\/)?login/i.test(u.href), { timeout: 25000 }).catch(() => {});
+    if (/\/auth\/(ui\/)?login/i.test(this.page.url())) {
+      throw new Error(
+        `Library app did not load; page is still on login (${this.page.url()}). ` +
+          'Verify reportTestUrl, reportTestPassword, and user credentials in tests/config/.env.report.'
+      );
+    }
+    await this.page.locator('.mstrd-AppContainer, .library-home, .mstrd-LibraryPage, [class*="DossierGallery"]').first().waitFor({ state: 'visible', timeout: 30000 }).catch(() => {});
+    await this.page.waitForTimeout(1500);
   }
 
   async handleError(): Promise<void> {
@@ -59,6 +68,12 @@ export class LibraryPage {
     await this.handleError();
     // Wait for report editor and dataset panel to be ready
     await this.page.waitForSelector('.report-editor-dataset, .report-objects, .dataset-panel', { timeout: 45000 }).catch(() => {});
+    // Wait for metrics dropzone or editor panel (ensures report is interactive)
+    await this.page
+      .locator('.template-editor-content-metrics, [class*="template-editor-content-metrics"], .report-editor-editor')
+      .first()
+      .waitFor({ state: 'visible', timeout: 30000 })
+      .catch(() => {});
     await this.page.waitForTimeout(1500);
   }
 

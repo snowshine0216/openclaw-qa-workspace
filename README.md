@@ -43,3 +43,18 @@ npm install -g mcporter
 ```
 3. install playwright mcp server:  ```npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest" ```
 4. list installed servers: ```mcporter list```
+
+## Workspace Planner Skill Linking
+
+Use the sync script at `src/sync-skills.sh` to link missing skills safely.
+
+What it does (`link-missing-only`, no overwrite):
+- Syncs missing entries from `.cursor/skills` into `workspace-planner/skills`.
+- Syncs missing entries from `workspace-planner/skills` into `.agents/skills`.
+- Preserves all existing files/symlinks in both destination folders.
+
+Run from repository root:
+
+```bash
+./src/sync-skills.sh
+```

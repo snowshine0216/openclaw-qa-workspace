@@ -17,18 +17,31 @@ test.describe('Report Editor Shortcut Metrics', () => {
       const d = reportShortcutMetricsData.dossiers.ReportGridShortcutMx;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
+      // Wait for Cost to be in metrics dropzone before opening context menu
+      await expect
+        .poll(
+          async () => {
+            const metrics = await reportEditorPanel.getMetricsObjects();
+            return metrics.some((m) => /^Cost$/i.test(m.trim()) || (m.includes('Cost') && !m.includes('Rank')));
+          },
+          { timeout: 15000, message: 'Metrics dropzone should have Cost' }
+        )
+        .toBe(true);
+
       await reportEditorPanel.createRankForMetricInMetricsDropZone('Cost');
       await expect
         .poll(
           async () => {
             const metrics = await reportEditorPanel.getMetricsObjects();
-            return metrics.some((m) => m.includes('Rank'));
+            return metrics.some((m) => /Rank.*Cost|Rank \(Cost\)/i.test(m));
           },
           { timeout: 15000, message: 'Metrics should contain Rank (Cost)' }
         )
         .toBe(true);
 
       await reportToolbar.switchToDesignMode();
+      // Wait for grid to be ready and show expected layout
+      await reportGridView.waitForGridToContainText(/Subcategory/i, 15000);
       expect(await reportGridView.getGridCellTextByPos(0, 0), 'Grid cell (0,0)').toBe('Subcategory');
 
       await reportEditorPanel.createRankForMetricInMetricsDropZone('Cost', 'Descending');

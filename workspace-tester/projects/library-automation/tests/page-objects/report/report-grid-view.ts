@@ -3,6 +3,22 @@ import type { Page } from '@playwright/test';
 export class ReportGridView {
   constructor(private readonly page: Page) {}
 
+  /** Wait for grid to contain text matching pattern (polling). Resilient when cell position varies. */
+  async waitForGridToContainText(pattern: string | RegExp, timeout = 20000): Promise<void> {
+    const re = typeof pattern === 'string' ? new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') : pattern;
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+      const allCells = this.page.locator('.ag-cell, [role="gridcell"]');
+      const count = await allCells.count();
+      for (let i = 0; i < Math.min(count, 80); i++) {
+        const text = (await allCells.nth(i).textContent())?.trim() || '';
+        if (re.test(text)) return;
+      }
+      await this.page.waitForTimeout(500);
+    }
+    throw new Error(`waitForGridToContainText(${pattern}): not found within ${timeout}ms`);
+  }
+
   /** Wait for grid cell to have expected value (polling). */
   async waitForGridCellToBeExpectedValue(
     row: number,

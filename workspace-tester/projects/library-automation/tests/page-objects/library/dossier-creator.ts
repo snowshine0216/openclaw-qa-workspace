@@ -22,13 +22,17 @@ export class DossierCreator {
     const base = currentUrl.match(/^(https?:\/\/[^/]+\/MicroStrategyLibrary)/i)?.[1];
     if (!base) return;
     await this.page.goto(`${base}/app`, { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(3000);
+    await this.page.waitForURL(/\/(app|Home|Dashboard|Library)/i, { timeout: 10000 }).catch(() => {});
   }
 
   private get addButton() {
     return this.page.locator(
-      '.mstrd-NavBarWrapper div[class*="CreateDossierNavItemContainer-ico"], ' +
-      '.mstrd-NavBarWrapper [class*="CreateDossierNavItemContainer"] [class*="-ico"], ' +
+      'div[class*="mstrd-CreateDossierNavItemContainer-ico"], ' +
+      'div[class*="CreateDossierNavItemContainer-ico"], ' +
+      '.mstrd-CreateDossierNavItemContainer-icon, ' +
+      '[class*="CreateDossierNavItemContainer-icon"], ' +
+      '.mstrd-NavBarWrapper [class*="CreateDossierNavItemContainer"], ' +
       '[data-feature-id*="create-dossier"], [data-feature-id*="create-report"]'
     ).first();
   }
@@ -60,7 +64,9 @@ export class DossierCreator {
 
   private get projectDropdownBtn() {
     return this.getCreateNewDossierPanel().locator(
-      '[class*="projectPicker"] [class*="project-selector"], [class*="projectPicker"] [class*="ant-select-selector"]'
+      '.projectPicker.library-theme [class*="project-selector"], ' +
+      '[class*="projectPicker"] [class*="project-selector"], ' +
+      '[class*="projectPicker"] [class*="ant-select-selector"]'
     ).first();
   }
 
@@ -120,6 +126,7 @@ export class DossierCreator {
           'Ensure user authentication succeeded before calling createNewReport().'
       );
     }
+    await this.page.locator('.mstrd-NavBarWrapper, [class*="NavBarWrapper"]').first().waitFor({ state: 'visible', timeout: 20000 }).catch(() => {});
     try {
       await this.addButton.waitFor({ state: 'visible', timeout: 45000 });
     } catch (e) {
@@ -131,9 +138,10 @@ export class DossierCreator {
     }
     await this.addButton.click();
     await this.page.waitForTimeout(500);
-    await this.createNewReportItem.waitFor({ state: 'visible', timeout: 5000 });
+    await this.createNewReportItem.waitFor({ state: 'visible', timeout: 8000 });
     await this.createNewReportItem.click();
     await this.page.waitForSelector('.ant-modal-content', { state: 'visible', timeout: 15000 });
+    await this.page.locator('.mstr-rc-loading-dot-icon').first().waitFor({ state: 'hidden', timeout: 15000 }).catch(() => {});
     await this.page.waitForTimeout(1000);
   }
 

@@ -30,34 +30,46 @@ export class ReportPageBy {
     await this.page.waitForTimeout(1500);
   }
 
-  /** WDIO: getSelector(selectorName) - container with label. Matches mstrmojo-ReportPageBySelector-Box structure. */
-  getSelector(selectorName: string) {
-    const exactLabel = new RegExp(`^\\s*${this.escapeRegExp(selectorName)}\\s*$`, 'i');
-    const byAria = this.page.locator(
-      `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label[aria-label="${selectorName}"]), ` +
-      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"])`
-    );
-    const byExactLabel = this.page
-      .locator(
-        '.mstrmojo-ReportPageBySelector-container, [class*="ReportPageBySelector-container"], [class*="ReportPageBySelector-Box"]'
-      )
-      .filter({
-        has: this.page.locator('.mstrmojo-Label, [class*="Label"]').filter({ hasText: exactLabel }),
-      });
-
-    return byAria.or(byExactLabel).first();
+  /** WDIO: getSelector(selectorName) - container with label. Matches mstrmojo-ReportPageBySelector-Box structure.
+   * Optional fallbacks: try label variants when exact match fails (e.g. "Season" for "Seasons", "Metric" for "Metrics"). */
+  getSelector(selectorName: string, fallbacks?: string[]) {
+    const labels = [selectorName, ...(fallbacks ?? [])];
+    const locators = labels.flatMap((label) => {
+      const exactLabel = new RegExp(`^\\s*${this.escapeRegExp(label)}\\s*$`, 'i');
+      const byAria = this.page.locator(
+        `.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label[aria-label="${label}"]), ` +
+          `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${label}"])`
+      );
+      const byExactLabel = this.page
+        .locator(
+          '.mstrmojo-ReportPageBySelector-container, [class*="ReportPageBySelector-container"], [class*="ReportPageBySelector-Box"]'
+        )
+        .filter({
+          has: this.page.locator('.mstrmojo-Label, [class*="Label"]').filter({ hasText: exactLabel }),
+        });
+      return [byAria, byExactLabel];
+    });
+    let result = locators[0]!;
+    for (let i = 1; i < locators.length; i++) {
+      result = result.or(locators[i]!);
+    }
+    return result.first();
   }
 
   /** WDIO: getSelectorPulldownTextBox - the dropdown trigger (mstrmojo-ui-Pulldown-text, role=combobox) */
-  getSelectorPulldownTextBox(selectorName: string) {
-    const inSelector = this.getSelector(selectorName).locator(
+  getSelectorPulldownTextBox(selectorName: string, fallbacks?: string[]) {
+    const inSelector = this.getSelector(selectorName, fallbacks).locator(
       '.mstrmojo-ui-Pulldown-text, .pulldown-container [role="combobox"], [role="combobox"], .pulldown-container, [class*="Pulldown-text"]'
     );
-    const directByAria = this.page.locator(
-      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]) .mstrmojo-ui-Pulldown-text, ` +
-      `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${selectorName}"]) [role="combobox"]`
-    );
-    return inSelector.or(directByAria).first();
+    const labels = [selectorName, ...(fallbacks ?? [])];
+    const directByAria = labels
+      .map(
+        (label) =>
+          `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${label}"]) .mstrmojo-ui-Pulldown-text, ` +
+          `[class*="ReportPageBySelector-container"]:has(.mstrmojo-Label[aria-label="${label}"]) [role="combobox"]`
+      )
+      .join(', ');
+    return inSelector.or(this.page.locator(directByAria)).first();
   }
 
   /** WDIO: getElementFromPopupList - item in open dropdown */
@@ -90,11 +102,11 @@ export class ReportPageBy {
     return this.getVisiblePopupList();
   }
 
-  async getPageBySelectorText(selector: string): Promise<string> {
-    const selectorEl = this.getSelector(selector);
+  async getPageBySelectorText(selector: string, fallbacks?: string[]): Promise<string> {
+    const selectorEl = this.getSelector(selector, fallbacks);
     await selectorEl.waitFor({ state: 'visible', timeout: 20000 });
 
-    const pulldown = this.getSelectorPulldownTextBox(selector);
+    const pulldown = this.getSelectorPulldownTextBox(selector, fallbacks);
     await pulldown.waitFor({ state: 'visible', timeout: 20000 });
 
     for (const attr of ['aria-valuetext', 'value', 'title', 'aria-label'] as const) {
@@ -121,8 +133,8 @@ export class ReportPageBy {
   }
 
   /** WDIO: openDropdownFromSelector */
-  async openDropdownFromSelector(selectorName: string, timeout = 20000): Promise<void> {
-    const el = this.getSelectorPulldownTextBox(selectorName);
+  async openDropdownFromSelector(selectorName: string, timeout = 20000, fallbacks?: string[]): Promise<void> {
+    const el = this.getSelectorPulldownTextBox(selectorName, fallbacks);
     await el.waitFor({ state: 'visible', timeout });
     await el.scrollIntoViewIfNeeded();
     await el.click({ force: true });
@@ -138,22 +150,20 @@ export class ReportPageBy {
   }
 
   /** WDIO: openSelectorContextMenu */
-  async openSelectorContextMenu(selectorName: string): Promise<void> {
-    const label = this.page.locator(`.mstrmojo-ReportPageBySelector-container .mstrmojo-Label[aria-label="${selectorName}"]`).first();
-    if ((await label.count()) > 0) {
-      await label.waitFor({ state: 'visible', timeout: 20000 });
-      await label.scrollIntoViewIfNeeded();
-      await label.click({ button: 'right', force: true });
-      await this.page.waitForTimeout(800);
-      return;
+  async openSelectorContextMenu(selectorName: string, fallbacks?: string[]): Promise<void> {
+    const labels = [selectorName, ...(fallbacks ?? [])];
+    for (const lbl of labels) {
+      const label = this.page.locator(`.mstrmojo-ReportPageBySelector-container .mstrmojo-Label[aria-label="${lbl}"]`).first();
+      if ((await label.count()) > 0) {
+        await label.waitFor({ state: 'visible', timeout: 20000 });
+        await label.scrollIntoViewIfNeeded();
+        await label.click({ button: 'right', force: true });
+        await this.page.waitForTimeout(800);
+        return;
+      }
     }
 
-    let el = this.page
-      .locator(`.mstrmojo-ReportPageBySelector-container:has(.mstrmojo-Label[aria-label="${selectorName}"])`)
-      .first();
-    if ((await el.count()) === 0) {
-      el = this.getSelector(selectorName);
-    }
+    let el = this.getSelector(selectorName, fallbacks);
     await el.waitFor({ state: 'visible', timeout: 20000 });
     await el.scrollIntoViewIfNeeded();
     const menu = this.page.locator(
@@ -163,7 +173,7 @@ export class ReportPageBy {
     if (await menu.first().isVisible().catch(() => false)) return;
 
     // Retry on combobox element in the selector in case the container swallows right click.
-    const pulldown = this.getSelectorPulldownTextBox(selectorName);
+    const pulldown = this.getSelectorPulldownTextBox(selectorName, fallbacks);
     await pulldown.click({ button: 'right', force: true }).catch(() => {});
     if (await menu.first().isVisible().catch(() => false)) return;
 
@@ -185,7 +195,7 @@ export class ReportPageBy {
   }
 
   /** WDIO: changePageByElement */
-  async changePageByElement(selectorName: string, elementName: string): Promise<void> {
+  async changePageByElement(selectorName: string, elementName: string, fallbacks?: string[]): Promise<void> {
     const popupList = this.getVisiblePopupList();
     const escaped = this.escapeRegExp(elementName);
     const exactText = new RegExp(`^\\s*${escaped}\\s*$`, 'i');
@@ -207,7 +217,7 @@ export class ReportPageBy {
       }
     };
 
-    await this.openDropdownFromSelector(selectorName);
+    await this.openDropdownFromSelector(selectorName, 20000, fallbacks);
     await this.waitForPopupListVisible(10000);
 
     // Primary attempt, then one re-open attempt to handle transient stale overlays.
@@ -219,13 +229,13 @@ export class ReportPageBy {
         .slice(0, 20);
       await this.page.keyboard.press('Escape').catch(() => {});
       await this.page.waitForTimeout(300);
-      await this.openDropdownFromSelector(selectorName);
+      await this.openDropdownFromSelector(selectorName, 20000, fallbacks);
       await this.waitForPopupListVisible(10000);
 
       const selectedOnRetry = await clickPopupItem(12000);
       if (!selectedOnRetry) {
         // Final fallback: editable combobox path (type value + Enter)
-        const combo = this.getSelectorPulldownTextBox(selectorName);
+        const combo = this.getSelectorPulldownTextBox(selectorName, fallbacks);
         await combo.click({ force: true }).catch(() => {});
         await combo.fill(elementName).catch(async () => {
           await combo.press('Meta+a').catch(() => combo.press('Control+a').catch(() => {}));
@@ -233,7 +243,7 @@ export class ReportPageBy {
         });
         await this.page.keyboard.press('Enter').catch(() => {});
         await this.page.waitForTimeout(800);
-        const textAfter = await this.getPageBySelectorText(selectorName);
+        const textAfter = await this.getPageBySelectorText(selectorName, fallbacks);
         if (!new RegExp(escaped, 'i').test(textAfter)) {
           throw new Error(
             `Page By value "${elementName}" not found for selector "${selectorName}". ` +
@@ -262,12 +272,13 @@ export class ReportPageBy {
         '.mstrmojo-ListBase.mstrmojo-ui-Menu.visible a.mnu--page-by-sort, ' +
         '.mstrmojo-ListBase.mstrmojo-ui-Menu a.mnu--page-by-sort'
       ).first();
+      // Exact "Sort" only — exclude "Sort Ascending" and "Sort Descending"
       const fallbackSort = this.page
         .locator('.mstr-context-menu li, .ant-dropdown-menu li, [role="menuitem"]')
-        .filter({ hasText: /sort/i })
+        .filter({ hasText: /^\s*Sort\s*$/i })
         .first();
       const sortItem = exactSort.or(fallbackSort).first();
-      await sortItem.waitFor({ state: 'attached', timeout: 15000 });
+      await sortItem.waitFor({ state: 'visible', timeout: 15000 });
       await sortItem.click({ force: true });
       await this.page.waitForTimeout(1200);
       return;

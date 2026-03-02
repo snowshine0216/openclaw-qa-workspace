@@ -19,8 +19,8 @@ test.describe('Page-by Sorting in report editor', () => {
       reportPageBy,
       reportPageBySorting,
     }) => {
-      // Use DeveloperPBYearAscCustomCategoriesParentTop: Year and Custom Categories (same structure as screenshot)
-      const d = reportPageBySortingData.dossiers.DeveloperPBYearAscCustomCategoriesParentTop;
+      // Dossier fallback: ReportWS_PB_YearCategory1 (Year + Category) when DeveloperPBYearAscCustomCategoriesParentTop Year selector not found
+      const d = reportPageBySortingData.dossiers.ReportWS_PB_YearCategory1;
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportToolbar.switchToDesignMode();
@@ -29,7 +29,7 @@ test.describe('Page-by Sorting in report editor', () => {
       const yearSelector = reportPageBy.getSelectorPulldownTextBox('Year');
       await expect(yearSelector).toBeVisible({ timeout: 30000 });
 
-      const categorySelector = reportPageBy.getSelectorPulldownTextBox('Custom Categories');
+      const categorySelector = reportPageBy.getSelectorPulldownTextBox('Category');
       await expect(categorySelector).toBeVisible({ timeout: 20000 });
 
       // Open Sort dialog from Year context menu
@@ -37,7 +37,7 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportPageBy.clickContextMenuOption('Sort');
       await expect(reportPageBySorting.dialog).toBeVisible({ timeout: 10000 });
 
-      // Configure sorting: Year descending, Custom Categories as second sort
+      // Configure sorting: Year descending, Category as second sort
       await reportPageBySorting.openDropdown(1, 'Sort By');
       await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Year');
       await reportPageBySorting.openDropdown(1, 'Criteria');
@@ -45,9 +45,9 @@ test.describe('Page-by Sorting in report editor', () => {
       await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
       await reportPageBySorting.openDropdown(2, 'Sort By');
-      await reportPageBySorting.selectFromDropdown(2, 'Sort By', 'Custom Categories');
+      await reportPageBySorting.selectFromDropdown(2, 'Sort By', 'Category');
       await reportPageBySorting.openDropdown(2, 'Criteria');
-      // Custom Categories may use ID or DESC; try both
+      // Category may use ID or DESC; try both
       await reportPageBySorting.selectFromDropdown(2, 'Criteria', 'ID', ['DESC', 'Description']);
       await reportPageBySorting.openDropdown(2, 'Order');
       await reportPageBySorting.selectFromDropdown(2, 'Order', 'Descending');
@@ -57,7 +57,7 @@ test.describe('Page-by Sorting in report editor', () => {
 
       const yearText = await reportPageBy.getPageBySelectorText('Year');
       expect(yearText).toBeTruthy();
-      const categoryText = await reportPageBy.getPageBySelectorText('Custom Categories');
+      const categoryText = await reportPageBy.getPageBySelectorText('Category');
       expect(categoryText).toBeTruthy();
     }
   );

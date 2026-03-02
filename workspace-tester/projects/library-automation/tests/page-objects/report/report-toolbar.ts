@@ -14,8 +14,9 @@ export class ReportToolbar {
   }
 
   async switchToDesignMode(inAuthoring?: boolean): Promise<void> {
-    // Wait for initial page load
-    await this.page.locator('.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+    // Wait for initial page load and dossier loading overlay to disappear
+    const loadingSelectors = '.mstr-loader, [class*="loading"], .mstrWaitBox, .mstrd-LoadingIcon-content--visible, .mstrd-LoadingIcon-content.mstrd-LoadingIcon-content--visible';
+    await this.page.locator(loadingSelectors).first().waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});
     
     // Click the resume/design mode button to switch from view mode to design mode
     // Exact button selector from user: mstr-ws-icons single-icon-library-resume
@@ -29,7 +30,9 @@ export class ReportToolbar {
     
     const isVisible = await designModeBtn.isVisible({ timeout: 5000 }).catch(() => false);
     if (isVisible) {
-      await designModeBtn.click();
+      // Wait for loading overlay to not intercept (dossier view loading)
+      await this.page.locator(loadingSelectors).first().waitFor({ state: 'hidden', timeout: 90000 }).catch(() => {});
+      await designModeBtn.click({ force: true });
       console.log('[switchToDesignMode] Design mode button clicked');
       
       // Wait for report to reload in design mode (like WDIO)

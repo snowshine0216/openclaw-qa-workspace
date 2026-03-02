@@ -24,23 +24,26 @@ test.describe('Page-by Sorting in report editor', () => {
       await libraryPage.editReportByUrl({ dossierId: d.id, projectId: d.projectId });
 
       await reportToolbar.switchToDesignMode();
+      await reportPageBy.waitForPageByArea(30000);
 
-      const seasonsText = await reportPageBy.getPageBySelectorText('Seasons');
+      // Fallback "Season" when "Seasons" label differs by environment
+      const seasonsFallbacks = ['Season'];
+      const seasonsText = await reportPageBy.getPageBySelectorText('Seasons', seasonsFallbacks);
       expect(seasonsText, 'Page-by Seasons should contain Winter').toContain('Winter');
 
-      await reportPageBy.openSelectorContextMenu('Seasons');
+      await reportPageBy.openSelectorContextMenu('Seasons', seasonsFallbacks);
       await reportPageBy.clickContextMenuOption('Sort');
       await reportPageBySorting.openDropdown(1, 'Sort By');
-      await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Seasons');
+      await reportPageBySorting.selectFromDropdown(1, 'Sort By', 'Seasons', seasonsFallbacks);
       const sortBySeasons = reportPageBySorting.getCurrentSelectionOnSortingColumnByRowAndCol(1, 'Sort By', 'Seasons');
       await expect(sortBySeasons).toBeVisible({ timeout: 10000 });
 
       await reportPageBySorting.clickBtn('Done');
-      await reportPageBy.openDropdownFromSelector('Seasons');
+      await reportPageBy.openDropdownFromSelector('Seasons', 20000, seasonsFallbacks);
       const winterItem = reportPageBy.getElementFromPopupList('Winter');
       await expect(winterItem).toBeVisible();
 
-      await reportPageBy.openSelectorContextMenu('Seasons');
+      await reportPageBy.openSelectorContextMenu('Seasons', seasonsFallbacks);
       await reportPageBy.clickContextMenuOption('Sort');
       await reportPageBySorting.openDropdown(1, 'Order');
       await reportPageBySorting.selectFromDropdown(1, 'Order', 'Descending');
@@ -48,7 +51,7 @@ test.describe('Page-by Sorting in report editor', () => {
       await expect(orderDesc).toBeVisible({ timeout: 10000 });
 
       await reportPageBySorting.clickBtn('Done');
-      await reportPageBy.openDropdownFromSelector('Seasons');
+      await reportPageBy.openDropdownFromSelector('Seasons', 20000, seasonsFallbacks);
       const fallItem = reportPageBy.getElementFromPopupList('Fall');
       await expect(fallItem).toBeVisible();
     }

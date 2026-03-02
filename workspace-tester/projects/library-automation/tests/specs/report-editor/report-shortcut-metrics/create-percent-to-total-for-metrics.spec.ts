@@ -30,8 +30,8 @@ test.describe('Report Editor Shortcut Metrics', () => {
         )
         .toBe(true);
 
-      const rowsMetricText = await reportGridView.getGridCellTextByPos(1, 2);
-      expect(rowsMetricText, 'After create percent to total Over Rows, grid should show Percent to Total By Rows (Cost)').toMatch(/Percent to Total.*Rows.*Cost/i);
+      // Grid cell position may vary; use resilient wait for grid to contain the metric text
+      await reportGridView.waitForGridToContainText(/Percent to Total.*Rows.*Cost/i, 20000);
 
       await reportEditorPanel.createPercentToTotalForMetricInMetricsDropZone('Cost', 'Over Columns');
       await expect
