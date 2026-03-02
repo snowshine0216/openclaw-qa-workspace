@@ -6,14 +6,14 @@ import { expect, test, type Page } from '@playwright/test';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const baseFixturePath = path.resolve(projectRoot, 'fixtures/qa_plan_base.md');
-const protectedFeatureId = 'BCIN-6709';
+const protectedFeatureIds = new Set(['BCIN-6709']);
 const fixtureFeatureId = 'BCIN-E2E';
 const qaPlanPath = path.resolve(
   projectRoot,
   `workspace/workspace-planner/projects/feature-plan/${fixtureFeatureId}/qa_plan_final.md`,
 );
 
-if (fixtureFeatureId === protectedFeatureId) {
+if (protectedFeatureIds.has(fixtureFeatureId)) {
   throw new Error('Fixture feature id must not match protected production-like feature id.');
 }
 
@@ -83,7 +83,7 @@ test('auto-save persists editor changes through API', async ({ page }) => {
   await expect
     .poll(
       async () => {
-        const response = await page.request.get('/api/features/BCIN-E2E/test-key-points');
+        const response = await page.request.get(`/api/features/${fixtureFeatureId}/test-key-points`);
         const payload = (await response.json()) as {
           document: { sections: Array<{ cases: Array<{ expectedResults: string }> }> };
         };

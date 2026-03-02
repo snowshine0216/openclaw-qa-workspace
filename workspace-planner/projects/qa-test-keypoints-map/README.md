@@ -118,9 +118,12 @@ npm run test:e2e:headed
 
 - E2E tests run on an isolated fixture workspace under:
   - `tests/e2e/workspace/`
-- They do not modify real feature plan files.
+- Playwright starts server with:
+  - `WORKSPACE_ROOT=tests/e2e/workspace`
+  - `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709`
+- This means E2E tests do not modify real feature plan folders.
 - Covered behaviors:
-  - graph hierarchy and directional edge rendering
+  - graph hierarchy and verified-step bullet-list rendering
   - add-category/add-subtopic behavior
   - bullet-list steps box
   - auto-save persistence via API
@@ -129,5 +132,7 @@ npm run test:e2e:headed
 
 - feature id regex validation: `^[A-Za-z0-9._-]+$`
 - path traversal guard: file operations restricted to `workspace-planner/projects/feature-plan`
+- optional write guard via env var:
+  - `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709,OTHER-FEATURE`
 - malformed/missing required columns block writes
 - rewrite scope restricted to `## 🧪 Test Key Points`
