@@ -58,3 +58,36 @@ Run from repository root:
 ```bash
 ./src/sync-skills.sh
 ```
+
+## QA Test Key Points Interactive Page
+
+This repository includes an interactive XMind-style editor for QA plans at:
+
+`workspace-planner/projects/qa-test-keypoints-map`
+
+Quick start:
+
+```bash
+cd workspace-planner/projects/qa-test-keypoints-map
+npm install
+npm run test:e2e:install
+npm run dev
+```
+
+Main commands:
+
+```bash
+# Unit tests
+npm run test:unit
+
+# Playwright E2E tests
+npm run test:e2e
+
+# Typecheck + build
+npm run typecheck
+npm run build
+```
+
+Detailed usage guide:
+
+- `workspace-planner/projects/qa-test-keypoints-map/README.md`
