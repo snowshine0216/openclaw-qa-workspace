@@ -136,12 +136,14 @@ const processFailedJob = (db, runId, failedJob, extentResults, jenkinsUrl) => {
     });
 
     failureLog.push({
-      jobName:     failedJob.jobName,
-      buildNum:    failedJob.buildNum,
-      testResult:  failure,
-      failureType: type,
+      jobName:      failedJob.jobName,
+      buildNum:     failedJob.buildNum,
+      testResult:   failure,
+      failureType:  type,
       rerunNum,
       rerunRes,
+      lastFailed:   prevData.lastFailedBuild,
+      isRecurring:  prevData.isRecurring,
     });
   }
 
