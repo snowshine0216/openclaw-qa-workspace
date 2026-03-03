@@ -14,6 +14,7 @@ Design principles for building resilient, resumable OpenClaw agents with human-i
 1. **Draft** the workflow (Phase 0 + later phases).
 2. **Invoke agent-idempotency** — apply it to Phase 0: classify states, define options (Use Existing / Smart Refresh / Full Regenerate / Resume / Generate from Cache), ensure archive-before-overwrite, cache freshness display, run.json/task.json schema.
 3. **Refactor** Phase 0 per agent-idempotency feedback before finalizing.
+4. **Invoke openclaw-agent-design-review** (via `openclaw-agent-design-reviewer`) and resolve all P0/P1 findings before final output.
 
 **Reference workflows** (canonical examples that embody agent-idempotency + state machine):
 
@@ -149,6 +150,8 @@ Before finalizing an agent design:
 
 - [ ] **agent-idempotency** skill invoked to review and refactor Phase 0
 - [ ] clawddocs consulted for agent concepts
+- [ ] `openclaw-agent-design-reviewer` executed and returned `pass` or `pass_with_advisories`
+- [ ] reviewer report path captured in final handoff output
 - [ ] Workflow, AGENTS.md, skills need identified
 - [ ] task.json/run.json with state machine defined
 - [ ] check_resume.sh (or equivalent) for idempotency and resume

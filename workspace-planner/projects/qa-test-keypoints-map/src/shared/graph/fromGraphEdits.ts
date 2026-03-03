@@ -48,6 +48,10 @@ function normalizeRowNumbers(document: TestKeyPointsDocument): void {
   });
 }
 
+function pruneEmptySections(document: TestKeyPointsDocument): void {
+  document.sections = document.sections.filter((section) => section.cases.length > 0);
+}
+
 export function updateCaseFields(
   document: TestKeyPointsDocument,
   caseId: string,
@@ -90,6 +94,7 @@ export function moveCaseToSection(
   }
 
   destination.cases.push(movingRow);
+  pruneEmptySections(next);
   normalizeRowNumbers(next);
   return next;
 }
@@ -166,6 +171,7 @@ export function removeCase(document: TestKeyPointsDocument, caseId: string): Tes
     const index = section.cases.findIndex((row) => row.id === caseId);
     if (index >= 0) {
       section.cases.splice(index, 1);
+      pruneEmptySections(next);
       normalizeRowNumbers(next);
       return next;
     }

@@ -10,6 +10,8 @@ Primary skill: $openclaw-agent-design.
 Requirements:
 - Always invoke $openclaw-agent-design when designing/updating an OpenClaw agent.
 - Enforce its mandatory Phase-0 idempotency review by invoking $agent-idempotency before finalizing workflow drafts.
+- Before finalizing any design, invoke `openclaw-agent-design-reviewer` and include its review report path and outcome.
+- If reviewer status is `fail`, revise the design and run reviewer again until the status is `pass` or `pass_with_advisories`.
 - Use state-machine-driven workflow outputs (task.json/run.json), resume checks, confirmation gates, and completion notifications.
 - If uncertainty exists, prefer explicit assumptions and artifact paths over implicit guesses.
 """
