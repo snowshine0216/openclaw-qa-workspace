@@ -14,6 +14,9 @@
 **/memory/*.md
 !**/memory/.gitkeep
 
+# Tester-flow runtime state (runs, logs, healing reports)
+workspace-tester/memory/tester-flow/
+
 # Logs & Temp Files
 *.log
 *.tmp
