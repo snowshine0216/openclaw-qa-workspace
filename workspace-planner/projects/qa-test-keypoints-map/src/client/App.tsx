@@ -24,7 +24,6 @@ import { CategoryNode } from './components/CategoryNode';
 import { CheckpointNode } from './components/CheckpointNode';
 import { ResultNode } from './components/ResultNode';
 import { RootNode } from './components/RootNode';
-import { StepNode } from './components/StepNode';
 import { TouchingBezierEdge } from './components/TouchingBezierEdge';
 
 const DEFAULT_FEATURE = (import.meta.env.VITE_DEFAULT_FEATURE as string | undefined) || 'BCIN-6709';
@@ -32,13 +31,11 @@ const DEFAULT_FEATURE = (import.meta.env.VITE_DEFAULT_FEATURE as string | undefi
 const EDGE_TYPES = {
   straight: TouchingBezierEdge,
 };
-const AUTO_SAVE_DELAY_MS = 900;
 
 const NODE_TYPES = {
   rootNode: RootNode,
   categoryNode: CategoryNode,
   checkpointNode: CheckpointNode,
-  stepNode: StepNode,
   resultNode: ResultNode,
 } as NodeTypes;
 
@@ -142,7 +139,7 @@ function AppContent() {
   const applyDocumentEdit = useCallback((nextDocument: TestKeyPointsDocument) => {
     setDocument(nextDocument);
     setDraftVersion((value) => value + 1);
-    setStatus({ message: 'Pending auto-save…', changed: true });
+    setStatus({ message: 'Unsaved changes. Click Save.', changed: true });
     setError(null);
   }, []);
 
@@ -201,20 +198,6 @@ function AppContent() {
     [activeFeatureId, saving],
   );
 
-  useEffect(() => {
-    if (!document || !dirty || saving) {
-      return undefined;
-    }
-
-    const timer = window.setTimeout(() => {
-      void saveDocumentNow(document, draftVersion);
-    }, AUTO_SAVE_DELAY_MS);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [document, dirty, saving, saveDocumentNow, draftVersion]);
-
   const onNodeClick = useCallback(
     (_event: unknown, node: GraphNode) => {
       if (node.data.kind === 'root') {
@@ -236,7 +219,7 @@ function AppContent() {
         return;
       }
 
-      if (node.data.kind === 'steps' || node.data.kind === 'result') {
+      if (node.data.kind === 'result') {
         const sectionId = findSectionIdForCase(document, node.data.caseId);
         if (sectionId) {
           setSelectedTarget({ kind: 'case', sectionId, caseId: node.data.caseId });
@@ -342,7 +325,7 @@ function AppContent() {
         <div>
           <p className="eyebrow">Interactive QA Mapping</p>
           <h1>Test Key Points Graph Editor</h1>
-          <p className="subtitle">XMind-style category to step flow with section-limited markdown rewrite.</p>
+          <p className="subtitle">XMind-style category to result flow with section-limited markdown rewrite.</p>
         </div>
 
         <div className="header-controls">
@@ -375,6 +358,17 @@ function AppContent() {
             <div className="panel-actions">
               <button type="button" onClick={addTopic} disabled={!document}>
                 {addButtonLabel}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (document) {
+                    void saveDocumentNow(document, draftVersion);
+                  }
+                }}
+                disabled={!document || saving || !dirty}
+              >
+                Save
               </button>
               <button type="button" className="danger" onClick={deleteCase} disabled={!selectedCaseId}>
                 Delete Case
@@ -512,7 +506,7 @@ function AppContent() {
             <>
               <h2>Case Editor</h2>
               <p className="placeholder">
-                Select a checkpoint/step/result node to edit the case details. Select a category node to rename it.
+                Select a checkpoint/result node to edit the case details. Select a category node to rename it.
               </p>
             </>
           )}

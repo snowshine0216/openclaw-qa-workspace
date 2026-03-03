@@ -15,7 +15,7 @@ The app reads markdown, renders an XMind-style graph, supports inline editing, a
   - `Test Key Points`
   - `Expected Results`
 - Render graph as:
-  - `Feature -> Category -> Check Point -> Verified Steps (bullet list) -> Expected Result`
+  - `Feature -> Category -> Check Point -> Expected Result`
 - High-contrast directional edges between each relationship
 - Edit case fields inline:
   - `Priority`
@@ -23,12 +23,14 @@ The app reads markdown, renders an XMind-style graph, supports inline editing, a
   - `Acceptance Criteria`
   - `Test Key Points`
   - `Expected Results`
+- Delete behavior:
+  - deleting a case also removes its category when that category becomes empty
 - Smart add behavior:
   - no selection/root selected: add top-level category
   - category/case selected: add subtopic in that category
 - Move cases across categories
-- Debounced auto-save (no manual save button)
-- Backup only when file content changed
+- Manual save via `Save` button only
+- Backup only when `Save` is clicked and file content changed
 - Section-only rewrite (non-target sections preserved)
 
 ## Prerequisites
@@ -70,15 +72,15 @@ Default loaded feature id: `BCIN-6709`
    - Feature
    - Category
    - Check Point
-   - Verified Steps (bullet list)
    - Expected Result
-3. Select a checkpoint/steps/result node to edit its case in the right panel.
+3. Select a checkpoint/result node to edit its case in the right panel.
 4. Use toolbar actions:
    - `Add Category` when nothing/root is selected
    - `Add Subtopic` when category/case is selected
+   - `Save` to persist current edits
    - `Delete Case`
    - `Zoom Out`, `Zoom In`, `Fit`
-5. Edits auto-save after debounce and only backup on real changes.
+5. Edits remain local until you click `Save`; backup is created only if the saved content changed.
 
 ## Validation and Reporting
 
@@ -123,10 +125,10 @@ npm run test:e2e:headed
   - `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709`
 - This means E2E tests do not modify real feature plan folders.
 - Covered behaviors:
-  - graph hierarchy and verified-step bullet-list rendering
+  - graph hierarchy rendering
   - add-category/add-subtopic behavior
-  - bullet-list steps box
-  - auto-save persistence via API
+  - auto-remove empty category after deleting its last case
+  - manual-save persistence via API
 
 ## Safety Rules
 

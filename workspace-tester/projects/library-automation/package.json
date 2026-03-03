@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
+    "preflight:framework-profile": "node .agents/scripts/generate_framework_profile.mjs",
     "test:report-undo-redo": "npx playwright test tests/specs/report-editor/report-undo-redo/ --project=report-undo-redo",
     "test:report-undo-redo:list": "npx playwright test tests/specs/report-editor/report-undo-redo/ --list",
     "test:report-editor": "npx playwright test tests/specs/report-editor/",

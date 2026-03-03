@@ -42,7 +42,23 @@ Extract for the selected family:
 
 Use these resolved values in all steps below (replace `{specsBase}`, `{pomBase}`, etc.).
 
-### 0.3 Resolve Phase Feature Name and WDIO Path
+### 0.3 Framework Profile Preflight (required before generation/healing)
+
+Generate and load framework profile so generator/healer do not drift from project conventions:
+
+```bash
+cd workspace-tester/projects/library-automation
+npm run preflight:framework-profile
+cat .agents/context/framework-profile.json
+```
+
+Use the profile values as constraints in later steps:
+- `framework.runner`
+- `templates.generated_spec_output`
+- `generation.fixture_import_path`
+- `reuse_contract.rules`
+
+### 0.4 Resolve Phase Feature Name and WDIO Path
 
 Read the family design doc **Section 0 (Migration Progress)** to resolve phase → feature name mapping. Also read `wdioSubfolder` from `script_families.json` for the target phase (`families.<family>.phases.<phase>.wdioSubfolder`).
 
@@ -100,7 +116,7 @@ npm run {npmScriptPrefix}<Feature>
 1. **Env missing** (e.g. "REPORT_ENV not set", "reportTestUrl missing"): Log and skip running; note in report. Do NOT invoke healer.
 2. **Tests ran but some failed** (migration artifact, locator, or unknown): Invoke healer loop (max 3 rounds):
    - **Before first healer invocation:** For each failing spec, resolve the corresponding WDIO source file (by name mapping or spec MD `**Migrated from WDIO:**` field). If the WDIO file exists at `workspace-tester/projects/wdio/specs/regression/<family>/<wdioSubfolder>/`, pass `wdioSourcePath` and per-spec mapping to the healer. If it does not exist, pass `wdioSourcePath: null` or omit; healer skips the original-script check.
-   - **Round 1–3**: Invoke [playwright-test-healer](../../.claude/agents/playwright-test-healer.md) with: family, phase, spec path `{specsBase}<feature>/`, error output, round number, working dir `workspace-tester/projects/library-automation`, npm command `npm run {npmScriptPrefix}<Feature>`, `wdioSourcePath` (path or null), `specMdPath` `{specMdBase}<feature>/`
+   - **Round 1–3**: Invoke [playwright-test-healer](../../.claude/agents/playwright-test-healer.md) with: family, phase, spec path `{specsBase}<feature>/`, error output, round number, working dir `workspace-tester/projects/library-automation`, npm command `npm run {npmScriptPrefix}<Feature>`, `wdioSourcePath` (path or null), `specMdPath` `{specMdBase}<feature>/`, `frameworkProfilePath` `.agents/context/framework-profile.json`
    - **Healer constraints (mandatory):** (1) If `wdioSourcePath` is provided and the corresponding WDIO spec file exists, read it and the spec MD before applying any fix; ensure fixes preserve the original test intent and step sequence. If no WDIO spec exists, proceed without this check. (2) Do not remove, skip, or reorder steps without explicit user permission. Do not use `test.fixme()` or similar to skip tests without permission; if a fix would require skipping or altering steps, document the suggestion in the healing report and stop.
    - After each round: re-run `npm run {npmScriptPrefix}<Feature>`. If all pass → stop and update status.
    - If still failing after round N (N=1,2): invoke healer again for round N+1.

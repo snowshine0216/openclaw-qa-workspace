@@ -12,6 +12,10 @@ max_depth = 1
 description = "Designs resilient OpenClaw agents and workflows with idempotent Phase 0 patterns."
 config_file = "agents/openclaw-agent-designer.toml"
 
+[agents.openclaw-agent-design-reviewer]
+description = "Reviews OpenClaw agent designs for path validity, test coverage evidence, and documentation completeness."
+config_file = "agents/openclaw-agent-design-reviewer.toml"
+
 [agents.playwright-test-planner]
 description = "Explores UI and produces comprehensive Playwright test plans."
 config_file = "agents/playwright-test-planner.toml"

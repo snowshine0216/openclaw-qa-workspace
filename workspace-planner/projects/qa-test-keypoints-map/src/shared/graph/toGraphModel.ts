@@ -28,12 +28,6 @@ export type CheckpointNodeData = {
   relatedCodeChange: string;
 };
 
-export type StepNodeData = {
-  kind: 'steps';
-  caseId: string;
-  steps: string[];
-};
-
 export type ResultNodeData = {
   kind: 'result';
   caseId: string;
@@ -44,20 +38,17 @@ export type GraphNodeData =
   | RootNodeData
   | CategoryNodeData
   | CheckpointNodeData
-  | StepNodeData
   | ResultNodeData;
 
 export type RootGraphNode = Node<RootNodeData, 'rootNode'>;
 export type CategoryGraphNode = Node<CategoryNodeData, 'categoryNode'>;
 export type CheckpointGraphNode = Node<CheckpointNodeData, 'checkpointNode'>;
-export type StepGraphNode = Node<StepNodeData, 'stepNode'>;
 export type ResultGraphNode = Node<ResultNodeData, 'resultNode'>;
 
 export type GraphNode =
   | RootGraphNode
   | CategoryGraphNode
   | CheckpointGraphNode
-  | StepGraphNode
   | ResultGraphNode;
 
 function arrowEdge(source: string, target: string, id: string): Edge {
@@ -81,41 +72,6 @@ function connectDirect(
   relationshipId: string,
 ): void {
   edges.push(arrowEdge(sourceId, targetId, `edge::${relationshipId}`));
-}
-
-function extractStepTexts(testKeyPoints: string): string[] {
-  const lineItems = testKeyPoints
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lineItems.length > 1) {
-    return lineItems;
-  }
-
-  const single = lineItems[0] ?? testKeyPoints.trim();
-  if (!single) {
-    return ['Define verification step'];
-  }
-
-  const arrowParts = single
-    .split(/\s*(?:->|→)\s*/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  if (arrowParts.length > 1) {
-    return arrowParts;
-  }
-
-  const numberedParts = single
-    .split(/\s*(?=\d+\.\s)/)
-    .map((part) => part.replace(/^\d+\.\s*/, '').trim())
-    .filter(Boolean);
-  if (numberedParts.length > 1) {
-    return numberedParts;
-  }
-
-  return [single];
 }
 
 function addCategoryNode(nodes: GraphNode[], section: TestKeyPointSection): CategoryGraphNode {
@@ -145,7 +101,6 @@ function addCaseHierarchy(
   row: TestCaseRow,
 ): void {
   const checkpointId = `${row.id}::checkpoint`;
-  const stepsId = `${row.id}::steps`;
   const resultId = `${row.id}::result`;
 
   const checkpointNode: CheckpointGraphNode = {
@@ -169,25 +124,6 @@ function addCaseHierarchy(
   nodes.push(checkpointNode);
   connectDirect(edges, section.id, checkpointId, `${section.id}::${row.id}::checkpoint`);
 
-  const stepTexts = extractStepTexts(row.testKeyPoints);
-  const stepsNode: StepGraphNode = {
-    id: stepsId,
-    type: 'stepNode',
-    data: {
-      kind: 'steps',
-      caseId: row.id,
-      steps: stepTexts,
-    },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    position: { x: 0, y: 0 },
-    width: 350,
-    height: Math.min(260, Math.max(132, 80 + stepTexts.length * 22)),
-  };
-
-  nodes.push(stepsNode);
-  connectDirect(edges, checkpointId, stepsId, `${row.id}::steps`);
-
   const resultNode: ResultGraphNode = {
     id: resultId,
     type: 'resultNode',
@@ -204,7 +140,7 @@ function addCaseHierarchy(
   };
 
   nodes.push(resultNode);
-  connectDirect(edges, stepsId, resultId, `${row.id}::result`);
+  connectDirect(edges, checkpointId, resultId, `${row.id}::result`);
 }
 
 function layoutGraph(nodes: GraphNode[], edges: Edge[]): GraphNode[] {

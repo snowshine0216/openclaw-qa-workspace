@@ -316,16 +316,6 @@ button.ghost {
   background: linear-gradient(160deg, rgba(254, 250, 233, 0.96), rgba(250, 255, 239, 0.9));
 }
 
-.verified-node {
-  border-color: rgba(76, 53, 138, 0.27);
-  background: linear-gradient(160deg, rgba(245, 238, 255, 0.95), rgba(252, 246, 255, 0.9));
-}
-
-.step-node {
-  border-color: rgba(25, 96, 153, 0.28);
-  background: linear-gradient(160deg, rgba(237, 247, 255, 0.95), rgba(246, 253, 255, 0.9));
-}
-
 .result-node {
   border-color: rgba(8, 120, 82, 0.32);
   background: linear-gradient(160deg, rgba(232, 251, 242, 0.96), rgba(241, 255, 249, 0.9));
@@ -391,18 +381,6 @@ button.ghost {
   margin-top: 6px;
   font-size: 0.88rem;
   text-decoration: underline;
-}
-
-.steps-list {
-  margin: 8px 0 0;
-  padding-left: 20px;
-  color: var(--ink-soft);
-  font-size: 0.95rem;
-  line-height: 1.45;
-}
-
-.steps-list li {
-  margin-bottom: 4px;
 }
 
 .error-message {
