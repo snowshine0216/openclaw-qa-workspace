@@ -1,0 +1,31 @@
+{
+  "feature_key": "BCIN-6709",
+  "overall_status": "in_progress",
+  "current_phase": "phase_1_intake",
+  "updated_at": "2026-03-03T02:07:25.739Z",
+  "phases": {
+    "phase_0_idempotency": {
+      "status": "completed"
+    },
+    "phase_1_intake": {
+      "status": "completed"
+    },
+    "phase_2_generate": {
+      "status": "pending"
+    },
+    "phase_3_execute": {
+      "status": "pending"
+    },
+    "phase_4_heal": {
+      "status": "pending"
+    },
+    "phase_5_finalize": {
+      "status": "pending"
+    }
+  },
+  "healing": {
+    "max_rounds": 3,
+    "current_round": 0,
+    "status": "not_started"
+  }
+}

@@ -104,6 +104,7 @@ Create `scripts/check_resume.sh <entity-id>` that implements the **agent-idempot
 - **Double confirm** requirements with the user before proceeding. Raise questions if unsure.
 - **ONLY proceed with explicit user approval** for: external API calls, publishing, overwriting outputs.
 - **Be critical** — surface ambiguities, missing data, risks. Never silently guess.
+- **Document impact explicitly** — state whether docs/AGENTS are updated and include an explicit **user-facing README** impact note (`updated`, `no change`, or `not applicable` with reason).
 
 Example Phase 0 pattern:
 
@@ -116,6 +117,36 @@ Example Phase 0 pattern:
 5. Handle FINAL_EXISTS / DRAFT_EXISTS / CONTEXT_ONLY → STOP, present options, wait for choice.
 6. If FRESH or RESUMABLE → initialize task.json or resume from phase.
 ```
+
+## 4A. Per-Phase User Interaction Contract (MANDATORY)
+
+For **every phase** in the workflow, include explicit user interaction details:
+
+1. **Done** — what was completed in this phase.
+2. **Blocked** — what is currently blocked and why.
+3. **Questions** — what must be confirmed by the user before proceeding.
+4. **Assumption Policy** — never assume missing context; if information is missing or ambiguous, stop and ask the user.
+
+Use this template:
+
+````markdown
+### Phase <N>: <phase_name>
+
+Actions:
+1. <step>
+2. <step>
+
+User Interaction:
+1. Done: <completed items>
+2. Blocked: <blockers and dependencies>
+3. Questions: <open questions for user decisions>
+4. Assumption policy: if any key detail is unclear, stop and ask before continuing.
+
+Verification:
+```bash
+# phase-specific verification command(s)
+```
+````
 
 ## 5. Phase-End Notifications
 
@@ -144,6 +175,21 @@ Published by [Agent Name].
 
 **If Feishu fails:** Log to `run.json` or `task.json` → `notification_pending` (full message text). On next run, retry before starting any phase.
 
+### Mandatory Final Workflow Steps (Do Not Omit)
+
+Actions:
+
+1. Write execution summary.
+2. Set final state.
+3. Send Feishu notification.
+4. On send failure, set `run.json.notification_pending=<full payload>`.
+
+Verification:
+
+```bash
+jq -r '.notification_pending // empty' memory/tester-flow/runs/<work_item_key>/run.json
+```
+
 ## 7. Quick Checklist
 
 Before finalizing an agent design:
@@ -158,7 +204,9 @@ Before finalizing an agent design:
 - [ ] Phase 0 aligns with agent-idempotency: tiered existence check, archive-before-overwrite, freshness display
 - [ ] User confirmation gates before external/publish steps
 - [ ] Phase-end progress notifications
+- [ ] Per-phase user interaction included: Done, Blocked, Questions, and no silent assumptions
 - [ ] Feishu notification + `notification_pending` fallback
+- [ ] Documentation impact captured, including explicit user-facing README mention
 
 ## Additional Resources
 

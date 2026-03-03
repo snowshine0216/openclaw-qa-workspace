@@ -1,0 +1,13 @@
+.codex/config.toml
+.codex/agents/openclaw-agent-designer.toml
+.codex/agents/openclaw-agent-design-reviewer.toml
+.cursor/agents/openclaw-agent-design-reviewer.md
+.cursor/skills/openclaw-agent-design/SKILL.md
+.cursor/skills/openclaw-agent-design-review/SKILL.md
+.cursor/skills/openclaw-agent-design-review/reference.md
+.cursor/skills/openclaw-agent-design-review/examples.md
+.cursor/skills/openclaw-agent-design-review/scripts/validate_paths.sh
+.cursor/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh
+.agents/skills/openclaw-agent-design-review/SKILL.md
+AGENTS.md
+README.md

@@ -12,6 +12,54 @@ _Operating instructions for test execution and validation._
 6. Read `agents/qa-test/MEMORY.md` (test execution patterns)
 7. Read `WORKSPACE_RULES.md` (file organization)
 
+## Workflow Discovery Policy (Mandatory)
+
+1. Default `.agents` discovery root is `workspace-tester/.agents`.
+2. Default workflow path resolution starts at `.agents/workflows/`.
+3. Project-local `.agents` paths (for example `projects/library-automation/.agents/*`) are deprecated and must not be used for planner-spec generation/healing execution.
+4. Do not treat project-local `.agents` as implicit discovery defaults.
+5. Canonical runtime entrypoints are shell scripts under `src/tester-flow/`.
+
+## Core Workflow: Playwright Generation + Healing (3 Modes)
+
+When the user asks to generate executable Playwright specs and run/heal them, route through this workflow:
+
+1. **Trigger** workflow file:
+   `.agents/workflows/planner-spec-generation-healing.md`
+2. **Select execution mode before Phase 0**:
+   - `planner_first`: consume planner-generated Markdown specs
+   - `direct`: generate from provided requirement context
+   - `provided_plan`: consume user-provided plan/spec paths
+3. **Persist state control at each phase**:
+   - `memory/tester-flow/runs/<work_item_key>/task.json`
+   - `memory/tester-flow/runs/<work_item_key>/run.json`
+4. **Run bounded healing**:
+   - max 3 rounds
+   - rerun failed specs only per round
+   - write `healing_report.md` if unresolved after round 3
+5. **Notification fallback**:
+   - if Feishu delivery fails, store payload in `run.json.notification_pending`
+
+### Canonical Runtime Commands (v2)
+
+Run from `workspace-tester/`:
+
+1. `src/tester-flow/run_r0.sh`
+2. `src/tester-flow/run_phase0.sh`
+3. `src/tester-flow/run_phase1.sh`
+4. `src/tester-flow/run_phase2.sh`
+5. `src/tester-flow/run_phase3.sh`
+6. `src/tester-flow/run_phase4.sh`
+7. `src/tester-flow/run_phase5.sh`
+8. `src/tester-flow/run_full_flow.sh`
+
+Required enforcement:
+
+1. `agents_root` must be `.agents` in canonical task state.
+2. Canonical state writes must target `memory/tester-flow/runs/<work_item_key>/`.
+3. Optional legacy mirror writes are disabled.
+4. Mode transition mismatch fails unless `new_run_on_mode_change=true`.
+
 ## Core Workflow: Test Execution
 
 ### Phase 1: Load Test Plan
@@ -84,7 +132,7 @@ Handoff to qa-report:
 When the user asks to migrate reportEditor specs (e.g. "migrate reportEditor phase 2c" or "migrate next pending phase"):
 
 1. **Trigger** the workflow file:
-   `projects/library-automation/.agents/workflows/script-migration.md`
+   `.agents/workflows/script-migration.md`
 2. **Follow** the workflow step-by-step. It defines:
    - Phase 0: Preparation (load config from `migration/script_families.json` and initialize state)
    - Phase 1: Per-phase execution (4.1–4.9: register commands, analyze, create specs, migrate, refactor to POM, extract test data, validate, fixtures, snapshot mapping)
@@ -100,7 +148,7 @@ Do not skip Phase 3 — the design doc must be updated after each phase migratio
 When the user asks to quality-check WDIO→Playwright migration (e.g. "check migration quality for reportEditor 2b"):
 
 1. Trigger workflow file:
-   `projects/library-automation/.agents/workflows/script-migration-quality-check.md`
+   `.agents/workflows/script-migration-quality-check.md`
 2. Use the `wdio-to-playwright-check` specialist as the orchestration owner.
 3. If execution fails, `wdio-to-playwright-check` must invoke `playwright-test-healer` with max 3 rounds.
 4. After each healing round, re-run the phase command and update:

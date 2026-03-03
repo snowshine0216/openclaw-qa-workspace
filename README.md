@@ -59,6 +59,22 @@ Run from repository root:
 ./src/sync-skills.sh
 ```
 
+## OpenClaw Agent Design Review Gate
+
+OpenClaw design tasks now use a two-step specialist flow:
+
+1. `openclaw-agent-designer` drafts the agent/workflow design.
+2. `openclaw-agent-design-reviewer` runs a blocking quality review.
+
+Reviewer checks include:
+- path validity and OpenClaw pathing best practices
+- test/smoke evidence for newly introduced scripts/workflows
+- documentation coverage and explicit user-facing `README.md` mention
+
+Review artifacts default to:
+- `projects/agent-design-review/<design-id>/design_review_report.md`
+- `projects/agent-design-review/<design-id>/design_review_report.json`
+
 ## QA Test Key Points Interactive Page
 
 This repository includes an interactive XMind-style editor for QA plans at:

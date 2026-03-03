@@ -1,0 +1,13 @@
+{
+  "run_key": "BCIN-6709",
+  "report_state": "DRAFT_EXISTS",
+  "data_fetched_at": "2026-03-03T02:07:25.456Z",
+  "output_generated_at": null,
+  "output_approved_at": null,
+  "planner_specs_source": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs",
+  "tester_specs_dir": "specs/feature-plan/BCIN-6709",
+  "generated_specs": [],
+  "failed_specs": [],
+  "archive_log": [],
+  "notification_pending": null
+}

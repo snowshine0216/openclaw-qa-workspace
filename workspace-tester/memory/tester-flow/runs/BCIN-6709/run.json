@@ -1,0 +1,85 @@
+{
+  "execution_mode": "planner_first",
+  "pre_route_decision_log": [
+    {
+      "at": "2026-03-03T06:04:11.231Z",
+      "intent_source_type": "feature_id",
+      "intent_input_raw": "BCIN-6709",
+      "work_item_key": "BCIN-6709",
+      "plan_existence": "exists",
+      "route": "invoke_tester_workflow"
+    }
+  ],
+  "planner_specs_source": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs",
+  "resolved_plan_inputs": [
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/edge-cases/api-failure-during-recovery.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/edge-cases/concurrent-operations.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/edge-cases/error-dialog-ui.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/edge-cases/rapid-error-cycles.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/modeling-service/non-crash.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/pause-mode/analytical-engine-error.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/pause-mode/max-rows-error.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/pause-mode/recovery-cycle.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/pause-mode/sql-failure.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/prompt-errors/cancel-flow.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/prompt-errors/max-rows-error.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/prompt-errors/non-recoverable-error.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/running-mode/modeling-service-error.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/scope-boundary/api-contract-validation.md",
+    "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/projects/feature-plan/BCIN-6709/specs/scope-boundary/consumption-mode-unchanged.md"
+  ],
+  "planner_artifact_path": null,
+  "intake_manifest_path": "memory/tester-flow/runs/BCIN-6709/context/spec_manifest.json",
+  "generated_specs": [
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/api-failure-during-recovery.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/concurrent-operations.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/error-dialog-ui.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/rapid-error-cycles.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/modeling-service/non-crash.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/analytical-engine-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/max-rows-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/recovery-cycle.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/sql-failure.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/cancel-flow.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/max-rows-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/non-recoverable-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/running-mode/modeling-service-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/scope-boundary/api-contract-validation.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/scope-boundary/consumption-mode-unchanged.spec.ts"
+  ],
+  "failed_specs": [
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/api-failure-during-recovery.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/concurrent-operations.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/error-dialog-ui.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/edge-cases/rapid-error-cycles.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/modeling-service/non-crash.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/analytical-engine-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/max-rows-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/recovery-cycle.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/pause-mode/sql-failure.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/cancel-flow.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/max-rows-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/prompt-errors/non-recoverable-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/running-mode/modeling-service-error.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/scope-boundary/api-contract-validation.spec.ts",
+    "projects/library-automation/tests/specs/feature-plan/BCIN-6709/scope-boundary/consumption-mode-unchanged.spec.ts"
+  ],
+  "mode_transition_log": [
+    {
+      "at": "2026-03-03T06:04:11.231Z",
+      "from": null,
+      "to": "planner_first",
+      "reason": "initial_mode_gate"
+    }
+  ],
+  "legacy_path_used": false,
+  "legacy_path_reason": null,
+  "notification_pending": "Playwright test run completed\nFeature: BCIN-6709\nStatus: failed\nSpecs: 0/15 passed\nSummary: memory/tester-flow/runs/BCIN-6709/reports/execution-summary.md\nUpdated: 2026-03-03T07:48:10.058Z\nHealing report: memory/tester-flow/runs/BCIN-6709/healing/healing_report.md\nPublished by Tester Agent (planner-spec-generation-healing).",
+  "report_state": "DRAFT_EXISTS",
+  "data_fetched_at": "2026-03-03T06:07:06.426Z",
+  "output_generated_at": "2026-03-03T07:48:10.058Z",
+  "output_approved_at": null,
+  "run_key": "BCIN-6709",
+  "tester_specs_dir": "projects/library-automation/specs/feature-plan/BCIN-6709",
+  "archive_log": []
+}

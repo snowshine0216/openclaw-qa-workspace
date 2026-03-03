@@ -1,0 +1,11 @@
+workspace-tester/docs/OPENCLAW_AGENT_DESIGN_SKILL_REBUILT.md
+workspace-tester/.agents/workflows/planner-spec-generation-healing.md
+workspace-tester/src/tester-flow/runner.mjs
+workspace-tester/src/tester-flow/run_r0.sh
+workspace-tester/src/tester-flow/run_phase0.sh
+workspace-tester/src/tester-flow/run_phase1.sh
+workspace-tester/src/tester-flow/run_phase2.sh
+workspace-tester/src/tester-flow/run_phase3.sh
+workspace-tester/src/tester-flow/run_phase4.sh
+workspace-tester/src/tester-flow/run_phase5.sh
+workspace-tester/src/tester-flow/run_full_flow.sh

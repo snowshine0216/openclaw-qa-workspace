@@ -1,0 +1,29 @@
+{
+  "design_id": "openclaw-agent-design-skill-rebuilt-20260303",
+  "reviewed_artifact": "workspace-tester/docs/OPENCLAW_AGENT_DESIGN_SKILL_REBUILT.md",
+  "overall_status": "pass_with_advisories",
+  "reviewed_at": "2026-03-03",
+  "checks": {
+    "path_validation": "pass",
+    "design_evidence": "pass",
+    "notification_fallback_contract": "pass",
+    "user_interaction_contract": "pass",
+    "readme_impact_mention": "pass"
+  },
+  "findings": [
+    {
+      "severity": "P2",
+      "title": "Mixed path example styles",
+      "detail": "The doc uses both shell-variable path patterns and reviewer-compatibility placeholder command examples."
+    },
+    {
+      "severity": "P2",
+      "title": "Template-only review artifact examples",
+      "detail": "Review artifact paths are template-based with $DESIGN_ID; include one concrete example in a future revision."
+    }
+  ],
+  "decision": {
+    "approved": true,
+    "blocking_findings": false
+  }
+}

@@ -1,0 +1,12 @@
+.codex/agents/openclaw-agent-designer.toml
+.cursor/skills/openclaw-agent-design/SKILL.md
+.cursor/skills/openclaw-agent-design/reference.md
+.cursor/agents/openclaw-agent-design-reviewer.md
+.cursor/skills/openclaw-agent-design-review/SKILL.md
+.cursor/skills/openclaw-agent-design-review/reference.md
+.cursor/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh
+.cursor/skills/openclaw-agent-design-review/scripts/validate_paths.sh
+workspace-reporter/.agents/workflows/qa-summary.md
+workspace-planner/.agents/workflows/feature-qa-planning.md
+.cursor/skills/agent-idempotency/SKILL.md
+.agents/skills/openclaw-agent-design-review/SKILL.md

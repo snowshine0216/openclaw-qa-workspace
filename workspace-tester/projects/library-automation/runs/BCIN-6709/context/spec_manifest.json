@@ -1,0 +1,112 @@
+{
+  "feature_key": "BCIN-6709",
+  "generated_at": "2026-03-03T02:07:25.155Z",
+  "spec_count": 15,
+  "specs": [
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/edge-cases/api-failure-during-recovery.md",
+      "hash": "51947d7757aad08025739bb69843b7da67a4e1bd2036afcf0d182b28f7e7f5db",
+      "last_modified_utc": "2026-03-02T07:06:32.000Z",
+      "scenario_name": "api-failure-during-recovery",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/edge-cases/api-failure-during-recovery.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/edge-cases/concurrent-operations.md",
+      "hash": "f88138a8a71086a0e7ebba79639fc63c5aef13f07e2b7f1e6563b7478159192f",
+      "last_modified_utc": "2026-03-02T07:07:04.000Z",
+      "scenario_name": "concurrent-operations",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/edge-cases/concurrent-operations.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/edge-cases/error-dialog-ui.md",
+      "hash": "0c77816341b5040e0d9bfe7dcd6d341c65d9ba6df77d5678bc4701b3e61386f1",
+      "last_modified_utc": "2026-03-02T07:06:52.000Z",
+      "scenario_name": "error-dialog-ui",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/edge-cases/error-dialog-ui.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/edge-cases/rapid-error-cycles.md",
+      "hash": "8c93da6a4c1fbac475d4dafee48a204a005d45be2d8fe897314ba804b85f1881",
+      "last_modified_utc": "2026-03-02T07:06:41.000Z",
+      "scenario_name": "rapid-error-cycles",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/edge-cases/rapid-error-cycles.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/modeling-service/non-crash.md",
+      "hash": "81ef2f8b8d52ba6411193f770c7eb79abbd416615f75b9a8692615b6f4efb9cd",
+      "last_modified_utc": "2026-03-02T07:04:36.000Z",
+      "scenario_name": "non-crash",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/modeling-service/non-crash.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/pause-mode/analytical-engine-error.md",
+      "hash": "ddd0926025f8eab96e8b52b6c748edebe4d709ab4cf555a10b6b04180e0a6b4c",
+      "last_modified_utc": "2026-03-02T07:03:01.000Z",
+      "scenario_name": "analytical-engine-error",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/pause-mode/analytical-engine-error.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/pause-mode/max-rows-error.md",
+      "hash": "ca60edf33afc0bf98a8ee56aab0ca3ea7b15ad2dbd9f936800e3ce6eb6213bab",
+      "last_modified_utc": "2026-03-02T07:02:22.000Z",
+      "scenario_name": "max-rows-error",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/pause-mode/max-rows-error.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/pause-mode/recovery-cycle.md",
+      "hash": "fb60059e090b9942d930815ac1aa1e1f5f8c91a3fe6f798955d81eddb214a10f",
+      "last_modified_utc": "2026-03-02T07:03:26.000Z",
+      "scenario_name": "recovery-cycle",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/pause-mode/recovery-cycle.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/pause-mode/sql-failure.md",
+      "hash": "e3b134b0b682eafe61e58e584f13a365ff9983396cdd9035ce785c71b70f9474",
+      "last_modified_utc": "2026-03-02T07:02:42.000Z",
+      "scenario_name": "sql-failure",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/pause-mode/sql-failure.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/prompt-errors/cancel-flow.md",
+      "hash": "b9f53b8121612ffa39b299235278c9bc210154a0736abd9218d7403db4c5cf15",
+      "last_modified_utc": "2026-03-02T07:05:56.000Z",
+      "scenario_name": "cancel-flow",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/prompt-errors/cancel-flow.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/prompt-errors/max-rows-error.md",
+      "hash": "fc51b11e1fbef34a802b0331ba3f724f1b4ea6f940fa5e4409232f988d841123",
+      "last_modified_utc": "2026-03-02T07:05:11.000Z",
+      "scenario_name": "max-rows-error",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/prompt-errors/max-rows-error.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/prompt-errors/non-recoverable-error.md",
+      "hash": "09c44fa8848c5814bff7e8b648a229908d47ea686c21a56a40c56642bc4f6b82",
+      "last_modified_utc": "2026-03-02T07:05:32.000Z",
+      "scenario_name": "non-recoverable-error",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/prompt-errors/non-recoverable-error.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/running-mode/modeling-service-error.md",
+      "hash": "e6084af794b0efc3db4df6f5cc7b5c1387b3059987a34631248c8f7e6e35b927",
+      "last_modified_utc": "2026-03-02T07:04:06.000Z",
+      "scenario_name": "modeling-service-error",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/running-mode/modeling-service-error.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/scope-boundary/api-contract-validation.md",
+      "hash": "290c51dbfd24261f00922626622d8d117d7a1896379eafbd4a89767867b9a480",
+      "last_modified_utc": "2026-03-02T07:06:21.000Z",
+      "scenario_name": "api-contract-validation",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/scope-boundary/api-contract-validation.spec.ts"
+    },
+    {
+      "relative_spec_path": "specs/feature-plan/BCIN-6709/scope-boundary/consumption-mode-unchanged.md",
+      "hash": "3bf721bf661bf2de1e663659523b569ed84c335b28962b3be97e4068d620fb39",
+      "last_modified_utc": "2026-03-02T07:06:10.000Z",
+      "scenario_name": "consumption-mode-unchanged",
+      "target_spec_path": "tests/specs/feature-plan/BCIN-6709/scope-boundary/consumption-mode-unchanged.spec.ts"
+    }
+  ]
+}
