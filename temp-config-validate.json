@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.26",
+    "lastTouchedAt": "2026-03-03T07:16:15.198Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-02-25T10:24:37.274Z",
+    "lastRunVersion": "2026.2.22-2",
+    "lastRunCommand": "configure",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "github-copilot:github": {
+        "provider": "github-copilot",
+        "mode": "token"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "github-copilot/claude-sonnet-4.5"
+      },
+      "memorySearch": {
+        "enabled": true,
+        "provider": "openai",
+        "model": "openai/text-embedding-3-small",
+        "remote": {
+          "baseUrl": "https://openrouter.ai/api/v1/",
+          "apiKey": "${OPENROUTER_API_KEY}"
+        },
+        "sync": { "watch": true },
+        "query": { "maxResults": 8, "hybrid": { "enabled": true } },
+        "cache": { "enabled": true, "maxEntries": 50000 }
+      }
+    },
+      "models": {
+        "github-copilot/claude-sonnet-4.5": {
+          "alias": "sonnet-4.5"
+        },
+        "github-copilot/claude-opus-4.6": {
+          "alias": "opus-4.6"
+        },
+        "github-copilot/gpt-5.1-codex-max": {
+          "alias": "gpt-5.1-codex"
+        },
+        "github-copilot/gpt-5.2": {
+          "alias": "gpt-5.2"
+        }
+      },
+      "workspace": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8,
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 5
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "workspace": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace",
+        "subagents": {
+          "allowAgents": [
+            "*"
+          ]
+        }
+      }
+    ]
+  }
+}

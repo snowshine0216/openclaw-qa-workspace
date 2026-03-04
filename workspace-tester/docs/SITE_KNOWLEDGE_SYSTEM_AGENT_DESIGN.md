@@ -118,7 +118,7 @@ When the Tester Agent runs inside OpenClaw, add `memory/site-knowledge` to the w
         },
         "sync": { "watch": true },
         "query": { "maxResults": 8, "hybrid": { "enabled": true } },
-        "cache": { "enabled": true }
+        "cache": { "enabled": true, "maxEntries": 50000 }
       }
     }
   }

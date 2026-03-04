@@ -1,0 +1,472 @@
+{
+  "domains": {
+    "admin": {
+      "pomPaths": [
+        "pageObjects/admin"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/admin"
+    },
+    "agGrid": {
+      "pomPaths": [
+        "pageObjects/agGrid"
+      ],
+      "specPaths": [
+        "specs/regression/AG-Grid",
+        "specs/regression/config/aggrid"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/agGrid"
+    },
+    "aibot": {
+      "pomPaths": [
+        "pageObjects/aibot"
+      ],
+      "specPaths": [
+        "specs/regression/aibotAdvancedMode",
+        "specs/regression/aibotChatPanel",
+        "specs/regression/aibotDatasetContextMenu",
+        "specs/regression/aibotDatasetFolderStructure",
+        "specs/regression/aibotDatasetPanel",
+        "specs/regression/aibotKnowledgeNuggets",
+        "specs/regression/aibotMultiDataset",
+        "specs/regression/aibotSnapshotsPanel",
+        "specs/regression/aibotSnapshotsPanel/data_backup"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/aibot"
+    },
+    "alert": {
+      "pomPaths": [
+        "pageObjects/alert"
+      ],
+      "specPaths": [
+        "specs/regression/alert"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/alert"
+    },
+    "auth": {
+      "pomPaths": [
+        "pageObjects/auth"
+      ],
+      "specPaths": [
+        "specs/regression/authentication",
+        "specs/regression/authentication/appAuthMode",
+        "specs/regression/authentication/defaultMode",
+        "specs/regression/authentication/guest",
+        "specs/regression/authentication/impersonate",
+        "specs/regression/authentication/jwt",
+        "specs/regression/authentication/kerberos",
+        "specs/regression/authentication/ldap",
+        "specs/regression/authentication/locale",
+        "specs/regression/authentication/multisso",
+        "specs/regression/authentication/oauth2",
+        "specs/regression/authentication/oauthApi",
+        "specs/regression/authentication/oidc",
+        "specs/regression/authentication/oidcGlobalLogout",
+        "specs/regression/authentication/oidcSystemPrompt",
+        "specs/regression/authentication/oneAuth",
+        "specs/regression/authentication/restore",
+        "specs/regression/authentication/saml",
+        "specs/regression/authentication/samlSystemPrompt",
+        "specs/regression/authentication/sessionManagement",
+        "specs/regression/authentication/sessions",
+        "specs/regression/authentication/singleLogout",
+        "specs/regression/authentication/singleSession",
+        "specs/regression/authentication/standard",
+        "specs/regression/authentication/tanzu",
+        "specs/regression/authentication/Trust",
+        "specs/regression/config/dashboardAuthoring",
+        "specs/regression/dashboardAuthoring",
+        "specs/regression/dashboardAuthoring/adjustRadiusSpacingAndShadow",
+        "specs/regression/dashboardAuthoring/copyGroup",
+        "specs/regression/dashboardAuthoring/datasetPanel",
+        "specs/regression/dashboardAuthoring/resizeGroup",
+        "specs/regression/oauth2Settings"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/auth"
+    },
+    "authoring": {
+      "pomPaths": [
+        "pageObjects/authoring"
+      ],
+      "specPaths": [
+        "specs/regression/config/dashboardAuthoring",
+        "specs/regression/dashboardAuthoring",
+        "specs/regression/dashboardAuthoring/adjustRadiusSpacingAndShadow",
+        "specs/regression/dashboardAuthoring/copyGroup",
+        "specs/regression/dashboardAuthoring/datasetPanel",
+        "specs/regression/dashboardAuthoring/resizeGroup"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/authoring"
+    },
+    "authoringFilter": {
+      "pomPaths": [
+        "pageObjects/authoringFilter"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/authoringFilter"
+    },
+    "autoAnswers": {
+      "pomPaths": [
+        "pageObjects/autoAnswers"
+      ],
+      "specPaths": [
+        "specs/regression/AutoAnswers"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/autoAnswers"
+    },
+    "base": {
+      "pomPaths": [
+        "pageObjects/base"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/base"
+    },
+    "collaboration": {
+      "pomPaths": [
+        "pageObjects/collaboration"
+      ],
+      "specPaths": [
+        "specs/regression/collaboration"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/collaboration"
+    },
+    "common": {
+      "pomPaths": [
+        "pageObjects/common"
+      ],
+      "specPaths": [
+        "specs/regression/libraryVisualizations/vizCommon"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/common"
+    },
+    "compoundGrid": {
+      "pomPaths": [
+        "pageObjects/compoundGrid"
+      ],
+      "specPaths": [
+        "specs/regression/compoundGrid",
+        "specs/regression/config/compoundGrid"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/compoundGrid"
+    },
+    "document": {
+      "pomPaths": [
+        "pageObjects/document"
+      ],
+      "specPaths": [
+        "specs/regression/document"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/document"
+    },
+    "dossier": {
+      "pomPaths": [
+        "pageObjects/dossier"
+      ],
+      "specPaths": [
+        "specs/regression/dossier",
+        "specs/regression/dossierCreator",
+        "specs/regression/dossierlinking",
+        "specs/regression/DossierTransaction",
+        "specs/regression/DossierTransaction/Component",
+        "specs/regression/DossierTransaction/PythonTransaction",
+        "specs/regression/DossierTransaction/SQLTransaction"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/dossier"
+    },
+    "dossierEditor": {
+      "pomPaths": [
+        "pageObjects/dossierEditor"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/dossierEditor"
+    },
+    "embedding": {
+      "pomPaths": [
+        "pageObjects/embedding"
+      ],
+      "specPaths": [
+        "specs/regression/config/embedding",
+        "specs/regression/embedding-sdk",
+        "specs/regression/embedding-sdk/iframeEmbedding",
+        "specs/regression/embedding-sdk/nativeEmbedding"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/embedding"
+    },
+    "export": {
+      "pomPaths": [
+        "pageObjects/export"
+      ],
+      "specPaths": [
+        "specs/regression/export",
+        "specs/regression/libraryExport",
+        "specs/regression/runAsExport"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/export"
+    },
+    "filter": {
+      "pomPaths": [
+        "pageObjects/filter"
+      ],
+      "specPaths": [
+        "specs/regression/filter",
+        "specs/regression/filterSearch",
+        "specs/regression/reportEditor/reportScopeFilter",
+        "specs/regression/reportFilter",
+        "specs/regression/scopefilter"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/filter"
+    },
+    "group": {
+      "pomPaths": [
+        "pageObjects/group"
+      ],
+      "specPaths": [
+        "specs/regression/contentGroup",
+        "specs/regression/dashboardAuthoring/copyGroup",
+        "specs/regression/dashboardAuthoring/resizeGroup",
+        "specs/regression/personalGroup"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/group"
+    },
+    "insights": {
+      "pomPaths": [
+        "pageObjects/insights"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/insights"
+    },
+    "library": {
+      "pomPaths": [
+        "pageObjects/library"
+      ],
+      "specPaths": [
+        "specs/regression/library",
+        "specs/regression/config/libraryVisualization",
+        "specs/regression/libraryExport",
+        "specs/regression/libraryVisualizations",
+        "specs/regression/libraryVisualizations/autoNarratives",
+        "specs/regression/libraryVisualizations/forecast",
+        "specs/regression/libraryVisualizations/keyDriver",
+        "specs/regression/libraryVisualizations/trend",
+        "specs/regression/libraryVisualizations/vizCommon"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/library"
+    },
+    "prompt": {
+      "pomPaths": [
+        "pageObjects/prompt"
+      ],
+      "specPaths": [
+        "specs/regression/prompt",
+        "specs/regression/authentication/oidcSystemPrompt",
+        "specs/regression/authentication/samlSystemPrompt",
+        "specs/regression/systemprompts"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/prompt"
+    },
+    "report": {
+      "pomPaths": [
+        "pageObjects/report"
+      ],
+      "specPaths": [
+        "specs/regression/config/reportEditor",
+        "specs/regression/reportEditor",
+        "specs/regression/reportEditor/mdx",
+        "specs/regression/reportEditor/reportCancel",
+        "specs/regression/reportEditor/reportCreator",
+        "specs/regression/reportEditor/reportFolderBrowsing",
+        "specs/regression/reportEditor/reportFormatting",
+        "specs/regression/reportEditor/reportPageBy",
+        "specs/regression/reportEditor/reportPageBySorting",
+        "specs/regression/reportEditor/reportScopeFilter",
+        "specs/regression/reportEditor/reportShortcutMetrics",
+        "specs/regression/reportEditor/reportSqlView",
+        "specs/regression/reportEditor/reportSubset",
+        "specs/regression/reportEditor/reportTheme",
+        "specs/regression/reportEditor/reportThreshold",
+        "specs/regression/reportEditor/reportUICheck",
+        "specs/regression/reportEditor/reportUndoRedo",
+        "specs/regression/reportFilter"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/report"
+    },
+    "rwd": {
+      "pomPaths": [
+        "pageObjects/rwd"
+      ],
+      "specPaths": [
+        "specs/regression/rwd"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/rwd"
+    },
+    "saas": {
+      "pomPaths": [
+        "pageObjects/saas"
+      ],
+      "specPaths": [
+        "specs/regression/saas"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/saas"
+    },
+    "search": {
+      "pomPaths": [
+        "pageObjects/search"
+      ],
+      "specPaths": [
+        "specs/regression/filterSearch",
+        "specs/regression/globalSearch"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/search"
+    },
+    "selector": {
+      "pomPaths": [
+        "pageObjects/selector"
+      ],
+      "specPaths": [
+        "specs/regression/selector",
+        "specs/regression/IncanvasSelector",
+        "specs/regression/selectorPanel"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/selector"
+    },
+    "snapshots": {
+      "pomPaths": [
+        "pageObjects/snapshots"
+      ],
+      "specPaths": [
+        "specs/regression/config/snapshots",
+        "specs/regression/snapshot/snapshots",
+        "specs/regression/aibotSnapshotsPanel",
+        "specs/regression/aibotSnapshotsPanel/data_backup"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/snapshots"
+    },
+    "teams": {
+      "pomPaths": [
+        "pageObjects/teams"
+      ],
+      "specPaths": [
+        "specs/regression/teams",
+        "specs/regression/integrationTeams"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/teams"
+    },
+    "telemetry": {
+      "pomPaths": [
+        "pageObjects/telemetry"
+      ],
+      "specPaths": [
+        "specs/regression/telemetry"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/telemetry"
+    },
+    "transaction": {
+      "pomPaths": [
+        "pageObjects/transaction"
+      ],
+      "specPaths": [
+        "specs/regression/transaction",
+        "specs/regression/DossierTransaction",
+        "specs/regression/DossierTransaction/Component",
+        "specs/regression/DossierTransaction/PythonTransaction",
+        "specs/regression/DossierTransaction/SQLTransaction"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/transaction"
+    },
+    "transactionSQL": {
+      "pomPaths": [
+        "pageObjects/transactionSQL"
+      ],
+      "specPaths": [
+        "specs/regression/DossierTransaction/SQLTransaction"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/transactionSQL"
+    },
+    "transactionSQLEditor": {
+      "pomPaths": [
+        "pageObjects/transactionSQLEditor"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/transactionSQLEditor"
+    },
+    "visualization": {
+      "pomPaths": [
+        "pageObjects/visualization"
+      ],
+      "specPaths": [
+        "specs/regression/aiVisualizations",
+        "specs/regression/config/libraryVisualization",
+        "specs/regression/libraryVisualizations",
+        "specs/regression/libraryVisualizations/autoNarratives",
+        "specs/regression/libraryVisualizations/forecast",
+        "specs/regression/libraryVisualizations/keyDriver",
+        "specs/regression/libraryVisualizations/trend",
+        "specs/regression/libraryVisualizations/vizCommon"
+      ],
+      "navigationHint": "Auto-generated from pageObjects/visualization"
+    },
+    "web_admin": {
+      "pomPaths": [
+        "pageObjects/web_admin"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_admin"
+    },
+    "web_auth": {
+      "pomPaths": [
+        "pageObjects/web_auth"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_auth"
+    },
+    "web_dossier": {
+      "pomPaths": [
+        "pageObjects/web_dossier"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_dossier"
+    },
+    "web_folderBrowsing": {
+      "pomPaths": [
+        "pageObjects/web_folderBrowsing"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_folderBrowsing"
+    },
+    "web_home": {
+      "pomPaths": [
+        "pageObjects/web_home"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_home"
+    },
+    "web_personalView": {
+      "pomPaths": [
+        "pageObjects/web_personalView"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_personalView"
+    },
+    "web_preference": {
+      "pomPaths": [
+        "pageObjects/web_preference"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_preference"
+    },
+    "web_report": {
+      "pomPaths": [
+        "pageObjects/web_report"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_report"
+    },
+    "web_subscription": {
+      "pomPaths": [
+        "pageObjects/web_subscription"
+      ],
+      "specPaths": [],
+      "navigationHint": "Auto-generated from pageObjects/web_subscription"
+    }
+  }
+}

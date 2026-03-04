@@ -1,0 +1,178 @@
+{
+  "generatedAt": "2026-03-04T03:45:44.568Z",
+  "sourceRepo": "git@github.com:mstr-kiai/web-dossier.git",
+  "domains": {
+    "admin": {
+      "componentCount": 1,
+      "filePath": "admin.md"
+    },
+    "agGrid": {
+      "componentCount": 4,
+      "filePath": "agGrid.md"
+    },
+    "aibot": {
+      "componentCount": 27,
+      "filePath": "aibot.md"
+    },
+    "alert": {
+      "componentCount": 2,
+      "filePath": "alert.md"
+    },
+    "auth": {
+      "componentCount": 12,
+      "filePath": "auth.md"
+    },
+    "authoring": {
+      "componentCount": 58,
+      "filePath": "authoring.md"
+    },
+    "authoringFilter": {
+      "componentCount": 4,
+      "filePath": "authoringFilter.md"
+    },
+    "autoAnswers": {
+      "componentCount": 4,
+      "filePath": "autoAnswers.md"
+    },
+    "base": {
+      "componentCount": 12,
+      "filePath": "base.md"
+    },
+    "collaboration": {
+      "componentCount": 4,
+      "filePath": "collaboration.md"
+    },
+    "common": {
+      "componentCount": 34,
+      "filePath": "common.md"
+    },
+    "compoundGrid": {
+      "componentCount": 2,
+      "filePath": "compoundGrid.md"
+    },
+    "document": {
+      "componentCount": 17,
+      "filePath": "document.md"
+    },
+    "dossier": {
+      "componentCount": 16,
+      "filePath": "dossier.md"
+    },
+    "dossierEditor": {
+      "componentCount": 16,
+      "filePath": "dossierEditor.md"
+    },
+    "embedding": {
+      "componentCount": 2,
+      "filePath": "embedding.md"
+    },
+    "export": {
+      "componentCount": 9,
+      "filePath": "export.md"
+    },
+    "filter": {
+      "componentCount": 16,
+      "filePath": "filter.md"
+    },
+    "group": {
+      "componentCount": 2,
+      "filePath": "group.md"
+    },
+    "insights": {
+      "componentCount": 3,
+      "filePath": "insights.md"
+    },
+    "library": {
+      "componentCount": 22,
+      "filePath": "library.md"
+    },
+    "prompt": {
+      "componentCount": 17,
+      "filePath": "prompt.md"
+    },
+    "report": {
+      "componentCount": 43,
+      "filePath": "report.md"
+    },
+    "rwd": {
+      "componentCount": 1,
+      "filePath": "rwd.md"
+    },
+    "saas": {
+      "componentCount": 4,
+      "filePath": "saas.md"
+    },
+    "search": {
+      "componentCount": 5,
+      "filePath": "search.md"
+    },
+    "selector": {
+      "componentCount": 14,
+      "filePath": "selector.md"
+    },
+    "snapshots": {
+      "componentCount": 4,
+      "filePath": "snapshots.md"
+    },
+    "teams": {
+      "componentCount": 11,
+      "filePath": "teams.md"
+    },
+    "telemetry": {
+      "componentCount": 1,
+      "filePath": "telemetry.md"
+    },
+    "transaction": {
+      "componentCount": 13,
+      "filePath": "transaction.md"
+    },
+    "transactionSQL": {
+      "componentCount": 9,
+      "filePath": "transactionSQL.md"
+    },
+    "transactionSQLEditor": {
+      "componentCount": 11,
+      "filePath": "transactionSQLEditor.md"
+    },
+    "visualization": {
+      "componentCount": 12,
+      "filePath": "visualization.md"
+    },
+    "web_admin": {
+      "componentCount": 10,
+      "filePath": "web_admin.md"
+    },
+    "web_auth": {
+      "componentCount": 1,
+      "filePath": "web_auth.md"
+    },
+    "web_dossier": {
+      "componentCount": 3,
+      "filePath": "web_dossier.md"
+    },
+    "web_folderBrowsing": {
+      "componentCount": 3,
+      "filePath": "web_folderBrowsing.md"
+    },
+    "web_home": {
+      "componentCount": 15,
+      "filePath": "web_home.md"
+    },
+    "web_personalView": {
+      "componentCount": 1,
+      "filePath": "web_personalView.md"
+    },
+    "web_preference": {
+      "componentCount": 23,
+      "filePath": "web_preference.md"
+    },
+    "web_report": {
+      "componentCount": 12,
+      "filePath": "web_report.md"
+    },
+    "web_subscription": {
+      "componentCount": 1,
+      "filePath": "web_subscription.md"
+    }
+  }
+}

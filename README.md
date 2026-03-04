@@ -107,3 +107,36 @@ npm run build
 Detailed usage guide:
 
 - `workspace-planner/projects/qa-test-keypoints-map/README.md`
+
+## Site Knowledge Generator
+
+The Site Knowledge System generator for Tester Agent lives at:
+
+`workspace-tester/tools/sitemap-generator`
+
+Use it to generate `memory/site-knowledge/` Markdown files from WDIO page objects.
+
+Quick run:
+
+```bash
+cd workspace-tester/tools/sitemap-generator
+npm run generate:domains -- --repo ../../projects/wdio --output ./config/domains.json
+npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+```
+
+Direct node commands:
+
+```bash
+cd workspace-tester/tools/sitemap-generator
+node generate-sitemap.mjs --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+```
+
+Full usage and troubleshooting:
+
+- `workspace-tester/tools/sitemap-generator/README.md`
+
+
+### GH setup and generate site knowledge
+- refer to workspace-tester/tools/sitemap-generator/README.md for more details
+- to check if gh is setup correctly, run `gh auth status -h github.com`
+

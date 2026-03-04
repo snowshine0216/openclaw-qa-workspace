@@ -1,0 +1,12 @@
+{
+  "name": "@workspace-tester/sitemap-generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "generate:sitemap": "node generate-sitemap.mjs",
+    "generate:domains": "node scripts/generate-domains-config.mjs",
+    "playground": "node playground/run.mjs",
+    "playground:domains": "node playground/run-domains-config.mjs"
+  }
+}
