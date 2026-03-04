@@ -16,55 +16,14 @@ _Operating instructions for test execution and validation._
 
 1. Default `.agents` discovery root is `workspace-tester/.agents`.
 2. Default workflow path resolution starts at `.agents/workflows/`.
-3. Project-local `.agents` paths (for example `projects/library-automation/.agents/*`) are deprecated and must not be used for planner-spec generation/healing execution.
-4. Do not treat project-local `.agents` as implicit discovery defaults.
-5. Canonical runtime entrypoints are shell scripts under `src/tester-flow/`.
 
-## Core Workflow: Playwright Generation + Healing (3 Modes)
 
-When the user asks to generate executable Playwright specs and run/heal them, route through this workflow:
-
-1. **Trigger** workflow file:
-   `.agents/workflows/planner-spec-generation-healing.md`
-2. **Select execution mode before Phase 0**:
-   - `planner_first`: consume planner-generated Markdown specs
-   - `direct`: generate from provided requirement context
-   - `provided_plan`: consume user-provided plan/spec paths
-3. **Persist state control at each phase**:
-   - `memory/tester-flow/runs/<work_item_key>/task.json`
-   - `memory/tester-flow/runs/<work_item_key>/run.json`
-4. **Run bounded healing**:
-   - max 3 rounds
-   - rerun failed specs only per round
-   - write `healing_report.md` if unresolved after round 3
-5. **Notification fallback**:
-   - if Feishu delivery fails, store payload in `run.json.notification_pending`
-
-### Canonical Runtime Commands (v2)
-
-Run from `workspace-tester/`:
-
-1. `src/tester-flow/run_r0.sh`
-2. `src/tester-flow/run_phase0.sh`
-3. `src/tester-flow/run_phase1.sh`
-4. `src/tester-flow/run_phase2.sh`
-5. `src/tester-flow/run_phase3.sh`
-6. `src/tester-flow/run_phase4.sh`
-7. `src/tester-flow/run_phase5.sh`
-8. `src/tester-flow/run_full_flow.sh`
-
-Required enforcement:
-
-1. `agents_root` must be `.agents` in canonical task state.
-2. Canonical state writes must target `memory/tester-flow/runs/<work_item_key>/`.
-3. Optional legacy mirror writes are disabled.
-4. Mode transition mismatch fails unless `new_run_on_mode_change=true`.
 
 ## Core Workflow: Test Execution
 
 ### Phase 1: Load Test Plan
 ```
-Task received from master agent:
+Task received from master agent OR user command:
   ↓
 Extract issue key (e.g., BCIN-1234)
   ↓
@@ -85,7 +44,7 @@ Check prerequisites:
 
 If blocked:
   - Document blocker
-  - Report to master agent
+  - Report to master agent OR user
   - Wait for resolution
 ```
 
@@ -93,7 +52,7 @@ If blocked:
 ```
 For each test case in the plan:
   1. Note test case ID (TC-01, TC-02, etc.)
-  2. Follow steps precisely
+  2. Follow steps 
   3. Take screenshot after each key action
   4. Capture console logs if errors occur
   5. Record actual result
@@ -127,44 +86,7 @@ Handoff to qa-report:
   - Reference test case IDs
 ```
 
-## ReportEditor Migration Workflow
 
-When the user asks to migrate reportEditor specs (e.g. "migrate reportEditor phase 2c" or "migrate next pending phase"):
-
-1. **Trigger** the workflow file:
-   `.agents/workflows/script-migration.md`
-2. **Follow** the workflow step-by-step. It defines:
-   - Phase 0: Preparation (load config from `migration/script_families.json` and initialize state)
-   - Phase 1: Per-phase execution (4.1–4.9: register commands, analyze, create specs, migrate, refactor to POM, extract test data, validate, fixtures, snapshot mapping)
-   - Phase 2: Validation (MCP `compare_frameworks`, run phase suite, record results)
-   - Phase 3: Update design doc (Section 0, 6.4, 10) and `migration/script_families.json`
-3. **Use MCP** `user-tests-migration` tools: `analyze_wdio_test`, `migrate_to_playwright`, `refactor_to_pom`, `register_custom_commands`, `compare_frameworks`.
-4. **Working directory:** `projects/library-automation`.
-
-Do not skip Phase 3 — the design doc must be updated after each phase migration.
-
-## Migration Quality-Check Workflow
-
-When the user asks to quality-check WDIO→Playwright migration (e.g. "check migration quality for reportEditor 2b"):
-
-1. Trigger workflow file:
-   `.agents/workflows/script-migration-quality-check.md`
-2. Use the `wdio-to-playwright-check` specialist as the orchestration owner.
-3. If execution fails, `wdio-to-playwright-check` must invoke `playwright-test-healer` with max 3 rounds.
-4. After each healing round, re-run the phase command and update:
-   `projects/library-automation/migration/self-healing/<family>/<phase>/progress.md`
-5. If still failing after round 3, stop and output:
-   `projects/library-automation/migration/self-healing/<family>/<phase>/healing_report.md`
-
-## File Organization
-
-**All test outputs go to projects/:**
-- Execution reports: `projects/test-reports/<issue-key>/execution-report.md`
-- Screenshots: `projects/screenshots/<issue-key>/TC-XX-<description>.png`
-- Console logs: `projects/screenshots/<issue-key>/TC-XX-console.txt`
-- Network logs: `projects/screenshots/<issue-key>/TC-XX-network.har`
-
-**Before creating files, consult `WORKSPACE_RULES.md`**
 
 ## Browser Automation
 
@@ -457,6 +379,18 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 3. Help remove it from files and git history
 
 **Secrets live in `~/.openclaw/` (outside git) — NEVER in workspace.**
+
+## Site Knowledge Search
+
+Site knowledge (WDIO page objects, locators, UI components) lives in `memory/site-knowledge/`.
+
+**Search methods:**
+- **qmd (BM25):** `qmd search "keyword" -c site-knowledge --json -n 10`
+- **OpenClaw:** Use `memory_search` tool when running in OpenClaw
+
+**After search:** Update MEMORY.md with useful patterns (locators, component names) found.
+
+See [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md).
 
 ## Tools
 

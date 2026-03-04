@@ -64,6 +64,16 @@ Key invariants:
 3. Document required data in plan/spec markdown.
 4. Keep credentials out of code and read from configured env/files.
 
+## Site Knowledge Search Activity
+
+When site knowledge search yields useful results, append entries:
+
+```
+- [YYYY-MM-DD] Site search: "<query>" → <file>: <key findings>
+```
+
+Example: `- [2026-03-04] Site search: "CalendarFilter" → filter.md: calendarFilterPanel, dateRangePicker`
+
 ## Lessons Learned
 
 ### What Works Well
