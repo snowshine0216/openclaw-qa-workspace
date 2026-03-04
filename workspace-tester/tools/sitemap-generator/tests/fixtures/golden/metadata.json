@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-03-04T09:24:21.940Z",
+  "sourceRepo": "tests/fixtures/wdio-stub",
+  "domains": {
+    "filter": {
+      "displayName": "Filter",
+      "componentCount": 2,
+      "workflowCount": 1,
+      "commonElementCount": 9,
+      "filePath": "filter.md"
+    },
+    "autoAnswers": {
+      "displayName": "AutoAnswers (AI Assistant)",
+      "componentCount": 1,
+      "workflowCount": 1,
+      "commonElementCount": 2,
+      "filePath": "autoAnswers.md"
+    }
+  }
+}

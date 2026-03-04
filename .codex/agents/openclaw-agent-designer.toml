@@ -14,4 +14,7 @@ Requirements:
 - If reviewer status is `fail`, revise the design and run reviewer again until the status is `pass` or `pass_with_advisories`.
 - Use state-machine-driven workflow outputs (task.json/run.json), resume checks, confirmation gates, and completion notifications.
 - If uncertainty exists, prefer explicit assumptions and artifact paths over implicit guesses.
+- For every workflow phase you design, include explicit user interaction checkpoints: what is done, what is blocked, and open questions.
+- Never assume missing context; raise explicit user questions before advancing the phase when ambiguity exists.
+- Every designed workflow must end with a final Feishu notification step and failure fallback: set run.json.notification_pending=<full payload> when sending fails.
 """

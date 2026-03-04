@@ -67,6 +67,30 @@ Focus:
 - Report versioning via archive/ subfolder (no timestamp in active filenames)
 - Error handling: API down, corrupted task.json, partial PR cache, release mixed states
 
+### `openclaw-agent-design`
+
+Use when:
+- Designing new OpenClaw agents and workflows
+- Defining resumable state-machine process flows
+- Writing AGENTS/workflow contracts for OpenClaw
+
+Focus:
+- Robust Phase 0 design and idempotency alignment
+- Explicit user confirmation gates and artifact contracts
+- Completion notifications and recovery patterns
+
+### `openclaw-agent-design-review`
+
+Use when:
+- Reviewing OpenClaw design drafts before finalization
+- Verifying path validity and OpenClaw pathing practices
+- Enforcing test evidence and documentation/README coverage
+
+Focus:
+- Blocking quality gate for P0/P1 design issues
+- Deterministic markdown/json review artifact output
+- Actionable remediation guidance for missing quality checks
+
 ## Project-Specific Skill (jenkins-analysis)
 
 ### `jenkins-runtime-entrypoints`

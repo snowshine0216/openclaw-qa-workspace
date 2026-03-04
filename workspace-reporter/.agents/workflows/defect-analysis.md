@@ -1,10 +1,14 @@
 ---
-description: Run defect analysis for a Jira feature, JQL query, or release version. Generates standardized QA risk reports. Always confirms with user before proceeding to next phases.
+description: Run defect analysis for a Jira feature, JQL query, or release version. For single-issue input, invoke single-defect-analysis workflow instead. Always confirms with user before proceeding to next phases.
 ---
 
 # Defect Analysis Workflow
 
-Use this workflow to ingest a Jira feature issue key, JQL query, or **release version** (e.g., 26.03), analyze linked defects per feature, fetch and analyze PRs in parallel, and produce standardized QA Risk & Defect Analysis Reports (one per feature).
+Use this workflow to ingest a Jira feature issue key, JQL query, or **release version** (e.g., 26.03), analyze linked defects per feature, and produce standardized QA Risk & Defect Analysis Reports.
+
+**Two operating modes:**
+- **Single-issue mode** (triggered by one Jira issue link/key, no QA plan) → **Invoke `.agents/workflows/single-defect-analysis.md`** → produces a **Testing Plan** (FC steps + exploratory tests), then notifies the Tester agent.
+- **Feature/JQL/release mode** → Proceed to Phase 0 as usual → produces a **full QA Risk Report**.
 
 **⚠️ User Confirmation Principle:** Before any future action, always confirm with the user. Never make self-decisions without explicit approval. See REPORTER_AGENT_DESIGN.md Section 1.1.
 
@@ -285,3 +289,16 @@ When invoked by the **Feature Summary Workflow** as a sub-step:
   - `## Executive Summary` → defect health snapshot
   - `## Risk Analysis by Functional Area` → QA focus identification
   - `## Recommended QA Focus Areas` → merged into feature test strategy
+
+## Integration Notes (Tester Agent — Single Issue Mode)
+
+For single-issue analysis, invoke **`.agents/workflows/single-defect-analysis.md`** (not this workflow).
+
+When the Tester Agent spawns the Reporter for a single issue:
+- **Input**: Single issue key (e.g., `BCIN-7890`)
+- **Workflow**: `single-defect-analysis.md`
+- **Output**: `<ISSUE_KEY>_TESTING_PLAN.md` + `tester_handoff.json`
+- **Callback**: After testing, the Tester calls back with PASS/FAIL → handled by Phase 7 of `single-defect-analysis.md`
+- **Files consumed by Tester:**
+  - `workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md`
+  - `workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json`

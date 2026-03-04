@@ -11,6 +11,7 @@ export class LibraryPage {
 
   /** Logout by navigating to logout URL */
   async logout(): Promise<void> {
+    if (!this.page) return;
     if (this.page && this.page.context) {
       await this.page.context().clearCookies();
     }

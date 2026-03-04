@@ -1,0 +1,51 @@
+{
+    "design_id": "tester-agent-v2-single-issue",
+    "review_date": "2026-03-04",
+    "reviewed_artifacts": [
+        "workspace-tester/docs/TESTER_AGENT_DESIGN_v2.md",
+        "workspace-tester/AGENTS.md",
+        "workspace-tester/MEMORY.md",
+        "workspace-tester/docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md",
+        "workspace-reporter/.agents/workflows/defect-analysis.md",
+        "workspace-reporter/AGENTS.md"
+    ],
+    "overall_status": "pass_with_advisories",
+    "path_check": {
+        "total_checked": 17,
+        "passed": 16,
+        "exempted": 1,
+        "exemption_reason": "workspace-reporter/skills/message/SKILL.md — Feishu plugin is an OpenClaw builtin, not a workspace skill file"
+    },
+    "gate_results": {
+        "path_validity": "pass",
+        "test_evidence": "pass",
+        "documentation_completeness": "pass",
+        "idempotency": "pass",
+        "per_phase_user_interaction": "pass",
+        "notification_contract": "pass",
+        "handoff_artifacts": "pass"
+    },
+    "findings": [
+        {
+            "id": "ADVISORY-001",
+            "severity": "P2",
+            "summary": "check_resume.sh does not emit TESTING_PLAN_EXISTS state",
+            "evidence": "defect-analysis.md Phase -1.1 references TESTING_PLAN_EXISTS as a possible REPORT_STATE, but scripts/check_resume.sh was not updated to detect this state.",
+            "recommended_fix": "Add detection for <KEY>_TESTING_PLAN.md existence in check_resume.sh and emit TESTING_PLAN_EXISTS accordingly."
+        },
+        {
+            "id": "ADVISORY-002",
+            "severity": "P2",
+            "summary": "defect-analysis-reporter/SKILL.md missing Testing Plan output format spec",
+            "evidence": "defect-analysis.md Phase -1.5 says 'Read skills/defect-analysis-reporter/SKILL.md section on Testing Plan output' but this section does not exist.",
+            "recommended_fix": "Add a Testing Plan Output section to workspace-reporter/skills/defect-analysis-reporter/SKILL.md with FC steps table + exploratory charter format."
+        },
+        {
+            "id": "ADVISORY-003",
+            "severity": "P2",
+            "summary": "No notification_pending fallback in tester->reporter outcome callback",
+            "evidence": "AGENTS.md Phase 3.5 uses session_spawn for outcome callback without a fallback persistence pattern if the spawn fails.",
+            "recommended_fix": "Add reporter_notification_pending field to task.json with a recovery command, consistent with the notification_pending pattern used in other workflows."
+        }
+    ]
+}

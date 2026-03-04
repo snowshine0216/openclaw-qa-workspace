@@ -12,10 +12,17 @@ _Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary pu
 
 ## Core Workflow: Defect Analysis
 
-Full workflow: `.agents/workflows/defect-analysis.md`  
+**Workflow routing:**
+- When input is **exactly one Jira issue key/URL** with no QA plan → invoke `.agents/workflows/single-defect-analysis.md`.
+- When input is Feature ID / JQL / release version → invoke `.agents/workflows/defect-analysis.md`.
+
 Full design: `projects/docs/REPORTER_AGENT_DESIGN.md`
 
-### Phases (summary)
+**Two modes:**
+- **Single-Issue Testing Plan Mode** — invoked via `session_spawn` from Tester Agent with one Jira issue key. Run **`.agents/workflows/single-defect-analysis.md`**. Produces a testing plan (FC steps + exploratory charter) instead of a full report.
+- **Feature / JQL / Release Mode** — run **`.agents/workflows/defect-analysis.md`**. Produces QA Risk & Defect Analysis Report.
+
+### Phases (defect-analysis.md — Feature/JQL/Release only)
 
 | Phase | Action |
 |-------|--------|
@@ -28,11 +35,20 @@ Full design: `projects/docs/REPORTER_AGENT_DESIGN.md`
 | **5. Approval** | **STOP. Ask user to review draft. Wait for APPROVE or REJECT.** |
 | **6. Publish** | APPROVE → convert MD→HTML → publish via `confluence` skill. REJECT → broadcast via `message` (Feishu). Final report already exists (promoted in Phase 4a). |
 
+### Phases (single-defect-analysis.md — Single-Issue only)
+
+| Phase | Action |
+|-------|--------|
+| **1–6** | Detect single-issue mode, fetch issue + PR diff, FC risk assessment, generate `<KEY>_TESTING_PLAN.md`, write `tester_handoff.json`, notify Tester. |
+| **7. Test Outcome** | Receive PASS/FAIL from Tester. PASS → confirm with user → close Jira + add verification comment. FAIL → confirm with user → add comment to existing issue OR file new defect using `bug-report-formatter` skill. |
+
 ### ⚠️ Mandatory Rules
 
 - **Never proceed to the next phase without user confirmation** when it involves external API calls or publishing.
 - **Never publish to Confluence without explicit user approval.**
+- **Never close or comment on Jira without explicit user approval** (Phase 7).
 - Raise clarifying questions for ambiguous input — never assume.
+
 
 ---
 

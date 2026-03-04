@@ -59,6 +59,22 @@ Run from repository root:
 ./src/sync-skills.sh
 ```
 
+## OpenClaw Agent Design Review Gate
+
+OpenClaw design tasks now use a two-step specialist flow:
+
+1. `openclaw-agent-designer` drafts the agent/workflow design.
+2. `openclaw-agent-design-reviewer` runs a blocking quality review.
+
+Reviewer checks include:
+- path validity and OpenClaw pathing best practices
+- test/smoke evidence for newly introduced scripts/workflows
+- documentation coverage and explicit user-facing `README.md` mention
+
+Review artifacts default to:
+- `projects/agent-design-review/<design-id>/design_review_report.md`
+- `projects/agent-design-review/<design-id>/design_review_report.json`
+
 ## QA Test Key Points Interactive Page
 
 This repository includes an interactive XMind-style editor for QA plans at:
@@ -91,3 +107,36 @@ npm run build
 Detailed usage guide:
 
 - `workspace-planner/projects/qa-test-keypoints-map/README.md`
+
+## Site Knowledge Generator
+
+The Site Knowledge System generator for Tester Agent lives at:
+
+`workspace-tester/tools/sitemap-generator`
+
+Use it to generate `memory/site-knowledge/` Markdown files from WDIO page objects.
+
+Quick run:
+
+```bash
+cd workspace-tester/tools/sitemap-generator
+npm run generate:domains -- --repo ../../projects/wdio --output ./config/domains.json
+npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+```
+
+Direct node commands:
+
+```bash
+cd workspace-tester/tools/sitemap-generator
+node generate-sitemap.mjs --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+```
+
+Full usage and troubleshooting:
+
+- `workspace-tester/tools/sitemap-generator/README.md`
+
+
+### GH setup and generate site knowledge
+- refer to workspace-tester/tools/sitemap-generator/README.md for more details
+- to check if gh is setup correctly, run `gh auth status -h github.com`
+

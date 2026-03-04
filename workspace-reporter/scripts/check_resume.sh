@@ -21,7 +21,8 @@
 set -euo pipefail
 
 readonly FEATURE_KEY="${1:?Usage: check_resume.sh <feature-key-or-release>}"
-readonly REPORTER_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+REPORTER_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+readonly REPORTER_ROOT
 readonly FEATURE_DIR="$REPORTER_ROOT/projects/defects-analysis/$FEATURE_KEY"
 
 # Release-scoped mode uses batch_task.json; single-feature uses task.json
@@ -59,6 +60,7 @@ human_age() {
 
 REPORT_FINAL="$FEATURE_DIR/${FEATURE_KEY}_REPORT_FINAL.md"
 REPORT_DRAFT="$FEATURE_DIR/${FEATURE_KEY}_REPORT_DRAFT.md"
+TESTING_PLAN="$FEATURE_DIR/${FEATURE_KEY}_TESTING_PLAN.md"
 JIRA_RAW="$FEATURE_DIR/context/jira_raw.json"
 ARCHIVE_DIR="$FEATURE_DIR/archive"
 
@@ -66,7 +68,24 @@ echo "============================================"
 echo " Report Status Check"
 echo "============================================"
 
-if [ -f "$REPORT_FINAL" ]; then
+# Single-issue testing plan mode: check for TESTING_PLAN_EXISTS first
+if [ -f "$TESTING_PLAN" ] && [ ! -f "$REPORT_FINAL" ] && [ ! -f "$REPORT_DRAFT" ]; then
+  REPORT_STATE="TESTING_PLAN_EXISTS"
+  PLAN_AGE="unknown"
+  if [ -f "$TASK_FILE" ]; then
+    PLAN_TS=$(jq -r '.testing_plan_generated_at // ""' "$TASK_FILE" 2>/dev/null || true)
+    PLAN_AGE=$(human_age "$PLAN_TS")
+    TESTER_NOTIFIED=$(jq -r '.tester_notified_at // "null"' "$TASK_FILE" 2>/dev/null || echo "null")
+    TEST_RESULT=$(jq -r '.test_result // "null"' "$TASK_FILE" 2>/dev/null || echo "null")
+  fi
+  print_status "REPORT_STATE" "TESTING_PLAN_EXISTS"
+  print_status "Testing plan" "$(basename "$TESTING_PLAN") (generated: $PLAN_AGE)"
+  [ "${TESTER_NOTIFIED:-null}" != "null" ] && print_status "Tester notified" "$TESTER_NOTIFIED"
+  [ "${TEST_RESULT:-null}" != "null" ] && print_status "Test result" "$TEST_RESULT"
+  echo ""
+  echo "Options: (A) Use Existing Plan  (B) Regenerate Plan"
+
+elif [ -f "$REPORT_FINAL" ]; then
   REPORT_STATE="FINAL_EXISTS"
   JIRA_AGE="unknown"
   PR_CACHED=0

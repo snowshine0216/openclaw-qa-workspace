@@ -17,23 +17,34 @@ Use these specialists from `.codex/config.toml`:
 - Mandatory skill: `$openclaw-agent-design`.
 - Mandatory process: Phase 0 must pass `$agent-idempotency` review before finalization.
 
-2. `playwright-test-planner`
+2. `openclaw-agent-design-reviewer`
+- Purpose: review OpenClaw agent/workflow designs before finalization.
+- Mandatory skill: `$openclaw-agent-design-review`.
+- Mandatory process: P0/P1 findings block approval; must output review report artifacts.
+
+3. `playwright-test-planner`
 - Purpose: explore UI and create comprehensive plan docs.
 - Canonical workflow: `.cursor/agents/playwright-test-planner.md`.
 
-3. `playwright-test-generator`
+4. `playwright-test-generator`
 - Purpose: generate Playwright specs from approved plans.
 - Canonical workflow: `.cursor/agents/playwright-test-generator.md`.
 
-4. `playwright-test-healer`
+5. `playwright-test-healer`
 - Purpose: debug and fix failing Playwright tests.
 - Canonical workflow: `.cursor/agents/playwright-test-healer.md`.
 
-5. `wdio-to-playwright-check`
+6. `wdio-to-playwright-check`
 - Purpose: run WDIO→Playwright migration quality checks and orchestrate healing.
 - Canonical workflow: `workspace-tester/projects/library-automation/.agents/workflows/script-migration-quality-check.md`.
 
 ## Orchestration Contract
+
+For OpenClaw agent design work, orchestrate in strict order:
+
+1. `openclaw-agent-designer` drafts/updates design artifacts.
+2. `openclaw-agent-design-reviewer` validates paths, test evidence, and documentation coverage.
+3. If reviewer returns `fail`, loop back to designer until reviewer returns `pass` or `pass_with_advisories`.
 
 For test automation work, orchestrate in strict order unless explicitly overridden:
 
@@ -48,6 +59,11 @@ For migration quality-check work:
 3. `wdio-to-playwright-check` re-runs phase tests after each round and updates progress artifacts.
 
 Handoff rules:
+- OpenClaw designer must provide the design artifact path(s) under review.
+- OpenClaw design reviewer must provide:
+  - review report markdown artifact path
+  - review report json artifact path
+  - final status (`pass` | `pass_with_advisories` | `fail`)
 - Planner must provide exact plan artifact path.
 - Generator must record generated spec path(s).
 - Healer must output pass result or healing report path if max rounds exhausted.
@@ -86,5 +102,7 @@ Treat each file below as a reusable playbook. Select the closest match by user i
 
 - Do not silently skip required specialist steps.
 - Do not bypass idempotency checks for OpenClaw workflow design.
+- Do not bypass the OpenClaw design reviewer gate for OpenClaw design tasks.
+- Do not finalize OpenClaw design output when reviewer result is `fail`.
 - For Playwright healing, do not exceed 3 rounds; write a healing report on unresolved failures.
 - Always return artifact paths for plan/spec/healing outputs.
