@@ -1,8 +1,12 @@
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import domainsConfig from '../config/domains.json' with { type: 'json' };
 import { listGitHubDirectory } from './github.mjs';
+import {
+  assertValidDomainsConfig,
+  getDomainConfigEntry,
+  getDomainKeysInOrder,
+} from './domainConfig.mjs';
 
 /**
  * Resolve configured domains from user input.
@@ -10,19 +14,23 @@ import { listGitHubDirectory } from './github.mjs';
  * @returns {string[]}
  */
 export function resolveDomains(domains) {
+  assertValidDomainsConfig();
   if (!Array.isArray(domains) || domains.length === 0) {
     return [];
   }
   return domains.includes('all')
-    ? Object.keys(domainsConfig.domains)
-    : domains.filter((domain) => domain in domainsConfig.domains);
+    ? getDomainKeysInOrder()
+    : domains.filter((domain) => getDomainConfigEntry(domain) !== undefined);
 }
 
 /**
  * Find all POM .js files for given domains (local path or GitHub repo URL).
  * @param {string} repoSource
  * @param {string[]} domains
- * @param {{ listRemoteDirectory?: typeof listGitHubDirectory }} [deps]
+ * @param {{
+ *   listRemoteDirectory?: typeof listGitHubDirectory,
+ *   log?: (message: string) => void
+ * }} [deps]
  * @returns {Promise<Array<{domain: string, filePath: string, fileName: string, isRemote: boolean}>>}
  */
 export async function resolvePomFiles(repoSource, domains, deps = {}) {
@@ -38,14 +46,19 @@ export async function resolvePomFiles(repoSource, domains, deps = {}) {
 
   const apiBasePath = isRemote ? getGitHubApiPath(repoSource) : '';
   const listRemote = deps.listRemoteDirectory ?? listGitHubDirectory;
-  const domainEntries = await Promise.all(
-    resolvedDomains.map((domain) =>
-      isRemote
-        ? collectRemotePomEntries(apiBasePath, domain, listRemote)
-        : collectLocalPomEntries(repoSource, domain)
-    )
-  );
-  return domainEntries.flat();
+  const log = deps.log ?? (() => {});
+  const out = [];
+
+  for (const domain of resolvedDomains) {
+    log(`[resolvePomFiles] ${domain}: scanning configured POM paths...`);
+    const entries = isRemote
+      ? await collectRemotePomEntries(apiBasePath, domain, listRemote, log)
+      : await collectLocalPomEntries(repoSource, domain, log);
+    log(`[resolvePomFiles] ${domain}: resolved ${entries.length} POM files`);
+    out.push(...entries);
+  }
+
+  return out;
 }
 
 /** Convert GitHub URL to API base path. */
@@ -57,12 +70,19 @@ export function getGitHubApiPath(url) {
   return `repos/${parsed.owner}/${parsed.repo}/contents/tests/wdio`;
 }
 
-async function collectLocalPomEntries(repoPath, domain) {
-  const pomPaths = domainsConfig.domains[domain]?.pomPaths ?? [];
-  const allEntries = await Promise.all(
-    pomPaths.map((relPath) => readLocalPomPath(path.join(repoPath, relPath), domain))
-  );
-  return allEntries.flat();
+function isGitHubRepoSource(repoSource) {
+  return parseGitHubRepoSource(repoSource) !== null;
+}
+
+async function collectLocalPomEntries(repoPath, domain, log) {
+  const pomPaths = getDomainConfigEntry(domain)?.pomPaths ?? [];
+  const out = [];
+  for (const relPath of pomPaths) {
+    log(`[resolvePomFiles] ${domain}: path ${relPath}`);
+    const entries = await readLocalPomPath(path.join(repoPath, relPath), domain);
+    out.push(...entries);
+  }
+  return out;
 }
 
 async function readLocalPomPath(targetPath, domain) {
@@ -95,12 +115,15 @@ async function collectLocalJsFiles(dirPath) {
   return nested.flat();
 }
 
-async function collectRemotePomEntries(apiBasePath, domain, listRemoteDirectory) {
-  const pomPaths = domainsConfig.domains[domain]?.pomPaths ?? [];
-  const found = await Promise.all(
-    pomPaths.map((relPath) => collectRemotePomPath(joinApiPath(apiBasePath, relPath), domain, listRemoteDirectory))
-  );
-  return found.flat();
+async function collectRemotePomEntries(apiBasePath, domain, listRemoteDirectory, log) {
+  const pomPaths = getDomainConfigEntry(domain)?.pomPaths ?? [];
+  const out = [];
+  for (const relPath of pomPaths) {
+    log(`[resolvePomFiles] ${domain}: path ${relPath}`);
+    const entries = await collectRemotePomPath(joinApiPath(apiBasePath, relPath), domain, listRemoteDirectory);
+    out.push(...entries);
+  }
+  return out;
 }
 
 async function collectRemotePomPath(apiPath, domain, listRemoteDirectory) {
@@ -135,10 +158,6 @@ async function readRemoteItemsStrict(apiPath, listRemoteDirectory) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Remote listing failed for ${apiPath}: ${message}`);
   }
-}
-
-function isGitHubRepoSource(repoSource) {
-  return parseGitHubRepoSource(repoSource) !== null;
 }
 
 function parseGitHubRepoSource(repoSource) {

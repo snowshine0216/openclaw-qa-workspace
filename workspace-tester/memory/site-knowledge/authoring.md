@@ -1,2587 +1,3578 @@
-# Site Knowledge: authoring
+# Site Knowledge: Authoring Domain
 
-> Components: 58
+## Overview
+
+- **Domain key:** `authoring`
+- **Components covered:** AdvancedFilter, BaseContainer, BaseFormatPanel, BaseFormatPanelReact, CalculationMetric, Checkbox, ColumnSetOperations, Common, ContextMenuOperations, ContextMenuSelectors, DashboardFormattingPanel, DatasetPanel, DatasetsPanel, DerivedAttributeEditor, DerivedMetricEditor, DossierMojoEditor, DossierMojoEditor, DragDropOperations, EditorPanelForGrid, ExistingObjectsDialog, FormatPanelForGridBase, FormatPanelForGridGeneral, FormatPanelForGridTitleCRV, FormatPanelForGridToolBox, FreeformPositionAndSize, GridCellOperations, GridSelectors, GridValidators, GroupEditor, GroupOperations, HtmlContainer_Authoring, ImageContainer_Authoring, InCanvasSelector_Authoring, Keyboard, MoreOptionsDialog, NewFormatPanelForGrid, NewGalleryPanel, NgmContextMenu, NgmEditorPanel, NgmFormatPanel, NgmVisualizationPanel, NumberFormatOperations, NumberFormatSelectors, Open_Canvas, OutlineOperations, PanelSelector, PanelStack, ResponsiveGroupingEditor, RichTextBox, serves, Shapes, SortOperations, Textfield, ThresholdEditor, TOCcontentsPanel, Utils, VizPanelForGrid
+- **Spec files scanned:** 23
+- **POM files scanned:** 57
+
+## Components
 
 ### AdvancedFilter
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `openAdvancedFilterEditor(VisualizationTitle)` |
-| `openNewQualificationEditor()` |
-| `openBasedOnDropDown()` |
-| `closeAllDropDown()` |
-| `selectObjectFromBasedOnDropdown(elementName)` |
-| `selectParameterFromBasedOnDropdown(elementName)` |
-| `openChooseElementsByDropDown()` |
-| `openChooseElementsByDropDownI18N(optionName)` |
-| `checkChooseElementsByDropdown()` |
-| `doSelectionOnChooseElementsByDropdown(typeName)` |
-| `checkNewQualificationTitle(titleName)` |
-| `doElementSelectionForAttributeFilter(elementNames)` |
-| `clickOnNewQualificationEditorOkButton()` |
-| `clickOnNewQualificationEditorCancelButton()` |
-| `applyAdvancedFilterItem()` |
-| `checkAdvancedFilterByIndex(index)` |
-| `checkAdvancedFilterByIndexNotExist(index)` |
-| `selectInListOrNotInList(buttonName)` |
-| `typeValueInput(text)` |
-| `clearValueInput()` |
-| `typeDateValueInput(date)` |
-| `clearDateValueInput()` |
-| `openAttributeDropdown()` |
-| `doSelectionOnAttributeDropdown(attName)` |
-| `typeAndInput(text)` |
-| `openOutputLevelDropdown()` |
-| `doSelectionOnOutputLevelDropDown(optionName)` |
-| `openOperatorDropDown()` |
-| `doSelectionOnOperatorDropdown(optionName)` |
-| `openMetricDropdown()` |
-| `doSelectionOnMetricDropdown(metricName)` |
-| `typeOnSearchBox(text)` |
-| `clearSearchBox()` |
-| `checkAttributeElement(text)` |
-| `toggleViewSelected()` |
-| `clickClearAllButton()` |
-| `checkDeselectedAttributeElement(elementName)` |
-| `clickSaveOnAdvancedFilterEditor()` |
-| `clickCancelOnAdvancedFilterEditor()` |
-| `hoverAndClickFilterIcon()` |
-| `clickAdvancedQualificationButton()` |
-| `hoverOnFilterItemByIndex(index)` |
-| `clickCreateASetButtonByIndex(index)` |
-| `clickAttributeOnCreateASetAttributeList(attributeName)` |
-| `createASet()` |
-| `clickDeleteButtonByIndex(index)` |
-| `dragFilterAndWait(movingElement, targetElement)` |
-| `editAdvancedFilter(index)` |
-| `openLogicalOperatorDialog(index, currOperator)` |
-| `changeLogicalOperatorBetweenFilters(newOperator)` |
-| `closeColumnSetAdvancedFilterEditor(columnSet)` |
-| `checkPlusButtonAppear()` |
-| `openColumnSetContextMenu()` |
-| `doSelectionOnPlusButtonContextMenu(columnSet)` |
-| `changeToAnotherColumnSetAdvancedFilterEditor(columnSet)` |
-| `selectAttributeFilterOperator(operatorName)` |
-| `selectMetricFilterOperatorByValue(operatorName)` |
-| `selectMetricFilterOperatorByRank(operatorName)` |
-| `clickButtonInErrorPopUp(buttonName)` |
-| `clickParameterTextBox()` |
-| `selectParameterObjectFromPullDown(parameterObject)` |
-| `clickAdvancedFilterButton()` |
-| `clickAdvancedFilterApplyButton()` |
-| `clickAdvancedFilterCancelButton()` |
-| `clickAdvancedFilterClearButton()` |
-| `selectFilterOption(option)` |
-| `selectFilterOperator(operator)` |
-
-**Sub-components**
-- baseContainer
-
----
-
-### AuthoringFilterSummary
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `HeaderCloseBtn` | `.mstrmojo-FilterSummaryBodyContainer-titleBar .mstrmojo-FilterSummaryBodyContainer-closeBtn` | button |
-| `FooterCloseBtn` | `.mstrmojo-FilterSummaryBodyContainer-footer .mstrmojo-FilterSummaryBodyContainer-closeButton` | button |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickHeaderCloseBtn()` |
-| `clickFooterCloseBtn()` |
-| `clickAllFiltersBtn()` |
-| `clickBackgroundFiltersBtn()` |
-| `clickInGridFiltersBtn()` |
-| `waitForFilterSummaryDialogToClose()` |
-| `assertFilterSummaryDialogClosed()` |
-| `clickViewMoreBtn()` |
-| `clickViewMoreBtnByIndex(index = 0)` |
-| `clickViewLessBtnByIndex(index = 0)` |
-| `swipeUp()` |
-| `swipeToTitle(title)` |
-| `assertTitleExisted(element)` |
-| `assertElementExisted(text)` |
-
-**Sub-components**
-- baseContainer
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `applyAdvancedFilterItem()`
+  - `changeLogicalOperatorBetweenFilters(newOperator)`
+  - `changeToAnotherColumnSetAdvancedFilterEditor(columnSet)`
+  - `checkAdvancedFilterByIndex(index)`
+  - `checkAdvancedFilterByIndexNotExist(index)`
+  - `checkAttributeElement(text)`
+  - `checkChooseElementsByDropdown()`
+  - `checkDeselectedAttributeElement(elementName)`
+  - `checkNewQualificationTitle(titleName)`
+  - `checkPlusButtonAppear()`
+  - `clearDateValueInput()`
+  - `clearSearchBox()`
+  - `clearValueInput()`
+  - `clickAdvancedFilterApplyButton()`
+  - `clickAdvancedFilterButton()`
+  - `clickAdvancedFilterCancelButton()`
+  - `clickAdvancedFilterClearButton()`
+  - `clickAdvancedQualificationButton()`
+  - `clickAttributeOnCreateASetAttributeList(attributeName)`
+  - `clickButtonInErrorPopUp(buttonName)`
+  - `clickCancelOnAdvancedFilterEditor()`
+  - `clickClearAllButton()`
+  - `clickCreateASetButtonByIndex(index)`
+  - `clickDeleteButtonByIndex(index)`
+  - `clickOnNewQualificationEditorCancelButton()`
+  - `clickOnNewQualificationEditorOkButton()`
+  - `clickParameterTextBox()`
+  - `clickSaveOnAdvancedFilterEditor()`
+  - `closeAllDropDown()`
+  - `closeColumnSetAdvancedFilterEditor(columnSet)`
+  - `createASet()`
+  - `doElementSelectionForAttributeFilter(elementNames)`
+  - `doSelectionOnAttributeDropdown(attName)`
+  - `doSelectionOnChooseElementsByDropdown(typeName)`
+  - `doSelectionOnMetricDropdown(metricName)`
+  - `doSelectionOnOperatorDropdown(optionName)`
+  - `doSelectionOnOutputLevelDropDown(optionName)`
+  - `doSelectionOnPlusButtonContextMenu(columnSet)`
+  - `dragFilterAndWait(movingElement, targetElement)`
+  - `editAdvancedFilter(index)`
+  - `hoverAndClickFilterIcon()`
+  - `hoverOnFilterItemByIndex(index)`
+  - `openAdvancedFilterEditor(VisualizationTitle)`
+  - `openAttributeDropdown()`
+  - `openBasedOnDropDown()`
+  - `openChooseElementsByDropDown()`
+  - `openChooseElementsByDropDownI18N(optionName)`
+  - `openColumnSetContextMenu()`
+  - `openLogicalOperatorDialog(index, currOperator)`
+  - `openMetricDropdown()`
+  - `openNewQualificationEditor()`
+  - `openOperatorDropDown()`
+  - `openOutputLevelDropdown()`
+  - `selectAttributeFilterOperator(operatorName)`
+  - `selectFilterOperator(operator)`
+  - `selectFilterOption(option)`
+  - `selectInListOrNotInList(buttonName)`
+  - `selectMetricFilterOperatorByRank(operatorName)`
+  - `selectMetricFilterOperatorByValue(operatorName)`
+  - `selectObjectFromBasedOnDropdown(elementName)`
+  - `selectParameterFromBasedOnDropdown(elementName)`
+  - `selectParameterObjectFromPullDown(parameterObject)`
+  - `toggleViewSelected()`
+  - `typeAndInput(text)`
+  - `typeDateValueInput(date)`
+  - `typeOnSearchBox(text)`
+  - `typeValueInput(text)`
+- **Related components:** baseContainer
 
 ### BaseContainer
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickContainerByScript(containerName)` |
-| `clickContainer(containerName)` |
-| `hoverOnVisualizationContainer(visualizationName)` |
-| `hoverOnContainerAndClick(containerName)` |
-| `hoverOnContainerTitlebarAndClick(containerName)` |
-| `clickOnContainerTitle(containerName)` |
-| `openContextMenu(containerName)` |
-| `openContextMenu2(containerName)` |
-| `openContextMenu3(containerName)` |
-| `selectContextMenuOption(option)` |
-| `changeViz(newViz, containerName, preventPopup = true)` |
-| `selectSecondaryContextMenuOption(subOption)` |
-| `clickOnMaximizeRestoreButton(containerName)` |
-| `clickMaximizeBtn()` |
-| `hoverOnMaximizeBtn()` |
-| `hoverOnRestoreBtn()` |
-| `swapContainer(containerName)` |
-| `openAdvancedFilterEditor(containerName)` |
-| `selectTargetVisualizations(containerName)` |
-| `editTargetVisualizations(containerName)` |
-| `showFormatPanel()` |
-| `editTextArea(containerName)` |
-| `deleteContainer(container)` |
-| `duplicateContainer(containerName)` |
-| `copytoContainer(containerName, locationName)` |
-| `movetoContainer(containerName, locationName)` |
-| `copymoveContainer(containerName, actionName, locationName)` |
-| `moveContainerToTargetPosition(containerName, direction, targetValue)` |
-| `moveContainerByOffset(containerName, moveX, moveY)` |
-| `moveContainerByPosition(sourceContainer, targetContainer, relativePosition)` |
-| `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` |
-| `containerRelativePosition(containerName1, containerName2, relativePosition)` |
-| `containerAlignment(containerName1, containerName2, position)` |
-| `calculateContainerRect(containerName)` |
-| `resizeContainer(containerName, direction, percentChangeH, percentChangeW = percentChangeH)` |
-| `resizeContainerAndHoldMouse(containerName, direction, percentChangeH, percentChangeW = percentChangeH)` |
-| `verifyContainerSize(containerName, percent, direction)` |
-| `verifyMaximizeBtnInHighContrast(visualizationName)` |
-| `verifyRestoreBtnInHighContrast(visualizationName)` |
-| `clickOnContainerTopBorder(containerName)` |
-| `moveMouse(x, y)` |
-| `rightClickWithJavaScript(element, offsetX = 0, offsetY = 0)` |
-| `multiSelectElementsUsingCommandOrControl(elements, waitLoadingDialog = false)` |
-| `safeCtrlClickElement(element)` |
-| `verifyCheckedSecondaryContextMenu(secondaryOption)` |
-| `clickContainerButton()` |
-| `clickContainerOption(option)` |
-| `clickContainerApplyButton()` |
-| `clickContainerCancelButton()` |
-| `selectContainerLayout(layout)` |
-| `selectContainerAlignment(alignment)` |
-| `retry(fn, retries = 3, delay = 100)` |
-
-**Sub-components**
-- newGalleryPanel
-- getContainer
-- hoverOnVisualizationContainer
-- copymoveContainer
-- calculateContainer
-- resizeContainer
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `calculateContainerRect(containerName)`
+  - `changeViz(newViz, containerName, preventPopup = true)`
+  - `clickContainer(containerName)`
+  - `clickContainerApplyButton()`
+  - `clickContainerButton()`
+  - `clickContainerByScript(containerName)`
+  - `clickContainerCancelButton()`
+  - `clickContainerOption(option)`
+  - `clickMaximizeBtn()`
+  - `clickOnContainerTitle(containerName)`
+  - `clickOnContainerTopBorder(containerName)`
+  - `clickOnMaximizeRestoreButton(containerName)`
+  - `containerAlignment(containerName1, containerName2, position)`
+  - `containerRelativePosition(containerName1, containerName2, relativePosition)`
+  - `copymoveContainer(containerName, actionName, locationName)`
+  - `copytoContainer(containerName, locationName)`
+  - `deleteContainer(container)`
+  - `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })`
+  - `duplicateContainer(containerName)`
+  - `editTargetVisualizations(containerName)`
+  - `editTextArea(containerName)`
+  - `hoverOnContainerAndClick(containerName)`
+  - `hoverOnContainerTitlebarAndClick(containerName)`
+  - `hoverOnMaximizeBtn()`
+  - `hoverOnRestoreBtn()`
+  - `hoverOnVisualizationContainer(visualizationName)`
+  - `moveContainerByOffset(containerName, moveX, moveY)`
+  - `moveContainerByPosition(sourceContainer, targetContainer, relativePosition)`
+  - `moveContainerToTargetPosition(containerName, direction, targetValue)`
+  - `moveMouse(x, y)`
+  - `movetoContainer(containerName, locationName)`
+  - `multiSelectElementsUsingCommandOrControl(elements, waitLoadingDialog = false)`
+  - `openAdvancedFilterEditor(containerName)`
+  - `openContextMenu(containerName)`
+  - `openContextMenu2(containerName)`
+  - `openContextMenu3(containerName)`
+  - `resizeContainer(containerName, direction, percentChangeH, percentChangeW = percentChangeH)`
+  - `resizeContainerAndHoldMouse(containerName, direction, percentChangeH, percentChangeW = percentChangeH)`
+  - `retry(fn, retries = 3, delay = 100)`
+  - `rightClickWithJavaScript(element, offsetX = 0, offsetY = 0)`
+  - `safeCtrlClickElement(element)`
+  - `selectContainerAlignment(alignment)`
+  - `selectContainerLayout(layout)`
+  - `selectContextMenuOption(option)`
+  - `selectSecondaryContextMenuOption(subOption)`
+  - `selectTargetVisualizations(containerName)`
+  - `showFormatPanel()`
+  - `swapContainer(containerName)`
+  - `verifyCheckedSecondaryContextMenu(secondaryOption)`
+  - `verifyContainerSize(containerName, percent, direction)`
+  - `verifyMaximizeBtnInHighContrast(visualizationName)`
+  - `verifyRestoreBtnInHighContrast(visualizationName)`
+- **Related components:** calculateContainer, copymoveContainer, getContainer, hoverOnVisualizationContainer, newGalleryPanel, resizeContainer
 
 ### BaseFormatPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `toggleFormatPanelFromToolbar()` |
-| `switchToFormatPanelByClickingOnIcon()` |
-| `selectTarget(menuOption)` |
-| `renameByDoubleClickOnFormatPanel(newName)` |
-| `renameByFormatPanelContextMenu(newName)` |
-| `openHelpLink()` |
-| `selectContainerFillColorButton()` |
-| `selectContainerTitleBarFillColorButton()` |
-| `ChangeContainerFillColorOpacity(opacity)` |
-| `ChangeGridFillColorOpacity(opacity)` |
-| `verifyGridCellOpacity(opacity)` |
-| `selectTitleFillColorButton()` |
-| `ChangeTitleBarFillColorOpacity(opacity)` |
-| `selectTitleAlignment(alignment)` |
-| `selectContainerBorderStyleButton()` |
-| `selectContainerBorderStyle(style)` |
-| `selectContainerBorderColorButton()` |
-| `selectRowsAndColumnsFillColorButton()` |
-| `changeRowsAndColumnsFillColorOpacity(opacity)` |
-| `selectRowsOrColumns(menuOption)` |
-| `selectAdvancedColorSwatchMenu()` |
-| `selectAdvancedColorPaletteMenu()` |
-| `selectAdvancedColorSwatchNoFill()` |
-| `selectAdvancedColorBuiltInSwatch(color)` |
-| `selectAdvancedColorBuiltInSwatchByPosition(idx)` |
-| `selectAdvancedColorThemeSwatchByPosition(idx)` |
-| `selectAdvancedColorPaletteColorFill()` |
-| `setAdvancedColorPaletteHex(hex)` |
-| `setAdvancedColorPaletteWheel(x, y)` |
-| `selectAdvancedColorPaletteNoFill()` |
-| `confirmAdvancedColorPalette()` |
-| `cancelAdvancedColorPalette()` |
-| `changeBackgroundColorInDossierFormat(color)` |
-| `selectContainerTitleFillColorButton()` |
-| `selectContainerBodyFillColorButton()` |
-| `clearAndSetValue(el, value)` |
-| `ChangeContainerTitleFillColorOpacity(opacity)` |
-| `ChangeContainerBodyFillColorOpacity(opacity)` |
-| `clickOnCheckBox(label)` |
-| `changeDropdown(fromOption, toOption)` |
-| `changeDropdownWithTitle(title, toOption)` |
-| `openFontPickerForAllFonts()` |
-| `openFontPickerForTitle()` |
-
-**Sub-components**
-- formatPanel
-- getContainer
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `cancelAdvancedColorPalette()`
+  - `changeBackgroundColorInDossierFormat(color)`
+  - `ChangeContainerBodyFillColorOpacity(opacity)`
+  - `ChangeContainerFillColorOpacity(opacity)`
+  - `ChangeContainerTitleFillColorOpacity(opacity)`
+  - `changeDropdown(fromOption, toOption)`
+  - `changeDropdownWithTitle(title, toOption)`
+  - `ChangeGridFillColorOpacity(opacity)`
+  - `changeRowsAndColumnsFillColorOpacity(opacity)`
+  - `ChangeTitleBarFillColorOpacity(opacity)`
+  - `clearAndSetValue(el, value)`
+  - `clickOnCheckBox(label)`
+  - `confirmAdvancedColorPalette()`
+  - `openFontPickerForAllFonts()`
+  - `openFontPickerForTitle()`
+  - `openHelpLink()`
+  - `renameByDoubleClickOnFormatPanel(newName)`
+  - `renameByFormatPanelContextMenu(newName)`
+  - `selectAdvancedColorBuiltInSwatch(color)`
+  - `selectAdvancedColorBuiltInSwatchByPosition(idx)`
+  - `selectAdvancedColorPaletteColorFill()`
+  - `selectAdvancedColorPaletteMenu()`
+  - `selectAdvancedColorPaletteNoFill()`
+  - `selectAdvancedColorSwatchMenu()`
+  - `selectAdvancedColorSwatchNoFill()`
+  - `selectAdvancedColorThemeSwatchByPosition(idx)`
+  - `selectContainerBodyFillColorButton()`
+  - `selectContainerBorderColorButton()`
+  - `selectContainerBorderStyle(style)`
+  - `selectContainerBorderStyleButton()`
+  - `selectContainerFillColorButton()`
+  - `selectContainerTitleBarFillColorButton()`
+  - `selectContainerTitleFillColorButton()`
+  - `selectRowsAndColumnsFillColorButton()`
+  - `selectRowsOrColumns(menuOption)`
+  - `selectTarget(menuOption)`
+  - `selectTitleAlignment(alignment)`
+  - `selectTitleFillColorButton()`
+  - `setAdvancedColorPaletteHex(hex)`
+  - `setAdvancedColorPaletteWheel(x, y)`
+  - `switchToFormatPanelByClickingOnIcon()`
+  - `toggleFormatPanelFromToolbar()`
+  - `verifyGridCellOpacity(opacity)`
+- **Related components:** formatPanel, getContainer
 
 ### BaseFormatPanelReact
-> Extends: `BaseFormatPanel`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `switchSection(sec)` |
-| `switchToGeneralSettingsTab()` |
-| `changeDropdownReact(fromOption, toOption)` |
-| `changePropDropdownReact(prop, toOption)` |
-| `selectFromDropdownReact(option)` |
-| `selectAdvancedColorBuiltInSwatchReact(color)` |
-| `dismissColorPicker()` |
-| `dismissButtonFormatPopup()` |
-| `changeContainerFillColor({ color, dismissColorPicker = true })` |
-| `focusELAndReplaceInputValue(el, value)` |
-| `changeContainerFillColorOpacity(opacity)` |
-| `changeContainerTitleFillColor({ color, dismissColorPicker = true })` |
-| `changeContainerTitleFillColorOpacity(opacity)` |
-| `changeContainerBorder(option)` |
-| `changeContainerBorderColor(color)` |
-| `changeSegmentControl(fromOption, toOption)` |
-| `clickOnCheckboxReact(label)` |
-| `changeNgmMatrixFillColor(color)` |
-| `changeNgmMatrixFillColorOpacity(opacity)` |
-| `clickTxnTypeOnFormatPanel(label)` |
-| `hoverTxnTypeBtn(label)` |
-| `clickTxnTypeLabelOnFormatPanel(label)` |
-| `toggleTxnTypeOnFormatPanel(label, isPause)` |
-| `function(status)` |
-| `clickTxnTypeRightBtnOnFormatPanel(btn, label)` |
-| `clickPythonTxnTypeDeleteBtn(btn, label)` |
-| `clickTxnContextMenuIconOnFormatPanel()` |
-| `selectTxnContextMenuOption(option)` |
-| `clickTxnAfterSubmissionCheckbox(label)` |
-| `changeAfterSubmissionDropdown(fromOption, toOption)` |
-| `clickAfterSubmissionBtn(btnName)` |
-| `setAfterSubmissionMessage(value)` |
-| `switchToTextAndFormSection()` |
-| `switchToTitleAndContainerSection()` |
-| `switchToTransactionOptionsSection()` |
-
-**Sub-components**
-- formatPanel
-- FormatPanel
-- afterSubmissionContainer
-
----
+- **CSS root:** `.mstrmojo-VIBoxPanel.mstrmojo-vi-PropEditor`
+- **User-visible elements:**
+  - Color Picker (`.ant-popover-content .color-picker-dropdown`)
+  - Format Panel Content (`.mstrmojo-VIBoxPanel.mstrmojo-vi-PropEditor`)
+- **Component actions:**
+  - `changeAfterSubmissionDropdown(fromOption, toOption)`
+  - `changeContainerBorder(option)`
+  - `changeContainerBorderColor(color)`
+  - `changeContainerFillColor({ color, dismissColorPicker = true })`
+  - `changeContainerFillColorOpacity(opacity)`
+  - `changeContainerTitleFillColor({ color, dismissColorPicker = true })`
+  - `changeContainerTitleFillColorOpacity(opacity)`
+  - `changeDropdownReact(fromOption, toOption)`
+  - `changeNgmMatrixFillColor(color)`
+  - `changeNgmMatrixFillColorOpacity(opacity)`
+  - `changePropDropdownReact(prop, toOption)`
+  - `changeSegmentControl(fromOption, toOption)`
+  - `clickAfterSubmissionBtn(btnName)`
+  - `clickOnCheckboxReact(label)`
+  - `clickPythonTxnTypeDeleteBtn(btn, label)`
+  - `clickTxnAfterSubmissionCheckbox(label)`
+  - `clickTxnContextMenuIconOnFormatPanel()`
+  - `clickTxnTypeLabelOnFormatPanel(label)`
+  - `clickTxnTypeOnFormatPanel(label)`
+  - `clickTxnTypeRightBtnOnFormatPanel(btn, label)`
+  - `dismissButtonFormatPopup()`
+  - `dismissColorPicker()`
+  - `focusELAndReplaceInputValue(el, value)`
+  - `function(status)`
+  - `hoverTxnTypeBtn(label)`
+  - `selectAdvancedColorBuiltInSwatchReact(color)`
+  - `selectFromDropdownReact(option)`
+  - `selectTxnContextMenuOption(option)`
+  - `setAfterSubmissionMessage(value)`
+  - `switchSection(sec)`
+  - `switchToGeneralSettingsTab()`
+  - `switchToTextAndFormSection()`
+  - `switchToTitleAndContainerSection()`
+  - `switchToTransactionOptionsSection()`
+  - `toggleTxnTypeOnFormatPanel(label, isPause)`
+- **Related components:** afterSubmissionContainer, formatPanel, FormatPanel
 
 ### CalculationMetric
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `createCalculation(secondObject, calculationType)` |
-
-**Sub-components**
-_none_
-
----
-
-### Common
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `hasClass(element, cls)` |
-
-**Sub-components**
-_none_
-
----
-
-### DashboardFormattingPanel
-> Extends: `DossierAuthoringPage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `FormatButton` | `.item.mb.style` | element |
-| `DashboardFormattingButton` | `.item.dashboardStyles.mstrmojo-ui-Menu-item` | element |
-| `DashboardFormatPanel` | `.mstrmojo-Editor.DashboardStyles` | element |
-| `BackgroundSection` | `.mstrmojo-Box.bg.ctrl-group` | element |
-| `DashboardFormattingPopUp` | `.mstrmojo-Editor.DashboardStyles.modal` | element |
-| `LockPageSizeCheckBox` | `.mstrmojo-CheckBox.pageSize` | element |
-| `LockPageSizeHelperIcon` | `.mstrmojo-Box.helpIcon` | element |
-| `ScrollableArea` | `.mstrmojo-Box.mstrmojo-vi-EditorGroup.ctrl-group` | element |
-| `LayoutStyleSection` | `.mstrmojo-ui-CheckList.layoutstyle.horizontal.radio` | element |
-| `ShadowFillSection` | `.shadow-fill-setting` | element |
-| `ShadowBlurSection` | `.shadow-size-setting` | element |
-| `ShadowDistanceSection` | `.shadow-distance-setting` | element |
-| `ShadowAngleSection` | `.shadow-angle-setting` | element |
-| `PopupColorPicker` | `.mstrmojo-popup-widget-hosted.mstrmojo-ui-PreviewButton.mstrmojo-ColorPickerBtn` | button |
-| `OkButton` | `.mstrmojo-Button-text=OK` | button |
-| `PaddingSection` | `.radius-spacing-setting .mstrmojo-vi-TwoColumnProp` | element |
-| `RootPanelBgColorPicker` | `.mstr-rc-3-color-picker.root-panel-bg-color-picker-rc3` | element |
-| `SizeSelectDropdown` | `#mstr-rc-3-color-picker-image-mode__size-select__dropdown` | dropdown |
-
-**Actions**
-| Signature |
-|-----------|
-| `openFormatMenu()` |
-| `openDashboardFormattingMenu()` |
-| `open()` |
-| `close()` |
-| `clickOkButton()` |
-| `clickCardOption()` |
-| `clickFlatOption()` |
-| `selectLayoutStyle(style)` |
-| `getSelectedLayoutStyle()` |
-| `isCardSelected()` |
-| `isFlatSelected()` |
-| `getPaddingValue()` |
-| `setPaddingValue(value)` |
-| `getBackgroundColor()` |
-| `setBackgroundColor(colorName)` |
-| `clickLockPageSizeCheckBox()` |
-| `clickLockPageSizeHelperIcon()` |
-| `scrollUpInLeftBox()` |
-| `scrollToShadowAngleSetting()` |
-| `scrollBackToTop()` |
-| `scrollToShadowSection(sectionType = 'angle')` |
-| `clearInputValue()` |
-| `getRadiusValue()` |
-| `setRadiusValue(value)` |
-| `getRadiusSliderPosition()` |
-| `slideRadiusSlider(xOffset = 10)` |
-| `getShadowFillValue()` |
-| `setShadowFillCapacityValue(value)` |
-| `clickShadowColorPicker()` |
-| `selectShadowColorByName(colorName)` |
-| `isPopupColorPickerVisible()` |
-| `closePopupColorPicker()` |
-| `getShadowSelectedColor()` |
-| `getShadowFillColor()` |
-| `getShadowFillColorDetails()` |
-| `getShadowBlurValue()` |
-| `setShadowBlurValue(value)` |
-| `getShadowBlurSliderPosition()` |
-| `slideShadowBlurSlider(xOffset = 10)` |
-| `getShadowDistanceValue()` |
-| `setShadowDistanceValue(value)` |
-| `getShadowDistanceSliderPosition()` |
-| `slideShadowDistanceSlider(xOffset = 10)` |
-| `getShadowAngleValue()` |
-| `setShadowAngleValue(value)` |
-| `getShadowAngleSliderPosition()` |
-| `slideShadowAngleSlider(xOffset = 10)` |
-| `getRootPanelBgColorValue()` |
-| `getDashboardLevelImagePreviewUrl()` |
-| `getImagePreviewUrl()` |
-| `clickRootPanelBgColorPicker()` |
-| `isRootPanelBgColorPickerExpanded()` |
-| `clickSwatchesMode()` |
-| `clickPaletteMode()` |
-| `clickGradientMode()` |
-| `clickImageMode()` |
-| `selectColorByName(colorName)` |
-| `selectColorByHex(hexValue)` |
-| `selectColorByRGB(rgbValue)` |
-| `isColorPickerPopoverVisible()` |
-| `getCurrentSelectedColorMode()` |
-| `closeColorPickerPopover()` |
-| `setColorBySaturationClick(saturation = 50, brightness = 50)` |
-| `clickColorSaturationArea(xPercent = 50, yPercent = 50)` |
-| `clickHueSlider(huePercent = 50)` |
-| `setHueByValue(hueValue)` |
-| `getHexColorPicker()` |
-| `setColorByHex(hexValue)` |
-| `setColorByRGB(rgbValue)` |
-| `clickAddToFavorite()` |
-| `clickGradientStartButton()` |
-| `clickGradientEndButton()` |
-| `setGradientStartColor(color)` |
-| `setGradientEndColor(color)` |
-| `inverseGradient()` |
-| `rotateGradient()` |
-| `setImageUrl(imageUrl)` |
-| `getImageUrl()` |
-| `clickUploadButton()` |
-| `clickImageOkButton()` |
-| `isImageOkButtonEnabled()` |
-| `uploadImageFile(filePath)` |
-| `openSizeSelect()` |
-| `getSizeSelectValue()` |
-| `selectImageSize(sizeOption)` |
-| `getAvailableImageSizes()` |
-| `setImageBackground(imageUrl, size = '')` |
-| `uploadImageBackground(filePath, size = 'Fill Canvas')` |
-| `getLastVisibleInvalidUrlDialog()` |
-| `isInvalidUrlDialogVisible()` |
-| `closeInvalidUrlDialog()` |
-| `waitForInvalidUrlDialog(timeout = 5000)` |
-| `openOptimizedForDropDown()` |
-| `openConsumptionViewDropDown()` |
-| `selectOptimizedForOption(option)` |
-| `selectConsumptionViewOption(option)` |
-| `getPopupList()` |
-| `getCustomDimensionInput(axis)` |
-| `getCustomWidthInput()` |
-| `getCustomHeightInput()` |
-| `setCustomPageSize(width, height)` |
-
-**Sub-components**
-- getLockPage
-- getRootPanel
-- getDashboardFormatPanel
-- getDashboardLevelRootPanel
-- getGradientModeContainer
-- getImageModeContainer
-
----
-
-### DatasetPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `SaveAsEditor` | `.mstrmojo-SaveAsEditor` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `switchDatasetsTab()` |
-| `addDataFromDatasetsPanel(addDataOption)` |
-| `addObjectToVizByDoubleClick(objectName, objectTypeName, datasetName)` |
-| `addObjectFromDSFolderToVizByDoubleClick(objectName, objectTypeName, datasetName, folderName)` |
-| `addObjectToFilter(objectName, objectTypeName, datasetName)` |
-| `addObjectFromFolderToFilter(objectName, objectTypeName, datasetName, folderName)` |
-| `addObjectFromSearchListToVizByDoubleClick(objectName, objectTypeName, datasetName)` |
-| `actionOnObjectFromDataset(objectName, objectTypeName, datasetName, menuOption)` |
-| `secondaryCMOnObjectFromDataset(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)` |
-| `actionOnObjectFromCustomView(objectName, objectTypeName, datasetName, menuOption)` |
-| `secondaryCMOnObjectFromCustomView(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)` |
-| `actionOnGroupFromCustomView(groupName, menuOption)` |
-| `renameGroupFromCustomView(newGroupName, groupName)` |
-| `createCalculationFromDataset(objectName, objectTypeName, datasetName, calculationType, secondObject)` |
-| `openEditObjectEditor(objectName, objectTypeName, datasetName)` |
-| `selectFromDatasetsPanelContextMenu(menuItemName)` |
-| `searchOnDatasetsPanel(keywords)` |
-| `clearSearch()` |
-| `selectFromSearchPulldown(item)` |
-| `collapseDataset(datasetName)` |
-| `expandDataset(datasetName)` |
-| `collapseFolderUnderDataset(folderName, datasetName)` |
-| `expandFolderUnderDataset(folderName, datasetName)` |
-| `deleteDataset(datasetName)` |
-| `renameObject(objectName, objectTypeName, datasetName, newObjectName)` |
-| `editObject(objectName, objectTypeName, datasetName)` |
-| `clearObjectAlias(objectName, objectTypeName, datasetName)` |
-| `duplicateObjectAs(objectName, objectTypeName, datasetName, newObjectTypeName)` |
-| `duplicateObjectInFolderAs(objectName, objectTypeName, folderName, datasetName, newObjectTypeName)` |
-| `multiSelectObjectsAndTakeCMAction(objectList, datasetName, firstMenu)` |
-| `multiSelectObjectsAndTakeSecondaryCM(objectList, datasetName, firstMenu, secondaryMenu)` |
-| `renameDataset(datasetName, newDatasetName)` |
-| `showHiddenObject(objectName, objectType)` |
-| `showHiddenObjects(objectNameList)` |
-| `chooseDatasetContextMenuOption(datasetName, option)` |
-| `rightClickOnDataset(datasetName)` |
-| `searchAndAddExistingDataset(datasetName)` |
-| `showDataForSelectedDatasetAndObject(objectName, datasetName)` |
-| `changePullDown(fromOption, toOption)` |
-| `changePullDownwithTitle(pullDownTitle, fromOption, toOption)` |
-| `hoverAttributeFormInDataTypeMenu(formName)` |
-| `linkAttribute(tarAttribute)` |
-| `linkAttributeForm(sourForm, tarAttr, tarAttrForm)` |
-| `inputNameInatasetSaveAs(name)` |
-| `changeNameInDatasetSaveAsDialog(name)` |
-| `saveDataset()` |
-| `saveAsDataset()` |
-| `createTimeOrGeoAttribute(newType, objName, datasetName, contextOption)` |
-| `editDatasetNotification(itemText)` |
-| `changeNewObjectInReplaceObjectsEditor(oriObject, newObject)` |
-| `searchAndSelectNewObjectInReplaceObjectsEditor(searchKey, oriObject, newObject)` |
-| `getIndexForObjectinDS(datasetName, index, objectName)` |
-| `switchToInReportTab()` |
-| `switchToAllObjectsTab()` |
-| `switchToSearchTab()` |
-| `expandAttributeFolder()` |
-| `expandMetricFolder()` |
-| `expandCustomGroupFolder()` |
-| `expandConsolidationFolder()` |
-| `expandDimensionFolder()` |
-| `expandHierarchyFolder()` |
-| `expandTransformationFolder()` |
-| `expandFilterFolder()` |
-| `expandTemplateFolder()` |
-| `createDMorDA(datasetName, option)` |
-| `isDatasetDisplayed(dsName)` |
-| `isObjectFromDSdisplayed(objectName, objectTypeName, datasetName)` |
-| `isHighlightedObjectFromDSdisplayed(objectName, objectTypeName, datasetName, keyword)` |
-| `currentCheckedItemFromCM()` |
-| `renameTextField(newName)` |
-| `isLinkedObjectDSdisplayed(objectName, datasetName)` |
-| `isSelectExistingDatasetDialogDisplayed()` |
-| `isAttributeLinked(objectName, datasetName)` |
-| `unmapAttribute(objectName, objectTypeName, datasetName)` |
-| `actionOnObjectFromPreview(obj, dataset, cmOption)` |
-| `updateDatasetFromPreview()` |
-
-**Sub-components**
-- DIContainer
-- datasetsPanel
-
----
-
-### DerivedAttributeEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `setFunctionsSearchKey(fnString)` |
-| `addFunctionByDoubleClick(functionName)` |
-| `setObjectSearchKey(pattern)` |
-| `addObjectByDoubleClick(objectName)` |
-| `addSearchedObjectByDoubleClick(objectName)` |
-| `getAttributeFormDefinition()` |
-| `setAttributeName(newName)` |
-| `setAttributeDesc(newDesc)` |
-| `setAttributeFormDefinition(formula)` |
-| `selectAttributeForm(formName)` |
-| `selectFormFromDropdown(formName)` |
-| `renameAttributeForm(formNewName)` |
-| `addBlankAttrForm()` |
-| `addAttrFormByName(formName)` |
-| `clearAttrForm()` |
-| `validateForm()` |
-| `saveAttribute()` |
-| `cancelAttribute()` |
-| `switchFormulaEditor()` |
-| `createDerivedAttribute({ objectNames, derivedAttributeName })` |
-
-**Sub-components**
-- functionsPanel
-- objectsPanel
-- attributePanel
-
----
-
-### DerivedMetricEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `setFunctionsSearchKey(fnString)` |
-| `addFunctionByDoubleClick(functionName)` |
-| `setElementsSelectioninPopupList(elementsList)` |
-| `clickOnDropdownOfValueList(label)` |
-| `selectValueList(list)` |
-| `addObjectByDoubleClick(objectName)` |
-| `getMetricDefinition()` |
-| `setMetricName(newName)` |
-| `setFormulaMetricName(newName)` |
-| `setMetricNameOpenFromEdit(newName)` |
-| `setMetricDesc(newDesc)` |
-| `setMetricDefinition(formula)` |
-| `setAttributeFormDefinition(formula)` |
-| `presentInMetricDefinition(newToken)` |
-| `clearMetric()` |
-| `validateMetric()` |
-| `saveMetric()` |
-| `saveFormulaMetric()` |
-| `saveMetricEditorOpenFromEdit()` |
-| `addFilter()` |
-| `clearFilter()` |
-| `saveQualification()` |
-| `saveFilter()` |
-| `switchMode(modeName)` |
-| `switchModeInSimpleMetricEditor(modeName)` |
-| `openMetricOptionsDialog()` |
-| `openAFBPullDown()` |
-| `chooseAFB(afBehavior)` |
-| `saveAFB()` |
-| `cancelAFB()` |
-| `createDerivedMetricUsingFormula({ metricName, metricDefinition })` |
-| `waitForLoadingFinish()` |
-
-**Sub-components**
-- functionsPanel
-- simpleMetricPanel
-- objectsPanel
-- metricPanel
-- displayedMetricPanel
-- saveBtnfromSimpleMetricPanel
-- switchBtninSimplifiedMetricPanel
-
----
-
-### DossierMojoEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickBtnOnMojoEditor(btnTxt)` |
-| `closeEditor()` |
-| `clickShowDetails()` |
-| `clickHtBtnOnAlert(btnTxt)` |
-| `changeFolderPath(folderName)` |
-| `searchObject(objectName)` |
-| `searchAndSelect(objectName)` |
-| `selectObject(ObjectName)` |
-| `changeDropdown(title, newMode)` |
-| `clickOnCheckboxWithTitle(title)` |
-| `clickOnCheckboxWithLabel(label)` |
-| `changeDropdownForExport(title, newMode)` |
-| `clickOnCheckboxLabelForExport(label)` |
-| `clickOnRadioButton(label)` |
-| `clickOnPortraitBtn()` |
-| `clickOnLandscapeBtn()` |
-| `downloadPDF()` |
-| `hasMojoEdtiorErrorText(txt)` |
-| `setCustomInstructionsText(id, txt)` |
-| `clickOnLeftTab(tabName)` |
-| `addFileFromDisk(filename)` |
-| `clickDeleteFileIcon()` |
-| `clickYesOnDeleteConfirm()` |
-
-**Sub-components**
-- knowledgeAssetContainer
-
----
-
-### DossierMojoEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickBtnOnMojoEditor(btnTxt)` |
-| `closeEditor()` |
-| `clickShowDetails()` |
-| `clickHtBtnOnAlert(btnTxt)` |
-| `changeFolderPath(folderName)` |
-| `searchObject(objectName)` |
-| `searchAndSelect(objectName)` |
-| `selectObject(ObjectName)` |
-| `changeDropdown(title, newMode)` |
-| `clickOnCheckboxWithTitle(title)` |
-| `clickOnCheckboxWithLabel(label)` |
-| `changeDropdownForExport(title, newMode)` |
-| `clickOnCheckboxLabelForExport(label)` |
-| `clickOnRadioButton(label)` |
-| `clickOnPortraitBtn()` |
-| `clickOnLandscapeBtn()` |
-| `downloadPDF()` |
-| `hasMojoEdtiorErrorText(txt)` |
-| `setCustomInstructionsText(id, txt)` |
-| `clickOnLeftTab(tabName)` |
-| `addFileFromDisk(filename)` |
-| `clickDeleteFileIcon()` |
-| `clickYesOnDeleteConfirm()` |
-| `clickErrorButton(btnTxt)` |
-| `isAlertMessageDisplayed(txt)` |
-| `isMoJoEditorWithTitleDisplayed(title)` |
-
-**Sub-components**
-- knowledgeAssetContainer
-
----
-
-### EditorPanelForGrid
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `SimpleThresholdEditor` | `.mstrmojo-Editor.mstrmojo-SimpleThresholdEditor.modal` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `isDisplayFormAvailable(formName)` |
-| `selectDisplayForms(formNames)` |
-| `isDisplayFormSelected(formName)` |
-| `getDisplayAttributeFormNamesPullDownMenu()` |
-| `getPullDownFromMoreOption(title)` |
-| `getDisplayAttributeFormNamesOption(option)` |
-| `getDisplayFormItem(formName)` |
-| `isObjectPresent(objectName, objectType)` |
-| `renameObject(objectName, objectType, newObjectName)` |
-| `renameObjectFromSection(objectName, sectionName, newObjectName)` |
-| `clearObjectAlias(objectName, objectType)` |
-| `removeFromDropZone(objectName, objectType)` |
-| `removeObjectInColumnSet(objectName, columnSet)` |
-| `removeAllObjects()` |
-| `showTotal()` |
-| `dragObjectFromDZtoDS(objectName, objectType, srcZone)` |
-| `replaceObjectByName(objectName, objectType, objectNameToBeReplaced, objectTypeToBeReplaced)` |
-| `replaceObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)` |
-| `dragObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)` |
-| `selectDropZonePanel(panelName)` |
-| `isEditorPanelPresent()` |
-| `isReplaceByOptionPresent(objectType, objectName, contextOption, newObjectName)` |
-| `shortcutMetricOptionRankExists(objectName, rank)` |
-| `shortcutMetricOptionCalculationExists(objectName, calculationMetric, index)` |
-| `clearThreshold(objectName)` |
-| `rightClickOnEditorPanel(objectName)` |
-| `openThresholdsEditorWithoutWaiting(objectName)` |
-| `openAttributeThresholdsEditor(objectName)` |
-| `openMetricThresholdsEditor(objectName)` |
-| `openThresholdsEditor(objectName)` |
-| `openCalculationEditor(objectName, objectType)` |
-| `createCalculationFromEditorPanel(objectName, calculationType, secondObject)` |
-| `createSubtotalsFromEditorPanel(objectName, objectType, subtotalOptions)` |
-| `secondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)` |
-| `ActionOnsecondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)` |
-| `openDerivedObjectEditor(objectName, objectType, actionType)` |
-| `createGroup(objectName, objectType)` |
-| `createAttribute(objectName)` |
-| `createMetric(objectName)` |
-| `createLink(objectName)` |
-| `openAdvancedSortEditor(objectName)` |
-| `simpleSort(objectName, sortOrder)` |
-| `openGroupEditor(groupName, groupType)` |
-| `editorPanelCalculationMultiSelect(elements, operation)` |
-| `openDisplayAttributeFormsMenu(objectName, objectType)` |
-| `setDisplayAttributeFormNames(option, submitAndClose)` |
-| `multiSelectDisplayFormsFromEditorPanel(objectName, formNames)` |
-| `multiSelectDisplayFormsFromDropZone(formNames, objectName, dropzone)` |
-| `multiSelectDisplayForms(formNames, skipCloseForm)` |
-| `closeFormPopup(buttonName)` |
-| `rightClickOnElement(el)` |
-| `getRowObjectTexts()` |
-| `getColumnSetObjectTexts(columnSetName)` |
-| `createThresholdForMetric({ objectName, createFunction })` |
-| `openPanelContextMenu()` |
-| `selectOptionFromContextMenu(menuOption)` |
-| `changeTitle(newTitle)` |
-
-**Sub-components**
-- datasetsPanel
-- filterPanel
-- getDockPanel
-- editorPanel
-- getDropZonePanel
-
----
-
-### ExistingObjectsDialog
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `getContexMenu(objName, menuItem)` |
-| `deleteObjectFromDatasetContainer(object)` |
-| `expandFolder(title)` |
-| `doubleClickOnObject(objName)` |
-| `selectMetricsFromDropdown()` |
-| `selectAccessModeFromDropdown(buttonName)` |
-| `clickOnBtn(btnText)` |
-| `confirmYearInDropzone()` |
-| `getAttributeFromFolder(objectName)` |
-| `dragAttToDropzone(objectName)` |
-| `confirmExistingObjDialog()` |
-| `attributeTimeFolder()` |
-| `getAttributeFolder(folderName)` |
-| `getYearAttribute()` |
-| `getAttribute(attributeName)` |
-| `expandTimeFolder()` |
-| `timeFolderElements()` |
-| `addAttributeToDropzone(attrName)` |
-| `addYearToDropzone()` |
-| `dragAndDropObjectAndWait(movingElement, targetElement)` |
-| `changeExistingObejctsDropdown(object, option)` |
-| `searchForObjectOnExistingObjectsDialog(keywords)` |
-| `moveExistingObjectsEditorScrollBar(direction, pixels)` |
-| `openFilterEditor()` |
-| `editFilterEditor()` |
-| `browseMDObject(obj, folder)` |
-| `clickCreateParameterBtn()` |
-| `selectCreateParameterType(type)` |
-| `clickClearAllBtn()` |
-| `clickButtonInClearAllPopup(buttonName)` |
-| `selectItemInParameterContextMenu(menuItem, parameterName)` |
-| `isObjectDisplayedinDSContainer(objectName)` |
-
-**Sub-components**
-- getObjectFromDatasetContainer
-- getObjectFromObjectBrowseContainer
-- getObjectTextFromObjectBrowseContainer
-- loadingTextFromObjectBrowserContainer
-
----
-
-### FreeformPositionAndSize
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `ClickOnXPositionInput()` |
-| `TypePositionInFormatPanel(number)` |
-| `ClickOnYPositionInput()` |
-| `ClickOnWidthInputBoxInFormatPanel()` |
-| `ClickOnHeightInputBoxInFormatPanel()` |
-| `ReplaceWidthInputBoxInReactPanel(Width)` |
-| `ReplaceHeightInputBoxInReactPanel(height)` |
-| `ReplaceXInputBoxInReactPanel(x)` |
-| `ReplaceYInputBoxInReactPanel(y)` |
-| `verifyHeightAndWidth()` |
-| `verifyXAndY()` |
-
-**Sub-components**
-- baseFormatPanel
-- bseFormatPanel
-
----
-
-### GroupEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `GroupEditor` | `.mstrmojo-DerivedElementsEditor` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `multiSelectAndDnDtoSelectedArea(attributeName1, attributeName2)` |
-| `moveGroupByPosition(sourceGroupName, targetGroupName, relativePosition)` |
-| `calculateGroupRect(groupName)` |
-| `groupRelativePosition(groupName1, groupName2, relativePosition)` |
-| `openGroupEditor({ isFromGrid, isCreate, attributeName })` |
-| `renameGroup(newName)` |
-| `selectElement(reference)` |
-| `selectElements(references)` |
-| `deSelectElement(reference)` |
-| `typeSearchKey(searchKey)` |
-| `renameNDE(newName)` |
-| `clickElementAndWait(element)` |
-| `renameGroupFromEditor(oldName, newName)` |
-| `deleteGroupFromEditor(name)` |
-| `editGroupFromEditor(name)` |
-| `displayAllOtherElementByItems()` |
-| `displayAllOtherElementByGroup()` |
-| `createGroups({ groupElements, groupNames })` |
-| `createGroupsFromEditorPanel({ attributeName, groupElements, groupNames })` |
-
-**Sub-components**
-- getContainer
-- getAttributeInEditorPanel
-
----
-
-### HtmlContainer_Authoring
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickHtmlContainerOkButton()` |
-| `clickFormatPanelOkButton()` |
-| `switchToIFrameByEdit(inputText)` |
-| `switchToIFrameByFormatPanel(inputText)` |
-| `switchToHtmlTextByEdit(inputText)` |
-| `switchToHtmlTextAndInput(inputText)` |
-| `switchToHtmlTextByFormatPanel(inputText)` |
-
-**Sub-components**
-- baseFormatPanel
-- getContainer
-- formatPanel
-- clickHtmlContainer
-- showFormatPanel
-- clickFormatPanel
-
----
-
-### ImageContainer_Authoring
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `editURL(visualizationName, url)` |
-| `editURLonFedRamp(visualizationName, url)` |
-| `setXAndY(x, y)` |
-| `restoreToOriginalSizeByFormatPanel()` |
-| `singleClickOnImageContainer(waitType, visualizationName)` |
-| `setImageContainersPicture(imageUrl, visualizationName)` |
-| `addImageFromDisk(visualizationName, filename)` |
-| `editURLFromFormat(url)` |
-| `clickOnImageSrc(visualizationName)` |
-
-**Sub-components**
-- baseFormatPanel
-- getContainer
-- getImageContainer
-- getFedRampImageContainer
-
----
-
-### InCanvasSelector_Authoring
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `resetContextMenu(selectorTitle)` |
-| `createNewElementFilter()` |
-| `createNewAttributeMetricFilter()` |
-| `createNewPanelFilter()` |
-| `dragDSObjectToSelector(objectType, objectName, datasetName, filterIdx = '', isScrollIntoView = true)` |
-| `clickSelectTargetButton(selectorTitle)` |
-| `clickApplyButtonFromFilterBoxDialog()` |
-| `selectTargetFilterFromWithinSelector(trgtFilterNames, selectorTitle)` |
-| `selectTargetVizFromWithinSelector(trgtVizNames, selectorTitle, replaceObjectName = null)` |
-| `selectTargetsFromWithinSelector(trgtFilterNames, trgtVizNames, selectorTitle)` |
-| `selectTargets(trgtFilterNames, trgtVizNames)` |
-| `cancelSelectTargetForSelector()` |
-| `selectTargetForSelectorContextMenu(selectorTitle, targets)` |
-| `openSelectorTargetsMenu(selectorTitle)` |
-| `openCurrentSelectorTargetsMenu()` |
-| `changeDisplayStyle(selectorTitle, styleName)` |
-| `changeDisplayStyleforSelectedSelector(styleName)` |
-| `selectAttributeDisplayForms(selectorTitle, formNames)` |
-| `openAttributeDisplayFormsMenu(selectorTitle)` |
-| `changeSelectorMode(selectorTitle, modeName)` |
-| `unsetSelectorFilter(selectorTitle)` |
-| `unsetCurrentSelectorFilter()` |
-| `toggleMultipleSelection(selectorTitle)` |
-| `toggleMultipleSelectionforSelectedSelector()` |
-| `metricSliderSelectorOnVal(selectorTitle, startValue, stopValue)` |
-| `switchMetricSelectorType(selectorTitle, type)` |
-| `metricSliderSelectorOnRank(selectorTitle, rankType, value)` |
-| `metricQualificationSelectorOnValue(selectorTitle, operatorName, inputValue1, inputValue2)` |
-| `metricQualificationSelectorOnRank(selectorTitle, rankType, value)` |
-| `metricQualificationSelectorOnNullValue(selectorTitle, operatorType)` |
-| `checkElementList(selectorTitle, elementNames)` |
-| `checkElementListByIndex(index, elementNames, isSpaceNotReplaced = false)` |
-| `searchBoxSelector(selectorTitle, searchPattern, elementName)` |
-| `searchBoxSelectorWithoutSelecting(selectorTitle, searchPattern)` |
-| `selectElementInSearchBox(elementName)` |
-| `clearSearchBox(selectorTitle)` |
-| `searchInDropdownSelector(selectorTitle, searchPattern)` |
-| `selectElementsInDropdown(selectorTitle, elements, skipOpeningPopup)` |
-| `linkOrButtonBarSelector(selectorTitle, elementNames)` |
-| `linkOrButtonCurrentBarSelector(elementNames)` |
-| `linkOrButtonBarSelectorInLibrary(selectorTitle, elementNames)` |
-| `listBoxSelector(selectorTitle, elementNames)` |
-| `openDropDownSelectorPullList(selectorTitle)` |
-| `singleDropdownSelector(selectorTitle, elementName)` |
-| `checkPresenceOfSelectTrgtBtn(selectorTitle)` |
-| `checkNonPresenceOfDynamicSelIcon(selectorTitle)` |
-| `checkPresenceOfDynamicSelIcon(selectorTitle)` |
-| `checkPresenceOfSelector(selectorTitle, selectorType)` |
-| `checkExcludeMode(selectorTitle, elementName, selectorType)` |
-| `checkNotExcludeMode(selectorTitle, elementName, selectorType)` |
-| `checkOrderOfElements(order, selectorTitle)` |
-| `checkForEleOrValueFilterBox(id)` |
-| `checkForNoEleOrValueFilterBox(id)` |
-| `checkForAttrOrMetricsFilterBox(id)` |
-| `selectSurveysAsTargets()` |
-| `toggleDynamicSelectionIcon(selectorTitle)` |
-| `verifyTooltipLocation(content, selectorName)` |
-| `renameSelectorbyDoubleClick(selectorTitle, newName)` |
-| `dragSelectorToCanvas(selectorTitle)` |
-| `selectFromLinkBarAttributeMetricSelector(option)` |
-| `hoverOnEmptyICSByIndex(index)` |
-| `createNewParameterFilter()` |
-| `dragDSObjectToParameterSelector(objectType, objectName, datasetName, filterIdx)` |
-| `dragDSObjectAfterSearchToParameterSelector(objectType, objectName, datasetName, filterIdx)` |
-| `setParameterSelectorInputValueByIndex(idx, value)` |
-| `setParameterSelectorInputValueByName(name, value)` |
-| `setParameterSliderSelectorValue(selectorTitle, value)` |
-| `openParameterCalendar(selectorTitle)` |
-| `resetToDefault(selectorTitle)` |
-| `copyFormatting(selectorTitle)` |
-| `pasteFormatting(selectorTitle)` |
-| `getSelectedPanelText()` |
-
-**Sub-components**
-- datasetPanel
-- filterPanel
-- getContainer
-- hoverOnContainer
-- getAttrOrMetricSelectorContainer
-- hoverOnVisualizationContainer
-- getParameterSelectorContainer
-- getSelectedPanel
-
----
-
-### Keyboard
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `pressArrowKeyForTimes(containerName, key, times)` |
-| `pressShiftAndArrowKeyForTimes(containerName, key, times)` |
-| `PressDeleteKeyForContainer(containerName)` |
-| `pressSingleKeyAndHoldOn(keyName)` |
-| `releaseSingleKey(keyName)` |
-| `dragAndDropAndHoldOnMouse(element, xPixels = 0, yPixels = 0)` |
-| `verifySnapGuide(lines, status)` |
-| `moveContainerByOffsetAndHoldOnMouse(containerName, moveX, moveY)` |
-| `moveSelectedGroupByOffsetAndHoldOn(containerName, moveX, moveY)` |
-| `releaseMouse()` |
-| `storeContainerRect(containerNames)` |
-| `PressTabKeyForTimes(times)` |
-| `PressEnterKeyForTimes(times)` |
-| `PressUpArrowkeyForTimes(times)` |
-| `PressDownArrowkeyForTimes(times)` |
-| `PressRightArrowkeyForTimes(times)` |
-| `PressLeftArrowkeyForTimes(times)` |
-| `PressEscKey()` |
-| `pressAltAndEnterKeyForTimes(times)` |
-
-**Sub-components**
-- baseContainer
-
----
-
-### MoreOptionsDialog
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `toggleOptionsForRowsHeader(Option)` |
-| `toggleOptionsForColumnsHeader(Option)` |
-| `saveAndCloseMoreOptionsDialog()` |
-| `selectDisplayAttributeFormMode(formMode)` |
-| `selectHideShowNullZerosOption(Option)` |
-| `changeFilteringMode(filteringMode)` |
-| `resetRowsPerPage(value)` |
-
-**Sub-components**
-_none_
-
----
-
-### NewGalleryPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `selectViz(vizName)` |
-| `hoverOnCategory(category)` |
-| `clickOnViz(vizName)` |
-| `closeChangeViz()` |
-
-**Sub-components**
-- NewGalleryPanel
-- getCategoryPanel
-
----
-
-### DatasetsPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `addDataFromDatasetsPanel(addDataOption)` |
-| `addObjectToVizByDoubleClick(objectName, objectTypeName, datasetName)` |
-| `addObjectFromDSFolderToVizByDoubleClick(objectName, objectTypeName, datasetName, folderName)` |
-| `addObjectToFilter(objectName, objectTypeName, datasetName)` |
-| `addObjectFromFolderToFilter(objectName, objectTypeName, datasetName, folderName)` |
-| `addObjectFromSearchListToVizByDoubleClick(objectName, objectTypeName, datasetName)` |
-| `actionOnObjectFromDataset(objectName, objectTypeName, datasetName, menuOption)` |
-| `secondaryCMOnObjectFromDataset(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)` |
-| `createCalculationFromDataset(objectName, objectTypeName, datasetName, calculationType, secondObject)` |
-| `openEditObjectEditor(objectName, objectTypeName, datasetName)` |
-| `selectFromDatasetsPanelContextMenu(menuItemName)` |
-| `searchOnDatasetsPanel(keywords)` |
-| `clearSearch()` |
-| `selectFromSearchPulldown(item)` |
-| `collapseDataset(datasetName)` |
-| `expandDataset(datasetName)` |
-| `collapseFolderUnderDataset(folderName, datasetName)` |
-| `expandFolderUnderDataset(folderName, datasetName)` |
-| `deleteDataset(datasetName)` |
-| `renameObject(objectName, objectTypeName, datasetName, newObjectName)` |
-| `editObject(objectName, objectTypeName, datasetName)` |
-| `clearObjectAlias(objectName, objectTypeName, datasetName)` |
-| `duplicateObjectAs(objectName, objectTypeName, datasetName, newObjectTypeName)` |
-| `duplicateObjectInFolderAs(objectName, objectTypeName, folderName, datasetName, newObjectTypeName)` |
-| `multiSelectObjectsAndTakeCMAction(objectList, datasetName, firstMenu)` |
-| `multiSelectObjectsAndTakeSecondaryCM(objectList, datasetName, firstMenu, secondaryMenu)` |
-| `renameDataset(datasetName, newDatasetName)` |
-| `showHiddenObject(objectName, objectType)` |
-| `showHiddenObjects(objectNameList)` |
-| `chooseDatasetContextMenuOption(datasetName, option)` |
-| `rightClickOnDataset(datasetName)` |
-| `searchAndAddExistingDataset(datasetName)` |
-| `showDataForSelectedDatasetAndObject(objectName, datasetName)` |
-| `changePullDown(fromOption, toOption)` |
-| `changePullDownwithTitle(pullDownTitle, fromOption, toOption)` |
-| `hoverAttributeFormInDataTypeMenu(formName)` |
-| `linkAttribute(tarAttribute)` |
-| `linkAttributeForm(sourForm, tarAttr, tarAttrForm)` |
-| `inputNameInatasetSaveAs(name)` |
-| `saveDataset()` |
-| `createTimeOrGeoAttribute(newType, objName, datasetName, contextOption)` |
-| `editDatasetNotification(itemText)` |
-| `changeNewObjectInReplaceObjectsEditor(oriObject, newObject)` |
-| `searchAndSelectNewObjectInReplaceObjectsEditor(searchKey, oriObject, newObject)` |
-
-**Sub-components**
-- datasetsPanel
-
----
-
-### Open_Canvas
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickOnOpenCanvasButton()` |
-| `clickOnAutoCanvasButton()` |
-| `clickOnCanvas()` |
-| `multiSelectContainerAndTakeCMOption(containerNameList, cmOption)` |
-| `openAndTakeContextMenuByRMC(containerName, cmOption)` |
-| `openAndTakeContextMenuByRMCTitle(containerName, cmOption)` |
-| `openContextMenuByRMC(containerName)` |
-| `multiSelectContainersFromCanvas(containerList)` |
-| `moveSelectedGroup(moveX, moveY)` |
-| `selectedGroupContextMenuAction(cmOption)` |
-| `GroupContextMenuAction(containerName, cmOption)` |
-| `doubleClickContainer(containerName)` |
-| `rightClickContainerAndDoCMAction(containerName, cmOption)` |
-| `calculateContainerSizeAndLocation(containerName)` |
-| `verifyAlignment(containerNameList, alignOption)` |
-| `verifyDistribute(containerNameList, distributeOption)` |
-| `verifyGroupPosition(position, containerName)` |
-| `lassoSelect(fromCordinates, toCordinates)` |
-| `resizeGroup(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)` |
-| `calculateGroupRect(groupContainerChildName)` |
-| `resizeGroupAndHoldMouse(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)` |
-
-**Sub-components**
-- baseContainer
-- DocPanel
-
----
-
-### PanelSelector
-> Extends: `InCanvasSelector_Authoring`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `selectTargetPanelStackFromWithinSelector(panelStacks, selectorTitle)` |
-| `selectTargetPanelStackFromLayersPanel(panelStacks, selectorTitle)` |
-| `selectorCMAction(selector, cmOption)` |
-| `linkBarPanelSelector(selectorTitle, elementName)` |
-| `dropdownPanelSelector(selectorTitle, elementName)` |
-
-**Sub-components**
-- layersPanel
-- getPanel
-- getContainer
-- getElementFromLinkBarPanel
-
----
-
-### PanelStack
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `openPanelStackCM(name)` |
-| `panelStackCMAction(name, cmOption)` |
-| `clearAllFilterOnPS(ps)` |
-| `clearFilterOnPS(ps, condition)` |
-| `addPanel(stack)` |
-| `switchPanel(panel, stack)` |
-| `switchPanelByArrow(arrow, stack)` |
-| `doubleClickOnPanel(panel, stack)` |
-| `panelCMAction(panel, stack, cmOption)` |
-| `moveVerticalScrollbarInPanel(stack, moveY)` |
-| `renamePanel(panel, stack, newPanel)` |
-| `inputToRename(newName)` |
-| `clickContainerInStack(viz, stack)` |
-| `containerCMAction(viz, stack, cmOption)` |
-| `clickButtonByName(id, name)` |
-| `hoverOnButton(id, name)` |
-| `buttonStyle(id, name, style)` |
-| `isButtonDisabled(id, name)` |
-| `getPanelPadding(id, style)` |
-
-**Sub-components**
-- getPanel
-- getPanelInPanel
-- getContainerInCurrentPanelOfPanel
-- openPanel
-- getAddPanel
-- getPanelSwitchArrowInPanel
-- getVerticalScrollBarInPanel
-- getCurrentPanelCanvasInPanel
-- getContainer
-
----
-
-### ResponsiveGroupingEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `groupContainers(boxNames)` |
-| `actionFromContainerMenu(containerName, cmOption)` |
-| `actionFromContainerContextMenu(containerName, cmOption)` |
-| `deleteGroupFromToolbar(groupName)` |
-| `mergeGroups(srcGroupName, dstGroupName)` |
-| `selectGroup(groupName)` |
-| `clickSaveCancelBotton(buttonName)` |
-
-**Sub-components**
-- baseContainer
-- baseContainergetContainer
-- getContainer
-
----
-
-### RichTextBox
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `InputPlainText(inputText, RichTextbox)` |
-| `DoubleClickRichTextbox(RichTextbox)` |
-| `pressArrowKeyToMoveCursor(key, times)` |
-| `pressShiftAndArrowKeyToHighlightText(key, times)` |
-| `pressCtrlAndCtoCopyText()` |
-| `pressCtrlAndVtoPasteText()` |
-| `verifyVeriticalAlignment(expectedType)` |
-
-**Sub-components**
-- getContainer
-- getRichTextContainer
-
----
-
-### Shapes
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `changeShapeBorderStyle(style)` |
-| `selectShapeBorderStyleFromDropdown(style)` |
-| `selectShapeBorderColorButton()` |
-| `selectShapeFillColorButton()` |
-| `selectLineShapeColorButton()` |
-| `verifyOuterBorderWidth(expectWidth)` |
-| `selectLineStartArrow(arrowOption)` |
-| `selectLineEndArrow(arrowOption)` |
-| `verifyLineStartArrow(startArrow)` |
-| `function(text)` |
-| `verifyLineEndArrow(endArrow)` |
-| `function(text)` |
-| `verifyLineDirection(expectedDirection)` |
-| `ChangeShapeOuterBorderWidth(Width)` |
-| `ClickBorderWidthIncreaseBtnForTimes(times)` |
-| `ClickBorderWidthDecreaseBtnForTimes(times)` |
-| `ChangeShapeFillColorOpacity(opacity)` |
-| `ClickOnRadioButton(option)` |
-| `ClickOnLineDirectionButton(option)` |
-| `verifyCircle()` |
-| `verifyEllipse()` |
-| `selectPolygonSlides(sides)` |
-| `ClickPolygonSlidesIncreaseBtnForTimes(times)` |
-| `ClickPolygonSlidesDecreaseBtnForTimes(times)` |
-| `verifyPolygonSlides(slides)` |
-| `function(text)` |
-| `verifyTriangleDirection(direction)` |
-| `verifyRightTriangleDirection(direction)` |
-
-**Sub-components**
-- baseContainer
-- baseFormatPanel
-
----
-
-### TOCcontentsPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `changePanelWidthByPixel(offsetX)` |
-| `changeView(contentsPanelView)` |
-| `toggleChapter(chapterTitle)` |
-| `clickOnChapter(chapterTitle)` |
-| `clickOnPage(chapterTitle, pageTitle)` |
-| `actionOnPanel(option)` |
-| `contextMenuOnChapter(chapterTitle, option)` |
-| `renameChapterByDoubleClickFromChapterTitle(chapterTitle, newChapterTitle)` |
-| `renameChapterFromChapterTitle(chapterTitle, newChapterTitle)` |
-| `deleteChapterFromChapterTitle(chapterTitle)` |
-| `MenuOnChapter(chapterTitle, option)` |
-| `deleteChapterFromContextMenu(chapterTitle)` |
-| `renameChapterFromContextMenu(chapterTitle, newChapterTitle)` |
-| `contextMenuOnPage(pageTitle, chapterTitle, option)` |
-| `deleteChapterFromPageTitle(pageTitle, chapterTitle)` |
-| `renamePageFromPageTitle(pageTitle, chapterTitle, newPageTitle)` |
-| `renamePageByDoubleClickFromPageTitle(pageTitle, newPageTitle, chapterTitle)` |
-| `dragNdropChapter(chapterTitle, chapterIndex)` |
-| `dragNdropToMovePage(srcPage, srcChapter, desPage, desChapter, relativePosition)` |
-| `dragPageAndDropToCreateNewChapter(pageName, chapterName, chapterIndex)` |
-| `moveVerticalScrollbar(moveY)` |
-| `changeCoverImageBySample(sampleImageOrder)` |
-| `changeCoverImageByUrl(imageUrl)` |
-| `selectMultiplePagesUsingControlOrShiftToDoOperation(key, pageList, chapterTitle, contextMenuOption)` |
-| `clickCoverImageCancelBtn()` |
-| `isCurrentPageDisplayed(pageTitle, chapterTitle)` |
-
-**Sub-components**
-- contentsPanel
-- getPage
-- getCurrentPage
-
----
-
-### Textfield
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `InputSimpleText(text, textContainer)` |
-| `insertTextField(buttonName)` |
-| `addDatasetObjectByDragAndDrop(objectTypeName, objectName, datasetName, containerName)` |
-| `replaceTextboxText(textboxText)` |
-| `pasteTextboxText(containerTitle)` |
-| `singleClickOnTextContainer(waitType)` |
-| `singleClickOnTextContainer(waitType, containerName)` |
-| `ClickOnFontStyleButtonInPanel(type)` |
-| `ClickFontSizeIncreaseBtnForTimes(times)` |
-| `ClickFontSizeDecreaseBtnForTimes(times)` |
-| `replaceFontSizeText(fontSize)` |
-| `ClickOnFontColorDropdown()` |
-| `ClickOnAlignOrPaddingButton(option)` |
-| `changeNumberFormat(type)` |
-| `verifyTextBoxVeriticalAlignment(expectedType)` |
-
-**Sub-components**
-- datasetsPanel
-- baseFormatPanel
-- getContainer
-- getTextContainer
-- getFontStyleButtonFromFormatPanel
-
----
-
-### ThresholdEditor
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `CloseBtn` | `.edt-title-btn.mstrmojo-Editor-close` | button |
-
-**Actions**
-| Signature |
-|-----------|
-| `deleteThresholdConditionByOrderNumber(orderNum)` |
-| `openOuterBorderDropdownMenu()` |
-| `openOuterBorderColorPickerDropdownMenu()` |
-| `selectOuterBorderOptionByIndexNumber(indexNum)` |
-| `selectOuterBorderColorByColorName(colorName)` |
-| `openFontSizeDropdownMenu()` |
-| `selectFontSizeBySizeNumber(sizeNum)` |
-| `openFontColorDropdownMenu()` |
-| `selectFontColorByColorName(colorName)` |
-| `selectFontByFontName(fontName)` |
-| `openFontFamilyDropdownMenu()` |
-| `selectQuickSymbolByIndexNumber(index)` |
-| `openQuickSymbolDropDownMenu()` |
-| `inputInTextBox(message)` |
-| `replaceInTextBox(message)` |
-| `selectApplyToOptionFromThreeDotsMenu(optionName, orderNum)` |
-| `selectSecondaryOptionInMenuForThresholdConditions(secondaryOp, orderNum)` |
-| `clickOnOptionOnTheFontButtonBar(optionName)` |
-| `selectOptionFromDataReplaceDropdownMenu(optionName)` |
-| `clickOnEnableDataReplaceCheckBox()` |
-| `addColorBandByRMCColorBand(indexNum)` |
-| `getMarkerAndChangeValue(indexNum, value)` |
-| `changeColorForColorBand(colorName, indexNum)` |
-| `deletColorBandByIndexNumber(indexNum)` |
-| `addHandlerInTheMiddleArea()` |
-| `dragAndMoveMarker(indexNum)` |
-| `openFormatPreviewPanelByOrderNumber(orderNum)` |
-| `openThresholdConditionByOrderNumber(orderNum)` |
-| `setFillColor(colorName)` |
-| `setFillColorOpacity(opacity)` |
-| `clickOnCheckMarkOnFormatPreviewPanel()` |
-| `clickOnCancelMarkOnFormatPreviewPanel()` |
-| `selectAttributeElementFromColumnContainer(elementName)` |
-| `saveAndCloseAdvancedThresholdEditor()` |
-| `saveAndCloseSimThresholdEditor()` |
-| `openThresholdEditorFromViz(objectName, visualizationName)` |
-| `clearThresholdFromViz(objectName, visualizationName)` |
-| `openThresholdEditorFromCompoundGridDropzone(objectName, columnSet)` |
-| `clearThresholds(headerName, visualizationName)` |
-| `switchSimpleThresholdsType(thresholdsType)` |
-| `switchSimpleThresholdsTypeI18N(thresholdsType)` |
-| `revertThresholdColorBand()` |
-| `openSimpleThresholdColorBandDropDownMenu()` |
-| `selectSimpleThresholdColorBand(colorBandName)` |
-| `openSimpleThresholdImageBandDropDownMenu()` |
-| `openAndSelectSimpleThresholdColorBand(colorBandName)` |
-| `selectSimpleThresholdImageBand(imageBandName)` |
-| `selectSimpleThresholdBasedOnObject(objectName)` |
-| `selectSimpleThresholdBasedOnOption(optionName)` |
-| `selectSimpleThresholdBreakByObject(objectName)` |
-| `switchSimToAdvThresholdWithApply()` |
-| `switchSimToAdvThresholdWithClear()` |
-| `switchAdvToSimThresholdWithApply()` |
-| `switchAdvToSimThresholdWithClear()` |
-| `openNewThresholdCondition()` |
-| `openNewThresholdConditionI18N(name)` |
-| `clickOnNewConditionEditorOkButton()` |
-| `checkThresholdConditionByIndex(index)` |
-| `clickThresholdConditionByIndex(index)` |
-| `openColumnSetPullDown()` |
-| `selectColumnSet(columnSet)` |
-| `openThresholdEditorFromMicroChart(microchartName)` |
-| `openMicrochartFillColor()` |
-| `setMicrochartFillColor(colorName)` |
-| `clickOnEnableAllowUsersCheckBox(item)` |
-| `checkAttributeName(item)` |
-| `selectOptionSample()` |
-| `setOpacityPercentage(value)` |
-| `selectOptionAttributeFromDropdown(elementName)` |
-| `clickFormatPreviewPanelOkButton()` |
-| `closeThresholdEditor()` |
-
-**Sub-components**
-- vizPanel
-- getFormatPreviewPanel
-- getFillColorPanel
-- getAttributeElementFromColumnContainer
-- microchartFillColorPanel
-- formatPreviewPanel
-
----
-
-### Utils
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `getRgbaColorCode(expectedColor)` |
-
-**Sub-components**
-_none_
-
----
-
-### VizPanelForGrid
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `FilterSummaryPopupMenu` | `div.mstrmojo-ListBase.mstrmojo-ui-Menu.mstrmojo-viz-fe-menu.visible` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `getElementByPartialValueByViz(visualizationName, elementPartialValue)` |
-| `getObjectHeader(objectName, visualizationName)` |
-| `getGridCellStyleByPosition(row, col, visualizationName, style)` |
-| `getGridCellTextByPosition(row, col, visualizationName)` |
-| `resetContextMenuButton(visualizationName)` |
-| `renameObject(objectName, visualizationName, newObjectName)` |
-| `existObjectByName(objectName, visualizationName)` |
-| `isContextMenuOptionPresentInHeaderCell(menuOption, cellText, visualizationName)` |
-| `existReplaceByOption(objectName, visualizationName, targetObject)` |
-| `replaceObjectWithinGrid(objectName, targetObject, visualizationName, waitForLoadingDialog = true)` |
-| `existDrillOption(objectName, visualizationName, targetObject)` |
-| `sortAscending(objectName, visualizationName)` |
-| `metricSortFromViz(objectName, visualizationName, order)` |
-| `clickMetricSortAscending(objType, objName)` |
-| `clickMetricSortDescending(objType, objName)` |
-| `clickMetricClearSort(objType, objName)` |
-| `selectSortIconsFromElement(objectType, objectName, visualizationName)` |
-| `selectSortWithinAttribute(objectType, objectName, sortType, sortAttr)` |
-| `sortDescending(objectName, visualizationName, waitForLoadingDialog = true)` |
-| `openAdvancedSortEditor(objectName, visualizationName)` |
-| `openCustomSortEditor(objectName, visualizationName)` |
-| `clickButtonInCustomSortEditor(buttonTxt)` |
-| `addAdvancedSortParameter(columnOrder, objectName, sortOrder)` |
-| `saveAndCloseSortEditor()` |
-| `closeSortEditor()` |
-| `switchRowColumnInSortEditor(buttonName)` |
-| `clickSortDeleteRowButton(columnOrder)` |
-| `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)` |
-| `dragSortRowwithPositionInAdvancedSortEditor(srcSortRow, desPosition, desSortRow)` |
-| `moveAdvancedSortEditorScrollBar(direction, pixels)` |
-| `hoverOverAdvancedSortRulesPanel()` |
-| `clickOnGridElement(objectName, visualizationName)` |
-| `clickOnGridElementWithoutLoading(objectName, visualizationName)` |
-| `hoverOnGridElement(objectName, visualizationName)` |
-| `keepOnly(objectName, visualizationName, waitForLoadingDialog = true)` |
-| `excludeElement(objectName, visualizationName, waitForLoadingDialog = true)` |
-| `mouseOverGridCellByPosition(row, col, visualization)` |
-| `openContextMenuItemForGridCells(gridCellNames, menuItemName, visualizationName)` |
-| `rightMouseClickOnElements(elements, waitForLoadingDialog)` |
-| `openContextMenuItemForGridCell(gridCellName, menuItemName, visualizationName)` |
-| `openContextMenuItemForGridCellByPosition(row, col, menuItemName, visualizationName)` |
-| `openContextMenuItemForGridCellsByOffSet(gridCellNames, menuItemName, visualizationName, offsetX = 1, offsetY = 1)` |
-| `rightMouseClickOnElementsbyOffSet(elements, offsetX, offsetY, waitForLoadingDialog)` |
-| `rightClickOnHeader(objectName, visualizationName)` |
-| `clickOnGridObjectHeader(objectName, visualizationName)` |
-| `clickOnMultiGridCellByOffSet(objectNames, visualizationName)` |
-| `openFormatToolBoxFromColumnHeader(objectName, visualizationName)` |
-| `openFormatToolBoxFromVisualizationTitle(visualizationName)` |
-| `expandOutlineFromColumnHeader(objectName, visualizationName)` |
-| `collapseOutlineFromColumnHeader(objectName, visualizationName)` |
-| `confirmOutlineGridCollapsed(objectName, visualizationName)` |
-| `confirmOutlineGridExpanded(objectName, visualizationName)` |
-| `openFormatToolBoxFromElement(objectName, visualizationName)` |
-| `existContextMenuItemByName(option)` |
-| `selectContextMenuOptionFromElement(objectName, option, visualizationName)` |
-| `selectContextMenuOptionFromElementByIndex(rowIndex, colIndex, option, visualizationName)` |
-| `selectContextMenuOptionFromElementWithHyperLink(objectName, option, visualizationName)` |
-| `selectContextMenuOptionFromObjectinDZ(objectName, desZone, option)` |
-| `clickContextMenuButton(button)` |
-| `clickNfShortcutIcon(shortcut)` |
-| `selectNumberFormatFromDropdown(numberFormat)` |
-| `clickNumberFormatDropdownOption()` |
-| `selectNfCurrencySymbolFromDropdown(symbol)` |
-| `selectNfCurrencyPositionFromDropdown(position)` |
-| `selectNfValueFormatFromDropdown(format)` |
-| `clickNfCondense()` |
-| `replaceText({ elem, text })` |
-| `inputNfCustomTextBox(newFormat)` |
-| `toggleNfThousandSeparator()` |
-| `selectNfNegativeForm(form, inRed)` |
-| `moveNfDecimalPlace(change, numOfPlaces)` |
-| `openCalculationEditor(metricName, visualizationName)` |
-| `openThresholdEditor(metricName, visualizationName)` |
-| `openShowDataDiagFromViz(visualizationName)` |
-| `openMoreOptionDiagFromViz(visualizationName)` |
-| `deleteViz(visualizationName)` |
-| `setDataSource(visualizationName, gridSourceName)` |
-| `setDataSourceForCompoundOrAg(containerName, columnSet, dataSource)` |
-| `getDataSourceOption(gridName, dataSource)` |
-| `getDataSourceOptionForCompoundOrAg(containerName, columnSet, dataSource)` |
-| `selectVizContainer(visualizationName)` |
-| `expandOutlineFromElement(elementName, visualizationName)` |
-| `collapseOutlineFromElement(elementName, visualizationName)` |
-| `selectMultipleElements(elements, visualizationName)` |
-| `selectMultipleGridCells(elements, visualizationName)` |
-| `selectMultipleEncodedGridCells(elements, visualizationName)` |
-| `selectMultipleElementsWithHyperLink(elements, objectName, visualizationName)` |
-| `selectMultipleElementsByPartialValue(elementPartialValue, objectName, visualizationName)` |
-| `clearMultipleElements(elements, objectName, visualizationName)` |
-| `selectElementsUsingShift(elements_1, elements_2, visualizationName)` |
-| `isElementPresent(element, objectName, visualizationName)` |
-| `groupElements(elements, objectName, visualizationName, groupName)` |
-| `groupElements2(elements, objectName, visualizationName, groupName)` |
-| `inputFieldRenameHelper(newName)` |
-| `groupElementsHelper(arrElements, groupName)` |
-| `calculationElementsHelper(arrElements, calculation, calculationName)` |
-| `groupElementsByPartialValue(elementPartialValue, objectName, visualizationName, groupName)` |
-| `ungroupElements(objectName, visualizationName, groupName)` |
-| `ungroupElements2(objectName, visualizationName, groupName)` |
-| `groupElementsForCalculation(elements, objectName, visualizationName, groupName, calculationMenu)` |
-| `addElementsToExistingGroup(elements, objectName, visualizationName, groupName)` |
-| `groupElementsByPartialValueForCalculation(elementPartialValue, objectName, visualizationName, groupName)` |
-| `keepOnlyVizFilter(elements, objectName, visualizationName)` |
-| `rightClickOnHeader(objectName, visualizationName)` |
-| `clearThresholds(headerName, visualizationName)` |
-| `createNewGroup(attributeName, visualizationName)` |
-| `drillFromHeader(headerName, drillToObject, visualizationName, waitForLoadingDialog = true)` |
-| `drillFromElements(elements, drillToObject, visualizationName)` |
-| `drillFromElement(element, drillToObject, visualizationName)` |
-| `toggleShowTotalsFromAttribute(objectName, visualizationName, subtotalOptions, waitForLoadingDialog = true)` |
-| `toggleShowTotalsFromMetric(objectName, visualizationName, waitForLoadingDialog = true)` |
-| `renameVisualizationByContextMenu(visualizationName, newvisualizationName)` |
-| `renameVisualizationByDoubleClick(visualizationName, newVisualizationName)` |
-| `changeSubtotalPosition(cellToClick, newPosition, visualizationName)` |
-| `editCalculationGroup(newCalculation, groupName, visualizationName)` |
-| `deleteCalculationGroup(groupName, visualizationName)` |
-| `editGroup(groupName, visualizationName)` |
-| `editHeaderGroups(headerName, visualizationName)` |
-| `renameGroup(groupName, visualizationName, newGroupName)` |
-| `excludeElements(elements, visualizationName)` |
-| `keepOnlyElements(elements, visualizationName)` |
-| `clearDrillConditions(visualizationName)` |
-| `isSaveDisabledForHeaderRename()` |
-| `isGroupEditorOpen()` |
-| `isGroupEditorOpenForSpecificGroup(groupName)` |
-| `noThresholdsPresentOnObject(headerName, visualizationName)` |
-| `addColumnSet()` |
-| `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)` |
-| `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)` |
-| `dragDSObjectToGridColumnSetDZ(objectName, objectTypeName, datasetName, columnSetName)` |
-| `dragDSObjectToColumnSetDZwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition, desObject)` |
-| `dragDSObjectToGridMicrochartDZ(objectName, objectTypeName, datasetName, microchartName)` |
-| `dragDSObjectToMicrochartDZwithPosition(objectName, objectTypeName, datasetName, microchartName, desPosition, desObject)` |
-| `dragDSObjectToDZwithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)` |
-| `dragDSObjectBetweenColumnSetwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition)` |
-| `dragDSObjectBelowColumnsTitleBar(objectName, objectTypeName, datasetName)` |
-| `dragDSObjectToLastColumnSet(objectName, objectTypeName, datasetName)` |
-| `reOrderObjectsInColumnSet(objectTypeName1, objectName1, columnSet1, objectTypeName2, objectName2, columnSet2, desPosition)` |
-| `multiselectAndDragDSObjectsToDZ(datasetName, objOneType, objOneName, objTwoType, objTwoName, desZone)` |
-| `multiselectAndDragDSObjectsToDZWithPosition(datasetName, objOneType, objOneName, objTwoType, objTwoName, desPosition, desObject, desZone)` |
-| `baseDragFunction(movingElement, targetElement, xOffset = 0, yOffset = 0, doMouseUp, waitforLoadingDialog)` |
-| `dragDSObjectToGridByColumnBorder(objectName, objectTypeName, datasetName, colNum, vizName)` |
-| `moveObjectToGridByColumnBorder(objectName, srcViz, colNum, destViz)` |
-| `dragDSObjectToGridWithPositionInRow(objectName, objectTypeName, datasetName, desPosition, elementInRow, vizName)` |
-| `moveObjectToGridWithPositionInRow(objectName, srcViz, desPosition, elementInRow, destViz)` |
-| `dragObjectToInvalidDZ(objectName, vizName)` |
-| `removeObjectFromGrid(objectName, vizName)` |
-| `dragObjectToOtherViz(objectName, srcViz, destViz)` |
-| `deleteColumnSet(columnSetName)` |
-| `reorderColumnSet(columnSetName, desPosition, relColumnSetName, offsetX = 0, offsetY = 10)` |
-| `renameColumnSet(columnSetPosition, newColumnSetName)` |
-| `expandCollapseColumnSet(columnSetName)` |
-| `editMicrochart(setName, microchartName)` |
-| `switchToEditorPanel()` |
-| `clickOnViz(vizName)` |
-| `createLocalContextualLink(srcVizName, tgtVizName)` |
-| `selectElementOnViz(objectName, vizName)` |
-| `moveScrollBar(direction, pixels, vizName)` |
-| `scrollToGridCell(visualizationName, elementName)` |
-| `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)` |
-| `dismissContextMenu()` |
-| `clickOnContainerTitle(visualizationTitle)` |
-| `clickOnColumnSet(columnSetName)` |
-| `clickButtonInWarningDialog(buttonName)` |
-| `scrollToElementInDatasetPanel(objectName, objectTypeName, datasetName)` |
-| `clickContextMenuOption(option)` |
-| `waitForInfoWindowSpinnerGone(timeout = 10000)` |
-| `clickFilterSummaryIcon()` |
-| `clickShowFilterSummaryMenuItem()` |
-| `isFilterSummaryIconDisplayed()` |
-
-**Sub-components**
-- datasetPanel
-- ngmEditorPanel
-- docAuthBasePage
-- getContainer
-- getGridContainer
-- getColumnSetInEditorPanel
-- getAdvancedSortEditorRulesPanel
-- getColumnSetEndInEditorPanel
-- editorPanel
-
----
-
-### FormatPanelForGridBase
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `selectTextFont(font)` |
-| `selectTextFontBold()` |
-| `selectTextFontItalic()` |
-| `selectTextFontUnderline()` |
-| `selectTextFontStrikethrough()` |
-| `selectTextFontSizeStepUp()` |
-| `selectTextFontSizeStepDown()` |
-| `setTextFontSize(size)` |
-| `selectTextFontSize(size)` |
-| `selectTextFontColorButton()` |
-
-**Sub-components**
-_none_
-
----
-
-### FormatPanelForGridGeneral
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickMoreOptionsButtonInFormatPanel()` |
-| `checkBanding()` |
-| `checkOutline()` |
-| `selectGridTemplateColor(color)` |
-| `selectGridStyle(style)` |
-| `selectGridPadding(padding)` |
-| `selectGridColumnsFit(fit)` |
-| `selectGridRowsFit(fit)` |
-| `selectGridColumnsFitTarget(target)` |
-| `setGridColumnsFitFixedInches()` |
-| `setGridRowsFitFixedInches()` |
-
-**Sub-components**
-_none_
-
----
-
-### FormatPanelForGridTitleCRV
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `selectTextAlign(align)` |
-| `selectCellAlign(align)` |
-| `selectBackgroundFillColorButton()` |
-| `selectHorizontalLinesStyleButton()` |
-| `selectVerticalLinesStyleButton()` |
-| `selectLineStyle(style)` |
-| `selectHorizontalLinesColorButton()` |
-| `selectVerticalLinesColorButton()` |
-| `selectWrapTextCheckbox()` |
-| `selectSubtotalSameAs()` |
-| `selectSubtotalTextFont(font)` |
-| `selectSubtotalTextFontBold()` |
-| `selectSubtotalTextFontItalic()` |
-| `selectSubtotalTextFontUnderline()` |
-| `selectSubtotalTextFontStrikethrough()` |
-| `setSubtotalTextFontSize()` |
-| `selectSubtotalTextFontSize(size)` |
-| `selectSubtotalTextFontColorButton()` |
-| `selectSubtotalTextAlign(align)` |
-| `selectSubtotalCellAlign(align)` |
-| `selectSubtotalBackgroundFillColorButton()` |
-| `selectSubtotalHorizontalLinesStyleButton()` |
-| `selectSubtotalVerticalLinesStyleButton()` |
-| `selectSubtotalHorizontalLinesColorButton()` |
-| `selectSubtotalVerticalLinesColorButton()` |
-| `selectSubtotalWrapTextCheckbox()` |
-| `isSubtotalSameAsCheckboxChecked()` |
-
-**Sub-components**
-_none_
-
----
-
-### FormatPanelForGridToolBox
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `selectTextAlign(align)` |
-
-**Sub-components**
-_none_
-
----
-
-### NewFormatPanelForGrid
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `switchToTab(tabName, waitLoading = true)` |
-| `clickSectionTitle(sectionName)` |
-| `selectGridTemplateColor(color)` |
-| `selectGridTemplateStyle(style)` |
-| `clickCheckBox(checkBoxName)` |
-| `selectCellPadding(padding)` |
-| `clickColumnSizeBtn(isAgGrid)` |
-| `clickArrangementBtn()` |
-| `clickColumnSizeFitOption(fit, isAgGrid = true)` |
-| `clickColumnSizeTargetBtn()` |
-| `clickColumnSizeTargetOption(target)` |
-| `setFixedInches(inches, elInchesInput)` |
-| `setColumnSizeFixedInches(inches)` |
-| `setRowSizeFixedInches(inches)` |
-| `clickRowSizeBtn(isAgGrid)` |
-| `clickRowSizeFitOption(fit)` |
-| `selectGridSegment(option)` |
-| `selectGridColumns(columnSet)` |
-| `changeGridElement(option)` |
-| `changeColumnSet(option)` |
-| `selectFromGridELDropdownReact(option)` |
-| `selectTextFont(font)` |
-| `selectFontStyle(style)` |
-| `selectTitleOption(option)` |
-| `setTextFontSize(size)` |
-| `clickFontColorBtn()` |
-| `clickColorPickerModeBtn(mode)` |
-| `clickBuiltInColor(color)` |
-| `setColorPaletteHex(hex)` |
-| `setColorPaletteRGB(r, g, b, a = null)` |
-| `setNoFillColor()` |
-| `selectFontAlign(align)` |
-| `clickCellFillColorBtn()` |
-| `changeCellsFillColor(color)` |
-| `changeCellFillColorOpacity(opacity)` |
-| `getCellOpacityOnReactPanel()` |
-| `selectVerticalAlign(align)` |
-| `selectCellBorderOrientation(option)` |
-| `openCellBorderStyleDropDown()` |
-| `openCellBorderStyleDropDownByPos(pos)` |
-| `selectCellBorderStyle(style)` |
-| `clickCellBorderColorBtn()` |
-| `clickCellBorderColorBtnByPos(pos)` |
-| `setColorInSectionItem(sectionName, label, color)` |
-| `setNumberInputInSectionItem(sectionName, label, value)` |
-| `setSelectorOptionInSectionItem(sectionName, label, style)` |
-| `setRadiusInSectionItem(sectionName, label, option)` |
-| `setAlignmentInSectionItem(sectionName, label, option)` |
-| `setArrangement(option)` |
-| `toggleShowHeaders()` |
-| `toggleTitleBar()` |
-| `toggleTitles()` |
-| `toggleTitleButtons()` |
-| `clickTitleBackgroundColorBtn()` |
-| `clickContainerFillColorBtn()` |
-| `openContainerBorderPullDown()` |
-| `selectBorderStyle(style)` |
-| `clickContainerBorderColorBtn()` |
-| `changeContainerFillColorOpacity(opacity)` |
-| `enableBanding()` |
-| `selectButtonRadius(option)` |
-| `selectButtonSize(size)` |
-| `clickButtonFormatIcon(buttonName)` |
-| `clickButtonVisibleIcon(buttonName)` |
-| `isButtonVisible(buttonName)` |
-| `setButtonAlias(alias)` |
-| `setButtonLabelOption(option)` |
-| `setExportButtonOption(option)` |
-| `selectButtonTextFont(font)` |
-| `selectButtonTextFontStyle(style)` |
-| `clickButtonTextFontColorBtn()` |
-| `clickButtonIconColorBtn()` |
-| `clickButtonBackgroundColorBtn()` |
-| `openButtonBorderPullDown()` |
-| `selectButtonBorderStyle(style)` |
-| `clickButtonBorderColorBtn()` |
-| `changeButtonFillColorOpacity(opacity)` |
-| `changeMicroChartAlign(align)` |
-| `toggleDPSpots()` |
-| `changeDPSelection(selection)` |
-| `selectKeyDPOption(option)` |
-| `moveChartHeightSlider(direction, pixels)` |
-| `expandLayoutSection(languageOption = Locales.English)` |
-| `expandSpacingSection(languageOption = Locales.English)` |
-| `expandTemplateSection(languageOption = Locales.English)` |
-| `switchToGridTab()` |
-| `switchToTextFormatTab()` |
-| `switchToTitleContainerTab()` |
-| `enableWrapText()` |
-| `disableWrapText()` |
-| `enableOutline()` |
-| `textFontSizeInputValue()` |
-| `isFontAlignButtonSelected(align)` |
-| `isFontAlignButtonDisabled(align)` |
-| `isCheckBoxChecked(checkBoxName)` |
-
-**Sub-components**
-- baseFormatPanel
-- FormatPanel
-- getContainer
-
----
-
-### serves
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickOnGridElement(objectName, visualizationName)` |
-| `rightClickOnGridElement(objectName, visualizationName)` |
-| `sortAscending(objectName, visualizationName)` |
-| `sortDescending(objectName, visualizationName)` |
-| `clearSorting(objectName, visualizationName)` |
-| `sortWithinAttribute(objectName, visualizationName, sortAttribute)` |
-| `existContextMenuItemByName(option)` |
-| `selectContextMenuOptionByName(option)` |
-| `rightClickOnHeader(objectName, visualizationName)` |
-| `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)` |
-| `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)` |
-| `removeObjectFromGrid(objectName, vizName)` |
-| `expandOutlineFromColumnHeader(objectName, visualizationName)` |
-| `collapseOutlineFromColumnHeader(objectName, visualizationName)` |
-| `groupElements(elements, objectName, visualizationName, groupName)` |
-| `ungroupElements(objectName, visualizationName, groupName)` |
-| `groupElementsForCalculation(elements, objectName, visualizationName, groupName, calculationMenu)` |
-| `addColumnSet()` |
-| `deleteColumnSet(columnSetName)` |
-| `renameColumnSet(columnSetPosition, newColumnSetName)` |
-| `clickNfShortcutIcon(shortcut)` |
-| `existObjectByName(objectName, visualizationName)` |
-| `isElementPresent(element, objectName, visualizationName)` |
-| `getAllGridObjectCount(visualizationName)` |
-| `changeVizToCompoundGrid(containerName)` |
-| `switchToEditorPanel()` |
-
-**Sub-components**
-- datasetPanel
-
----
-
-### ColumnSetOperations
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `addColumnSet()` |
-| `deleteColumnSet(columnSetName)` |
-| `reorderColumnSet(columnSetName, desPosition, relColumnSetName, offsetX = 0, offsetY = 10)` |
-| `renameColumnSet(columnSetPosition, newColumnSetName)` |
-| `expandCollapseColumnSet(columnSetName)` |
-| `editMicrochart(setName, microchartName)` |
-| `clickOnColumnSet(columnSetName)` |
-| `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)` |
-| `reOrderObjectsInColumnSet({ objectName1, columnSet1, objectName2, columnSet2, desPosition })` |
-
-**Sub-components**
-_none_
-
----
-
-### ContextMenuOperations
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `existContextMenuItemByName(option)` |
-| `selectContextMenuOptionFromElement({ objectName, option, visualizationName })` |
-| `selectContextMenuOptionFromHeader({ objectName, option, visualizationName })` |
-| `isElementInHeaderRow(element, visualizationName)` |
-| `selectContextMenuOptionFromElementByIndex(rowIndex, colIndex, option, visualizationName)` |
-| `selectContextMenuOptionFromElementWithHyperLink(objectName, option, visualizationName)` |
-| `selectContextMenuOptionFromObjectinDZ(objectName, desZone, option)` |
-| `clickContextMenuButton(button)` |
-| `openContextMenuItemForGridCells(gridCellNames, menuItemName, visualizationName)` |
-| `openContextMenuItemForGridCellByPosition(row, col, menuItemName, visualizationName)` |
-| `openContextMenuItemForGridCellsByOffSet(gridCellNames, menuItemName, visualizationName, offsetX = 1, offsetY = 1)` |
-| `rightClickOnHeader(objectName, visualizationName, offsetX = 0, offsetY = 0)` |
-| `isContextMenuOptionPresentInHeaderCell(menuOption, cellText, visualizationName)` |
-| `dismissContextMenu()` |
-| `openNumberFormatContextMenu(objectName, visualizationName)` |
-| `saveContextMenuOption()` |
-| `updateAndSaveNumberFormat(objectName, visualizationName, updateNumberFormatFunction, datasetName)` |
-| `getCellType(objectName, visualizationName)` |
-| `openFormatContextMenu(objectName, visualizationName)` |
-| `openContextMenuOption(objectName, option, visualizationName)` |
-
-**Sub-components**
-- datasetPanel
-
----
-
-### DragDropOperations
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)` |
-| `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)` |
-| `dragDSObjectToGridColumnSetDZ(objectName, objectTypeName, datasetName, columnSetName)` |
-| `dragDSGroupToGridDZ(groupName, desZone)` |
-| `dragDSObjectToDZWithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)` |
-| `multiselectAndDragDSObjectsToDZ(datasetName, objOneType, objOneName, objTwoType, objTwoName, desZone)` |
-| `dragObjectToOtherViz(objectName, srcViz, destViz)` |
-| `removeObjectFromGrid(objectName, vizName)` |
-| `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)` |
-| `baseDragFunction(movingElement, targetElement, xOffset = 0, yOffset = 0, doMouseUp, waitforLoadingDialog)` |
-| `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)` |
-| `dragAttributeToGridColumnSetDZ({ objectName, datasetName, columnSetName })` |
-| `dragMetricToGridColumnSetDZ({ objectName, datasetName, columnSetName })` |
-| `dragMetricToDropZoneBelowObject({ objectName, datasetName, dropZone, belowObject })` |
-| `dragAttributeToRows({ objectName, datasetName })` |
-| `dragMetricToRows({ objectName, datasetName })` |
-| `dragAttributeToColumns({ objectName, datasetName })` |
-| `dragMetricToColumns({ objectName, datasetName })` |
-| `dragAttributeToRowsBelowObject({ objectName, datasetName, belowObject })` |
-| `dragMetricToRowsBelowObject({ objectName, datasetName, belowObject })` |
-
-**Sub-components**
-- datasetPanel
-
----
-
-### GridCellOperations
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickOnGridElement(objectName, visualizationName)` |
-| `clickOnGridElementWithoutLoading(objectName, visualizationName)` |
-| `rightClickOnGridElement(objectName, visualizationName)` |
-| `hoverOnGridElement(objectName, visualizationName)` |
-| `mouseOverGridCellByPosition(row, col, visualization)` |
-| `selectMultipleElements(elements, visualizationName)` |
-| `selectMultipleGridCells(elements, visualizationName)` |
-| `selectElementsUsingShift(elements_1, elements_2, visualizationName)` |
-| `scrollToGridCell(visualizationName, elementName)` |
-| `moveScrollBar(direction, pixels, vizName)` |
-| `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)` |
-| `isElementPresent(element, objectName, visualizationName)` |
-
-**Sub-components**
-_none_
-
----
-
-### GroupOperations
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `groupElements(elements, objectName, visualizationName, groupName)` |
-| `groupElements2(elements, objectName, visualizationName, groupName)` |
-| `groupElementsHelper(arrElements, groupName)` |
-| `inputFieldRenameHelper(newName)` |
-| `groupElementsByPartialValue(elementPartialValue, objectName, visualizationName, groupName)` |
-| `ungroupElements(objectName, visualizationName, groupName)` |
-| `ungroupElements2(objectName, visualizationName, groupName)` |
-| `groupElementsForCalculation(elements, visualizationName, groupName, calculationMenu)` |
-| `addElementsToExistingGroup(elements, visualizationName, groupName)` |
-| `editCalculationGroup({ newCalculation, groupName, visualizationName })` |
-| `deleteCalculationGroup(groupName, visualizationName)` |
-| `editGroup(groupName, visualizationName)` |
-| `renameGroup(groupName, visualizationName, newGroupName)` |
-| `groupElementsToAverageCalculation({ elements, visualizationName, groupName })` |
-| `groupElementsToSumCalculation(elements, visualizationName, groupName)` |
-
-**Sub-components**
-_none_
-
----
-
-### NumberFormatOperations
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickNfShortcutIcon(shortcut)` |
-| `selectNumberFormatFromDropdown(numberFormat)` |
-| `clickNumberFormatDropdownOption()` |
-| `selectNfCurrencySymbolFromDropdown(symbol)` |
-| `selectNfCurrencyPositionFromDropdown(position)` |
-| `selectNfValueFormatFromDropdown(format)` |
-| `clickNfCondense()` |
-| `inputNfCustomTextBox(newFormat)` |
-| `toggleNfThousandSeparator()` |
-| `selectNfNegativeForm(form, inRed)` |
-| `moveNfDecimalPlace(change, numOfPlaces)` |
-
-**Sub-components**
-_none_
-
----
-
-### OutlineOperations
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `expandOutlineFromColumnHeader(objectName, visualizationName)` |
-| `collapseOutlineFromColumnHeader(objectName, visualizationName)` |
-| `confirmOutlineGridCollapsed(objectName, visualizationName)` |
-| `confirmOutlineGridExpanded(objectName, visualizationName)` |
-| `expandOutlineFromElement(elementName, visualizationName)` |
-| `collapseOutlineFromElement(elementName, visualizationName)` |
-
-**Sub-components**
-_none_
-
----
-
-### SortOperations
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `sortAscending(objectName, visualizationName)` |
-| `sortDescending({ objectName, visualizationName = 'Visualization 1' })` |
-| `sortMetric({ order })` |
-| `sortMetricFromDropZone({ objectName, order })` |
-| `metricSortFromViz({ objectName, visualizationName, order })` |
-| `openAdvancedSortEditor({ objectName, visualizationName = 'Visualization 1' })` |
-| `openCustomSortEditor(objectName, visualizationName)` |
-| `addAdvancedSortParameter({ columnOrder, objectName, sortOrder })` |
-| `saveAndCloseSortEditor()` |
-| `closeSortEditor()` |
-| `dragSortRowWithPositionInAdvancedSortEditor({ srcSortRow, desPosition, desSortRow })` |
-| `switchRowColumnInSortEditor(buttonName)` |
-| `clickSortDeleteRowButton(columnOrder)` |
-| `createAndSaveAdvancedSort({ rowOrders, columnOrders, dragSortActions })` |
-| `sortDescendingFromDropZone(objectName)` |
-| `sortAscendingFromDropZone(objectName)` |
-| `clearSortFromDropZone(objectName)` |
-| `clearSortFromViz({ objectName, visualizationName })` |
-| `sortAscendingFromViz({ objectName, visualizationName })` |
-| `sortDescendingFromViz({ objectName, visualizationName })` |
-| `sortWithinAttributeFromDropZone({ objectName, sortAttr })` |
-
-**Sub-components**
-- editorPanel
-
----
-
-### ContextMenuSelectors
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| _none_ |
-
-**Sub-components**
-_none_
-
----
-
-### GridSelectors
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `getObjectHeader(objectName, visualizationName)` |
-| `getAllObjectHeaders(visualizationName)` |
-| `getObjectHeaderByIndex(columnIndex, visualizationName)` |
-| `isObjectHeaderExists(objectName, visualizationName)` |
-| `getLinkFromGridCell(row, col, visualizationName)` |
-
-**Sub-components**
-- getContainer
-- getGridContainer
-- getColumnSetInEditorPanel
-
----
-
-### NumberFormatSelectors
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| _none_ |
-
-**Sub-components**
-_none_
-
----
-
-### GridValidators
-> Extends: `BaseContainer`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `isSaveDisabledForHeaderRename()` |
-| `isGroupEditorOpen()` |
-| `isGroupEditorOpenForSpecificGroup(groupName)` |
-| `noThresholdsPresentOnObject(headerName, visualizationName)` |
-| `existObjectByName(objectName, visualizationName)` |
-| `existReplaceByOption(objectName, visualizationName, targetObject)` |
-| `existDrillOption(objectName, visualizationName, targetObject)` |
-| `isElementPresent(element, objectName, visualizationName)` |
-| `getAllGridObjectCount(visualizationName)` |
-| `getGridCellCSSPropertyByPosition(row, col, visualizationName, property)` |
-| `isOutlinePresentForGridObject(objectName, visualizationName)` |
-| `getGridCellTextByPosition(row, col, visualizationName)` |
-
-**Sub-components**
-_none_
-
----
-
-### NgmContextMenu
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickOnContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction)` |
-| `clickOnSecondaryContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction1, objectFunction2)` |
-| `openContextMenuFromEditorPanel(objectName, objectZone)` |
-| `ctrlSelectAndCreateCalculation(objectName1, objectName2, objectZone, objectFunction)` |
-| `ctrlSelectAndRemove(objectName1, objectName2, objectZone)` |
-| `clickOnContextMenuOptionFromAxis(objectName, objectFunction)` |
-| `clickOnSecondaryContextMenuOptionFromAxis(objectName, objectFunction1, objectFunction2)` |
-| `openContextMenuFromAxis(objectName)` |
-| `selectElementAndclickOnContextMenuOption(chartType, index, objectFunction)` |
-| `selectElementAndclickOnSecondaryContextMenuOption(chartType, index, objectFunction1, objectFunction2)` |
-| `clickOnContextMenuOptionFromElement(chartType, index, objectFunction)` |
-| `clickOnSecondaryContextMenuOptionFromElement(chartType, index, objectFunction1, objectFunction2)` |
-| `ctrlSelectElementsAndclickOnContextMenuOption(chartType, indexArray, objectFunction)` |
-| `ctrlSelectElementsAndclickOnSecondaryContextMenuOption(chartType, indexArray, objectFunction1, objectFunction2)` |
-| `openContextMenuFromElement(chartType, index)` |
-| `clickOnContextMenuOption(webel, objectFunction)` |
-| `clickOnSecondaryContextMenuOption(webel, objectFunction1, objectFunction2)` |
-| `closeContextMenu()` |
-
-**Sub-components**
-- ngmEditorPanel
-- ngmVisualizationPanel
-
----
-
-### NgmEditorPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `dragDSObjectToBlankDZ(objectName, objectTypeName, datasetName, desZone)` |
-| `dragDSObjectToDZ(objectName, objectTypeName, datasetName, desZone, desPosition, desObject)` |
-| `dragDSObjectToDZReplace(objectName, objectTypeName, datasetName, desObject, desZone)` |
-| `moveObject(srcObject, srcZone, desZone, desPosition, desObject)` |
-| `moveObjectToBlankDZ(srcObject, srcZone, desZone)` |
-| `moveObjectToReplace(srcObject, srcZone, desObject, desZone)` |
-| `removeObjectFromDropZone(srcObject, srcZone)` |
-| `editorPanelShortcutFunction(funName)` |
-| `dragAndDropObjectAndWait(movingElement, targetElement)` |
-| `moveToSpecificLocationAndWait(desPosition, srcElement, desElement)` |
-
-**Sub-components**
-- datasetsPanel
-- datasetPanel
-
----
-
-### NgmFormatPanel
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `openFormatPanel()` |
-| `switchFormatPanel(name)` |
-| `select(groupName)` |
-
-**Sub-components**
-- formatPanel
-- openFormatPanel
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `createCalculation(secondObject, calculationType)`
+- **Related components:** _none_
 
 ### Checkbox
-> Extends: `BasePage`
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `check()`
+  - `getIdentity()`
+  - `getWebElement(index)`
+  - `isChecked()`
+  - `locate()`
+  - `locateByIndex(idx)`
+  - `uncheck()`
+- **Related components:** _none_
 
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
+### ColumnSetOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addColumnSet()`
+  - `clickOnColumnSet(columnSetName)`
+  - `deleteColumnSet(columnSetName)`
+  - `editMicrochart(setName, microchartName)`
+  - `expandCollapseColumnSet(columnSetName)`
+  - `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)`
+  - `renameColumnSet(columnSetPosition, newColumnSetName)`
+  - `reorderColumnSet(columnSetName, desPosition, relColumnSetName, offsetX = 0, offsetY = 10)`
+  - `reOrderObjectsInColumnSet({ objectName1, columnSet1, objectName2, columnSet2, desPosition })`
+- **Related components:** _none_
 
-**Actions**
-| Signature |
-|-----------|
-| `locateByIndex(idx)` |
-| `locate()` |
-| `getWebElement(index)` |
-| `getIdentity()` |
-| `check()` |
-| `uncheck()` |
-| `isChecked()` |
+### Common
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `hasClass(element, cls)`
+- **Related components:** _none_
 
-**Sub-components**
-_none_
+### ContextMenuOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clickContextMenuButton(button)`
+  - `dismissContextMenu()`
+  - `existContextMenuItemByName(option)`
+  - `getCellType(objectName, visualizationName)`
+  - `isContextMenuOptionPresentInHeaderCell(menuOption, cellText, visualizationName)`
+  - `isElementInHeaderRow(element, visualizationName)`
+  - `openContextMenuItemForGridCellByPosition(row, col, menuItemName, visualizationName)`
+  - `openContextMenuItemForGridCells(gridCellNames, menuItemName, visualizationName)`
+  - `openContextMenuItemForGridCellsByOffSet(gridCellNames, menuItemName, visualizationName, offsetX = 1, offsetY = 1)`
+  - `openContextMenuOption(objectName, option, visualizationName)`
+  - `openFormatContextMenu(objectName, visualizationName)`
+  - `openNumberFormatContextMenu(objectName, visualizationName)`
+  - `rightClickOnHeader(objectName, visualizationName, offsetX = 0, offsetY = 0)`
+  - `saveContextMenuOption()`
+  - `selectContextMenuOptionFromElement({ objectName, option, visualizationName })`
+  - `selectContextMenuOptionFromElementByIndex(rowIndex, colIndex, option, visualizationName)`
+  - `selectContextMenuOptionFromElementWithHyperLink(objectName, option, visualizationName)`
+  - `selectContextMenuOptionFromHeader({ objectName, option, visualizationName })`
+  - `selectContextMenuOptionFromObjectinDZ(objectName, desZone, option)`
+  - `updateAndSaveNumberFormat(objectName, visualizationName, updateNumberFormatFunction, datasetName)`
+- **Related components:** datasetPanel
 
----
+### ContextMenuSelectors
+- **CSS root:** `.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`
+- **User-visible elements:**
+  - Metric Sort Ascending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Clear Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.clr.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Descending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.desc.mstrmojo-ui-Menu-item .micn`)
+- **Component actions:**
+  - _none_
+- **Related components:** _none_
+
+### DashboardFormattingPanel
+- **CSS root:** `.mstrmojo-Editor.DashboardStyles`
+- **User-visible elements:**
+  - Background Section (`.mstrmojo-Box.bg.ctrl-group`)
+  - Dashboard Format Panel (`.mstrmojo-Editor.DashboardStyles`)
+  - Dashboard Formatting Button (`.item.dashboardStyles.mstrmojo-ui-Menu-item`)
+  - Dashboard Formatting Pop Up (`.mstrmojo-Editor.DashboardStyles.modal`)
+  - Format Button (`.item.mb.style`)
+  - Layout Style Section (`.mstrmojo-ui-CheckList.layoutstyle.horizontal.radio`)
+  - Lock Page Size Check Box (`.mstrmojo-CheckBox.pageSize`)
+  - Lock Page Size Helper Icon (`.mstrmojo-Box.helpIcon`)
+  - Ok Button (`.mstrmojo-Button-text=OK`)
+  - Padding Section (`.radius-spacing-setting .mstrmojo-vi-TwoColumnProp`)
+  - Popup Color Picker (`.mstrmojo-popup-widget-hosted.mstrmojo-ui-PreviewButton.mstrmojo-ColorPickerBtn`)
+  - Root Panel Bg Color Picker (`.mstr-rc-3-color-picker.root-panel-bg-color-picker-rc3`)
+  - Scrollable Area (`.mstrmojo-Box.mstrmojo-vi-EditorGroup.ctrl-group`)
+  - Shadow Angle Section (`.shadow-angle-setting`)
+  - Shadow Blur Section (`.shadow-size-setting`)
+  - Shadow Distance Section (`.shadow-distance-setting`)
+  - Shadow Fill Section (`.shadow-fill-setting`)
+  - Size Select Dropdown (`#mstr-rc-3-color-picker-image-mode__size-select__dropdown`)
+- **Component actions:**
+  - `clearInputValue()`
+  - `clickAddToFavorite()`
+  - `clickCardOption()`
+  - `clickColorSaturationArea(xPercent = 50, yPercent = 50)`
+  - `clickFlatOption()`
+  - `clickGradientEndButton()`
+  - `clickGradientMode()`
+  - `clickGradientStartButton()`
+  - `clickHueSlider(huePercent = 50)`
+  - `clickImageMode()`
+  - `clickImageOkButton()`
+  - `clickLockPageSizeCheckBox()`
+  - `clickLockPageSizeHelperIcon()`
+  - `clickOkButton()`
+  - `clickPaletteMode()`
+  - `clickRootPanelBgColorPicker()`
+  - `clickShadowColorPicker()`
+  - `clickSwatchesMode()`
+  - `clickUploadButton()`
+  - `close()`
+  - `closeColorPickerPopover()`
+  - `closeInvalidUrlDialog()`
+  - `closePopupColorPicker()`
+  - `getAvailableImageSizes()`
+  - `getBackgroundColor()`
+  - `getCurrentSelectedColorMode()`
+  - `getCustomDimensionInput(axis)`
+  - `getCustomHeightInput()`
+  - `getCustomWidthInput()`
+  - `getDashboardLevelImagePreviewUrl()`
+  - `getHexColorPicker()`
+  - `getImagePreviewUrl()`
+  - `getImageUrl()`
+  - `getLastVisibleInvalidUrlDialog()`
+  - `getPaddingValue()`
+  - `getPopupList()`
+  - `getRadiusSliderPosition()`
+  - `getRadiusValue()`
+  - `getRootPanelBgColorValue()`
+  - `getSelectedLayoutStyle()`
+  - `getShadowAngleSliderPosition()`
+  - `getShadowAngleValue()`
+  - `getShadowBlurSliderPosition()`
+  - `getShadowBlurValue()`
+  - `getShadowDistanceSliderPosition()`
+  - `getShadowDistanceValue()`
+  - `getShadowFillColor()`
+  - `getShadowFillColorDetails()`
+  - `getShadowFillValue()`
+  - `getShadowSelectedColor()`
+  - `getSizeSelectValue()`
+  - `inverseGradient()`
+  - `isCardSelected()`
+  - `isColorPickerPopoverVisible()`
+  - `isFlatSelected()`
+  - `isImageOkButtonEnabled()`
+  - `isInvalidUrlDialogVisible()`
+  - `isPopupColorPickerVisible()`
+  - `isRootPanelBgColorPickerExpanded()`
+  - `open()`
+  - `openConsumptionViewDropDown()`
+  - `openDashboardFormattingMenu()`
+  - `openFormatMenu()`
+  - `openOptimizedForDropDown()`
+  - `openSizeSelect()`
+  - `rotateGradient()`
+  - `scrollBackToTop()`
+  - `scrollToShadowAngleSetting()`
+  - `scrollToShadowSection(sectionType = 'angle')`
+  - `scrollUpInLeftBox()`
+  - `selectColorByHex(hexValue)`
+  - `selectColorByName(colorName)`
+  - `selectColorByRGB(rgbValue)`
+  - `selectConsumptionViewOption(option)`
+  - `selectImageSize(sizeOption)`
+  - `selectLayoutStyle(style)`
+  - `selectOptimizedForOption(option)`
+  - `selectShadowColorByName(colorName)`
+  - `setBackgroundColor(colorName)`
+  - `setColorByHex(hexValue)`
+  - `setColorByRGB(rgbValue)`
+  - `setColorBySaturationClick(saturation = 50, brightness = 50)`
+  - `setCustomPageSize(width, height)`
+  - `setGradientEndColor(color)`
+  - `setGradientStartColor(color)`
+  - `setHueByValue(hueValue)`
+  - `setImageBackground(imageUrl, size = '')`
+  - `setImageUrl(imageUrl)`
+  - `setPaddingValue(value)`
+  - `setRadiusValue(value)`
+  - `setShadowAngleValue(value)`
+  - `setShadowBlurValue(value)`
+  - `setShadowDistanceValue(value)`
+  - `setShadowFillCapacityValue(value)`
+  - `slideRadiusSlider(xOffset = 10)`
+  - `slideShadowAngleSlider(xOffset = 10)`
+  - `slideShadowBlurSlider(xOffset = 10)`
+  - `slideShadowDistanceSlider(xOffset = 10)`
+  - `uploadImageBackground(filePath, size = 'Fill Canvas')`
+  - `uploadImageFile(filePath)`
+  - `waitForInvalidUrlDialog(timeout = 5000)`
+- **Related components:** getDashboardFormatPanel, getDashboardLevelRootPanel, getGradientModeContainer, getImageModeContainer, getLockPage, getRootPanel
+
+### DatasetPanel
+- **CSS root:** `#DIContainer`
+- **User-visible elements:**
+  - Add Link (`.mstrmojo-att-link .mstrmojo-addLink`)
+  - Data Import Dialog (`.mstrmojo-di-popup`)
+  - Dataset Save As Text Input (`.mstrmojo-SaveAsEditor-nameInput`)
+  - DIContainer (`#DIContainer`)
+  - Link From Att Form (`.mstrmojo-att-link .mstrmojo-linkFormFromPD`)
+  - Link To Att (`.mstrmojo-att-link .mstrmojo-linkToAtt`)
+  - Link To Att Form (`.mstrmojo-att-link .mstrmojo-linkFormToPD`)
+  - Save As Editor (`.mstrmojo-SaveAsEditor`)
+  - Show Att Form (`.mstrmojo-att-link .mstrmojo-showForms`)
+  - Switch Tab Button (`.mstrmojo-TableOfContents .mstrmojo-switchTabBtn`)
+- **Component actions:**
+  - `actionOnObjectFromDataset(objectName, objectTypeName, datasetName, menuOption)`
+  - `actionOnObjectFromPreview(obj, dataset, cmOption)`
+  - `addDataFromDatasetsPanel(addDataOption)`
+  - `addObjectFromDSFolderToVizByDoubleClick(objectName, objectTypeName, datasetName, folderName)`
+  - `addObjectFromFolderToFilter(objectName, objectTypeName, datasetName, folderName)`
+  - `addObjectFromSearchListToVizByDoubleClick(objectName, objectTypeName, datasetName)`
+  - `addObjectToFilter(objectName, objectTypeName, datasetName)`
+  - `addObjectToVizByDoubleClick(objectName, objectTypeName, datasetName)`
+  - `changeNameInDatasetSaveAsDialog(name)`
+  - `changeNewObjectInReplaceObjectsEditor(oriObject, newObject)`
+  - `changePullDown(fromOption, toOption)`
+  - `changePullDownwithTitle(pullDownTitle, fromOption, toOption)`
+  - `chooseDatasetContextMenuOption(datasetName, option)`
+  - `clearObjectAlias(objectName, objectTypeName, datasetName)`
+  - `clearSearch()`
+  - `collapseDataset(datasetName)`
+  - `collapseFolderUnderDataset(folderName, datasetName)`
+  - `createCalculationFromDataset(objectName, objectTypeName, datasetName, calculationType, secondObject)`
+  - `createDMorDA(datasetName, option)`
+  - `createTimeOrGeoAttribute(newType, objName, datasetName, contextOption)`
+  - `currentCheckedItemFromCM()`
+  - `deleteDataset(datasetName)`
+  - `duplicateObjectAs(objectName, objectTypeName, datasetName, newObjectTypeName)`
+  - `duplicateObjectInFolderAs(objectName, objectTypeName, folderName, datasetName, newObjectTypeName)`
+  - `editDatasetNotification(itemText)`
+  - `editObject(objectName, objectTypeName, datasetName)`
+  - `expandAttributeFolder()`
+  - `expandConsolidationFolder()`
+  - `expandCustomGroupFolder()`
+  - `expandDataset(datasetName)`
+  - `expandDimensionFolder()`
+  - `expandFilterFolder()`
+  - `expandFolderUnderDataset(folderName, datasetName)`
+  - `expandHierarchyFolder()`
+  - `expandMetricFolder()`
+  - `expandTemplateFolder()`
+  - `expandTransformationFolder()`
+  - `getIndexForObjectinDS(datasetName, index, objectName)`
+  - `hoverAttributeFormInDataTypeMenu(formName)`
+  - `inputNameInatasetSaveAs(name)`
+  - `isAttributeLinked(objectName, datasetName)`
+  - `isDatasetDisplayed(dsName)`
+  - `isHighlightedObjectFromDSdisplayed(objectName, objectTypeName, datasetName, keyword)`
+  - `isLinkedObjectDSdisplayed(objectName, datasetName)`
+  - `isObjectFromDSdisplayed(objectName, objectTypeName, datasetName)`
+  - `isSelectExistingDatasetDialogDisplayed()`
+  - `linkAttribute(tarAttribute)`
+  - `linkAttributeForm(sourForm, tarAttr, tarAttrForm)`
+  - `multiSelectObjectsAndTakeCMAction(objectList, datasetName, firstMenu)`
+  - `multiSelectObjectsAndTakeSecondaryCM(objectList, datasetName, firstMenu, secondaryMenu)`
+  - `openEditObjectEditor(objectName, objectTypeName, datasetName)`
+  - `renameDataset(datasetName, newDatasetName)`
+  - `renameObject(objectName, objectTypeName, datasetName, newObjectName)`
+  - `renameTextField(newName)`
+  - `rightClickOnDataset(datasetName)`
+  - `saveAsDataset()`
+  - `saveDataset()`
+  - `searchAndAddExistingDataset(datasetName)`
+  - `searchAndSelectNewObjectInReplaceObjectsEditor(searchKey, oriObject, newObject)`
+  - `searchOnDatasetsPanel(keywords)`
+  - `secondaryCMOnObjectFromDataset(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)`
+  - `selectFromDatasetsPanelContextMenu(menuItemName)`
+  - `selectFromSearchPulldown(item)`
+  - `showDataForSelectedDatasetAndObject(objectName, datasetName)`
+  - `showHiddenObject(objectName, objectType)`
+  - `showHiddenObjects(objectNameList)`
+  - `switchDatasetsTab()`
+  - `switchToAllObjectsTab()`
+  - `switchToInReportTab()`
+  - `switchToSearchTab()`
+  - `unmapAttribute(objectName, objectTypeName, datasetName)`
+  - `updateDatasetFromPreview()`
+- **Related components:** datasetsPanel, DIContainer
+
+### DatasetsPanel
+- **CSS root:** `.mstrmojo-att-link .mstrmojo-addLink`
+- **User-visible elements:**
+  - Add Link (`.mstrmojo-att-link .mstrmojo-addLink`)
+  - Dataset Save As Text Input (`.mstrmojo-SaveAsEditor-nameInput`)
+  - Link From Att Form (`.mstrmojo-att-link .mstrmojo-linkFormFromPD`)
+  - Link To Att (`.mstrmojo-att-link .mstrmojo-linkToAtt`)
+  - Link To Att Form (`.mstrmojo-att-link .mstrmojo-linkFormToPD`)
+  - Show Att Form (`.mstrmojo-att-link .mstrmojo-showForms`)
+- **Component actions:**
+  - `actionOnObjectFromDataset(objectName, objectTypeName, datasetName, menuOption)`
+  - `addDataFromDatasetsPanel(addDataOption)`
+  - `addObjectFromDSFolderToVizByDoubleClick(objectName, objectTypeName, datasetName, folderName)`
+  - `addObjectFromFolderToFilter(objectName, objectTypeName, datasetName, folderName)`
+  - `addObjectFromSearchListToVizByDoubleClick(objectName, objectTypeName, datasetName)`
+  - `addObjectToFilter(objectName, objectTypeName, datasetName)`
+  - `addObjectToVizByDoubleClick(objectName, objectTypeName, datasetName)`
+  - `changeNewObjectInReplaceObjectsEditor(oriObject, newObject)`
+  - `changePullDown(fromOption, toOption)`
+  - `changePullDownwithTitle(pullDownTitle, fromOption, toOption)`
+  - `chooseDatasetContextMenuOption(datasetName, option)`
+  - `clearObjectAlias(objectName, objectTypeName, datasetName)`
+  - `clearSearch()`
+  - `collapseDataset(datasetName)`
+  - `collapseFolderUnderDataset(folderName, datasetName)`
+  - `createCalculationFromDataset(objectName, objectTypeName, datasetName, calculationType, secondObject)`
+  - `createTimeOrGeoAttribute(newType, objName, datasetName, contextOption)`
+  - `deleteDataset(datasetName)`
+  - `duplicateObjectAs(objectName, objectTypeName, datasetName, newObjectTypeName)`
+  - `duplicateObjectInFolderAs(objectName, objectTypeName, folderName, datasetName, newObjectTypeName)`
+  - `editDatasetNotification(itemText)`
+  - `editObject(objectName, objectTypeName, datasetName)`
+  - `expandDataset(datasetName)`
+  - `expandFolderUnderDataset(folderName, datasetName)`
+  - `hoverAttributeFormInDataTypeMenu(formName)`
+  - `inputNameInatasetSaveAs(name)`
+  - `linkAttribute(tarAttribute)`
+  - `linkAttributeForm(sourForm, tarAttr, tarAttrForm)`
+  - `multiSelectObjectsAndTakeCMAction(objectList, datasetName, firstMenu)`
+  - `multiSelectObjectsAndTakeSecondaryCM(objectList, datasetName, firstMenu, secondaryMenu)`
+  - `openEditObjectEditor(objectName, objectTypeName, datasetName)`
+  - `renameDataset(datasetName, newDatasetName)`
+  - `renameObject(objectName, objectTypeName, datasetName, newObjectName)`
+  - `rightClickOnDataset(datasetName)`
+  - `saveDataset()`
+  - `searchAndAddExistingDataset(datasetName)`
+  - `searchAndSelectNewObjectInReplaceObjectsEditor(searchKey, oriObject, newObject)`
+  - `searchOnDatasetsPanel(keywords)`
+  - `secondaryCMOnObjectFromDataset(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)`
+  - `selectFromDatasetsPanelContextMenu(menuItemName)`
+  - `selectFromSearchPulldown(item)`
+  - `showDataForSelectedDatasetAndObject(objectName, datasetName)`
+  - `showHiddenObject(objectName, objectType)`
+  - `showHiddenObjects(objectNameList)`
+- **Related components:** datasetsPanel
+
+### DerivedAttributeEditor
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addAttrFormByName(formName)`
+  - `addBlankAttrForm()`
+  - `addFunctionByDoubleClick(functionName)`
+  - `addObjectByDoubleClick(objectName)`
+  - `addSearchedObjectByDoubleClick(objectName)`
+  - `cancelAttribute()`
+  - `clearAttrForm()`
+  - `createDerivedAttribute({ objectNames, derivedAttributeName })`
+  - `getAttributeFormDefinition()`
+  - `renameAttributeForm(formNewName)`
+  - `saveAttribute()`
+  - `selectAttributeForm(formName)`
+  - `selectFormFromDropdown(formName)`
+  - `setAttributeDesc(newDesc)`
+  - `setAttributeFormDefinition(formula)`
+  - `setAttributeName(newName)`
+  - `setFunctionsSearchKey(fnString)`
+  - `setObjectSearchKey(pattern)`
+  - `switchFormulaEditor()`
+  - `validateForm()`
+- **Related components:** attributePanel, functionsPanel, objectsPanel
+
+### DerivedMetricEditor
+- **CSS root:** `.mstrmojo-FE .mstrmojo-Button.mstrmojo-WebButton.hot`
+- **User-visible elements:**
+  - Save Filter Btn (`.mstrmojo-FE .mstrmojo-Button.mstrmojo-WebButton.hot`)
+- **Component actions:**
+  - `addFilter()`
+  - `addFunctionByDoubleClick(functionName)`
+  - `addObjectByDoubleClick(objectName)`
+  - `cancelAFB()`
+  - `chooseAFB(afBehavior)`
+  - `clearFilter()`
+  - `clearMetric()`
+  - `clickOnDropdownOfValueList(label)`
+  - `createDerivedMetricUsingFormula({ metricName, metricDefinition })`
+  - `getMetricDefinition()`
+  - `openAFBPullDown()`
+  - `openMetricOptionsDialog()`
+  - `presentInMetricDefinition(newToken)`
+  - `saveAFB()`
+  - `saveFilter()`
+  - `saveFormulaMetric()`
+  - `saveMetric()`
+  - `saveMetricEditorOpenFromEdit()`
+  - `saveQualification()`
+  - `selectValueList(list)`
+  - `setAttributeFormDefinition(formula)`
+  - `setElementsSelectioninPopupList(elementsList)`
+  - `setFormulaMetricName(newName)`
+  - `setFunctionsSearchKey(fnString)`
+  - `setMetricDefinition(formula)`
+  - `setMetricDesc(newDesc)`
+  - `setMetricName(newName)`
+  - `setMetricNameOpenFromEdit(newName)`
+  - `switchMode(modeName)`
+  - `switchModeInSimpleMetricEditor(modeName)`
+  - `validateMetric()`
+  - `waitForLoadingFinish()`
+- **Related components:** displayedMetricPanel, functionsPanel, metricPanel, objectsPanel, saveBtnfromSimpleMetricPanel, simpleMetricPanel, switchBtninSimplifiedMetricPanel
+
+### DossierMojoEditor
+- **CSS root:** `.mstrmojo-Editor .toggle-details-link`
+- **User-visible elements:**
+  - Show Details (`.mstrmojo-Editor .toggle-details-link`)
+- **Component actions:**
+  - `addFileFromDisk(filename)`
+  - `changeDropdown(title, newMode)`
+  - `changeDropdownForExport(title, newMode)`
+  - `changeFolderPath(folderName)`
+  - `clickBtnOnMojoEditor(btnTxt)`
+  - `clickDeleteFileIcon()`
+  - `clickHtBtnOnAlert(btnTxt)`
+  - `clickOnCheckboxLabelForExport(label)`
+  - `clickOnCheckboxWithLabel(label)`
+  - `clickOnCheckboxWithTitle(title)`
+  - `clickOnLandscapeBtn()`
+  - `clickOnLeftTab(tabName)`
+  - `clickOnPortraitBtn()`
+  - `clickOnRadioButton(label)`
+  - `clickShowDetails()`
+  - `clickYesOnDeleteConfirm()`
+  - `closeEditor()`
+  - `downloadPDF()`
+  - `hasMojoEdtiorErrorText(txt)`
+  - `searchAndSelect(objectName)`
+  - `searchObject(objectName)`
+  - `selectObject(ObjectName)`
+  - `setCustomInstructionsText(id, txt)`
+- **Related components:** knowledgeAssetContainer
+
+### DossierMojoEditor
+- **CSS root:** `.mstrmojo-Editor .toggle-details-link`
+- **User-visible elements:**
+  - Show Details (`.mstrmojo-Editor .toggle-details-link`)
+- **Component actions:**
+  - `addFileFromDisk(filename)`
+  - `changeDropdown(title, newMode)`
+  - `changeDropdownForExport(title, newMode)`
+  - `changeFolderPath(folderName)`
+  - `clickBtnOnMojoEditor(btnTxt)`
+  - `clickDeleteFileIcon()`
+  - `clickErrorButton(btnTxt)`
+  - `clickHtBtnOnAlert(btnTxt)`
+  - `clickOnCheckboxLabelForExport(label)`
+  - `clickOnCheckboxWithLabel(label)`
+  - `clickOnCheckboxWithTitle(title)`
+  - `clickOnLandscapeBtn()`
+  - `clickOnLeftTab(tabName)`
+  - `clickOnPortraitBtn()`
+  - `clickOnRadioButton(label)`
+  - `clickShowDetails()`
+  - `clickYesOnDeleteConfirm()`
+  - `closeEditor()`
+  - `downloadPDF()`
+  - `hasMojoEdtiorErrorText(txt)`
+  - `isAlertMessageDisplayed(txt)`
+  - `isMoJoEditorWithTitleDisplayed(title)`
+  - `searchAndSelect(objectName)`
+  - `searchObject(objectName)`
+  - `selectObject(ObjectName)`
+  - `setCustomInstructionsText(id, txt)`
+- **Related components:** knowledgeAssetContainer
+
+### DragDropOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `baseDragFunction(movingElement, targetElement, xOffset = 0, yOffset = 0, doMouseUp, waitforLoadingDialog)`
+  - `dragAttributeToColumns({ objectName, datasetName })`
+  - `dragAttributeToGridColumnSetDZ({ objectName, datasetName, columnSetName })`
+  - `dragAttributeToRows({ objectName, datasetName })`
+  - `dragAttributeToRowsBelowObject({ objectName, datasetName, belowObject })`
+  - `dragDSObjectToDZWithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)`
+  - `dragDSObjectToGridColumnSetDZ(objectName, objectTypeName, datasetName, columnSetName)`
+  - `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)`
+  - `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)`
+  - `dragMetricToColumns({ objectName, datasetName })`
+  - `dragMetricToDropZoneBelowObject({ objectName, datasetName, dropZone, belowObject })`
+  - `dragMetricToGridColumnSetDZ({ objectName, datasetName, columnSetName })`
+  - `dragMetricToRows({ objectName, datasetName })`
+  - `dragMetricToRowsBelowObject({ objectName, datasetName, belowObject })`
+  - `dragObjectToOtherViz(objectName, srcViz, destViz)`
+  - `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)`
+  - `multiselectAndDragDSObjectsToDZ(datasetName, objOneType, objOneName, objTwoType, objTwoName, desZone)`
+  - `removeObjectFromGrid(objectName, vizName)`
+  - `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)`
+- **Related components:** datasetPanel
+
+### EditorPanelForGrid
+- **CSS root:** `.mstrmojo-Editor.mstrmojo-SimpleThresholdEditor.modal`
+- **User-visible elements:**
+  - Simple Threshold Editor (`.mstrmojo-Editor.mstrmojo-SimpleThresholdEditor.modal`)
+- **Component actions:**
+  - `ActionOnsecondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)`
+  - `changeTitle(newTitle)`
+  - `clearObjectAlias(objectName, objectType)`
+  - `clearThreshold(objectName)`
+  - `closeFormPopup(buttonName)`
+  - `createAttribute(objectName)`
+  - `createCalculationFromEditorPanel(objectName, calculationType, secondObject)`
+  - `createGroup(objectName, objectType)`
+  - `createLink(objectName)`
+  - `createMetric(objectName)`
+  - `createSubtotalsFromEditorPanel(objectName, objectType, subtotalOptions)`
+  - `createThresholdForMetric({ objectName, createFunction })`
+  - `dragObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)`
+  - `dragObjectFromDZtoDS(objectName, objectType, srcZone)`
+  - `editorPanelCalculationMultiSelect(elements, operation)`
+  - `getColumnSetObjectTexts(columnSetName)`
+  - `getDisplayAttributeFormNamesOption(option)`
+  - `getDisplayAttributeFormNamesPullDownMenu()`
+  - `getDisplayFormItem(formName)`
+  - `getPullDownFromMoreOption(title)`
+  - `getRowObjectTexts()`
+  - `isDisplayFormAvailable(formName)`
+  - `isDisplayFormSelected(formName)`
+  - `isEditorPanelPresent()`
+  - `isObjectPresent(objectName, objectType)`
+  - `isReplaceByOptionPresent(objectType, objectName, contextOption, newObjectName)`
+  - `multiSelectDisplayForms(formNames, skipCloseForm)`
+  - `multiSelectDisplayFormsFromDropZone(formNames, objectName, dropzone)`
+  - `multiSelectDisplayFormsFromEditorPanel(objectName, formNames)`
+  - `openAdvancedSortEditor(objectName)`
+  - `openAttributeThresholdsEditor(objectName)`
+  - `openCalculationEditor(objectName, objectType)`
+  - `openDerivedObjectEditor(objectName, objectType, actionType)`
+  - `openDisplayAttributeFormsMenu(objectName, objectType)`
+  - `openGroupEditor(groupName, groupType)`
+  - `openMetricThresholdsEditor(objectName)`
+  - `openPanelContextMenu()`
+  - `openThresholdsEditor(objectName)`
+  - `openThresholdsEditorWithoutWaiting(objectName)`
+  - `removeAllObjects()`
+  - `removeFromDropZone(objectName, objectType)`
+  - `removeObjectInColumnSet(objectName, columnSet)`
+  - `renameObject(objectName, objectType, newObjectName)`
+  - `renameObjectFromSection(objectName, sectionName, newObjectName)`
+  - `replaceObjectByName(objectName, objectType, objectNameToBeReplaced, objectTypeToBeReplaced)`
+  - `replaceObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)`
+  - `rightClickOnEditorPanel(objectName)`
+  - `rightClickOnElement(el)`
+  - `secondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)`
+  - `selectDisplayForms(formNames)`
+  - `selectDropZonePanel(panelName)`
+  - `selectOptionFromContextMenu(menuOption)`
+  - `setDisplayAttributeFormNames(option, submitAndClose)`
+  - `shortcutMetricOptionCalculationExists(objectName, calculationMetric, index)`
+  - `shortcutMetricOptionRankExists(objectName, rank)`
+  - `showTotal()`
+  - `simpleSort(objectName, sortOrder)`
+- **Related components:** datasetsPanel, editorPanel, filterPanel, getDockPanel, getDropZonePanel
+
+### ExistingObjectsDialog
+- **CSS root:** `.mstrmojo-Editor mstrmojo-VIDatasetEditor modal`
+- **User-visible elements:**
+  - Existing Object Dialog (`.mstrmojo-Editor mstrmojo-VIDatasetEditor modal`)
+- **Component actions:**
+  - `addAttributeToDropzone(attrName)`
+  - `addYearToDropzone()`
+  - `attributeTimeFolder()`
+  - `browseMDObject(obj, folder)`
+  - `changeExistingObejctsDropdown(object, option)`
+  - `clickButtonInClearAllPopup(buttonName)`
+  - `clickClearAllBtn()`
+  - `clickCreateParameterBtn()`
+  - `clickOnBtn(btnText)`
+  - `confirmExistingObjDialog()`
+  - `confirmYearInDropzone()`
+  - `deleteObjectFromDatasetContainer(object)`
+  - `doubleClickOnObject(objName)`
+  - `dragAndDropObjectAndWait(movingElement, targetElement)`
+  - `dragAttToDropzone(objectName)`
+  - `editFilterEditor()`
+  - `expandFolder(title)`
+  - `expandTimeFolder()`
+  - `getAttribute(attributeName)`
+  - `getAttributeFolder(folderName)`
+  - `getAttributeFromFolder(objectName)`
+  - `getContexMenu(objName, menuItem)`
+  - `getYearAttribute()`
+  - `isObjectDisplayedinDSContainer(objectName)`
+  - `moveExistingObjectsEditorScrollBar(direction, pixels)`
+  - `openFilterEditor()`
+  - `searchForObjectOnExistingObjectsDialog(keywords)`
+  - `selectAccessModeFromDropdown(buttonName)`
+  - `selectCreateParameterType(type)`
+  - `selectItemInParameterContextMenu(menuItem, parameterName)`
+  - `selectMetricsFromDropdown()`
+  - `timeFolderElements()`
+- **Related components:** getObjectFromDatasetContainer, getObjectFromObjectBrowseContainer, getObjectTextFromObjectBrowseContainer, loadingTextFromObjectBrowserContainer
+
+### FormatPanelForGridBase
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `selectTextFont(font)`
+  - `selectTextFontBold()`
+  - `selectTextFontColorButton()`
+  - `selectTextFontItalic()`
+  - `selectTextFontSize(size)`
+  - `selectTextFontSizeStepDown()`
+  - `selectTextFontSizeStepUp()`
+  - `selectTextFontStrikethrough()`
+  - `selectTextFontUnderline()`
+  - `setTextFontSize(size)`
+- **Related components:** _none_
+
+### FormatPanelForGridGeneral
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `checkBanding()`
+  - `checkOutline()`
+  - `clickMoreOptionsButtonInFormatPanel()`
+  - `selectGridColumnsFit(fit)`
+  - `selectGridColumnsFitTarget(target)`
+  - `selectGridPadding(padding)`
+  - `selectGridRowsFit(fit)`
+  - `selectGridStyle(style)`
+  - `selectGridTemplateColor(color)`
+  - `setGridColumnsFitFixedInches()`
+  - `setGridRowsFitFixedInches()`
+- **Related components:** _none_
+
+### FormatPanelForGridTitleCRV
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `isSubtotalSameAsCheckboxChecked()`
+  - `selectBackgroundFillColorButton()`
+  - `selectCellAlign(align)`
+  - `selectHorizontalLinesColorButton()`
+  - `selectHorizontalLinesStyleButton()`
+  - `selectLineStyle(style)`
+  - `selectSubtotalBackgroundFillColorButton()`
+  - `selectSubtotalCellAlign(align)`
+  - `selectSubtotalHorizontalLinesColorButton()`
+  - `selectSubtotalHorizontalLinesStyleButton()`
+  - `selectSubtotalSameAs()`
+  - `selectSubtotalTextAlign(align)`
+  - `selectSubtotalTextFont(font)`
+  - `selectSubtotalTextFontBold()`
+  - `selectSubtotalTextFontColorButton()`
+  - `selectSubtotalTextFontItalic()`
+  - `selectSubtotalTextFontSize(size)`
+  - `selectSubtotalTextFontStrikethrough()`
+  - `selectSubtotalTextFontUnderline()`
+  - `selectSubtotalVerticalLinesColorButton()`
+  - `selectSubtotalVerticalLinesStyleButton()`
+  - `selectSubtotalWrapTextCheckbox()`
+  - `selectTextAlign(align)`
+  - `selectVerticalLinesColorButton()`
+  - `selectVerticalLinesStyleButton()`
+  - `selectWrapTextCheckbox()`
+  - `setSubtotalTextFontSize()`
+- **Related components:** _none_
+
+### FormatPanelForGridToolBox
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `selectTextAlign(align)`
+- **Related components:** _none_
+
+### FreeformPositionAndSize
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `ClickOnHeightInputBoxInFormatPanel()`
+  - `ClickOnWidthInputBoxInFormatPanel()`
+  - `ClickOnXPositionInput()`
+  - `ClickOnYPositionInput()`
+  - `ReplaceHeightInputBoxInReactPanel(height)`
+  - `ReplaceWidthInputBoxInReactPanel(Width)`
+  - `ReplaceXInputBoxInReactPanel(x)`
+  - `ReplaceYInputBoxInReactPanel(y)`
+  - `TypePositionInFormatPanel(number)`
+  - `verifyHeightAndWidth()`
+  - `verifyXAndY()`
+- **Related components:** baseFormatPanel, bseFormatPanel
+
+### GridCellOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clickOnGridElement(objectName, visualizationName)`
+  - `clickOnGridElementWithoutLoading(objectName, visualizationName)`
+  - `hoverOnGridElement(objectName, visualizationName)`
+  - `isElementPresent(element, objectName, visualizationName)`
+  - `mouseOverGridCellByPosition(row, col, visualization)`
+  - `moveScrollBar(direction, pixels, vizName)`
+  - `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)`
+  - `rightClickOnGridElement(objectName, visualizationName)`
+  - `scrollToGridCell(visualizationName, elementName)`
+  - `selectElementsUsingShift(elements_1, elements_2, visualizationName)`
+  - `selectMultipleElements(elements, visualizationName)`
+  - `selectMultipleGridCells(elements, visualizationName)`
+- **Related components:** _none_
+
+### GridSelectors
+- **CSS root:** `.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`
+- **User-visible elements:**
+  - Document Body (`body`)
+  - Metric Sort Ascending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Clear Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.clr.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Descending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.desc.mstrmojo-ui-Menu-item .micn`)
+- **Component actions:**
+  - `getAllObjectHeaders(visualizationName)`
+  - `getLinkFromGridCell(row, col, visualizationName)`
+  - `getObjectHeader(objectName, visualizationName)`
+  - `getObjectHeaderByIndex(columnIndex, visualizationName)`
+  - `isObjectHeaderExists(objectName, visualizationName)`
+- **Related components:** getColumnSetInEditorPanel, getContainer, getGridContainer
+
+### GridValidators
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `existDrillOption(objectName, visualizationName, targetObject)`
+  - `existObjectByName(objectName, visualizationName)`
+  - `existReplaceByOption(objectName, visualizationName, targetObject)`
+  - `getAllGridObjectCount(visualizationName)`
+  - `getGridCellCSSPropertyByPosition(row, col, visualizationName, property)`
+  - `getGridCellTextByPosition(row, col, visualizationName)`
+  - `isElementPresent(element, objectName, visualizationName)`
+  - `isGroupEditorOpen()`
+  - `isGroupEditorOpenForSpecificGroup(groupName)`
+  - `isOutlinePresentForGridObject(objectName, visualizationName)`
+  - `isSaveDisabledForHeaderRename()`
+  - `noThresholdsPresentOnObject(headerName, visualizationName)`
+- **Related components:** _none_
+
+### GroupEditor
+- **CSS root:** `.mstrmojo-DerivedElementsEditor`
+- **User-visible elements:**
+  - Group Editor (`.mstrmojo-DerivedElementsEditor`)
+- **Component actions:**
+  - `calculateGroupRect(groupName)`
+  - `clickElementAndWait(element)`
+  - `createGroups({ groupElements, groupNames })`
+  - `createGroupsFromEditorPanel({ attributeName, groupElements, groupNames })`
+  - `deleteGroupFromEditor(name)`
+  - `deSelectElement(reference)`
+  - `displayAllOtherElementByGroup()`
+  - `displayAllOtherElementByItems()`
+  - `editGroupFromEditor(name)`
+  - `groupRelativePosition(groupName1, groupName2, relativePosition)`
+  - `moveGroupByPosition(sourceGroupName, targetGroupName, relativePosition)`
+  - `multiSelectAndDnDtoSelectedArea(attributeName1, attributeName2)`
+  - `openGroupEditor({ isFromGrid, isCreate, attributeName })`
+  - `renameGroup(newName)`
+  - `renameGroupFromEditor(oldName, newName)`
+  - `renameNDE(newName)`
+  - `selectElement(reference)`
+  - `selectElements(references)`
+  - `typeSearchKey(searchKey)`
+- **Related components:** getAttributeInEditorPanel, getContainer
+
+### GroupOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addElementsToExistingGroup(elements, visualizationName, groupName)`
+  - `deleteCalculationGroup(groupName, visualizationName)`
+  - `editCalculationGroup({ newCalculation, groupName, visualizationName })`
+  - `editGroup(groupName, visualizationName)`
+  - `groupElements(elements, objectName, visualizationName, groupName)`
+  - `groupElements2(elements, objectName, visualizationName, groupName)`
+  - `groupElementsByPartialValue(elementPartialValue, objectName, visualizationName, groupName)`
+  - `groupElementsForCalculation(elements, visualizationName, groupName, calculationMenu)`
+  - `groupElementsHelper(arrElements, groupName)`
+  - `groupElementsToAverageCalculation({ elements, visualizationName, groupName })`
+  - `groupElementsToSumCalculation(elements, visualizationName, groupName)`
+  - `inputFieldRenameHelper(newName)`
+  - `renameGroup(groupName, visualizationName, newGroupName)`
+  - `ungroupElements(objectName, visualizationName, groupName)`
+  - `ungroupElements2(objectName, visualizationName, groupName)`
+- **Related components:** _none_
+
+### HtmlContainer_Authoring
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clickFormatPanelOkButton()`
+  - `clickHtmlContainerOkButton()`
+  - `switchToHtmlTextAndInput(inputText)`
+  - `switchToHtmlTextByEdit(inputText)`
+  - `switchToHtmlTextByFormatPanel(inputText)`
+  - `switchToIFrameByEdit(inputText)`
+  - `switchToIFrameByFormatPanel(inputText)`
+- **Related components:** baseFormatPanel, clickFormatPanel, clickHtmlContainer, formatPanel, getContainer, showFormatPanel
+
+### ImageContainer_Authoring
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addImageFromDisk(visualizationName, filename)`
+  - `clickOnImageSrc(visualizationName)`
+  - `editURL(visualizationName, url)`
+  - `editURLFromFormat(url)`
+  - `editURLonFedRamp(visualizationName, url)`
+  - `restoreToOriginalSizeByFormatPanel()`
+  - `setImageContainersPicture(imageUrl, visualizationName)`
+  - `setXAndY(x, y)`
+  - `singleClickOnImageContainer(waitType, visualizationName)`
+- **Related components:** baseFormatPanel, getContainer, getFedRampImageContainer, getImageContainer
+
+### InCanvasSelector_Authoring
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `cancelSelectTargetForSelector()`
+  - `changeDisplayStyle(selectorTitle, styleName)`
+  - `changeDisplayStyleforSelectedSelector(styleName)`
+  - `changeSelectorMode(selectorTitle, modeName)`
+  - `checkElementList(selectorTitle, elementNames)`
+  - `checkElementListByIndex(index, elementNames, isSpaceNotReplaced = false)`
+  - `checkExcludeMode(selectorTitle, elementName, selectorType)`
+  - `checkForAttrOrMetricsFilterBox(id)`
+  - `checkForEleOrValueFilterBox(id)`
+  - `checkForNoEleOrValueFilterBox(id)`
+  - `checkNonPresenceOfDynamicSelIcon(selectorTitle)`
+  - `checkNotExcludeMode(selectorTitle, elementName, selectorType)`
+  - `checkOrderOfElements(order, selectorTitle)`
+  - `checkPresenceOfDynamicSelIcon(selectorTitle)`
+  - `checkPresenceOfSelector(selectorTitle, selectorType)`
+  - `checkPresenceOfSelectTrgtBtn(selectorTitle)`
+  - `clearSearchBox(selectorTitle)`
+  - `clickApplyButtonFromFilterBoxDialog()`
+  - `clickSelectTargetButton(selectorTitle)`
+  - `copyFormatting(selectorTitle)`
+  - `createNewAttributeMetricFilter()`
+  - `createNewElementFilter()`
+  - `createNewPanelFilter()`
+  - `createNewParameterFilter()`
+  - `dragDSObjectAfterSearchToParameterSelector(objectType, objectName, datasetName, filterIdx)`
+  - `dragDSObjectToParameterSelector(objectType, objectName, datasetName, filterIdx)`
+  - `dragDSObjectToSelector(objectType, objectName, datasetName, filterIdx = '', isScrollIntoView = true)`
+  - `dragSelectorToCanvas(selectorTitle)`
+  - `getSelectedPanelText()`
+  - `hoverOnEmptyICSByIndex(index)`
+  - `linkOrButtonBarSelector(selectorTitle, elementNames)`
+  - `linkOrButtonBarSelectorInLibrary(selectorTitle, elementNames)`
+  - `linkOrButtonCurrentBarSelector(elementNames)`
+  - `listBoxSelector(selectorTitle, elementNames)`
+  - `metricQualificationSelectorOnNullValue(selectorTitle, operatorType)`
+  - `metricQualificationSelectorOnRank(selectorTitle, rankType, value)`
+  - `metricQualificationSelectorOnValue(selectorTitle, operatorName, inputValue1, inputValue2)`
+  - `metricSliderSelectorOnRank(selectorTitle, rankType, value)`
+  - `metricSliderSelectorOnVal(selectorTitle, startValue, stopValue)`
+  - `openAttributeDisplayFormsMenu(selectorTitle)`
+  - `openCurrentSelectorTargetsMenu()`
+  - `openDropDownSelectorPullList(selectorTitle)`
+  - `openParameterCalendar(selectorTitle)`
+  - `openSelectorTargetsMenu(selectorTitle)`
+  - `pasteFormatting(selectorTitle)`
+  - `renameSelectorbyDoubleClick(selectorTitle, newName)`
+  - `resetContextMenu(selectorTitle)`
+  - `resetToDefault(selectorTitle)`
+  - `searchBoxSelector(selectorTitle, searchPattern, elementName)`
+  - `searchBoxSelectorWithoutSelecting(selectorTitle, searchPattern)`
+  - `searchInDropdownSelector(selectorTitle, searchPattern)`
+  - `selectAttributeDisplayForms(selectorTitle, formNames)`
+  - `selectElementInSearchBox(elementName)`
+  - `selectElementsInDropdown(selectorTitle, elements, skipOpeningPopup)`
+  - `selectFromLinkBarAttributeMetricSelector(option)`
+  - `selectSurveysAsTargets()`
+  - `selectTargetFilterFromWithinSelector(trgtFilterNames, selectorTitle)`
+  - `selectTargetForSelectorContextMenu(selectorTitle, targets)`
+  - `selectTargets(trgtFilterNames, trgtVizNames)`
+  - `selectTargetsFromWithinSelector(trgtFilterNames, trgtVizNames, selectorTitle)`
+  - `selectTargetVizFromWithinSelector(trgtVizNames, selectorTitle, replaceObjectName = null)`
+  - `setParameterSelectorInputValueByIndex(idx, value)`
+  - `setParameterSelectorInputValueByName(name, value)`
+  - `setParameterSliderSelectorValue(selectorTitle, value)`
+  - `singleDropdownSelector(selectorTitle, elementName)`
+  - `switchMetricSelectorType(selectorTitle, type)`
+  - `toggleDynamicSelectionIcon(selectorTitle)`
+  - `toggleMultipleSelection(selectorTitle)`
+  - `toggleMultipleSelectionforSelectedSelector()`
+  - `unsetCurrentSelectorFilter()`
+  - `unsetSelectorFilter(selectorTitle)`
+  - `verifyTooltipLocation(content, selectorName)`
+- **Related components:** datasetPanel, filterPanel, getAttrOrMetricSelectorContainer, getContainer, getParameterSelectorContainer, getSelectedPanel, hoverOnContainer, hoverOnVisualizationContainer
+
+### Keyboard
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `dragAndDropAndHoldOnMouse(element, xPixels = 0, yPixels = 0)`
+  - `moveContainerByOffsetAndHoldOnMouse(containerName, moveX, moveY)`
+  - `moveSelectedGroupByOffsetAndHoldOn(containerName, moveX, moveY)`
+  - `pressAltAndEnterKeyForTimes(times)`
+  - `pressArrowKeyForTimes(containerName, key, times)`
+  - `PressDeleteKeyForContainer(containerName)`
+  - `PressDownArrowkeyForTimes(times)`
+  - `PressEnterKeyForTimes(times)`
+  - `PressEscKey()`
+  - `PressLeftArrowkeyForTimes(times)`
+  - `PressRightArrowkeyForTimes(times)`
+  - `pressShiftAndArrowKeyForTimes(containerName, key, times)`
+  - `pressSingleKeyAndHoldOn(keyName)`
+  - `PressTabKeyForTimes(times)`
+  - `PressUpArrowkeyForTimes(times)`
+  - `releaseMouse()`
+  - `releaseSingleKey(keyName)`
+  - `storeContainerRect(containerNames)`
+  - `verifySnapGuide(lines, status)`
+- **Related components:** baseContainer
+
+### MoreOptionsDialog
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `changeFilteringMode(filteringMode)`
+  - `resetRowsPerPage(value)`
+  - `saveAndCloseMoreOptionsDialog()`
+  - `selectDisplayAttributeFormMode(formMode)`
+  - `selectHideShowNullZerosOption(Option)`
+  - `toggleOptionsForColumnsHeader(Option)`
+  - `toggleOptionsForRowsHeader(Option)`
+- **Related components:** _none_
+
+### NewFormatPanelForGrid
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `changeButtonFillColorOpacity(opacity)`
+  - `changeCellFillColorOpacity(opacity)`
+  - `changeCellsFillColor(color)`
+  - `changeColumnSet(option)`
+  - `changeContainerFillColorOpacity(opacity)`
+  - `changeDPSelection(selection)`
+  - `changeGridElement(option)`
+  - `changeMicroChartAlign(align)`
+  - `clickArrangementBtn()`
+  - `clickBuiltInColor(color)`
+  - `clickButtonBackgroundColorBtn()`
+  - `clickButtonBorderColorBtn()`
+  - `clickButtonFormatIcon(buttonName)`
+  - `clickButtonIconColorBtn()`
+  - `clickButtonTextFontColorBtn()`
+  - `clickButtonVisibleIcon(buttonName)`
+  - `clickCellBorderColorBtn()`
+  - `clickCellBorderColorBtnByPos(pos)`
+  - `clickCellFillColorBtn()`
+  - `clickCheckBox(checkBoxName)`
+  - `clickColorPickerModeBtn(mode)`
+  - `clickColumnSizeBtn(isAgGrid)`
+  - `clickColumnSizeFitOption(fit, isAgGrid = true)`
+  - `clickColumnSizeTargetBtn()`
+  - `clickColumnSizeTargetOption(target)`
+  - `clickContainerBorderColorBtn()`
+  - `clickContainerFillColorBtn()`
+  - `clickFontColorBtn()`
+  - `clickRowSizeBtn(isAgGrid)`
+  - `clickRowSizeFitOption(fit)`
+  - `clickSectionTitle(sectionName)`
+  - `clickTitleBackgroundColorBtn()`
+  - `disableWrapText()`
+  - `enableBanding()`
+  - `enableOutline()`
+  - `enableWrapText()`
+  - `expandLayoutSection(languageOption = Locales.English)`
+  - `expandSpacingSection(languageOption = Locales.English)`
+  - `expandTemplateSection(languageOption = Locales.English)`
+  - `getCellOpacityOnReactPanel()`
+  - `isButtonVisible(buttonName)`
+  - `isCheckBoxChecked(checkBoxName)`
+  - `isFontAlignButtonDisabled(align)`
+  - `isFontAlignButtonSelected(align)`
+  - `moveChartHeightSlider(direction, pixels)`
+  - `openButtonBorderPullDown()`
+  - `openCellBorderStyleDropDown()`
+  - `openCellBorderStyleDropDownByPos(pos)`
+  - `openContainerBorderPullDown()`
+  - `selectBorderStyle(style)`
+  - `selectButtonBorderStyle(style)`
+  - `selectButtonRadius(option)`
+  - `selectButtonSize(size)`
+  - `selectButtonTextFont(font)`
+  - `selectButtonTextFontStyle(style)`
+  - `selectCellBorderOrientation(option)`
+  - `selectCellBorderStyle(style)`
+  - `selectCellPadding(padding)`
+  - `selectFontAlign(align)`
+  - `selectFontStyle(style)`
+  - `selectFromGridELDropdownReact(option)`
+  - `selectGridColumns(columnSet)`
+  - `selectGridSegment(option)`
+  - `selectGridTemplateColor(color)`
+  - `selectGridTemplateStyle(style)`
+  - `selectKeyDPOption(option)`
+  - `selectTextFont(font)`
+  - `selectTitleOption(option)`
+  - `selectVerticalAlign(align)`
+  - `setAlignmentInSectionItem(sectionName, label, option)`
+  - `setArrangement(option)`
+  - `setButtonAlias(alias)`
+  - `setButtonLabelOption(option)`
+  - `setColorInSectionItem(sectionName, label, color)`
+  - `setColorPaletteHex(hex)`
+  - `setColorPaletteRGB(r, g, b, a = null)`
+  - `setColumnSizeFixedInches(inches)`
+  - `setExportButtonOption(option)`
+  - `setFixedInches(inches, elInchesInput)`
+  - `setNoFillColor()`
+  - `setNumberInputInSectionItem(sectionName, label, value)`
+  - `setRadiusInSectionItem(sectionName, label, option)`
+  - `setRowSizeFixedInches(inches)`
+  - `setSelectorOptionInSectionItem(sectionName, label, style)`
+  - `setTextFontSize(size)`
+  - `switchToGridTab()`
+  - `switchToTab(tabName, waitLoading = true)`
+  - `switchToTextFormatTab()`
+  - `switchToTitleContainerTab()`
+  - `textFontSizeInputValue()`
+  - `toggleDPSpots()`
+  - `toggleShowHeaders()`
+  - `toggleTitleBar()`
+  - `toggleTitleButtons()`
+  - `toggleTitles()`
+- **Related components:** baseFormatPanel, FormatPanel, getContainer
+
+### NewGalleryPanel
+- **CSS root:** `.mstrmojo-galleryPanel-new`
+- **User-visible elements:**
+  - New Gallery Panel (`.mstrmojo-galleryPanel-new`)
+- **Component actions:**
+  - `clickOnViz(vizName)`
+  - `closeChangeViz()`
+  - `hoverOnCategory(category)`
+  - `selectViz(vizName)`
+- **Related components:** getCategoryPanel, NewGalleryPanel
+
+### NgmContextMenu
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clickOnContextMenuOption(webel, objectFunction)`
+  - `clickOnContextMenuOptionFromAxis(objectName, objectFunction)`
+  - `clickOnContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction)`
+  - `clickOnContextMenuOptionFromElement(chartType, index, objectFunction)`
+  - `clickOnSecondaryContextMenuOption(webel, objectFunction1, objectFunction2)`
+  - `clickOnSecondaryContextMenuOptionFromAxis(objectName, objectFunction1, objectFunction2)`
+  - `clickOnSecondaryContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction1, objectFunction2)`
+  - `clickOnSecondaryContextMenuOptionFromElement(chartType, index, objectFunction1, objectFunction2)`
+  - `closeContextMenu()`
+  - `ctrlSelectAndCreateCalculation(objectName1, objectName2, objectZone, objectFunction)`
+  - `ctrlSelectAndRemove(objectName1, objectName2, objectZone)`
+  - `ctrlSelectElementsAndclickOnContextMenuOption(chartType, indexArray, objectFunction)`
+  - `ctrlSelectElementsAndclickOnSecondaryContextMenuOption(chartType, indexArray, objectFunction1, objectFunction2)`
+  - `openContextMenuFromAxis(objectName)`
+  - `openContextMenuFromEditorPanel(objectName, objectZone)`
+  - `openContextMenuFromElement(chartType, index)`
+  - `selectElementAndclickOnContextMenuOption(chartType, index, objectFunction)`
+  - `selectElementAndclickOnSecondaryContextMenuOption(chartType, index, objectFunction1, objectFunction2)`
+- **Related components:** ngmEditorPanel, ngmVisualizationPanel
+
+### NgmEditorPanel
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `dragAndDropObjectAndWait(movingElement, targetElement)`
+  - `dragDSObjectToBlankDZ(objectName, objectTypeName, datasetName, desZone)`
+  - `dragDSObjectToDZ(objectName, objectTypeName, datasetName, desZone, desPosition, desObject)`
+  - `dragDSObjectToDZReplace(objectName, objectTypeName, datasetName, desObject, desZone)`
+  - `editorPanelShortcutFunction(funName)`
+  - `moveObject(srcObject, srcZone, desZone, desPosition, desObject)`
+  - `moveObjectToBlankDZ(srcObject, srcZone, desZone)`
+  - `moveObjectToReplace(srcObject, srcZone, desObject, desZone)`
+  - `moveToSpecificLocationAndWait(desPosition, srcElement, desElement)`
+  - `removeObjectFromDropZone(srcObject, srcZone)`
+- **Related components:** datasetPanel, datasetsPanel
+
+### NgmFormatPanel
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `openFormatPanel()`
+  - `select(groupName)`
+  - `switchFormatPanel(name)`
+- **Related components:** formatPanel, openFormatPanel
 
 ### NgmVisualizationPanel
-> Extends: `BasePage`
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clearVizHover()`
+  - `ctrlSelectElement(chartType, index)`
+  - `getCurrentPanel()`
+  - `getElementCount(chartType)`
+  - `getELementPath(chartType)`
+  - `getElementPathByIndex(index, chartType)`
+  - `getELementTooltip(index, chartType)`
+  - `multiSelectElementsUsingCmndOrCtrl(indexArray, chartType)`
+  - `multiSelectElementsUsingCommandOrControlNGM(xpaths)`
+  - `selectElement(chartType, index)`
+- **Related components:** getCurrentPanel
 
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
+### NumberFormatOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `clickNfCondense()`
+  - `clickNfShortcutIcon(shortcut)`
+  - `clickNumberFormatDropdownOption()`
+  - `inputNfCustomTextBox(newFormat)`
+  - `moveNfDecimalPlace(change, numOfPlaces)`
+  - `selectNfCurrencyPositionFromDropdown(position)`
+  - `selectNfCurrencySymbolFromDropdown(symbol)`
+  - `selectNfNegativeForm(form, inRed)`
+  - `selectNfValueFormatFromDropdown(format)`
+  - `selectNumberFormatFromDropdown(numberFormat)`
+  - `toggleNfThousandSeparator()`
+- **Related components:** _none_
 
-**Actions**
-| Signature |
-|-----------|
-| `getCurrentPanel()` |
-| `getELementPath(chartType)` |
-| `getElementPathByIndex(index, chartType)` |
-| `getELementTooltip(index, chartType)` |
-| `selectElement(chartType, index)` |
-| `ctrlSelectElement(chartType, index)` |
-| `multiSelectElementsUsingCmndOrCtrl(indexArray, chartType)` |
-| `multiSelectElementsUsingCommandOrControlNGM(xpaths)` |
-| `clearVizHover()` |
-| `getElementCount(chartType)` |
+### NumberFormatSelectors
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - _none_
+- **Related components:** _none_
 
-**Sub-components**
-- getCurrentPanel
+### Open_Canvas
+- **CSS root:** `.mstrmojo-GroupContainer.selected`
+- **User-visible elements:**
+  - Auto Cavas Button From Toolbar (`.mstrmojo-VIToolbar .toggleManualMode.on`)
+  - Hover Drag Icon (`.hover-drag-icon-btn.visible`)
+  - Open Cavas Button From Toolbar (`.mstrmojo-VIToolbar .toggleManualMode`)
+  - Selected Group (`.mstrmojo-GroupContainer.selected`)
+- **Component actions:**
+  - `calculateContainerSizeAndLocation(containerName)`
+  - `calculateGroupRect(groupContainerChildName)`
+  - `clickOnAutoCanvasButton()`
+  - `clickOnCanvas()`
+  - `clickOnOpenCanvasButton()`
+  - `doubleClickContainer(containerName)`
+  - `GroupContextMenuAction(containerName, cmOption)`
+  - `lassoSelect(fromCordinates, toCordinates)`
+  - `moveSelectedGroup(moveX, moveY)`
+  - `multiSelectContainerAndTakeCMOption(containerNameList, cmOption)`
+  - `multiSelectContainersFromCanvas(containerList)`
+  - `openAndTakeContextMenuByRMC(containerName, cmOption)`
+  - `openAndTakeContextMenuByRMCTitle(containerName, cmOption)`
+  - `openContextMenuByRMC(containerName)`
+  - `resizeGroup(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)`
+  - `resizeGroupAndHoldMouse(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)`
+  - `rightClickContainerAndDoCMAction(containerName, cmOption)`
+  - `selectedGroupContextMenuAction(cmOption)`
+  - `verifyAlignment(containerNameList, alignOption)`
+  - `verifyDistribute(containerNameList, distributeOption)`
+  - `verifyGroupPosition(position, containerName)`
+- **Related components:** baseContainer, DocPanel
+
+### OutlineOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `collapseOutlineFromColumnHeader(objectName, visualizationName)`
+  - `collapseOutlineFromElement(elementName, visualizationName)`
+  - `confirmOutlineGridCollapsed(objectName, visualizationName)`
+  - `confirmOutlineGridExpanded(objectName, visualizationName)`
+  - `expandOutlineFromColumnHeader(objectName, visualizationName)`
+  - `expandOutlineFromElement(elementName, visualizationName)`
+- **Related components:** _none_
+
+### PanelSelector
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `dropdownPanelSelector(selectorTitle, elementName)`
+  - `linkBarPanelSelector(selectorTitle, elementName)`
+  - `selectorCMAction(selector, cmOption)`
+  - `selectTargetPanelStackFromLayersPanel(panelStacks, selectorTitle)`
+  - `selectTargetPanelStackFromWithinSelector(panelStacks, selectorTitle)`
+- **Related components:** getContainer, getElementFromLinkBarPanel, getPanel, layersPanel
+
+### PanelStack
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addPanel(stack)`
+  - `buttonStyle(id, name, style)`
+  - `clearAllFilterOnPS(ps)`
+  - `clearFilterOnPS(ps, condition)`
+  - `clickButtonByName(id, name)`
+  - `clickContainerInStack(viz, stack)`
+  - `containerCMAction(viz, stack, cmOption)`
+  - `doubleClickOnPanel(panel, stack)`
+  - `getPanelPadding(id, style)`
+  - `hoverOnButton(id, name)`
+  - `inputToRename(newName)`
+  - `isButtonDisabled(id, name)`
+  - `moveVerticalScrollbarInPanel(stack, moveY)`
+  - `openPanelStackCM(name)`
+  - `panelCMAction(panel, stack, cmOption)`
+  - `panelStackCMAction(name, cmOption)`
+  - `renamePanel(panel, stack, newPanel)`
+  - `switchPanel(panel, stack)`
+  - `switchPanelByArrow(arrow, stack)`
+- **Related components:** getAddPanel, getContainer, getContainerInCurrentPanelOfPanel, getCurrentPanelCanvasInPanel, getPanel, getPanelInPanel, getPanelSwitchArrowInPanel, getVerticalScrollBarInPanel, openPanel
+
+### ResponsiveGroupingEditor
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `actionFromContainerContextMenu(containerName, cmOption)`
+  - `actionFromContainerMenu(containerName, cmOption)`
+  - `clickSaveCancelBotton(buttonName)`
+  - `deleteGroupFromToolbar(groupName)`
+  - `groupContainers(boxNames)`
+  - `mergeGroups(srcGroupName, dstGroupName)`
+  - `selectGroup(groupName)`
+- **Related components:** baseContainer, baseContainergetContainer, getContainer
+
+### RichTextBox
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `DoubleClickRichTextbox(RichTextbox)`
+  - `InputPlainText(inputText, RichTextbox)`
+  - `pressArrowKeyToMoveCursor(key, times)`
+  - `pressCtrlAndCtoCopyText()`
+  - `pressCtrlAndVtoPasteText()`
+  - `pressShiftAndArrowKeyToHighlightText(key, times)`
+  - `verifyVeriticalAlignment(expectedType)`
+- **Related components:** getContainer, getRichTextContainer
+
+### serves
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addColumnSet()`
+  - `changeVizToCompoundGrid(containerName)`
+  - `clearSorting(objectName, visualizationName)`
+  - `clickNfShortcutIcon(shortcut)`
+  - `clickOnGridElement(objectName, visualizationName)`
+  - `collapseOutlineFromColumnHeader(objectName, visualizationName)`
+  - `deleteColumnSet(columnSetName)`
+  - `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)`
+  - `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)`
+  - `existContextMenuItemByName(option)`
+  - `existObjectByName(objectName, visualizationName)`
+  - `expandOutlineFromColumnHeader(objectName, visualizationName)`
+  - `getAllGridObjectCount(visualizationName)`
+  - `groupElements(elements, objectName, visualizationName, groupName)`
+  - `groupElementsForCalculation(elements, objectName, visualizationName, groupName, calculationMenu)`
+  - `isElementPresent(element, objectName, visualizationName)`
+  - `removeObjectFromGrid(objectName, vizName)`
+  - `renameColumnSet(columnSetPosition, newColumnSetName)`
+  - `rightClickOnGridElement(objectName, visualizationName)`
+  - `rightClickOnHeader(objectName, visualizationName)`
+  - `selectContextMenuOptionByName(option)`
+  - `sortAscending(objectName, visualizationName)`
+  - `sortDescending(objectName, visualizationName)`
+  - `sortWithinAttribute(objectName, visualizationName, sortAttribute)`
+  - `switchToEditorPanel()`
+  - `ungroupElements(objectName, visualizationName, groupName)`
+- **Related components:** datasetPanel
+
+### Shapes
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `changeShapeBorderStyle(style)`
+  - `ChangeShapeFillColorOpacity(opacity)`
+  - `ChangeShapeOuterBorderWidth(Width)`
+  - `ClickBorderWidthDecreaseBtnForTimes(times)`
+  - `ClickBorderWidthIncreaseBtnForTimes(times)`
+  - `ClickOnLineDirectionButton(option)`
+  - `ClickOnRadioButton(option)`
+  - `ClickPolygonSlidesDecreaseBtnForTimes(times)`
+  - `ClickPolygonSlidesIncreaseBtnForTimes(times)`
+  - `function(text)`
+  - `function(text)`
+  - `function(text)`
+  - `selectLineEndArrow(arrowOption)`
+  - `selectLineShapeColorButton()`
+  - `selectLineStartArrow(arrowOption)`
+  - `selectPolygonSlides(sides)`
+  - `selectShapeBorderColorButton()`
+  - `selectShapeBorderStyleFromDropdown(style)`
+  - `selectShapeFillColorButton()`
+  - `verifyCircle()`
+  - `verifyEllipse()`
+  - `verifyLineDirection(expectedDirection)`
+  - `verifyLineEndArrow(endArrow)`
+  - `verifyLineStartArrow(startArrow)`
+  - `verifyOuterBorderWidth(expectWidth)`
+  - `verifyPolygonSlides(slides)`
+  - `verifyRightTriangleDirection(direction)`
+  - `verifyTriangleDirection(direction)`
+- **Related components:** baseContainer, baseFormatPanel
+
+### SortOperations
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addAdvancedSortParameter({ columnOrder, objectName, sortOrder })`
+  - `clearSortFromDropZone(objectName)`
+  - `clearSortFromViz({ objectName, visualizationName })`
+  - `clickSortDeleteRowButton(columnOrder)`
+  - `closeSortEditor()`
+  - `createAndSaveAdvancedSort({ rowOrders, columnOrders, dragSortActions })`
+  - `dragSortRowWithPositionInAdvancedSortEditor({ srcSortRow, desPosition, desSortRow })`
+  - `metricSortFromViz({ objectName, visualizationName, order })`
+  - `openAdvancedSortEditor({ objectName, visualizationName = 'Visualization 1' })`
+  - `openCustomSortEditor(objectName, visualizationName)`
+  - `saveAndCloseSortEditor()`
+  - `sortAscending(objectName, visualizationName)`
+  - `sortAscendingFromDropZone(objectName)`
+  - `sortAscendingFromViz({ objectName, visualizationName })`
+  - `sortDescending({ objectName, visualizationName = 'Visualization 1' })`
+  - `sortDescendingFromDropZone(objectName)`
+  - `sortDescendingFromViz({ objectName, visualizationName })`
+  - `sortMetric({ order })`
+  - `sortMetricFromDropZone({ objectName, order })`
+  - `sortWithinAttributeFromDropZone({ objectName, sortAttr })`
+  - `switchRowColumnInSortEditor(buttonName)`
+- **Related components:** editorPanel
+
+### Textfield
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `addDatasetObjectByDragAndDrop(objectTypeName, objectName, datasetName, containerName)`
+  - `changeNumberFormat(type)`
+  - `ClickFontSizeDecreaseBtnForTimes(times)`
+  - `ClickFontSizeIncreaseBtnForTimes(times)`
+  - `ClickOnAlignOrPaddingButton(option)`
+  - `ClickOnFontColorDropdown()`
+  - `ClickOnFontStyleButtonInPanel(type)`
+  - `InputSimpleText(text, textContainer)`
+  - `insertTextField(buttonName)`
+  - `pasteTextboxText(containerTitle)`
+  - `replaceFontSizeText(fontSize)`
+  - `replaceTextboxText(textboxText)`
+  - `singleClickOnTextContainer(waitType, containerName)`
+  - `singleClickOnTextContainer(waitType)`
+  - `verifyTextBoxVeriticalAlignment(expectedType)`
+- **Related components:** baseFormatPanel, datasetsPanel, getContainer, getFontStyleButtonFromFormatPanel, getTextContainer
+
+### ThresholdEditor
+- **CSS root:** `.edt-title-btn.mstrmojo-Editor-close`
+- **User-visible elements:**
+  - Close Btn (`.edt-title-btn.mstrmojo-Editor-close`)
+- **Component actions:**
+  - `addColorBandByRMCColorBand(indexNum)`
+  - `addHandlerInTheMiddleArea()`
+  - `changeColorForColorBand(colorName, indexNum)`
+  - `checkAttributeName(item)`
+  - `checkThresholdConditionByIndex(index)`
+  - `clearThresholdFromViz(objectName, visualizationName)`
+  - `clearThresholds(headerName, visualizationName)`
+  - `clickFormatPreviewPanelOkButton()`
+  - `clickOnCancelMarkOnFormatPreviewPanel()`
+  - `clickOnCheckMarkOnFormatPreviewPanel()`
+  - `clickOnEnableAllowUsersCheckBox(item)`
+  - `clickOnEnableDataReplaceCheckBox()`
+  - `clickOnNewConditionEditorOkButton()`
+  - `clickOnOptionOnTheFontButtonBar(optionName)`
+  - `clickThresholdConditionByIndex(index)`
+  - `closeThresholdEditor()`
+  - `deletColorBandByIndexNumber(indexNum)`
+  - `deleteThresholdConditionByOrderNumber(orderNum)`
+  - `dragAndMoveMarker(indexNum)`
+  - `getMarkerAndChangeValue(indexNum, value)`
+  - `inputInTextBox(message)`
+  - `openAndSelectSimpleThresholdColorBand(colorBandName)`
+  - `openColumnSetPullDown()`
+  - `openFontColorDropdownMenu()`
+  - `openFontFamilyDropdownMenu()`
+  - `openFontSizeDropdownMenu()`
+  - `openFormatPreviewPanelByOrderNumber(orderNum)`
+  - `openMicrochartFillColor()`
+  - `openNewThresholdCondition()`
+  - `openNewThresholdConditionI18N(name)`
+  - `openOuterBorderColorPickerDropdownMenu()`
+  - `openOuterBorderDropdownMenu()`
+  - `openQuickSymbolDropDownMenu()`
+  - `openSimpleThresholdColorBandDropDownMenu()`
+  - `openSimpleThresholdImageBandDropDownMenu()`
+  - `openThresholdConditionByOrderNumber(orderNum)`
+  - `openThresholdEditorFromCompoundGridDropzone(objectName, columnSet)`
+  - `openThresholdEditorFromMicroChart(microchartName)`
+  - `openThresholdEditorFromViz(objectName, visualizationName)`
+  - `replaceInTextBox(message)`
+  - `revertThresholdColorBand()`
+  - `saveAndCloseAdvancedThresholdEditor()`
+  - `saveAndCloseSimThresholdEditor()`
+  - `selectApplyToOptionFromThreeDotsMenu(optionName, orderNum)`
+  - `selectAttributeElementFromColumnContainer(elementName)`
+  - `selectColumnSet(columnSet)`
+  - `selectFontByFontName(fontName)`
+  - `selectFontColorByColorName(colorName)`
+  - `selectFontSizeBySizeNumber(sizeNum)`
+  - `selectOptionAttributeFromDropdown(elementName)`
+  - `selectOptionFromDataReplaceDropdownMenu(optionName)`
+  - `selectOptionSample()`
+  - `selectOuterBorderColorByColorName(colorName)`
+  - `selectOuterBorderOptionByIndexNumber(indexNum)`
+  - `selectQuickSymbolByIndexNumber(index)`
+  - `selectSecondaryOptionInMenuForThresholdConditions(secondaryOp, orderNum)`
+  - `selectSimpleThresholdBasedOnObject(objectName)`
+  - `selectSimpleThresholdBasedOnOption(optionName)`
+  - `selectSimpleThresholdBreakByObject(objectName)`
+  - `selectSimpleThresholdColorBand(colorBandName)`
+  - `selectSimpleThresholdImageBand(imageBandName)`
+  - `setFillColor(colorName)`
+  - `setFillColorOpacity(opacity)`
+  - `setMicrochartFillColor(colorName)`
+  - `setOpacityPercentage(value)`
+  - `switchAdvToSimThresholdWithApply()`
+  - `switchAdvToSimThresholdWithClear()`
+  - `switchSimpleThresholdsType(thresholdsType)`
+  - `switchSimpleThresholdsTypeI18N(thresholdsType)`
+  - `switchSimToAdvThresholdWithApply()`
+  - `switchSimToAdvThresholdWithClear()`
+- **Related components:** formatPreviewPanel, getAttributeElementFromColumnContainer, getFillColorPanel, getFormatPreviewPanel, microchartFillColorPanel, vizPanel
+
+### TOCcontentsPanel
+- **CSS root:** `.image-and-btn`
+- **User-visible elements:**
+  - Cover Image Btn (`.image-and-btn`)
+  - Cover Image Url Box (`.mstrmojo-vi-ui-editors-CoverPageEditor input`)
+  - TOC (`.mstrmojo-TableOfContents`)
+- **Component actions:**
+  - `actionOnPanel(option)`
+  - `changeCoverImageBySample(sampleImageOrder)`
+  - `changeCoverImageByUrl(imageUrl)`
+  - `changePanelWidthByPixel(offsetX)`
+  - `changeView(contentsPanelView)`
+  - `clickCoverImageCancelBtn()`
+  - `clickOnChapter(chapterTitle)`
+  - `clickOnPage(chapterTitle, pageTitle)`
+  - `contextMenuOnChapter(chapterTitle, option)`
+  - `contextMenuOnPage(pageTitle, chapterTitle, option)`
+  - `deleteChapterFromChapterTitle(chapterTitle)`
+  - `deleteChapterFromContextMenu(chapterTitle)`
+  - `deleteChapterFromPageTitle(pageTitle, chapterTitle)`
+  - `dragNdropChapter(chapterTitle, chapterIndex)`
+  - `dragNdropToMovePage(srcPage, srcChapter, desPage, desChapter, relativePosition)`
+  - `dragPageAndDropToCreateNewChapter(pageName, chapterName, chapterIndex)`
+  - `isCurrentPageDisplayed(pageTitle, chapterTitle)`
+  - `MenuOnChapter(chapterTitle, option)`
+  - `moveVerticalScrollbar(moveY)`
+  - `renameChapterByDoubleClickFromChapterTitle(chapterTitle, newChapterTitle)`
+  - `renameChapterFromChapterTitle(chapterTitle, newChapterTitle)`
+  - `renameChapterFromContextMenu(chapterTitle, newChapterTitle)`
+  - `renamePageByDoubleClickFromPageTitle(pageTitle, newPageTitle, chapterTitle)`
+  - `renamePageFromPageTitle(pageTitle, chapterTitle, newPageTitle)`
+  - `selectMultiplePagesUsingControlOrShiftToDoOperation(key, pageList, chapterTitle, contextMenuOption)`
+  - `toggleChapter(chapterTitle)`
+- **Related components:** contentsPanel, getCurrentPage, getPage
+
+### Utils
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `getRgbaColorCode(expectedColor)`
+- **Related components:** _none_
+
+### VizPanelForGrid
+- **CSS root:** `.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`
+- **User-visible elements:**
+  - Document Body (`body`)
+  - Metric Sort Ascending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.asc.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Clear Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.clr.mstrmojo-ui-Menu-item .micn`)
+  - Metric Sort Descending Icon (`.mstrmojo-ui-Menu-item-container .item.xt.btn.desc.mstrmojo-ui-Menu-item .micn`)
+- **Component actions:**
+  - `addAdvancedSortParameter(columnOrder, objectName, sortOrder)`
+  - `addColumnSet()`
+  - `addElementsToExistingGroup(elements, objectName, visualizationName, groupName)`
+  - `baseDragFunction(movingElement, targetElement, xOffset = 0, yOffset = 0, doMouseUp, waitforLoadingDialog)`
+  - `calculationElementsHelper(arrElements, calculation, calculationName)`
+  - `changeSubtotalPosition(cellToClick, newPosition, visualizationName)`
+  - `clearDrillConditions(visualizationName)`
+  - `clearMultipleElements(elements, objectName, visualizationName)`
+  - `clearThresholds(headerName, visualizationName)`
+  - `clickButtonInCustomSortEditor(buttonTxt)`
+  - `clickButtonInWarningDialog(buttonName)`
+  - `clickContextMenuButton(button)`
+  - `clickContextMenuOption(option)`
+  - `clickMetricClearSort(objType, objName)`
+  - `clickMetricSortAscending(objType, objName)`
+  - `clickMetricSortDescending(objType, objName)`
+  - `clickNfCondense()`
+  - `clickNfShortcutIcon(shortcut)`
+  - `clickNumberFormatDropdownOption()`
+  - `clickOnColumnSet(columnSetName)`
+  - `clickOnContainerTitle(visualizationTitle)`
+  - `clickOnGridElement(objectName, visualizationName)`
+  - `clickOnGridElementWithoutLoading(objectName, visualizationName)`
+  - `clickOnGridObjectHeader(objectName, visualizationName)`
+  - `clickOnMultiGridCellByOffSet(objectNames, visualizationName)`
+  - `clickOnViz(vizName)`
+  - `clickSortDeleteRowButton(columnOrder)`
+  - `closeSortEditor()`
+  - `collapseOutlineFromColumnHeader(objectName, visualizationName)`
+  - `collapseOutlineFromElement(elementName, visualizationName)`
+  - `confirmOutlineGridCollapsed(objectName, visualizationName)`
+  - `confirmOutlineGridExpanded(objectName, visualizationName)`
+  - `createLocalContextualLink(srcVizName, tgtVizName)`
+  - `createNewGroup(attributeName, visualizationName)`
+  - `deleteCalculationGroup(groupName, visualizationName)`
+  - `deleteColumnSet(columnSetName)`
+  - `deleteViz(visualizationName)`
+  - `dismissContextMenu()`
+  - `dragDSObjectBelowColumnsTitleBar(objectName, objectTypeName, datasetName)`
+  - `dragDSObjectBetweenColumnSetwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition)`
+  - `dragDSObjectToColumnSetDZwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition, desObject)`
+  - `dragDSObjectToDZwithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)`
+  - `dragDSObjectToGridByColumnBorder(objectName, objectTypeName, datasetName, colNum, vizName)`
+  - `dragDSObjectToGridColumnSetDZ(objectName, objectTypeName, datasetName, columnSetName)`
+  - `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)`
+  - `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)`
+  - `dragDSObjectToGridMicrochartDZ(objectName, objectTypeName, datasetName, microchartName)`
+  - `dragDSObjectToGridWithPositionInRow(objectName, objectTypeName, datasetName, desPosition, elementInRow, vizName)`
+  - `dragDSObjectToLastColumnSet(objectName, objectTypeName, datasetName)`
+  - `dragDSObjectToMicrochartDZwithPosition(objectName, objectTypeName, datasetName, microchartName, desPosition, desObject)`
+  - `dragObjectToInvalidDZ(objectName, vizName)`
+  - `dragObjectToOtherViz(objectName, srcViz, destViz)`
+  - `dragSortRowwithPositionInAdvancedSortEditor(srcSortRow, desPosition, desSortRow)`
+  - `drillFromElement(element, drillToObject, visualizationName)`
+  - `drillFromElements(elements, drillToObject, visualizationName)`
+  - `drillFromHeader(headerName, drillToObject, visualizationName, waitForLoadingDialog = true)`
+  - `editCalculationGroup(newCalculation, groupName, visualizationName)`
+  - `editGroup(groupName, visualizationName)`
+  - `editHeaderGroups(headerName, visualizationName)`
+  - `editMicrochart(setName, microchartName)`
+  - `excludeElement(objectName, visualizationName, waitForLoadingDialog = true)`
+  - `excludeElements(elements, visualizationName)`
+  - `existContextMenuItemByName(option)`
+  - `existDrillOption(objectName, visualizationName, targetObject)`
+  - `existObjectByName(objectName, visualizationName)`
+  - `existReplaceByOption(objectName, visualizationName, targetObject)`
+  - `expandCollapseColumnSet(columnSetName)`
+  - `expandOutlineFromColumnHeader(objectName, visualizationName)`
+  - `expandOutlineFromElement(elementName, visualizationName)`
+  - `getDataSourceOption(gridName, dataSource)`
+  - `getDataSourceOptionForCompoundOrAg(containerName, columnSet, dataSource)`
+  - `getElementByPartialValueByViz(visualizationName, elementPartialValue)`
+  - `getGridCellStyleByPosition(row, col, visualizationName, style)`
+  - `getGridCellTextByPosition(row, col, visualizationName)`
+  - `getObjectHeader(objectName, visualizationName)`
+  - `groupElements(elements, objectName, visualizationName, groupName)`
+  - `groupElements2(elements, objectName, visualizationName, groupName)`
+  - `groupElementsByPartialValue(elementPartialValue, objectName, visualizationName, groupName)`
+  - `groupElementsByPartialValueForCalculation(elementPartialValue, objectName, visualizationName, groupName)`
+  - `groupElementsForCalculation(elements, objectName, visualizationName, groupName, calculationMenu)`
+  - `groupElementsHelper(arrElements, groupName)`
+  - `hoverOnGridElement(objectName, visualizationName)`
+  - `hoverOverAdvancedSortRulesPanel()`
+  - `inputFieldRenameHelper(newName)`
+  - `inputNfCustomTextBox(newFormat)`
+  - `isContextMenuOptionPresentInHeaderCell(menuOption, cellText, visualizationName)`
+  - `isElementPresent(element, objectName, visualizationName)`
+  - `isGroupEditorOpen()`
+  - `isGroupEditorOpenForSpecificGroup(groupName)`
+  - `isSaveDisabledForHeaderRename()`
+  - `keepOnly(objectName, visualizationName, waitForLoadingDialog = true)`
+  - `keepOnlyElements(elements, visualizationName)`
+  - `keepOnlyVizFilter(elements, objectName, visualizationName)`
+  - `metricSortFromViz(objectName, visualizationName, order)`
+  - `mouseOverGridCellByPosition(row, col, visualization)`
+  - `moveAdvancedSortEditorScrollBar(direction, pixels)`
+  - `moveNfDecimalPlace(change, numOfPlaces)`
+  - `moveObjectToGridByColumnBorder(objectName, srcViz, colNum, destViz)`
+  - `moveObjectToGridWithPositionInRow(objectName, srcViz, desPosition, elementInRow, destViz)`
+  - `moveScrollBar(direction, pixels, vizName)`
+  - `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)`
+  - `multiselectAndDragDSObjectsToDZ(datasetName, objOneType, objOneName, objTwoType, objTwoName, desZone)`
+  - `multiselectAndDragDSObjectsToDZWithPosition(datasetName, objOneType, objOneName, objTwoType, objTwoName, desPosition, desObject, desZone)`
+  - `noThresholdsPresentOnObject(headerName, visualizationName)`
+  - `openAdvancedSortEditor(objectName, visualizationName)`
+  - `openCalculationEditor(metricName, visualizationName)`
+  - `openContextMenuItemForGridCell(gridCellName, menuItemName, visualizationName)`
+  - `openContextMenuItemForGridCellByPosition(row, col, menuItemName, visualizationName)`
+  - `openContextMenuItemForGridCells(gridCellNames, menuItemName, visualizationName)`
+  - `openContextMenuItemForGridCellsByOffSet(gridCellNames, menuItemName, visualizationName, offsetX = 1, offsetY = 1)`
+  - `openCustomSortEditor(objectName, visualizationName)`
+  - `openFormatToolBoxFromColumnHeader(objectName, visualizationName)`
+  - `openFormatToolBoxFromElement(objectName, visualizationName)`
+  - `openFormatToolBoxFromVisualizationTitle(visualizationName)`
+  - `openMoreOptionDiagFromViz(visualizationName)`
+  - `openShowDataDiagFromViz(visualizationName)`
+  - `openThresholdEditor(metricName, visualizationName)`
+  - `removeObjectFromGrid(objectName, vizName)`
+  - `renameColumnSet(columnSetPosition, newColumnSetName)`
+  - `renameGroup(groupName, visualizationName, newGroupName)`
+  - `renameObject(objectName, visualizationName, newObjectName)`
+  - `renameVisualizationByContextMenu(visualizationName, newvisualizationName)`
+  - `renameVisualizationByDoubleClick(visualizationName, newVisualizationName)`
+  - `reorderColumnSet(columnSetName, desPosition, relColumnSetName, offsetX = 0, offsetY = 10)`
+  - `reOrderObjectsInColumnSet(objectTypeName1, objectName1, columnSet1, objectTypeName2, objectName2, columnSet2, desPosition)`
+  - `replaceObjectWithinGrid(objectName, targetObject, visualizationName, waitForLoadingDialog = true)`
+  - `replaceText({ elem, text })`
+  - `resetContextMenuButton(visualizationName)`
+  - `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)`
+  - `rightClickOnHeader(objectName, visualizationName)`
+  - `rightClickOnHeader(objectName, visualizationName)`
+  - `rightMouseClickOnElements(elements, waitForLoadingDialog)`
+  - `rightMouseClickOnElementsbyOffSet(elements, offsetX, offsetY, waitForLoadingDialog)`
+  - `saveAndCloseSortEditor()`
+  - `scrollToElementInDatasetPanel(objectName, objectTypeName, datasetName)`
+  - `scrollToGridCell(visualizationName, elementName)`
+  - `selectContextMenuOptionFromElement(objectName, option, visualizationName)`
+  - `selectContextMenuOptionFromElementByIndex(rowIndex, colIndex, option, visualizationName)`
+  - `selectContextMenuOptionFromElementWithHyperLink(objectName, option, visualizationName)`
+  - `selectContextMenuOptionFromObjectinDZ(objectName, desZone, option)`
+  - `selectElementOnViz(objectName, vizName)`
+  - `selectElementsUsingShift(elements_1, elements_2, visualizationName)`
+  - `selectMultipleElements(elements, visualizationName)`
+  - `selectMultipleElementsByPartialValue(elementPartialValue, objectName, visualizationName)`
+  - `selectMultipleElementsWithHyperLink(elements, objectName, visualizationName)`
+  - `selectMultipleEncodedGridCells(elements, visualizationName)`
+  - `selectMultipleGridCells(elements, visualizationName)`
+  - `selectNfCurrencyPositionFromDropdown(position)`
+  - `selectNfCurrencySymbolFromDropdown(symbol)`
+  - `selectNfNegativeForm(form, inRed)`
+  - `selectNfValueFormatFromDropdown(format)`
+  - `selectNumberFormatFromDropdown(numberFormat)`
+  - `selectSortIconsFromElement(objectType, objectName, visualizationName)`
+  - `selectSortWithinAttribute(objectType, objectName, sortType, sortAttr)`
+  - `selectVizContainer(visualizationName)`
+  - `setDataSource(visualizationName, gridSourceName)`
+  - `setDataSourceForCompoundOrAg(containerName, columnSet, dataSource)`
+  - `sortAscending(objectName, visualizationName)`
+  - `sortDescending(objectName, visualizationName, waitForLoadingDialog = true)`
+  - `switchRowColumnInSortEditor(buttonName)`
+  - `switchToEditorPanel()`
+  - `toggleNfThousandSeparator()`
+  - `toggleShowTotalsFromAttribute(objectName, visualizationName, subtotalOptions, waitForLoadingDialog = true)`
+  - `toggleShowTotalsFromMetric(objectName, visualizationName, waitForLoadingDialog = true)`
+  - `ungroupElements(objectName, visualizationName, groupName)`
+  - `ungroupElements2(objectName, visualizationName, groupName)`
+  - `waitForInfoWindowSpinnerGone(timeout = 10000)`
+- **Related components:** datasetPanel, docAuthBasePage, editorPanel, getAdvancedSortEditorRulesPanel, getColumnSetEndInEditorPanel, getColumnSetInEditorPanel, getContainer, getGridContainer, ngmEditorPanel
+
+## Common Workflows (from spec.ts)
+
+1. [TC4280] Sanity test on Map Attribute in datasets panel (used in 2 specs)
+2. [TC4990] Sanity test on Link Attribute in datasets panel (used in 2 specs)
+3. [TC4992] Dataset Display: Expand/Collapse with Pause Mode - Regression (used in 2 specs)
+4. [TC4992] should handle Table/Flat View with pause mode and undo/redo operations (used in 2 specs)
+5. [TC58143] Map Attribute regression test (used in 2 specs)
+6. [TC60987-1] should switch between Table View and Flat View (used in 2 specs)
+7. [TC60987-2] should collapse and expand all datasets (used in 2 specs)
+8. [TC60987-3] should handle multiple datasets collapse/expand behavior (used in 2 specs)
+9. [TC60987] Dataset Display: Expand/Collapse, Flat/Table View - Acceptance (used in 2 specs)
+10. [TC60993_1] Test the context menu of Report dataset_Edit, Show data, Join, Replace (used in 2 specs)
+11. [TC60993_2] Test the context menu of Report dataset_Add Metric, Attribute (used in 2 specs)
+12. [TC60993_3] Test the context menu of Report dataset_Rename, Delete (used in 2 specs)
+13. [TC60993_4] Test the context menu of Report dataset_Save as (used in 2 specs)
+14. [TC99449_01] F43390 Copy from Auto to Auto (used in 2 specs)
+15. [TC99449_02] F43390 Copy from Auto to Freeform (used in 2 specs)
+16. [TC99449_03] F43390 Copy from Freeform to Auto (used in 2 specs)
+17. [TC99449_04] F43390 Copy from Freeform to Freeform (used in 2 specs)
+18. [TC99449_05] F43390 Check the copied containers in Consumption mode (used in 2 specs)
+19. [TC99450_01] F43390 Copy from Auto to NewPage/NewChapter/OtherPage (used in 2 specs)
+20. [TC99450_02] F43390 Copy from Freeform to NewPage/NewChapter/OtherPage (used in 2 specs)
+21. [TC99450_03] Invalid multi-selections copy (used in 2 specs)
+22. [TC99454_01] F43366 Resize a group of containers in authoring mode (used in 2 specs)
+23. [TC99454_02] F43366 Check the resized groups in Consumption mode (used in 2 specs)
+24. [TC99550_1] The radius setting should be preserved during container manipulations (used in 2 specs)
+25. [TC99550_10] Delete and Undo (used in 2 specs)
+26. [TC99550_11] Change visualization types (used in 2 specs)
+27. [TC99550_12] Resize containers and groups (used in 2 specs)
+28. [TC99550_13] Move containers (used in 2 specs)
+29. [TC99550_14] Duplicate page + panel, Responsive Preview (used in 2 specs)
+30. [TC99550_15] Library Consumption Mode (used in 2 specs)
+31. [TC99550_2] Copy/Paste Formatting (used in 2 specs)
+32. [TC99550_3] Delete and Undo (used in 2 specs)
+33. [TC99550_4] Change visualization types (used in 2 specs)
+34. [TC99550_5] Resize containers and groups (used in 2 specs)
+35. [TC99550_6] Move containers (used in 2 specs)
+36. [TC99550_7] Duplicate page + panel, Responsive Preview (used in 2 specs)
+37. [TC99550_8] The shadow setting should be preserved during container manipulations (used in 2 specs)
+38. [TC99550_9] Copy/Paste Formatting (used in 2 specs)
+39. Dataset Display: Expand/Collapse, Flat/Table View (used in 2 specs)
+40. Dataset_ContextMenu_Report (used in 2 specs)
+41. DossierDS_AttributeLinkAndMapping (used in 2 specs)
+42. F43366 Resize Group E2E workflow (used in 2 specs)
+43. F43390 Copy Group E2E workflow (used in 2 specs)
+44. F43390 Copy Group workflow (used in 2 specs)
+45. radius E2E (used in 2 specs)
+46. Shadow E2E (used in 2 specs)
+47. [BCED-2102] Check the styles of Datasets and TOC panel when the title text is too long (used in 1 specs)
+48. [TC19981] Query Details - DI cube (used in 1 specs)
+49. [TC60086_1] Query Details -- Report (used in 1 specs)
+50. [TC60086_2] Query Details -- Existing Objects - InMemory (used in 1 specs)
+51. [TC60086_3] Query Details -- Existing Objects - Live (used in 1 specs)
+52. [TC60086_4] Query Details -- DatabaseInMemory (used in 1 specs)
+53. [TC60086_5] Query Details -- DatabaseLive (used in 1 specs)
+54. [TC60259] Turn on/off panels (used in 1 specs)
+55. [TC60401_01] Select Targets in auto canvas (used in 1 specs)
+56. [TC60401_02] Select Targets in freeform layout (used in 1 specs)
+57. [TC60401_03] Select Targets in auto canvas (used in 1 specs)
+58. [TC60401_04] select targets in group (used in 1 specs)
+59. [TC60401_05] select targets in group for filter (used in 1 specs)
+60. [TC60401_06] select entire group in layer panel (used in 1 specs)
+61. [TC60401_07] AM selector manipulation in layer panel (used in 1 specs)
+62. [TC60904_2] 11.3.11 DE258037: Freeform group items inside of IW can be targeted from outside (used in 1 specs)
+63. [TC60904] 11.2.1 DE153794: After select targets, though we are on layersControl panel, but the gallery panel shows (used in 1 specs)
+64. [TC61678] Regression test on Panel Control (used in 1 specs)
+65. [TC65318] 11.2.2 DE161952/11.3EA DE164405: RMC on the target icon in select target mode (used in 1 specs)
+66. [TC65325_01] Copy visualization to existing page in same chapter (used in 1 specs)
+67. [TC65325_02] Copy visualization to new page with undo/redo operations (used in 1 specs)
+68. [TC65325_03] Copy visualization across chapters with filter warnings (used in 1 specs)
+69. [TC65325_04] Copy visualization with visualization filtering (used in 1 specs)
+70. [TC65325_05] Move visualization to existing page in same chapter (used in 1 specs)
+71. [TC65325_06] Move visualization to new page with undo/redo (used in 1 specs)
+72. [TC65325_07] Move visualization across chapters with filter warnings (used in 1 specs)
+73. [TC65325_08] Move visualization with visualization filtering (used in 1 specs)
+74. [TC65325_09] Duplicate visualization with complex scenarios (used in 1 specs)
+75. [TC65325_10] Duplicate visualization with filtering (used in 1 specs)
+76. [TC65325_11] Complex multi-operation workflow with undo/redo (used in 1 specs)
+77. [TC65325_11] Duplicate and delete visualization through layers panel (used in 1 specs)
+78. [TC99170_01] Edit existing dataset, add objects and update dataset, and Undo/redo (used in 1 specs)
+79. [TC99170_02] Search for Objects in the Datasets Panel by type, and add objects into grid (used in 1 specs)
+80. [TC99170_03] Search objects in dataset panel by key word (used in 1 specs)
+81. [TC99170_04] Sort objects in dataset panel by key word (used in 1 specs)
+82. [TC99170_06] Change Join Behaviors for dataset (used in 1 specs)
+83. [TC99170_07] Unlink the attributes (used in 1 specs)
+84. [TC99170_08] Collapse all datasets and expand datasets (used in 1 specs)
+85. [TC99170_09] Collapse a single dataset then delete (used in 1 specs)
+86. [TC99170_10] Show data from dataset (used in 1 specs)
+87. [TC99170_11] Create derived attribute and dervied metric from the dataset (used in 1 specs)
+88. [TC99170_12] Replace dataset from dataset panel (used in 1 specs)
+89. [TC99170_13] Hide unused objects (used in 1 specs)
+90. [TC99170_14] Save the dashboard (used in 1 specs)
+91. [TC99170_15] DE321960 scroll bar when expanding folders (used in 1 specs)
+92. [TC99170] Dataset Manupulations E2E workflow (used in 1 specs)
+93. [TC99192_00] Dashboard Authoring workflow (used in 1 specs)
+94. [TC99192_01] Text Field (used in 1 specs)
+95. [TC99192_02] Image Container (used in 1 specs)
+96. [TC99192_03] HTML Container (used in 1 specs)
+97. [TC99192_04] Panel Stack (used in 1 specs)
+98. [TC99192_05] Reposition containers (used in 1 specs)
+99. [TC99192_06] Freeform Layout + Position/Size + Grouping + Align + Shape (used in 1 specs)
+100. [TC99192_07] Rich Text Box Partial Formatting (used in 1 specs)
+101. [TC99192_08] Layers Panel (used in 1 specs)
+102. [TC99192_09] Responsive View (used in 1 specs)
+103. [TC99192_10] Dashboard Authoring - Library Consumption (used in 1 specs)
+104. Comprehensive Operations (used in 1 specs)
+105. Container Duplicate, Copy, and Move Operations (used in 1 specs)
+106. Copy Operations (used in 1 specs)
+107. Dashboard Authoring E2E workflows (used in 1 specs)
+108. Dataset Manupulations E2E workflows (used in 1 specs)
+109. Defect Automation (used in 1 specs)
+110. Duplicate Operations (used in 1 specs)
+111. LeftsidePanelControl (used in 1 specs)
+112. Manipulation in Layers panel for select target (used in 1 specs)
+113. Move Operations (used in 1 specs)
+114. New Dashboard Authoring Layout - Datasets/TOC panels (used in 1 specs)
+115. QueryDetails (used in 1 specs)
+116. Select targets action in container/LayerPanel, cover freeform and auto canvas (used in 1 specs)
+117. Select targets by container (used in 1 specs)
+
+## Common Elements (from POM + spec.ts)
+
+1. getDossierView -- frequency: 101
+2. getAllPanels -- frequency: 38
+3. {actual} -- frequency: 32
+4. {expected} -- frequency: 31
+5. getText -- frequency: 28
+6. getGridCellTextByPosition -- frequency: 22
+7. getTargetIconInLayersPanel -- frequency: 22
+8. getRootViewContent -- frequency: 19
+9. getDatasetsPanel -- frequency: 17
+10. getSourceButton -- frequency: 16
+11. getMojoEditorWithTitle -- frequency: 15
+12. getToggleBar -- frequency: 15
+13. getGridCellByPosition -- frequency: 14
+14. getDatasetPanel -- frequency: 12
+15. getFreeformLayoutPage -- frequency: 12
+16. getSourceIconInLayersPanel -- frequency: 11
+17. getTextContainer -- frequency: 10
+18. getDatasetObjectsPanel -- frequency: 9
+19. getIndexForObjectinDS -- frequency: 8
+20. getEditorPanel -- frequency: 7
+21. getImageContainer -- frequency: 7
+22. getObjectFromSectionSansType -- frequency: 7
+23. /descendant -- frequency: 6
+24. getCheckedItemFromCM -- frequency: 6
+25. getContainer -- frequency: 6
+26. getDisabledContainerFromLayersPanel -- frequency: 6
+27. getFilterPanel -- frequency: 6
+28. getFormatPanel -- frequency: 6
+29. getLayersPanel -- frequency: 6
+30. getTargetButton -- frequency: 6
+31. getValue -- frequency: 5
+32. getCurrentPanelInPanelStack -- frequency: 4
+33. getGridCell -- frequency: 4
+34. getImageContainerWithURL -- frequency: 4
+35. getObjectFromDataset -- frequency: 4
+36. getObjectFromSection -- frequency: 4
+37. C1292 F -- frequency: 3
+38. getAllGridObjectCount -- frequency: 3
+39. getAttributeFormDefinition -- frequency: 3
+40. getCellInshowDataGrid -- frequency: 3
+41. getContentsPanel -- frequency: 3
+42. Metric Sort Ascending Icon -- frequency: 3
+43. Metric Sort Clear Icon -- frequency: 3
+44. Metric Sort Descending Icon -- frequency: 3
+45. Add Link -- frequency: 2
+46. Dataset Save As Text Input -- frequency: 2
+47. Document Body -- frequency: 2
+48. getCheckboxWithLabelReact -- frequency: 2
+49. getMetricDefinition -- frequency: 2
+50. getPage -- frequency: 2
+51. getRichTextField -- frequency: 2
+52. getThemePanel -- frequency: 2
+53. getToolbar -- frequency: 2
+54. Link From Att Form -- frequency: 2
+55. Link To Att -- frequency: 2
+56. Link To Att Form -- frequency: 2
+57. Show Att Form -- frequency: 2
+58. Show Details -- frequency: 2
+59. 4 F60 D6 -- frequency: 1
+60. 55 BFC3 -- frequency: 1
+61. 7 E0 F16 -- frequency: 1
+62. Auto Cavas Button From Toolbar -- frequency: 1
+63. Background Section -- frequency: 1
+64. Close Btn -- frequency: 1
+65. Color Picker -- frequency: 1
+66. Cover Image Btn -- frequency: 1
+67. Cover Image Url Box -- frequency: 1
+68. Dashboard Format Panel -- frequency: 1
+69. Dashboard Formatting Button -- frequency: 1
+70. Dashboard Formatting Pop Up -- frequency: 1
+71. Data Import Dialog -- frequency: 1
+72. DDCAFF -- frequency: 1
+73. DIContainer -- frequency: 1
+74. Existing Object Dialog -- frequency: 1
+75. Format Button -- frequency: 1
+76. Format Panel Content -- frequency: 1
+77. getFunctionInList -- frequency: 1
+78. getFunctionSelectioninPopupList -- frequency: 1
+79. getFunctionTypeinPopupList -- frequency: 1
+80. getGridCellStyleByPosition -- frequency: 1
+81. getLevelSelectioninPopupList -- frequency: 1
+82. getObjectSelectioninPopupList -- frequency: 1
+83. getPanelCount -- frequency: 1
+84. getPanelStack -- frequency: 1
+85. getPanelTabStrip -- frequency: 1
+86. Group Editor -- frequency: 1
+87. Hover Drag Icon -- frequency: 1
+88. Layout Style Section -- frequency: 1
+89. Lock Page Size Check Box -- frequency: 1
+90. Lock Page Size Helper Icon -- frequency: 1
+91. New Gallery Panel -- frequency: 1
+92. Ok Button -- frequency: 1
+93. Open Cavas Button From Toolbar -- frequency: 1
+94. Padding Section -- frequency: 1
+95. Popup Color Picker -- frequency: 1
+96. Root Panel Bg Color Picker -- frequency: 1
+97. Save As Editor -- frequency: 1
+98. Save Filter Btn -- frequency: 1
+99. Scrollable Area -- frequency: 1
+100. Selected Group -- frequency: 1
+101. Shadow Angle Section -- frequency: 1
+102. Shadow Blur Section -- frequency: 1
+103. Shadow Distance Section -- frequency: 1
+104. Shadow Fill Section -- frequency: 1
+105. Simple Threshold Editor -- frequency: 1
+106. Size Select Dropdown -- frequency: 1
+107. Switch Tab Button -- frequency: 1
+108. TOC -- frequency: 1
+
+## Key Actions
+
+- `pause()` -- used in 218 specs
+- `actionOnToolbar()` -- used in 130 specs
+- `isObjectFromDSdisplayed(objectName, objectTypeName, datasetName)` -- used in 118 specs
+- `isDisplayed()` -- used in 113 specs
+- `selectContextMenuOption(option)` -- used in 107 specs
+- `getDossierView()` -- used in 101 specs
+- `goToPage()` -- used in 96 specs
+- `openContextMenu(containerName)` -- used in 89 specs
+- `waitForAuthoringPageLoading()` -- used in 76 specs
+- `getText()` -- used in 61 specs
+- `selectSecondaryContextMenuOption(subOption)` -- used in 54 specs
+- `editDossierByUrl()` -- used in 53 specs
+- `isAgGridCellHasTextDisplayed()` -- used in 52 specs
+- `resizeGroup(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)` -- used in 52 specs
+- `sleep()` -- used in 48 specs
+- `toString()` -- used in 43 specs
+- `openDossierByUrl()` -- used in 39 specs
+- `getAllPanels()` -- used in 38 specs
+- `isDatasetDisplayed(dsName)` -- used in 37 specs
+- `clickButtonFromToolbar()` -- used in 36 specs
+- `resizeContainer(containerName, direction, percentChangeH, percentChangeW = percentChangeH)` -- used in 34 specs
+- `addObjectToVizByDoubleClick(objectName, objectTypeName, datasetName)` -- used in 31 specs
+- `togglePanel()` -- used in 28 specs
+- `clickBtnOnMojoEditor(btnTxt)` -- used in 27 specs
+- `getCSSProperty()` -- used in 27 specs
+- `waitForDisplayed()` -- used in 26 specs
+- `openPageFromTocMenu()` -- used in 25 specs
+- `clickOnContainerFromLayersPanel()` -- used in 24 specs
+- `multiSelectContainersFromCanvas(containerList)` -- used in 24 specs
+- `applyButtonForSelectTarget()` -- used in 23 specs
+- `chooseDatasetContextMenuOption(datasetName, option)` -- used in 23 specs
+- `login()` -- used in 23 specs
+- `multiSelectContainers()` -- used in 23 specs
+- `getGridCellTextByPosition(row, col, visualizationName)` -- used in 22 specs
+- `getTargetIconInLayersPanel()` -- used in 22 specs
+- `openAndTakeContextMenuByRMC(containerName, cmOption)` -- used in 22 specs
+- `expandFolder(title)` -- used in 20 specs
+- `getRootViewContent()` -- used in 19 specs
+- `isMoJoEditorWithTitleDisplayed(title)` -- used in 19 specs
+- `actionOnObjectFromDataset(objectName, objectTypeName, datasetName, menuOption)` -- used in 17 specs
+- `changeViz(newViz, containerName, preventPopup = true)` -- used in 17 specs
+- `getDatasetsPanel()` -- used in 17 specs
+- `getSourceButton()` -- used in 16 specs
+- `getMojoEditorWithTitle()` -- used in 15 specs
+- `getToggleBar()` -- used in 15 specs
+- `goToLibrary()` -- used in 15 specs
+- `getGridCellByPosition()` -- used in 14 specs
+- `clickContainer(containerName)` -- used in 13 specs
+- `resetDossierIfPossible()` -- used in 13 specs
+- `selectTargetVisualizations(containerName)` -- used in 13 specs
+- `clickOnElement()` -- used in 12 specs
+- `doubleClickOnObject(objName)` -- used in 12 specs
+- `getDatasetPanel()` -- used in 12 specs
+- `getFreeformLayoutPage()` -- used in 12 specs
+- `selectObject(ObjectName)` -- used in 12 specs
+- `switchSection(sec)` -- used in 12 specs
+- `switchToFormatPanelByClickingOnIcon()` -- used in 12 specs
+- `waitForElementVisible()` -- used in 12 specs
+- `actionOnMenubarWithSubmenu()` -- used in 11 specs
+- `getSourceIconInLayersPanel()` -- used in 11 specs
+- `isExisting()` -- used in 11 specs
+- `isHighlightedObjectFromDSdisplayed(objectName, objectTypeName, datasetName, keyword)` -- used in 11 specs
+- `saveInMyReport()` -- used in 11 specs
+- `selectFromSearchPulldown(item)` -- used in 11 specs
+- `selectTargetButton()` -- used in 11 specs
+- `waitLoadingDataPopUpIsNotDisplayed()` -- used in 11 specs
+- `checkPresenceOfSelectTrgtBtn(selectorTitle)` -- used in 10 specs
+- `customCredentials()` -- used in 10 specs
+- `getTextContainer()` -- used in 10 specs
+- `log()` -- used in 10 specs
+- `xls()` -- used in 10 specs
+- `getDatasetObjectsPanel()` -- used in 9 specs
+- `selectOptionFromToolbarPulldown()` -- used in 9 specs
+- `clickOnBtn(btnText)` -- used in 8 specs
+- `expandDataset(datasetName)` -- used in 8 specs
+- `getIndexForObjectinDS(datasetName, index, objectName)` -- used in 8 specs
+- `isObjectDisplayedinDSContainer(objectName)` -- used in 8 specs
+- `moveContainerByOffset(containerName, moveX, moveY)` -- used in 8 specs
+- `simpleSaveDashboard()` -- used in 8 specs
+- `closeQueryDetail()` -- used in 7 specs
+- `collapseDataset(datasetName)` -- used in 7 specs
+- `duplicateContainerFromLayersPanel()` -- used in 7 specs
+- `expandORCollapseGroup()` -- used in 7 specs
+- `getEditorPanel()` -- used in 7 specs
+- `getImageContainer()` -- used in 7 specs
+- `getObjectFromSectionSansType()` -- used in 7 specs
+- `getValue()` -- used in 7 specs
+- `ReplaceHeightInputBoxInReactPanel(height)` -- used in 7 specs
+- `ReplaceXInputBoxInReactPanel(x)` -- used in 7 specs
+- `ReplaceYInputBoxInReactPanel(y)` -- used in 7 specs
+- `rightClickOnContainerFromLayersPanel()` -- used in 7 specs
+- `doubleClickContainer(containerName)` -- used in 6 specs
+- `getCheckedItemFromCM()` -- used in 6 specs
+- `getContainer()` -- used in 6 specs
+- `getDisabledContainerFromLayersPanel()` -- used in 6 specs
+- `getFilterPanel()` -- used in 6 specs
+- `getFormatPanel()` -- used in 6 specs
+- `getLayersPanel()` -- used in 6 specs
+- `getObjectFromDataset()` -- used in 6 specs
+- `getTargetButton()` -- used in 6 specs
+- `secondaryCMOnObjectFromDataset(objectName, objectTypeName, datasetName, firstMenu, secondaryMenu)` -- used in 6 specs
+- `clickBuiltInColor(color)` -- used in 5 specs
+- `clickColorPickerModeBtn(mode)` -- used in 5 specs
+- `ReplaceWidthInputBoxInReactPanel(Width)` -- used in 5 specs
+- `addDatasetObjectByDragAndDrop(objectTypeName, objectName, datasetName, containerName)` -- used in 4 specs
+- `addObjectByDoubleClick(objectName)` -- used in 4 specs
+- `changeFolderPath(folderName)` -- used in 4 specs
+- `changeNewObjectInReplaceObjectsEditor(oriObject, newObject)` -- used in 4 specs
+- `clickDataSourceByIndex()` -- used in 4 specs
+- `clickFontColorBtn()` -- used in 4 specs
+- `contextMenuActionFromLayersPanel()` -- used in 4 specs
+- `contextMenuOnPage(pageTitle, chapterTitle, option)` -- used in 4 specs
+- `createDMorDA(datasetName, option)` -- used in 4 specs
+- `duplicatePage()` -- used in 4 specs
+- `editDatasetNotification(itemText)` -- used in 4 specs
+- `getCurrentPanelInPanelStack()` -- used in 4 specs
+- `getGridCell()` -- used in 4 specs
+- `getImageContainerWithURL()` -- used in 4 specs
+- `getObjectFromSection()` -- used in 4 specs
+- `GroupContextMenuAction(containerName, cmOption)` -- used in 4 specs
+- `importSampleFiles()` -- used in 4 specs
+- `isAttributeLinked(objectName, datasetName)` -- used in 4 specs
+- `isButtonDisabled(id, name)` -- used in 4 specs
+- `isMojoErrorPresent()` -- used in 4 specs
+- `linkBarPanelSelector(selectorTitle, elementName)` -- used in 4 specs
+- `moveContainerByPosition(sourceContainer, targetContainer, relativePosition)` -- used in 4 specs
+- `moveContainerToTargetPosition(containerName, direction, targetValue)` -- used in 4 specs
+- `multiSelectContainerAndTakeCMOption(containerNameList, cmOption)` -- used in 4 specs
+- `openAndTakeContextMenuByRMCTitle(containerName, cmOption)` -- used in 4 specs
+- `rightClickAttributeMetricAndSelectOption()` -- used in 4 specs
+- `selectAMSelectorListObject()` -- used in 4 specs
+- `selectFromDatasetsPanelContextMenu(menuItemName)` -- used in 4 specs
+- `selectMetricsFromDropdown()` -- used in 4 specs
+- `unmapAttribute(objectName, objectTypeName, datasetName)` -- used in 4 specs
+- `waitUntil()` -- used in 4 specs
+- `addFunctionByDoubleClick(functionName)` -- used in 3 specs
+- `addGridToViz()` -- used in 3 specs
+- `changeContainerFillColor({ color, dismissColorPicker = true })` -- used in 3 specs
+- `clickCreateButton()` -- used in 3 specs
+- `clickNewDataBtnUntilShowDataSource()` -- used in 3 specs
+- `containerRelativePosition(containerName1, containerName2, relativePosition)` -- used in 3 specs
+- `createNewDossier()` -- used in 3 specs
+- `dropDownForVisualizationInLayersPanelToSelectAnotherElement()` -- used in 3 specs
+- `getAllGridObjectCount(visualizationName)` -- used in 3 specs
+- `getAttribute(attributeName)` -- used in 3 specs
+- `getAttributeFormDefinition()` -- used in 3 specs
+- `getCellInshowDataGrid()` -- used in 3 specs
+- `getContentsPanel()` -- used in 3 specs
+- `groupContainers(boxNames)` -- used in 3 specs
+- `isRowCountEqual()` -- used in 3 specs
+- `linkAttribute(tarAttribute)` -- used in 3 specs
+- `objectToReplace()` -- used in 3 specs
+- `saveAttribute()` -- used in 3 specs
+- `saveMetric()` -- used in 3 specs
+- `selectFormFromDropdown(formName)` -- used in 3 specs
+- `setAttributeName(newName)` -- used in 3 specs
+- `validateForm()` -- used in 3 specs
+- `actionOnObjectFromPreview(obj, dataset, cmOption)` -- used in 2 specs
+- `addExistingObjects()` -- used in 2 specs
+- `addPanel(stack)` -- used in 2 specs
+- `cancelButtonForSelectTarget()` -- used in 2 specs
+- `changeDropdownReact(fromOption, toOption)` -- used in 2 specs
+- `changeNameInDatasetSaveAsDialog(name)` -- used in 2 specs
+- `clearSearch()` -- used in 2 specs
+- `clickCancelButton()` -- used in 2 specs
+- `clickClearFormulaEditorButton()` -- used in 2 specs
+- `clickContainerBorderColorBtn()` -- used in 2 specs
+- `clickContainerByScript(containerName)` -- used in 2 specs
+- `clickContainerFillColorBtn()` -- used in 2 specs
+- `clickHtmlContainerOkButton()` -- used in 2 specs
+- `clickMojoErrorButton()` -- used in 2 specs
+- `clickOnAutoCanvasButton()` -- used in 2 specs
+- `clickSaveCancelBotton(buttonName)` -- used in 2 specs
+- `createBlankDashboardFromLibrary()` -- used in 2 specs
+- `createNewDashboardByUrl()` -- used in 2 specs
+- `deleteContainer(container)` -- used in 2 specs
+- `deleteContainerFromLayersPanel()` -- used in 2 specs
+- `disablePendoTutorial()` -- used in 2 specs
+- `disableTutorial()` -- used in 2 specs
+- `dismissColorPicker()` -- used in 2 specs
+- `DoubleClickRichTextbox(RichTextbox)` -- used in 2 specs
+- `editURL(visualizationName, url)` -- used in 2 specs
+- `getCheckboxWithLabelReact()` -- used in 2 specs
+- `getMetricDefinition()` -- used in 2 specs
+- `getPage()` -- used in 2 specs
+- `getRichTextField()` -- used in 2 specs
+- `getThemePanel()` -- used in 2 specs
+- `getToolbar()` -- used in 2 specs
+- `handleError()` -- used in 2 specs
+- `isContainerSelected()` -- used in 2 specs
+- `isDatasetPresentByName()` -- used in 2 specs
+- `isPauseModeActive()` -- used in 2 specs
+- `isSelectExistingDatasetDialogDisplayed()` -- used in 2 specs
+- `openContextMenuByRMC(containerName)` -- used in 2 specs
+- `openDefaultApp()` -- used in 2 specs
+- `pressShiftAndArrowKeyToHighlightText(key, times)` -- used in 2 specs
+- `renameDataset(datasetName, newDatasetName)` -- used in 2 specs
+- `replaceFontSizeText(fontSize)` -- used in 2 specs
+- `saveAsDataset()` -- used in 2 specs
+- `searchOnDatasetsPanel(keywords)` -- used in 2 specs
+- `selectContextMenuOptionWithHover()` -- used in 2 specs
+- `selectShapeBorderColorButton()` -- used in 2 specs
+- `selectTargetVizFromWithinSelector(trgtVizNames, selectorTitle, replaceObjectName = null)` -- used in 2 specs
+- `switchMode(modeName)` -- used in 2 specs
+- `switchToHtmlTextByEdit(inputText)` -- used in 2 specs
+- `switchToIFrameByEdit(inputText)` -- used in 2 specs
+- `updateDatasetFromPreview()` -- used in 2 specs
+- `validateMetric()` -- used in 2 specs
+- `waitForElementInvisible()` -- used in 2 specs
+- `addSearchedObjectByDoubleClick(objectName)` -- used in 1 specs
+- `changeContainerBorder(option)` -- used in 1 specs
+- `changeNumberFormat(type)` -- used in 1 specs
+- `changePanelWidthByPixel(offsetX)` -- used in 1 specs
+- `changeVizType()` -- used in 1 specs
+- `checkKeepChangesLocalCheckbox()` -- used in 1 specs
+- `ClickFontSizeIncreaseBtnForTimes(times)` -- used in 1 specs
+- `clickOnCheckboxReact(label)` -- used in 1 specs
+- `ClickOnFontStyleButtonInPanel(type)` -- used in 1 specs
+- `clickOnOpenCanvasButton()` -- used in 1 specs
+- `ClickOnRadioButton(option)` -- used in 1 specs
+- `closeFormatPanel()` -- used in 1 specs
+- `copyQueryDetails()` -- used in 1 specs
+- `createDossierAndImportSampleFiles()` -- used in 1 specs
+- `deleteDataset(datasetName)` -- used in 1 specs
+- `deleteGroupFromToolbar(groupName)` -- used in 1 specs
+- `deleteViz(visualizationName)` -- used in 1 specs
+- `dismissContextMenu()` -- used in 1 specs
+- `getFunctionInList()` -- used in 1 specs
+- `getFunctionSelectioninPopupList()` -- used in 1 specs
+- `getFunctionTypeinPopupList()` -- used in 1 specs
+- `getGridCellStyleByPosition(row, col, visualizationName, style)` -- used in 1 specs
+- `getLevelSelectioninPopupList()` -- used in 1 specs
+- `getObjectSelectioninPopupList()` -- used in 1 specs
+- `getPanelCount()` -- used in 1 specs
+- `getPanelStack()` -- used in 1 specs
+- `getPanelTabStrip()` -- used in 1 specs
+- `importDataFromURL()` -- used in 1 specs
+- `InputPlainText(inputText, RichTextbox)` -- used in 1 specs
+- `InputSimpleText(text, textContainer)` -- used in 1 specs
+- `isKeepChangesLocalCheckboxChecked()` -- used in 1 specs
+- `isObjectVisibleOnEditorPanel()` -- used in 1 specs
+- `openContainerBorderPullDown()` -- used in 1 specs
+- `pressArrowKeyToMoveCursor(key, times)` -- used in 1 specs
+- `restoreToOriginalSizeByFormatPanel()` -- used in 1 specs
+- `saveToFolder()` -- used in 1 specs
+- `selectBorderStyle(style)` -- used in 1 specs
+- `selectFontAlign(align)` -- used in 1 specs
+- `selectFontStyle(style)` -- used in 1 specs
+- `selectTargetPanelStackFromLayersPanel(panelStacks, selectorTitle)` -- used in 1 specs
+- `selectTextFont(font)` -- used in 1 specs
+- `setMetricName(newName)` -- used in 1 specs
+- `setObjectSearchKey(pattern)` -- used in 1 specs
+- `setXAndY(x, y)` -- used in 1 specs
+- `switchPanel(panel, stack)` -- used in 1 specs
+- `switchToHtmlTextByFormatPanel(inputText)` -- used in 1 specs
+- `switchToIFrameByFormatPanel(inputText)` -- used in 1 specs
+- `actionFromContainerContextMenu(containerName, cmOption)` -- used in 0 specs
+- `actionFromContainerMenu(containerName, cmOption)` -- used in 0 specs
+- `actionOnPanel(option)` -- used in 0 specs
+- `ActionOnsecondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)` -- used in 0 specs
+- `addAdvancedSortParameter({ columnOrder, objectName, sortOrder })` -- used in 0 specs
+- `addAdvancedSortParameter(columnOrder, objectName, sortOrder)` -- used in 0 specs
+- `addAttrFormByName(formName)` -- used in 0 specs
+- `addAttributeToDropzone(attrName)` -- used in 0 specs
+- `addBlankAttrForm()` -- used in 0 specs
+- `addColorBandByRMCColorBand(indexNum)` -- used in 0 specs
+- `addColumnSet()` -- used in 0 specs
+- `addDataFromDatasetsPanel(addDataOption)` -- used in 0 specs
+- `addElementsToExistingGroup(elements, objectName, visualizationName, groupName)` -- used in 0 specs
+- `addElementsToExistingGroup(elements, visualizationName, groupName)` -- used in 0 specs
+- `addFileFromDisk(filename)` -- used in 0 specs
+- `addFilter()` -- used in 0 specs
+- `addHandlerInTheMiddleArea()` -- used in 0 specs
+- `addImageFromDisk(visualizationName, filename)` -- used in 0 specs
+- `addObjectFromDSFolderToVizByDoubleClick(objectName, objectTypeName, datasetName, folderName)` -- used in 0 specs
+- `addObjectFromFolderToFilter(objectName, objectTypeName, datasetName, folderName)` -- used in 0 specs
+- `addObjectFromSearchListToVizByDoubleClick(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `addObjectToFilter(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `addYearToDropzone()` -- used in 0 specs
+- `applyAdvancedFilterItem()` -- used in 0 specs
+- `attributeTimeFolder()` -- used in 0 specs
+- `baseDragFunction(movingElement, targetElement, xOffset = 0, yOffset = 0, doMouseUp, waitforLoadingDialog)` -- used in 0 specs
+- `browseMDObject(obj, folder)` -- used in 0 specs
+- `buttonStyle(id, name, style)` -- used in 0 specs
+- `calculateContainerRect(containerName)` -- used in 0 specs
+- `calculateContainerSizeAndLocation(containerName)` -- used in 0 specs
+- `calculateGroupRect(groupContainerChildName)` -- used in 0 specs
+- `calculateGroupRect(groupName)` -- used in 0 specs
+- `calculationElementsHelper(arrElements, calculation, calculationName)` -- used in 0 specs
+- `cancelAdvancedColorPalette()` -- used in 0 specs
+- `cancelAFB()` -- used in 0 specs
+- `cancelAttribute()` -- used in 0 specs
+- `cancelSelectTargetForSelector()` -- used in 0 specs
+- `changeAfterSubmissionDropdown(fromOption, toOption)` -- used in 0 specs
+- `changeBackgroundColorInDossierFormat(color)` -- used in 0 specs
+- `changeButtonFillColorOpacity(opacity)` -- used in 0 specs
+- `changeCellFillColorOpacity(opacity)` -- used in 0 specs
+- `changeCellsFillColor(color)` -- used in 0 specs
+- `changeColorForColorBand(colorName, indexNum)` -- used in 0 specs
+- `changeColumnSet(option)` -- used in 0 specs
+- `ChangeContainerBodyFillColorOpacity(opacity)` -- used in 0 specs
+- `changeContainerBorderColor(color)` -- used in 0 specs
+- `changeContainerFillColorOpacity(opacity)` -- used in 0 specs
+- `ChangeContainerFillColorOpacity(opacity)` -- used in 0 specs
+- `changeContainerTitleFillColor({ color, dismissColorPicker = true })` -- used in 0 specs
+- `changeContainerTitleFillColorOpacity(opacity)` -- used in 0 specs
+- `ChangeContainerTitleFillColorOpacity(opacity)` -- used in 0 specs
+- `changeCoverImageBySample(sampleImageOrder)` -- used in 0 specs
+- `changeCoverImageByUrl(imageUrl)` -- used in 0 specs
+- `changeDisplayStyle(selectorTitle, styleName)` -- used in 0 specs
+- `changeDisplayStyleforSelectedSelector(styleName)` -- used in 0 specs
+- `changeDPSelection(selection)` -- used in 0 specs
+- `changeDropdown(fromOption, toOption)` -- used in 0 specs
+- `changeDropdown(title, newMode)` -- used in 0 specs
+- `changeDropdownForExport(title, newMode)` -- used in 0 specs
+- `changeDropdownWithTitle(title, toOption)` -- used in 0 specs
+- `changeExistingObejctsDropdown(object, option)` -- used in 0 specs
+- `changeFilteringMode(filteringMode)` -- used in 0 specs
+- `changeGridElement(option)` -- used in 0 specs
+- `ChangeGridFillColorOpacity(opacity)` -- used in 0 specs
+- `changeLogicalOperatorBetweenFilters(newOperator)` -- used in 0 specs
+- `changeMicroChartAlign(align)` -- used in 0 specs
+- `changeNgmMatrixFillColor(color)` -- used in 0 specs
+- `changeNgmMatrixFillColorOpacity(opacity)` -- used in 0 specs
+- `changePropDropdownReact(prop, toOption)` -- used in 0 specs
+- `changePullDown(fromOption, toOption)` -- used in 0 specs
+- `changePullDownwithTitle(pullDownTitle, fromOption, toOption)` -- used in 0 specs
+- `changeRowsAndColumnsFillColorOpacity(opacity)` -- used in 0 specs
+- `changeSegmentControl(fromOption, toOption)` -- used in 0 specs
+- `changeSelectorMode(selectorTitle, modeName)` -- used in 0 specs
+- `changeShapeBorderStyle(style)` -- used in 0 specs
+- `ChangeShapeFillColorOpacity(opacity)` -- used in 0 specs
+- `ChangeShapeOuterBorderWidth(Width)` -- used in 0 specs
+- `changeSubtotalPosition(cellToClick, newPosition, visualizationName)` -- used in 0 specs
+- `changeTitle(newTitle)` -- used in 0 specs
+- `ChangeTitleBarFillColorOpacity(opacity)` -- used in 0 specs
+- `changeToAnotherColumnSetAdvancedFilterEditor(columnSet)` -- used in 0 specs
+- `changeView(contentsPanelView)` -- used in 0 specs
+- `changeVizToCompoundGrid(containerName)` -- used in 0 specs
+- `check()` -- used in 0 specs
+- `checkAdvancedFilterByIndex(index)` -- used in 0 specs
+- `checkAdvancedFilterByIndexNotExist(index)` -- used in 0 specs
+- `checkAttributeElement(text)` -- used in 0 specs
+- `checkAttributeName(item)` -- used in 0 specs
+- `checkBanding()` -- used in 0 specs
+- `checkChooseElementsByDropdown()` -- used in 0 specs
+- `checkDeselectedAttributeElement(elementName)` -- used in 0 specs
+- `checkElementList(selectorTitle, elementNames)` -- used in 0 specs
+- `checkElementListByIndex(index, elementNames, isSpaceNotReplaced = false)` -- used in 0 specs
+- `checkExcludeMode(selectorTitle, elementName, selectorType)` -- used in 0 specs
+- `checkForAttrOrMetricsFilterBox(id)` -- used in 0 specs
+- `checkForEleOrValueFilterBox(id)` -- used in 0 specs
+- `checkForNoEleOrValueFilterBox(id)` -- used in 0 specs
+- `checkNewQualificationTitle(titleName)` -- used in 0 specs
+- `checkNonPresenceOfDynamicSelIcon(selectorTitle)` -- used in 0 specs
+- `checkNotExcludeMode(selectorTitle, elementName, selectorType)` -- used in 0 specs
+- `checkOrderOfElements(order, selectorTitle)` -- used in 0 specs
+- `checkOutline()` -- used in 0 specs
+- `checkPlusButtonAppear()` -- used in 0 specs
+- `checkPresenceOfDynamicSelIcon(selectorTitle)` -- used in 0 specs
+- `checkPresenceOfSelector(selectorTitle, selectorType)` -- used in 0 specs
+- `checkThresholdConditionByIndex(index)` -- used in 0 specs
+- `chooseAFB(afBehavior)` -- used in 0 specs
+- `clearAllFilterOnPS(ps)` -- used in 0 specs
+- `clearAndSetValue(el, value)` -- used in 0 specs
+- `clearAttrForm()` -- used in 0 specs
+- `clearDateValueInput()` -- used in 0 specs
+- `clearDrillConditions(visualizationName)` -- used in 0 specs
+- `clearFilter()` -- used in 0 specs
+- `clearFilterOnPS(ps, condition)` -- used in 0 specs
+- `clearInputValue()` -- used in 0 specs
+- `clearMetric()` -- used in 0 specs
+- `clearMultipleElements(elements, objectName, visualizationName)` -- used in 0 specs
+- `clearObjectAlias(objectName, objectType)` -- used in 0 specs
+- `clearObjectAlias(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `clearSearchBox()` -- used in 0 specs
+- `clearSearchBox(selectorTitle)` -- used in 0 specs
+- `clearSortFromDropZone(objectName)` -- used in 0 specs
+- `clearSortFromViz({ objectName, visualizationName })` -- used in 0 specs
+- `clearSorting(objectName, visualizationName)` -- used in 0 specs
+- `clearThreshold(objectName)` -- used in 0 specs
+- `clearThresholdFromViz(objectName, visualizationName)` -- used in 0 specs
+- `clearThresholds(headerName, visualizationName)` -- used in 0 specs
+- `clearValueInput()` -- used in 0 specs
+- `clearVizHover()` -- used in 0 specs
+- `clickAddToFavorite()` -- used in 0 specs
+- `clickAdvancedFilterApplyButton()` -- used in 0 specs
+- `clickAdvancedFilterButton()` -- used in 0 specs
+- `clickAdvancedFilterCancelButton()` -- used in 0 specs
+- `clickAdvancedFilterClearButton()` -- used in 0 specs
+- `clickAdvancedQualificationButton()` -- used in 0 specs
+- `clickAfterSubmissionBtn(btnName)` -- used in 0 specs
+- `clickApplyButtonFromFilterBoxDialog()` -- used in 0 specs
+- `clickArrangementBtn()` -- used in 0 specs
+- `clickAttributeOnCreateASetAttributeList(attributeName)` -- used in 0 specs
+- `ClickBorderWidthDecreaseBtnForTimes(times)` -- used in 0 specs
+- `ClickBorderWidthIncreaseBtnForTimes(times)` -- used in 0 specs
+- `clickButtonBackgroundColorBtn()` -- used in 0 specs
+- `clickButtonBorderColorBtn()` -- used in 0 specs
+- `clickButtonByName(id, name)` -- used in 0 specs
+- `clickButtonFormatIcon(buttonName)` -- used in 0 specs
+- `clickButtonIconColorBtn()` -- used in 0 specs
+- `clickButtonInClearAllPopup(buttonName)` -- used in 0 specs
+- `clickButtonInCustomSortEditor(buttonTxt)` -- used in 0 specs
+- `clickButtonInErrorPopUp(buttonName)` -- used in 0 specs
+- `clickButtonInWarningDialog(buttonName)` -- used in 0 specs
+- `clickButtonTextFontColorBtn()` -- used in 0 specs
+- `clickButtonVisibleIcon(buttonName)` -- used in 0 specs
+- `clickCancelOnAdvancedFilterEditor()` -- used in 0 specs
+- `clickCardOption()` -- used in 0 specs
+- `clickCellBorderColorBtn()` -- used in 0 specs
+- `clickCellBorderColorBtnByPos(pos)` -- used in 0 specs
+- `clickCellFillColorBtn()` -- used in 0 specs
+- `clickCheckBox(checkBoxName)` -- used in 0 specs
+- `clickClearAllBtn()` -- used in 0 specs
+- `clickClearAllButton()` -- used in 0 specs
+- `clickColorSaturationArea(xPercent = 50, yPercent = 50)` -- used in 0 specs
+- `clickColumnSizeBtn(isAgGrid)` -- used in 0 specs
+- `clickColumnSizeFitOption(fit, isAgGrid = true)` -- used in 0 specs
+- `clickColumnSizeTargetBtn()` -- used in 0 specs
+- `clickColumnSizeTargetOption(target)` -- used in 0 specs
+- `clickContainerApplyButton()` -- used in 0 specs
+- `clickContainerButton()` -- used in 0 specs
+- `clickContainerCancelButton()` -- used in 0 specs
+- `clickContainerInStack(viz, stack)` -- used in 0 specs
+- `clickContainerOption(option)` -- used in 0 specs
+- `clickContextMenuButton(button)` -- used in 0 specs
+- `clickContextMenuOption(option)` -- used in 0 specs
+- `clickCoverImageCancelBtn()` -- used in 0 specs
+- `clickCreateASetButtonByIndex(index)` -- used in 0 specs
+- `clickCreateParameterBtn()` -- used in 0 specs
+- `clickDeleteButtonByIndex(index)` -- used in 0 specs
+- `clickDeleteFileIcon()` -- used in 0 specs
+- `clickElementAndWait(element)` -- used in 0 specs
+- `clickErrorButton(btnTxt)` -- used in 0 specs
+- `clickFlatOption()` -- used in 0 specs
+- `ClickFontSizeDecreaseBtnForTimes(times)` -- used in 0 specs
+- `clickFormatPanelOkButton()` -- used in 0 specs
+- `clickFormatPreviewPanelOkButton()` -- used in 0 specs
+- `clickGradientEndButton()` -- used in 0 specs
+- `clickGradientMode()` -- used in 0 specs
+- `clickGradientStartButton()` -- used in 0 specs
+- `clickHtBtnOnAlert(btnTxt)` -- used in 0 specs
+- `clickHueSlider(huePercent = 50)` -- used in 0 specs
+- `clickImageMode()` -- used in 0 specs
+- `clickImageOkButton()` -- used in 0 specs
+- `clickLockPageSizeCheckBox()` -- used in 0 specs
+- `clickLockPageSizeHelperIcon()` -- used in 0 specs
+- `clickMaximizeBtn()` -- used in 0 specs
+- `clickMetricClearSort(objType, objName)` -- used in 0 specs
+- `clickMetricSortAscending(objType, objName)` -- used in 0 specs
+- `clickMetricSortDescending(objType, objName)` -- used in 0 specs
+- `clickMoreOptionsButtonInFormatPanel()` -- used in 0 specs
+- `clickNfCondense()` -- used in 0 specs
+- `clickNfShortcutIcon(shortcut)` -- used in 0 specs
+- `clickNumberFormatDropdownOption()` -- used in 0 specs
+- `clickOkButton()` -- used in 0 specs
+- `ClickOnAlignOrPaddingButton(option)` -- used in 0 specs
+- `clickOnCancelMarkOnFormatPreviewPanel()` -- used in 0 specs
+- `clickOnCanvas()` -- used in 0 specs
+- `clickOnChapter(chapterTitle)` -- used in 0 specs
+- `clickOnCheckBox(label)` -- used in 0 specs
+- `clickOnCheckboxLabelForExport(label)` -- used in 0 specs
+- `clickOnCheckboxWithLabel(label)` -- used in 0 specs
+- `clickOnCheckboxWithTitle(title)` -- used in 0 specs
+- `clickOnCheckMarkOnFormatPreviewPanel()` -- used in 0 specs
+- `clickOnColumnSet(columnSetName)` -- used in 0 specs
+- `clickOnContainerTitle(containerName)` -- used in 0 specs
+- `clickOnContainerTitle(visualizationTitle)` -- used in 0 specs
+- `clickOnContainerTopBorder(containerName)` -- used in 0 specs
+- `clickOnContextMenuOption(webel, objectFunction)` -- used in 0 specs
+- `clickOnContextMenuOptionFromAxis(objectName, objectFunction)` -- used in 0 specs
+- `clickOnContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction)` -- used in 0 specs
+- `clickOnContextMenuOptionFromElement(chartType, index, objectFunction)` -- used in 0 specs
+- `clickOnDropdownOfValueList(label)` -- used in 0 specs
+- `clickOnEnableAllowUsersCheckBox(item)` -- used in 0 specs
+- `clickOnEnableDataReplaceCheckBox()` -- used in 0 specs
+- `ClickOnFontColorDropdown()` -- used in 0 specs
+- `clickOnGridElement(objectName, visualizationName)` -- used in 0 specs
+- `clickOnGridElementWithoutLoading(objectName, visualizationName)` -- used in 0 specs
+- `clickOnGridObjectHeader(objectName, visualizationName)` -- used in 0 specs
+- `ClickOnHeightInputBoxInFormatPanel()` -- used in 0 specs
+- `clickOnImageSrc(visualizationName)` -- used in 0 specs
+- `clickOnLandscapeBtn()` -- used in 0 specs
+- `clickOnLeftTab(tabName)` -- used in 0 specs
+- `ClickOnLineDirectionButton(option)` -- used in 0 specs
+- `clickOnMaximizeRestoreButton(containerName)` -- used in 0 specs
+- `clickOnMultiGridCellByOffSet(objectNames, visualizationName)` -- used in 0 specs
+- `clickOnNewConditionEditorOkButton()` -- used in 0 specs
+- `clickOnNewQualificationEditorCancelButton()` -- used in 0 specs
+- `clickOnNewQualificationEditorOkButton()` -- used in 0 specs
+- `clickOnOptionOnTheFontButtonBar(optionName)` -- used in 0 specs
+- `clickOnPage(chapterTitle, pageTitle)` -- used in 0 specs
+- `clickOnPortraitBtn()` -- used in 0 specs
+- `clickOnRadioButton(label)` -- used in 0 specs
+- `clickOnSecondaryContextMenuOption(webel, objectFunction1, objectFunction2)` -- used in 0 specs
+- `clickOnSecondaryContextMenuOptionFromAxis(objectName, objectFunction1, objectFunction2)` -- used in 0 specs
+- `clickOnSecondaryContextMenuOptionFromEditorPanel(objectName, objectZone, objectFunction1, objectFunction2)` -- used in 0 specs
+- `clickOnSecondaryContextMenuOptionFromElement(chartType, index, objectFunction1, objectFunction2)` -- used in 0 specs
+- `clickOnViz(vizName)` -- used in 0 specs
+- `ClickOnWidthInputBoxInFormatPanel()` -- used in 0 specs
+- `ClickOnXPositionInput()` -- used in 0 specs
+- `ClickOnYPositionInput()` -- used in 0 specs
+- `clickPaletteMode()` -- used in 0 specs
+- `clickParameterTextBox()` -- used in 0 specs
+- `ClickPolygonSlidesDecreaseBtnForTimes(times)` -- used in 0 specs
+- `ClickPolygonSlidesIncreaseBtnForTimes(times)` -- used in 0 specs
+- `clickPythonTxnTypeDeleteBtn(btn, label)` -- used in 0 specs
+- `clickRootPanelBgColorPicker()` -- used in 0 specs
+- `clickRowSizeBtn(isAgGrid)` -- used in 0 specs
+- `clickRowSizeFitOption(fit)` -- used in 0 specs
+- `clickSaveOnAdvancedFilterEditor()` -- used in 0 specs
+- `clickSectionTitle(sectionName)` -- used in 0 specs
+- `clickSelectTargetButton(selectorTitle)` -- used in 0 specs
+- `clickShadowColorPicker()` -- used in 0 specs
+- `clickShowDetails()` -- used in 0 specs
+- `clickSortDeleteRowButton(columnOrder)` -- used in 0 specs
+- `clickSwatchesMode()` -- used in 0 specs
+- `clickThresholdConditionByIndex(index)` -- used in 0 specs
+- `clickTitleBackgroundColorBtn()` -- used in 0 specs
+- `clickTxnAfterSubmissionCheckbox(label)` -- used in 0 specs
+- `clickTxnContextMenuIconOnFormatPanel()` -- used in 0 specs
+- `clickTxnTypeLabelOnFormatPanel(label)` -- used in 0 specs
+- `clickTxnTypeOnFormatPanel(label)` -- used in 0 specs
+- `clickTxnTypeRightBtnOnFormatPanel(btn, label)` -- used in 0 specs
+- `clickUploadButton()` -- used in 0 specs
+- `clickYesOnDeleteConfirm()` -- used in 0 specs
+- `close()` -- used in 0 specs
+- `closeAllDropDown()` -- used in 0 specs
+- `closeChangeViz()` -- used in 0 specs
+- `closeColorPickerPopover()` -- used in 0 specs
+- `closeColumnSetAdvancedFilterEditor(columnSet)` -- used in 0 specs
+- `closeContextMenu()` -- used in 0 specs
+- `closeEditor()` -- used in 0 specs
+- `closeFormPopup(buttonName)` -- used in 0 specs
+- `closeInvalidUrlDialog()` -- used in 0 specs
+- `closePopupColorPicker()` -- used in 0 specs
+- `closeSortEditor()` -- used in 0 specs
+- `closeThresholdEditor()` -- used in 0 specs
+- `collapseFolderUnderDataset(folderName, datasetName)` -- used in 0 specs
+- `collapseOutlineFromColumnHeader(objectName, visualizationName)` -- used in 0 specs
+- `collapseOutlineFromElement(elementName, visualizationName)` -- used in 0 specs
+- `confirmAdvancedColorPalette()` -- used in 0 specs
+- `confirmExistingObjDialog()` -- used in 0 specs
+- `confirmOutlineGridCollapsed(objectName, visualizationName)` -- used in 0 specs
+- `confirmOutlineGridExpanded(objectName, visualizationName)` -- used in 0 specs
+- `confirmYearInDropzone()` -- used in 0 specs
+- `containerAlignment(containerName1, containerName2, position)` -- used in 0 specs
+- `containerCMAction(viz, stack, cmOption)` -- used in 0 specs
+- `contextMenuOnChapter(chapterTitle, option)` -- used in 0 specs
+- `copyFormatting(selectorTitle)` -- used in 0 specs
+- `copymoveContainer(containerName, actionName, locationName)` -- used in 0 specs
+- `copytoContainer(containerName, locationName)` -- used in 0 specs
+- `createAndSaveAdvancedSort({ rowOrders, columnOrders, dragSortActions })` -- used in 0 specs
+- `createASet()` -- used in 0 specs
+- `createAttribute(objectName)` -- used in 0 specs
+- `createCalculation(secondObject, calculationType)` -- used in 0 specs
+- `createCalculationFromDataset(objectName, objectTypeName, datasetName, calculationType, secondObject)` -- used in 0 specs
+- `createCalculationFromEditorPanel(objectName, calculationType, secondObject)` -- used in 0 specs
+- `createDerivedAttribute({ objectNames, derivedAttributeName })` -- used in 0 specs
+- `createDerivedMetricUsingFormula({ metricName, metricDefinition })` -- used in 0 specs
+- `createGroup(objectName, objectType)` -- used in 0 specs
+- `createGroups({ groupElements, groupNames })` -- used in 0 specs
+- `createGroupsFromEditorPanel({ attributeName, groupElements, groupNames })` -- used in 0 specs
+- `createLink(objectName)` -- used in 0 specs
+- `createLocalContextualLink(srcVizName, tgtVizName)` -- used in 0 specs
+- `createMetric(objectName)` -- used in 0 specs
+- `createNewAttributeMetricFilter()` -- used in 0 specs
+- `createNewElementFilter()` -- used in 0 specs
+- `createNewGroup(attributeName, visualizationName)` -- used in 0 specs
+- `createNewPanelFilter()` -- used in 0 specs
+- `createNewParameterFilter()` -- used in 0 specs
+- `createSubtotalsFromEditorPanel(objectName, objectType, subtotalOptions)` -- used in 0 specs
+- `createThresholdForMetric({ objectName, createFunction })` -- used in 0 specs
+- `createTimeOrGeoAttribute(newType, objName, datasetName, contextOption)` -- used in 0 specs
+- `ctrlSelectAndCreateCalculation(objectName1, objectName2, objectZone, objectFunction)` -- used in 0 specs
+- `ctrlSelectAndRemove(objectName1, objectName2, objectZone)` -- used in 0 specs
+- `ctrlSelectElement(chartType, index)` -- used in 0 specs
+- `ctrlSelectElementsAndclickOnContextMenuOption(chartType, indexArray, objectFunction)` -- used in 0 specs
+- `ctrlSelectElementsAndclickOnSecondaryContextMenuOption(chartType, indexArray, objectFunction1, objectFunction2)` -- used in 0 specs
+- `currentCheckedItemFromCM()` -- used in 0 specs
+- `deletColorBandByIndexNumber(indexNum)` -- used in 0 specs
+- `deleteCalculationGroup(groupName, visualizationName)` -- used in 0 specs
+- `deleteChapterFromChapterTitle(chapterTitle)` -- used in 0 specs
+- `deleteChapterFromContextMenu(chapterTitle)` -- used in 0 specs
+- `deleteChapterFromPageTitle(pageTitle, chapterTitle)` -- used in 0 specs
+- `deleteColumnSet(columnSetName)` -- used in 0 specs
+- `deleteGroupFromEditor(name)` -- used in 0 specs
+- `deleteObjectFromDatasetContainer(object)` -- used in 0 specs
+- `deleteThresholdConditionByOrderNumber(orderNum)` -- used in 0 specs
+- `deSelectElement(reference)` -- used in 0 specs
+- `disableWrapText()` -- used in 0 specs
+- `dismissButtonFormatPopup()` -- used in 0 specs
+- `displayAllOtherElementByGroup()` -- used in 0 specs
+- `displayAllOtherElementByItems()` -- used in 0 specs
+- `doElementSelectionForAttributeFilter(elementNames)` -- used in 0 specs
+- `doSelectionOnAttributeDropdown(attName)` -- used in 0 specs
+- `doSelectionOnChooseElementsByDropdown(typeName)` -- used in 0 specs
+- `doSelectionOnMetricDropdown(metricName)` -- used in 0 specs
+- `doSelectionOnOperatorDropdown(optionName)` -- used in 0 specs
+- `doSelectionOnOutputLevelDropDown(optionName)` -- used in 0 specs
+- `doSelectionOnPlusButtonContextMenu(columnSet)` -- used in 0 specs
+- `doubleClickOnPanel(panel, stack)` -- used in 0 specs
+- `downloadPDF()` -- used in 0 specs
+- `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` -- used in 0 specs
+- `dragAndDropAndHoldOnMouse(element, xPixels = 0, yPixels = 0)` -- used in 0 specs
+- `dragAndDropObjectAndWait(movingElement, targetElement)` -- used in 0 specs
+- `dragAndMoveMarker(indexNum)` -- used in 0 specs
+- `dragAttributeToColumns({ objectName, datasetName })` -- used in 0 specs
+- `dragAttributeToGridColumnSetDZ({ objectName, datasetName, columnSetName })` -- used in 0 specs
+- `dragAttributeToRows({ objectName, datasetName })` -- used in 0 specs
+- `dragAttributeToRowsBelowObject({ objectName, datasetName, belowObject })` -- used in 0 specs
+- `dragAttToDropzone(objectName)` -- used in 0 specs
+- `dragDSObjectAfterSearchToParameterSelector(objectType, objectName, datasetName, filterIdx)` -- used in 0 specs
+- `dragDSObjectBelowColumnsTitleBar(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `dragDSObjectBetweenColumnSetwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition)` -- used in 0 specs
+- `dragDSObjectToBlankDZ(objectName, objectTypeName, datasetName, desZone)` -- used in 0 specs
+- `dragDSObjectToColumnSetDZwithPosition(objectName, objectTypeName, datasetName, columnSet, desPosition, desObject)` -- used in 0 specs
+- `dragDSObjectToDZ(objectName, objectTypeName, datasetName, desZone, desPosition, desObject)` -- used in 0 specs
+- `dragDSObjectToDZReplace(objectName, objectTypeName, datasetName, desObject, desZone)` -- used in 0 specs
+- `dragDSObjectToDZwithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)` -- used in 0 specs
+- `dragDSObjectToDZWithPosition(objectName, objectTypeName, datasetName, zone, desPosition, desObject, offsetX = 0, offsetY = 10)` -- used in 0 specs
+- `dragDSObjectToGridByColumnBorder(objectName, objectTypeName, datasetName, colNum, vizName)` -- used in 0 specs
+- `dragDSObjectToGridColumnSetDZ(objectName, objectTypeName, datasetName, columnSetName)` -- used in 0 specs
+- `dragDSObjectToGridContainer(objectName, objectTypeName, datasetName, vizName)` -- used in 0 specs
+- `dragDSObjectToGridDZ(objectName, objectTypeName, datasetName, desZone)` -- used in 0 specs
+- `dragDSObjectToGridMicrochartDZ(objectName, objectTypeName, datasetName, microchartName)` -- used in 0 specs
+- `dragDSObjectToGridWithPositionInRow(objectName, objectTypeName, datasetName, desPosition, elementInRow, vizName)` -- used in 0 specs
+- `dragDSObjectToLastColumnSet(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `dragDSObjectToMicrochartDZwithPosition(objectName, objectTypeName, datasetName, microchartName, desPosition, desObject)` -- used in 0 specs
+- `dragDSObjectToParameterSelector(objectType, objectName, datasetName, filterIdx)` -- used in 0 specs
+- `dragDSObjectToSelector(objectType, objectName, datasetName, filterIdx = '', isScrollIntoView = true)` -- used in 0 specs
+- `dragFilterAndWait(movingElement, targetElement)` -- used in 0 specs
+- `dragMetricToColumns({ objectName, datasetName })` -- used in 0 specs
+- `dragMetricToDropZoneBelowObject({ objectName, datasetName, dropZone, belowObject })` -- used in 0 specs
+- `dragMetricToGridColumnSetDZ({ objectName, datasetName, columnSetName })` -- used in 0 specs
+- `dragMetricToRows({ objectName, datasetName })` -- used in 0 specs
+- `dragMetricToRowsBelowObject({ objectName, datasetName, belowObject })` -- used in 0 specs
+- `dragNdropChapter(chapterTitle, chapterIndex)` -- used in 0 specs
+- `dragNdropToMovePage(srcPage, srcChapter, desPage, desChapter, relativePosition)` -- used in 0 specs
+- `dragObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)` -- used in 0 specs
+- `dragObjectFromDZtoDS(objectName, objectType, srcZone)` -- used in 0 specs
+- `dragObjectToInvalidDZ(objectName, vizName)` -- used in 0 specs
+- `dragObjectToOtherViz(objectName, srcViz, destViz)` -- used in 0 specs
+- `dragPageAndDropToCreateNewChapter(pageName, chapterName, chapterIndex)` -- used in 0 specs
+- `dragSelectorToCanvas(selectorTitle)` -- used in 0 specs
+- `dragSortRowWithPositionInAdvancedSortEditor({ srcSortRow, desPosition, desSortRow })` -- used in 0 specs
+- `dragSortRowwithPositionInAdvancedSortEditor(srcSortRow, desPosition, desSortRow)` -- used in 0 specs
+- `drillFromElement(element, drillToObject, visualizationName)` -- used in 0 specs
+- `drillFromElements(elements, drillToObject, visualizationName)` -- used in 0 specs
+- `drillFromHeader(headerName, drillToObject, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `dropdownPanelSelector(selectorTitle, elementName)` -- used in 0 specs
+- `duplicateContainer(containerName)` -- used in 0 specs
+- `duplicateObjectAs(objectName, objectTypeName, datasetName, newObjectTypeName)` -- used in 0 specs
+- `duplicateObjectInFolderAs(objectName, objectTypeName, folderName, datasetName, newObjectTypeName)` -- used in 0 specs
+- `editAdvancedFilter(index)` -- used in 0 specs
+- `editCalculationGroup({ newCalculation, groupName, visualizationName })` -- used in 0 specs
+- `editCalculationGroup(newCalculation, groupName, visualizationName)` -- used in 0 specs
+- `editFilterEditor()` -- used in 0 specs
+- `editGroup(groupName, visualizationName)` -- used in 0 specs
+- `editGroupFromEditor(name)` -- used in 0 specs
+- `editHeaderGroups(headerName, visualizationName)` -- used in 0 specs
+- `editMicrochart(setName, microchartName)` -- used in 0 specs
+- `editObject(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `editorPanelCalculationMultiSelect(elements, operation)` -- used in 0 specs
+- `editorPanelShortcutFunction(funName)` -- used in 0 specs
+- `editTargetVisualizations(containerName)` -- used in 0 specs
+- `editTextArea(containerName)` -- used in 0 specs
+- `editURLFromFormat(url)` -- used in 0 specs
+- `editURLonFedRamp(visualizationName, url)` -- used in 0 specs
+- `enableBanding()` -- used in 0 specs
+- `enableOutline()` -- used in 0 specs
+- `enableWrapText()` -- used in 0 specs
+- `excludeElement(objectName, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `excludeElements(elements, visualizationName)` -- used in 0 specs
+- `existContextMenuItemByName(option)` -- used in 0 specs
+- `existDrillOption(objectName, visualizationName, targetObject)` -- used in 0 specs
+- `existObjectByName(objectName, visualizationName)` -- used in 0 specs
+- `existReplaceByOption(objectName, visualizationName, targetObject)` -- used in 0 specs
+- `expandAttributeFolder()` -- used in 0 specs
+- `expandCollapseColumnSet(columnSetName)` -- used in 0 specs
+- `expandConsolidationFolder()` -- used in 0 specs
+- `expandCustomGroupFolder()` -- used in 0 specs
+- `expandDimensionFolder()` -- used in 0 specs
+- `expandFilterFolder()` -- used in 0 specs
+- `expandFolderUnderDataset(folderName, datasetName)` -- used in 0 specs
+- `expandHierarchyFolder()` -- used in 0 specs
+- `expandLayoutSection(languageOption = Locales.English)` -- used in 0 specs
+- `expandMetricFolder()` -- used in 0 specs
+- `expandOutlineFromColumnHeader(objectName, visualizationName)` -- used in 0 specs
+- `expandOutlineFromElement(elementName, visualizationName)` -- used in 0 specs
+- `expandSpacingSection(languageOption = Locales.English)` -- used in 0 specs
+- `expandTemplateFolder()` -- used in 0 specs
+- `expandTemplateSection(languageOption = Locales.English)` -- used in 0 specs
+- `expandTimeFolder()` -- used in 0 specs
+- `expandTransformationFolder()` -- used in 0 specs
+- `focusELAndReplaceInputValue(el, value)` -- used in 0 specs
+- `function(status)` -- used in 0 specs
+- `function(text)` -- used in 0 specs
+- `getAllObjectHeaders(visualizationName)` -- used in 0 specs
+- `getAttributeFolder(folderName)` -- used in 0 specs
+- `getAttributeFromFolder(objectName)` -- used in 0 specs
+- `getAvailableImageSizes()` -- used in 0 specs
+- `getBackgroundColor()` -- used in 0 specs
+- `getCellOpacityOnReactPanel()` -- used in 0 specs
+- `getCellType(objectName, visualizationName)` -- used in 0 specs
+- `getColumnSetObjectTexts(columnSetName)` -- used in 0 specs
+- `getContexMenu(objName, menuItem)` -- used in 0 specs
+- `getCurrentPanel()` -- used in 0 specs
+- `getCurrentSelectedColorMode()` -- used in 0 specs
+- `getCustomDimensionInput(axis)` -- used in 0 specs
+- `getCustomHeightInput()` -- used in 0 specs
+- `getCustomWidthInput()` -- used in 0 specs
+- `getDashboardLevelImagePreviewUrl()` -- used in 0 specs
+- `getDataSourceOption(gridName, dataSource)` -- used in 0 specs
+- `getDataSourceOptionForCompoundOrAg(containerName, columnSet, dataSource)` -- used in 0 specs
+- `getDisplayAttributeFormNamesOption(option)` -- used in 0 specs
+- `getDisplayAttributeFormNamesPullDownMenu()` -- used in 0 specs
+- `getDisplayFormItem(formName)` -- used in 0 specs
+- `getElementByPartialValueByViz(visualizationName, elementPartialValue)` -- used in 0 specs
+- `getElementCount(chartType)` -- used in 0 specs
+- `getELementPath(chartType)` -- used in 0 specs
+- `getElementPathByIndex(index, chartType)` -- used in 0 specs
+- `getELementTooltip(index, chartType)` -- used in 0 specs
+- `getGridCellCSSPropertyByPosition(row, col, visualizationName, property)` -- used in 0 specs
+- `getHexColorPicker()` -- used in 0 specs
+- `getIdentity()` -- used in 0 specs
+- `getImagePreviewUrl()` -- used in 0 specs
+- `getImageUrl()` -- used in 0 specs
+- `getLastVisibleInvalidUrlDialog()` -- used in 0 specs
+- `getLinkFromGridCell(row, col, visualizationName)` -- used in 0 specs
+- `getMarkerAndChangeValue(indexNum, value)` -- used in 0 specs
+- `getObjectHeader(objectName, visualizationName)` -- used in 0 specs
+- `getObjectHeaderByIndex(columnIndex, visualizationName)` -- used in 0 specs
+- `getPaddingValue()` -- used in 0 specs
+- `getPanelPadding(id, style)` -- used in 0 specs
+- `getPopupList()` -- used in 0 specs
+- `getPullDownFromMoreOption(title)` -- used in 0 specs
+- `getRadiusSliderPosition()` -- used in 0 specs
+- `getRadiusValue()` -- used in 0 specs
+- `getRgbaColorCode(expectedColor)` -- used in 0 specs
+- `getRootPanelBgColorValue()` -- used in 0 specs
+- `getRowObjectTexts()` -- used in 0 specs
+- `getSelectedLayoutStyle()` -- used in 0 specs
+- `getSelectedPanelText()` -- used in 0 specs
+- `getShadowAngleSliderPosition()` -- used in 0 specs
+- `getShadowAngleValue()` -- used in 0 specs
+- `getShadowBlurSliderPosition()` -- used in 0 specs
+- `getShadowBlurValue()` -- used in 0 specs
+- `getShadowDistanceSliderPosition()` -- used in 0 specs
+- `getShadowDistanceValue()` -- used in 0 specs
+- `getShadowFillColor()` -- used in 0 specs
+- `getShadowFillColorDetails()` -- used in 0 specs
+- `getShadowFillValue()` -- used in 0 specs
+- `getShadowSelectedColor()` -- used in 0 specs
+- `getSizeSelectValue()` -- used in 0 specs
+- `getWebElement(index)` -- used in 0 specs
+- `getYearAttribute()` -- used in 0 specs
+- `groupElements(elements, objectName, visualizationName, groupName)` -- used in 0 specs
+- `groupElements2(elements, objectName, visualizationName, groupName)` -- used in 0 specs
+- `groupElementsByPartialValue(elementPartialValue, objectName, visualizationName, groupName)` -- used in 0 specs
+- `groupElementsByPartialValueForCalculation(elementPartialValue, objectName, visualizationName, groupName)` -- used in 0 specs
+- `groupElementsForCalculation(elements, objectName, visualizationName, groupName, calculationMenu)` -- used in 0 specs
+- `groupElementsForCalculation(elements, visualizationName, groupName, calculationMenu)` -- used in 0 specs
+- `groupElementsHelper(arrElements, groupName)` -- used in 0 specs
+- `groupElementsToAverageCalculation({ elements, visualizationName, groupName })` -- used in 0 specs
+- `groupElementsToSumCalculation(elements, visualizationName, groupName)` -- used in 0 specs
+- `groupRelativePosition(groupName1, groupName2, relativePosition)` -- used in 0 specs
+- `hasClass(element, cls)` -- used in 0 specs
+- `hasMojoEdtiorErrorText(txt)` -- used in 0 specs
+- `hoverAndClickFilterIcon()` -- used in 0 specs
+- `hoverAttributeFormInDataTypeMenu(formName)` -- used in 0 specs
+- `hoverOnButton(id, name)` -- used in 0 specs
+- `hoverOnCategory(category)` -- used in 0 specs
+- `hoverOnContainerAndClick(containerName)` -- used in 0 specs
+- `hoverOnContainerTitlebarAndClick(containerName)` -- used in 0 specs
+- `hoverOnEmptyICSByIndex(index)` -- used in 0 specs
+- `hoverOnFilterItemByIndex(index)` -- used in 0 specs
+- `hoverOnGridElement(objectName, visualizationName)` -- used in 0 specs
+- `hoverOnMaximizeBtn()` -- used in 0 specs
+- `hoverOnRestoreBtn()` -- used in 0 specs
+- `hoverOnVisualizationContainer(visualizationName)` -- used in 0 specs
+- `hoverOverAdvancedSortRulesPanel()` -- used in 0 specs
+- `hoverTxnTypeBtn(label)` -- used in 0 specs
+- `inputFieldRenameHelper(newName)` -- used in 0 specs
+- `inputInTextBox(message)` -- used in 0 specs
+- `inputNameInatasetSaveAs(name)` -- used in 0 specs
+- `inputNfCustomTextBox(newFormat)` -- used in 0 specs
+- `inputToRename(newName)` -- used in 0 specs
+- `insertTextField(buttonName)` -- used in 0 specs
+- `inverseGradient()` -- used in 0 specs
+- `isAlertMessageDisplayed(txt)` -- used in 0 specs
+- `isButtonVisible(buttonName)` -- used in 0 specs
+- `isCardSelected()` -- used in 0 specs
+- `isCheckBoxChecked(checkBoxName)` -- used in 0 specs
+- `isChecked()` -- used in 0 specs
+- `isColorPickerPopoverVisible()` -- used in 0 specs
+- `isContextMenuOptionPresentInHeaderCell(menuOption, cellText, visualizationName)` -- used in 0 specs
+- `isCurrentPageDisplayed(pageTitle, chapterTitle)` -- used in 0 specs
+- `isDisplayFormAvailable(formName)` -- used in 0 specs
+- `isDisplayFormSelected(formName)` -- used in 0 specs
+- `isEditorPanelPresent()` -- used in 0 specs
+- `isElementInHeaderRow(element, visualizationName)` -- used in 0 specs
+- `isElementPresent(element, objectName, visualizationName)` -- used in 0 specs
+- `isFlatSelected()` -- used in 0 specs
+- `isFontAlignButtonDisabled(align)` -- used in 0 specs
+- `isFontAlignButtonSelected(align)` -- used in 0 specs
+- `isGroupEditorOpen()` -- used in 0 specs
+- `isGroupEditorOpenForSpecificGroup(groupName)` -- used in 0 specs
+- `isImageOkButtonEnabled()` -- used in 0 specs
+- `isInvalidUrlDialogVisible()` -- used in 0 specs
+- `isLinkedObjectDSdisplayed(objectName, datasetName)` -- used in 0 specs
+- `isObjectHeaderExists(objectName, visualizationName)` -- used in 0 specs
+- `isObjectPresent(objectName, objectType)` -- used in 0 specs
+- `isOutlinePresentForGridObject(objectName, visualizationName)` -- used in 0 specs
+- `isPopupColorPickerVisible()` -- used in 0 specs
+- `isReplaceByOptionPresent(objectType, objectName, contextOption, newObjectName)` -- used in 0 specs
+- `isRootPanelBgColorPickerExpanded()` -- used in 0 specs
+- `isSaveDisabledForHeaderRename()` -- used in 0 specs
+- `isSubtotalSameAsCheckboxChecked()` -- used in 0 specs
+- `keepOnly(objectName, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `keepOnlyElements(elements, visualizationName)` -- used in 0 specs
+- `keepOnlyVizFilter(elements, objectName, visualizationName)` -- used in 0 specs
+- `lassoSelect(fromCordinates, toCordinates)` -- used in 0 specs
+- `linkAttributeForm(sourForm, tarAttr, tarAttrForm)` -- used in 0 specs
+- `linkOrButtonBarSelector(selectorTitle, elementNames)` -- used in 0 specs
+- `linkOrButtonBarSelectorInLibrary(selectorTitle, elementNames)` -- used in 0 specs
+- `linkOrButtonCurrentBarSelector(elementNames)` -- used in 0 specs
+- `listBoxSelector(selectorTitle, elementNames)` -- used in 0 specs
+- `locate()` -- used in 0 specs
+- `locateByIndex(idx)` -- used in 0 specs
+- `MenuOnChapter(chapterTitle, option)` -- used in 0 specs
+- `mergeGroups(srcGroupName, dstGroupName)` -- used in 0 specs
+- `metricQualificationSelectorOnNullValue(selectorTitle, operatorType)` -- used in 0 specs
+- `metricQualificationSelectorOnRank(selectorTitle, rankType, value)` -- used in 0 specs
+- `metricQualificationSelectorOnValue(selectorTitle, operatorName, inputValue1, inputValue2)` -- used in 0 specs
+- `metricSliderSelectorOnRank(selectorTitle, rankType, value)` -- used in 0 specs
+- `metricSliderSelectorOnVal(selectorTitle, startValue, stopValue)` -- used in 0 specs
+- `metricSortFromViz({ objectName, visualizationName, order })` -- used in 0 specs
+- `metricSortFromViz(objectName, visualizationName, order)` -- used in 0 specs
+- `mouseOverGridCellByPosition(row, col, visualization)` -- used in 0 specs
+- `moveAdvancedSortEditorScrollBar(direction, pixels)` -- used in 0 specs
+- `moveChartHeightSlider(direction, pixels)` -- used in 0 specs
+- `moveContainerByOffsetAndHoldOnMouse(containerName, moveX, moveY)` -- used in 0 specs
+- `moveExistingObjectsEditorScrollBar(direction, pixels)` -- used in 0 specs
+- `moveGroupByPosition(sourceGroupName, targetGroupName, relativePosition)` -- used in 0 specs
+- `moveMouse(x, y)` -- used in 0 specs
+- `moveNfDecimalPlace(change, numOfPlaces)` -- used in 0 specs
+- `moveObject(srcObject, srcZone, desZone, desPosition, desObject)` -- used in 0 specs
+- `moveObjectToBlankDZ(srcObject, srcZone, desZone)` -- used in 0 specs
+- `moveObjectToGridByColumnBorder(objectName, srcViz, colNum, destViz)` -- used in 0 specs
+- `moveObjectToGridWithPositionInRow(objectName, srcViz, desPosition, elementInRow, destViz)` -- used in 0 specs
+- `moveObjectToReplace(srcObject, srcZone, desObject, desZone)` -- used in 0 specs
+- `moveScrollBar(direction, pixels, vizName)` -- used in 0 specs
+- `moveSelectedGroup(moveX, moveY)` -- used in 0 specs
+- `moveSelectedGroupByOffsetAndHoldOn(containerName, moveX, moveY)` -- used in 0 specs
+- `movetoContainer(containerName, locationName)` -- used in 0 specs
+- `moveToSpecificLocationAndWait(desPosition, srcElement, desElement, offsetX = 0, offsetY = 10)` -- used in 0 specs
+- `moveToSpecificLocationAndWait(desPosition, srcElement, desElement)` -- used in 0 specs
+- `moveVerticalScrollbar(moveY)` -- used in 0 specs
+- `moveVerticalScrollbarInPanel(stack, moveY)` -- used in 0 specs
+- `multiSelectAndDnDtoSelectedArea(attributeName1, attributeName2)` -- used in 0 specs
+- `multiselectAndDragDSObjectsToDZ(datasetName, objOneType, objOneName, objTwoType, objTwoName, desZone)` -- used in 0 specs
+- `multiselectAndDragDSObjectsToDZWithPosition(datasetName, objOneType, objOneName, objTwoType, objTwoName, desPosition, desObject, desZone)` -- used in 0 specs
+- `multiSelectDisplayForms(formNames, skipCloseForm)` -- used in 0 specs
+- `multiSelectDisplayFormsFromDropZone(formNames, objectName, dropzone)` -- used in 0 specs
+- `multiSelectDisplayFormsFromEditorPanel(objectName, formNames)` -- used in 0 specs
+- `multiSelectElementsUsingCmndOrCtrl(indexArray, chartType)` -- used in 0 specs
+- `multiSelectElementsUsingCommandOrControl(elements, waitLoadingDialog = false)` -- used in 0 specs
+- `multiSelectElementsUsingCommandOrControlNGM(xpaths)` -- used in 0 specs
+- `multiSelectObjectsAndTakeCMAction(objectList, datasetName, firstMenu)` -- used in 0 specs
+- `multiSelectObjectsAndTakeSecondaryCM(objectList, datasetName, firstMenu, secondaryMenu)` -- used in 0 specs
+- `noThresholdsPresentOnObject(headerName, visualizationName)` -- used in 0 specs
+- `open()` -- used in 0 specs
+- `openAdvancedFilterEditor(containerName)` -- used in 0 specs
+- `openAdvancedFilterEditor(VisualizationTitle)` -- used in 0 specs
+- `openAdvancedSortEditor({ objectName, visualizationName = 'Visualization 1' })` -- used in 0 specs
+- `openAdvancedSortEditor(objectName, visualizationName)` -- used in 0 specs
+- `openAdvancedSortEditor(objectName)` -- used in 0 specs
+- `openAFBPullDown()` -- used in 0 specs
+- `openAndSelectSimpleThresholdColorBand(colorBandName)` -- used in 0 specs
+- `openAttributeDisplayFormsMenu(selectorTitle)` -- used in 0 specs
+- `openAttributeDropdown()` -- used in 0 specs
+- `openAttributeThresholdsEditor(objectName)` -- used in 0 specs
+- `openBasedOnDropDown()` -- used in 0 specs
+- `openButtonBorderPullDown()` -- used in 0 specs
+- `openCalculationEditor(metricName, visualizationName)` -- used in 0 specs
+- `openCalculationEditor(objectName, objectType)` -- used in 0 specs
+- `openCellBorderStyleDropDown()` -- used in 0 specs
+- `openCellBorderStyleDropDownByPos(pos)` -- used in 0 specs
+- `openChooseElementsByDropDown()` -- used in 0 specs
+- `openChooseElementsByDropDownI18N(optionName)` -- used in 0 specs
+- `openColumnSetContextMenu()` -- used in 0 specs
+- `openColumnSetPullDown()` -- used in 0 specs
+- `openConsumptionViewDropDown()` -- used in 0 specs
+- `openContextMenu2(containerName)` -- used in 0 specs
+- `openContextMenu3(containerName)` -- used in 0 specs
+- `openContextMenuFromAxis(objectName)` -- used in 0 specs
+- `openContextMenuFromEditorPanel(objectName, objectZone)` -- used in 0 specs
+- `openContextMenuFromElement(chartType, index)` -- used in 0 specs
+- `openContextMenuItemForGridCell(gridCellName, menuItemName, visualizationName)` -- used in 0 specs
+- `openContextMenuItemForGridCellByPosition(row, col, menuItemName, visualizationName)` -- used in 0 specs
+- `openContextMenuItemForGridCells(gridCellNames, menuItemName, visualizationName)` -- used in 0 specs
+- `openContextMenuItemForGridCellsByOffSet(gridCellNames, menuItemName, visualizationName, offsetX = 1, offsetY = 1)` -- used in 0 specs
+- `openContextMenuOption(objectName, option, visualizationName)` -- used in 0 specs
+- `openCurrentSelectorTargetsMenu()` -- used in 0 specs
+- `openCustomSortEditor(objectName, visualizationName)` -- used in 0 specs
+- `openDashboardFormattingMenu()` -- used in 0 specs
+- `openDerivedObjectEditor(objectName, objectType, actionType)` -- used in 0 specs
+- `openDisplayAttributeFormsMenu(objectName, objectType)` -- used in 0 specs
+- `openDropDownSelectorPullList(selectorTitle)` -- used in 0 specs
+- `openEditObjectEditor(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `openFilterEditor()` -- used in 0 specs
+- `openFontColorDropdownMenu()` -- used in 0 specs
+- `openFontFamilyDropdownMenu()` -- used in 0 specs
+- `openFontPickerForAllFonts()` -- used in 0 specs
+- `openFontPickerForTitle()` -- used in 0 specs
+- `openFontSizeDropdownMenu()` -- used in 0 specs
+- `openFormatContextMenu(objectName, visualizationName)` -- used in 0 specs
+- `openFormatMenu()` -- used in 0 specs
+- `openFormatPanel()` -- used in 0 specs
+- `openFormatPreviewPanelByOrderNumber(orderNum)` -- used in 0 specs
+- `openFormatToolBoxFromColumnHeader(objectName, visualizationName)` -- used in 0 specs
+- `openFormatToolBoxFromElement(objectName, visualizationName)` -- used in 0 specs
+- `openFormatToolBoxFromVisualizationTitle(visualizationName)` -- used in 0 specs
+- `openGroupEditor({ isFromGrid, isCreate, attributeName })` -- used in 0 specs
+- `openGroupEditor(groupName, groupType)` -- used in 0 specs
+- `openHelpLink()` -- used in 0 specs
+- `openLogicalOperatorDialog(index, currOperator)` -- used in 0 specs
+- `openMetricDropdown()` -- used in 0 specs
+- `openMetricOptionsDialog()` -- used in 0 specs
+- `openMetricThresholdsEditor(objectName)` -- used in 0 specs
+- `openMicrochartFillColor()` -- used in 0 specs
+- `openMoreOptionDiagFromViz(visualizationName)` -- used in 0 specs
+- `openNewQualificationEditor()` -- used in 0 specs
+- `openNewThresholdCondition()` -- used in 0 specs
+- `openNewThresholdConditionI18N(name)` -- used in 0 specs
+- `openNumberFormatContextMenu(objectName, visualizationName)` -- used in 0 specs
+- `openOperatorDropDown()` -- used in 0 specs
+- `openOptimizedForDropDown()` -- used in 0 specs
+- `openOuterBorderColorPickerDropdownMenu()` -- used in 0 specs
+- `openOuterBorderDropdownMenu()` -- used in 0 specs
+- `openOutputLevelDropdown()` -- used in 0 specs
+- `openPanelContextMenu()` -- used in 0 specs
+- `openPanelStackCM(name)` -- used in 0 specs
+- `openParameterCalendar(selectorTitle)` -- used in 0 specs
+- `openQuickSymbolDropDownMenu()` -- used in 0 specs
+- `openSelectorTargetsMenu(selectorTitle)` -- used in 0 specs
+- `openShowDataDiagFromViz(visualizationName)` -- used in 0 specs
+- `openSimpleThresholdColorBandDropDownMenu()` -- used in 0 specs
+- `openSimpleThresholdImageBandDropDownMenu()` -- used in 0 specs
+- `openSizeSelect()` -- used in 0 specs
+- `openThresholdConditionByOrderNumber(orderNum)` -- used in 0 specs
+- `openThresholdEditor(metricName, visualizationName)` -- used in 0 specs
+- `openThresholdEditorFromCompoundGridDropzone(objectName, columnSet)` -- used in 0 specs
+- `openThresholdEditorFromMicroChart(microchartName)` -- used in 0 specs
+- `openThresholdEditorFromViz(objectName, visualizationName)` -- used in 0 specs
+- `openThresholdsEditor(objectName)` -- used in 0 specs
+- `openThresholdsEditorWithoutWaiting(objectName)` -- used in 0 specs
+- `panelCMAction(panel, stack, cmOption)` -- used in 0 specs
+- `panelStackCMAction(name, cmOption)` -- used in 0 specs
+- `pasteFormatting(selectorTitle)` -- used in 0 specs
+- `pasteTextboxText(containerTitle)` -- used in 0 specs
+- `presentInMetricDefinition(newToken)` -- used in 0 specs
+- `pressAltAndEnterKeyForTimes(times)` -- used in 0 specs
+- `pressArrowKeyForTimes(containerName, key, times)` -- used in 0 specs
+- `pressCtrlAndCtoCopyText()` -- used in 0 specs
+- `pressCtrlAndVtoPasteText()` -- used in 0 specs
+- `PressDeleteKeyForContainer(containerName)` -- used in 0 specs
+- `PressDownArrowkeyForTimes(times)` -- used in 0 specs
+- `PressEnterKeyForTimes(times)` -- used in 0 specs
+- `PressEscKey()` -- used in 0 specs
+- `PressLeftArrowkeyForTimes(times)` -- used in 0 specs
+- `PressRightArrowkeyForTimes(times)` -- used in 0 specs
+- `pressShiftAndArrowKeyForTimes(containerName, key, times)` -- used in 0 specs
+- `pressSingleKeyAndHoldOn(keyName)` -- used in 0 specs
+- `PressTabKeyForTimes(times)` -- used in 0 specs
+- `PressUpArrowkeyForTimes(times)` -- used in 0 specs
+- `releaseMouse()` -- used in 0 specs
+- `releaseSingleKey(keyName)` -- used in 0 specs
+- `removeAllObjects()` -- used in 0 specs
+- `removeFromDropZone(objectName, objectType)` -- used in 0 specs
+- `removeObjectFromDropZone(srcObject, srcZone)` -- used in 0 specs
+- `removeObjectFromGrid(objectName, vizName)` -- used in 0 specs
+- `removeObjectInColumnSet(objectName, columnSet)` -- used in 0 specs
+- `renameAttributeForm(formNewName)` -- used in 0 specs
+- `renameByDoubleClickOnFormatPanel(newName)` -- used in 0 specs
+- `renameByFormatPanelContextMenu(newName)` -- used in 0 specs
+- `renameChapterByDoubleClickFromChapterTitle(chapterTitle, newChapterTitle)` -- used in 0 specs
+- `renameChapterFromChapterTitle(chapterTitle, newChapterTitle)` -- used in 0 specs
+- `renameChapterFromContextMenu(chapterTitle, newChapterTitle)` -- used in 0 specs
+- `renameColumnSet(columnSetPosition, newColumnSetName)` -- used in 0 specs
+- `renameGroup(groupName, visualizationName, newGroupName)` -- used in 0 specs
+- `renameGroup(newName)` -- used in 0 specs
+- `renameGroupFromEditor(oldName, newName)` -- used in 0 specs
+- `renameNDE(newName)` -- used in 0 specs
+- `renameObject(objectName, objectType, newObjectName)` -- used in 0 specs
+- `renameObject(objectName, objectTypeName, datasetName, newObjectName)` -- used in 0 specs
+- `renameObject(objectName, visualizationName, newObjectName)` -- used in 0 specs
+- `renameObjectFromSection(objectName, sectionName, newObjectName)` -- used in 0 specs
+- `renamePageByDoubleClickFromPageTitle(pageTitle, newPageTitle, chapterTitle)` -- used in 0 specs
+- `renamePageFromPageTitle(pageTitle, chapterTitle, newPageTitle)` -- used in 0 specs
+- `renamePanel(panel, stack, newPanel)` -- used in 0 specs
+- `renameSelectorbyDoubleClick(selectorTitle, newName)` -- used in 0 specs
+- `renameTextField(newName)` -- used in 0 specs
+- `renameVisualizationByContextMenu(visualizationName, newvisualizationName)` -- used in 0 specs
+- `renameVisualizationByDoubleClick(visualizationName, newVisualizationName)` -- used in 0 specs
+- `reorderColumnSet(columnSetName, desPosition, relColumnSetName, offsetX = 0, offsetY = 10)` -- used in 0 specs
+- `reOrderObjectsInColumnSet({ objectName1, columnSet1, objectName2, columnSet2, desPosition })` -- used in 0 specs
+- `reOrderObjectsInColumnSet(objectTypeName1, objectName1, columnSet1, objectTypeName2, objectName2, columnSet2, desPosition)` -- used in 0 specs
+- `replaceInTextBox(message)` -- used in 0 specs
+- `replaceObjectByName(objectName, objectType, objectNameToBeReplaced, objectTypeToBeReplaced)` -- used in 0 specs
+- `replaceObjectByNameInColumnSet(objectName, columnSet, objectNameToBeReplaced)` -- used in 0 specs
+- `replaceObjectWithinGrid(objectName, targetObject, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `replaceText({ elem, text })` -- used in 0 specs
+- `replaceTextboxText(textboxText)` -- used in 0 specs
+- `resetContextMenu(selectorTitle)` -- used in 0 specs
+- `resetContextMenuButton(visualizationName)` -- used in 0 specs
+- `resetRowsPerPage(value)` -- used in 0 specs
+- `resetToDefault(selectorTitle)` -- used in 0 specs
+- `resizeColumnByMovingBorder(colNum, pixels, direction, vizName)` -- used in 0 specs
+- `resizeContainerAndHoldMouse(containerName, direction, percentChangeH, percentChangeW = percentChangeH)` -- used in 0 specs
+- `resizeGroupAndHoldMouse(groupChildContainerName, direction, percentChangeH, percentChangeW = percentChangeH)` -- used in 0 specs
+- `retry(fn, retries = 3, delay = 100)` -- used in 0 specs
+- `revertThresholdColorBand()` -- used in 0 specs
+- `rightClickContainerAndDoCMAction(containerName, cmOption)` -- used in 0 specs
+- `rightClickOnDataset(datasetName)` -- used in 0 specs
+- `rightClickOnEditorPanel(objectName)` -- used in 0 specs
+- `rightClickOnElement(el)` -- used in 0 specs
+- `rightClickOnGridElement(objectName, visualizationName)` -- used in 0 specs
+- `rightClickOnHeader(objectName, visualizationName, offsetX = 0, offsetY = 0)` -- used in 0 specs
+- `rightClickOnHeader(objectName, visualizationName)` -- used in 0 specs
+- `rightClickWithJavaScript(element, offsetX = 0, offsetY = 0)` -- used in 0 specs
+- `rightMouseClickOnElements(elements, waitForLoadingDialog)` -- used in 0 specs
+- `rightMouseClickOnElementsbyOffSet(elements, offsetX, offsetY, waitForLoadingDialog)` -- used in 0 specs
+- `rotateGradient()` -- used in 0 specs
+- `safeCtrlClickElement(element)` -- used in 0 specs
+- `saveAFB()` -- used in 0 specs
+- `saveAndCloseAdvancedThresholdEditor()` -- used in 0 specs
+- `saveAndCloseMoreOptionsDialog()` -- used in 0 specs
+- `saveAndCloseSimThresholdEditor()` -- used in 0 specs
+- `saveAndCloseSortEditor()` -- used in 0 specs
+- `saveContextMenuOption()` -- used in 0 specs
+- `saveDataset()` -- used in 0 specs
+- `saveFilter()` -- used in 0 specs
+- `saveFormulaMetric()` -- used in 0 specs
+- `saveMetricEditorOpenFromEdit()` -- used in 0 specs
+- `saveQualification()` -- used in 0 specs
+- `scrollBackToTop()` -- used in 0 specs
+- `scrollToElementInDatasetPanel(objectName, objectTypeName, datasetName)` -- used in 0 specs
+- `scrollToGridCell(visualizationName, elementName)` -- used in 0 specs
+- `scrollToShadowAngleSetting()` -- used in 0 specs
+- `scrollToShadowSection(sectionType = 'angle')` -- used in 0 specs
+- `scrollUpInLeftBox()` -- used in 0 specs
+- `searchAndAddExistingDataset(datasetName)` -- used in 0 specs
+- `searchAndSelect(objectName)` -- used in 0 specs
+- `searchAndSelectNewObjectInReplaceObjectsEditor(searchKey, oriObject, newObject)` -- used in 0 specs
+- `searchBoxSelector(selectorTitle, searchPattern, elementName)` -- used in 0 specs
+- `searchBoxSelectorWithoutSelecting(selectorTitle, searchPattern)` -- used in 0 specs
+- `searchForObjectOnExistingObjectsDialog(keywords)` -- used in 0 specs
+- `searchInDropdownSelector(selectorTitle, searchPattern)` -- used in 0 specs
+- `searchObject(objectName)` -- used in 0 specs
+- `secondaryMenuOnEditorObject(objectName, objectType, firstMenu, secondaryMenu)` -- used in 0 specs
+- `select(groupName)` -- used in 0 specs
+- `selectAccessModeFromDropdown(buttonName)` -- used in 0 specs
+- `selectAdvancedColorBuiltInSwatch(color)` -- used in 0 specs
+- `selectAdvancedColorBuiltInSwatchByPosition(idx)` -- used in 0 specs
+- `selectAdvancedColorBuiltInSwatchReact(color)` -- used in 0 specs
+- `selectAdvancedColorPaletteColorFill()` -- used in 0 specs
+- `selectAdvancedColorPaletteMenu()` -- used in 0 specs
+- `selectAdvancedColorPaletteNoFill()` -- used in 0 specs
+- `selectAdvancedColorSwatchMenu()` -- used in 0 specs
+- `selectAdvancedColorSwatchNoFill()` -- used in 0 specs
+- `selectAdvancedColorThemeSwatchByPosition(idx)` -- used in 0 specs
+- `selectApplyToOptionFromThreeDotsMenu(optionName, orderNum)` -- used in 0 specs
+- `selectAttributeDisplayForms(selectorTitle, formNames)` -- used in 0 specs
+- `selectAttributeElementFromColumnContainer(elementName)` -- used in 0 specs
+- `selectAttributeFilterOperator(operatorName)` -- used in 0 specs
+- `selectAttributeForm(formName)` -- used in 0 specs
+- `selectBackgroundFillColorButton()` -- used in 0 specs
+- `selectButtonBorderStyle(style)` -- used in 0 specs
+- `selectButtonRadius(option)` -- used in 0 specs
+- `selectButtonSize(size)` -- used in 0 specs
+- `selectButtonTextFont(font)` -- used in 0 specs
+- `selectButtonTextFontStyle(style)` -- used in 0 specs
+- `selectCellAlign(align)` -- used in 0 specs
+- `selectCellBorderOrientation(option)` -- used in 0 specs
+- `selectCellBorderStyle(style)` -- used in 0 specs
+- `selectCellPadding(padding)` -- used in 0 specs
+- `selectColorByHex(hexValue)` -- used in 0 specs
+- `selectColorByName(colorName)` -- used in 0 specs
+- `selectColorByRGB(rgbValue)` -- used in 0 specs
+- `selectColumnSet(columnSet)` -- used in 0 specs
+- `selectConsumptionViewOption(option)` -- used in 0 specs
+- `selectContainerAlignment(alignment)` -- used in 0 specs
+- `selectContainerBodyFillColorButton()` -- used in 0 specs
+- `selectContainerBorderColorButton()` -- used in 0 specs
+- `selectContainerBorderStyle(style)` -- used in 0 specs
+- `selectContainerBorderStyleButton()` -- used in 0 specs
+- `selectContainerFillColorButton()` -- used in 0 specs
+- `selectContainerLayout(layout)` -- used in 0 specs
+- `selectContainerTitleBarFillColorButton()` -- used in 0 specs
+- `selectContainerTitleFillColorButton()` -- used in 0 specs
+- `selectContextMenuOptionByName(option)` -- used in 0 specs
+- `selectContextMenuOptionFromElement({ objectName, option, visualizationName })` -- used in 0 specs
+- `selectContextMenuOptionFromElement(objectName, option, visualizationName)` -- used in 0 specs
+- `selectContextMenuOptionFromElementByIndex(rowIndex, colIndex, option, visualizationName)` -- used in 0 specs
+- `selectContextMenuOptionFromElementWithHyperLink(objectName, option, visualizationName)` -- used in 0 specs
+- `selectContextMenuOptionFromHeader({ objectName, option, visualizationName })` -- used in 0 specs
+- `selectContextMenuOptionFromObjectinDZ(objectName, desZone, option)` -- used in 0 specs
+- `selectCreateParameterType(type)` -- used in 0 specs
+- `selectDisplayAttributeFormMode(formMode)` -- used in 0 specs
+- `selectDisplayForms(formNames)` -- used in 0 specs
+- `selectDropZonePanel(panelName)` -- used in 0 specs
+- `selectedGroupContextMenuAction(cmOption)` -- used in 0 specs
+- `selectElement(chartType, index)` -- used in 0 specs
+- `selectElement(reference)` -- used in 0 specs
+- `selectElementAndclickOnContextMenuOption(chartType, index, objectFunction)` -- used in 0 specs
+- `selectElementAndclickOnSecondaryContextMenuOption(chartType, index, objectFunction1, objectFunction2)` -- used in 0 specs
+- `selectElementInSearchBox(elementName)` -- used in 0 specs
+- `selectElementOnViz(objectName, vizName)` -- used in 0 specs
+- `selectElements(references)` -- used in 0 specs
+- `selectElementsInDropdown(selectorTitle, elements, skipOpeningPopup)` -- used in 0 specs
+- `selectElementsUsingShift(elements_1, elements_2, visualizationName)` -- used in 0 specs
+- `selectFilterOperator(operator)` -- used in 0 specs
+- `selectFilterOption(option)` -- used in 0 specs
+- `selectFontByFontName(fontName)` -- used in 0 specs
+- `selectFontColorByColorName(colorName)` -- used in 0 specs
+- `selectFontSizeBySizeNumber(sizeNum)` -- used in 0 specs
+- `selectFromDropdownReact(option)` -- used in 0 specs
+- `selectFromGridELDropdownReact(option)` -- used in 0 specs
+- `selectFromLinkBarAttributeMetricSelector(option)` -- used in 0 specs
+- `selectGridColumns(columnSet)` -- used in 0 specs
+- `selectGridColumnsFit(fit)` -- used in 0 specs
+- `selectGridColumnsFitTarget(target)` -- used in 0 specs
+- `selectGridPadding(padding)` -- used in 0 specs
+- `selectGridRowsFit(fit)` -- used in 0 specs
+- `selectGridSegment(option)` -- used in 0 specs
+- `selectGridStyle(style)` -- used in 0 specs
+- `selectGridTemplateColor(color)` -- used in 0 specs
+- `selectGridTemplateStyle(style)` -- used in 0 specs
+- `selectGroup(groupName)` -- used in 0 specs
+- `selectHideShowNullZerosOption(Option)` -- used in 0 specs
+- `selectHorizontalLinesColorButton()` -- used in 0 specs
+- `selectHorizontalLinesStyleButton()` -- used in 0 specs
+- `selectImageSize(sizeOption)` -- used in 0 specs
+- `selectInListOrNotInList(buttonName)` -- used in 0 specs
+- `selectItemInParameterContextMenu(menuItem, parameterName)` -- used in 0 specs
+- `selectKeyDPOption(option)` -- used in 0 specs
+- `selectLayoutStyle(style)` -- used in 0 specs
+- `selectLineEndArrow(arrowOption)` -- used in 0 specs
+- `selectLineShapeColorButton()` -- used in 0 specs
+- `selectLineStartArrow(arrowOption)` -- used in 0 specs
+- `selectLineStyle(style)` -- used in 0 specs
+- `selectMetricFilterOperatorByRank(operatorName)` -- used in 0 specs
+- `selectMetricFilterOperatorByValue(operatorName)` -- used in 0 specs
+- `selectMultipleElements(elements, visualizationName)` -- used in 0 specs
+- `selectMultipleElementsByPartialValue(elementPartialValue, objectName, visualizationName)` -- used in 0 specs
+- `selectMultipleElementsWithHyperLink(elements, objectName, visualizationName)` -- used in 0 specs
+- `selectMultipleEncodedGridCells(elements, visualizationName)` -- used in 0 specs
+- `selectMultipleGridCells(elements, visualizationName)` -- used in 0 specs
+- `selectMultiplePagesUsingControlOrShiftToDoOperation(key, pageList, chapterTitle, contextMenuOption)` -- used in 0 specs
+- `selectNfCurrencyPositionFromDropdown(position)` -- used in 0 specs
+- `selectNfCurrencySymbolFromDropdown(symbol)` -- used in 0 specs
+- `selectNfNegativeForm(form, inRed)` -- used in 0 specs
+- `selectNfValueFormatFromDropdown(format)` -- used in 0 specs
+- `selectNumberFormatFromDropdown(numberFormat)` -- used in 0 specs
+- `selectObjectFromBasedOnDropdown(elementName)` -- used in 0 specs
+- `selectOptimizedForOption(option)` -- used in 0 specs
+- `selectOptionAttributeFromDropdown(elementName)` -- used in 0 specs
+- `selectOptionFromContextMenu(menuOption)` -- used in 0 specs
+- `selectOptionFromDataReplaceDropdownMenu(optionName)` -- used in 0 specs
+- `selectOptionSample()` -- used in 0 specs
+- `selectorCMAction(selector, cmOption)` -- used in 0 specs
+- `selectOuterBorderColorByColorName(colorName)` -- used in 0 specs
+- `selectOuterBorderOptionByIndexNumber(indexNum)` -- used in 0 specs
+- `selectParameterFromBasedOnDropdown(elementName)` -- used in 0 specs
+- `selectParameterObjectFromPullDown(parameterObject)` -- used in 0 specs
+- `selectPolygonSlides(sides)` -- used in 0 specs
+- `selectQuickSymbolByIndexNumber(index)` -- used in 0 specs
+- `selectRowsAndColumnsFillColorButton()` -- used in 0 specs
+- `selectRowsOrColumns(menuOption)` -- used in 0 specs
+- `selectSecondaryOptionInMenuForThresholdConditions(secondaryOp, orderNum)` -- used in 0 specs
+- `selectShadowColorByName(colorName)` -- used in 0 specs
+- `selectShapeBorderStyleFromDropdown(style)` -- used in 0 specs
+- `selectShapeFillColorButton()` -- used in 0 specs
+- `selectSimpleThresholdBasedOnObject(objectName)` -- used in 0 specs
+- `selectSimpleThresholdBasedOnOption(optionName)` -- used in 0 specs
+- `selectSimpleThresholdBreakByObject(objectName)` -- used in 0 specs
+- `selectSimpleThresholdColorBand(colorBandName)` -- used in 0 specs
+- `selectSimpleThresholdImageBand(imageBandName)` -- used in 0 specs
+- `selectSortIconsFromElement(objectType, objectName, visualizationName)` -- used in 0 specs
+- `selectSortWithinAttribute(objectType, objectName, sortType, sortAttr)` -- used in 0 specs
+- `selectSubtotalBackgroundFillColorButton()` -- used in 0 specs
+- `selectSubtotalCellAlign(align)` -- used in 0 specs
+- `selectSubtotalHorizontalLinesColorButton()` -- used in 0 specs
+- `selectSubtotalHorizontalLinesStyleButton()` -- used in 0 specs
+- `selectSubtotalSameAs()` -- used in 0 specs
+- `selectSubtotalTextAlign(align)` -- used in 0 specs
+- `selectSubtotalTextFont(font)` -- used in 0 specs
+- `selectSubtotalTextFontBold()` -- used in 0 specs
+- `selectSubtotalTextFontColorButton()` -- used in 0 specs
+- `selectSubtotalTextFontItalic()` -- used in 0 specs
+- `selectSubtotalTextFontSize(size)` -- used in 0 specs
+- `selectSubtotalTextFontStrikethrough()` -- used in 0 specs
+- `selectSubtotalTextFontUnderline()` -- used in 0 specs
+- `selectSubtotalVerticalLinesColorButton()` -- used in 0 specs
+- `selectSubtotalVerticalLinesStyleButton()` -- used in 0 specs
+- `selectSubtotalWrapTextCheckbox()` -- used in 0 specs
+- `selectSurveysAsTargets()` -- used in 0 specs
+- `selectTarget(menuOption)` -- used in 0 specs
+- `selectTargetFilterFromWithinSelector(trgtFilterNames, selectorTitle)` -- used in 0 specs
+- `selectTargetForSelectorContextMenu(selectorTitle, targets)` -- used in 0 specs
+- `selectTargetPanelStackFromWithinSelector(panelStacks, selectorTitle)` -- used in 0 specs
+- `selectTargets(trgtFilterNames, trgtVizNames)` -- used in 0 specs
+- `selectTargetsFromWithinSelector(trgtFilterNames, trgtVizNames, selectorTitle)` -- used in 0 specs
+- `selectTextAlign(align)` -- used in 0 specs
+- `selectTextFontBold()` -- used in 0 specs
+- `selectTextFontColorButton()` -- used in 0 specs
+- `selectTextFontItalic()` -- used in 0 specs
+- `selectTextFontSize(size)` -- used in 0 specs
+- `selectTextFontSizeStepDown()` -- used in 0 specs
+- `selectTextFontSizeStepUp()` -- used in 0 specs
+- `selectTextFontStrikethrough()` -- used in 0 specs
+- `selectTextFontUnderline()` -- used in 0 specs
+- `selectTitleAlignment(alignment)` -- used in 0 specs
+- `selectTitleFillColorButton()` -- used in 0 specs
+- `selectTitleOption(option)` -- used in 0 specs
+- `selectTxnContextMenuOption(option)` -- used in 0 specs
+- `selectValueList(list)` -- used in 0 specs
+- `selectVerticalAlign(align)` -- used in 0 specs
+- `selectVerticalLinesColorButton()` -- used in 0 specs
+- `selectVerticalLinesStyleButton()` -- used in 0 specs
+- `selectViz(vizName)` -- used in 0 specs
+- `selectVizContainer(visualizationName)` -- used in 0 specs
+- `selectWrapTextCheckbox()` -- used in 0 specs
+- `setAdvancedColorPaletteHex(hex)` -- used in 0 specs
+- `setAdvancedColorPaletteWheel(x, y)` -- used in 0 specs
+- `setAfterSubmissionMessage(value)` -- used in 0 specs
+- `setAlignmentInSectionItem(sectionName, label, option)` -- used in 0 specs
+- `setArrangement(option)` -- used in 0 specs
+- `setAttributeDesc(newDesc)` -- used in 0 specs
+- `setAttributeFormDefinition(formula)` -- used in 0 specs
+- `setBackgroundColor(colorName)` -- used in 0 specs
+- `setButtonAlias(alias)` -- used in 0 specs
+- `setButtonLabelOption(option)` -- used in 0 specs
+- `setColorByHex(hexValue)` -- used in 0 specs
+- `setColorByRGB(rgbValue)` -- used in 0 specs
+- `setColorBySaturationClick(saturation = 50, brightness = 50)` -- used in 0 specs
+- `setColorInSectionItem(sectionName, label, color)` -- used in 0 specs
+- `setColorPaletteHex(hex)` -- used in 0 specs
+- `setColorPaletteRGB(r, g, b, a = null)` -- used in 0 specs
+- `setColumnSizeFixedInches(inches)` -- used in 0 specs
+- `setCustomInstructionsText(id, txt)` -- used in 0 specs
+- `setCustomPageSize(width, height)` -- used in 0 specs
+- `setDataSource(visualizationName, gridSourceName)` -- used in 0 specs
+- `setDataSourceForCompoundOrAg(containerName, columnSet, dataSource)` -- used in 0 specs
+- `setDisplayAttributeFormNames(option, submitAndClose)` -- used in 0 specs
+- `setElementsSelectioninPopupList(elementsList)` -- used in 0 specs
+- `setExportButtonOption(option)` -- used in 0 specs
+- `setFillColor(colorName)` -- used in 0 specs
+- `setFillColorOpacity(opacity)` -- used in 0 specs
+- `setFixedInches(inches, elInchesInput)` -- used in 0 specs
+- `setFormulaMetricName(newName)` -- used in 0 specs
+- `setFunctionsSearchKey(fnString)` -- used in 0 specs
+- `setGradientEndColor(color)` -- used in 0 specs
+- `setGradientStartColor(color)` -- used in 0 specs
+- `setGridColumnsFitFixedInches()` -- used in 0 specs
+- `setGridRowsFitFixedInches()` -- used in 0 specs
+- `setHueByValue(hueValue)` -- used in 0 specs
+- `setImageBackground(imageUrl, size = '')` -- used in 0 specs
+- `setImageContainersPicture(imageUrl, visualizationName)` -- used in 0 specs
+- `setImageUrl(imageUrl)` -- used in 0 specs
+- `setMetricDefinition(formula)` -- used in 0 specs
+- `setMetricDesc(newDesc)` -- used in 0 specs
+- `setMetricNameOpenFromEdit(newName)` -- used in 0 specs
+- `setMicrochartFillColor(colorName)` -- used in 0 specs
+- `setNoFillColor()` -- used in 0 specs
+- `setNumberInputInSectionItem(sectionName, label, value)` -- used in 0 specs
+- `setOpacityPercentage(value)` -- used in 0 specs
+- `setPaddingValue(value)` -- used in 0 specs
+- `setParameterSelectorInputValueByIndex(idx, value)` -- used in 0 specs
+- `setParameterSelectorInputValueByName(name, value)` -- used in 0 specs
+- `setParameterSliderSelectorValue(selectorTitle, value)` -- used in 0 specs
+- `setRadiusInSectionItem(sectionName, label, option)` -- used in 0 specs
+- `setRadiusValue(value)` -- used in 0 specs
+- `setRowSizeFixedInches(inches)` -- used in 0 specs
+- `setSelectorOptionInSectionItem(sectionName, label, style)` -- used in 0 specs
+- `setShadowAngleValue(value)` -- used in 0 specs
+- `setShadowBlurValue(value)` -- used in 0 specs
+- `setShadowDistanceValue(value)` -- used in 0 specs
+- `setShadowFillCapacityValue(value)` -- used in 0 specs
+- `setSubtotalTextFontSize()` -- used in 0 specs
+- `setTextFontSize(size)` -- used in 0 specs
+- `shortcutMetricOptionCalculationExists(objectName, calculationMetric, index)` -- used in 0 specs
+- `shortcutMetricOptionRankExists(objectName, rank)` -- used in 0 specs
+- `showDataForSelectedDatasetAndObject(objectName, datasetName)` -- used in 0 specs
+- `showFormatPanel()` -- used in 0 specs
+- `showHiddenObject(objectName, objectType)` -- used in 0 specs
+- `showHiddenObjects(objectNameList)` -- used in 0 specs
+- `showTotal()` -- used in 0 specs
+- `simpleSort(objectName, sortOrder)` -- used in 0 specs
+- `singleClickOnImageContainer(waitType, visualizationName)` -- used in 0 specs
+- `singleClickOnTextContainer(waitType, containerName)` -- used in 0 specs
+- `singleClickOnTextContainer(waitType)` -- used in 0 specs
+- `singleDropdownSelector(selectorTitle, elementName)` -- used in 0 specs
+- `slideRadiusSlider(xOffset = 10)` -- used in 0 specs
+- `slideShadowAngleSlider(xOffset = 10)` -- used in 0 specs
+- `slideShadowBlurSlider(xOffset = 10)` -- used in 0 specs
+- `slideShadowDistanceSlider(xOffset = 10)` -- used in 0 specs
+- `sortAscending(objectName, visualizationName)` -- used in 0 specs
+- `sortAscendingFromDropZone(objectName)` -- used in 0 specs
+- `sortAscendingFromViz({ objectName, visualizationName })` -- used in 0 specs
+- `sortDescending({ objectName, visualizationName = 'Visualization 1' })` -- used in 0 specs
+- `sortDescending(objectName, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `sortDescending(objectName, visualizationName)` -- used in 0 specs
+- `sortDescendingFromDropZone(objectName)` -- used in 0 specs
+- `sortDescendingFromViz({ objectName, visualizationName })` -- used in 0 specs
+- `sortMetric({ order })` -- used in 0 specs
+- `sortMetricFromDropZone({ objectName, order })` -- used in 0 specs
+- `sortWithinAttribute(objectName, visualizationName, sortAttribute)` -- used in 0 specs
+- `sortWithinAttributeFromDropZone({ objectName, sortAttr })` -- used in 0 specs
+- `storeContainerRect(containerNames)` -- used in 0 specs
+- `swapContainer(containerName)` -- used in 0 specs
+- `switchAdvToSimThresholdWithApply()` -- used in 0 specs
+- `switchAdvToSimThresholdWithClear()` -- used in 0 specs
+- `switchDatasetsTab()` -- used in 0 specs
+- `switchFormatPanel(name)` -- used in 0 specs
+- `switchFormulaEditor()` -- used in 0 specs
+- `switchMetricSelectorType(selectorTitle, type)` -- used in 0 specs
+- `switchModeInSimpleMetricEditor(modeName)` -- used in 0 specs
+- `switchPanelByArrow(arrow, stack)` -- used in 0 specs
+- `switchRowColumnInSortEditor(buttonName)` -- used in 0 specs
+- `switchSimpleThresholdsType(thresholdsType)` -- used in 0 specs
+- `switchSimpleThresholdsTypeI18N(thresholdsType)` -- used in 0 specs
+- `switchSimToAdvThresholdWithApply()` -- used in 0 specs
+- `switchSimToAdvThresholdWithClear()` -- used in 0 specs
+- `switchToAllObjectsTab()` -- used in 0 specs
+- `switchToEditorPanel()` -- used in 0 specs
+- `switchToGeneralSettingsTab()` -- used in 0 specs
+- `switchToGridTab()` -- used in 0 specs
+- `switchToHtmlTextAndInput(inputText)` -- used in 0 specs
+- `switchToInReportTab()` -- used in 0 specs
+- `switchToSearchTab()` -- used in 0 specs
+- `switchToTab(tabName, waitLoading = true)` -- used in 0 specs
+- `switchToTextAndFormSection()` -- used in 0 specs
+- `switchToTextFormatTab()` -- used in 0 specs
+- `switchToTitleAndContainerSection()` -- used in 0 specs
+- `switchToTitleContainerTab()` -- used in 0 specs
+- `switchToTransactionOptionsSection()` -- used in 0 specs
+- `textFontSizeInputValue()` -- used in 0 specs
+- `timeFolderElements()` -- used in 0 specs
+- `toggleChapter(chapterTitle)` -- used in 0 specs
+- `toggleDPSpots()` -- used in 0 specs
+- `toggleDynamicSelectionIcon(selectorTitle)` -- used in 0 specs
+- `toggleFormatPanelFromToolbar()` -- used in 0 specs
+- `toggleMultipleSelection(selectorTitle)` -- used in 0 specs
+- `toggleMultipleSelectionforSelectedSelector()` -- used in 0 specs
+- `toggleNfThousandSeparator()` -- used in 0 specs
+- `toggleOptionsForColumnsHeader(Option)` -- used in 0 specs
+- `toggleOptionsForRowsHeader(Option)` -- used in 0 specs
+- `toggleShowHeaders()` -- used in 0 specs
+- `toggleShowTotalsFromAttribute(objectName, visualizationName, subtotalOptions, waitForLoadingDialog = true)` -- used in 0 specs
+- `toggleShowTotalsFromMetric(objectName, visualizationName, waitForLoadingDialog = true)` -- used in 0 specs
+- `toggleTitleBar()` -- used in 0 specs
+- `toggleTitleButtons()` -- used in 0 specs
+- `toggleTitles()` -- used in 0 specs
+- `toggleTxnTypeOnFormatPanel(label, isPause)` -- used in 0 specs
+- `toggleViewSelected()` -- used in 0 specs
+- `typeAndInput(text)` -- used in 0 specs
+- `typeDateValueInput(date)` -- used in 0 specs
+- `typeOnSearchBox(text)` -- used in 0 specs
+- `TypePositionInFormatPanel(number)` -- used in 0 specs
+- `typeSearchKey(searchKey)` -- used in 0 specs
+- `typeValueInput(text)` -- used in 0 specs
+- `uncheck()` -- used in 0 specs
+- `ungroupElements(objectName, visualizationName, groupName)` -- used in 0 specs
+- `ungroupElements2(objectName, visualizationName, groupName)` -- used in 0 specs
+- `unsetCurrentSelectorFilter()` -- used in 0 specs
+- `unsetSelectorFilter(selectorTitle)` -- used in 0 specs
+- `updateAndSaveNumberFormat(objectName, visualizationName, updateNumberFormatFunction, datasetName)` -- used in 0 specs
+- `uploadImageBackground(filePath, size = 'Fill Canvas')` -- used in 0 specs
+- `uploadImageFile(filePath)` -- used in 0 specs
+- `verifyAlignment(containerNameList, alignOption)` -- used in 0 specs
+- `verifyCheckedSecondaryContextMenu(secondaryOption)` -- used in 0 specs
+- `verifyCircle()` -- used in 0 specs
+- `verifyContainerSize(containerName, percent, direction)` -- used in 0 specs
+- `verifyDistribute(containerNameList, distributeOption)` -- used in 0 specs
+- `verifyEllipse()` -- used in 0 specs
+- `verifyGridCellOpacity(opacity)` -- used in 0 specs
+- `verifyGroupPosition(position, containerName)` -- used in 0 specs
+- `verifyHeightAndWidth()` -- used in 0 specs
+- `verifyLineDirection(expectedDirection)` -- used in 0 specs
+- `verifyLineEndArrow(endArrow)` -- used in 0 specs
+- `verifyLineStartArrow(startArrow)` -- used in 0 specs
+- `verifyMaximizeBtnInHighContrast(visualizationName)` -- used in 0 specs
+- `verifyOuterBorderWidth(expectWidth)` -- used in 0 specs
+- `verifyPolygonSlides(slides)` -- used in 0 specs
+- `verifyRestoreBtnInHighContrast(visualizationName)` -- used in 0 specs
+- `verifyRightTriangleDirection(direction)` -- used in 0 specs
+- `verifySnapGuide(lines, status)` -- used in 0 specs
+- `verifyTextBoxVeriticalAlignment(expectedType)` -- used in 0 specs
+- `verifyTooltipLocation(content, selectorName)` -- used in 0 specs
+- `verifyTriangleDirection(direction)` -- used in 0 specs
+- `verifyVeriticalAlignment(expectedType)` -- used in 0 specs
+- `verifyXAndY()` -- used in 0 specs
+- `waitForInfoWindowSpinnerGone(timeout = 10000)` -- used in 0 specs
+- `waitForInvalidUrlDialog(timeout = 5000)` -- used in 0 specs
+- `waitForLoadingFinish()` -- used in 0 specs
+
+## Source Coverage
+
+- `pageObjects/authoring/**/*.js`
+- `specs/regression/config/dashboardAuthoring/**/*.{ts,js}`
+- `specs/regression/dashboardAuthoring/**/*.{ts,js}`
+- `specs/regression/dashboardAuthoring/adjustRadiusSpacingAndShadow/**/*.{ts,js}`
+- `specs/regression/dashboardAuthoring/copyGroup/**/*.{ts,js}`
+- `specs/regression/dashboardAuthoring/datasetPanel/**/*.{ts,js}`
+- `specs/regression/dashboardAuthoring/resizeGroup/**/*.{ts,js}`

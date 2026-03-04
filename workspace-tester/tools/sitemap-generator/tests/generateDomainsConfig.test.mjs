@@ -39,6 +39,9 @@ test('buildDomainsConfig -- creates one config entry per domain', () => {
   assert.deepEqual(Object.keys(out.domains), ['aibot', 'filter']);
   assert.deepEqual(out.domains.aibot.pomPaths, ['pageObjects/aibot']);
   assert.ok(out.domains.aibot.specPaths.includes('specs/regression/aibotChatPanel'));
+  assert.equal(out.domains.autoAnswers, undefined);
+  assert.equal(out.domains.aibot.displayName, 'Bot (AI Bot)');
+  assert.ok(Array.isArray(out.domains.aibot.keyEntryPoints));
 });
 
 test('collectRemoteTree -- discovers domains and regression subfolders from gh api tree', async () => {
@@ -127,6 +130,8 @@ test('main -- supports --repo-url with auth/list/write dependency injection', as
   assert.equal(outputFile, '/tmp/domains.json');
   const parsed = JSON.parse(outputContent);
   assert.deepEqual(Object.keys(parsed.domains), ['filter']);
+  assert.equal(parsed.domains.filter.displayName, 'Filter');
+  assert.ok(Array.isArray(parsed.domains.filter.keyEntryPoints));
 });
 
 test('main -- fails on remote crawl errors before writing output', async () => {
@@ -167,4 +172,6 @@ test('main -- generates config from local repo tree', async () => {
   assert.ok(parsed.domains.filter);
   assert.ok(parsed.domains.autoAnswers);
   assert.ok(parsed.domains.filter.specPaths.some((v) => v.includes('filterSearch')));
+  assert.equal(parsed.domains.autoAnswers.displayName, 'AutoAnswers (AI Assistant)');
+  assert.ok(Array.isArray(parsed.domains.filter.keyEntryPoints));
 });

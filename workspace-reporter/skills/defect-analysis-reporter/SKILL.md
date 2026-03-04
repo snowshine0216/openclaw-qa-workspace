@@ -112,3 +112,103 @@ Output target:
   - projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md
 Generate the report following all sections in order.
 ```
+
+---
+
+## Testing Plan Output (Single-Issue Mode)
+
+Used by **Phase 5** of the single-defect-analysis workflow.
+
+### Inputs
+
+| Field | Source |
+|-------|--------|
+| Issue summary, description, priority, labels | `context/issue.json` |
+| PR diff analysis | `context/prs/<PR_ID>_impact.md` |
+| FC risk level + score | Computed in Phase -1.4 |
+| Affected domains | Inferred from PR diff file paths |
+
+### Output
+
+Single file placed at:
+```
+projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md
+```
+
+### Required Sections (in order)
+
+#### Section 1: Issue Header
+```markdown
+# Testing Plan: <ISSUE_KEY>
+
+## Issue
+**Summary:** <summary>
+**Priority:** <priority> | **Status:** <status>
+**Labels:** <labels (comma-separated)>
+**Risk Level:** <HIGH | MEDIUM | LOW> (Score: <N>)
+```
+
+#### Section 2: Fix Summary
+```markdown
+## Fix Summary
+<PR URL(s) if available, or "No fix PR linked.">
+**Affected Domains:** <comma-separated domains>
+**Fix Risk Analysis:** <≤30-word summary per PR — files changed, complexity, regression risk>
+```
+
+#### Section 3: FC Verification Steps *(required)*
+```markdown
+## 1. FC Verification Steps
+
+> Mandatory smoke steps to verify the reported bug is fixed.
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| FC-01 | <specific reproduction step from issue description> | <what proves the fix works> |
+| FC-02 | <second step if multi-step repro> | <expected> |
+
+**Pre-conditions:**
+- Environment: <staging URL / feature flag if known, or "standard staging">
+- Test data: <if specified in issue, or "none">
+```
+
+**Rules for FC steps:**
+- Derive steps directly from issue description / repro steps.
+- If repro steps are vague, generate the most likely steps based on issue summary + affected component.
+- Minimum 1 step, maximum 5 steps. Each step must be independently executable.
+- Expected result must be a binary observable outcome (pass / fail).
+
+#### Section 4: Exploratory Testing *(conditional)*
+
+> Include **only if** `risk_level` is `MEDIUM` or `HIGH`. Omit entirely for `LOW` risk.
+
+```markdown
+## 2. Exploratory Testing
+
+### 2.1 Regression Areas
+
+Based on the fix scope, the following adjacent areas carry regression risk:
+
+| Area | Risk | Suggested Exploration |
+|------|------|-----------------------|
+| <component / domain name> | <High | Medium> | <1-sentence exploration hint> |
+
+### 2.2 Exploratory Charter
+
+- **Target:** <Feature area — e.g. "CalendarFilter reset behaviour on Library page">
+- **Focus:** <What to look for — e.g. "UI glitches after date selection, incorrect filter counts">
+- **Time-box:** <15 min for MEDIUM | 30 min for HIGH>
+- **Heuristics:** CRUD, boundary values, error paths, state transitions
+```
+
+**Rules for exploratory section:**
+- Regression areas must come from the PR diff domain map (`affected_domains`).
+- Charter must be scoped to one specific user journey, not an entire feature.
+- Time-box must be stated explicitly.
+
+### Functional Guidelines
+
+1. **Never fabricate repro steps.** If the issue description has no repro steps, write "Steps derived from issue summary" and explain your inference.
+2. **Never leave `<placeholders>` in the final output.** Every field must be populated.
+3. **FC steps must be atomic.** Each step = one user action in the browser.
+4. **If no PR is linked:** omit PR URL row in Fix Summary. Add note: "No fix PR found — FC steps based on issue description only."

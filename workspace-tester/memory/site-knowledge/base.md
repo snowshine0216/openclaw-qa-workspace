@@ -1,674 +1,1011 @@
-# Site Knowledge: base
+# Site Knowledge: Base Domain
 
-> Components: 12
+## Overview
+
+- **Domain key:** `base`
+- **Components covered:** BaseAuthoring, BaseBotConfigTab, BaseComponent, BaseDialog, BaseFilter, BaseGrid, BaseLibrary, BasePage, BasePageDialog, BasePrompt, BaseVisualization, WebBasePage
+- **Spec files scanned:** 0
+- **POM files scanned:** 12
+
+## Components
 
 ### BaseAuthoring
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `MenuContainer` | `.mstrmojo-ui-Menu-item-container` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickMenuOptionInLevel({ level, option })` |
-| `clickMenuOptions({ firstOption, secondOption, thirdOption })` |
-
-**Sub-components**
-- getMenuContainer
-
----
+- **CSS root:** `.mstrmojo-ui-Menu-item-container`
+- **User-visible elements:**
+  - Menu Container (`.mstrmojo-ui-Menu-item-container`)
+- **Component actions:**
+  - `clickMenuOptionInLevel({ level, option })`
+  - `clickMenuOptions({ firstOption, secondOption, thirdOption })`
+- **Related components:** getMenuContainer
 
 ### BaseBotConfigTab
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `Tooltip` | `.mstr-ai-chatbot-Tooltip` | element |
-| `BotTitle` | `.mstrd-DossierTitle-segment` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `getTooltipFullText()` |
-| `getTooltipDisplayedText()` |
-| `waitForTooltipDisplayed()` |
-| `scrollToBottom()` |
-| `scrollToTop()` |
-| `resetInput({ elem })` |
-| `dismissFocus()` |
-
-**Sub-components**
-- getCurrentTabContainer
-
----
+- **CSS root:** `.mstrd-DossierTitle-segment`
+- **User-visible elements:**
+  - Bot Title (`.mstrd-DossierTitle-segment`)
+  - Tooltip (`.mstr-ai-chatbot-Tooltip`)
+- **Component actions:**
+  - `dismissFocus()`
+  - `getTooltipDisplayedText()`
+  - `getTooltipFullText()`
+  - `resetInput({ elem })`
+  - `scrollToBottom()`
+  - `scrollToTop()`
+  - `waitForTooltipDisplayed()`
+- **Related components:** getCurrentTabContainer
 
 ### BaseComponent
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `scrollIntoView(option)` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `scrollIntoView(option)`
+- **Related components:** _none_
 
 ### BaseDialog
-> Extends: `WebBasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `Dialog` | `.mstrDialogBone` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `apply()` |
-| `confirm()` |
-| `cancel()` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `.mstrDialogBone`
+- **User-visible elements:**
+  - Dialog (`.mstrDialogBone`)
+- **Component actions:**
+  - `apply()`
+  - `cancel()`
+  - `confirm()`
+- **Related components:** _none_
 
 ### BaseFilter
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `FilterMainPanel` | `.mstrd-FilterPanel` | element |
-| `SecondaryPanel` | `.mstrd-FilterDetailsPanel` | element |
-| `ContextMenu` | `.mstrd-FilterItemContextMenu-menu` | element |
-| `ErrorTooltip` | `.ant-tooltip-content` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `openSecondaryPanel(filterName)` |
-| `closeSecondaryPanel(filterName)` |
-| `openContextMenu(filterName)` |
-| `selectContextMenuOption(filterName, menuName)` |
-| `hoverOnCircularIcon(filterName)` |
-| `hoverOnFilterName(filterName)` |
-| `removeCapsuleByName({ filterName, capsuleName })` |
-| `isCapsuleExcluded({ filterName, capsuleName })` |
-| `isCapsuleHighlighted(filterName, capsuleName)` |
-| `capsuleCount(filterName)` |
-| `filterSelectionInfo(name)` |
-| `capsuleName(filterName, index = 0)` |
-| `isCapsulePresent({ filterName, capsuleName })` |
-| `isSecondaryPanelPresent()` |
-| `isCircularFilterIconPresent(filterName)` |
-| `isDotLineHighlighted(filterName)` |
-| `isResetOptionPresent()` |
-| `appliedFilterCount()` |
-| `isContextMenuOptionPresent(option)` |
-| `isContextMenuOptionDisabled(option)` |
-| `isContextMenuDotsPresent(filterName)` |
-| `isMendatoryIconByNameDisplayed(filterName)` |
-| `filterContainers()` |
-| `isGlobalFilterIconPresent(filterName)` |
-| `getFilterWarningText(name)` |
-| `getFilterErrorTooltipText()` |
-| `getFilterDateRangeWarningText(name)` |
-| `isFilterDateRangeWarningDisplayed(name)` |
-
-**Sub-components**
-- filterPanel
-- getFilterContainer
-- getSecondaryPanel
-
----
+- **CSS root:** `.mstrd-FilterPanel`
+- **User-visible elements:**
+  - Context Menu (`.mstrd-FilterItemContextMenu-menu`)
+  - Error Tooltip (`.ant-tooltip-content`)
+  - Filter Main Panel (`.mstrd-FilterPanel`)
+  - Secondary Panel (`.mstrd-FilterDetailsPanel`)
+- **Component actions:**
+  - `appliedFilterCount()`
+  - `capsuleCount(filterName)`
+  - `capsuleName(filterName, index = 0)`
+  - `closeSecondaryPanel(filterName)`
+  - `filterContainers()`
+  - `filterSelectionInfo(name)`
+  - `getFilterDateRangeWarningText(name)`
+  - `getFilterErrorTooltipText()`
+  - `getFilterWarningText(name)`
+  - `hoverOnCircularIcon(filterName)`
+  - `hoverOnFilterName(filterName)`
+  - `isCapsuleExcluded({ filterName, capsuleName })`
+  - `isCapsuleHighlighted(filterName, capsuleName)`
+  - `isCapsulePresent({ filterName, capsuleName })`
+  - `isCircularFilterIconPresent(filterName)`
+  - `isContextMenuDotsPresent(filterName)`
+  - `isContextMenuOptionDisabled(option)`
+  - `isContextMenuOptionPresent(option)`
+  - `isDotLineHighlighted(filterName)`
+  - `isFilterDateRangeWarningDisplayed(name)`
+  - `isGlobalFilterIconPresent(filterName)`
+  - `isMendatoryIconByNameDisplayed(filterName)`
+  - `isResetOptionPresent()`
+  - `isSecondaryPanelPresent()`
+  - `openContextMenu(filterName)`
+  - `openSecondaryPanel(filterName)`
+  - `removeCapsuleByName({ filterName, capsuleName })`
+  - `selectContextMenuOption(filterName, menuName)`
+- **Related components:** filterPanel, getFilterContainer, getSecondaryPanel
 
 ### BaseGrid
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `Grid` | `#table_UniqueReportID` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `clickCell(cell, index = 1)` |
-| `clickCellFromLocation(row, column)` |
-| `clickCellLink(link)` |
-| `selectContextMenuOnCell(cell, menuPaths)` |
-| `selectContextMenuOnCells(cells, menuPaths)` |
-| `getTableWidth()` |
-| `getColumnWidth(cellContent)` |
-| `getCellData(row, column)` |
-| `getOneRowData(row)` |
-| `getOneRowDataFromBottom(row)` |
-| `getCellCssValue(row, column, cssName)` |
-| `openContextMenu(cell)` |
-| `IsMenuPresentOnContextMenu(cell, menuPaths)` |
-| `waitForGridLoaded()` |
-| `getRowCount()` |
-| `isCellClickable(cell, index = 1)` |
-| `isCellDisplayed(name)` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `#table_UniqueReportID`
+- **User-visible elements:**
+  - Grid (`#table_UniqueReportID`)
+- **Component actions:**
+  - `clickCell(cell, index = 1)`
+  - `clickCellFromLocation(row, column)`
+  - `clickCellLink(link)`
+  - `getCellCssValue(row, column, cssName)`
+  - `getCellData(row, column)`
+  - `getColumnWidth(cellContent)`
+  - `getOneRowData(row)`
+  - `getOneRowDataFromBottom(row)`
+  - `getRowCount()`
+  - `getTableWidth()`
+  - `isCellClickable(cell, index = 1)`
+  - `isCellDisplayed(name)`
+  - `IsMenuPresentOnContextMenu(cell, menuPaths)`
+  - `openContextMenu(cell)`
+  - `selectContextMenuOnCell(cell, menuPaths)`
+  - `selectContextMenuOnCells(cells, menuPaths)`
+  - `waitForGridLoaded()`
+- **Related components:** _none_
 
 ### BaseLibrary
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `DossierListContainer` | `.ReactVirtualized__Grid` | element |
-| `DossierListContainerHeight` | `.ReactVirtualized__Grid__innerScrollContainer` | element |
-| `DossierContextMenu` | `.mstrd-ContextMenu` | element |
-| `ContextMenuDropdown` | `.ant-popover-inner-content` | element |
-| `DossierContextMenuMobile` | `.mstrd-ContextMenu-menu` | element |
-| `DossierSecondaryContextMenu` | `.ant-dropdown-menu.ant-dropdown-menu-sub` | dropdown |
-| `MultiSelectButton` | `.mstrd-SelectionModeNavItemContainer-icon` | dropdown |
-| `EmptyLibrary` | `.mstrd-EmptyLibrary` | element |
-| `ClearFilterButton` | `.mstrd-EmptyLibraryFromFilter-clear` | element |
-| `DeleteConfirmationWindow` | `.mstrd-MessageBox-main` | element |
-| `TitleElement` | `.mstrd-NavBarTitle > .mstrd-NavBarTitle-item.mstrd-NavBarTitle-item-active` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `getItemsCount()` |
-| `getLastItem()` |
-| `moveDossierIntoViewPort(name, owner = null)` |
-| `renderNextBlock(count)` |
-| `loadUntilRendered({ name, count = 0, attempt = 1, owner = null })` |
-| `scrollToBottom()` |
-| `scrollToTop()` |
-| `isDossierItemElementInViewport(dossierItemElem)` |
-| `openSortMenu()` |
-| `openCombinedModeSortMenu()` |
-| `quickSort()` |
-| `closeSortMenu()` |
-| `selectSortOption(option = 'Content Name')` |
-| `selectSortOrder(order)` |
-| `hoverQuickSort()` |
-| `hoverFilter()` |
-| `clickFilterIcon()` |
-| `closeFilterPanel()` |
-| `selectFilterOptionButton(option)` |
-| `clickFilterApply()` |
-| `clickFilterClearAll()` |
-| `clearFilters()` |
-| `isItemViewable(name, owner = null)` |
-| `currentSortOption()` |
-| `hoverOnDossierName(dossierName)` |
-| `confirmDelete()` |
-| `cancelDelete()` |
-| `title()` |
-| `itemInfo(name)` |
-| `itemSharedByTimeInfo(name)` |
-| `isItemCertified(name)` |
-| `isItemDocument(name)` |
-| `isCommentCountDisplayed(name)` |
-| `currentSortStatus()` |
-| `currentSortOrder()` |
-| `isSortMenuOpen()` |
-| `isDossierSelected()` |
-| `isEditIconDisplayedInContextMenu()` |
-| `isItemDisplayedInContextMenu(item)` |
-| `allItemList()` |
-| `lastItem()` |
-| `firstTwoItems()` |
-| `isDeleteWindowPresent()` |
-| `titleFont()` |
-| `getContextMenuList(isMobile = false)` |
-
-**Sub-components**
-- getDossierListContainer
-
----
+- **CSS root:** `.ReactVirtualized__Grid`
+- **User-visible elements:**
+  - Clear Filter Button (`.mstrd-EmptyLibraryFromFilter-clear`)
+  - Context Menu Dropdown (`.ant-popover-inner-content`)
+  - Delete Confirmation Window (`.mstrd-MessageBox-main`)
+  - Dossier Context Menu (`.mstrd-ContextMenu`)
+  - Dossier Context Menu Mobile (`.mstrd-ContextMenu-menu`)
+  - Dossier List Container (`.ReactVirtualized__Grid`)
+  - Dossier List Container Height (`.ReactVirtualized__Grid__innerScrollContainer`)
+  - Dossier Secondary Context Menu (`.ant-dropdown-menu.ant-dropdown-menu-sub`)
+  - Empty Content (`.mstrd-EmptyContent`)
+  - Empty Library (`.mstrd-EmptyLibrary`)
+  - Multi Select Button (`.mstrd-SelectionModeNavItemContainer-icon`)
+  - Title Element (`.mstrd-NavBarTitle > .mstrd-NavBarTitle-item.mstrd-NavBarTitle-item-active`)
+- **Component actions:**
+  - `allItemList()`
+  - `cancelDelete()`
+  - `clearFilters()`
+  - `clickFilterApply()`
+  - `clickFilterClearAll()`
+  - `clickFilterIcon()`
+  - `closeFilterPanel()`
+  - `closeSortMenu()`
+  - `confirmDelete()`
+  - `currentSortOption()`
+  - `currentSortOrder()`
+  - `currentSortStatus()`
+  - `firstTwoItems()`
+  - `getContextMenuList(isMobile = false)`
+  - `getItemsCount()`
+  - `getLastItem()`
+  - `hoverFilter()`
+  - `hoverOnDossierName(dossierName)`
+  - `hoverQuickSort()`
+  - `isCommentCountDisplayed(name)`
+  - `isDeleteWindowPresent()`
+  - `isDossierItemElementInViewport(dossierItemElem)`
+  - `isDossierSelected()`
+  - `isEditIconDisplayedInContextMenu()`
+  - `isItemCertified(name)`
+  - `isItemDisplayedInContextMenu(item)`
+  - `isItemDocument(name)`
+  - `isItemViewable(name, owner = null)`
+  - `isSortMenuOpen()`
+  - `itemInfo(name)`
+  - `itemSharedByTimeInfo(name)`
+  - `lastItem()`
+  - `loadUntilRendered({ name, count = 0, attempt = 1, owner = null })`
+  - `moveDossierIntoViewPort(name, owner = null)`
+  - `openCombinedModeSortMenu()`
+  - `openSortMenu()`
+  - `quickSort()`
+  - `renderNextBlock(count)`
+  - `scrollToBottom()`
+  - `scrollToTop()`
+  - `selectFilterOptionButton(option)`
+  - `selectSortOption(option = 'Content Name')`
+  - `selectSortOrder(order)`
+  - `title()`
+  - `titleFont()`
+- **Related components:** getDossierListContainer
 
 ### BasePage
-
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `MstrRoot` | `#mstrd-Root` | element |
-| `BackButton` | `.mstr-nav-icon.icon-backarrow_rsd` | element |
-| `TooltipContainer` | `[class*=tooltip-inner]` | element |
-| `MojoTooltip` | `.mstrmojo-Tooltip-content` | element |
-| `DocView` | `.mstrmojo-DocLayoutViewer-layout` | element |
-| `Tooltip` | `.ant-tooltip-inner` | element |
-| `TooltipText` | `.ant-tooltip-inner` | element |
-| `ErrorMessage` | `#mstrWeb_error .mstrAlertMessage` | element |
-| `AntDropdown` | `.ant-select-dropdown:not(.ant-select-dropdown-hidden)` | dropdown |
-| `MojoWait` | `.mojo-overlay-wait` | element |
-| `LoadingLabel` | `.mstrd-Loadable-icon` | element |
-| `ErrorDialogue` | `.mstrd-MessageBox` | element |
-| `MojoErrorDialogue` | `.mstrmojo-Editor.mstrmojo-alert.modal` | element |
-| `ProgressBar` | `.mstrd-progressBar` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `getCurrentPageByKey()` |
-| `getDocLayout()` |
-| `safeGetElement(target, desc, waitTime = this.DEFAULT_LOADING_TIMEOUT)` |
-| `viewErrorDetails()` |
-| `errorMessage()` |
-| `executeScript(...args)` |
-| `sleep(duration)` |
-| `wait(...condition)` |
-| `resizeWindow(width, height)` |
-| `getBrowserTabs()` |
-| `switchToWindow(tabInstance)` |
-| `currentURL()` |
-| `closeCurrentTab()` |
-| `switchToTab(tabIndex)` |
-| `switchToNewWindowWithUrl(url)` |
-| `switchToNewWindow()` |
-| `closeTab(index)` |
-| `closeAllTabs()` |
-| `closeAllSecondaryTabs()` |
-| `tabCount()` |
-| `waitDocumentToBeLoaded(checkDocumentLoaded = true)` |
-| `isWaitingPageDisplayed()` |
-| `waitPageLoading()` |
-| `activeElement()` |
-| `activeElementText()` |
-| `hideElement(el)` |
-| `fakeElementText(el, text = 'fakeText')` |
-| `getTitle(el)` |
-| `getInputValue(el)` |
-| `getInnerText(el)` |
-| `waitDataLoaded()` |
-| `waitPageRefresh()` |
-| `showElement(el)` |
-| `getLabelValue(el)` |
-| `getHeightValue(el)` |
-| `getFontFamily(el)` |
-| `getCSSProperty(el, property)` |
-| `dismissError()` |
-| `dismissErrorByText(text)` |
-| `waitForMojoError()` |
-| `waitForError()` |
-| `dismissMojoError()` |
-| `clickMojoErrorButton(text)` |
-| `clickErrorActionButton(buttonName)` |
-| `clickErrorActionButtonNoWait(buttonName)` |
-| `getI18NFormattedDate(day, month, year)` |
-| `setTextToClipboard(text)` |
-| `getI18NCalendarStartWeekDay()` |
-| `openCustomAppById({ id, dossier = false, check_flag = true })` |
-| `openDefaultApp()` |
-| `previousPage()` |
-| `input(keyword)` |
-| `enter()` |
-| `arrow(direction)` |
-| `delete()` |
-| `ctrlA()` |
-| `ctrlF()` |
-| `copy()` |
-| `paste()` |
-| `esc()` |
-| `space()` |
-| `tab(repeatTimes = 0)` |
-| `f6(loopCount = 1)` |
-| `home()` |
-| `end()` |
-| `ctrlHome()` |
-| `ctrlEnd()` |
-| `shiftTab(repeatTimes = 0)` |
-| `shiftEnter()` |
-| `navigateUpWithArrow(loopCount = 1)` |
-| `navigateUpUsingShiftArrow(loopCount)` |
-| `navigateDownWithArrow(loopCount = 1)` |
-| `navigateDownUsingShiftArrow(loopCount)` |
-| `navigateRightWithArrow(loopCount = 1)` |
-| `navigateLeftWithArrow(loopCount = 1)` |
-| `tabForward(loopCount = 1)` |
-| `tabBackward(loopCount = 1)` |
-| `tabToElement(elem, options = {})` |
-| `isFocused(elem)` |
-| `isFocusedElement(elem)` |
-| `arrowUp()` |
-| `arrowDown()` |
-| `arrowLeft()` |
-| `arrowRight()` |
-| `clickAndNoWait({ elem, offset = { x: 0, y: 0 } }, checkClickable = true)` |
-| `performClickAction({ type = 'pointer', button = 0, x = 0, y = 0 })` |
-| `clickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })` |
-| `clickByXYPositionNoWait({ elem, x, y })` |
-| `clickWithOffset({ elem, offset = { x: 0, y: 0 } })` |
-| `click({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` |
-| `clickOnElement(elem)` |
-| `clickByForce({ elem, offset = { x: 0, y: 0 } })` |
-| `clickByPresence({ elem, offset = { x: 0, y: 0 } })` |
-| `clickForSafari(elem)` |
-| `doubleClick({ elem, offset = { x: 0, y: 0 } })` |
-| `doubleClickOnElement(elem)` |
-| `ctrlClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` |
-| `moveAndClickByOffsetFromMultiElements({ elements, offset = { x: 0, y: 0 } })` |
-| `clear({ elem }, isPrompted = false)` |
-| `rightClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` |
-| `rightClickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })` |
-| `rightClickWithOffset({ elem, offset = { x: 0, y: 0 } })` |
-| `rightMouseClickOnElement(elem)` |
-| `hoverWithoutWait({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })` |
-| `hover({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })` |
-| `hoverMouseOnElement(elem)` |
-| `hoverMouseAndClickOnElement(element)` |
-| `hoverForICSTooltip({ elem, offset = { x: 0, y: 0 } })` |
-| `dismissPreloadDropdown({ elem, offset = { x: 0, y: 0 } })` |
-| `hoverWithoutPause({ elem, offset = { x: 0, y: 0 } })` |
-| `elemSupportsActionOnSafari(elem)` |
-| `hoverForSafari({ elem, offset = { x: 0, y: 0 } })` |
-| `multiSelectElements({ elem1, elem2 })` |
-| `shiftClick({ elem, offset = { x: 0, y: 0 } })` |
-| `multiSelectElementsUsingShift(headElement, tailElement)` |
-| `selectAll(elem)` |
-| `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` |
-| `dragAndDropForCondition({ fromElem, toElem })` |
-| `dragAndDropByInterval({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` |
-| `dragAndDropForSafari({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` |
-| `dragAndDropForAuthoring({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` |
-| `dragAndDropForAuthoringWithOffset({
-        fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 }, speedFactor = 1, })` |
-| `dragAndDropPixelByPixel(src_location, tar_location)` |
-| `dragAndDropByPixel(element, xPixels = 0, yPixels = 0, waitForLoadingDialog)` |
-| `releasePointer()` |
-| `getElementPositionOfScreen(elem, offset = { x: 0, y: 0 })` |
-| `typeKeyboard(keys)` |
-| `mouseClick(el, eventData)` |
-| `moveToElement(el, offset = { x: 0, y: 0 })` |
-| `moveToPosition({ x, y })` |
-| `getElementHeight(element)` |
-| `scrollDownToTargetOption(listContent, wholeList, item, pixel = 150)` |
-| `renameTextField(newName)` |
-| `scrollDown(elem, offset)` |
-| `scrollOnPage(toPosition)` |
-| `scrollPageToTop()` |
-| `scrollPageToBottom()` |
-| `waitForElementPresence(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementInvisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '', interval: undefined })` |
-| `waitForElementStaleness(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForTextPresentInElementValue(el, txt, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementClickable(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementEnabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementDisabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForDynamicElementLoading()` |
-| `waitForLibraryLoading()` |
-| `waitForItemLoading()` |
-| `waitForPageIndicatorInvisible()` |
-| `waitForCurtainDisappear()` |
-| `waitForCondition(conditionFunc, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementVisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementVisibleInTeams(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForEitherElemmentVisible(el1, el2, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementExsiting(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForTextAppearInElement(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForTextUpdated(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForElementAppearAndGone(el)` |
-| `waitForPageLoadByTitle(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForPageLoadByUrl(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForPendoToBeInitialized(options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` |
-| `waitForProcessorDisappear()` |
-| `waitForErrorMessage()` |
-| `tooltip()` |
-| `mojoTooltip()` |
-| `isTooltipDisplayed(tooltip)` |
-| `isErrorPresent()` |
-| `isErrorActionButtonPresent(buttonName)` |
-| `isMojoErrorPresent()` |
-| `errorTitle()` |
-| `showDetails()` |
-| `errorDetails()` |
-| `getBrowserData(script, domElement)` |
-| `dragMoveAndDrop(source, target)` |
-| `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog = false)` |
-| `clickOnElementByInjectingScript(element)` |
-| `isSelected(el, key = 'selected')` |
-| `isUnSelected(el, key = 'unselected')` |
-| `isChecked(el)` |
-| `isCollapsed(el)` |
-| `isOn(el)` |
-| `getSelected(els, key = 'selected')` |
-| `elemSupportsClickMethodOnSafari(elem)` |
-| `errorMsg()` |
-| `mojoErrorMsg()` |
-| `isDisabled(el)` |
-| `isAriaDisabled(el)` |
-| `isAriaReadOnly(el)` |
-| `isAriaChecked(el)` |
-| `isAiraSelected(el)` |
-| `isDisabledStatus(el)` |
-| `isHidden(el)` |
-| `isActive(el)` |
-| `isExpanded(el)` |
-| `isExisted(item, els, attribute = 'value')` |
-| `switchToNewWindowWithLink(link)` |
-| `waitForDownloadComplete(name, fileType)` |
-| `getClipboardText()` |
-| `moveToTopLeftCorner()` |
-| `clickTopLeftCorner()` |
-| `isElementVisible(element, timeout = this.DEFAULT_LOADING_TIMEOUT)` |
-| `isElementPresent(element)` |
-| `scrollIntoView(element, options = { block: 'nearest', inline: 'nearest', behavior: 'smooth' }, attributeName = 'class')` |
-| `setValueByJavaScript({ element, value, shouldEnter = false })` |
-| `setInputValue({ element, value})` |
-
-**Sub-components**
-- getCurrentPage
-- waitForPage
-- getWaitingPage
-- isWaitingPage
-- getPage
-- dossierPage
-- getErrorDialogMainContainer
-- getTooltipContainer
-
----
+- **CSS root:** `#mstrd-Root`
+- **User-visible elements:**
+  - Ant Dropdown (`.ant-select-dropdown:not(.ant-select-dropdown-hidden)`)
+  - Back Button (`.mstr-nav-icon.icon-backarrow_rsd`)
+  - Doc View (`.mstrmojo-DocLayoutViewer-layout`)
+  - Error Dialogue (`.mstrd-MessageBox`)
+  - Error Message (`#mstrWeb_error .mstrAlertMessage`)
+  - Loading Label (`.mstrd-Loadable-icon`)
+  - Mojo Error Dialogue (`.mstrmojo-Editor.mstrmojo-alert.modal`)
+  - Mojo Tooltip (`.mstrmojo-Tooltip-content`)
+  - Mojo Wait (`.mojo-overlay-wait`)
+  - Mstr Root (`#mstrd-Root`)
+  - Progress Bar (`.mstrd-progressBar`)
+  - Tooltip (`.ant-tooltip-inner`)
+  - Tooltip Container (`[class*=tooltip-inner]`)
+  - Tooltip Text (`.ant-tooltip-inner`)
+- **Component actions:**
+  - `activeElement()`
+  - `activeElementText()`
+  - `arrow(direction)`
+  - `arrowDown()`
+  - `arrowLeft()`
+  - `arrowRight()`
+  - `arrowUp()`
+  - `clear({ elem }, isPrompted = false)`
+  - `click({ elem, offset = { x: 0, y: 0 }, checkClickable = true })`
+  - `clickAndNoWait({ elem, offset = { x: 0, y: 0 } }, checkClickable = true)`
+  - `clickByForce({ elem, offset = { x: 0, y: 0 } })`
+  - `clickByPresence({ elem, offset = { x: 0, y: 0 } })`
+  - `clickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })`
+  - `clickByXYPositionNoWait({ elem, x, y })`
+  - `clickErrorActionButton(buttonName)`
+  - `clickErrorActionButtonNoWait(buttonName)`
+  - `clickForSafari(elem)`
+  - `clickMojoErrorButton(text)`
+  - `clickOnElement(elem)`
+  - `clickOnElementByInjectingScript(element)`
+  - `clickTopLeftCorner()`
+  - `clickWithOffset({ elem, offset = { x: 0, y: 0 } })`
+  - `closeAllSecondaryTabs()`
+  - `closeAllTabs()`
+  - `closeCurrentTab()`
+  - `closeTab(index)`
+  - `copy()`
+  - `ctrlA()`
+  - `ctrlClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })`
+  - `ctrlEnd()`
+  - `ctrlF()`
+  - `ctrlHome()`
+  - `currentURL()`
+  - `delete()`
+  - `dismissError()`
+  - `dismissErrorByText(text)`
+  - `dismissMojoError()`
+  - `dismissPreloadDropdown({ elem, offset = { x: 0, y: 0 } })`
+  - `doubleClick({ elem, offset = { x: 0, y: 0 } })`
+  - `doubleClickOnElement(elem)`
+  - `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })`
+  - `dragAndDropByInterval({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })`
+  - `dragAndDropByPixel(element, xPixels = 0, yPixels = 0, waitForLoadingDialog)`
+  - `dragAndDropForAuthoring({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })`
+  - `dragAndDropForAuthoringWithOffset({
+        fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 }, speedFactor = 1, })`
+  - `dragAndDropForCondition({ fromElem, toElem })`
+  - `dragAndDropForSafari({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })`
+  - `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog = false)`
+  - `dragAndDropPixelByPixel(src_location, tar_location)`
+  - `dragMoveAndDrop(source, target)`
+  - `elemSupportsActionOnSafari(elem)`
+  - `elemSupportsClickMethodOnSafari(elem)`
+  - `end()`
+  - `enter()`
+  - `errorDetails()`
+  - `errorMessage()`
+  - `errorMsg()`
+  - `errorTitle()`
+  - `esc()`
+  - `executeScript(...args)`
+  - `f6(loopCount = 1)`
+  - `fakeElementText(el, text = 'fakeText')`
+  - `getBrowserData(script, domElement)`
+  - `getBrowserTabs()`
+  - `getClipboardText()`
+  - `getCSSProperty(el, property)`
+  - `getCurrentPageByKey()`
+  - `getDocLayout()`
+  - `getElementHeight(element)`
+  - `getElementPositionOfScreen(elem, offset = { x: 0, y: 0 })`
+  - `getFontFamily(el)`
+  - `getHeightValue(el)`
+  - `getI18NCalendarStartWeekDay()`
+  - `getI18NFormattedDate(day, month, year)`
+  - `getInnerText(el)`
+  - `getInputValue(el)`
+  - `getLabelValue(el)`
+  - `getSelected(els, key = 'selected')`
+  - `getTitle(el)`
+  - `hideElement(el)`
+  - `home()`
+  - `hover({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })`
+  - `hoverForICSTooltip({ elem, offset = { x: 0, y: 0 } })`
+  - `hoverForSafari({ elem, offset = { x: 0, y: 0 } })`
+  - `hoverMouseAndClickOnElement(element)`
+  - `hoverMouseOnElement(elem)`
+  - `hoverWithoutPause({ elem, offset = { x: 0, y: 0 } })`
+  - `hoverWithoutWait({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })`
+  - `input(keyword)`
+  - `isActive(el)`
+  - `isAiraSelected(el)`
+  - `isAriaChecked(el)`
+  - `isAriaDisabled(el)`
+  - `isAriaReadOnly(el)`
+  - `isChecked(el)`
+  - `isCollapsed(el)`
+  - `isDisabled(el)`
+  - `isDisabledStatus(el)`
+  - `isElementPresent(element)`
+  - `isElementVisible(element, timeout = this.DEFAULT_LOADING_TIMEOUT)`
+  - `isErrorActionButtonPresent(buttonName)`
+  - `isErrorPresent()`
+  - `isExisted(item, els, attribute = 'value')`
+  - `isExpanded(el)`
+  - `isFocused(elem)`
+  - `isFocusedElement(elem)`
+  - `isHidden(el)`
+  - `isMojoErrorPresent()`
+  - `isOn(el)`
+  - `isSelected(el, key = 'selected')`
+  - `isTooltipDisplayed(tooltip)`
+  - `isUnSelected(el, key = 'unselected')`
+  - `isWaitingPageDisplayed()`
+  - `mojoErrorMsg()`
+  - `mojoTooltip()`
+  - `mouseClick(el, eventData)`
+  - `moveAndClickByOffsetFromMultiElements({ elements, offset = { x: 0, y: 0 } })`
+  - `moveToElement(el, offset = { x: 0, y: 0 })`
+  - `moveToPosition({ x, y })`
+  - `moveToTopLeftCorner()`
+  - `multiSelectElements({ elem1, elem2 })`
+  - `multiSelectElementsUsingShift(headElement, tailElement)`
+  - `navigateDownUsingShiftArrow(loopCount)`
+  - `navigateDownWithArrow(loopCount = 1)`
+  - `navigateLeftWithArrow(loopCount = 1)`
+  - `navigateRightWithArrow(loopCount = 1)`
+  - `navigateUpUsingShiftArrow(loopCount)`
+  - `navigateUpWithArrow(loopCount = 1)`
+  - `openCustomAppById({ id, dossier = false, check_flag = true })`
+  - `openDefaultApp()`
+  - `paste()`
+  - `performClickAction({ type = 'pointer', button = 0, x = 0, y = 0 })`
+  - `previousPage()`
+  - `releasePointer()`
+  - `renameTextField(newName)`
+  - `resizeWindow(width, height)`
+  - `rightClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })`
+  - `rightClickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })`
+  - `rightClickWithOffset({ elem, offset = { x: 0, y: 0 } })`
+  - `rightMouseClickOnElement(elem)`
+  - `safeGetElement(target, desc, waitTime = this.DEFAULT_LOADING_TIMEOUT)`
+  - `scrollDown(elem, offset)`
+  - `scrollDownToTargetOption(listContent, wholeList, item, pixel = 150)`
+  - `scrollIntoView(element, options = { block: 'nearest', inline: 'nearest', behavior: 'smooth' }, attributeName = 'class')`
+  - `scrollOnPage(toPosition)`
+  - `scrollPageToBottom()`
+  - `scrollPageToTop()`
+  - `selectAll(elem)`
+  - `setInputValue({ element, value})`
+  - `setTextToClipboard(text)`
+  - `setValueByJavaScript({ element, value, shouldEnter = false })`
+  - `shiftClick({ elem, offset = { x: 0, y: 0 } })`
+  - `shiftEnter()`
+  - `shiftTab(repeatTimes = 0)`
+  - `showDetails()`
+  - `showElement(el)`
+  - `sleep(duration)`
+  - `space()`
+  - `switchToNewWindow()`
+  - `switchToNewWindowWithLink(link)`
+  - `switchToNewWindowWithUrl(url)`
+  - `switchToTab(tabIndex)`
+  - `switchToWindow(tabInstance)`
+  - `tab(repeatTimes = 0)`
+  - `tabBackward(loopCount = 1)`
+  - `tabCount()`
+  - `tabForward(loopCount = 1)`
+  - `tabToElement(elem, options = {})`
+  - `tooltip()`
+  - `typeKeyboard(keys)`
+  - `viewErrorDetails()`
+  - `wait(...condition)`
+  - `waitDataLoaded()`
+  - `waitDocumentToBeLoaded(checkDocumentLoaded = true)`
+  - `waitForCondition(conditionFunc, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForCurtainDisappear()`
+  - `waitForDownloadComplete(name, fileType)`
+  - `waitForDynamicElementLoading()`
+  - `waitForEitherElemmentVisible(el1, el2, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementAppearAndGone(el)`
+  - `waitForElementClickable(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementDisabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementEnabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementExsiting(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementInvisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '', interval: undefined })`
+  - `waitForElementPresence(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementStaleness(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementVisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForElementVisibleInTeams(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForError()`
+  - `waitForErrorMessage()`
+  - `waitForItemLoading()`
+  - `waitForLibraryLoading()`
+  - `waitForMojoError()`
+  - `waitForPageIndicatorInvisible()`
+  - `waitForPageLoadByTitle(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForPageLoadByUrl(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForPendoToBeInitialized(options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForProcessorDisappear()`
+  - `waitForTextAppearInElement(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForTextPresentInElementValue(el, txt, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitForTextUpdated(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })`
+  - `waitPageLoading()`
+  - `waitPageRefresh()`
+- **Related components:** dossierPage, getCurrentPage, getErrorDialogMainContainer, getPage, getTooltipContainer, getWaitingPage, isWaitingPage, waitForPage
 
 ### BasePageDialog
-> Extends: `BaseComponent`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `confirm()` |
-| `cancel()` |
-| `close()` |
-| `isDialogPresent()` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `cancel()`
+  - `close()`
+  - `confirm()`
+  - `isDialogPresent()`
+- **Related components:** _none_
 
 ### BasePrompt
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| _none_ | | |
-
-**Actions**
-| Signature |
-|-----------|
-| `getPromptByName(promptName)` |
-| `waitForPromptDetail(promptName)` |
-| `selectPromptByIndex({ index, promptName })` |
-| `selectPromptByTitle(promptTitle)` |
-| `isAnswerRequired(index)` |
-| `errorMsg(promptElement)` |
-| `isErrorDisplayed(promptElement)` |
-| `getPromptsNumber()` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `_unknown_`
+- **User-visible elements:**
+  - _none_
+- **Component actions:**
+  - `errorMsg(promptElement)`
+  - `getPromptByName(promptName)`
+  - `getPromptsNumber()`
+  - `isAnswerRequired(index)`
+  - `isErrorDisplayed(promptElement)`
+  - `selectPromptByIndex({ index, promptName })`
+  - `selectPromptByTitle(promptTitle)`
+  - `waitForPromptDetail(promptName)`
+- **Related components:** _none_
 
 ### BaseVisualization
-> Extends: `BasePage`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `VizLoadingSpinner` | `.mstrd-LoadingIcon-content` | element |
-| `ViewFilterContainer` | `.mstrmojo-viz-fe-menu` | element |
-| `VizTooltipContainer` | `.vis-tooltip` | element |
-| `SettingMenu` | `.mstrmojo-ui-Menu-item-container` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `getContainerByTitleInCurrentPage(title)` |
-| `getContextMenuTitlesByLevel(level, pageBy = false)` |
-| `getViewFilterItemByIndex()` |
-| `clickNlgCopyBtn(title)` |
-| `checkNlgCopyBtnStatus(testCase, imageName, tolerance = 0.5)` |
-| `checkVizContainerMenu(testCase, imageName, tolerance = 0.5)` |
-| `checkVizContainerByTitle(vizTitle, testCase, imageName, tolerance = 0.5)` |
-| `restoreContainer(title)` |
-| `maximizeContainer(title)` |
-| `minimizeLegend(title)` |
-| `maximizeLegend(title)` |
-| `closeLegend(title)` |
-| `clickTopOfContextMenuForSafari()` |
-| `clickElmAndWait(elm)` |
-| `openContextMenu({ elem, offset, clickContextMenuWhenOpen = false })` |
-| `rightClickTitleBoxNoWait(title)` |
-| `clickContextMenu(el, prompted = false)` |
-| `clickMenuOptionInLevel({ level, option }, prompted = false)` |
-| `clickMenuButtonInLevel({ level, btnClass }, prompted = false)` |
-| `selectContextMenuOptions({
-            elem, offset, firstOption, secondOption, thirdOption, clickContextMenuWhenOpen = false, isIconSelector = false, }, prompted = false)` |
-| `openVisualizationMenu({ elem, offset })` |
-| `selectVisualizationMenuOptions({ elem, offset, firstOption, secondOption, thirdOption })` |
-| `selectExportToPDFOnVisualizationMenu(title)` |
-| `editContextualLink(title)` |
-| `createContextualLink(title)` |
-| `selectAddToInsightsOnVisualizationMenu(title)` |
-| `openMenuOnVisualization(title)` |
-| `openLinkEditorOnContainer(elem)` |
-| `openMenuOnVisualizationWithouWait(title)` |
-| `selectExportOnVisualizationMenu(title)` |
-| `selectExportToExcelOnVisualizationMenu(title)` |
-| `selectExportToGoogleSheetsOnVisualizationMenu(title)` |
-| `selectExportGridDataOnVisualizationMenu(title)` |
-| `clickVisualizationTitle(title)` |
-| `clickVisualizationTitleContainer(title)` |
-| `selectShowDataOnVisualizationMenu(title)` |
-| `selectAlertOnVisualizationMenu(title)` |
-| `selectDeleteOnVisualizationMenu(title)` |
-| `selectAlertOnVisualizationMenu(title, name = 'Alert')` |
-| `isAlertOnVisualizationMenuPresent(title)` |
-| `closeContextMenu(title)` |
-| `openViewFilterContainer(title)` |
-| `clearViewFilter(itemText)` |
-| `hoverViewFilter(itemText)` |
-| `closeViewFilterContainer(title)` |
-| `vizCount()` |
-| `isVizEmpty(title)` |
-| `getVizErrorContent(title)` |
-| `getErrCount(errorMsg)` |
-| `isContextMenuOptionPresent({ level, option })` |
-| `isContextMenuItemSelected(option, level = 0)` |
-| `isViewFilterPresent(title)` |
-| `isViewFilterItemPresent(itemText)` |
-| `vizTooltip()` |
-| `vizDossierLinkingTooltip()` |
-| `linkToTargetByGridToolTip()` |
-| `waitForDownloadComplete({ name, fileType, vizName })` |
-| `valueOfToolTip(vizElementFinder)` |
-| `isSingleVisualizationExportSpinnerPresent(title)` |
-| `isVisualizationExportTypePresent(type)` |
-| `getViewFilterItemText()` |
-| `isVizDisplayed(title)` |
-| `hideContainer(title)` |
-| `showContainer(title)` |
-| `hideSubPanelContainer(title)` |
-| `showSubPanelContainer(title)` |
-| `isContainerSelected(title)` |
-| `isContainerBorderHidden(title)` |
-| `changeVizType(title, vizCategory, vizType)` |
-| `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog)` |
-| `clickTitleBarButtonInConsumption(visualizationName, buttonName)` |
-| `hoverTitleBarButton(visualizationName, buttonName)` |
-
-**Sub-components**
-- dossierPage
-- getContainer
-- getCurrentPage
-- getViewFilterContainer
-- getVizTooltipContainer
-- getVisualizationExportTypeContainer
-- getNlgContainer
-- getContainerByTitleInCurrentPage
-- getVizLinkingTooltipContainer
-- getSubPanelContainer
-
----
+- **CSS root:** `.mstrmojo-viz-fe-menu`
+- **User-visible elements:**
+  - Setting Menu (`.mstrmojo-ui-Menu-item-container`)
+  - View Filter Container (`.mstrmojo-viz-fe-menu`)
+  - Viz Loading Spinner (`.mstrd-LoadingIcon-content`)
+  - Viz Tooltip Container (`.vis-tooltip`)
+- **Component actions:**
+  - `changeVizType(title, vizCategory, vizType)`
+  - `checkNlgCopyBtnStatus(testCase, imageName, tolerance = 0.5)`
+  - `checkVizContainerByTitle(vizTitle, testCase, imageName, tolerance = 0.5)`
+  - `checkVizContainerMenu(testCase, imageName, tolerance = 0.5)`
+  - `clearViewFilter(itemText)`
+  - `clickContextMenu(el, prompted = false)`
+  - `clickElmAndWait(elm)`
+  - `clickMenuButtonInLevel({ level, btnClass }, prompted = false)`
+  - `clickMenuOptionInLevel({ level, option }, prompted = false)`
+  - `clickNlgCopyBtn(title)`
+  - `clickTitleBarButtonInConsumption(visualizationName, buttonName)`
+  - `clickTopOfContextMenuForSafari()`
+  - `clickVisualizationTitle(title)`
+  - `clickVisualizationTitleContainer(title)`
+  - `closeContextMenu(title)`
+  - `closeLegend(title)`
+  - `closeViewFilterContainer(title)`
+  - `createContextualLink(title)`
+  - `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog)`
+  - `editContextualLink(title)`
+  - `getContainerByTitleInCurrentPage(title)`
+  - `getContextMenuTitlesByLevel(level, pageBy = false)`
+  - `getErrCount(errorMsg)`
+  - `getViewFilterItemByIndex()`
+  - `getViewFilterItemText()`
+  - `getVizErrorContent(title)`
+  - `hideContainer(title)`
+  - `hideSubPanelContainer(title)`
+  - `hoverTitleBarButton(visualizationName, buttonName)`
+  - `hoverViewFilter(itemText)`
+  - `isAlertOnVisualizationMenuPresent(title)`
+  - `isContainerBorderHidden(title)`
+  - `isContainerSelected(title)`
+  - `isContextMenuItemSelected(option, level = 0)`
+  - `isContextMenuOptionPresent({ level, option })`
+  - `isSingleVisualizationExportSpinnerPresent(title)`
+  - `isViewFilterItemPresent(itemText)`
+  - `isViewFilterPresent(title)`
+  - `isVisualizationExportTypePresent(type)`
+  - `isVizDisplayed(title)`
+  - `isVizEmpty(title)`
+  - `linkToTargetByGridToolTip()`
+  - `maximizeContainer(title)`
+  - `maximizeLegend(title)`
+  - `minimizeLegend(title)`
+  - `openContextMenu({ elem, offset, clickContextMenuWhenOpen = false })`
+  - `openLinkEditorOnContainer(elem)`
+  - `openMenuOnVisualization(title)`
+  - `openMenuOnVisualizationWithouWait(title)`
+  - `openViewFilterContainer(title)`
+  - `openVisualizationMenu({ elem, offset })`
+  - `restoreContainer(title)`
+  - `rightClickTitleBoxNoWait(title)`
+  - `selectAddToInsightsOnVisualizationMenu(title)`
+  - `selectAlertOnVisualizationMenu(title, name = 'Alert')`
+  - `selectAlertOnVisualizationMenu(title)`
+  - `selectContextMenuOptions({
+            elem, offset, firstOption, secondOption, thirdOption, clickContextMenuWhenOpen = false, isIconSelector = false, }, prompted = false)`
+  - `selectDeleteOnVisualizationMenu(title)`
+  - `selectExportGridDataOnVisualizationMenu(title)`
+  - `selectExportOnVisualizationMenu(title)`
+  - `selectExportToExcelOnVisualizationMenu(title)`
+  - `selectExportToGoogleSheetsOnVisualizationMenu(title)`
+  - `selectExportToPDFOnVisualizationMenu(title)`
+  - `selectShowDataOnVisualizationMenu(title)`
+  - `selectVisualizationMenuOptions({ elem, offset, firstOption, secondOption, thirdOption })`
+  - `showContainer(title)`
+  - `showSubPanelContainer(title)`
+  - `valueOfToolTip(vizElementFinder)`
+  - `vizCount()`
+  - `vizDossierLinkingTooltip()`
+  - `vizTooltip()`
+  - `waitForDownloadComplete({ name, fileType, vizName })`
+- **Related components:** dossierPage, getContainer, getContainerByTitleInCurrentPage, getCurrentPage, getNlgContainer, getSubPanelContainer, getViewFilterContainer, getVisualizationExportTypeContainer, getVizLinkingTooltipContainer, getVizTooltipContainer
 
 ### WebBasePage
-> Extends: `BasePage`
+- **CSS root:** `#mstrLogo`
+- **User-visible elements:**
+  - Mstr Logo (`#mstrLogo`)
+  - Web Wait Curtain (`#mstrWeb_waitCurtain`)
+- **Component actions:**
+  - `_openAll(folders)`
+  - `backToFolder()`
+  - `backToHomePage()`
+  - `clickBackArrow()`
+  - `clickPath(path)`
+  - `closeAppPopupsByClickBlankPath()`
+  - `continueLicenseWarning()`
+  - `getAccountName()`
+  - `getAlertTitle()`
+  - `getCurrentPageName()`
+  - `getFolderItem(itemName)`
+  - `hoverOnMSTRLogo()`
+  - `is404Page()`
+  - `isAlertDisplayed()`
+  - `isExportStatusPagePresent()`
+  - `openByPath(path)`
+  - `openHomePage()`
+  - `paths()`
+  - `projectStatus()`
+  - `scrollWebPageToBottom()`
+  - `title()`
+  - `waitAllToBeLoaded()`
+  - `waitForAlertAppear()`
+  - `waitForWebCurtainDisappear()`
+  - `webMovetoElement(el, offset = { x: 0, y: 0 })`
+- **Related components:** getFolderContainer, getWebPage, waitPage
 
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `MstrLogo` | `#mstrLogo` | element |
-| `WebWaitCurtain` | `#mstrWeb_waitCurtain` | element |
+## Common Workflows (from spec.ts)
 
-**Actions**
-| Signature |
-|-----------|
-| `waitForAlertAppear()` |
-| `getAccountName()` |
-| `getFolderItem(itemName)` |
-| `openHomePage()` |
-| `continueLicenseWarning()` |
-| `openByPath(path)` |
-| `_openAll(folders)` |
-| `webMovetoElement(el, offset = { x: 0, y: 0 })` |
-| `backToFolder()` |
-| `clickBackArrow()` |
-| `backToHomePage()` |
-| `closeAppPopupsByClickBlankPath()` |
-| `clickPath(path)` |
-| `title()` |
-| `paths()` |
-| `scrollWebPageToBottom()` |
-| `waitForWebCurtainDisappear()` |
-| `waitAllToBeLoaded()` |
-| `isExportStatusPagePresent()` |
-| `getCurrentPageName()` |
-| `getAlertTitle()` |
-| `isAlertDisplayed()` |
-| `is404Page()` |
-| `projectStatus()` |
-| `hoverOnMSTRLogo()` |
+1. _none_
 
-**Sub-components**
-- getFolderContainer
-- getWebPage
-- waitPage
+## Common Elements (from POM + spec.ts)
+
+1. Tooltip -- frequency: 2
+2. Ant Dropdown -- frequency: 1
+3. Back Button -- frequency: 1
+4. Bot Title -- frequency: 1
+5. Clear Filter Button -- frequency: 1
+6. Context Menu -- frequency: 1
+7. Context Menu Dropdown -- frequency: 1
+8. Delete Confirmation Window -- frequency: 1
+9. Dialog -- frequency: 1
+10. Doc View -- frequency: 1
+11. Dossier Context Menu -- frequency: 1
+12. Dossier Context Menu Mobile -- frequency: 1
+13. Dossier List Container -- frequency: 1
+14. Dossier List Container Height -- frequency: 1
+15. Dossier Secondary Context Menu -- frequency: 1
+16. Empty Content -- frequency: 1
+17. Empty Library -- frequency: 1
+18. Error Dialogue -- frequency: 1
+19. Error Message -- frequency: 1
+20. Error Tooltip -- frequency: 1
+21. Filter Main Panel -- frequency: 1
+22. Grid -- frequency: 1
+23. Loading Label -- frequency: 1
+24. Menu Container -- frequency: 1
+25. Mojo Error Dialogue -- frequency: 1
+26. Mojo Tooltip -- frequency: 1
+27. Mojo Wait -- frequency: 1
+28. Mstr Logo -- frequency: 1
+29. Mstr Root -- frequency: 1
+30. Multi Select Button -- frequency: 1
+31. Progress Bar -- frequency: 1
+32. Secondary Panel -- frequency: 1
+33. Setting Menu -- frequency: 1
+34. Title Element -- frequency: 1
+35. Tooltip Container -- frequency: 1
+36. Tooltip Text -- frequency: 1
+37. View Filter Container -- frequency: 1
+38. Viz Loading Spinner -- frequency: 1
+39. Viz Tooltip Container -- frequency: 1
+40. Web Wait Curtain -- frequency: 1
+
+## Key Actions
+
+- `_openAll(folders)` -- used in 0 specs
+- `activeElement()` -- used in 0 specs
+- `activeElementText()` -- used in 0 specs
+- `allItemList()` -- used in 0 specs
+- `appliedFilterCount()` -- used in 0 specs
+- `apply()` -- used in 0 specs
+- `arrow(direction)` -- used in 0 specs
+- `arrowDown()` -- used in 0 specs
+- `arrowLeft()` -- used in 0 specs
+- `arrowRight()` -- used in 0 specs
+- `arrowUp()` -- used in 0 specs
+- `backToFolder()` -- used in 0 specs
+- `backToHomePage()` -- used in 0 specs
+- `cancel()` -- used in 0 specs
+- `cancelDelete()` -- used in 0 specs
+- `capsuleCount(filterName)` -- used in 0 specs
+- `capsuleName(filterName, index = 0)` -- used in 0 specs
+- `changeVizType(title, vizCategory, vizType)` -- used in 0 specs
+- `checkNlgCopyBtnStatus(testCase, imageName, tolerance = 0.5)` -- used in 0 specs
+- `checkVizContainerByTitle(vizTitle, testCase, imageName, tolerance = 0.5)` -- used in 0 specs
+- `checkVizContainerMenu(testCase, imageName, tolerance = 0.5)` -- used in 0 specs
+- `clear({ elem }, isPrompted = false)` -- used in 0 specs
+- `clearFilters()` -- used in 0 specs
+- `clearViewFilter(itemText)` -- used in 0 specs
+- `click({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` -- used in 0 specs
+- `clickAndNoWait({ elem, offset = { x: 0, y: 0 } }, checkClickable = true)` -- used in 0 specs
+- `clickBackArrow()` -- used in 0 specs
+- `clickByForce({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `clickByPresence({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `clickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })` -- used in 0 specs
+- `clickByXYPositionNoWait({ elem, x, y })` -- used in 0 specs
+- `clickCell(cell, index = 1)` -- used in 0 specs
+- `clickCellFromLocation(row, column)` -- used in 0 specs
+- `clickCellLink(link)` -- used in 0 specs
+- `clickContextMenu(el, prompted = false)` -- used in 0 specs
+- `clickElmAndWait(elm)` -- used in 0 specs
+- `clickErrorActionButton(buttonName)` -- used in 0 specs
+- `clickErrorActionButtonNoWait(buttonName)` -- used in 0 specs
+- `clickFilterApply()` -- used in 0 specs
+- `clickFilterClearAll()` -- used in 0 specs
+- `clickFilterIcon()` -- used in 0 specs
+- `clickForSafari(elem)` -- used in 0 specs
+- `clickMenuButtonInLevel({ level, btnClass }, prompted = false)` -- used in 0 specs
+- `clickMenuOptionInLevel({ level, option }, prompted = false)` -- used in 0 specs
+- `clickMenuOptionInLevel({ level, option })` -- used in 0 specs
+- `clickMenuOptions({ firstOption, secondOption, thirdOption })` -- used in 0 specs
+- `clickMojoErrorButton(text)` -- used in 0 specs
+- `clickNlgCopyBtn(title)` -- used in 0 specs
+- `clickOnElement(elem)` -- used in 0 specs
+- `clickOnElementByInjectingScript(element)` -- used in 0 specs
+- `clickPath(path)` -- used in 0 specs
+- `clickTitleBarButtonInConsumption(visualizationName, buttonName)` -- used in 0 specs
+- `clickTopLeftCorner()` -- used in 0 specs
+- `clickTopOfContextMenuForSafari()` -- used in 0 specs
+- `clickVisualizationTitle(title)` -- used in 0 specs
+- `clickVisualizationTitleContainer(title)` -- used in 0 specs
+- `clickWithOffset({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `close()` -- used in 0 specs
+- `closeAllSecondaryTabs()` -- used in 0 specs
+- `closeAllTabs()` -- used in 0 specs
+- `closeAppPopupsByClickBlankPath()` -- used in 0 specs
+- `closeContextMenu(title)` -- used in 0 specs
+- `closeCurrentTab()` -- used in 0 specs
+- `closeFilterPanel()` -- used in 0 specs
+- `closeLegend(title)` -- used in 0 specs
+- `closeSecondaryPanel(filterName)` -- used in 0 specs
+- `closeSortMenu()` -- used in 0 specs
+- `closeTab(index)` -- used in 0 specs
+- `closeViewFilterContainer(title)` -- used in 0 specs
+- `confirm()` -- used in 0 specs
+- `confirmDelete()` -- used in 0 specs
+- `continueLicenseWarning()` -- used in 0 specs
+- `copy()` -- used in 0 specs
+- `createContextualLink(title)` -- used in 0 specs
+- `ctrlA()` -- used in 0 specs
+- `ctrlClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` -- used in 0 specs
+- `ctrlEnd()` -- used in 0 specs
+- `ctrlF()` -- used in 0 specs
+- `ctrlHome()` -- used in 0 specs
+- `currentSortOption()` -- used in 0 specs
+- `currentSortOrder()` -- used in 0 specs
+- `currentSortStatus()` -- used in 0 specs
+- `currentURL()` -- used in 0 specs
+- `delete()` -- used in 0 specs
+- `dismissError()` -- used in 0 specs
+- `dismissErrorByText(text)` -- used in 0 specs
+- `dismissFocus()` -- used in 0 specs
+- `dismissMojoError()` -- used in 0 specs
+- `dismissPreloadDropdown({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `doubleClick({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `doubleClickOnElement(elem)` -- used in 0 specs
+- `dragAndDrop({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` -- used in 0 specs
+- `dragAndDropByInterval({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` -- used in 0 specs
+- `dragAndDropByPixel(element, xPixels = 0, yPixels = 0, waitForLoadingDialog)` -- used in 0 specs
+- `dragAndDropForAuthoring({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` -- used in 0 specs
+- `dragAndDropForAuthoringWithOffset({
+        fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 }, speedFactor = 1, })` -- used in 0 specs
+- `dragAndDropForCondition({ fromElem, toElem })` -- used in 0 specs
+- `dragAndDropForSafari({ fromElem, fromOffset = { x: 0, y: 0 }, toElem, toOffset = { x: 0, y: 0 } })` -- used in 0 specs
+- `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog = false)` -- used in 0 specs
+- `dragAndDropObjectWithExtraMove(movingElement, targetElement, moveX = 0, moveY = 0, waitForLoadingDialog)` -- used in 0 specs
+- `dragAndDropPixelByPixel(src_location, tar_location)` -- used in 0 specs
+- `dragMoveAndDrop(source, target)` -- used in 0 specs
+- `editContextualLink(title)` -- used in 0 specs
+- `elemSupportsActionOnSafari(elem)` -- used in 0 specs
+- `elemSupportsClickMethodOnSafari(elem)` -- used in 0 specs
+- `end()` -- used in 0 specs
+- `enter()` -- used in 0 specs
+- `errorDetails()` -- used in 0 specs
+- `errorMessage()` -- used in 0 specs
+- `errorMsg()` -- used in 0 specs
+- `errorMsg(promptElement)` -- used in 0 specs
+- `errorTitle()` -- used in 0 specs
+- `esc()` -- used in 0 specs
+- `executeScript(...args)` -- used in 0 specs
+- `f6(loopCount = 1)` -- used in 0 specs
+- `fakeElementText(el, text = 'fakeText')` -- used in 0 specs
+- `filterContainers()` -- used in 0 specs
+- `filterSelectionInfo(name)` -- used in 0 specs
+- `firstTwoItems()` -- used in 0 specs
+- `getAccountName()` -- used in 0 specs
+- `getAlertTitle()` -- used in 0 specs
+- `getBrowserData(script, domElement)` -- used in 0 specs
+- `getBrowserTabs()` -- used in 0 specs
+- `getCellCssValue(row, column, cssName)` -- used in 0 specs
+- `getCellData(row, column)` -- used in 0 specs
+- `getClipboardText()` -- used in 0 specs
+- `getColumnWidth(cellContent)` -- used in 0 specs
+- `getContainerByTitleInCurrentPage(title)` -- used in 0 specs
+- `getContextMenuList(isMobile = false)` -- used in 0 specs
+- `getContextMenuTitlesByLevel(level, pageBy = false)` -- used in 0 specs
+- `getCSSProperty(el, property)` -- used in 0 specs
+- `getCurrentPageByKey()` -- used in 0 specs
+- `getCurrentPageName()` -- used in 0 specs
+- `getDocLayout()` -- used in 0 specs
+- `getElementHeight(element)` -- used in 0 specs
+- `getElementPositionOfScreen(elem, offset = { x: 0, y: 0 })` -- used in 0 specs
+- `getErrCount(errorMsg)` -- used in 0 specs
+- `getFilterDateRangeWarningText(name)` -- used in 0 specs
+- `getFilterErrorTooltipText()` -- used in 0 specs
+- `getFilterWarningText(name)` -- used in 0 specs
+- `getFolderItem(itemName)` -- used in 0 specs
+- `getFontFamily(el)` -- used in 0 specs
+- `getHeightValue(el)` -- used in 0 specs
+- `getI18NCalendarStartWeekDay()` -- used in 0 specs
+- `getI18NFormattedDate(day, month, year)` -- used in 0 specs
+- `getInnerText(el)` -- used in 0 specs
+- `getInputValue(el)` -- used in 0 specs
+- `getItemsCount()` -- used in 0 specs
+- `getLabelValue(el)` -- used in 0 specs
+- `getLastItem()` -- used in 0 specs
+- `getOneRowData(row)` -- used in 0 specs
+- `getOneRowDataFromBottom(row)` -- used in 0 specs
+- `getPromptByName(promptName)` -- used in 0 specs
+- `getPromptsNumber()` -- used in 0 specs
+- `getRowCount()` -- used in 0 specs
+- `getSelected(els, key = 'selected')` -- used in 0 specs
+- `getTableWidth()` -- used in 0 specs
+- `getTitle(el)` -- used in 0 specs
+- `getTooltipDisplayedText()` -- used in 0 specs
+- `getTooltipFullText()` -- used in 0 specs
+- `getViewFilterItemByIndex()` -- used in 0 specs
+- `getViewFilterItemText()` -- used in 0 specs
+- `getVizErrorContent(title)` -- used in 0 specs
+- `hideContainer(title)` -- used in 0 specs
+- `hideElement(el)` -- used in 0 specs
+- `hideSubPanelContainer(title)` -- used in 0 specs
+- `home()` -- used in 0 specs
+- `hover({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })` -- used in 0 specs
+- `hoverFilter()` -- used in 0 specs
+- `hoverForICSTooltip({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `hoverForSafari({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `hoverMouseAndClickOnElement(element)` -- used in 0 specs
+- `hoverMouseOnElement(elem)` -- used in 0 specs
+- `hoverOnCircularIcon(filterName)` -- used in 0 specs
+- `hoverOnDossierName(dossierName)` -- used in 0 specs
+- `hoverOnFilterName(filterName)` -- used in 0 specs
+- `hoverOnMSTRLogo()` -- used in 0 specs
+- `hoverQuickSort()` -- used in 0 specs
+- `hoverTitleBarButton(visualizationName, buttonName)` -- used in 0 specs
+- `hoverViewFilter(itemText)` -- used in 0 specs
+- `hoverWithoutPause({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `hoverWithoutWait({ elem, offset = { x: 0, y: 0 }, useBrowserActionForSafari = false })` -- used in 0 specs
+- `input(keyword)` -- used in 0 specs
+- `is404Page()` -- used in 0 specs
+- `isActive(el)` -- used in 0 specs
+- `isAiraSelected(el)` -- used in 0 specs
+- `isAlertDisplayed()` -- used in 0 specs
+- `isAlertOnVisualizationMenuPresent(title)` -- used in 0 specs
+- `isAnswerRequired(index)` -- used in 0 specs
+- `isAriaChecked(el)` -- used in 0 specs
+- `isAriaDisabled(el)` -- used in 0 specs
+- `isAriaReadOnly(el)` -- used in 0 specs
+- `isCapsuleExcluded({ filterName, capsuleName })` -- used in 0 specs
+- `isCapsuleHighlighted(filterName, capsuleName)` -- used in 0 specs
+- `isCapsulePresent({ filterName, capsuleName })` -- used in 0 specs
+- `isCellClickable(cell, index = 1)` -- used in 0 specs
+- `isCellDisplayed(name)` -- used in 0 specs
+- `isChecked(el)` -- used in 0 specs
+- `isCircularFilterIconPresent(filterName)` -- used in 0 specs
+- `isCollapsed(el)` -- used in 0 specs
+- `isCommentCountDisplayed(name)` -- used in 0 specs
+- `isContainerBorderHidden(title)` -- used in 0 specs
+- `isContainerSelected(title)` -- used in 0 specs
+- `isContextMenuDotsPresent(filterName)` -- used in 0 specs
+- `isContextMenuItemSelected(option, level = 0)` -- used in 0 specs
+- `isContextMenuOptionDisabled(option)` -- used in 0 specs
+- `isContextMenuOptionPresent({ level, option })` -- used in 0 specs
+- `isContextMenuOptionPresent(option)` -- used in 0 specs
+- `isDeleteWindowPresent()` -- used in 0 specs
+- `isDialogPresent()` -- used in 0 specs
+- `isDisabled(el)` -- used in 0 specs
+- `isDisabledStatus(el)` -- used in 0 specs
+- `isDossierItemElementInViewport(dossierItemElem)` -- used in 0 specs
+- `isDossierSelected()` -- used in 0 specs
+- `isDotLineHighlighted(filterName)` -- used in 0 specs
+- `isEditIconDisplayedInContextMenu()` -- used in 0 specs
+- `isElementPresent(element)` -- used in 0 specs
+- `isElementVisible(element, timeout = this.DEFAULT_LOADING_TIMEOUT)` -- used in 0 specs
+- `isErrorActionButtonPresent(buttonName)` -- used in 0 specs
+- `isErrorDisplayed(promptElement)` -- used in 0 specs
+- `isErrorPresent()` -- used in 0 specs
+- `isExisted(item, els, attribute = 'value')` -- used in 0 specs
+- `isExpanded(el)` -- used in 0 specs
+- `isExportStatusPagePresent()` -- used in 0 specs
+- `isFilterDateRangeWarningDisplayed(name)` -- used in 0 specs
+- `isFocused(elem)` -- used in 0 specs
+- `isFocusedElement(elem)` -- used in 0 specs
+- `isGlobalFilterIconPresent(filterName)` -- used in 0 specs
+- `isHidden(el)` -- used in 0 specs
+- `isItemCertified(name)` -- used in 0 specs
+- `isItemDisplayedInContextMenu(item)` -- used in 0 specs
+- `isItemDocument(name)` -- used in 0 specs
+- `isItemViewable(name, owner = null)` -- used in 0 specs
+- `isMendatoryIconByNameDisplayed(filterName)` -- used in 0 specs
+- `IsMenuPresentOnContextMenu(cell, menuPaths)` -- used in 0 specs
+- `isMojoErrorPresent()` -- used in 0 specs
+- `isOn(el)` -- used in 0 specs
+- `isResetOptionPresent()` -- used in 0 specs
+- `isSecondaryPanelPresent()` -- used in 0 specs
+- `isSelected(el, key = 'selected')` -- used in 0 specs
+- `isSingleVisualizationExportSpinnerPresent(title)` -- used in 0 specs
+- `isSortMenuOpen()` -- used in 0 specs
+- `isTooltipDisplayed(tooltip)` -- used in 0 specs
+- `isUnSelected(el, key = 'unselected')` -- used in 0 specs
+- `isViewFilterItemPresent(itemText)` -- used in 0 specs
+- `isViewFilterPresent(title)` -- used in 0 specs
+- `isVisualizationExportTypePresent(type)` -- used in 0 specs
+- `isVizDisplayed(title)` -- used in 0 specs
+- `isVizEmpty(title)` -- used in 0 specs
+- `isWaitingPageDisplayed()` -- used in 0 specs
+- `itemInfo(name)` -- used in 0 specs
+- `itemSharedByTimeInfo(name)` -- used in 0 specs
+- `lastItem()` -- used in 0 specs
+- `linkToTargetByGridToolTip()` -- used in 0 specs
+- `loadUntilRendered({ name, count = 0, attempt = 1, owner = null })` -- used in 0 specs
+- `maximizeContainer(title)` -- used in 0 specs
+- `maximizeLegend(title)` -- used in 0 specs
+- `minimizeLegend(title)` -- used in 0 specs
+- `mojoErrorMsg()` -- used in 0 specs
+- `mojoTooltip()` -- used in 0 specs
+- `mouseClick(el, eventData)` -- used in 0 specs
+- `moveAndClickByOffsetFromMultiElements({ elements, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `moveDossierIntoViewPort(name, owner = null)` -- used in 0 specs
+- `moveToElement(el, offset = { x: 0, y: 0 })` -- used in 0 specs
+- `moveToPosition({ x, y })` -- used in 0 specs
+- `moveToTopLeftCorner()` -- used in 0 specs
+- `multiSelectElements({ elem1, elem2 })` -- used in 0 specs
+- `multiSelectElementsUsingShift(headElement, tailElement)` -- used in 0 specs
+- `navigateDownUsingShiftArrow(loopCount)` -- used in 0 specs
+- `navigateDownWithArrow(loopCount = 1)` -- used in 0 specs
+- `navigateLeftWithArrow(loopCount = 1)` -- used in 0 specs
+- `navigateRightWithArrow(loopCount = 1)` -- used in 0 specs
+- `navigateUpUsingShiftArrow(loopCount)` -- used in 0 specs
+- `navigateUpWithArrow(loopCount = 1)` -- used in 0 specs
+- `openByPath(path)` -- used in 0 specs
+- `openCombinedModeSortMenu()` -- used in 0 specs
+- `openContextMenu({ elem, offset, clickContextMenuWhenOpen = false })` -- used in 0 specs
+- `openContextMenu(cell)` -- used in 0 specs
+- `openContextMenu(filterName)` -- used in 0 specs
+- `openCustomAppById({ id, dossier = false, check_flag = true })` -- used in 0 specs
+- `openDefaultApp()` -- used in 0 specs
+- `openHomePage()` -- used in 0 specs
+- `openLinkEditorOnContainer(elem)` -- used in 0 specs
+- `openMenuOnVisualization(title)` -- used in 0 specs
+- `openMenuOnVisualizationWithouWait(title)` -- used in 0 specs
+- `openSecondaryPanel(filterName)` -- used in 0 specs
+- `openSortMenu()` -- used in 0 specs
+- `openViewFilterContainer(title)` -- used in 0 specs
+- `openVisualizationMenu({ elem, offset })` -- used in 0 specs
+- `paste()` -- used in 0 specs
+- `paths()` -- used in 0 specs
+- `performClickAction({ type = 'pointer', button = 0, x = 0, y = 0 })` -- used in 0 specs
+- `previousPage()` -- used in 0 specs
+- `projectStatus()` -- used in 0 specs
+- `quickSort()` -- used in 0 specs
+- `releasePointer()` -- used in 0 specs
+- `removeCapsuleByName({ filterName, capsuleName })` -- used in 0 specs
+- `renameTextField(newName)` -- used in 0 specs
+- `renderNextBlock(count)` -- used in 0 specs
+- `resetInput({ elem })` -- used in 0 specs
+- `resizeWindow(width, height)` -- used in 0 specs
+- `restoreContainer(title)` -- used in 0 specs
+- `rightClick({ elem, offset = { x: 0, y: 0 }, checkClickable = true })` -- used in 0 specs
+- `rightClickByXYPosition({ elem, x = 0, y = 0, checkClickable = true })` -- used in 0 specs
+- `rightClickTitleBoxNoWait(title)` -- used in 0 specs
+- `rightClickWithOffset({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `rightMouseClickOnElement(elem)` -- used in 0 specs
+- `safeGetElement(target, desc, waitTime = this.DEFAULT_LOADING_TIMEOUT)` -- used in 0 specs
+- `scrollDown(elem, offset)` -- used in 0 specs
+- `scrollDownToTargetOption(listContent, wholeList, item, pixel = 150)` -- used in 0 specs
+- `scrollIntoView(element, options = { block: 'nearest', inline: 'nearest', behavior: 'smooth' }, attributeName = 'class')` -- used in 0 specs
+- `scrollIntoView(option)` -- used in 0 specs
+- `scrollOnPage(toPosition)` -- used in 0 specs
+- `scrollPageToBottom()` -- used in 0 specs
+- `scrollPageToTop()` -- used in 0 specs
+- `scrollToBottom()` -- used in 0 specs
+- `scrollToTop()` -- used in 0 specs
+- `scrollWebPageToBottom()` -- used in 0 specs
+- `selectAddToInsightsOnVisualizationMenu(title)` -- used in 0 specs
+- `selectAlertOnVisualizationMenu(title, name = 'Alert')` -- used in 0 specs
+- `selectAlertOnVisualizationMenu(title)` -- used in 0 specs
+- `selectAll(elem)` -- used in 0 specs
+- `selectContextMenuOnCell(cell, menuPaths)` -- used in 0 specs
+- `selectContextMenuOnCells(cells, menuPaths)` -- used in 0 specs
+- `selectContextMenuOption(filterName, menuName)` -- used in 0 specs
+- `selectContextMenuOptions({
+            elem, offset, firstOption, secondOption, thirdOption, clickContextMenuWhenOpen = false, isIconSelector = false, }, prompted = false)` -- used in 0 specs
+- `selectDeleteOnVisualizationMenu(title)` -- used in 0 specs
+- `selectExportGridDataOnVisualizationMenu(title)` -- used in 0 specs
+- `selectExportOnVisualizationMenu(title)` -- used in 0 specs
+- `selectExportToExcelOnVisualizationMenu(title)` -- used in 0 specs
+- `selectExportToGoogleSheetsOnVisualizationMenu(title)` -- used in 0 specs
+- `selectExportToPDFOnVisualizationMenu(title)` -- used in 0 specs
+- `selectFilterOptionButton(option)` -- used in 0 specs
+- `selectPromptByIndex({ index, promptName })` -- used in 0 specs
+- `selectPromptByTitle(promptTitle)` -- used in 0 specs
+- `selectShowDataOnVisualizationMenu(title)` -- used in 0 specs
+- `selectSortOption(option = 'Content Name')` -- used in 0 specs
+- `selectSortOrder(order)` -- used in 0 specs
+- `selectVisualizationMenuOptions({ elem, offset, firstOption, secondOption, thirdOption })` -- used in 0 specs
+- `setInputValue({ element, value})` -- used in 0 specs
+- `setTextToClipboard(text)` -- used in 0 specs
+- `setValueByJavaScript({ element, value, shouldEnter = false })` -- used in 0 specs
+- `shiftClick({ elem, offset = { x: 0, y: 0 } })` -- used in 0 specs
+- `shiftEnter()` -- used in 0 specs
+- `shiftTab(repeatTimes = 0)` -- used in 0 specs
+- `showContainer(title)` -- used in 0 specs
+- `showDetails()` -- used in 0 specs
+- `showElement(el)` -- used in 0 specs
+- `showSubPanelContainer(title)` -- used in 0 specs
+- `sleep(duration)` -- used in 0 specs
+- `space()` -- used in 0 specs
+- `switchToNewWindow()` -- used in 0 specs
+- `switchToNewWindowWithLink(link)` -- used in 0 specs
+- `switchToNewWindowWithUrl(url)` -- used in 0 specs
+- `switchToTab(tabIndex)` -- used in 0 specs
+- `switchToWindow(tabInstance)` -- used in 0 specs
+- `tab(repeatTimes = 0)` -- used in 0 specs
+- `tabBackward(loopCount = 1)` -- used in 0 specs
+- `tabCount()` -- used in 0 specs
+- `tabForward(loopCount = 1)` -- used in 0 specs
+- `tabToElement(elem, options = {})` -- used in 0 specs
+- `title()` -- used in 0 specs
+- `titleFont()` -- used in 0 specs
+- `tooltip()` -- used in 0 specs
+- `typeKeyboard(keys)` -- used in 0 specs
+- `valueOfToolTip(vizElementFinder)` -- used in 0 specs
+- `viewErrorDetails()` -- used in 0 specs
+- `vizCount()` -- used in 0 specs
+- `vizDossierLinkingTooltip()` -- used in 0 specs
+- `vizTooltip()` -- used in 0 specs
+- `wait(...condition)` -- used in 0 specs
+- `waitAllToBeLoaded()` -- used in 0 specs
+- `waitDataLoaded()` -- used in 0 specs
+- `waitDocumentToBeLoaded(checkDocumentLoaded = true)` -- used in 0 specs
+- `waitForAlertAppear()` -- used in 0 specs
+- `waitForCondition(conditionFunc, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForCurtainDisappear()` -- used in 0 specs
+- `waitForDownloadComplete({ name, fileType, vizName })` -- used in 0 specs
+- `waitForDownloadComplete(name, fileType)` -- used in 0 specs
+- `waitForDynamicElementLoading()` -- used in 0 specs
+- `waitForEitherElemmentVisible(el1, el2, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementAppearAndGone(el)` -- used in 0 specs
+- `waitForElementClickable(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementDisabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementEnabled(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementExsiting(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementInvisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '', interval: undefined })` -- used in 0 specs
+- `waitForElementPresence(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementStaleness(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementVisible(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForElementVisibleInTeams(el, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForError()` -- used in 0 specs
+- `waitForErrorMessage()` -- used in 0 specs
+- `waitForGridLoaded()` -- used in 0 specs
+- `waitForItemLoading()` -- used in 0 specs
+- `waitForLibraryLoading()` -- used in 0 specs
+- `waitForMojoError()` -- used in 0 specs
+- `waitForPageIndicatorInvisible()` -- used in 0 specs
+- `waitForPageLoadByTitle(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForPageLoadByUrl(title, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForPendoToBeInitialized(options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForProcessorDisappear()` -- used in 0 specs
+- `waitForPromptDetail(promptName)` -- used in 0 specs
+- `waitForTextAppearInElement(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForTextPresentInElementValue(el, txt, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForTextUpdated(el, text, options = { timeout: this.DEFAULT_LOADING_TIMEOUT, msg: '' })` -- used in 0 specs
+- `waitForTooltipDisplayed()` -- used in 0 specs
+- `waitForWebCurtainDisappear()` -- used in 0 specs
+- `waitPageLoading()` -- used in 0 specs
+- `waitPageRefresh()` -- used in 0 specs
+- `webMovetoElement(el, offset = { x: 0, y: 0 })` -- used in 0 specs
+
+## Source Coverage
+
+- `pageObjects/base/**/*.js`

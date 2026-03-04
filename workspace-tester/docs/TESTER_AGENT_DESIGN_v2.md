@@ -65,8 +65,38 @@ GitHub URL as input and scans from there.
 
 ### 2.2 Script Signature
 
+
+``` bash
+# Usage: generate-domains-config.mjs
+node generate-domains-config.mjs \
+  --repo <local-path-or-github-url> \
+  --output ./config/domains.json
+
+# Example (local repo)
+node generate-domains-config.mjs \
+  --repo /path/to/wdio \
+  --output ./config/domains.json
+
+# Example (GitHub URL)
+node generate-domains-config.mjs \
+  --repo https://github.com/microstrategy/library-automation-wdio \
+  --output ./config/domains.json
+
+# Example (all domains)
+node generate-domains-config.mjs \
+  --repo https://github.com/microstrategy/library-automation-wdio \
+  --output ./config/domains.json \
+  --domains all
+
+# Example (specific domains)
+node generate-domains-config.mjs \
+  --repo https://github.com/microstrategy/library-automation-wdio \
+  --output ./config/domains.json \
+  --domains filter,autoAnswers,aibot
+```
+
 ```bash
-# Usage
+# Usage: generate-sitemap.mjs
 node generate-sitemap.mjs \
   --repo <local-path-or-github-url> \
   --domains filter,autoAnswers,aibot \
@@ -182,42 +212,49 @@ Each domain produces one Markdown file. Example for `filter`:
 # Site Knowledge: Filter Domain
 
 ## Overview
-Covers: CalendarFilter, CheckboxFilter, RadiobuttonFilter, SearchBoxFilter,
-        DynamicFilter, MQFilter, MQSliderFilter, FilterSummaryBar, ParameterFilter,
-        VisualizationFilter, AttributeSlider, Timezone
+
+- **Domain key:** `filter`
+- **Components covered:** CalendarFilter, CheckboxFilter
+- **Spec files scanned:** 23
+- **POM files scanned:** 16
 
 ## Components
 
 ### CalendarFilter
-**CSS root:** `.mstrd-CalendarWidget`
-**User-visible elements:**
-- Date range input (`.mstrd-DateRange-input`) — user types or picks a date
-- Apply button — confirms filter selection
-- Clear button — resets selection
-- Month/Year navigation arrows
+- **CSS root:** `.mstrd-CalendarWidget`
+- **User-visible elements:**
+  - Date range input (`.mstrd-DateRange-input`)
+  - Apply button (`.mstrd-Apply-btn`)
+  - Clear button (`.mstrd-Clear-btn`)
+- **Component actions:**
+  - `applyFilter()`
+  - `selectDate(year, month, day)`
+- **Related components:** CalendarWidget
 
-**Key actions:**
-- `selectDate(year, month, day)` — pick a specific date
-- `applyFilter()` — confirm
-- `clearFilter()` — reset
+## Common Workflows (from spec.ts)
 
-**Related components:** CalendarHeader, CalendarWidget, CalendarDynamicPanel
+1. Apply attribute filter and validate grid refresh (used in 11 specs)
+2. Clear all filters and verify default state (used in 7 specs)
+3. Date range selection and apply (used in 6 specs)
 
----
+## Common Elements (from POM + spec.ts)
 
-### CheckboxFilter
-**CSS root:** `.mstrd-CheckboxFilter`
-**User-visible elements:**
-- List of attribute values as checkboxes
-- Search box (`.mstrd-FilterSearch`) — filter the checkbox list
-- Select All / Clear All buttons
+1. Filter Panel toggle button -- frequency: 18
+2. Apply button -- frequency: 15
+3. Date range input -- frequency: 12
 
-**Key actions:**
-- `selectElement(value)` — check one value
-- `selectAll()` / `clearAll()` — bulk select/clear
-- `searchElement(text)` — type in search box
+## Key Actions
 
-... (other components follow the same pattern)
+- `applyFilter()` -- used in 14 specs
+- `clearFilter()` -- used in 8 specs
+- `selectDate(year, month, day)` -- used in 6 specs
+
+## Source Coverage
+
+- `pageObjects/filter/*.js`
+- `pageObjects/common/FilterPanel.js`
+- `specs/regression/filter/**/*.spec.ts`
+- `specs/e2e/filter/**/*.ts`
 ```
 
 ### 2.6 Compact SITEMAP.md (Layer 1 — Always Available)
@@ -225,54 +262,30 @@ Covers: CalendarFilter, CheckboxFilter, RadiobuttonFilter, SearchBoxFilter,
 The compact sitemap is a single file summarizing all in-scope domains:
 
 ```markdown
-# MicroStrategy Library — Site Map (Strategy Product)
-# Generated: <ISO8601>  Source: <repo-url>
+# Site Knowledge -- Compact Sitemap
 
-## Product Areas (In Scope)
+> Generated: <ISO8601>
+> Source: <repo-url>
 
-### Filter
-Navigation: Library Home → open a Dossier/Report → Filter Panel (sidebar or top bar)
-Key UI entry points:
-- Filter Panel toggle button (top-right of viewer)
-- Filter capsules in summary bar
-- Individual filter widgets (calendar, checkbox, dropdown, slider, searchbox)
+## Filter
 
-Components: CalendarFilter, CheckboxFilter, RadiobuttonFilter, SearchBoxFilter,
-            DynamicFilter, MQFilter, MQSliderFilter, FilterSummaryBar, ParameterFilter
+- **Domain key:** `filter`
+- **Navigation:** Library Home -> open a Dossier/Report -> Filter Panel
+- **Components:** 16
+- **Common workflows:** 7
+- **Common elements:** 29
+- **Detail file:** `filter.md`
+- **Query hint:** `query sitemap:filter`
 
-For detail: query sitemap:filter
+## AutoAnswers (AI Assistant)
 
----
-
-### AutoAnswers (AI Assistant)
-Navigation: Library Home → Dossier with AI enabled → AI Assistant panel
-Key UI entry points:
-- AI Assistant panel toggle (right sidebar icon)
-- Interpretation blade (auto-generated insights)
-- Learning tab (user feedback on answers)
-- AI Visualization panel
-
-Components: AIAssistant, AIViz, Interpretation, Learning
-
-For detail: query sitemap:autoAnswers
-
----
-
-### Bot (AI Bot)
-Navigation: Library Home → Bot item on home page → Bot chat / edit mode
-Key UI entry points:
-- Bot home card (library list view)
-- Chat panel (send messages, see answers, snapshots)
-- Dataset panel (add/remove datasets)
-- Bot authoring (create/edit bot: rules, custom instructions, general settings)
-- Snapshots panel
-
-Components: AIBotChatPanel, AIBotDatasetPanel, AIBotDatasetPanelContextMenu,
-            BotAuthoring, BotCustomInstructions, BotRulesSettings, GeneralSettings,
-            AIBotSnapshotsPanel, AIBotUsagePanel, HistoryPanel, CacheManager,
-            BotAppearance, ChatAnswer, WarningDialog
-
-For detail: query sitemap:aibot
+- **Domain key:** `autoAnswers`
+- **Navigation:** Library Home -> Dossier with AI enabled -> AI Assistant panel
+- **Components:** 4
+- **Common workflows:** 5
+- **Common elements:** 12
+- **Detail file:** `autoAnswers.md`
+- **Query hint:** `query sitemap:autoAnswers`
 ```
 
 ---
@@ -310,23 +323,6 @@ For detail: query sitemap:aibot
 └────────────────────────────────────┘
 ```
 
-### 3.2 Agent-side Read API
-
-```typescript
-// Pattern 1: Load full domain sheet before testing
-const { content } = await readSiteKnowledge('memory/site-knowledge', 'filter');
-// → reads memory/site-knowledge/filter.md
-
-// Pattern 2: Keyword search within loaded content
-const excerpts = searchKnowledgeContent(content, 'CalendarFilter', 3);
-// → returns matching line blocks (pure function, no filesystem)
-
-// Pattern 3: Top-level overview only (unknown domain, or cross-domain task)
-const { content } = await readSiteKnowledge('memory/site-knowledge', 'unknown');
-// → falls back to SITEMAP.md
-```
-
-→ Full stubs and tests for these functions: [SITE_KNOWLEDGE_SYSTEM_DESIGN.md §7](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
 
 ---
 
@@ -334,8 +330,10 @@ const { content } = await readSiteKnowledge('memory/site-knowledge', 'unknown');
 
 ### 4.1 Augmented Testing Flow
 
+> **Scope:** Feature testing only (no performance, load, or stress testing).
+
 ```
-User: "Test BCIN-7890" (or issue-only flow, see §5)
+User: "Test BCIN-7890" (or issue-only flow, see [§5](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md#5-issue-only-fc-flow--reporter-delegated-design))
        ↓
 Phase 0: QA Plan Discovery (same as TESTER_AGENT_DESIGN.md §3.1)
        ↓
@@ -354,11 +352,17 @@ Phase 2: Test Generation (playwright-test-generator)
     a. Component names (to comment in code: "// AIBotChatPanel area")
     b. CSS anchors (for fallback locators if semantic ones fail)
     c. Action vocabulary (to write correct step descriptions)
-  → Playwright MCP does LIVE DOM inspection for actual locators
+  → Playwright MCP (via mcporter) does LIVE DOM inspection for actual locators
+    (e.g. mcporter call user-playwright-mcp.browser_snapshot, browser_navigate, browser_click)
        ↓
 Phase 3: Execution & Healing (playwright-test-healer)
+  → Healer uses Playwright MCP via mcporter skills for feature testing only
   → Healer can re-query site_context.md to understand what a failing element IS
   → Provides semantic fallback if a locator breaks
+       ↓
+Phase 4: Report & Confirmation
+  → Generate execution report (summary, pass/fail per step, screenshots)
+  → Confirm with user before closing Jira or filing defects
 ```
 
 ### 4.2 WDIO Page Objects → Playwright MCP: Compatibility Rationale
@@ -387,117 +391,11 @@ Playwright, they serve as reliable fallback locators even when ARIA roles are mi
 
 ---
 
-## 5. Issue-only FC Flow
+## 5. Issue-only FC Flow — Reporter-Delegated Design
 
-### 5.1 Overview
-
-When the user provides only a **Jira issue key** (no pre-existing QA plan), the agent must:
-1. Fetch the issue (description, type, labels, fix PR link if any)
-2. Assess whether a full QA plan is needed or a direct smoke test is sufficient
-3. Either auto-handoff to Planner or run targeted tests directly
-
-```
-User: "FC BCIN-7890" (issue key, no QA plan)
-       ↓
-[A] Fetch Jira issue metadata
-    - description, labels, components, priority, fix PR(s)
-       ↓
-[B] Fetch fix PR diff (if linked)
-    - changed files → map to feature domain (filter? bot? autoAnswers?)
-    - changed files → estimate scope (1 component changed vs 5)
-       ↓
-[C] FC Risk Assessment
-    - Rule-based scoring (see §5.2)
-       ↓
-[D] Route based on risk score
-    Low risk  → Direct targeted test (skip planner, use site knowledge to guide)
-    High risk → Auto-handoff to Planner to draft QA plan first
-```
-
-### 5.2 FC Risk Assessment Rules
-
-The agent scores the FC risk and decides the flow automatically.
-
-| Signal | Weight | How to get it |
-|--------|--------|--------------|
-| Priority: P1/P2 | +3 | Jira `priority` field |
-| Fix touches > 3 files | +2 | PR diff file count |
-| Fix touches > 1 domain (filter + bot) | +3 | PR diff → map to POM domains |
-| Issue labels include "regression-risk" | +2 | Jira labels |
-| Fix is a config/feature-flag change only | -2 | PR diff: only config files changed |
-| Issue description is < 50 words (vague) | +1 | Description length |
-| QA plan exists from planner workspace | -3 | Phase 0.2 check (already done) |
-
-**Scoring:**
-- **Score ≥ 4** → High risk → Auto-handoff to Planner (see §5.3)
-- **Score < 4** → Low risk → Direct targeted test (see §5.4)
-
-> **Note on confirmation:** The agent does NOT ask the user for confirmation before routing.
-> It documents the risk score and rationale in `task.json` and proceeds automatically.
-> The user is informed of the decision via progress notification.
-
-### 5.3 High-risk Route — Handoff to Planner
-
-```
-Agent notifies: "⚠️ FC risk score: 5/10 (P1 bug, 4 files changed across filter+bot domains).
-                Handing off to Planner Agent to draft a QA plan before testing."
-       ↓
-In OpenClaw:
-  session spawn --agent planner \
-    --skill feature-planner \
-    --context "Draft QA plan for FC: BCIN-7890.
-               Issue: <description>
-               Fix PR: <PR URL>
-               Focus domains: filter, aibot
-               Use /test-case-generation workflow."
-       ↓
-Wait for planner to produce specs in:
-  workspace-planner/projects/feature-plan/BCIN-7890/specs/
-       ↓
-Resume Tester pipeline from Phase 0.2 (cross-workspace spec discovery)
-```
-
-### 5.4 Low-risk Route — Direct Targeted Test
-
-```
-Agent notifies: "✅ FC risk score: 2/10 (config change only, single component).
-                Running targeted smoke test directly."
-       ↓
-Phase 0.5: Site Knowledge Pre-fetch
-  → Query: "CalendarFilter reset behaviour" (derived from issue description + fix PR)
-  → Store as site_context.md
-       ↓
-Phase 1*: Generate minimal spec on-the-fly
-  → Agent drafts a targeted .md spec from:
-    a. Issue description (what behaviour changed)
-    b. Fix PR diff (what code was touched)
-    c. Site context (which UI elements to interact with)
-  → Stored as: specs/fc/<BCIN-7890>/targeted_smoke.md
-       ↓
-Phase 2–4: Normal generation → run → heal pipeline
-```
-
-### 5.5 Jira Issue Fetch Contract
-
-```typescript
-interface IssueContext {
-  key: string;            // e.g. "BCIN-7890"
-  summary: string;
-  description: string;
-  priority: "P1" | "P2" | "P3" | "P4";
-  labels: string[];
-  components: string[];   // e.g. ["Filter", "Library"]
-  fixPRs: string[];       // GitHub PR URLs if linked
-  affectedVersions: string[];
-}
-
-interface PRContext {
-  url: string;
-  changedFiles: string[];     // relative file paths
-  changedDomains: string[];   // inferred: ["filter", "aibot"]
-  diffSummary: string;        // first 500 chars of unified diff
-}
-```
+> **Single source of truth:** [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md §5](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md#5-issue-only-fc-flow--reporter-delegated-design)
+>
+> The full design (overview, responsibilities, session_spawn protocol, idempotency guard, tester handoff contract, site knowledge search) lives in the Site Knowledge Agent Design document. This section provides a pointer for readers of the Tester Agent design.
 
 ---
 
@@ -554,34 +452,34 @@ workspace-tester/
 
 ---
 
-## 7. Task State Extensions
+## 7. Task State Extensions (Single-Issue FC Mode)
 
-The `task.json` schema from `TESTER_AGENT_DESIGN.md` is extended with two new sections:
+The `task.json` schema for single-issue FC mode:
 
 ```json
 {
-  "run_key": "BCIN-7890:fc",
-  "overall_status": "in_progress",
-  "input_type": "issue",
-  "issue_context": {
-    "key": "BCIN-7890",
-    "priority": "P2",
-    "fix_prs": ["https://github.com/org/repo/pull/4521"],
+  "run_key": "BCIN-7890",
+  "mode": "single_issue_fc",
+  "overall_status": "waiting_for_reporter | testing | test_complete | completed | fail_escalated",
+  "reporter_spawned_at": "<ISO8601>",
+  "issue_key": "BCIN-7890",
+  "testing_plan_source": "workspace-reporter/projects/defects-analysis/BCIN-7890/BCIN-7890_TESTING_PLAN.md",
+  "tester_handoff": {
+    "risk_level": "MEDIUM",
+    "fc_steps_count": 3,
+    "exploratory_required": true,
     "affected_domains": ["filter"]
-  },
-  "fc_risk": {
-    "score": 2,
-    "rationale": "Single file changed (CalendarFilter.js). Config change only. P2.",
-    "route": "direct_targeted_test"
   },
   "site_knowledge": {
     "queried_at": "<ISO8601>",
-    "query": "CalendarFilter reset behaviour",
+    "query": "CalendarFilter reset behaviour filter",
     "context_path": "memory/tester-flow/runs/BCIN-7890/site_context.md",
-    "source_file": "memory/site-knowledge/filter.md",
-    "keyword_matches": 3
+    "keyword_matches": 4
   },
-  "phases": { "...": "same as TESTER_AGENT_DESIGN.md" }
+  "result": "PASS | FAIL | null",
+  "evidence_path": "memory/tester-flow/runs/BCIN-7890/reports/",
+  "test_completed_at": "<ISO8601>",
+  "reporter_notified_at": "<ISO8601>"
 }
 ```
 
@@ -617,9 +515,9 @@ The `task.json` schema from `TESTER_AGENT_DESIGN.md` is extended with two new se
 |------|------|-------|
 | C1 | Implement `fetchIssueContext()` | Jira REST API, returns `IssueContext` |
 | C2 | Implement `fetchPRContext()` | GitHub API, returns `PRContext` |
-| C3 | Implement `assessFCRisk()` | Rule scoring table from §5.2 |
+| C3 | Implement `assessFCRisk()` | Rule scoring table (Reporter; see [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md §5](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md#5-issue-only-fc-flow--reporter-delegated-design)) |
 | C4 | Implement `routeByRisk()` | Calls planner spawn OR direct test |
-| C5 | Add fc-specific spec generation (§5.4) | On-the-fly .md from issue + site context |
+| C5 | Add fc-specific spec generation | Reporter TESTING_PLAN.md (see [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md §5](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md#5-issue-only-fc-flow--reporter-delegated-design)) |
 
 ### Phase D — RAG Inspection UI (Priority: Low / Deferred)
 
@@ -673,6 +571,7 @@ The agent only *consumes* the output; it never must generate it.
 ## 10. References
 
 - [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md) — **TDD design for Site Knowledge System** (stubs + tests, file-based storage)
+- [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md) — **Agent-side design** (pre-fetch flow, qmd/memorySearch, **Issue-only FC Flow §5** — single source of truth)
 - [TESTER_AGENT_DESIGN_v1.md](./TESTER_AGENT_DESIGN_v1.md) — Core tester pipeline (Phase 0–4)
 - [wdio/pageObjects/filter/](../projects/wdio/pageObjects/filter/) — Filter POM source
 - [wdio/pageObjects/aibot/](../projects/wdio/pageObjects/aibot/) — Bot POM source (27 files)

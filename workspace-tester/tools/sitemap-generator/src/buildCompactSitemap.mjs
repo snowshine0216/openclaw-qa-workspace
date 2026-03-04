@@ -1,16 +1,25 @@
 /**
  * Build compact top-level sitemap markdown.
- * @param {Array<{domain: string, componentCount: number}>} domainSheets
+ * @param {Array<{
+ *   domain: string,
+ *   displayName: string,
+ *   navigationHint: string,
+ *   componentCount: number,
+ *   workflows: Array<unknown>,
+ *   commonElements: Array<unknown>,
+ *   detailFile: string
+ * }>} domainModels
  * @param {string} sourceRepo
+ * @param {{ generatedAt?: string }} [options]
  * @returns {string}
  */
-export function buildCompactSitemap(domainSheets, sourceRepo) {
-  const blocks = domainSheets.map(renderDomainSummaryBlock).join('\n\n');
-  const ts = new Date().toISOString();
+export function buildCompactSitemap(domainModels, sourceRepo, options = {}) {
+  const generatedAt = options.generatedAt ?? new Date().toISOString();
+  const blocks = domainModels.map(renderDomainSummaryBlock).join('\n\n');
   return [
     '# Site Knowledge -- Compact Sitemap',
     '',
-    `> Generated: ${ts}  `,
+    `> Generated: ${generatedAt}`,
     `> Source: \`${sourceRepo}\``,
     '',
     blocks,
@@ -19,14 +28,27 @@ export function buildCompactSitemap(domainSheets, sourceRepo) {
 
 /**
  * Render one domain summary block.
- * @param {{domain: string, componentCount: number}} sheet
+ * @param {{
+ *   domain: string,
+ *   displayName: string,
+ *   navigationHint: string,
+ *   componentCount: number,
+ *   workflows: Array<unknown>,
+ *   commonElements: Array<unknown>,
+ *   detailFile: string
+ * }} model
  * @returns {string}
  */
-export function renderDomainSummaryBlock(sheet) {
+export function renderDomainSummaryBlock(model) {
   return [
-    `## ${sheet.domain}`,
+    `## ${model.displayName}`,
     '',
-    `- **Components:** ${sheet.componentCount}`,
-    `- **Detail file:** \`${sheet.domain}.md\``,
+    `- **Domain key:** \`${model.domain}\``,
+    `- **Navigation:** ${model.navigationHint}`,
+    `- **Components:** ${model.componentCount}`,
+    `- **Common workflows:** ${model.workflows.length}`,
+    `- **Common elements:** ${model.commonElements.length}`,
+    `- **Detail file:** \`${model.detailFile}\``,
+    `- **Query hint:** \`query sitemap:${model.domain}\``,
   ].join('\n');
 }

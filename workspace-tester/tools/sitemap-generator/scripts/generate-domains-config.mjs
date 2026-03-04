@@ -5,11 +5,34 @@ import { parseArgs } from 'node:util';
 import { checkGhAuth, listGitHubDirectory } from '../src/github.mjs';
 import { getGitHubApiPath } from '../src/resolvePomFiles.mjs';
 
+const DISPLAY_NAME_OVERRIDES = {
+  autoAnswers: 'AutoAnswers (AI Assistant)',
+  aibot: 'Bot (AI Bot)',
+};
+
+const KEY_ENTRY_POINT_OVERRIDES = {
+  filter: [
+    'Filter Panel toggle button',
+    'Filter summary bar capsules',
+    'Individual filter widgets (calendar, checkbox, dropdown)',
+  ],
+  autoAnswers: [
+    'AI Assistant panel toggle (right sidebar)',
+    'Interpretation blade',
+    'Learning tab',
+  ],
+  aibot: [
+    'Bot home card in Library',
+    'Chat panel',
+    'Dataset panel',
+  ],
+};
+
 /**
  * Create domains config from discovered pageObjects/specs-regression trees.
  * @param {string[]} domainDirs
  * @param {string[]} regressionDirs
- * @returns {{domains: Record<string, {pomPaths: string[], specPaths: string[], navigationHint: string}>}}
+ * @returns {{domains: Record<string, {displayName: string, pomPaths: string[], specPaths: string[], navigationHint: string, keyEntryPoints: string[]}>}}
  */
 export function buildDomainsConfig(domainDirs, regressionDirs) {
   const sortedDomains = [...domainDirs].sort((a, b) => a.localeCompare(b));
@@ -17,9 +40,11 @@ export function buildDomainsConfig(domainDirs, regressionDirs) {
 
   for (const domain of sortedDomains) {
     domains[domain] = {
+      displayName: getDisplayName(domain),
       pomPaths: [`pageObjects/${domain}`],
       specPaths: matchSpecPaths(domain, regressionDirs).map((p) => `specs/regression/${p}`),
       navigationHint: `Auto-generated from pageObjects/${domain}`,
+      keyEntryPoints: [...(KEY_ENTRY_POINT_OVERRIDES[domain] ?? [])],
     };
   }
 
@@ -138,6 +163,20 @@ export async function main(argv, deps = {}) {
 
   console.log(`Generated domains.json with ${tree.domainDirs.length} domains.`);
   console.log(`Output: ${outputFile}`);
+}
+
+function getDisplayName(domain) {
+  return DISPLAY_NAME_OVERRIDES[domain] ?? titleCaseDomain(domain);
+}
+
+function titleCaseDomain(domain) {
+  return domain
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0].toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 async function writeOutput(outputFile, content) {

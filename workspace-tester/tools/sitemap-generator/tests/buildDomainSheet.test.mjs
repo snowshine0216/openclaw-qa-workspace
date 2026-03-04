@@ -1,61 +1,65 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildDomainSheet, renderComponentSection } from '../src/buildDomainSheet.mjs';
+import { buildDomainSheet } from '../src/buildDomainSheet.mjs';
 
-const STUB_POM = {
+const STUB_MODEL = {
   domain: 'filter',
-  className: 'CalendarFilter',
-  parentClass: 'BaseContainer',
-  locators: [{ name: 'ApplyButton', css: '.mstrd-Apply-btn', type: 'button' }],
-  actions: [
-    { name: 'applyFilter', params: [] },
-    { name: 'selectDate', params: ['year', 'month', 'day'] },
+  displayName: 'Filter',
+  componentNames: ['CalendarFilter'],
+  componentCount: 1,
+  specFileCount: 2,
+  pomFileCount: 1,
+  components: [
+    {
+      className: 'CalendarFilter',
+      cssRoot: '.mstrd-CalendarWidget',
+      elements: [{ label: 'Apply Button', css: '.mstrd-Apply-btn' }],
+      actions: ['applyFilter()'],
+      relatedComponents: ['CalendarWidget'],
+    },
   ],
-  subComponents: ['CalendarWidget'],
+  workflows: [{ name: 'Apply filter', frequency: 2 }],
+  commonElements: [{ label: 'Apply Button', frequency: 3, examples: ['.mstrd-Apply-btn'] }],
+  actions: [{ signature: 'applyFilter()', frequency: 2 }],
+  sourceCoverage: ['pageObjects/filter/**/*.js', 'specs/regression/filter/**/*.{ts,js}'],
 };
 
-test('renderComponentSection -- includes class name as h3 heading', () => {
-  const out = renderComponentSection(STUB_POM);
-  assert.match(out, /^### CalendarFilter/m);
-});
-
-test('renderComponentSection -- includes CSS selector', () => {
-  const out = renderComponentSection(STUB_POM);
-  assert.match(out, /\.mstrd-Apply-btn/);
-});
-
-test('renderComponentSection -- includes actions with params', () => {
-  const out = renderComponentSection(STUB_POM);
-  assert.match(out, /selectDate\(year, month, day\)/);
-});
-
-test('renderComponentSection -- lists sub-components', () => {
-  const out = renderComponentSection(STUB_POM);
-  assert.match(out, /- CalendarWidget/);
-});
-
-test('renderComponentSection -- POM with no locators does not crash', () => {
-  const out = renderComponentSection({ ...STUB_POM, locators: [] });
-  assert.match(out, /\| _none_ \| \| \|/);
-});
-
 test('buildDomainSheet -- returns DomainSheet with correct domain name', () => {
-  const out = buildDomainSheet('filter', [STUB_POM]);
+  const out = buildDomainSheet(STUB_MODEL);
   assert.equal(out.domain, 'filter');
 });
 
-test('buildDomainSheet -- componentCount equals number of POMs passed', () => {
-  const out = buildDomainSheet('filter', [STUB_POM, { ...STUB_POM, className: 'CheckboxFilter' }]);
-  assert.equal(out.componentCount, 2);
+test('buildDomainSheet -- exposes counts from model', () => {
+  const out = buildDomainSheet(STUB_MODEL);
+  assert.equal(out.componentCount, 1);
+  assert.equal(out.workflowCount, 1);
+  assert.equal(out.commonElementCount, 1);
 });
 
-test('buildDomainSheet -- content starts with # Site Knowledge:', () => {
-  const out = buildDomainSheet('filter', [STUB_POM]);
-  assert.match(out.content, /^# Site Knowledge: filter/);
+test('buildDomainSheet -- content includes required section headers', () => {
+  const out = buildDomainSheet(STUB_MODEL);
+  assert.match(out.content, /## Overview/);
+  assert.match(out.content, /## Components/);
+  assert.match(out.content, /## Common Workflows \(from spec\.ts\)/);
+  assert.match(out.content, /## Common Elements \(from POM \+ spec\.ts\)/);
+  assert.match(out.content, /## Key Actions/);
+  assert.match(out.content, /## Source Coverage/);
 });
 
-test('buildDomainSheet -- empty POMs array -> componentCount is 0', () => {
-  const out = buildDomainSheet('filter', []);
-  assert.equal(out.componentCount, 0);
-  assert.match(out.content, /> Components: 0/);
+test('buildDomainSheet -- empty sections render deterministic placeholders', () => {
+  const out = buildDomainSheet({
+    ...STUB_MODEL,
+    componentNames: [],
+    components: [],
+    workflows: [],
+    commonElements: [],
+    actions: [],
+    sourceCoverage: [],
+    componentCount: 0,
+  });
+
+  assert.match(out.content, /\*\*Components covered:\*\* _none_/);
+  assert.match(out.content, /## Components\n\n_none_/);
+  assert.match(out.content, /1\. _none_/);
+  assert.match(out.content, /- _none_/);
 });

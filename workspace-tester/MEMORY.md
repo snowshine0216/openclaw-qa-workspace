@@ -2,33 +2,6 @@
 
 _Test execution patterns, runtime state map, and automation tips._
 
-## Tester Flow v2 State Map
-
-Canonical state root:
-
-1. `memory/tester-flow/runs/<work_item_key>/`
-
-Primary files:
-
-1. `task.json` (control-plane status)
-2. `run.json` (data-plane artifacts and logs)
-3. `context/spec_manifest.json` (phase-1 intake manifest)
-4. `reports/execution-summary.md` (phase-5 summary)
-5. `healing/healing_report.md` (only if unresolved after round 3)
-
-Key invariants:
-
-1. `task.json.execution_mode` and `run.json.execution_mode` must match.
-2. `task.json.healing.max_rounds` must stay `3`.
-3. `run.json.pre_route_decision_log` must have at least one entry.
-4. `run.json.legacy_path_used` must remain `false` in canonical flow.
-
-## Migration Notes (March 3, 2026)
-
-1. Planner-spec generation/healing runtime moved to `src/tester-flow/`.
-2. Project-local scripts under `projects/library-automation/.agents/scripts/` are deprecated for this flow.
-3. Canonical discovery is workspace-root `.agents/workflows/` only.
-4. Canonical writes target `memory/tester-flow/runs/*`; no mirror writes to project-local `runs/*`.
 
 ## Common Failure Patterns
 
@@ -37,12 +10,6 @@ Key invariants:
 1. Element not found: increase wait and verify page state before interaction.
 2. Stale element reference: re-query after DOM updates.
 3. Click intercepted: wait for overlays/loaders to clear.
-
-### Workflow Input Issues
-
-1. Missing planner artifacts (`qa_plan_final.md` or `specs/`): run R0 with `PLANNER_PRESOLVE_CMD` configured.
-2. Missing `**Seed:**` in markdown: block `planner_first` and `provided_plan` until fixed.
-3. Invalid mode transition: requires `new_run_on_mode_change=true`.
 
 ### Healing Loop Issues
 
@@ -64,15 +31,24 @@ Key invariants:
 3. Document required data in plan/spec markdown.
 4. Keep credentials out of code and read from configured env/files.
 
-## Site Knowledge Search Activity
+## Site Knowledge Search
 
-When site knowledge search yields useful results, append entries:
+**Do NOT append to MEMORY.md after site search** — site_context.md is run-specific; MEMORY.md would bloat.
 
+**Always run site search before FC test execution.** Use keywords from:
+- Issue summary + description
+- Domain labels (filter, autoAnswers, aibot)
+- Component names from testing plan
+
+Search commands:
+```bash
+# BM25 (always available)
+qmd search "<keyword>" -c site-knowledge --json -n 10
+
+# OpenClaw (when available)
+# memory_search tool with query
 ```
-- [YYYY-MM-DD] Site search: "<query>" → <file>: <key findings>
-```
 
-Example: `- [2026-03-04] Site search: "CalendarFilter" → filter.md: calendarFilterPanel, dateRangePicker`
 
 ## Lessons Learned
 

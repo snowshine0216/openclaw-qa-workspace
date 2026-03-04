@@ -1,43 +1,139 @@
 /**
- * Build one domain sheet from parsed POM summaries.
- * @param {string} domain
- * @param {Array<{className: string, parentClass: string | null, locators: Array<{name:string,css:string,type:string}>, actions: Array<{name:string,params:string[]}>, subComponents: string[]}>} pomSummaries
- * @returns {{ domain: string, content: string, componentCount: number }}
+ * Build one rich domain sheet from fused knowledge model.
+ * @param {{
+ *   domain: string,
+ *   displayName: string,
+ *   componentNames: string[],
+ *   components: Array<{
+ *     className: string,
+ *     cssRoot: string,
+ *     elements: Array<{ label: string, css: string }>,
+ *     actions: string[],
+ *     relatedComponents: string[]
+ *   }>,
+ *   workflows: Array<{ name: string, frequency: number }>,
+ *   commonElements: Array<{ label: string, frequency: number }>,
+ *   actions: Array<{ signature: string, frequency: number }>,
+ *   sourceCoverage: string[],
+ *   componentCount: number,
+ *   specFileCount: number,
+ *   pomFileCount: number
+ * }} domainModel
+ * @returns {{ domain: string, content: string, componentCount: number, workflowCount: number, commonElementCount: number }}
  */
-export function buildDomainSheet(domain, pomSummaries) {
-  const sections = pomSummaries.map(renderComponentSection).join('\n\n---\n\n');
-  const header = `# Site Knowledge: ${domain}\n\n> Components: ${pomSummaries.length}\n\n`;
+export function buildDomainSheet(domainModel) {
+  const content = [
+    `# Site Knowledge: ${domainModel.displayName} Domain`,
+    '',
+    '## Overview',
+    '',
+    `- **Domain key:** \`${domainModel.domain}\``,
+    `- **Components covered:** ${formatList(domainModel.componentNames)}`,
+    `- **Spec files scanned:** ${domainModel.specFileCount}`,
+    `- **POM files scanned:** ${domainModel.pomFileCount}`,
+    '',
+    '## Components',
+    '',
+    renderComponents(domainModel.components),
+    '',
+    '## Common Workflows (from spec.ts)',
+    '',
+    renderWorkflows(domainModel.workflows),
+    '',
+    '## Common Elements (from POM + spec.ts)',
+    '',
+    renderCommonElements(domainModel.commonElements),
+    '',
+    '## Key Actions',
+    '',
+    renderActions(domainModel.actions),
+    '',
+    '## Source Coverage',
+    '',
+    renderSourceCoverage(domainModel.sourceCoverage),
+  ].join('\n').trimEnd() + '\n';
+
   return {
-    domain,
-    content: `${header}${sections}`.trimEnd() + '\n',
-    componentCount: pomSummaries.length,
+    domain: domainModel.domain,
+    content,
+    componentCount: domainModel.componentCount,
+    workflowCount: domainModel.workflows.length,
+    commonElementCount: domainModel.commonElements.length,
   };
 }
 
-/**
- * Render one component section in markdown.
- * @param {{className: string, parentClass: string | null, locators: Array<{name:string,css:string,type:string}>, actions: Array<{name:string,params:string[]}>, subComponents: string[]}} pom
- * @returns {string}
- */
-export function renderComponentSection(pom) {
-  const locatorRows = pom.locators.map((locator) => `| \`${locator.name}\` | \`${locator.css}\` | ${locator.type} |`).join('\n');
-  const actionRows = pom.actions.map((action) => `| \`${action.name}(${action.params.join(', ')})\` |`).join('\n');
-  const subList = pom.subComponents.length ? pom.subComponents.map((name) => `- ${name}`).join('\n') : '_none_';
-  return [
-    `### ${pom.className}`,
-    pom.parentClass ? `> Extends: \`${pom.parentClass}\`` : '',
-    '',
-    '**Locators**',
-    '| Name | CSS | Type |',
-    '|------|-----|------|',
-    locatorRows || '| _none_ | | |',
-    '',
-    '**Actions**',
-    '| Signature |',
-    '|-----------|',
-    actionRows || '| _none_ |',
-    '',
-    '**Sub-components**',
-    subList,
-  ].join('\n').trimEnd();
+function renderComponents(components) {
+  if (components.length === 0) {
+    return '_none_';
+  }
+
+  return components
+    .map((component) => {
+      const elementLines =
+        component.elements.length === 0
+          ? ['  - _none_']
+          : component.elements.map((element) => `  - ${element.label} (\`${element.css}\`)`);
+      const actionLines =
+        component.actions.length === 0
+          ? ['  - _none_']
+          : component.actions.map((action) => `  - \`${action}\``);
+      const related = component.relatedComponents.length === 0
+        ? '_none_'
+        : component.relatedComponents.join(', ');
+
+      return [
+        `### ${component.className}`,
+        `- **CSS root:** \`${component.cssRoot}\``,
+        '- **User-visible elements:**',
+        ...elementLines,
+        '- **Component actions:**',
+        ...actionLines,
+        `- **Related components:** ${related}`,
+      ].join('\n');
+    })
+    .join('\n\n');
+}
+
+function renderWorkflows(workflows) {
+  if (workflows.length === 0) {
+    return '1. _none_';
+  }
+
+  return workflows
+    .map((workflow, index) => `${index + 1}. ${workflow.name} (used in ${workflow.frequency} specs)`)
+    .join('\n');
+}
+
+function renderCommonElements(commonElements) {
+  if (commonElements.length === 0) {
+    return '1. _none_';
+  }
+
+  return commonElements
+    .map((element, index) => `${index + 1}. ${element.label} -- frequency: ${element.frequency}`)
+    .join('\n');
+}
+
+function renderActions(actions) {
+  if (actions.length === 0) {
+    return '- _none_';
+  }
+
+  return actions
+    .map((action) => `- \`${action.signature}\` -- used in ${action.frequency} specs`)
+    .join('\n');
+}
+
+function renderSourceCoverage(sourceCoverage) {
+  if (sourceCoverage.length === 0) {
+    return '- _none_';
+  }
+  return sourceCoverage.map((item) => `- \`${item}\``).join('\n');
+}
+
+function formatList(items) {
+  if (items.length === 0) {
+    return '_none_';
+  }
+  return items.join(', ');
 }

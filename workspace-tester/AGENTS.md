@@ -17,60 +17,141 @@ _Operating instructions for test execution and validation._
 1. Default `.agents` discovery root is `workspace-tester/.agents`.
 2. Default workflow path resolution starts at `.agents/workflows/`.
 
+---
+[To extract or deprecate this section]
+## Input Routing: Single Issue vs. Full QA Plan
+
+At session start, determine the input type:
+
+| Input | Route |
+|-------|-------|
+| Single Jira issue key/URL (e.g., `BCIN-7890`) **without pre-existing QA plan** | ➡️ **Single-Issue FC Flow** (see below) |
+| QA plan + specs already exist | ➡️ **Core Workflow** (Phase 1–5 below) |
+| Planner workspace has plan | ➡️ Copy plan, then **Core Workflow** |
+
+---
+[extract to issue-test workflow]
+## Single-Issue FC Flow (via Reporter Agent)
+
+When given a **single Jira issue link** and no pre-existing QA plan, **ALWAYS** invoke the Reporter Agent first.
+
+### Phase 0: Spawn Reporter for Defect Analysis
+
+```
+Input: one Jira issue key (e.g., BCIN-7890)
+  ↓
+1. Check workspace-tester idempotency state:
+     memory/tester-flow/runs/<ISSUE_KEY>/task.json
+   If testing_plan already available → skip to Phase 1.5
+
+2. Spawn Reporter Agent via session_spawn:
+     session spawn --agent reporter \
+       --workspace workspace-reporter \
+       --skill defect-analysis \
+       --context "Single-issue testing plan requested for <ISSUE_KEY>.
+                 Invoke single-defect-analysis workflow.
+                 Notify tester workspace at:
+                 memory/tester-flow/runs/<ISSUE_KEY>/reporter_ready.signal"
+
+3. Save spawn state to: memory/tester-flow/runs/<ISSUE_KEY>/task.json
+     { "mode": "single_issue_fc", "reporter_spawned_at": "<ISO8601>",
+       "overall_status": "waiting_for_reporter" }
+
+4. WAIT for reporter to produce:
+     workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md
+     workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json
+```
+
+### Phase 1.5: Read Testing Plan from Reporter Workspace
+
+```
+1. Read reporter artifacts:
+     workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md
+     workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json
+
+2. Site Knowledge Search (MANDATORY — see Site Knowledge Search section):
+     qmd search "<keywords from issue summary>" -c site-knowledge --json -n 10
+     + OpenClaw memory_search (if available)
+   Save results: memory/tester-flow/runs/<ISSUE_KEY>/site_context.md
+   Do NOT update MEMORY.md (avoids bloat).
+
+3. Update task.json:
+     { "overall_status": "testing",
+       "testing_plan_source": "workspace-reporter/...",
+       "site_context_path": "memory/tester-flow/runs/<ISSUE_KEY>/site_context.md" }
+```
+
+### Phase 2.5: Execute FC Steps + Exploratory Tests
+
+```
+For each FC step in the testing plan:
+  1. Note step ID (FC-01, FC-02, ...)
+  2. Execute in browser (Playwright MCP / playwright-cli / browser tool)
+  3. Reference site_context.md for UI navigation guidance + locator hints
+  4. Take screenshot after each step
+  5. Record PASS ✅ or FAIL ❌
+
+If exploratory testing required (per tester_handoff.json: exploratory_required=true):
+  6. Follow Exploratory Charter from testing plan
+  7. Document findings per domain/component area
+
+Save ALL artifacts:
+  - Screenshots: memory/tester-flow/runs/<ISSUE_KEY>/screenshots/<step>.png
+  - Execution log: memory/tester-flow/runs/<ISSUE_KEY>/reports/execution-summary.md
+```
+
+### Phase 3.5: Report Outcome Back to Reporter
+
+```
+Determine overall result (PASS if all FC steps pass; FAIL if any FC step fails).
+
+Write execution summary:
+  memory/tester-flow/runs/<ISSUE_KEY>/reports/execution-summary.md
+
+Update task.json (BEFORE spawning — fallback persistence):
+  { "overall_status": "test_complete", "result": "PASS|FAIL",
+    "evidence_path": "memory/tester-flow/runs/<ISSUE_KEY>/reports/",
+    "test_completed_at": "<ISO8601>",
+    "reporter_notification_pending": true }   ← set before spawn attempt
+
+Notify Reporter Agent via session_spawn:
+  session spawn --agent reporter \
+    --workspace workspace-reporter \
+    --skill defect-analysis \
+    --context "Test outcome for <ISSUE_KEY>: <PASS|FAIL>.
+              Execution report: workspace-tester/memory/tester-flow/runs/<ISSUE_KEY>/reports/execution-summary.md
+              Screenshots: workspace-tester/memory/tester-flow/runs/<ISSUE_KEY>/screenshots/
+              Please proceed with Phase 7 of single-defect-analysis workflow."
+
+If session_spawn succeeds:
+  Update task.json: { "reporter_notification_pending": false, "reporter_notified_at": "<ISO8601>" }
+
+If session_spawn fails:
+  Leave reporter_notification_pending: true in task.json.
+  Log: "⚠️ session_spawn failed. reporter_notification_pending=true. Retry with:"
+       "  scripts/check_resume.sh <ISSUE_KEY>  # to inspect state"
+       "  Then re-run Phase 3.5 to notify reporter."
+
+Notify user:
+  "✅ FC testing complete for <ISSUE_KEY>. Result: PASS/FAIL. Reporter notified."
+```
 
 
+---
+[extract to feature-test workflow]
 ## Core Workflow: Test Execution
 
-### Phase 1: Load Test Plan
-```
-Task received from master agent OR user command:
-  ↓
-Extract issue key (e.g., BCIN-1234)
-  ↓
-Read test plan from: projects/test-plans/<issue-key>/test-plan.md
-  ↓
-Review test cases, prerequisites, test data
-  ↓
-Verify environment availability
-```
+### Phase 1: Load QA plan 
 
-### Phase 2: Setup Environment
-```
-Check prerequisites:
-  - Staging/production URL accessible?
-  - Test data available?
-  - Browser tools working?
-  - Authentication credentials ready?
 
-If blocked:
-  - Document blocker
-  - Report to master agent OR user
-  - Wait for resolution
-```
+### Phase 2: Search 
 
-### Phase 3: Execute Test Cases
-```
-For each test case in the plan:
-  1. Note test case ID (TC-01, TC-02, etc.)
-  2. Follow steps 
-  3. Take screenshot after each key action
-  4. Capture console logs if errors occur
-  5. Record actual result
-  6. Compare with expected result
-  7. Mark as PASS ✅ or FAIL ❌
-```
+
+### Phase 3: use playwright mcp via mcporter skills to test 
+
 
 ### Phase 4: Document Results
-```
-Create execution report:
-  - Summary (total, passed, failed, blocked)
-  - Per-test-case results
-  - Screenshots organized by test case
-  - Console/network logs for failures
-  - Issues found (bug summaries)
-
-Save to: projects/test-reports/<issue-key>/execution-report.md
-```
+use skills to document results
 
 ### Phase 5: Report Issues
 ```
@@ -86,64 +167,23 @@ Handoff to qa-report:
   - Reference test case IDs
 ```
 
+### Phase 6: Notify user via feishu 
 
 
-## Browser Automation
 
-### MicroStrategy Testing (microstrategy-ui-test skill)
-```
-Use when testing MicroStrategy Webstation:
-  - Load skill documentation first
-  - Follow MicroStrategy-specific patterns
-  - Use provided selectors and locators
-  - Capture Webstation-specific logs
-```
-
-### General Browser Automation (playwright-cli)
-```
-Common patterns:
-  - Navigate: playwright goto <url>
-  - Click: playwright click <selector>
-  - Type: playwright fill <selector> <text>
-  - Screenshot: playwright screenshot <path>
-  - Wait: playwright wait-for-selector <selector>
-```
-
-### Browser Tool (native)
-```
-Use browser tool for:
-  - Opening pages: browser action=open targetUrl=<url>
-  - Taking snapshots: browser action=snapshot
-  - Taking screenshots: browser action=screenshot
-  - Automating clicks/typing: browser action=act
-```
-
-## Screenshot Naming Convention
-
-Format: `<issue-key>/TC-<number>-<step>-<status>.png`
-
-Examples:
-- `BCIN-1234/TC-01-login-success.png`
-- `BCIN-1234/TC-02-invalid-creds-fail.png`
-- `BCIN-1234/TC-03-password-reset-pass.png`
-
-**Always include:**
-- Issue key folder
-- Test case ID
-- Brief description
-- Status (success/fail/error)
 
 ## Test Execution Checklist
 
 Before starting:
-- [ ] Test plan loaded
+- [ ] QA plan loaded
+- [ ] Site knowledge searched
 - [ ] Environment verified
 - [ ] Test data prepared
 - [ ] Browser tools ready
 - [ ] Screenshots folder created
 
 During execution:
-- [ ] Follow test steps precisely
+- [ ] Follow QA plan to test the feature, anything unclear re-do site knowledge search, if not enough information, do tavily search or confluence search
 - [ ] Take screenshots at key points
 - [ ] Capture errors and logs
 - [ ] Record actual results
@@ -156,38 +196,16 @@ After execution:
 - [ ] Execution report created
 - [ ] Issues reported to qa-report
 
-## Common Test Scenarios
+## Common Scenarios
 
-### Login Tests
+### Login 
 ```
 1. Navigate to login page
 2. Enter credentials
-3. Click login button
-4. Verify redirect to dashboard
-5. Screenshot each step
+3. Click login button (if no password provided)
 ```
 
-### Form Tests
-```
-1. Navigate to form
-2. Fill each field
-3. Submit form
-4. Verify success message
-5. Check database if possible
-6. Screenshot each step
-```
-
-### CRUD Tests
-```
-1. Create new record (POST)
-2. Verify record appears (GET)
-3. Update record (PUT)
-4. Verify changes (GET)
-5. Delete record (DELETE)
-6. Verify deletion (GET)
-7. Screenshot each step
-```
-
+[extract to test-report skills]
 ## Test Execution Template
 
 ```markdown
@@ -279,7 +297,7 @@ Record to `agents/qa-test/MEMORY.md`:
 - Effective screenshot strategies
 - Lessons learned from test executions
 
-## Coordination with qa-report
+## Coordination with qa-report [needs extracting]
 
 After test execution:
 1. Create execution report
@@ -294,7 +312,12 @@ After test execution:
 - Evidence paths (screenshots, logs)
 - Recommendations (fix, retest, etc.)
 
-## Skills Reference
+## Skills Reference [needs updating]
+
+### site-knowledge-search
+- Read skill doc: `workspace-tester/skills/site-knowledge-search/SKILL.md` (to be created)
+- MANDATORY: Run on every test execution (feature-test and defect-test workflows)
+- See design: [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md) §1.4
 
 ### microstrategy-ui-test
 - Read skill doc: `workspace/skills/microstrategy-webstation-test/SKILL.md`
@@ -384,13 +407,43 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 Site knowledge (WDIO page objects, locators, UI components) lives in `memory/site-knowledge/`.
 
+**⚠️ MANDATORY: Run on EVERY test execution** (both Single-Issue FC Flow and Core Workflow).
+
+**Skill:** Use `site-knowledge-search` skill — see `skills/site-knowledge-search/SKILL.md` (to be created per design).
+
 **Search methods:**
 - **qmd (BM25):** `qmd search "keyword" -c site-knowledge --json -n 10`
 - **OpenClaw:** Use `memory_search` tool when running in OpenClaw
 
-**After search:** Update MEMORY.md with useful patterns (locators, component names) found.
+**Search keywords:** Derive from:
+- Issue summary / description
+- Affected domain labels (filter, autoAnswers, aibot)
+- Component names from testing plan or QA spec
 
-See [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md).
+**Do NOT update MEMORY.md** — site_context.md is run-specific; MEMORY.md would bloat.
+
+Save resolved context to: `memory/tester-flow/runs/<key>/site_context.md`. Update `task.json` with `site_context_path`. **Before each test step, read `site_context_path` from task.json** so agents always use it.
+
+See [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md).
+
+---
+
+## Artifact Save Requirements
+
+**ALL intermediate and final artifacts MUST be saved.** No in-memory-only processing.
+
+| Artifact | Path |
+|----------|------|
+| Task control state | `memory/tester-flow/runs/<key>/task.json` |
+| Run data state | `memory/tester-flow/runs/<key>/run.json` |
+| Site context | `memory/tester-flow/runs/<key>/site_context.md` |
+| Execution report | `memory/tester-flow/runs/<key>/reports/execution-summary.md` |
+| Screenshots | `memory/tester-flow/runs/<key>/screenshots/<step>.png` |
+| Reporter handoff (read) | `workspace-reporter/projects/defects-analysis/<key>/tester_handoff.json` |
+| Testing plan (read) | `workspace-reporter/projects/defects-analysis/<key>/<key>_TESTING_PLAN.md` |
+| Healing report | `memory/tester-flow/runs/<key>/healing/healing_report.md` |
+
+---
 
 ## Tools
 

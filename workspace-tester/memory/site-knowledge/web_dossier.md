@@ -1,77 +1,97 @@
-# Site Knowledge: web_dossier
+# Site Knowledge: Web Dossier Domain
 
-> Components: 3
+## Overview
+
+- **Domain key:** `web_dossier`
+- **Components covered:** DossierMenu, DossierToolbar, WebDossierPage
+- **Spec files scanned:** 0
+- **POM files scanned:** 3
+
+## Components
 
 ### DossierMenu
-> Extends: `BaseComponent`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `MenuDropDown` | `.mstrmojo-ui-Menu-item-container` | element |
-| `ConfirmSaveDialog` | `.mstrmojo-ConfirmSave-Editor` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `openFile()` |
-| `downLoadDossier()` |
-| `openMenu(tab, menuPaths)` |
-| `isMenuItemPresent(item)` |
-| `closeDossier()` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `.mstrmojo-ui-Menu-item-container`
+- **User-visible elements:**
+  - Confirm Save Dialog (`.mstrmojo-ConfirmSave-Editor`)
+  - Menu Drop Down (`.mstrmojo-ui-Menu-item-container`)
+- **Component actions:**
+  - `closeDossier()`
+  - `downLoadDossier()`
+  - `isMenuItemPresent(item)`
+  - `openFile()`
+  - `openMenu(tab, menuPaths)`
+- **Related components:** _none_
 
 ### DossierToolbar
-> Extends: `BaseComponent`
-
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `ToolbarMenu` | `.vi-toolbarMenu` | element |
-
-**Actions**
-| Signature |
-|-----------|
-| `showNavigationBar()` |
-
-**Sub-components**
-_none_
-
----
+- **CSS root:** `.vi-toolbarMenu`
+- **User-visible elements:**
+  - Toolbar Menu (`.vi-toolbarMenu`)
+- **Component actions:**
+  - `showNavigationBar()`
+- **Related components:** _none_
 
 ### WebDossierPage
-> Extends: `WebBasePage`
+- **CSS root:** `.item.btn.close`
+- **User-visible elements:**
+  - Close Button (`.item.btn.close`)
+  - Launch In Library Button (`.mstrmojo-Button.share-link-bar-launch-button`)
+  - Re Prompt Button (`.item.btn.reprompt`)
+  - Share Link Bar (`.mstrmojo-ShareLinkBar `)
+- **Component actions:**
+  - `closeDossier()`
+  - `deleteUploadDossier(name)`
+  - `findShareDialog()`
+  - `getNthVisualizationContent(n)`
+  - `isFileNotEmpty(name)`
+  - `isShareLinkBarPresent()`
+  - `launchInLibrary()`
+  - `open(documentID)`
+  - `openDossierInListView(name)`
+  - `openRunWithPrompt(documentID)`
+  - `openWithPromptPage(documentID)`
+  - `rePrompt()`
+  - `uploadMstrFile(path)`
+  - `waitForDossierCurtainDisappear()`
+  - `waitForUploadComplete()`
+- **Related components:** openWithPromptPage
 
-**Locators**
-| Name | CSS | Type |
-|------|-----|------|
-| `RePromptButton` | `.item.btn.reprompt` | button |
-| `CloseButton` | `.item.btn.close` | button |
-| `LaunchInLibraryButton` | `.mstrmojo-Button.share-link-bar-launch-button` | button |
-| `ShareLinkBar` | `.mstrmojo-ShareLinkBar ` | element |
+## Common Workflows (from spec.ts)
 
-**Actions**
-| Signature |
-|-----------|
-| `getNthVisualizationContent(n)` |
-| `findShareDialog()` |
-| `open(documentID)` |
-| `openWithPromptPage(documentID)` |
-| `openRunWithPrompt(documentID)` |
-| `openDossierInListView(name)` |
-| `deleteUploadDossier(name)` |
-| `uploadMstrFile(path)` |
-| `waitForUploadComplete()` |
-| `rePrompt()` |
-| `closeDossier()` |
-| `launchInLibrary()` |
-| `waitForDossierCurtainDisappear()` |
-| `isFileNotEmpty(name)` |
-| `isShareLinkBarPresent()` |
+1. _none_
 
-**Sub-components**
-- openWithPromptPage
+## Common Elements (from POM + spec.ts)
+
+1. Close Button -- frequency: 1
+2. Confirm Save Dialog -- frequency: 1
+3. Launch In Library Button -- frequency: 1
+4. Menu Drop Down -- frequency: 1
+5. Re Prompt Button -- frequency: 1
+6. Share Link Bar -- frequency: 1
+7. Toolbar Menu -- frequency: 1
+
+## Key Actions
+
+- `closeDossier()` -- used in 0 specs
+- `deleteUploadDossier(name)` -- used in 0 specs
+- `downLoadDossier()` -- used in 0 specs
+- `findShareDialog()` -- used in 0 specs
+- `getNthVisualizationContent(n)` -- used in 0 specs
+- `isFileNotEmpty(name)` -- used in 0 specs
+- `isMenuItemPresent(item)` -- used in 0 specs
+- `isShareLinkBarPresent()` -- used in 0 specs
+- `launchInLibrary()` -- used in 0 specs
+- `open(documentID)` -- used in 0 specs
+- `openDossierInListView(name)` -- used in 0 specs
+- `openFile()` -- used in 0 specs
+- `openMenu(tab, menuPaths)` -- used in 0 specs
+- `openRunWithPrompt(documentID)` -- used in 0 specs
+- `openWithPromptPage(documentID)` -- used in 0 specs
+- `rePrompt()` -- used in 0 specs
+- `showNavigationBar()` -- used in 0 specs
+- `uploadMstrFile(path)` -- used in 0 specs
+- `waitForDossierCurtainDisappear()` -- used in 0 specs
+- `waitForUploadComplete()` -- used in 0 specs
+
+## Source Coverage
+
+- `pageObjects/web_dossier/**/*.js`

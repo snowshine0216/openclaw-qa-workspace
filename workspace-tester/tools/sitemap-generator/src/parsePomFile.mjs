@@ -16,7 +16,10 @@ export async function parsePomFile(entry, deps = {}) {
     : await readLocal(entry.filePath);
 
   const fallbackClass = path.parse(entry.fileName).name;
-  const classInfo = source.trim() ? safeClassInfo(source, fallbackClass) : { className: fallbackClass, parentClass: null };
+  const classInfo = source.trim()
+    ? safeClassInfo(source, fallbackClass)
+    : { className: fallbackClass, parentClass: null };
+
   return {
     domain: entry.domain,
     className: classInfo.className,
@@ -41,17 +44,37 @@ export function extractClassInfo(source) {
 }
 
 /**
- * Extract `get*` locators that call this.$('<css>').
+ * Extract locator-like getters that call this.$('<css>').
  * @param {string} source
  * @returns {Array<{ name: string, css: string, type: string }>}
  */
 export function extractLocators(source) {
-  const locatorRe = /get(\w+)\s*\(\)\s*\{[^}]*this\.\$\(['"]([^'"]+)['"]\)/gs;
-  return [...source.matchAll(locatorRe)].map((match) => ({
+  const locators = [];
+  const seen = new Set();
+
+  const methodGetterRe = /get([A-Z][A-Za-z0-9_]*)\s*\(\)\s*\{[^}]*this\.\$\(['"]([^'"]+)['"]\)/gs;
+  const propertyGetterRe = /get\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(\)?\s*\{[^}]*this\.\$\(['"]([^'"]+)['"]\)/gs;
+  const rootMethodRe = /\b(root|container|panel|widget)\s*\(\)\s*\{[^}]*this\.\$\(['"]([^'"]+)['"]\)/gis;
+
+  appendMatches(locators, seen, source, methodGetterRe, (match) => ({
     name: match[1],
     css: match[2],
     type: inferType(match[2]),
   }));
+
+  appendMatches(locators, seen, source, propertyGetterRe, (match) => ({
+    name: normalizeName(match[1]),
+    css: match[2],
+    type: inferType(match[2]),
+  }));
+
+  appendMatches(locators, seen, source, rootMethodRe, (match) => ({
+    name: normalizeName(match[1]),
+    css: match[2],
+    type: inferType(match[2]),
+  }));
+
+  return locators;
 }
 
 /**
@@ -65,6 +88,21 @@ export function extractActions(source) {
     name: match[1],
     params: match[2].split(',').map((value) => value.trim()).filter(Boolean),
   }));
+}
+
+function appendMatches(out, seen, source, regex, toLocator) {
+  for (const match of source.matchAll(regex)) {
+    const locator = toLocator(match);
+    const key = `${locator.name}|${locator.css}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(locator);
+    }
+  }
+}
+
+function normalizeName(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function inferType(css) {

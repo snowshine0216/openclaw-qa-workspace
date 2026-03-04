@@ -1,177 +1,306 @@
 {
-  "generatedAt": "2026-03-04T03:45:44.568Z",
-  "sourceRepo": "git@github.com:mstr-kiai/web-dossier.git",
+  "generatedAt": "2026-03-04T08:08:13.039Z",
+  "sourceRepo": "../../projects/wdio",
   "domains": {
     "admin": {
+      "displayName": "Admin",
       "componentCount": 1,
+      "workflowCount": 0,
+      "commonElementCount": 21,
       "filePath": "admin.md"
     },
     "agGrid": {
+      "displayName": "Ag Grid",
       "componentCount": 4,
+      "workflowCount": 284,
+      "commonElementCount": 140,
       "filePath": "agGrid.md"
     },
     "aibot": {
+      "displayName": "Bot (AI Bot)",
       "componentCount": 27,
+      "workflowCount": 437,
+      "commonElementCount": 631,
       "filePath": "aibot.md"
     },
     "alert": {
+      "displayName": "Alert",
       "componentCount": 2,
+      "workflowCount": 28,
+      "commonElementCount": 51,
       "filePath": "alert.md"
     },
     "auth": {
+      "displayName": "Auth",
       "componentCount": 12,
+      "workflowCount": 506,
+      "commonElementCount": 149,
       "filePath": "auth.md"
     },
     "authoring": {
-      "componentCount": 58,
+      "displayName": "Authoring",
+      "componentCount": 57,
+      "workflowCount": 117,
+      "commonElementCount": 108,
       "filePath": "authoring.md"
     },
     "authoringFilter": {
+      "displayName": "Authoring Filter",
       "componentCount": 4,
+      "workflowCount": 0,
+      "commonElementCount": 15,
       "filePath": "authoringFilter.md"
     },
     "autoAnswers": {
+      "displayName": "AutoAnswers (AI Assistant)",
       "componentCount": 4,
+      "workflowCount": 120,
+      "commonElementCount": 85,
       "filePath": "autoAnswers.md"
     },
     "base": {
+      "displayName": "Base",
       "componentCount": 12,
+      "workflowCount": 0,
+      "commonElementCount": 40,
       "filePath": "base.md"
     },
     "collaboration": {
+      "displayName": "Collaboration",
       "componentCount": 4,
+      "workflowCount": 54,
+      "commonElementCount": 103,
       "filePath": "collaboration.md"
     },
     "common": {
+      "displayName": "Common",
       "componentCount": 34,
+      "workflowCount": 18,
+      "commonElementCount": 121,
       "filePath": "common.md"
     },
     "compoundGrid": {
+      "displayName": "Compound Grid",
       "componentCount": 2,
+      "workflowCount": 65,
+      "commonElementCount": 41,
       "filePath": "compoundGrid.md"
     },
     "document": {
+      "displayName": "Document",
       "componentCount": 17,
+      "workflowCount": 83,
+      "commonElementCount": 33,
       "filePath": "document.md"
     },
     "dossier": {
+      "displayName": "Dossier",
       "componentCount": 16,
+      "workflowCount": 430,
+      "commonElementCount": 384,
       "filePath": "dossier.md"
     },
     "dossierEditor": {
+      "displayName": "Dossier Editor",
       "componentCount": 16,
+      "workflowCount": 0,
+      "commonElementCount": 74,
       "filePath": "dossierEditor.md"
     },
     "embedding": {
+      "displayName": "Embedding",
       "componentCount": 2,
+      "workflowCount": 22,
+      "commonElementCount": 7,
       "filePath": "embedding.md"
     },
     "export": {
+      "displayName": "Export",
       "componentCount": 9,
+      "workflowCount": 237,
+      "commonElementCount": 234,
       "filePath": "export.md"
     },
     "filter": {
+      "displayName": "Filter",
       "componentCount": 16,
+      "workflowCount": 326,
+      "commonElementCount": 158,
       "filePath": "filter.md"
     },
     "group": {
+      "displayName": "Group",
       "componentCount": 2,
+      "workflowCount": 65,
+      "commonElementCount": 33,
       "filePath": "group.md"
     },
     "insights": {
+      "displayName": "Insights",
       "componentCount": 3,
+      "workflowCount": 0,
+      "commonElementCount": 6,
       "filePath": "insights.md"
     },
     "library": {
+      "displayName": "Library",
       "componentCount": 22,
+      "workflowCount": 411,
+      "commonElementCount": 317,
       "filePath": "library.md"
     },
     "prompt": {
+      "displayName": "Prompt",
       "componentCount": 17,
+      "workflowCount": 185,
+      "commonElementCount": 63,
       "filePath": "prompt.md"
     },
     "report": {
+      "displayName": "Report",
       "componentCount": 43,
+      "workflowCount": 500,
+      "commonElementCount": 312,
       "filePath": "report.md"
     },
     "rwd": {
+      "displayName": "Rwd",
       "componentCount": 1,
+      "workflowCount": 2,
+      "commonElementCount": 12,
       "filePath": "rwd.md"
     },
     "saas": {
+      "displayName": "Saas",
       "componentCount": 4,
+      "workflowCount": 39,
+      "commonElementCount": 56,
       "filePath": "saas.md"
     },
     "search": {
+      "displayName": "Search",
       "componentCount": 5,
+      "workflowCount": 92,
+      "commonElementCount": 73,
       "filePath": "search.md"
     },
     "selector": {
+      "displayName": "Selector",
       "componentCount": 14,
+      "workflowCount": 171,
+      "commonElementCount": 79,
       "filePath": "selector.md"
     },
     "snapshots": {
+      "displayName": "Snapshots",
       "componentCount": 4,
+      "workflowCount": 62,
+      "commonElementCount": 61,
       "filePath": "snapshots.md"
     },
     "teams": {
+      "displayName": "Teams",
       "componentCount": 11,
+      "workflowCount": 133,
+      "commonElementCount": 140,
       "filePath": "teams.md"
     },
     "telemetry": {
+      "displayName": "Telemetry",
       "componentCount": 1,
+      "workflowCount": 42,
+      "commonElementCount": 3,
       "filePath": "telemetry.md"
     },
     "transaction": {
-      "componentCount": 13,
+      "displayName": "Transaction",
+      "componentCount": 12,
+      "workflowCount": 115,
+      "commonElementCount": 133,
       "filePath": "transaction.md"
     },
     "transactionSQL": {
+      "displayName": "Transaction SQL",
       "componentCount": 9,
+      "workflowCount": 51,
+      "commonElementCount": 83,
       "filePath": "transactionSQL.md"
     },
     "transactionSQLEditor": {
+      "displayName": "Transaction SQLEditor",
       "componentCount": 11,
+      "workflowCount": 0,
+      "commonElementCount": 0,
       "filePath": "transactionSQLEditor.md"
     },
     "visualization": {
+      "displayName": "Visualization",
       "componentCount": 12,
+      "workflowCount": 152,
+      "commonElementCount": 50,
       "filePath": "visualization.md"
     },
     "web_admin": {
+      "displayName": "Web Admin",
       "componentCount": 10,
+      "workflowCount": 0,
+      "commonElementCount": 69,
       "filePath": "web_admin.md"
     },
     "web_auth": {
+      "displayName": "Web Auth",
       "componentCount": 1,
+      "workflowCount": 0,
+      "commonElementCount": 6,
       "filePath": "web_auth.md"
     },
     "web_dossier": {
+      "displayName": "Web Dossier",
       "componentCount": 3,
+      "workflowCount": 0,
+      "commonElementCount": 7,
       "filePath": "web_dossier.md"
     },
     "web_folderBrowsing": {
+      "displayName": "Web Folder Browsing",
       "componentCount": 3,
+      "workflowCount": 0,
+      "commonElementCount": 16,
       "filePath": "web_folderBrowsing.md"
     },
     "web_home": {
+      "displayName": "Web Home",
       "componentCount": 15,
+      "workflowCount": 0,
+      "commonElementCount": 28,
       "filePath": "web_home.md"
     },
     "web_personalView": {
+      "displayName": "Web Personal View",
       "componentCount": 1,
+      "workflowCount": 0,
+      "commonElementCount": 1,
       "filePath": "web_personalView.md"
     },
     "web_preference": {
+      "displayName": "Web Preference",
       "componentCount": 23,
+      "workflowCount": 0,
+      "commonElementCount": 90,
       "filePath": "web_preference.md"
     },
     "web_report": {
+      "displayName": "Web Report",
       "componentCount": 12,
+      "workflowCount": 0,
+      "commonElementCount": 14,
       "filePath": "web_report.md"
     },
     "web_subscription": {
+      "displayName": "Web Subscription",
       "componentCount": 1,
+      "workflowCount": 0,
+      "commonElementCount": 1,
       "filePath": "web_subscription.md"
     }
   }

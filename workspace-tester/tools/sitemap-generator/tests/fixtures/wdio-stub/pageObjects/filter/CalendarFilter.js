@@ -1,4 +1,8 @@
 class CalendarFilter extends BaseContainer {
+  root() {
+    return this.$('.mstrd-CalendarWidget');
+  }
+
   getApplyButton() {
     return this.$('.mstrd-Apply-btn');
   }

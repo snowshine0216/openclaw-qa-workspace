@@ -9,6 +9,12 @@
 > **⚠️ Constraint:** This document is in TDD design phase.
 > Implementation code MUST NOT be written until the design is approved.
 > Test functions are listed as coverage tables and stub signatures only.
+>
+> **⚠️ Spec Alignment Note (2026-03-04):**
+> Current generated output at `memory/site-knowledge/SITEMAP.md` is an index-style format.
+> It does **not** fully match the narrative contract examples in
+> [TESTER_AGENT_DESIGN_v2.md](./TESTER_AGENT_DESIGN_v2.md) section `2.5` / `2.6`.
+> Alignment plan: [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md).
 
 ---
 
@@ -77,6 +83,22 @@ workspace-tester/
   }
 }
 ```
+
+### 2.2 Contract Drift: Current vs Target Output
+
+This design currently documents the **v1 renderer behavior** (compact index + technical domain sheet sections).
+Parent design `TESTER_AGENT_DESIGN_v2.md` expects richer narrative output for Layer 1 and Layer 2.
+
+| Output | Current v1 (actual) | Target contract (expected) |
+|--------|----------------------|----------------------------|
+| `SITEMAP.md` | Domain index with component counts and detail file pointers | Product-area narrative blocks (navigation path, key entry points, components, query hint) |
+| `<domain>.md` | Locator/action/sub-component tables directly from parsed POM schema | Human-facing domain knowledge sheet format from section `2.5` |
+
+Until implementation alignment is completed, treat this document as:
+
+1. Accurate for current generator behavior.
+2. In transition toward target contract defined in `TESTER_AGENT_DESIGN_v2.md`.
+3. Governed by the fix plan in `SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md`.
 
 ---
 
@@ -420,7 +442,9 @@ export function renderComponentSection(pom) {
 
 /**
  * Build the compact SITEMAP.md that summarises all domains in one file.
- * This is the "always loaded" top-level overview.  Pure function.
+ * This is the v1 "always loaded" top-level overview (index style).  Pure function.
+ * NOTE: A contract-alignment refactor is planned to match the richer narrative
+ * format defined in TESTER_AGENT_DESIGN_v2 section 2.6.
  *
  * @param {DomainSheet[]} domainSheets - One entry per domain
  * @param {string}        sourceRepo   - Source repo used for generation
@@ -751,6 +775,40 @@ test('saveKnowledgeToFile — empty sheets writes only SITEMAP.md + metadata.jso
 test('saveKnowledgeToFile — read-only outputDir throws descriptive error', async () => { /* stub */ });
 ```
 
+### 6.6 Output Contract Alignment Tests (Planned)
+
+> These tests are required by
+> [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md)
+> to guarantee "expected output == generated output" with minimum mocking.
+
+**Test Coverage**
+
+| Test Name | Scenario | Type |
+|-----------|----------|------|
+| `buildCompactSitemap — matches canonical Layer 1 golden file` | Fixture domain sheets → exact markdown compare (timestamp normalized) | Contract |
+| `buildDomainSheet — matches canonical Layer 2 golden file` | Fixture `filter` POM summaries → exact markdown compare | Contract |
+| `generate-sitemap e2e — fixture repo output equals expected artifacts` | CLI run against local fixtures → `SITEMAP.md` + `filter.md` exact match | Integration |
+| `contract sync — design examples match golden fixtures` | Doc examples in `TESTER_AGENT_DESIGN_v2.md` remain synchronized with expected output fixtures | Drift guard |
+
+**Minimum Mock Policy**
+
+1. No mocks for pure renderer functions.
+2. No mocks for local filesystem integration flow.
+3. Mock only remote boundary (`gh api`) and dynamic clock when needed for deterministic assertions.
+
+**Stub File**
+
+```javascript
+// tests/outputContractAlignment.test.mjs
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+test('buildCompactSitemap — matches canonical Layer 1 golden file', () => { /* stub */ });
+test('buildDomainSheet — matches canonical Layer 2 golden file', () => { /* stub */ });
+test('generate-sitemap e2e — fixture repo output equals expected artifacts', async () => { /* stub */ });
+test('contract sync — design examples match golden fixtures', () => { /* stub */ });
+```
+
 ---
 
 ## 7. How the Tester Agent Reads Site Knowledge
@@ -774,145 +832,21 @@ Key topics covered in the agent design document:
 
 ## 7.1 Playground
 
-The playground provides a quick sandbox to **manually exercise** the sitemap generator against a real
-or synthetic WDIO repo without running the full test suite.
-
-### Purpose
-
-- Validate that `generate-sitemap.mjs` produces correct Markdown output for a given repo.
-- Smoke-test the generated `memory/site-knowledge/` files before integrating with the Tester Agent.
-- Let developers iterate quickly on `buildDomainSheet` / `buildCompactSitemap` output format.
-
-### Location
-
-```
-workspace-tester/
-└── tools/
-    └── sitemap-generator/
-        └── playground/
-            ├── run.mjs               ← One-shot playground runner
-            ├── sample-repo/          ← Minimal synthetic WDIO repo for local runs
-            │   └── pageObjects/
-            │       └── filter/
-            │           └── CalendarFilter.js
-            └── output/               ← Generated files land here (gitignored)
-```
-
-### Usage
-
-```bash
-# Run against the synthetic sample repo
-node tools/sitemap-generator/playground/run.mjs
-
-# Run against a real local WDIO checkout
-node tools/sitemap-generator/playground/run.mjs \
-  --repo /path/to/wdio-repo \
-  --domains filter,autoAnswers,aibot
-```
-
-### `playground/run.mjs` Stub
-
-```javascript
-// playground/run.mjs
-// Quick smoke-test runner — not part of the production build.
-import { main } from '../generate-sitemap.mjs';
-
-const SAMPLE_REPO = new URL('./sample-repo', import.meta.url).pathname;
-const args = process.argv.slice(2).length
-  ? process.argv.slice(2)
-  : ['--repo', SAMPLE_REPO, '--domains', 'all', '--output-dir', './playground/output'];
-
-await main(args);
-console.log('📂 Check playground/output/ for generated files.');
-```
+> **Moved to:** [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md §6](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md)
+>
+> The playground documentation (purpose, location, run.mjs stub, usage commands) now lives in the agent design
+> document where it can be kept alongside the agent-side configuration and qmd setup instructions.
 
 ---
 
 ## 7.2 User-facing README
 
-A user-facing `README.md` targets **engineers who want to run or extend** the sitemap generator.
-It lives at the tool root and is the first document a new contributor reads.
+> **Moved to:** [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md §7](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md)
+>
+> The README template (required sections, CLI reference, qmd setup, troubleshooting) now lives in the
+> agent design document as it primarily concerns operators setting up the site knowledge infrastructure.
 
-### Location
 
-```
-workspace-tester/
-└── tools/
-    └── sitemap-generator/
-        └── README.md    ← this file
-```
-
-### Required Sections
-
-| Section | Content |
-|---------|--------|
-| **Overview** | One-paragraph description of what the tool does and why |
-| **Quick Start** | Three commands to clone, install (if any), and run |
-| **CLI Reference** | Table of all `--flags`, types, defaults, and examples |
-| **Output Format** | Description of `SITEMAP.md`, domain `.md` files, `metadata.json` |
-| **Adding a New Domain** | Step-by-step: edit `domains.json`, verify with playground, run tests |
-| **Running Tests** | `node --test tests/*.test.mjs` — what to expect on pass/fail |
-| **Playground** | Pointer to `playground/` and how to inspect output |
-| **Troubleshooting** | Common errors (`ENOENT`, empty output, `EACCES`) and fixes |
-
-### README Template (Stub)
-
-```markdown
-# Site Knowledge Generator
-
-> Crawls WDIO page-objects and writes structured Markdown knowledge files
-> to `memory/site-knowledge/` for use by the Tester Agent.
-
-## Quick Start
-
-\`\`\`bash
-cd workspace-tester/tools/sitemap-generator
-node generate-sitemap.mjs --repo-url https://github.com/mstr-kiai/web-dossier --domains all
-# Or if you have it locally:
-# node generate-sitemap.mjs --repo /path/to/wdio --domains all
-\`\`\`
-
-## Requirements
-
-If you are using the `--repo-url` flag to process remote repositories, you must have the **GitHub CLI (`gh`)** installed and authenticated:
-1. `brew install gh` (macOS)
-2. `gh auth login` (follow prompts inside terminal)
-
-## CLI Reference
-
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--repo` | string | _(see desc)_ | Local path of the WDIO repo (required if `--repo-url` not provided) |
-| `--repo-url` | string | _(see desc)_ | GitHub repo URL to load directly into memory using `gh api`. Auto-locates `tests/wdio`. |
-| `--domains` | CSV or `all` | _(required)_ | Domains to process |
-| `--output-dir` | string | `memory/site-knowledge` | Output directory |
-
-## Adding a New Domain
-
-1. Add an entry to `config/domains.json`.
-2. Run `node playground/run.mjs --domains <new-domain>` to inspect output.
-3. Run `node --test tests/*.test.mjs` to verify no regressions.
-
-## Running Tests
-
-\`\`\`bash
-node --test tests/*.test.mjs
-\`\`\`
-
-## Playground
-
-See `playground/` for a quick-run sandbox. Outputs land in `playground/output/`.
-
-## Troubleshooting
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Repo not found: …` | `--repo` path does not exist | Check the path |
-| Empty `.md` files | POM folder has no `.js` files | Verify `domains.json` `pomPaths` |
-| `EACCES` | Output dir not writable | Check permissions on `--output-dir` |
-```
-
----
 
 ## 8. `domains.json` Configuration
 
