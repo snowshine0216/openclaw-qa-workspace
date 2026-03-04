@@ -4,21 +4,39 @@
 
 ## Overview
 
-The Site Knowledge Generator scans page-object model (`.js`) files by domain, extracts class info, locators, and async actions, then writes:
+The Site Knowledge Generator scans page-object model (`.js`) and spec (`.ts`) files by domain, then writes:
 - one compact cross-domain `SITEMAP.md`
 - one domain detail sheet per domain (for example `filter.md`)
 - a machine-readable `metadata.json`
 
 The generator supports both local repositories (`--repo`) and GitHub repositories (`--repo-url` via `gh api`).
 
-## Quick Start
+## Canonical Commands (Single Source of Truth)
+
+Use this section as the only authoritative command contract for generation flows.
 
 ```bash
-git clone <your-repo-url>
+# 1) One-shot sitemap generation from GitHub source
 cd workspace-tester/tools/sitemap-generator
-node scripts/generate-domains-config.mjs --repo ../../projects/wdio --output ./config/domains.json
-node generate-sitemap.mjs --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+node generate-sitemap.mjs --repo-url git@github.com:mstr-kiai/web-dossier.git --domains all --output-dir ../../memory/site-knowledge
+
+# 2) Refresh domains config from GitHub source
+cd workspace-tester/tools/sitemap-generator && npm run generate:domains -- --repo-url git@github.com:mstr-kiai/web-dossier.git --output ./config/domains.json
+
+# 3) Generate sitemap from local repo with npm shortcut
+cd workspace-tester/tools/sitemap-generator && npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
+
+# Optional: include Common Elements + Component actions + Key Actions in <domain>.md
+cd workspace-tester/tools/sitemap-generator && npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge --verbose=true
 ```
+
+Notes:
+- Commands `#1` and `#2` require `gh` authentication.
+- Command `#3` requires a local checkout at `workspace-tester/projects/wdio` (`../../projects/wdio` from this folder).
+
+## Quick Start
+
+Run commands `#2` and `#3` from `Canonical Commands (Single Source of Truth)`.
 
 ## Shortcuts
 
@@ -30,19 +48,12 @@ cd workspace-tester/tools/sitemap-generator
 # Run tests
 npm run test
 
-# Generate domains config from local WDIO repo
-npm run generate:domains -- --repo ../../projects/wdio --output ./config/domains.json
-
-# Generate domains config from GitHub repo
-npm run generate:domains -- --repo-url git@github.com:mstr-kiai/web-dossier.git --output ./config/domains.json
-
-# Generate sitemap files
-npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
-
 # Playground
 npm run playground
 npm run playground:domains
 ```
+
+For generation commands, always use the canonical command section above.
 
 ## Requirements
 
@@ -61,10 +72,13 @@ gh auth login
 | `--repo-url` | string | none | GitHub repository source. Supports `https://github.com/<owner>/<repo>`, `git@github.com:<owner>/<repo>.git`, and `ssh://git@github.com/<owner>/<repo>`. Uses `gh api` (no local checkout needed). | `--repo-url git@github.com:mstr-kiai/web-dossier.git` |
 | `--domains` | CSV string or `all` | none | Domains to process. Must be provided. | `--domains filter,autoAnswers,aibot` |
 | `--output-dir` | string | `memory/site-knowledge` | Output directory for generated files. | `--output-dir ../../memory/site-knowledge` |
+| `--verbose` | boolean-ish string | `false` | Controls detail level in `<domain>.md`. Use `--verbose=true` to include Common Elements, Component actions, and Key Actions. | `--verbose=true` |
 
 ## Generate `domains.json` Automatically
 
-If you want full coverage (all first-level `pageObjects/*` folders), generate config from the WDIO repo tree:
+Use canonical command `#2` above to regenerate `./config/domains.json`.
+
+If you need direct script invocation (advanced use), generate config from the WDIO repo tree:
 
 ```bash
 cd workspace-tester/tools/sitemap-generator
@@ -102,7 +116,8 @@ memory/site-knowledge/
 
 File details:
 - `SITEMAP.md`: compact overview with generated timestamp and component counts by domain.
-- `<domain>.md`: full component sheet with locators, action signatures, and sub-component references.
+- `<domain>.md` default (`--verbose=false`): overview, components, common workflows, and source coverage.
+- `<domain>.md` verbose (`--verbose=true`): also includes common elements, component actions, and key actions.
 - `metadata.json`: source repo path/url, generation timestamp, and per-domain component counts.
 
 ## Adding a New Domain
@@ -159,8 +174,6 @@ Generated playground output is written to `playground/output/`.
 | `GitHub CLI (gh) is not authenticated` | `--repo-url` used without `gh auth login` | Run `gh auth login`, then rerun command |
 
 
-## references for cron job to use it
-``` bash
-cd workspace-tester/tools/sitemap-generator && npm run generate:domains -- --repo-url git@github.com:mstr-kiai/web-dossier.git --output ./config/domains.json
-cd workspace-tester/tools/sitemap-generator && npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
-```
+## Cron Reference
+
+Cron jobs must use the same canonical commands from `Canonical Commands (Single Source of Truth)` above.

@@ -19,10 +19,12 @@
  *   specFileCount: number,
  *   pomFileCount: number
  * }} domainModel
+ * @param {{ verbose?: boolean }} [options]
  * @returns {{ domain: string, content: string, componentCount: number, workflowCount: number, commonElementCount: number }}
  */
-export function buildDomainSheet(domainModel) {
-  const content = [
+export function buildDomainSheet(domainModel, options = {}) {
+  const verbose = options.verbose === true;
+  const sections = [
     `# Site Knowledge: ${domainModel.displayName} Domain`,
     '',
     '## Overview',
@@ -34,23 +36,30 @@ export function buildDomainSheet(domainModel) {
     '',
     '## Components',
     '',
-    renderComponents(domainModel.components),
+    renderComponents(domainModel.components, { verbose }),
     '',
     '## Common Workflows (from spec.ts)',
     '',
     renderWorkflows(domainModel.workflows),
-    '',
-    '## Common Elements (from POM + spec.ts)',
-    '',
-    renderCommonElements(domainModel.commonElements),
-    '',
-    '## Key Actions',
-    '',
-    renderActions(domainModel.actions),
-    '',
-    '## Source Coverage',
-    '',
-    renderSourceCoverage(domainModel.sourceCoverage),
+  ];
+
+  if (verbose) {
+    sections.push(
+      '',
+      '## Common Elements (from POM + spec.ts)',
+      '',
+      renderCommonElements(domainModel.commonElements),
+      '',
+      '## Key Actions',
+      '',
+      renderActions(domainModel.actions)
+    );
+  }
+
+  sections.push('', '## Source Coverage', '', renderSourceCoverage(domainModel.sourceCoverage));
+
+  const content = [
+    ...sections,
   ].join('\n').trimEnd() + '\n';
 
   return {
@@ -62,7 +71,7 @@ export function buildDomainSheet(domainModel) {
   };
 }
 
-function renderComponents(components) {
+function renderComponents(components, { verbose }) {
   if (components.length === 0) {
     return '_none_';
   }
@@ -86,8 +95,9 @@ function renderComponents(components) {
         `- **CSS root:** \`${component.cssRoot}\``,
         '- **User-visible elements:**',
         ...elementLines,
-        '- **Component actions:**',
-        ...actionLines,
+        ...(verbose
+          ? ['- **Component actions:**', ...actionLines]
+          : []),
         `- **Related components:** ${related}`,
       ].join('\n');
     })

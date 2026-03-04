@@ -41,9 +41,17 @@ test('buildDomainSheet -- content includes required section headers', () => {
   assert.match(out.content, /## Overview/);
   assert.match(out.content, /## Components/);
   assert.match(out.content, /## Common Workflows \(from spec\.ts\)/);
+  assert.match(out.content, /## Source Coverage/);
+  assert.doesNotMatch(out.content, /## Common Elements \(from POM \+ spec\.ts\)/);
+  assert.doesNotMatch(out.content, /## Key Actions/);
+  assert.doesNotMatch(out.content, /\*\*Component actions:\*\*/);
+});
+
+test('buildDomainSheet -- verbose mode includes common elements and action sections', () => {
+  const out = buildDomainSheet(STUB_MODEL, { verbose: true });
   assert.match(out.content, /## Common Elements \(from POM \+ spec\.ts\)/);
   assert.match(out.content, /## Key Actions/);
-  assert.match(out.content, /## Source Coverage/);
+  assert.match(out.content, /\*\*Component actions:\*\*/);
 });
 
 test('buildDomainSheet -- empty sections render deterministic placeholders', () => {

@@ -3,7 +3,7 @@
 > **Design ID:** `site-knowledge-output-alignment-impl-v2`
 > **Date:** 2026-03-04
 > **Status:** Design — Updated per review findings
-> **Plan Source:** [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md)
+> **Plan Source:** [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_PLAN2.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_PLAN2.md)
 > **Parent Design:** [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
 
 ---
@@ -118,7 +118,6 @@ interface DomainKnowledgeModel {
   componentCount: number;
   workflows: Array<{ name: string; frequency: number; sources: string[] }>;
   commonElements: Array<{ label: string; frequency: number; examples: string[] }>;
-  actions: Array<{ signature: string; frequency: number }>;
   detailFile: string;                 // e.g. filter.md
 }
 ```
@@ -238,13 +237,6 @@ To avoid drift, canonical formatting is fixed:
 3. Date range input — frequency: 12
 4. Filter capsule in summary bar — frequency: 10
 
-## Key Actions
-
-- `applyFilter()` — used in 14 specs
-- `clearFilter()` — used in 8 specs
-- `selectDate(year, month, day)` — used in 6 specs
-- `searchElement(text)` — used in 5 specs
-
 ## Source Coverage
 
 - `pageObjects/filter/*.js`
@@ -351,7 +343,7 @@ All must pass:
 ### Phase C — Renderer Refactor
 
 1. Refactor `buildCompactSitemap` to index format from `DomainKnowledgeModel`.
-2. Refactor `buildDomainSheet` to include workflows/elements/actions/source coverage.
+2. Refactor `buildDomainSheet` to include workflows/elements/source coverage without an actions section.
 3. Keep `saveKnowledgeToFile` unchanged.
 
 ### Phase D — Validation
@@ -374,20 +366,34 @@ Clarified decision in this v2 design:
 
 ---
 
-## 10. Definition of Done
+## 10. Command Source of Truth
+
+README command contract for sitemap generation is canonical:
+
+1. All execution commands in design docs must match [`tools/sitemap-generator/README.md`](../tools/sitemap-generator/README.md).
+2. If command behavior changes, update README first, then update design docs and tests.
+3. The following commands are required to remain valid:
+   - `cd workspace-tester/tools/sitemap-generator && npm run generate:domains -- --repo-url git@github.com:mstr-kiai/web-dossier.git --output ./config/domains.json`
+   - `cd workspace-tester/tools/sitemap-generator && npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge`
+   - `cd workspace-tester/tools/sitemap-generator && node generate-sitemap.mjs --repo-url git@github.com:mstr-kiai/web-dossier.git --domains all --output-dir ../../memory/site-knowledge`
+
+---
+
+## 11. Definition of Done
 
 - [ ] `domains.json` supports all areas with `displayName`/`specPaths` and required metadata fields
 - [ ] `SITEMAP.md` remains compact index format with alias + counts + query hints
-- [ ] Each `<domain>.md` includes Components + Common Workflows + Common Elements + Key Actions + Source Coverage
+- [ ] Each `<domain>.md` includes Components + Common Workflows + Common Elements + Source Coverage (no Key Actions section)
 - [ ] All deterministic ordering rules enforced
 - [ ] Golden + E2E + contract-sync tests pass
 - [ ] `--domains all` output covers every domain in config
 
 ---
 
-## 11. References
+## 12. References
 
 - [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_FIX_PLAN.md)
+- [SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_PLAN2.md](./SITE_KNOWLEDGE_OUTPUT_ALIGNMENT_PLAN2.md)
 - [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
 - [TESTER_AGENT_DESIGN_v2.md](./TESTER_AGENT_DESIGN_v2.md)
 - [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md)

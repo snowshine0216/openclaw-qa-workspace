@@ -24,9 +24,10 @@ import { assertValidDomainsConfig } from './src/domainConfig.mjs';
 export async function main(argv, deps = {}) {
   assertValidDomainsConfig();
   const log = deps.log ?? console.log;
+  const { args: normalizedArgs, verbose } = extractVerboseOption(argv);
 
   const { values } = parseArgs({
-    args: argv,
+    args: normalizedArgs,
     options: {
       repo: { type: 'string' },
       'repo-url': { type: 'string' },
@@ -102,7 +103,7 @@ export async function main(argv, deps = {}) {
 
   const generatedAt = resolveGeneratedAt(deps.now ?? (() => new Date()));
   log('[generate-sitemap] rendering markdown artifacts...');
-  const domainSheets = domainModels.map((model) => buildDomainSheet(model));
+  const domainSheets = domainModels.map((model) => buildDomainSheet(model, { verbose }));
   const sitemap = buildCompactSitemap(domainModels, repoSource, { generatedAt });
 
   const metadata = {
@@ -125,6 +126,37 @@ export async function main(argv, deps = {}) {
   log('[generate-sitemap] writing files...');
   const result = await saveKnowledgeToFile(values['output-dir'], domainSheets, sitemap, metadata);
   log(`Written ${result.filesWritten.length} files to ${result.outputDir}`);
+}
+
+function extractVerboseOption(argv) {
+  let verbose = false;
+  const args = [];
+
+  for (const arg of argv) {
+    if (arg === '--verbose') {
+      verbose = true;
+      continue;
+    }
+    if (arg === '--no-verbose') {
+      verbose = false;
+      continue;
+    }
+    if (arg.startsWith('--verbose=')) {
+      const raw = arg.slice('--verbose='.length).trim().toLowerCase();
+      if (raw === 'true' || raw === '1' || raw === 'yes') {
+        verbose = true;
+        continue;
+      }
+      if (raw === 'false' || raw === '0' || raw === 'no') {
+        verbose = false;
+        continue;
+      }
+      throw new Error(`Invalid --verbose value: ${raw}. Use true or false.`);
+    }
+    args.push(arg);
+  }
+
+  return { args, verbose };
 }
 
 function groupEntriesByDomain(entries) {

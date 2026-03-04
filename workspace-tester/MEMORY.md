@@ -33,8 +33,6 @@ _Test execution patterns, runtime state map, and automation tips._
 
 ## Site Knowledge Search
 
-**Do NOT append to MEMORY.md after site search** — site_context.md is run-specific; MEMORY.md would bloat.
-
 **Always run site search before FC test execution.** Use keywords from:
 - Issue summary + description
 - Domain labels (filter, autoAnswers, aibot)
@@ -45,7 +43,7 @@ Search commands:
 # BM25 (always available)
 qmd search "<keyword>" -c site-knowledge --json -n 10
 
-# OpenClaw (when available)
+# OpenClaw 
 # memory_search tool with query
 ```
 

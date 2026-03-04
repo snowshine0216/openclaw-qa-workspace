@@ -14,6 +14,9 @@
 **/memory/*.md
 !**/memory/.gitkeep
 
+# Site knowledge (generated, excluded from version control)
+workspace-tester/memory/site-knowledge/
+
 # Tester-flow runtime state (runs, logs, healing reports)
 workspace-tester/memory/tester-flow/
 

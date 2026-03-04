@@ -1,13 +1,60 @@
-# Site Knowledge System — Agent-Side Design (v2)
+# Site Knowledge System - Agent-Side Design (v2)
 
 > **Design ID:** `site-knowledge-agent-v2`
 > **Date:** 2026-03-04
-> **Status:** Draft — TDD Phase
+> **Status:** Draft - TDD Phase
 > **Parent Design:** [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
-> **Scope:** How the Tester Agent searches site knowledge and propagates context at test-run time.
+> **Scope:** Tester Agent runtime search of site knowledge and context propagation to test execution workflows.
 >
-> **⚠️ Constraint:** This document is in TDD design phase.
-> Implementation code MUST NOT be written until the design is approved.
+> **Constraint:** This is a design artifact. Do not implement code changes until this design is approved.
+
+---
+
+## 0. Design Authority and Migration Note
+
+### 0.1 Normative scope
+
+This document is the **normative source** for Site Knowledge behavior in:
+
+- feature-test workflow design
+- defect-test workflow design
+- site-context artifact generation and use
+- test reporting handoff expectations
+
+### 0.2 Design-only update policy
+
+This revision updates design contracts only. It does **not** perform code/workflow/skill implementation.
+
+### 0.3 Known cross-doc mismatch and migration requirement
+
+Current `AGENTS.md` still uses `memory/tester-flow/runs/...` in parts of the tester flow. This design standardizes on `projects/test-cases/<key>/...`.
+
+Follow-up (outside this design-only change):
+
+1. Align `AGENTS.md` path contracts to this design.
+2. Align `.agents/workflows/feature-test.md` and `.agents/workflows/defect-test.md` when created.
+3. Align `scripts/check_resume.sh` behavior to this design contract.
+
+### 0.4 Path resolution base (single execution context)
+
+All operational paths and commands in this document are resolved from:
+
+- `workspace-tester/` as the working directory (CWD base)
+
+Path style rule:
+
+1. Use workspace-root-relative paths only (example: `projects/test-cases/BCIN-1234/task.json`).
+2. For sibling workspaces, use explicit CWD-resolvable relative paths (`../workspace-planner/...`, `../workspace-reporter/...`).
+3. Do not mix repo-root-prefixed paths and CWD-relative paths in the same command contract.
+4. Legacy `memory/tester-flow/runs/...` paths may appear only in migration compatibility notes.
+
+### 0.5 Gate compatibility command (legacy canonical form)
+
+For OpenClaw design-review compatibility during migration, keep this exact canonical verification command in the design:
+
+```bash
+jq -r '.notification_pending // empty' memory/tester-flow/runs/<work_item_key>/run.json
+```
 
 ---
 
@@ -15,624 +62,694 @@
 
 ### 1.1 Overview
 
-This section describes the **agent-side** of the Site Knowledge System — how the Tester Agent **searches** the pre-generated `memory/site-knowledge/` files at runtime and propagates context to sub-agents (Planner, Generator, Healer).
+The Tester Agent searches pre-generated site knowledge at runtime and writes resolved context to a run-scoped artifact used by test execution.
 
-The generation side (how the files are produced) is covered in the parent design:
-[SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md).
+Generation-side design is in:
+[SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
 
-**Search Strategy: qmd BM25 + OpenClaw memorySearch**
+Search backends:
 
-The agent uses **two search backends** (use one or both):
+1. `qmd search` (BM25 keyword search)
+2. OpenClaw `memory_search` (hybrid semantic/keyword, when available)
 
-1. **qmd search** — BM25 keyword search only (`qmd search`). Fast, no embeddings required.
-2. **OpenClaw memorySearch** — Semantic search (vector + keyword hybrid) when running inside OpenClaw.
+Rule:
 
-**qmd uses only `qmd search`** — no `qmd vsearch`, no `qmd query`, no `qmd embed`. BM25 works without model downloads.
+- `qmd` usage in this design is BM25 only: `qmd search`
+- No `qmd vsearch`, `qmd query`, or `qmd embed` required for this runtime flow.
 
----
+### 1.2 Canonical runtime paths
 
-### 1.2 Workflow
+For work item key `BCIN-1234`:
 
-```
-Phase 0.5 [Site Knowledge Search]:
-  1. Determine affected domain from:
-       - QA plan / issue labels (Core Workflow)
-       - tester_handoff.json: affected_domains (Single-Issue FC Flow — from single-defect-analysis workflow)
-  2. Derive search keywords from:
-       - Issue summary + description
-       - Domain labels (filter, autoAnswers, aibot)
-       - Component names from testing plan / QA spec
-  3. Search site knowledge (BOTH methods when available):
-       - qmd:  qmd search "keyword" -c site-knowledge --json -n 10
-       - OpenClaw: memory_search tool (when available)
-  4. Store resolved content into run context:
-       projects/test-cases/<key>/site-context.md
-```
+- run root: `projects/test-cases/BCIN-1234/`
+- site context: `projects/test-cases/BCIN-1234/site_context.md`
+- task state: `projects/test-cases/BCIN-1234/task.json`
+- run metadata: `projects/test-cases/BCIN-1234/run.json`
+- report: `projects/test-cases/BCIN-1234/reports/execution-summary.md`
+- screenshots: `projects/test-cases/BCIN-1234/screenshots/<step>.png`
 
----
+### 1.3 Domain and keyword derivation
 
-### 1.3 Domains
+Domain sources:
 
-**Domains** are derived from:
+- defect-test: `tester_handoff.json.affected_domains`
+- feature-test: QA plan domain labels and component names
 
-| Source | How domains are obtained |
-|--------|--------------------------|
-| **Defect-test** | `tester_handoff.json` → `affected_domains` (Reporter infers from PR diff file paths) |
-| **Feature-test** | QA plan domain labels, component names |
+Canonical domains(example):
 
-**Canonical domain list:** `filter`, `autoAnswers`, `aibot`, `other` (catch-all from Reporter).
-
----
-
-### 1.4 Skills
-
-#### site-knowledge-search Skill (to create)
-
-**Path:** `workspace-tester/skills/site-knowledge-search/SKILL.md`
-
-**Purpose:** Encapsulate qmd + memory_search. Outputs `site_context.md` Mainly used in feature-test and defect-test workflows.
-
-**Inputs:**
-- `key` — string (e.g., `BCIN-1234`)
-- `keywords` — string or string[] (derived from issue summary, domain labels, component names)
-- `domains` — string[] (e.g., `["filter", "autoAnswers", "aibot"]`)
-
-**Output:**
-- `site_context.md` — resolved content with relevant component sections, CSS locator hints, sample worklows.
+- `filter`
+- `search`
+- `dashboard-editor`
+- `report-editor`
+- `export`
 
 
-**Detailed document to create:** `workspace-tester/skills/site-knowledge-search/SKILL.md`
+Keyword sources:
 
-| Section | Content |
-|---------|---------|
-| **Name** | `site-knowledge-search` |
-| **Description** | Search site knowledge (locators, UI components, sample workflows). **Must** look up `memory/site-knowledge/SITEMAP.md` to find the index, then run OpenClaw `memory_search` — in addition to qmd BM25 search. |
-| **When to use** | MANDATORY before every test execution (feature-test Phase 2, defect-test Phase 1.5b). |
-| **Inputs** | keywords, domains, key |
-| **Search flow** | 1. L ook up `memory/site-knowledge/SITEMAP.md` to find the index; 2. Run OpenClaw `memory_search` . 3. Run qmd BM25 search. `qmd search "<keyword>" -c site-knowledge --json -n 10`|
-| **Output** | `<workspace-folder>/projects/test-cases/<key>/site_context.md` |
-| **Keyword derivation** | From issue summary, affected_domains, QA plan component names |
-| **Error handling** | If qmd not installed: log warning, use memory_search only. If both fail: document in site_context.md, continue with empty context. |
+1. issue summary
+2. issue description
+3. domain labels
+4. component names from QA plan or testing plan
 
-**AGENTS.md integration:** After creating this skill, add to `workspace-tester/AGENTS.md` under "Skills Reference" or "Site Knowledge Search":
+### 1.4 Search execution contract
 
-```markdown
-### site-knowledge-search
-- Read skill doc: `workspace-tester/skills/site-knowledge-search/SKILL.md`
-- Use for searching WDIO page objects, locators, UI components before test execution
-- MANDATORY: Run on every test execution (feature-test and defect-test workflows)
-```
+Ordered flow:
 
----
+1. Read `memory/site-knowledge/SITEMAP.md` to identify index coverage.
+2. Run OpenClaw `memory_search` when tool is available in current runtime.
+3. Run BM25 search per keyword:
+   - `qmd search "<keyword>" -c site-knowledge --json -n 10`
+4. Merge, deduplicate, and write findings to `site_context.md`.
 
-### 1.5 Environment Setup and Configuration
+`site_context.md` minimum sections:
 
-#### qmd Setup (BM25 Only)
+1. Search Inputs (keywords, domains, timestamp)
+2. Resolved Components
+3. Locator Hints
+4. Workflow Hints
+5. Gaps and Fallback Notes
 
-| Requirement | Details |
-|-------------|---------|
-| **Runtime** | Node.js >= 22 (prefer Node over Bun on macOS — see [qmd#184](https://github.com/tobi/qmd/issues/184)) |
-| **Storage** | Index only (~tens of MB); no model download for BM25 |
-| **macOS** | `brew install sqlite` (for FTS5 extensions) |
+### 1.5 Error handling contract
 
-**Environment variables (optional, Mac Intel):**
+1. If `qmd` is unavailable, continue with `memory_search` only and record warning in `site_context.md`.
+2. If `memory_search` is unavailable, continue with `qmd` only and record warning in `site_context.md`.
+3. If both fail, write an explicit failure note to `site_context.md` and continue with degraded execution mode.
 
-```bash
-export NODE_LLAMA_CPP_CMAKE_OPTION_GGML_CUDA=OFF
-```
+### 1.6 Skill contract (`site-knowledge-search`)
 
-**Install and configure:**
+Planned skill path:
 
-```bash
-# Install qmd globally
-npm install -g @tobilu/qmd
+- `skills/site-knowledge-search/SKILL.md`
 
-# Add site-knowledge as a collection (run from workspace-tester root)
-qmd collection add memory/site-knowledge --name site-knowledge --mask "**/*.md"
+Inputs:
 
-# BM25 index is built automatically; no qmd embed needed
-```
+- `key`: string, example `BCIN-1234`
+- `keywords`: string array
+- `domains`: string array
 
-**Search command (BM25 only):**
+Output:
 
-```bash
-qmd search "CalendarFilter" -c site-knowledge --json -n 10
-```
-
-#### OpenClaw memorySearch Setup
-
-When the Tester Agent runs inside OpenClaw, add `memory/site-knowledge` to the watched paths.
-
-**Minimal config:**
-
-```json
-{
-  "agents": {
-    "defaults": {
-      "memorySearch": {
-        "enabled": true,
-        "extraPaths": ["memory/site-knowledge"],
-        "sync": { "watch": true }
-      }
-    }
-  }
-}
-```
+- `projects/test-cases/<key>/site_context.md`
 
 ---
 
-### 1.6 Test Suggestions
+## 2. Shared Idempotency and State Contract
 
-| Test | Purpose |
-|------|---------|
-| **Playground smoke** | Run `node tools/sitemap-generator/playground/run.mjs` → verify `qmd search "CalendarFilter" -c site-knowledge --json -n 5` returns results |
-| **Keyword derivation** | Given issue summary + affected_domains, verify derived keywords match expected (filter, CalendarFilter, etc.) |
-| **site_context.md output** | Run search → verify output contains relevant component sections, locator hints |
-| **test memory search** | in openclaw, ask related questions to verify memory search is working |
+This section applies to both feature-test and defect-test workflows.
 
----
+### 2.1 Idempotency classification (Phase 0)
 
-## 2. Feature Test Workflow
+Before any external call, classify run state:
 
-### 2.1 Overview
+1. `FINAL_EXISTS` - final report exists
+2. `DRAFT_EXISTS` - partial/draft artifacts exist without final completion
+3. `CONTEXT_ONLY` - cache/context exists without final output
+4. `FRESH` - no artifacts
 
-**Path:** `workspace-tester/.agents/workflows/feature-test.md`
+### 2.2 User options by state
 
-**Trigger:** Feature test invocation (issue key or QA plan path). QA plan may or may not exist.
+| State | Allowed options |
+|------|------------------|
+| `FINAL_EXISTS` | Use Existing / Smart Refresh / Full Regenerate |
+| `DRAFT_EXISTS` | Resume / Smart Refresh / Full Regenerate |
+| `CONTEXT_ONLY` | Generate from Cache / Re-fetch + Regenerate |
+| `FRESH` | Start New Run |
 
-**Invocation:** User command or master agent handoff with issue key or QA plan path.
+Semantics:
 
-**Plan-Path**: defaults to `workspace-planner/projects/test-plans/<issue-key>/qa-plan-fianl.md` [to update to Agents.md]
+- Smart Refresh: refresh stale/missing pieces only
+- Full Regenerate: rebuild everything
+- Resume: continue from recorded phase
+- Use Existing: return existing completed result
 
-**QA Plan Missing Handling:** If it is a feature test and no QA plan is found at `projects/test-plans/<issue-key>/test-plan.md` or the provided path:
-1. **Notify user** — "No QA plan found for <issue-key>. A QA plan is required to run feature tests."
-2. **Offer option** — "Invoke playwright-test-planner to create a QA plan? (Y/N)"
-3. **If approved** — use `sessions_spawn` to invoke `playwright-test-planner` agent. Wait for completion (see §2.2.1). Update `task.json` with `plan_path`, `planner_invoked: true`, `planner_spawned_at`.
-4. **If not approved** — Stop. Do not proceed to Phase 2.
+### 2.3 Archive-before-overwrite
 
-**Output:**
-- `projects/test-cases/<key>/reports/execution-summary.md`
-- `projects/test-cases/<key>/screenshots/<step>.png`
-- Handoff to qa-report (issue summaries, evidence paths)
+Rule:
 
-**Source:** `[extract to feature-test workflow]` in AGENTS.md — Core Workflow: Test Execution.
+- Never overwrite an existing final artifact directly.
+- Move prior output to `archive/` under run root before regeneration.
 
----
+Archive naming:
 
-### 2.2 Workflow Phases
+- `<key>_OUTPUT_FINAL_<YYYYMMDD>.md`
+- if same-day collision: append `_HHmm`
 
-| Phase | Action | Artifacts |
-|-------|--------|-----------|
-| **0. Init + QA Plan Check** | Create `projects/test-cases/<key>/task.json` (see §2.5). Resolve plan path from input (explicit path or `projects/test-plans/<issue-key>/test-plan.md`). **If plan found:** set `plan_path`, `overall_status: plan_ready`. **If plan not found:** (1) Notify user: "No QA plan found for <issue-key>. A QA plan is required." (2) Offer: "Invoke planner agent to create a QA plan? (Y/N)" (3) If Y: `sessions_spawn` planner (§2.2.1); wait for announce; set `plan_path`, `planner_invoked: true`, `planner_spawned_at`. (4) If N: stop. Update `task.json` after each change. | `task.json` |
-| **1. Load QA Plan** | Read test plan from `plan_path` in task.json. Extract issue key, test cases, prerequisites, test data. Verify environment availability. Update `task.json.updated_at`. | `task.json` |
-| **2. Site Knowledge Search** | **MANDATORY.** Invoke **site-knowledge-search** skill. Derive keywords from QA plan, domain labels, component names. Save to `projects/test-cases/<key>/site_context.md`. Update `task.json` with `site_context_path`, `overall_status: testing`. | `site_context.md`, `task.json` |
-| **3. Execute Tests** | **Read `site_context_path` from task.json before each test case.** Use Playwright MCP via mcporter skills. For each test case, if fails to execute, reference `site_context.md` for locators, take screenshots, record PASS/FAIL. If unclear, re-run site knowledge search; if still insufficient, use tavily/confluence search, and append to `site_context.md`. | `screenshots/<step>.png`, run state |
-| **4. Document Results** | Invoke **test-report skill** to produce execution report. Organize screenshots by test case. Update `task.json` with `result`, `evidence_path`, `test_completed_at`, `overall_status: test_complete`. | `reports/execution-summary.md`, `task.json` |
-| **5. Notify User** | Send summary via Feishu (chat-id from TOOLS.md). Set `overall_status: completed`. | Feishu message |
+### 2.4 Shared task.json schema
 
-#### 2.2.1 sessions_spawn for Sub-Agent (playwright-test-planner)
+Path:
 
-Per [Clawdbot Sub-Agents docs](https://docs.clawd.bot/tools/subagents), use the `sessions_spawn` tool:
+- `projects/test-cases/<key>/task.json`
 
-| Parameter | Value |
-|-----------|-------|
-| `task` | Required. Task string instructing the planner to create a QA plan for `<issue-key>`. Example: "Create a QA test plan for Jira issue BCIN-1234. Output to `projects/test-plans/BCIN-1234/test-plan.md`. Invoke playwright-test-planner workflow." |
-| `agentId` | `planner`|
-| `label` | Optional. e.g. `"planner-bcin-1234"` |
-| `runTimeoutSeconds` | Optional. Default from `agents.defaults.subagents.runTimeoutSeconds`; recommend 900 for planner. |
+Contract fields:
 
-**Behavior:** `sessions_spawn` is non-blocking; it returns `{ status: "accepted", runId, childSessionKey }` immediately. The sub-agent runs in background; on completion it **announces** a result back to the requester chat. The Tester Agent must **wait for the announce** (poll `/subagents info <runId>` or rely on channel delivery) before reading `plan_path` and proceeding to Phase 1.
+- `run_key`: string
+- `mode`: `feature_test | defect_test`
+- `overall_status`: `plan_check | plan_ready | waiting_for_reporter | testing | test_complete | completed | failed`
+- `current_phase`: string
+- `issue_key`: string
+- `plan_path`: string or null
+- `site_context_path`: string or null
+- `result`: `PASS | FAIL | BLOCKED | null`
+- `evidence_path`: string or null
+- `planner_invoked`: boolean
+- `planner_spawned_at`: ISO8601 or null
+- `reporter_invoked`: boolean
+- `reporter_spawned_at`: ISO8601 or null
+- `reporter_notification_pending`: boolean
+- `test_completed_at`: ISO8601 or null
+- `created_at`: ISO8601
+- `updated_at`: ISO8601
 
-**ACP harness (Codex, Cursor, Gemini CLI):** Use `sessions_spawn` with `runtime: "acp"` per [ACP Agents](https://docs.clawd.bot/tools/acp-agents).
+Write rule:
 
-#### 2.2.2 task.json Update Rules
+- Every write must update `updated_at`.
+- Use atomic write strategy (tmp file then rename).
 
-| When | Fields to Update |
-|------|-------------------|
-| Phase 0 start | `mode`, `issue_key`, `overall_status`, `created_at`, `updated_at` |
-| Plan resolved | `plan_path`, `overall_status: plan_ready` |
-| Planner spawned | `plan_path`, `planner_invoked: true`, `planner_spawned_at` (ISO8601), `updated_at` |
-| Phase 2 done | `site_context_path`, `overall_status: testing`, `updated_at` |
-| Phase 4 done | `result`, `evidence_path`, `test_completed_at`, `overall_status: test_complete`, `updated_at` |
-| Phase 6 done | `overall_status: completed`, `updated_at` |
+### 2.5 Shared run.json schema
 
-**Rule:** Always set `updated_at` to current ISO8601 on any write. Use atomic write (write to temp file, then rename) to avoid corruption on interrupt.
+Path:
 
-#### 2.2.3 Task Resume
+- `projects/test-cases/<key>/run.json`
 
-Before Phase 0, run `workspace-tester/scripts/check_resume.sh <key>` (see §5 Files to Create). It emits `TASK_STATE` and resume guidance.
+Contract fields:
 
-| `task.json.overall_status` | Action |
-|----------------------------|--------|
-| absent or `plan_check` | Proceed with Phase 0 |
-| `plan_ready` | Skip to Phase 1 |
-| `testing` | Resume from Phase 3 (re-read `site_context_path` from task.json) |
-| `test_complete` | **STOP.** Present existing report; offer: Use Existing / Re-run |
-| `completed` | **STOP.** Present existing report. |
+- `run_key`: string
+- `data_fetched_at`: ISO8601 or null
+- `site_context_generated_at`: ISO8601 or null
+- `subtask_timestamps`: object
+- `notification_pending`: string or null (full Feishu payload on failure)
+- `last_notification_attempt_at`: ISO8601 or null
+- `updated_at`: ISO8601
 
-**Idempotency:** If `test_complete` or `completed`, present existing report; ask user to re-run or use existing.
+### 2.6 Resume script contract
 
----
+Script path:
 
-### 2.3 Skills
+- `scripts/check_resume.sh`
 
-| Skill | Phase | Purpose |
-|-------|-------|---------|
-| **site-knowledge-search** | 2 | Search workflows, locators, UI components; save site_context.md |
-| **test-report** | 4 | Format execution report |
-| **mcporter** (mcporter) | 3 | invoke playwright MCP |
-| **Feishu** | 6 | Notify user |
+Usage:
 
----
+- `scripts/check_resume.sh <issue-key>`
 
-### 2.4 Use Example
+Must emit both:
 
-**With QA plan present:**
-```
-User: "Run feature tests for BCIN-1234."
-
-Agent:
-  0. Init task.json, resolve plan_path → found. plan_ready.
-  1. Load QA plan → extract issue key BCIN-1234, test cases, domains (filter, autoAnswers)
-  2. site-knowledge-search keywords="CalendarFilter filter autoAnswers" domains=["filter","autoAnswers"] output_path="projects/test-cases/BCIN-1234/site_context.md"
-  3. Execute each TC via Playwright MCP, reference site_context.md for locators
-  4. test-report → execution-summary.md
-  5. Handoff to qa-report (2 failures)
-  6. Feishu: "Feature test complete for BCIN-1234. 8 passed, 2 failed. Report: ..."
-```
-
-**With QA plan missing (planner invoked):**
-```
-User: "Run feature tests for BCIN-1234"
-
-Agent:
-  0. Init task.json, resolve plan_path → not found. Notify: "No QA plan found. Invoke playwright-test-planner? (Y/N)"
-  User: Y
-  0. sessions_spawn playwright-test-planner (§2.2.1) → plan at projects/test-plans/BCIN-1234/test-plan.md. Update task.json: planner_invoked=true, planner_spawned_at.
-  1. Load QA plan → ...
-  (Phases 2–6 as above)
-```
+1. `REPORT_STATE=<FINAL_EXISTS|DRAFT_EXISTS|CONTEXT_ONLY|FRESH>`
+2. `TASK_STATE=<PLAN_READY|WAITING_FOR_REPORTER|TESTING|TEST_COMPLETE|COMPLETED|FAILED|NONE>`
 
 ---
 
-### 2.5 task.json Schema (Feature-Test Mode)
-
-The workflow **registers** run state in `projects/test-cases/<key>/task.json`. Path: `workspace-tester/projects/test-cases/<key>/task.json`.
-
-**Example (minimal):**
-
-```json
-{
-  "run_key": "BCIN-1234",
-  "mode": "feature_test",
-  "overall_status": "plan_ready",
-  "issue_key": "BCIN-1234",
-  "plan_path": "projects/test-plans/BCIN-1234/test-plan.md",
-  "planner_invoked": false,
-  "planner_spawned_at": null,
-  "site_context_path": "projects/test-cases/BCIN-1234/site_context.md",
-  "result": null,
-  "evidence_path": null,
-  "test_completed_at": null,
-  "created_at": "2026-03-04T10:00:00Z",
-  "updated_at": "2026-03-04T10:05:00Z"
-}
-```
-
-**Example (after planner invoked):**
-
-```json
-{
-  "run_key": "BCIN-1234",
-  "mode": "feature_test",
-  "overall_status": "plan_ready",
-  "issue_key": "BCIN-1234",
-  "plan_path": "projects/test-plans/BCIN-1234/test-plan.md",
-  "planner_invoked": true,
-  "planner_spawned_at": "2026-03-04T10:02:00Z",
-  "site_context_path": "projects/test-cases/BCIN-1234/site_context.md",
-  "result": null,
-  "evidence_path": null,
-  "test_completed_at": null,
-  "created_at": "2026-03-04T10:00:00Z",
-  "updated_at": "2026-03-04T10:03:00Z"
-}
-```
-
-**Example (completed):**
-
-```json
-{
-  "run_key": "BCIN-1234",
-  "mode": "feature_test",
-  "overall_status": "completed",
-  "issue_key": "BCIN-1234",
-  "plan_path": "projects/test-plans/BCIN-1234/test-plan.md",
-  "planner_invoked": false,
-  "planner_spawned_at": null,
-  "site_context_path": "projects/test-cases/BCIN-1234/site_context.md",
-  "result": "PASS",
-  "evidence_path": "projects/test-cases/BCIN-1234/reports/",
-  "test_completed_at": "2026-03-04T11:30:00Z",
-  "created_at": "2026-03-04T10:00:00Z",
-  "updated_at": "2026-03-04T11:31:00Z"
-}
-```
-
-| Field | Type | When Set | Purpose |
-|-------|------|----------|---------|
-| `run_key` | string | Phase 0 | Same as `issue_key` for feature-test |
-| `mode` | string | Phase 0 | `"feature_test"` |
-| `overall_status` | string | Phase 0–6 | `plan_check` \| `plan_ready` \| `testing` \| `test_complete` \| `completed` — drives resume |
-| `issue_key` | string | Phase 0 | Jira issue key |
-| `plan_path` | string | Phase 0–1 | Resolved QA plan path |
-| `planner_invoked` | boolean | Phase 0 | True if planner was spawned due to missing plan |
-| `planner_spawned_at` | string \| null | Phase 0 | ISO8601 when planner invoked |
-| `site_context_path` | string | Phase 2 | Path to site_context.md |
-| `result` | string \| null | Phase 4–6 | `PASS` \| `FAIL` \| null |
-| `evidence_path` | string \| null | Phase 4–6 | Path to reports/ |
-| `test_completed_at` | string \| null | Phase 4–6 | ISO8601 |
-| `created_at` | string | Phase 0 | ISO8601 |
-| `updated_at` | string | Every write | ISO8601 — must update on any change |
-
----
-
-### 2.6 test-report Skill (to create)
-
-**Path:** `workspace-tester/skills/test-report/SKILL.md`
-
-**Purpose:** Format test execution results into a standardized report. When failures occur, document bugs via **bug-report-formatter** and optionally log to Jira after user confirmation.
-
-**Inputs:**
-- `key` — string (e.g., `BCIN-1234`)
-- `result` — object with per-test-case outcomes (PASS/FAIL), screenshots paths, expected vs actual
-- `evidence_path` — string (path to `reports/` and `screenshots/`)
-
-**Output:**
-- `projects/test-cases/<key>/reports/execution-summary.md` — structured execution report
-
-**Output format (enhanced):**
-
-```markdown
-# Test Execution Report: [Issue Key]
-
-**Date:** YYYY-MM-DD
-**Tester:** Atlas Tester (automated)
-**Test Plan:** [plan_path]
-**Environment:** Staging/Production
-
-## Summary
-- **Total Test Cases:** N
-- **Passed:** N
-- **Failed:** N
-- **Blocked:** N
-- **Overall Result:** PASS | FAIL
-
-## Test Results
-
-### TC-01: [Test Case Name] ✅ PASS
-**Actual Result:** [brief]
-**Screenshot:** [path]
-**Notes:** [optional]
-
-### TC-02: [Test Case Name] ❌ FAIL
-**Expected:** [expected]
-**Actual:** [actual]
-**Screenshot:** [path]
-**Console Log:** [path if captured]
-**Notes:** [optional]
-```
-
-**Bug handling flow:**
-
-| Step | Action |
-|------|--------|
-| 1 | If any test case **FAIL**, invoke **bug-report-formatter** skill to produce a standardized bug document per failure |
-| 2 | **Confirm with user:** "Bug(s) detected. Log to Jira? (Y/N)" — do NOT auto-log without confirmation |
-| 3 | If user confirms (Y): use **jira-cli** skill to create Jira issue(s) from the bug report(s) |
-| 4 | If user declines (N): leave bug documented in execution-summary.md only; do not create Jira tickets |
-
-**Skill references (add to SKILL.md):**
-- **bug-report-formatter** — Use when documenting FAIL cases. Read `workspace/skills/bug-report-formatter/SKILL.md`
-- **jira-cli** — Use only after user confirms logging. Read `workspace/skills/jira-cli/SKILL.md`
-
-**AGENTS.md integration:** Add to Skills Reference:
-
-```markdown
-### test-report
-- Read skill doc: `workspace-tester/skills/test-report/SKILL.md`
-- Use for formatting execution reports after test runs
-- On FAIL: use bug-report-formatter to document; confirm with user before logging to Jira; if confirmed, use jira-cli
-- See design: [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md) §2.6
-```
-
----
-
-## 3. Single Defect Test Workflow
+## 3. Feature-Test Workflow (NLG Contract)
 
 ### 3.1 Overview
 
-**Path:** `workspace-tester/.agents/workflows/defect-test.md`
+Workflow path to create:
 
-**Trigger:** Single Jira issue key/URL (e.g., `BCIN-7890`) **without** pre-existing QA plan.
+- `.agents/workflows/feature-test.md`
 
-**Invocation:** User command or master agent handoff with issue key.
+Trigger:
 
-**Output:**
-- `projects/test-cases/<ISSUE_KEY>/reports/execution-summary.md`
-- `projects/test-cases/<ISSUE_KEY>/screenshots/<step>.png`
-- send report (PASS/FAIL + evidence)
+- feature test command with issue key and optional QA plan path
 
-**Source:** `[extract to issue-test workflow]` in AGENTS.md — Single-Issue FC Flow.
+Default plan resolution order:
 
-**Integration:** Delegates to Reporter's `single-defect-analysis.md` (Phases 1–6). Reporter produces testing plan; Tester executes; Tester calls back for Phase 7 (Test Outcome Handling).
+1. explicit input path
+2. `../workspace-planner/projects/test-plans/<issue-key>/qa-plan-final.md`
+3. legacy fallback: `../workspace-planner/projects/test-plans/<issue-key>/test-plan.md`
 
----
+### Phase 0: Idempotency and Run Preparation
 
-### 3.2 Workflow Phases
+Actions:
 
-| Phase | Action | Artifacts |
-|-------|--------|-----------|
-| **0. Spawn Reporter** | Check idempotency: `workspace-planner/projects/test-cases/<ISSUE_KEY>/task.json`. If `testing_plan` exists → skip to Phase 1.5. Else: `sessions_spawn` Reporter with `single-defect-analysis` workflow (see [Clawdbot Sub-Agents](https://docs.clawd.bot/tools/subagents)). Save `overall_status: waiting_for_reporter`. Wait for `tester_handoff.json` + `_TESTING_PLAN.md`. | `task.json` |
-| **1.5. Read Testing Plan** | Read `workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>-testing-plan.md` and `tester_handoff.json`. | — |
-| **1.5b. Site Knowledge Search** | **MANDATORY.** Invoke **site-knowledge-search** skill. Keywords from issue summary + `affected_domains` in handoff. Save to `projects/test-cases/<ISSUE_KEY>/site_context.md`. Update `task.json` with `site_context_path`. | `site_context.md`, `task.json` |
-| **2.5. Execute FC Steps** | **Read `site_context_path` from task.json before execution.** For each FC step: execute in browser (Playwright MCP / playwright-cli / browser), reference `site_context.md`, screenshot, record PASS/FAIL. If `exploratory_required`: follow Exploratory Charter. | `screenshots/`, execution log |
-| **3.5. Report Outcome** | Invoke **test-report skill** for execution summary. Update `task.json` with `result`, `evidence_path`. `sessions_spawn` Reporter with PASS/FAIL + evidence paths. | `execution-summary.md`, Reporter callback |
-| **5. Notify User** | Send summary via Feishu (chat-id from TOOLS.md). Set `overall_status: completed`. | Feishu message |
+1. Ensure run root exists under `projects/test-cases/<issue-key>/`.
+2. Run `scripts/check_resume.sh <issue-key>`.
+3. Classify `REPORT_STATE` and present allowed options.
+4. If overwrite/regenerate selected, archive previous output first.
+5. Initialize or update `task.json` and `run.json`.
 
----
+User Interaction:
 
-### 3.3 Skills
+1. Done: state classification completed and options presented.
+2. Blocked: waiting for user choice when prior artifacts exist.
+3. Questions: choose one option (`Use Existing`, `Smart Refresh`, `Full Regenerate`, `Resume`, `Generate from Cache`).
+4. Assumption policy: if user intent is ambiguous, stop and ask. Do not auto-pick destructive refresh.
 
-| Skill | Phase | Purpose |
-|-------|-------|---------|
-| **site-knowledge-search** | 1.5b | Search WDIO page objects; save site_context.md |
-| **test-report** | 3.5 | Format execution report |
-| **playwright MCP** (mcporter) | 2.5 | Browser automation |
+State Updates:
 
----
+1. Set `task.json.current_phase = "phase_0_prepare"`.
+2. Set `task.json.overall_status = "plan_check"` unless terminal reuse path selected.
+3. Update `updated_at` in both state files.
 
-### 3.4 Use Example
-
-```
-User: "FC BCIN-7890"
-
-Agent:
-  0. Check task.json → fresh. sessions_spawn Reporter with single-defect-analysis.
-     Reporter produces tester_handoff.json + BCIN-7890_TESTING_PLAN.md
-  1.5. Read testing plan, handoff (affected_domains: ["filter"])
-  1.5b. site-knowledge-search keywords="<from issue summary> filter" domains=["filter"] output_path="projects/test-cases/BCIN-7890/site_context.md"
-  2.5. Execute FC-01, FC-02, FC-03 via Playwright MCP, reference site_context.md
-  3.5. test-report → execution-summary.md. sessions_spawn Reporter: "PASS, evidence at ..."
-  Reporter Phase 7: Confirm with user → close Jira + add comment
-```
-
----
-
-## 4. AGENTS.md and MEMORY.md Updates
-
-### 4.1 AGENTS.md — Site Knowledge Search section
-
-**Location:** [workspace-tester/AGENTS.md](../AGENTS.md), before "Tools" section.
-
-**Content (applied):**
-
-```markdown
-## Site Knowledge Search
-
-Site knowledge (workflow, locators, UI components) lives in `memory/site-knowledge/`.
-
-**Search methods:**
-- **qmd (BM25):** `qmd search "keyword" -c site-knowledge --json -n 10`
-- **OpenClaw:** Use `memory_search` tool when running in OpenClaw. Need to look up `memory/site-knowledge/SITEMAP.md` to find the index. then run `memory_search` with the index.
-
-**Skill:** Use `site-knowledge-search` skill — see `skills/site-knowledge-search/SKILL.md`.
-
-```
-
-**Skills Reference:**
-
-```markdown
-### site-knowledge-search
-- Read skill doc: `workspace-tester/skills/site-knowledge-search/SKILL.md`
-- MANDATORY: Run on every test execution (feature-test and defect-test workflows)
-- See design: [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md) §1.4
-
-### test-report
-- Read skill doc: `workspace-tester/skills/test-report/SKILL.md`
-- Use for formatting execution reports after test runs
-- On FAIL: use bug-report-formatter to document; confirm with user before logging to Jira; if confirmed, use jira-cli
-- See design: [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md](docs/SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN_v2.md) §2.6
-```
-
-
----
-
-## 5. Files to Create or Update
-
-| File | Action | Purpose |
-|------|--------|---------|
-| `workspace-tester/skills/site-knowledge-search/SKILL.md` | Create | Site knowledge search skill (detailed spec in §1.4) |
-| `workspace-tester/AGENTS.md` | Update | Add site-knowledge-search to Skills Reference; note skill in Site Knowledge Search section |
-| `workspace-tester/MEMORY.md` | No change | Do NOT add Site Knowledge Search Activity — would bloat MEMORY.md |
-| `workspace-tester/.agents/workflows/feature-test.md` | Create | Feature test workflow |
-| `workspace-tester/.agents/workflows/defect-test.md` | Create | Single defect test workflow |
-| `workspace-tester/skills/test-report/SKILL.md` | Create | Test execution report skill; on FAIL use bug-report-formatter; confirm with user before Jira log; if confirmed use jira-cli (§2.6) |
-| `workspace-tester/scripts/check_resume.sh` | Create | Feature-test resume check; emits TASK_STATE (see §5.1) |
-| `workspace-tester/projects/test-cases/.gitkeep` | Create | Ensure directory exists for task.json artifacts |
-| OpenClaw config | Update | Add memorySearch.extraPaths |
-
-### 5.1 check_resume.sh (Feature-Test)
-
-**Path:** `workspace-tester/scripts/check_resume.sh`
-
-**Usage:** `./scripts/check_resume.sh <issue-key>`
-
-**Purpose:** Phase 0 idempotency check for feature-test workflow. Reads `projects/test-cases/<key>/task.json` and emits:
-
-| Output | Meaning |
-|--------|---------|
-| `TASK_STATE=FRESH` | No task.json; proceed with Phase 0 |
-| `TASK_STATE=PLAN_READY` | `overall_status: plan_ready`; skip to Phase 1 |
-| `TASK_STATE=TESTING` | `overall_status: testing`; resume from Phase 3 |
-| `TASK_STATE=TEST_COMPLETE` | `overall_status: test_complete`; present report, offer re-run |
-| `TASK_STATE=COMPLETED` | `overall_status: completed`; present report |
-
-**Exit codes:** 0 = success; 1 = error reading task file.
-
-**Reference:** Similar to `workspace-reporter/scripts/check_resume.sh` but scoped to feature-test `task.json` schema (§2.5).
-
----
-
-## 6. Implementation Roadmap
-
-| Step | Task | Priority | Status |
-|------|------|----------|--------|
-| 1 | Create site-knowledge-search skill (SKILL.md) | **P1** | Pending |
-| 2 | Update AGENTS.md with site-knowledge-search skill reference | **P1** | Pending |
-| 3 | Add Site Knowledge Search section to AGENTS.md (with skill ref) | **P1** | Done |
-| 4 | Do NOT add MEMORY.md update (avoids bloat) | **P1** | Done |
-| 5 | Wire Phase 0.5 to use site-knowledge-search skill | **P2** | Pending |
-| 6 | Create feature-test workflow | **P2** | Pending |
-| 7 | Create defect-test workflow | **P2** | Pending |
-| 8 | Create test-report skill | **P2** | Pending |
-| 9 | Create scripts/check_resume.sh for feature-test | **P2** | Pending |
-| 10 | Shorten AGENTS.md to scenario → workflow routing | **P3** | Pending |
-
----
-
-## 7. Appendix: Playground and README
-
-### 7.1 Playground
-
-**Purpose:** Validate `generate-sitemap.mjs` output and smoke-test `qmd search` before integrating with the Tester Agent.
-
-**Location:** `workspace-tester/tools/sitemap-generator/playground/`
-
-**Usage:**
+Verification:
 
 ```bash
-node tools/sitemap-generator/playground/run.mjs
-node tools/sitemap-generator/playground/run.mjs --repo /path/to/wdio-repo --domains filter,autoAnswers,aibot
-qmd search "CalendarFilter" -c site-knowledge --json -n 5
+scripts/check_resume.sh BCIN-1234
+jq -r '.overall_status,.current_phase' projects/test-cases/BCIN-1234/task.json
 ```
 
-### 7.2 User-facing README
+### Phase 1: QA Plan Resolution
 
-**Location:** `workspace-tester/tools/sitemap-generator/README.md`
+Actions:
 
-**Required sections:** Overview, Quick Start, CLI Reference, Output Format, qmd Setup, Adding a New Domain, Running Tests, Playground, Troubleshooting.
+1. Resolve QA plan path using defined precedence.
+2. If no plan found, ask for approval to invoke planner.
+3. On approval, call `sessions_spawn` to invoke `planner` sub-agent and wait for completion announce.
+4. Persist resolved `plan_path`.
 
-See original [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md) §9 for full README template.
+User Interaction:
+
+1. Done: plan path resolved and recorded.
+2. Blocked: plan missing and planner invocation not approved.
+3. Questions: approve planner invocation now or stop run.
+4. Assumption policy: do not invoke planner without explicit user approval.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_1_plan_resolution"`
+2. on success: `task.json.overall_status = "plan_ready"`
+3. if spawned: set `planner_invoked = true`, `planner_spawned_at` timestamp
+
+Verification:
+
+```bash
+jq -r '.plan_path,.planner_invoked,.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+### Phase 2: Site Knowledge Search
+
+Actions:
+
+1. Derive keywords from issue + plan components + domain labels.
+2. Invoke `site-knowledge-search` skill.
+3. Write `site_context.md` to run root.
+4. Record freshness timestamps in `run.json`.
+
+User Interaction:
+
+1. Done: site context artifact generated.
+2. Blocked: both search backends unavailable and no fallback data.
+3. Questions: continue in degraded mode or stop.
+4. Assumption policy: do not hide degraded search quality; surface clearly.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_2_site_knowledge"`
+2. `task.json.site_context_path` set
+3. `task.json.overall_status = "testing"`
+4. `run.json.site_context_generated_at` set
+
+Verification:
+
+```bash
+test -f projects/test-cases/BCIN-1234/site_context.md && echo OK
+jq -r '.site_context_path,.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+### Phase 3: Execute Test Cases
+
+Actions:
+
+1. Read `site_context_path` before each test case.
+2. Execute cases via Playwright MCP (`mcporter`) and capture evidence.
+3. If locator guidance is insufficient, refresh site knowledge once, then retry per policy.
+4. Record PASS/FAIL/BLOCKED per case.
+
+User Interaction:
+
+1. Done: execution records and screenshots captured.
+2. Blocked: environment/data/access blockers prevent execution.
+3. Questions: retry blocked cases now or finalize with blocked status.
+4. Assumption policy: do not silently skip required cases.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_3_execution"`
+2. keep `task.json.overall_status = "testing"`
+3. update progress timestamps
+
+Verification:
+
+```bash
+ls -1 projects/test-cases/BCIN-1234/screenshots | head
+```
+
+### Phase 4: Reporting and Defect Gate
+
+Actions:
+
+1. Invoke `test-report` skill to generate execution summary.
+2. For failed cases, invoke `bug-report-formatter`.
+3. Ask user whether to create Jira issues.
+4. If approved, use `jira-cli` to create issues.
+
+User Interaction:
+
+1. Done: execution summary and bug docs prepared.
+2. Blocked: waiting for Jira logging approval when failures exist.
+3. Questions: create Jira issues now (Y/N).
+4. Assumption policy: never auto-create Jira tickets.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_4_reporting"`
+2. set `result`, `evidence_path`, `test_completed_at`
+3. set `task.json.overall_status = "test_complete"`
+
+Verification:
+
+```bash
+test -f projects/test-cases/BCIN-1234/reports/execution-summary.md && echo OK
+jq -r '.result,.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+### Phase 5: Completion Notification
+
+Actions:
+
+1. Send Feishu completion message.
+2. If send fails, persist full payload to `run.json.notification_pending`.
+3. If send succeeds, clear `notification_pending`.
+
+User Interaction:
+
+1. Done: notification attempt recorded with final status.
+2. Blocked: delivery failure requiring retry.
+3. Questions: retry notification now or defer.
+4. Assumption policy: do not mark run fully completed if notification state is unknown.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_5_notify"`
+2. `task.json.overall_status = "completed"` only after completion contract is satisfied
+3. update notification fields in `run.json`
+
+Verification:
+
+```bash
+jq -r '.notification_pending // empty' projects/test-cases/BCIN-1234/run.json
+# migration compatibility check (current AGENTS gate)
+jq -r '.notification_pending // empty' memory/tester-flow/runs/BCIN-1234/run.json
+jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+### 3.2 Feature-test status transition map
+
+| From | Event | To |
+|------|-------|----|
+| `plan_check` | plan resolved | `plan_ready` |
+| `plan_ready` | site context generated | `testing` |
+| `testing` | report generated | `test_complete` |
+| `test_complete` | notify contract completed | `completed` |
+| any | unrecoverable error | `failed` |
 
 ---
 
-## 8. References
+## 4. Defect-Test Workflow (NLG Contract)
 
-- [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md) — Generation pipeline (TDD stubs + tests)
-- [single-defect-analysis.md](../../workspace-reporter/.agents/workflows/single-defect-analysis.md) — Workflow format reference
-- [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md) — Original design (Issue-only FC Flow, sessions_spawn protocol)
-- [Clawdbot Sub-Agents](https://docs.clawd.bot/tools/subagents) — sessions_spawn tool, announce, ACP harness
-- [qmd GitHub](https://github.com/tobi/qmd) — BM25 search CLI
-- [OpenClaw memory docs](https://openclaw.im/docs/concepts/memory) — memorySearch config
-- [agent-idempotency skill](../../workspace-planner/skills/agent-idempotency/SKILL.md) — Idempotency patterns
+### 4.1 Overview
+
+Workflow path to create:
+
+- `.agents/workflows/defect-test.md`
+
+Trigger:
+
+- single Jira issue key or URL without a pre-existing feature QA plan
+
+Reporter integration source workflow:
+
+- `../workspace-reporter/.agents/workflows/single-defect-analysis.md`
+
+Canonical reporter artifacts used by tester:
+
+- `../workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md`
+- `../workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json`
+
+### Phase 0: Idempotency and Reporter Decision
+
+Actions:
+
+1. Run `scripts/check_resume.sh <issue-key>` for existing tester state.
+2. Classify run state and present idempotency options.
+3. Determine whether reporter artifacts already exist.
+4. If missing and approved, invoke reporter via `sessions_spawn`.
+
+User Interaction:
+
+1. Done: resume/regenerate path selected.
+2. Blocked: waiting for user choice or reporter availability.
+3. Questions: reuse existing reporter artifacts or regenerate.
+4. Assumption policy: do not respawn reporter without approval when usable artifacts already exist.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_0_prepare"`
+2. set `reporter_invoked` and `reporter_spawned_at` if spawned
+3. `task.json.overall_status = "waiting_for_reporter"` when waiting
+
+Verification:
+
+```bash
+jq -r '.reporter_invoked,.overall_status' projects/test-cases/BCIN-7890/task.json
+```
+
+### Phase 1: Reporter Intake
+
+Actions:
+
+1. Read reporter testing plan and handoff json.
+2. Validate FC steps, domains, exploratory flags.
+3. Normalize execution checklist for tester run.
+
+User Interaction:
+
+1. Done: handoff artifacts validated and accepted.
+2. Blocked: required reporter artifact missing or malformed.
+3. Questions: retry wait for reporter output or stop.
+4. Assumption policy: do not fabricate missing handoff fields.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_1_reporter_intake"`
+2. `task.json.overall_status = "testing"` when intake completes
+
+Verification:
+
+```bash
+test -f ../workspace-reporter/projects/defects-analysis/BCIN-7890/BCIN-7890_TESTING_PLAN.md && echo OK
+test -f ../workspace-reporter/projects/defects-analysis/BCIN-7890/tester_handoff.json && echo OK
+```
+
+### Phase 2: Site Knowledge Search
+
+Actions:
+
+1. Derive keywords from issue summary + `affected_domains`.
+2. Run `site-knowledge-search`.
+3. Persist `site_context.md` and timestamps.
+
+User Interaction:
+
+1. Done: context file generated.
+2. Blocked: no searchable domain mapping and no fallback context.
+3. Questions: proceed with `other` domain fallback or stop.
+4. Assumption policy: do not hide domain uncertainty.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_2_site_knowledge"`
+2. set `site_context_path`
+3. keep `task.json.overall_status = "testing"`
+
+Verification:
+
+```bash
+test -f projects/test-cases/BCIN-7890/site_context.md && echo OK
+```
+
+### Phase 3: FC and Exploratory Execution
+
+Actions:
+
+1. Execute FC steps from testing plan.
+2. Execute exploratory charter when required.
+3. Capture screenshot/log evidence and case outcomes.
+
+User Interaction:
+
+1. Done: all executable FC/exploratory steps attempted.
+2. Blocked: environment/app blocker prevents completion.
+3. Questions: retry unstable steps or finalize with BLOCKED.
+4. Assumption policy: do not claim PASS for unexecuted mandatory steps.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_3_execution"`
+2. keep `task.json.overall_status = "testing"`
+
+Verification:
+
+```bash
+ls -1 projects/test-cases/BCIN-7890/screenshots | head
+```
+
+### Phase 4: Callback and Reporting
+
+Actions:
+
+1. Generate `execution-summary.md` via `test-report`.
+2. Persist result and evidence path.
+3. Notify reporter with PASS/FAIL and evidence via `sessions_spawn`.
+4. If callback fails, set `task.json.reporter_notification_pending = true`.
+
+User Interaction:
+
+1. Done: report generated and callback attempted.
+2. Blocked: reporter callback failed.
+3. Questions: retry reporter callback now or defer.
+4. Assumption policy: do not mark callback success without send confirmation.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_4_callback_reporting"`
+2. set `result`, `evidence_path`, `test_completed_at`
+3. set `task.json.overall_status = "test_complete"`
+
+Verification:
+
+```bash
+jq -r '.reporter_notification_pending,.result,.overall_status' projects/test-cases/BCIN-7890/task.json
+```
+
+### Phase 5: Completion Notification
+
+Actions:
+
+1. Send Feishu completion summary.
+2. Persist `run.json.notification_pending` on failure.
+3. Clear pending notification payload on success.
+
+User Interaction:
+
+1. Done: notification state finalized.
+2. Blocked: Feishu send failure.
+3. Questions: retry now or keep pending for next resume.
+4. Assumption policy: do not silently drop failed notifications.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_5_notify"`
+2. set `task.json.overall_status = "completed"` only when completion contract satisfied
+
+Verification:
+
+```bash
+jq -r '.notification_pending // empty' projects/test-cases/BCIN-7890/run.json
+# migration compatibility check (current AGENTS gate)
+jq -r '.notification_pending // empty' memory/tester-flow/runs/BCIN-7890/run.json
+jq -r '.overall_status' projects/test-cases/BCIN-7890/task.json
+```
+
+### 4.2 Defect-test status transition map
+
+| From | Event | To |
+|------|-------|----|
+| `plan_check` | reporter path selected | `waiting_for_reporter` or `testing` |
+| `waiting_for_reporter` | intake complete | `testing` |
+| `testing` | report generated | `test_complete` |
+| `test_complete` | notify contract completed | `completed` |
+| any | unrecoverable error | `failed` |
+
+---
+
+## 5. Supporting Skill Contracts
+
+### 5.1 `test-report` skill
+
+Planned skill path:
+
+- `skills/test-report/SKILL.md`
+
+Purpose:
+
+- produce standardized `execution-summary.md`
+- trigger bug document generation for failed cases
+- gate Jira creation behind explicit user confirmation
+
+Inputs:
+
+- `key`
+- test case outcome set
+- evidence paths
+
+Output:
+
+- `projects/test-cases/<key>/reports/execution-summary.md`
+
+### 5.2 AGENTS.md references (to be synchronized later)
+
+Target sections to update in `AGENTS.md`:
+
+1. Site Knowledge Search section
+2. Skills Reference (`site-knowledge-search`, `test-report`)
+3. Feature-test and defect-test workflow routing references
+
+---
+
+## 6. Evidence and Quality Gates
+
+### 6.1 Design quality gate checklist
+
+- [x] Internal path consistency fixed
+- [x] Phase numbering consistency fixed (feature and defect both 0-5)
+- [x] Per-phase user interaction contract included (`Done/Blocked/Questions`)
+- [x] Anti-assumption policy stated in every phase
+- [x] Idempotency states and options defined
+- [x] Archive-before-overwrite contract defined
+- [x] Feishu fallback contract defined (`run.json.notification_pending`)
+- [x] Verification commands included for notification fallback
+- [x] README impact explicitly addressed
+
+### 6.2 Reviewer status summary (design process)
+
+1. Initial review result on pre-update v2: `fail`.
+2. Rewrite direction review result: `pass_with_advisories` (no P0/P1 blockers).
+
+Reference artifacts:
+
+- `/tmp/openclaw-review/site-knowledge-agent-v2/pass1/design_review_report.md`
+- `/tmp/openclaw-review/site-knowledge-agent-v2/pass1/design_review_report.json`
+- `/tmp/openclaw-review/site-knowledge-agent-v2/pass2/design_review_report.md`
+- `/tmp/openclaw-review/site-knowledge-agent-v2/pass2/design_review_report.json`
+
+---
+
+## 7. Files To Update in Implementation Phase (Not in This Design-Only Change)
+
+1. `.agents/workflows/feature-test.md` (create)
+2. `.agents/workflows/defect-test.md` (create)
+3. `skills/site-knowledge-search/SKILL.md` (create)
+4. `skills/test-report/SKILL.md` (create)
+5. `scripts/check_resume.sh` (create/update)
+6. `AGENTS.md` (sync to this design)
+7. OpenClaw runtime config for `memory_search` extra path (`memory/site-knowledge`)
+
+---
+
+## 8. README Impact
+
+User-facing README impact for this design update:
+
+- `tools/sitemap-generator/README.md`: **no change in this design-only commit**.
+- Reason: this revision changes runtime workflow contracts, not sitemap generator behavior.
+
+---
+
+## 9. References
+
+- [SITE_KNOWLEDGE_SYSTEM_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_DESIGN.md)
+- [SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md](./SITE_KNOWLEDGE_SYSTEM_AGENT_DESIGN.md)
+- [single-defect-analysis.md](../../workspace-reporter/.agents/workflows/single-defect-analysis.md)
+- [qmd](https://github.com/tobi/qmd)
+- [Clawdbot Sub-Agents](https://docs.clawd.bot/tools/subagents)
+- [ACP Agents](https://docs.clawd.bot/tools/acp-agents)
+- [OpenClaw memory concepts](https://openclaw.im/docs/concepts/memory)
