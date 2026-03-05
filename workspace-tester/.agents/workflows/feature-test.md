@@ -1,6 +1,6 @@
 ---
 description: |
-  Feature-test workflow with QA plan resolution, site knowledge search, test execution, and reporting.
+  Feature-test workflow with QA plan resolution, test environment/objects (testcase.md), site knowledge search, test execution, and reporting.
   Input: issue key + optional QA plan path. Output: execution-summary.md, screenshots, optional Jira issues.
   Uses site-knowledge-search, test-report and mcporter skills. Idempotent with archive-before-overwrite.
 ---
@@ -72,7 +72,7 @@ jq -r '.overall_status,.current_phase' projects/test-cases/BCIN-1234/task.json
 
 ### Actions
 
-1. Resolve QA plan path using defined precedence.
+1. Resolve QA plan path using defined precedence. You must look up the qa plan path in  `workspace-planner/projects/test-plans/<issue-key>/qa-plan-final.md` 
 2. If no plan found: ask for approval to invoke planner.
 3. On approval: call `sessions_spawn` to invoke `planner` sub-agent to generate a QA plan; wait for completion announce.
 4. Persist resolved `plan_path` in `task.json`.
@@ -98,15 +98,59 @@ jq -r '.plan_path,.planner_invoked,.overall_status' projects/test-cases/BCIN-123
 
 ---
 
-## Phase 2: Site Knowledge Search
+## Phase 2: Read Test Environment and Objects
 
 ### Actions
 
-1. Derive keywords from issue summary, description, plan components, and domain labels.
+1. **Check existence:** Resolve testcase path: `workspace-planner/projects/feature-plan/<issue-key>/testcase.md`.
+2. **If no testcase.md:**
+   - Require user to provide one:
+     - **Option A:** Upload in chat — agent saves to `workspace-planner/projects/feature-plan/<issue-key>/testcase.md`.
+     - **Option B:** User places file in that folder and confirms.
+   - Create folder if missing: `workspace-planner/projects/feature-plan/<issue-key>/`.
+   - Block until `testcase.md` exists and is valid markdown testcase content before proceeding.
+   - Validation minimum: file is non-empty and contains at least one explicit testcase section/item.
+3. **If testcase.md exists:**
+   - Ask user: "Do you need to refresh the test environment and objects? (Y/N)"
+   - **If Y:** Ask user to provide a new file (upload in chat or place in folder); overwrite after confirmation.
+   - **If N:** Proceed to Phase 3 (Site Knowledge Search).
+4. Persist `testcase_path` in `task.json`.
+
+### User Interaction
+
+| State | User Action |
+|-------|-------------|
+| **Blocked (no testcase.md)** | Upload file in chat or place in folder and confirm |
+| **Blocked (refresh requested)** | Provide new file (upload or place) |
+| **Done** | Proceed to site-knowledge-search |
+
+### State Updates
+
+- `task.json.current_phase = "phase_2_test_env"`
+- `task.json.testcase_path` = full path to `testcase.md`
+- `task.json.overall_status = "test_env_ready"`
+- `task.json.testcase_resolved_at` = ISO8601
+- Update `updated_at` in both state files
+
+### Verification
+
+```bash
+test -f ../workspace-planner/projects/feature-plan/BCIN-1234/testcase.md && echo OK
+jq -r '.testcase_path,.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+---
+
+## Phase 3: Site Knowledge Search
+
+### Actions
+
+1. **Prerequisite:** Phase 2 (`testcase.md`) must be resolved before this phase.
+2. Derive keywords from issue summary, description, plan components, domain labels, and `testcase.md`.
    - Example: `keywords=["create report","report filter","CalendarFilter"]` `domains=["filter","report-editor"]`
-2. Invoke **site-knowledge-search** skill — read `skills/site-knowledge-search/SKILL.md`.
-3. Skill writes `projects/test-cases/<key>/site_context.md`.
-4. Record freshness timestamps in `run.json`.
+3. Invoke **site-knowledge-search** skill — read `skills/site-knowledge-search/SKILL.md`.
+4. Skill writes `projects/test-cases/<key>/site_context.md`.
+5. Record freshness timestamps in `run.json`.
 
 ### User Interaction
 
@@ -117,7 +161,7 @@ jq -r '.plan_path,.planner_invoked,.overall_status' projects/test-cases/BCIN-123
 
 ### State Updates
 
-- `task.json.current_phase = "phase_2_site_knowledge"`
+- `task.json.current_phase = "phase_3_site_knowledge"`
 - `task.json.site_context_path` = full path to `site_context.md`
 - `task.json.overall_status = "testing"`
 - `run.json.site_context_generated_at` = ISO8601
@@ -131,11 +175,11 @@ jq -r '.site_context_path,.overall_status' projects/test-cases/BCIN-1234/task.js
 
 ---
 
-## Phase 3: Execute Test Cases
+## Phase 4: Execute Test Cases
 
 ### Actions
 
-1. Read `site_context_path` before each test case.
+1. Read `testcase_path` (test environment and objects) and `site_context_path` before each test case.
 2. Execute cases via Playwright MCP (`mcporter`) and capture evidence.
 3. If locator guidance is insufficient: refresh site knowledge once, then retry per policy.
 4. Record PASS/FAIL/BLOCKED per case.
@@ -150,7 +194,7 @@ jq -r '.site_context_path,.overall_status' projects/test-cases/BCIN-1234/task.js
 
 ### State Updates
 
-- `task.json.current_phase = "phase_3_execution"`
+- `task.json.current_phase = "phase_4_execution"`
 - Keep `task.json.overall_status = "testing"`
 - Update progress timestamps in `run.json.subtask_timestamps`
 
@@ -162,7 +206,7 @@ ls -1 projects/test-cases/BCIN-1234/screenshots | head
 
 ---
 
-## Phase 4: Reporting and Defect Gate
+## Phase 5: Reporting and Defect Gate
 
 ### Actions
 
@@ -181,7 +225,7 @@ ls -1 projects/test-cases/BCIN-1234/screenshots | head
 
 ### State Updates
 
-- `task.json.current_phase = "phase_4_reporting"`
+- `task.json.current_phase = "phase_5_reporting"`
 - Set `result`, `evidence_path`, `test_completed_at`
 - `task.json.overall_status = "test_complete"`
 
@@ -194,7 +238,7 @@ jq -r '.result,.overall_status' projects/test-cases/BCIN-1234/task.json
 
 ---
 
-## Phase 5: Completion Notification
+## Phase 6: Completion Notification
 
 ### Actions
 
@@ -211,7 +255,7 @@ jq -r '.result,.overall_status' projects/test-cases/BCIN-1234/task.json
 
 ### State Updates
 
-- `task.json.current_phase = "phase_5_notify"`
+- `task.json.current_phase = "phase_6_notify"`
 - `task.json.overall_status = "completed"` only after completion contract is satisfied
 - Update `run.json`: `notification_pending`, `last_notification_attempt_at`
 
@@ -229,7 +273,8 @@ jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
 | From | Event | To |
 |------|-------|-----|
 | `plan_check` | plan resolved | `plan_ready` |
-| `plan_ready` | site context generated | `testing` |
+| `plan_ready` | testcase.md resolved | `test_env_ready` |
+| `test_env_ready` | site context generated | `testing` |
 | `testing` | report generated | `test_complete` |
 | `test_complete` | notify contract completed | `completed` |
 | any | unrecoverable error | `failed` |
@@ -241,6 +286,7 @@ jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
 | Artifact | Path |
 |----------|------|
 | Run root | `projects/test-cases/<key>/` |
+| Test environment/objects | `workspace-planner/projects/feature-plan/<key>/testcase.md` |
 | Site context | `projects/test-cases/<key>/site_context.md` |
 | Task state | `projects/test-cases/<key>/task.json` |
 | Run metadata | `projects/test-cases/<key>/run.json` |
@@ -254,9 +300,9 @@ jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
 
 | Skill | Phase | Purpose |
 |-------|-------|---------|
-| `site-knowledge-search` | 2 | Search site knowledge, write site_context.md |
-| `test-report` | 4 | Generate execution-summary.md, bug docs, Jira gate |
-| `bug-report-formatter` | 4 | Format bug reports (invoked by test-report) |
-| `jira-cli` | 4 | Create Jira issues (only after user confirms) |
-| `playwright-cli` / `mcporter` | 3 | Browser automation |
-| `message` / `feishu` | 5 | Completion notification |
+| `site-knowledge-search` | 3 | Search site knowledge, write site_context.md |
+| `test-report` | 5 | Generate execution-summary.md, bug docs, Jira gate |
+| `bug-report-formatter` | 5 | Format bug reports (invoked by test-report) |
+| `jira-cli` | 5 | Create Jira issues (only after user confirms) |
+| `playwright-cli` / `mcporter` | 4 | Browser automation |
+| `message` / `feishu` | 6 | Completion notification |
