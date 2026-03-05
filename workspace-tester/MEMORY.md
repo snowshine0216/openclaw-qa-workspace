@@ -24,6 +24,17 @@ _Test execution patterns, runtime state map, and automation tips._
 3. Capture console output immediately on errors.
 4. Prefer stable selectors and semantic locators.
 
+### MicroStrategy Toolbar Button Selectors
+
+**Resume Data Retrieval Button:**
+- **Selector:** `span.single-icon-library-resume[role="button"]`
+- **Usage:** Click to resume paused data retrieval in report editing mode
+- **Context:** Report authoring toolbar (icon-only button)
+- **Alternative:** JavaScript evaluate with `querySelector().click()` when snapshot refs fail
+- **Full HTML:** `<span class="mstr-ws-icons mstr-icons-single-icon single-icon-library-resume single-icon-library-resume--91453ad3" role="button" tabindex="0"></span>`
+- **Note:** Playwright MCP snapshot format does not expose aria-labels/tooltips for icon-only buttons
+- **Discovered:** 2026-03-05 during BCIN-6709 test execution (PM-01)
+
 ## Test Data Best Practices
 
 1. Use consistent test accounts.
