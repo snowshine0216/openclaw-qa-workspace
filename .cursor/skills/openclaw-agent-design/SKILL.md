@@ -1,214 +1,281 @@
 ---
 name: openclaw-agent-design
-description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Must invoke agent-idempotency to review and refactor Phase 0. Uses clawddocs for agent concepts. Use when designing new OpenClaw agents, workflows, or when creating AGENTS.md, .agents/workflows, or agent skills.
+description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Produces a structured design doc following the canonical NLG template. Must invoke agent-idempotency for Phase 0, skill-creator for new skills, and openclaw-agent-design-review before finalizing. Use when designing new OpenClaw agents, workflows, or when creating/updating AGENTS.md, .agents/workflows/, or agent skills.
 ---
 
 # OpenClaw Agent Design
 
-Design principles for building resilient, resumable OpenClaw agents with human-in-the-loop confirmation and Feishu notification.
+## 0. Design Process (Mandatory Steps)
 
-## 0. Design Process: Invoke agent-idempotency
+Run these steps in order before finalizing any design doc:
 
-**MANDATORY:** When designing or drafting any workflow (especially Phase 0), invoke the **agent-idempotency** skill to review and refactor.
+1. **Consult clawddocs** — understand agent architecture, workspace conventions, session tools, Feishu integration.
+2. **Invoke agent-idempotency** — apply to Phase 0: classify states, define options, archive-before-overwrite, task.json/run.json schema.
+3. **For each new skill** — invoke **skill-creator** to produce the SKILL.md stub.
+4. **Invoke openclaw-agent-design-review** — resolve all P0/P1 findings before final output.
 
-1. **Draft** the workflow (Phase 0 + later phases).
-2. **Invoke agent-idempotency** — apply it to Phase 0: classify states, define options (Use Existing / Smart Refresh / Full Regenerate / Resume / Generate from Cache), ensure archive-before-overwrite, cache freshness display, run.json/task.json schema.
-3. **Refactor** Phase 0 per agent-idempotency feedback before finalizing.
-4. **Invoke openclaw-agent-design-review** (via `openclaw-agent-design-reviewer`) and resolve all P0/P1 findings before final output.
+Reference workflows (canonical Phase 0 examples):
+- `workspace-reporter/.agents/workflows/qa-summary.md`
+- `workspace-planner/.agents/workflows/feature-qa-planning.md`
 
-**Reference workflows** (canonical examples that embody agent-idempotency + state machine):
+---
 
-- `workspace-reporter/.agents/workflows/qa-summary.md` — Phase 0: Idempotency Check & Pre-Flight (Workspace State Classification, Archive Check, Missing Artifact Check)
-- `workspace-planner/.agents/workflows/feature-qa-planning.md` — Phase 0: Preparation, check_resume.sh, REPORT_STATE, DEFECT_ANALYSIS_RESUME
+## 1. Design Doc Template
 
-Use these as templates when designing new workflows.
+Every design output **must** follow this structure. Omit sections only when explicitly not applicable.
 
-## 1. Understand Agent Concepts (clawddocs)
+```markdown
+# <Agent Name> — Agent Design
 
-**MANDATORY:** Before designing any OpenClaw agent, use the **clawddocs** skill to understand:
+> **Design ID:** `<id>`
+> **Date:** YYYY-MM-DD
+> **Status:** Draft
+> **Scope:** <one-line scope>
+>
+> **Constraint:** This is a design artifact. Do not implement until approved.
 
-- Agent architecture (workspace structure, SOUL.md, AGENTS.md, MEMORY.md)
-- OpenClaw workspace conventions (workspace/, skills/, hooks/)
-- Multi-agent coordination (sessions_spawn, sessions_send, sessions_list)
-- Integration patterns (Feishu, providers, gateway configuration)
+---
 
-Consult clawddocs when: setting up agent structure, configuring integrations, or answering "how does OpenClaw handle X?"
+## 0. Environment Setup
 
-## 2. Artifacts to Consider
+> List runtime env requirements: env vars, tools, credentials, CLI setup commands.
+> If none: *No special setup required.*
 
-When designing a new agent, decide what to create:
+---
 
-| Artifact | When to Create | Purpose |
-|----------|----------------|---------|
-| **Workflow** (`.agents/workflows/<name>.md`) | Multi-phase, resumable process | Step-by-step orchestration with state tracking |
-| **AGENTS.md** | Every agent | Operating instructions, session checklist, core workflow reference |
-| **Skills** (`skills/<skill-name>/SKILL.md`) | Domain-specific reusable logic | Encapsulate tool usage, templates, validation |
-| **Scripts** (`scripts/*.sh`) | Resume/state checks, retries, archiving | Idempotency, checkpointing, resilience |
+## 1. Design Deliverables
 
-**Rule:** If the agent has >2 phases with external API calls or long-running work → create a workflow. Reference it from AGENTS.md.
+| Action | Path | Notes |
+|--------|------|-------|
+| CREATE | `.agents/workflows/<name>.md` | NLG workflow |
+| CREATE | `skills/<name>/SKILL.md` | via skill-creator |
+| UPDATE | `AGENTS.md` | sync workflow + skill refs |
+| CREATE | `scripts/check_resume.sh` | idempotency |
 
-## 3. State Machine for Resilience
+---
 
-**Use `task.json` (or `run.json` / `testcase_task.json`) to track status.** Make the workflow resumable and recoverable.
+## 2. AGENTS.md Sync
 
-### 3.1 Core Fields
+Sections to update:
+- **Skills Reference**: add `<skill-name>` with path and purpose
+- **Workflow routing**: add `/<slash-command>` → workflow path mapping
 
-```json
-{
-  "overall_status": "in_progress | completed | failed",
-  "current_phase": "<phase_name>",
-  "updated_at": "<ISO8601>",
-  "phases": {
-    "<phase>": { "status": "pending | in_progress | completed | failed" }
-  }
-}
-```
+---
 
-### 3.2 Sub-task State Machines
+## 3. Skills Design
 
-For optional/cross-agent subtasks, add explicit state fields from the start:
+> For each new skill: use `skill-creator` to generate SKILL.md stub.
 
-```json
-{
-  "defect_analysis": "not_applicable | pending | in_progress | completed | skipped"
-}
-```
+### 3.1 `<skill-name>` skill
 
-State transitions: `not_applicable` → `pending` → `in_progress` → `completed` or `skipped`.
+Planned path: `skills/<skill-name>/SKILL.md`
 
-### 3.3 Check-Resume Script Pattern
+Inputs:
+- `<field>`: <type>, example `<example>`
 
-Create `scripts/check_resume.sh <entity-id>` that implements the **agent-idempotency** tiered existence check:
+Output:
+- `<output path>`
 
-1. **Emit `REPORT_STATE` first** (idempotency before any API):
-   - **FINAL_EXISTS** → Output exists. STOP, show freshness. Options: (A) Use Existing (B) Smart Refresh (C) Full Regenerate.
-   - **DRAFT_EXISTS** → Draft exists. STOP. Options: (A) Resume to Approval (B) Smart Refresh (C) Full Regenerate.
-   - **CONTEXT_ONLY** → Context/cache exists, no output. Options: (A) Generate from Cache (B) Re-fetch + Regenerate.
-   - **FRESH** → No artifacts. Proceed.
-2. **Parse `task.json`** → `current_phase`, `overall_status`, sub-task states.
-3. **Emit `DEFECT_ANALYSIS_RESUME`** (or equivalent) when sub-task was `in_progress`/`pending`:
-   - `COMPLETED` → Proceed to next phase.
-   - `AWAITING_APPROVAL` → Prompt: (A) Open for approval (B) Skip.
-   - `NOT_FOUND` → Prompt: resume or skip.
-4. **If RESUMABLE** → Output `resume_from: <phase>`.
+---
 
-### 3.4 Working Directory Convention
+## 4. Workflow Design (NLG)
 
-- Working dir: `projects/<project-type>/<entity-id>/` (e.g. `projects/feature-plan/<feature-id>/`).
-- Scripts run from entity dir use `../scripts/` (e.g. `../scripts/check_resume.sh <feature-id>`).
+> Default: NLG workflow. Phases are plain-language instructions.
+> Use bash scripts only when the design explicitly requires automation.
 
-## 4. Workflow: Never Assume
+Workflow path: `.agents/workflows/<name>.md`
 
-**In workflow instructions:**
-
-- **Double confirm** requirements with the user before proceeding. Raise questions if unsure.
-- **ONLY proceed with explicit user approval** for: external API calls, publishing, overwriting outputs.
-- **Be critical** — surface ambiguities, missing data, risks. Never silently guess.
-- **Document impact explicitly** — state whether docs/AGENTS are updated and include an explicit **user-facing README** impact note (`updated`, `no change`, or `not applicable` with reason).
-
-Example Phase 0 pattern:
-
-```
-1. Accept target ID and artifacts from user.
-2. Based on provided artifacts, double confirm requirements and raise questions if doubts exist.
-   ONLY proceed with user approval.
-3. Ensure working directory is projects/<type>/<id>. Scripts use ../scripts/.
-4. Run ../scripts/check_resume.sh <id>. Parse REPORT_STATE.
-5. Handle FINAL_EXISTS / DRAFT_EXISTS / CONTEXT_ONLY → STOP, present options, wait for choice.
-6. If FRESH or RESUMABLE → initialize task.json or resume from phase.
-```
-
-## 4A. Per-Phase User Interaction Contract (MANDATORY)
-
-For **every phase** in the workflow, include explicit user interaction details:
-
-1. **Done** — what was completed in this phase.
-2. **Blocked** — what is currently blocked and why.
-3. **Questions** — what must be confirmed by the user before proceeding.
-4. **Assumption Policy** — never assume missing context; if information is missing or ambiguous, stop and ask the user.
-
-Use this template:
-
-````markdown
-### Phase <N>: <phase_name>
+### Phase 0: Idempotency and Run Preparation
 
 Actions:
-1. <step>
-2. <step>
+1. Run `scripts/check_resume.sh <key>`. Classify `REPORT_STATE`.
+2. Present options by state (see State Machine section).
+3. Archive prior output if overwrite/regenerate selected.
+4. Initialize or update `task.json` and `run.json`.
 
 User Interaction:
-1. Done: <completed items>
-2. Blocked: <blockers and dependencies>
-3. Questions: <open questions for user decisions>
-4. Assumption policy: if any key detail is unclear, stop and ask before continuing.
+1. Done: state classification completed, options presented.
+2. Blocked: waiting for user choice when prior artifacts exist.
+3. Questions: choose one option (Use Existing / Smart Refresh / Full Regenerate / Resume).
+4. Assumption policy: never auto-pick a destructive option. Stop and ask if intent is ambiguous.
+
+State Updates:
+1. `task.json.current_phase = "phase_0_prepare"`
+2. `task.json.overall_status = "<initial_status>"`
+3. Update `updated_at` in both state files.
 
 Verification:
 ```bash
-# phase-specific verification command(s)
-```
-````
-
-## 5. Phase-End Notifications
-
-**At the end of each phase**, notify the user about progress:
-
-- Phase completed
-- Artifacts produced (paths)
-- Next phase (or completion)
-- Any blockers or placeholders
-
-Inline example: *"📝 Written `<scenario>.md` (M of N)."*
-
-## 6. Final Feishu Notification
-
-**At workflow completion**, send notification via the `feishu` skill:
-
-```
-✅ [Workflow/Output] updated
-  Feature:   <FEATURE_KEY>
-  Page:      <Title>
-  URL:       <URL>
-  Updated:   <UTC TIME>
-  Sections:  1–9 (⚠️ <List with placeholders> have placeholders)
-Published by [Agent Name].
+scripts/check_resume.sh <key>
+jq -r '.overall_status,.current_phase' projects/<type>/<key>/task.json
 ```
 
-**If Feishu fails:** Log to `run.json` or `task.json` → `notification_pending` (full message text). On next run, retry before starting any phase.
-
-### Mandatory Final Workflow Steps (Do Not Omit)
+### Phase N: <Phase Name>
 
 Actions:
+1. <step>
 
-1. Write execution summary.
-2. Set final state.
-3. Send Feishu notification.
-4. On send failure, set `run.json.notification_pending=<full payload>`.
+User Interaction:
+1. Done: <completed items>
+2. Blocked: <blockers>
+3. Questions: <open questions>
+4. Assumption policy: if any key detail is unclear, stop and ask before continuing.
+
+State Updates:
+1. `task.json.current_phase = "phase_N_<name>"`
 
 Verification:
+```bash
+# phase-specific verification command
+```
 
+### Status Transition Map
+
+| From | Event | To |
+|------|-------|-----|
+| `<status>` | <event> | `<status>` |
+| any | unrecoverable error | `failed` |
+
+---
+
+## 5. State Schemas
+
+### task.json
+
+Path: `projects/<type>/<key>/task.json`
+
+Fields:
+- `run_key`: string
+- `overall_status`: string
+- `current_phase`: string
+- `created_at`: ISO8601
+- `updated_at`: ISO8601
+
+Write rule: every write must update `updated_at`. Use atomic write (tmp → rename).
+
+### run.json
+
+Path: `projects/<type>/<key>/run.json`
+
+Fields:
+- `notification_pending`: string or null (full Feishu payload on send failure)
+- `updated_at`: ISO8601
+
+---
+
+## 6. Scripts
+
+### `scripts/check_resume.sh`
+
+Usage: `scripts/check_resume.sh <key>`
+
+Must emit:
+- `REPORT_STATE=<FINAL_EXISTS|DRAFT_EXISTS|CONTEXT_ONLY|FRESH>`
+- `TASK_STATE=<status>` (parsed from task.json)
+
+---
+
+## 7. Files To Create / Update
+
+> Explicit inventory. Cross-reference with Section 1 (Deliverables).
+
+1. `.agents/workflows/<name>.md` — create
+2. `skills/<skill-name>/SKILL.md` — create
+3. `scripts/check_resume.sh` — create/update
+4. `AGENTS.md` — update (sync to this design)
+
+---
+
+## 8. README Impact
+
+User-facing README impact:
+- `<tool>/README.md`: **<updated | no change | not applicable>**
+- Reason: <why>
+
+---
+
+## 9. Quality Gates
+
+- [ ] Deliverables table complete with explicit paths
+- [ ] AGENTS.md sync sections listed
+- [ ] Environment setup addressed (or explicitly N/A)
+- [ ] Per-phase user interaction contract (Done / Blocked / Questions / Assumption policy)
+- [ ] Feishu notification + `notification_pending` fallback defined
+- [ ] README impact explicitly addressed
+- [ ] Reviewer status (openclaw-agent-design-review): pass or pass_with_advisories
+
+---
+
+## 10. References
+
+- <related design docs, skills, workflows>
+```
+
+---
+
+## 2. Key Rules
+
+### NLG Workflow Default
+
+All workflow phases use **NLG (natural language instructions)** by default. This means:
+- Phase blocks use: **Actions / User Interaction / State Updates / Verification**
+- No code execution in phase bodies unless the design explicitly calls for a script
+- Verification blocks use bash for spot-checking only, not execution logic
+
+### Never Assume
+
+In every workflow phase:
+- **Confirm requirements** with the user before external API calls, publishes, or overwrites
+- **Stop and ask** when context is ambiguous — never silently guess
+- **Document impact** — state AGENTS.md updates and README impact explicitly in every design
+
+### Final Feishu Notification
+
+All workflows must include a completion notification phase:
+1. Send Feishu message (use `feishu` skill template)
+2. On failure: persist full payload to `run.json.notification_pending`
+3. On next resume: retry notification before starting any phase
+
+Verification (gate-required canonical command):
 ```bash
 jq -r '.notification_pending // empty' memory/tester-flow/runs/<work_item_key>/run.json
 ```
 
-## 7. Quick Checklist
+---
 
-Before finalizing an agent design:
+## 3. State Machine Quick Reference
 
-- [ ] **agent-idempotency** skill invoked to review and refactor Phase 0
-- [ ] clawddocs consulted for agent concepts
-- [ ] `openclaw-agent-design-reviewer` executed and returned `pass` or `pass_with_advisories`
-- [ ] reviewer report path captured in final handoff output
-- [ ] Workflow, AGENTS.md, skills need identified
-- [ ] task.json/run.json with state machine defined
-- [ ] check_resume.sh (or equivalent) for idempotency and resume
-- [ ] Phase 0 aligns with agent-idempotency: tiered existence check, archive-before-overwrite, freshness display
-- [ ] User confirmation gates before external/publish steps
-- [ ] Phase-end progress notifications
-- [ ] Per-phase user interaction included: Done, Blocked, Questions, and no silent assumptions
-- [ ] Feishu notification + `notification_pending` fallback
-- [ ] Documentation impact captured, including explicit user-facing README mention
+| REPORT_STATE | Action |
+|---|---|
+| `FINAL_EXISTS` | Show freshness. STOP. Options: Use Existing / Smart Refresh / Full Regenerate |
+| `DRAFT_EXISTS` | STOP. Options: Resume / Smart Refresh / Full Regenerate |
+| `CONTEXT_ONLY` | STOP. Options: Generate from Cache / Re-fetch + Regenerate |
+| `FRESH` | Proceed. Initialize task.json |
+
+Archive rule: never overwrite an existing final artifact directly. Move prior output to `archive/` under run root before regeneration.
+
+---
+
+## 4. Quick Checklist
+
+Before finalizing a design doc:
+
+- [ ] **clawddocs** consulted for agent concepts
+- [ ] **agent-idempotency** applied to Phase 0
+- [ ] **skill-creator** invoked for each new skill
+- [ ] **openclaw-agent-design-review** executed → `pass` or `pass_with_advisories`
+- [ ] Reviewer report path captured in handoff output
+- [ ] Design doc follows canonical template (Sections 0–10)
+- [ ] Deliverables table complete
+- [ ] task.json / run.json schemas defined with concrete paths
+- [ ] check_resume.sh contract defined
+- [ ] Per-phase user interaction included (Done / Blocked / Questions / Assumption policy)
+- [ ] Status transition map present
+- [ ] Feishu + `notification_pending` fallback defined
+- [ ] README impact explicitly addressed
 
 ## Additional Resources
 
-- agent-idempotency skill: `.cursor/skills/agent-idempotency/SKILL.md`
-- State machine examples, REPORT_STATE handling, Feishu template: [reference.md](reference.md)
+- agent-idempotency: `.cursor/skills/agent-idempotency/SKILL.md`
+- skill-creator: `.cursor/skills/skill-creator/SKILL.md`
+- State machine examples and Feishu template: [reference.md](reference.md)
