@@ -1,0 +1,35 @@
+{
+  "name": "library-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "preflight:framework-profile": "node .agents/scripts/generate_framework_profile.mjs",
+    "test:report-undo-redo": "npx playwright test tests/specs/report-editor/report-undo-redo/ --project=report-undo-redo",
+    "test:report-undo-redo:list": "npx playwright test tests/specs/report-editor/report-undo-redo/ --list",
+    "test:report-editor": "npx playwright test tests/specs/report-editor/",
+    "test:report-editor:list": "npx playwright test tests/specs/report-editor/ --list",
+    "test:report-shortcut-metrics": "npx playwright test tests/specs/report-editor/report-shortcut-metrics/ --project=report-shortcut-metrics",
+    "test:report-page-by-sorting": "npx playwright test tests/specs/report-editor/report-page-by-sorting/ --project=report-page-by-sorting",
+    "test:report-page-by": "npx playwright test tests/specs/report-editor/report-page-by/ --project=report-page-by",
+    "test:report-creator": "npx playwright test tests/specs/report-editor/report-creator/ --project=report-creator --workers=1",
+    "test:report-subset": "npx playwright test tests/specs/report-editor/report-subset/ --project=report-subset --workers=1",
+    "test:report-threshold": "npx playwright test tests/specs/report-editor/report-threshold/ --project=report-threshold",
+    "test:report-theme": "npx playwright test tests/specs/report-editor/report-theme/ --project=report-theme",
+    "test:report-scope-filter": "npx playwright test tests/specs/report-editor/report-scope-filter/ --project=report-scope-filter",
+    "test:report-formatting": "npx playwright test tests/specs/report-editor/report-formatting/ --project=report-formatting",
+    "test:report-cancel": "npx playwright test tests/specs/report-editor/report-cancel/ --project=report-cancel",
+    "ts-check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.2",
+    "dotenv": "^17.3.1",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3"
+  }
+}

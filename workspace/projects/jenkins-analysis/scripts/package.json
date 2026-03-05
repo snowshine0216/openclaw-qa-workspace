@@ -1,0 +1,21 @@
+{
+  "name": "jenkins-qa-monitor",
+  "version": "1.0.0",
+  "description": "Jenkins QA monitoring webhook system",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "docx": "^8.5.0",
+    "marked": "^11.1.1",
+    "sql.js": "^1.14.0"
+  },
+  "author": "Atlas Daily",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}

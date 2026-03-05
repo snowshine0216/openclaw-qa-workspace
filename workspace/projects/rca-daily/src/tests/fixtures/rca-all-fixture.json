@@ -1,0 +1,16 @@
+{
+  "defects": [
+    {
+      "key": "BCIN-1234",
+      "category": "requires_rca",
+      "proposed_owner": "Xue, Yin",
+      "summary": "Test defect 1"
+    },
+    {
+      "key": "BCIN-5678",
+      "category": "requires_rca",
+      "proposed_owner": "Xue, Yin",
+      "summary": "Test defect 2"
+    }
+  ]
+}
