@@ -1,0 +1,16 @@
+{
+  "timestamp": "20260305-120000",
+  "total_issues": 2,
+  "rca_inputs": [
+    {
+      "issue_key": "BCIN-1234",
+      "input_file": "/tmp/output/rca-input-BCIN-1234.json",
+      "output_file": "/tmp/output/rca/BCIN-1234-rca.md"
+    },
+    {
+      "issue_key": "BCIN-5678",
+      "input_file": "/tmp/output/rca-input-BCIN-5678.json",
+      "output_file": "/tmp/output/rca/BCIN-5678-rca.md"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ Use these specialists from `.codex/config.toml`:
 
 1. `openclaw-agent-designer`
 - Purpose: design OpenClaw agents/workflows.
-- Mandatory skill: `$openclaw-agent-design`.
+- Mandatory skill: `$openclaw-agent-design`. Supports shell-script workflow mode alongside NLG mode.
 - Mandatory process: Phase 0 must pass `$agent-idempotency` review before finalization.
 
 2. `openclaw-agent-design-reviewer`
@@ -71,6 +71,13 @@ Handoff rules:
   - quality report artifact path
   - `migration/self-healing/<family>/<phase>/progress.md` path (if healer invoked)
   - final healer outcome (pass or `healing_report.md` path)
+
+## Shell Workflow Conventions
+
+When designing or implementing shell-script workflows:
+- **Entry-point**: workflows must use `scripts/run-<name>-workflow.sh` orchestrator.
+- **Agent Spawning**: Sub-agents must be spawned via stdout handoff pattern using `spawn-agents.js`. You MUST NOT use `sessions_spawn` (which is CLI-only).
+- **Compliance**: all automatable phases must be scripted; keep functions ≤ 20 lines, pure without side-effects, and include test stubs.
 
 ## Skills Loading Model
 

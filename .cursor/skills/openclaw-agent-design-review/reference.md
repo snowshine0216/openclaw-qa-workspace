@@ -68,6 +68,13 @@ Typical failures:
 - `PHASE-UX-002` (`P1`): Design allows silent assumptions instead of explicit user questions.
 - `NOTIFY-001` (`P1`): Final workflow steps missing Feishu send or `run.json.notification_pending` fallback.
 - `NOTIFY-002` (`P1`): Notification fallback verification command missing.
+- `SHELL-001` (`P0`): Design uses `sessions_spawn` instead of `spawn-agents.js`.
+- `SHELL-002` (`P1`): Shell script function exceeds 20-line limit.
+- `SHELL-003` (`P1`): No `lib/feishu.sh` fallback for notification.
+- `SHELL-004` (`P1`): Missing `run.json.notification_pending` write on Feishu failure.
+- `SHELL-005` (`P1`): Missing TDD test stubs for new scripts.
+- `SHELL-006` (`P2`): Main workflow script mixes orchestration and business logic.
+- `SHELL-007` (`P2`): Tests use heavy mocks instead of minimal mocks.
 
 ## Suggested JSON Finding Shape
 

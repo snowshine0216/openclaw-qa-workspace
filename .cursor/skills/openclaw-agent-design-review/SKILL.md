@@ -1,6 +1,6 @@
 ---
 name: openclaw-agent-design-review
-description: Reviews OpenClaw agent/workflow designs for path validity, test-evidence coverage, and documentation completeness. Uses clawddocs conventions. Emits a blocking pass/fail report with P0/P1/P2 findings. Validates that the design doc follows the canonical template from openclaw-agent-design SKILL.md.
+description: Reviews OpenClaw agent/workflow designs for path validity, test-evidence coverage, and documentation completeness. Uses clawddocs conventions. Emits a blocking pass/fail report with P0/P1/P2 findings. Validates that the design doc follows the canonical template from openclaw-agent-design SKILL.md and complies with shell workflow rules (SHELL-* checks, spawn-agents.js).
 ---
 
 # OpenClaw Agent Design Review
@@ -41,6 +41,7 @@ Optional:
 1. **Collect artifacts** — confirm all target files exist; build candidate list of referenced paths.
 2. **Check design doc template compliance** — verify all canonical sections are present.
 3. **Run path checks** — use `scripts/validate_paths.sh` for path existence and anti-pattern checks.
+3.5. **Shell Script Contract Check** — Verify shell-script compliance (`check_design_evidence.sh --scripts-dir <dir>`).
 4. **Run evidence checks** — use `scripts/check_design_evidence.sh` on the main design markdown.
 5. **Apply manual quality rubric** — use the matrix in `reference.md` to classify findings.
 6. **Emit review report** — write both markdown and JSON outputs.
@@ -70,6 +71,11 @@ Default output path:
 - [ ] AGENTS.md sync explicitly listed.
 - [ ] README impact explicitly addressed.
 - [ ] Output/handoff artifacts and paths are explicit.
+- [ ] If shell workflow used, `run-<name>-workflow.sh` orchestrator exists.
+- [ ] Sub-agents use `spawn-agents.js` and not `sessions_spawn`.
+- [ ] Scripts use `lib/feishu.sh` fallback explicitly.
+- [ ] Scripts are modular, max 20 lines per function.
+- [ ] TDD test stubs exist and use minimal mocks.
 
 ## Additional Resources
 

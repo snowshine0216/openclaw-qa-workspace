@@ -11,10 +11,11 @@
 
 ```bash
 cd ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src
-bash run-complete-rca-workflow.sh
+bash bin/run-complete-rca-workflow.sh
 ```
 
 **That's it!** The script:
+
 1. Collects data (Jira + GitHub)
 2. Creates RCA manifest
 3. **Notifies agent via Feishu**
@@ -27,7 +28,7 @@ bash run-complete-rca-workflow.sh
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  1. USER: bash run-complete-rca-workflow.sh                 │
+│  1. USER: bash bin/run-complete-rca-workflow.sh             │
 └───────────────────────────┬─────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -65,7 +66,7 @@ bash run-complete-rca-workflow.sh
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │  6. AGENT: Runs Post-Workflow                               │
-│     bash post-rca-workflow.sh <timestamp>                   │
+│     bash core/post-rca-workflow.sh <timestamp>              │
 └───────────────────────────┬─────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -93,19 +94,24 @@ bash run-complete-rca-workflow.sh
 ### 1. Data Collection
 
 #### `run-complete-rca-workflow.sh` ⭐ (Master Script)
+
 **What it does:**
+
 - Runs `process-rca.sh` for data collection
 - Creates manifest file
 - **Sends Feishu notification to agent**
 - Exits (agent continues automatically)
 
 **Usage:**
+
 ```bash
 bash run-complete-rca-workflow.sh
 ```
 
 #### `process-rca.sh`
+
 **What it does:**
+
 - Fetches Jira issues via `fetch-rca.sh`
 - Downloads Jira details (description, comments, metadata)
 - Extracts GitHub PR URLs from comments
@@ -114,6 +120,7 @@ bash run-complete-rca-workflow.sh
 - Creates `rca-input-<issue>-<timestamp>.json` for each issue
 
 **Output:**
+
 ```json
 {
   "issue_key": "BCIN-7552",
@@ -130,9 +137,11 @@ bash run-complete-rca-workflow.sh
 ### 2. Agent RCA Generation
 
 #### Agent Workflow
-**Triggered by:** Feishu notification from `run-complete-rca-workflow.sh`
+
+**Triggered by:** Feishu notification from `bin/run-complete-rca-workflow.sh`
 
 **Process:**
+
 1. Reads manifest file: `rca-manifest-<timestamp>.json`
 2. Extracts issue keys and input paths
 3. Spawns sub-agents in batches of 5:
@@ -142,8 +151,8 @@ bash run-complete-rca-workflow.sh
      label: "rca-BCIN-7552",
      mode: "run",
      runtime: "subagent",
-     task: "Generate RCA for BCIN-7552. Input: ... Output: ..."
-   })
+     task: "Generate RCA for BCIN-7552. Input: ... Output: ...",
+   });
    ```
 4. Each sub-agent:
    - Reads `rca-input-<issue>.json`
@@ -154,6 +163,7 @@ bash run-complete-rca-workflow.sh
    - Auto-announces completion
 
 **Sub-Agent Task Template:**
+
 ```
 Generate RCA document for Jira issue <ISSUE_KEY>.
 
@@ -205,18 +215,21 @@ Save output to the specified path.
 
 ### 3. Post-Workflow Processing
 
-#### `post-rca-workflow.sh`
+#### `core/post-rca-workflow.sh`
+
 **Triggered by:** Agent after all sub-agents complete
 
 **Usage:**
+
 ```bash
-bash post-rca-workflow.sh <timestamp>
+bash core/post-rca-workflow.sh <timestamp>
 ```
 
 **What it does:**
+
 1. **Updates Jira Latest Status:**
    - Reads all `rca/<issue>-rca.md` files
-   - Calls `update-jira-latest-status.sh` for each
+   - Calls `integrations/update-jira-latest-status.sh` for each
    - Converts markdown → ADF format
    - Updates Jira customfield_10050
 
@@ -237,28 +250,34 @@ bash post-rca-workflow.sh <timestamp>
 
 ### 4. Jira Integration
 
-#### `update-jira-latest-status.sh`
+#### `integrations/update-jira-latest-status.sh`
+
 **What it does:**
+
 - Converts RCA markdown to ADF
 - Fetches current Latest Status
 - Appends new content
 - Updates via Jira REST API
 
 **Usage:**
+
 ```bash
-./update-jira-latest-status.sh <ISSUE_KEY> <RCA_FILE>
+bash integrations/update-jira-latest-status.sh <ISSUE_KEY> <RCA_FILE>
 ```
 
 **Example:**
+
 ```bash
-./update-jira-latest-status.sh BCIN-7552 ../output/rca/BCIN-7552-rca.md
+bash integrations/update-jira-latest-status.sh BCIN-7552 ../output/rca/BCIN-7552-rca.md
 ```
 
-#### `markdown-to-adf.js`
+#### `utils/markdown-to-adf.js`
+
 **What it does:**
 Converts markdown to Atlassian Document Format (ADF)
 
 **Supported:**
+
 - Headings (H1-H6)
 - Bold, italic, code inline
 - Bullet and numbered lists
@@ -271,18 +290,30 @@ Converts markdown to Atlassian Document Format (ADF)
 
 ## 📁 File Structure
 
-```
+```text
 projects/rca-daily/
 ├── src/
-│   ├── run-complete-rca-workflow.sh    # ⭐ Master orchestration (AUTO)
-│   ├── process-rca.sh                  # Data collection
-│   ├── post-rca-workflow.sh            # Post-processing
-│   ├── fetch-rca.sh                    # Fetch all RCA defects
-│   ├── fetch-xuyin-rca.sh              # Fetch filtered defects
-│   ├── update-jira-latest-status.sh    # Update Jira Latest Status
-│   ├── markdown-to-adf.js              # MD → ADF converter
-│   ├── generate-rcas-via-agent.js      # Helper for agent manifest reading
-│   └── send-feishu-notification.js     # Feishu sender helper
+│   ├── bin/
+│   │   ├── run-complete-rca-workflow.sh    # ⭐ Master orchestration (AUTO)
+│   │   ├── daily-rca-check.sh              # Daily standalone check
+│   │   └── cron-daily-rca-check.sh         # Cron wrapper
+│   ├── core/
+│   │   ├── process-rca.sh                  # Data collection logic
+│   │   └── post-rca-workflow.sh            # Post-processing logic
+│   ├── fetchers/
+│   │   ├── fetch-rca.sh                    # Fetch all RCA defects
+│   │   └── fetch-xuyin-rca.sh              # Fetch filtered defects
+│   ├── integrations/
+│   │   └── update-jira-latest-status.sh    # Update Jira Latest Status
+│   └── utils/
+│       ├── markdown-to-adf.js              # MD → ADF converter
+│       ├── generate-rcas-via-agent.js      # Helper for agent manifest reading
+│       └── send-feishu-notification.js     # Feishu sender helper
+├── tests/
+│   ├── integration/                        # E2E integration tests
+│   ├── unit/                               # JS unit tests
+│   ├── fixtures/                           # Test data
+│   └── run-integration-tests.sh            # Entrypoint for tests
 └── output/
     ├── rca/                             # Generated RCA documents
     │   ├── BCIN-7552-rca.md
@@ -315,21 +346,27 @@ bash run-complete-rca-workflow.sh
 ### Manual Step-by-Step (Advanced)
 
 #### Step 1: Data Collection
+
 ```bash
 bash run-complete-rca-workflow.sh
 ```
+
 **Output:**
+
 - `rca-input-*.json` files
 - `rca-manifest-<timestamp>.json`
 - Feishu notification sent
 
 #### Step 2: Agent RCA Generation
+
 **Automatic** - Agent detects notification and:
+
 - Reads manifest
 - Spawns sub-agents (5 concurrent batches)
 - Waits for all completions
 
 **Manual (if needed):**
+
 ```javascript
 // In agent context:
 // 1. Read manifest
@@ -338,12 +375,14 @@ bash run-complete-rca-workflow.sh
 ```
 
 #### Step 3: Post-Workflow
+
 **Automatic** - Agent runs after RCA generation complete
 
 **Manual (if needed):**
+
 ```bash
 TIMESTAMP=20260305-174620  # from manifest filename
-bash post-rca-workflow.sh $TIMESTAMP
+bash core/post-rca-workflow.sh $TIMESTAMP
 ```
 
 ---
@@ -352,24 +391,24 @@ bash post-rca-workflow.sh $TIMESTAMP
 
 ### Issues Processed: 25
 
-| Product | Count | Issues |
-|---------|-------|--------|
-| BCIN | 8 | 7552, 7236, 5286, 6936, 6663, 5279, 5281, 6707 |
-| BCDA | 7 | 8620, 8020, 8344, 8273, 8065, 7912, 6709 |
-| BCED | 2 | 4471, 4728 |
-| BCEN | 5 | 5173, 5204, 5116, 4825, 3780 |
-| BCFR | 3 | 3595, 3343, 3241 |
+| Product | Count | Issues                                         |
+| ------- | ----- | ---------------------------------------------- |
+| BCIN    | 8     | 7552, 7236, 5286, 6936, 6663, 5279, 5281, 6707 |
+| BCDA    | 7     | 8620, 8020, 8344, 8273, 8065, 7912, 6709       |
+| BCED    | 2     | 4471, 4728                                     |
+| BCEN    | 5     | 5173, 5204, 5116, 4825, 3780                   |
+| BCFR    | 3     | 3595, 3343, 3241                               |
 
 ### Results
 
-| Metric | Value |
-|--------|-------|
-| **RCAs Generated** | 25/25 ✅ |
-| **Jira Updates** | 24/25 ✅ |
+| Metric                   | Value                     |
+| ------------------------ | ------------------------- |
+| **RCAs Generated**       | 25/25 ✅                  |
+| **Jira Updates**         | 24/25 ✅                  |
 | **Feishu Notifications** | 2 (trigger + complete) ✅ |
-| **Total Runtime** | ~15 minutes |
-| **Sub-agents Spawned** | 25 (in 5 batches) |
-| **Concurrent Limit** | 5 agents max |
+| **Total Runtime**        | ~15 minutes               |
+| **Sub-agents Spawned**   | 25 (in 5 batches)         |
+| **Concurrent Limit**     | 5 agents max              |
 
 ### Known Issues
 
@@ -384,7 +423,8 @@ bash post-rca-workflow.sh $TIMESTAMP
 
 ### Feishu Chat ID
 
-Update in `run-complete-rca-workflow.sh` and `post-rca-workflow.sh`:
+Update in `bin/run-complete-rca-workflow.sh` and `core/post-rca-workflow.sh`:
+
 ```bash
 FEISHU_CHAT_ID="oc_f15b73b877ad243886efaa1e99018807"
 ```
@@ -392,6 +432,7 @@ FEISHU_CHAT_ID="oc_f15b73b877ad243886efaa1e99018807"
 ### Jira Authentication
 
 Set in `~/.bash_profile`:
+
 ```bash
 export JIRA_USER="your.email@company.com"
 export JIRA_TOKEN="your_atlassian_api_token"
@@ -410,16 +451,19 @@ gh auth login
 ### Issue: Agent Doesn't Continue After Notification
 
 **Symptoms:**
+
 - Script completes successfully
 - Feishu notification sent
 - But no RCAs generated
 
 **Diagnosis:**
+
 1. Check agent is running and monitoring Feishu
 2. Verify Feishu chat ID matches agent's chat
 3. Check OpenClaw message tool is configured
 
 **Solution:**
+
 ```bash
 # Manual trigger: Agent reads manifest and spawns sub-agents
 # (agent context required)
@@ -430,10 +474,12 @@ gh auth login
 ### Issue: Sub-Agent Failures
 
 **Symptoms:**
+
 - Some RCAs not generated
 - Sub-agent completion errors
 
 **Diagnosis:**
+
 ```bash
 # Check output directory
 ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca/
@@ -442,6 +488,7 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 ```
 
 **Solution:**
+
 - Check input JSON files exist
 - Verify Jira/GitHub data is complete
 - Re-run failed issues manually
@@ -451,10 +498,12 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 ### Issue: Jira Update Fails
 
 **Symptoms:**
+
 - RCAs generated successfully
 - But Jira Latest Status not updated
 
 **Common Causes:**
+
 - Content too large (> Jira field limit)
 - Authentication expired
 - Network issues
@@ -462,12 +511,14 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 **Solutions:**
 
 1. **Content too large:**
+
    ```bash
    # Create shorter RCA version
    # Or attach RCA as file instead of inline
    ```
 
 2. **Authentication:**
+
    ```bash
    # Test Jira auth
    jira issue view <ISSUE_KEY> --raw | jq '.key'
@@ -475,7 +526,7 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 
 3. **Manual update:**
    ```bash
-   ./update-jira-latest-status.sh <ISSUE_KEY> ../output/rca/<FILE>.md
+   bash integrations/update-jira-latest-status.sh <ISSUE_KEY> ../output/rca/<FILE>.md
    ```
 
 ---
@@ -483,12 +534,15 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 ### Issue: Feishu Notification Fails
 
 **Symptoms:**
+
 - "Bot/User can NOT be out of the chat" error
 
 **Cause:**
+
 - OpenClaw bot not in target Feishu chat
 
 **Solution:**
+
 - Add bot to chat `oc_f15b73b877ad243886efaa1e99018807`
 - Or update chat ID in scripts
 
@@ -498,28 +552,29 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 
 ### Typical Run (25 issues)
 
-| Stage | Time | Notes |
-|-------|------|-------|
-| Data Collection | 2-3 min | Depends on Jira/GitHub API |
-| Agent Spawning | <1 min | Batches of 5 |
-| RCA Generation | 10-12 min | 5 concurrent agents |
-| Jira Updates | 2-3 min | Sequential |
-| **Total** | **15-20 min** | End-to-end |
+| Stage           | Time          | Notes                      |
+| --------------- | ------------- | -------------------------- |
+| Data Collection | 2-3 min       | Depends on Jira/GitHub API |
+| Agent Spawning  | <1 min        | Batches of 5               |
+| RCA Generation  | 10-12 min     | 5 concurrent agents        |
+| Jira Updates    | 2-3 min       | Sequential                 |
+| **Total**       | **15-20 min** | End-to-end                 |
 
 ### Resource Usage
 
-| Resource | Usage |
-|----------|-------|
-| CPU | Low (mostly waiting on API calls) |
-| Memory | Moderate (5 concurrent agents) |
-| Network | High (Jira + GitHub + Feishu) |
-| Tokens | ~100k (for 25 RCAs) |
+| Resource | Usage                             |
+| -------- | --------------------------------- |
+| CPU      | Low (mostly waiting on API calls) |
+| Memory   | Moderate (5 concurrent agents)    |
+| Network  | High (Jira + GitHub + Feishu)     |
+| Tokens   | ~100k (for 25 RCAs)               |
 
 ---
 
 ## 🎯 Next Steps
 
 ### Immediate Monitoring
+
 1. ✅ Workflow is fully automated
 2. Monitor Feishu for completion notifications
 3. Verify Jira updates in Latest Status field
@@ -529,7 +584,7 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 
 1. **Daily Cron Job**
    - Auto-run workflow daily at scheduled time
-   - Already have `daily-rca-check.sh` for monitoring
+   - Already have `bin/daily-rca-check.sh` for monitoring
 
 2. **Improved Error Handling**
    - Retry logic for failed sub-agents
@@ -548,24 +603,28 @@ ls -l ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-
 ## 📞 Support Commands
 
 ### Check Recent Runs
+
 ```bash
 ls -lt ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca-manifest-*.json | head -5
 ```
 
 ### View Latest RCAs
+
 ```bash
 ls -lt ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca/*.md | head -10
 ```
 
 ### Test Jira Update
+
 ```bash
 cd ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src
-./update-jira-latest-status.sh BCIN-7552 ../output/rca/BCIN-7552-rca.md
+bash integrations/update-jira-latest-status.sh BCIN-7552 ../output/rca/BCIN-7552-rca.md
 ```
 
 ### Manual Feishu Send
+
 ```bash
-node send-feishu-notification.js ../output/feishu-summary-final-<timestamp>.md oc_f15b73b877ad243886efaa1e99018807
+node utils/send-feishu-notification.js ../output/feishu-summary-final-<timestamp>.md oc_f15b73b877ad243886efaa1e99018807
 ```
 
 ---

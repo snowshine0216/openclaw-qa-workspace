@@ -1,6 +1,6 @@
 ---
 name: openclaw-agent-design
-description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Produces a structured design doc following the canonical NLG template. Must invoke agent-idempotency for Phase 0, skill-creator for new skills, and openclaw-agent-design-review before finalizing. Use when designing new OpenClaw agents, workflows, or when creating/updating AGENTS.md, .agents/workflows/, or agent skills.
+description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Produces a structured design doc following the shell-script workflow mode or canonical NLG template. Must invoke agent-idempotency for Phase 0, skill-creator for new skills, and openclaw-agent-design-review before finalizing. Automatable phases must be designed as shell scripts, and sub-agents spawned via spawn-agents.js (not sessions_spawn). Use when designing new OpenClaw agents, workflows, or when creating/updating AGENTS.md, .agents/workflows/, or agent skills.
 ---
 
 # OpenClaw Agent Design
@@ -47,10 +47,16 @@ Every design output **must** follow this structure. Omit sections only when expl
 
 | Action | Path | Notes |
 |--------|------|-------|
-| CREATE | `.agents/workflows/<name>.md` | NLG workflow |
+| CREATE | `scripts/run-<name>-workflow.sh` | Main orchestrator |
+| CREATE | `scripts/create-manifest.sh` | Data collection → manifest |
+| CREATE | `scripts/spawn-agents.js` | Sub-agent spawner (not sessions_spawn) |
+| CREATE | `scripts/post-workflow.sh` | Jira + Feishu post steps |
+| CREATE | `scripts/lib/manifest.sh` | Manifest helpers |
+| CREATE | `scripts/lib/feishu.sh` | Feishu + fallback helpers |
+| CREATE | `scripts/lib/logging.sh` | Logging helpers |
+| CREATE | `scripts/test/` | TDD smoke tests |
 | CREATE | `skills/<name>/SKILL.md` | via skill-creator |
 | UPDATE | `AGENTS.md` | sync workflow + skill refs |
-| CREATE | `scripts/check_resume.sh` | idempotency |
 
 ---
 
@@ -78,10 +84,15 @@ Output:
 
 ---
 
-## 4. Workflow Design (NLG)
+## 4. Workflow Design
 
-> Default: NLG workflow. Phases are plain-language instructions.
-> Use bash scripts only when the design explicitly requires automation.
+Shell scripts are the **default** for all automatable phases (data collection, manifest creation, agent spawning, Jira updates, Feishu notification).
+
+NLG phases **coexist** for phases that explicitly require a **human confirmation gate** — for example:
+- Phase 0: user selects resume / regenerate / skip option
+- Any phase where destructive action requires explicit approval
+
+Rule: if a phase can run unattended without human judgment, it **must** be a shell script. If it requires stopping for user input, it **must** be NLG with explicit `User Interaction` block.
 
 Workflow path: `.agents/workflows/<name>.md`
 
@@ -215,12 +226,15 @@ User-facing README impact:
 
 ## 2. Key Rules
 
-### NLG Workflow Default
+### Shell + NLG Hybrid Workflow
 
-All workflow phases use **NLG (natural language instructions)** by default. This means:
-- Phase blocks use: **Actions / User Interaction / State Updates / Verification**
-- No code execution in phase bodies unless the design explicitly calls for a script
-- Verification blocks use bash for spot-checking only, not execution logic
+- Automatable phases: MUST be shell scripts (data collection, manifest, spawning, Jira, Feishu).
+- Human confirmation phases: MUST be NLG with explicit User Interaction block (Done / Blocked / Questions / Assumption policy).
+- Sub-agent spawning: ALWAYS use spawn-agents.js stdout handoff pattern; NEVER use sessions_spawn.
+- Feishu notifications: ALWAYS go through lib/feishu.sh with run.json.notification_pending fallback.
+- All scripts: each function max 20 lines; TDD stubs in scripts/test/ before implementation.
+- lib/ helpers: pure functions only — no side effects, no global state mutation.
+- Tests: use minimal mocks — stub only external APIs; prefer real filesystem, jq, temp dirs, and small fixtures.
 
 ### Never Assume
 

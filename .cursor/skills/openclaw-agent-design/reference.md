@@ -134,3 +134,34 @@ If formatting check failed: append `⚠️ Manual adjustments may be needed.`
 | Working dir | `projects/<type>/<key>/` |
 | Script call from working dir | `../scripts/check_resume.sh <key>` |
 | Cross-workspace artifact | `../../../<workspace>/projects/...` |
+
+---
+
+## Shell Workflow Architecture
+
+```text
+  Bash Script (run-agent-workflow.sh)
+        │
+        ├── Step 1: check_resume.sh (idempotency gate)
+        │
+        ├── Step 2: create-manifest.sh
+        │         └── writes output/<key>/manifest-<timestamp>.json
+        │
+        └── Step 3: spawn-agents.js <manifest>
+                  └── reads manifest
+                  └── spawns N sub-agents via OpenClaw agent API (NOT sessions_spawn)
+                  └── prints stdout handoff block (parent Agent assumes control)
+
+  (Post-Script Execution by Parent Agent via NLG Instructions)
+        │
+        ▼
+   post-workflow.sh (called manually by agent after sub-agents complete)
+        ├── Step A: Jira update per output artifact
+        └── Step B: Feishu notification
+                  └── on failure: persists payload → run.json.notification_pending
+```
+
+### Script Conventions
+1. **Purity**: Each function max 20 lines. No global state mutation inside functions.
+2. **Minimal mocks**: TDD stubs use real temp dirs, real `jq`/`node` where cheap. Mock ONLY external APIs.
+3. **No sessions_spawn**: Use stdout manifest pattern (`spawn-agents.js`) for sub-agent passing.
