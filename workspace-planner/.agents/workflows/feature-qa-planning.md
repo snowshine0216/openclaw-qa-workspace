@@ -92,18 +92,14 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 ## 4. Publication
 1. Copy the final approved draft (latest from `drafts/qa_plan_v*.md`) to `projects/feature-plan/<feature-id>/qa_plan_final.md`. If `qa_plan_final.md` already exists (e.g. from Full Regenerate), archive it first to `archive/qa_plan_final_<YYYYMMDD>.md`.
 2. Generate an audit trail / changelog explaining what features and test strategies were captured. Save as `changelog.md`.
-3. **Convert Markdown to Confluence format** (CRITICAL): From feature dir `projects/feature-plan/<feature-id>`, use `../../../scripts/confluence/md-to-confluence.js`:
+3. **Publish markdown directly to Confluence**:
    ```bash
-   node ../../../scripts/confluence/md-to-confluence.js qa_plan_final.md qa_plan_confluence.html
-   ```
-4. **Publish to Confluence with storage format**:
-   ```bash
-   confluence update <page-id> --file qa_plan_confluence.html --format storage
+   confluence update <page-id> --file qa_plan_final.md --format markdown
    ```
    **Confluence page ID**: Obtained from user input at start, or stored in `task.json` (e.g. `confluence_page_id`) from a prior run. If unknown, prompt the user before publishing.
-   **⚠️ NEVER publish raw Markdown** - Confluence requires HTML storage format!
-5. **Verify publication**: Check that page renders correctly with formatted tables and headers.
-6. Update `task.json` phase to `confluence_review`.
+   Publish markdown directly with `--format markdown`.
+4. **Verify publication**: Check that page renders correctly with formatted tables and headers.
+5. Update `task.json` phase to `confluence_review`.
 
 ## 5. Confluence Content Review
 1. Spawn a sub-agent using the `qa-plan-confluence-review` skill. Pass it:

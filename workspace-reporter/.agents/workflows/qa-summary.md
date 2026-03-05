@@ -109,17 +109,20 @@ Never publish without explicit `APPROVE`.
 ## 5. Confluence Section Update
 
 Surgical update of `QA Summary` section only.
-1. Read current page: `confluence read <page-id>` (use `confluence` skill).
+1. Read current page as markdown:
+   `confluence read <page-id> --format markdown > /tmp/qa_page_before.md` (use `confluence` skill).
 2. Locate `QA Summary` section (if the existing page has a `5. QA Summary` numeric heading, replace it heavily with the `🔍 QA Summary` emoji heading).
 3. **Merge Rules:**
    - Add/replace sub-sections 1-9.
    - Preserve all content outside of `QA Summary`.
    - Preserve existing subsection data if the new draft only has a `[PENDING]` placeholder for it.
-4. Convert merged content to Confluence storage format and execute update:
-   `confluence update <page-id> --file qa_summary_section.html --format storage` (Or use skill).
+4. Save merged markdown to a file (for example `projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_MERGED.md`) and publish directly in markdown:
+   `confluence update <page-id> --file projects/qa-summaries/<FEATURE_KEY>/<FEATURE_KEY>_QA_SUMMARY_MERGED.md --format markdown` (or use skill).
+   Do not convert markdown to storage HTML for this workflow.
 5. **Post-Update Confluence Formatting Self-Check:**
-   - Immediately read back the page to verify structural formatting: `confluence read <page-id> --format storage > /tmp/qa_confluence_readback.html`
-   - Verify all 9 sections present, tables well-formed (at least 1 data row, no empty shells), no raw Markdown leakage.
+   - Immediately read back the page in markdown to verify structural formatting:
+     `confluence read <page-id> --format markdown > /tmp/qa_confluence_readback.md`
+   - Verify all 9 sections present, tables well-formed (at least 1 data row, no empty shells), and subsection numbering is preserved.
    - On pass: Log `✅ Confluence formatting self-check passed.` proceed.
    - On fail: Present issue to user and ask: *(A) Attempt auto-fix and re-publish, or (B) Notify me to fix manually?*
 6. On success, save `run.json` with `output_generated_at` and `confluence_published_at`.

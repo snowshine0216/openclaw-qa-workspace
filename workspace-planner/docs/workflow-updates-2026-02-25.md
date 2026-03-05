@@ -1,8 +1,16 @@
-# Workflow Documentation Updates - 2026-02-25
+# Workflow Documentation Updates - 2026-03-05
 
 ## Summary
 
-Updated workflow documentation to include critical Confluence conversion step to prevent publishing raw Markdown.
+Refactored Confluence publishing from Markdown->HTML storage conversion to direct markdown publishing.
+
+New standard for full-page updates:
+
+```bash
+confluence update <page-id> --file <input.md> --format markdown
+```
+
+For reporter postmortem outputs, when no existing page is available, create a new Confluence page from the full postmortem final markdown.
 
 ---
 
@@ -12,150 +20,83 @@ Updated workflow documentation to include critical Confluence conversion step to
 **Section**: Phase 4 - Publication
 
 **Changes**:
-- Added explicit Markdown → HTML conversion step
-- Added `--format storage` requirement
-- Added verification step
-- Added warning to never publish raw Markdown
-
-**Before**:
-```
-3. Use confluence create or update to deploy qa_plan_final.md
-```
+- Removed `md-to-confluence.js` conversion step
+- Replaced storage-format publish with direct markdown publish
+- Kept publication verification step
 
 **After**:
-```
-3. Convert Markdown to Confluence format (CRITICAL):
-   node scripts/confluence/md-to-confluence.js ...
-   
-4. Publish to Confluence with storage format:
-   confluence update <page-id> --file ... --format storage
-   
-   ⚠️ NEVER publish raw Markdown!
-   
-5. Verify publication
+```bash
+confluence update <page-id> --file qa_plan_final.md --format markdown
 ```
 
 ### 2. `AGENTS.md`
 **Section**: Core Workflow: Feature QA Planning (Master Orchestrator)
 
 **Changes**:
-- Expanded Publication step (5) into sub-steps (a, b, c, d)
-- Added critical warning at bottom of workflow
+- Replaced convert-then-publish instructions with direct markdown publishing
+- Removed warnings that required HTML storage conversion
+- Clarified fallback: create page if no existing Confluence page ID is available
 
-**Addition**:
-```
-⚠️ CRITICAL: Never publish raw Markdown to Confluence! 
-Always convert to HTML storage format first.
-```
-
-### 3. `MEMORY.md`
-**Section**: Lessons Learned → Critical Mistakes to NEVER Repeat
+### 3. `workspace-reporter/.agents/workflows/defect-analysis.md`
+**Section**: Phase 6 - Publish
 
 **Changes**:
-- Added new subsection: "Confluence Publishing - ALWAYS Convert Markdown First"
-- Documented the mistake, correct process, wrong process
-- Referenced script locations
-- Dated and contextualized (BCED-4198, 2026-02-25)
+- Replaced MD->HTML->storage flow with direct markdown publish
+- Added explicit rule: if no existing target page is available, create a Confluence page with the full postmortem final report markdown
 
----
-
-## New Files Created
-
-### 1. `scripts/confluence/QUICK_REFERENCE.md`
-Quick reference card for Confluence publishing:
-- Critical rule highlighted
-- Correct process (2 options)
-- Wrong process examples
-- Verification checklist
-- Troubleshooting tips
-- Scripts location
-
-**Purpose**: Fast lookup when publishing to Confluence
-
----
-
-## Documentation Structure
-
-```
-workspace-planner/
-├── AGENTS.md                          [UPDATED - Workflow summary]
-├── MEMORY.md                          [UPDATED - Lessons learned]
-├── .agents/
-│   └── workflows/
-│       └── feature-qa-planning.md     [UPDATED - Phase 4 details]
-└── scripts/
-    └── confluence/
-        ├── md-to-confluence.js        [NEW - Converter]
-        ├── publish.sh                 [NEW - Wrapper]
-        ├── README.md                  [NEW - Full docs]
-        └── QUICK_REFERENCE.md         [NEW - Quick lookup]
+**After**:
+```bash
+confluence update <page-id> --file projects/defects-analysis/<KEY>/<KEY>_REPORT_FINAL.md --format markdown
 ```
 
----
+Fallback:
+```bash
+confluence create "<KEY> QA Postmortem" <SPACEKEY> --file projects/defects-analysis/<KEY>/<KEY>_REPORT_FINAL.md --format markdown
+```
 
-## Key Principles Established
+### 4. `workspace-reporter/AGENTS.md`
+**Section**: Defect-analysis phase table
 
-### 1. Markdown for Authoring, HTML for Publishing
-- All QA plans authored in Markdown (human-readable, version-controllable)
-- Always convert to HTML before publishing to Confluence
-- Never publish raw Markdown
+**Changes**:
+- Replaced convert MD->HTML wording with direct markdown publishing
+- Explicitly states full postmortem page creation when no page exists
 
-### 2. Verification is Part of the Process
-- Conversion → Publication → **Verification**
-- Check page renders correctly
-- Ensure tables, headers, links work
+### 5. `workspace-reporter/scripts/README.md`
+**Changes**:
+- Removed `confluence/` symlink row (obsolete after converter removal)
 
-### 3. Reusable Tools
-- Scripts in structured folders (`scripts/confluence/`)
-- Documented and tested
-- One-command convenience wrapper
-
-### 4. Learning from Mistakes
-- Document in MEMORY.md
-- Update workflows immediately
-- Create safeguards (warnings, checklists)
+### 6. `projects/feature-plan/docs/DESIGN_ENHANCEMENTS.md`
+**Changes**:
+- Updated Confluence create/update examples from HTML storage to markdown format
 
 ---
 
-## Testing & Validation
+## Removed Assets
 
-### Validation Steps Taken
-1. ✅ Converted BCED-4198 QA plan to HTML
-2. ✅ Republished to Confluence (Version 3)
-3. ✅ Verified page renders correctly
-4. ✅ Tested wrapper script
-5. ✅ Documented process
-6. ✅ Updated all workflow docs
+The legacy converter path was removed:
 
-### Future Validation
-- [ ] Test on new feature QA plan
-- [ ] Verify wrapper script in clean environment
-- [ ] Confirm documentation is clear for other agents
+- `workspace-planner/scripts/confluence/` (deleted)
+- `workspace-reporter/scripts/confluence` symlink (removed)
 
 ---
 
-## Compliance
+## Key Principles
 
-✅ User requirement: "Create under scripts folder and make them structured"  
-✅ User requirement: "Update the workflow doc to reflect this extra step"
-
-All requirements met.
-
----
-
-## Rollout
-
-**Immediate Effect**: 
-- All future Confluence publications will follow new process
-- Workflow enforces conversion step
-- MEMORY.md prevents repeat mistakes
-
-**Backward Compatibility**:
-- Existing Markdown files unaffected
-- Can retroactively convert and republish if needed
+1. Author and publish directly in Markdown for full-page workflows.
+2. Verify rendered Confluence output after publish.
+3. Reporter publish path must explicitly support creating a new page with the full postmortem final report when no page exists.
 
 ---
 
-**Updated by**: QA Planner Agent (Atlas)  
-**Date**: 2026-02-25 18:54 GMT+8  
-**Status**: ✅ Complete
+## Validation Checklist
+
+- [ ] Publish a QA plan with `--format markdown`
+- [ ] Publish a defect postmortem report with `--format markdown`
+- [ ] Validate rendering via `confluence read <page-id>`
+- [ ] Confirm no workflow references the removed converter path
+
+---
+
+**Updated by**: QA Planner Agent
+**Date**: 2026-03-05
+**Status**: Complete

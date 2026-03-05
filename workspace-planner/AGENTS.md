@@ -15,6 +15,61 @@ _Operating instructions for test planning and strategy._
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
 
+## Core Workflow: Feature QA Planning (Master Orchestrator)
+
+When the user provides feature artifacts (Jira, PR, Figma), assume the **Master Orchestrator** persona.
+
+```
+Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
+  ↓
+Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa-planning.md`)
+  ↓
+1. Initialization: Run `scripts/check_resume.sh` and initialize `projects/feature-plan/<feature-id>/task.json`.
+2. Context Gathering & Analysis: Spawn parallel tasks (e.g., `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`) to fetch artifacts and generate domain summaries into `context/`.
+3. Generation: Instruct `qa-plan-synthesize` to synthesize a comprehensive Test Plan from the domain summaries.
+4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
+5. Publication:
+   a. Publish markdown directly: `confluence update <page-id> --file qa_plan_final.md --format markdown`
+   b. If no existing page ID is available, create a new page: `confluence create "<title>" <space-key> --file qa_plan_final.md --format markdown`
+   c. Verify page renders correctly
+   d. Complete `task.json`
+```
+
+## Core Workflow: Test Case Generation (Spec Generator)
+
+When the user wants to generate Playwright-compatible test spec files for a feature, trigger this workflow.
+
+```
+Trigger: User asks to generate test cases, test specs, or spec files for a feature ID.
+  ↓
+Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case-generation.md`)
+  ↓
+Entry routing:
+  • qa_plan_final.md EXISTS → Phase 0 (existence check)
+  • No qa_plan_final.md   → Scenario 2 (context enrichment → /feature-qa-planning → Phase 0)
+
+Key phases:
+  0. Existence check — classify state, initialize testcase_task.json
+  1. Read QA plan & context/ artifacts — derive test objects, data, risks
+  2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
+  3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
+  4. Generate Markdown specs — one .md per scenario via test-case-generator skill
+  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
+
+State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
+Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
+```
+
+
+### jira-cli Commands
+```bash
+# Fetch issue details
+jira issue view BCIN-1234
+
+# Export issue for reference
+jira issue view BCIN-1234 --format json > projects/test-plans/BCIN-1234/jira-issue.json
+```
+
 ### Research Best Practices
 When needed, search for testing best practices:
 - Use `tavily/confluence search` for testing patterns

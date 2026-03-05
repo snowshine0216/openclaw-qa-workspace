@@ -74,10 +74,10 @@ confluence children 123456
 confluence export 123456 --output ./context/confluence_export/
 
 # Publish final QA plan
-confluence create "QA Plan: Login Feature" SPACEKEY --body "$(cat qa_plan_final.md)"
+confluence create "QA Plan: Login Feature" SPACEKEY --file qa_plan_final.md --format markdown
 
 # Update existing page
-confluence update 123456 --file qa_plan_final.html --format storage
+confluence update 123456 --file qa_plan_final.md --format markdown
 ```
 
 > ⚠️ **Important**: We do NOT use `mcp-atlassian` Confluence tools. All Confluence operations go through the `confluence-cli` binary. Config lives at `~/.confluence-cli/config.json`. Requires `CONFLUENCE_TOKEN` env var.
@@ -877,11 +877,11 @@ EXISTING_PAGE=$(confluence find "QA Plan: BCIN-1234 Login Flow" 2>/dev/null)
 if [ -n "$EXISTING_PAGE" ]; then
   # Update existing page
   PAGE_ID=$(echo "$EXISTING_PAGE" | head -1 | awk '{print $1}')
-  confluence update "$PAGE_ID" --file qa_plan_final.html --format storage
+  confluence update "$PAGE_ID" --file qa_plan_final.md --format markdown
   echo "Updated existing page: $PAGE_ID"
 else
   # Create new page
-  confluence create "QA Plan: BCIN-1234 Login Flow" SPACEKEY --file qa_plan_final.html --format storage
+  confluence create "QA Plan: BCIN-1234 Login Flow" SPACEKEY --file qa_plan_final.md --format markdown
   echo "Created new page"
 fi
 

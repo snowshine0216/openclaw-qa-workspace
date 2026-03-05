@@ -37,7 +37,7 @@ Full design: `projects/docs/REPORTER_AGENT_DESIGN.md`
 | **3. PR Analysis** | Spawn parallel sub-agents (max 5). Fetch diffs via `github` skill. Save Fix Risk Analysis to `context/prs/<PR_ID>_impact.md`. Heartbeat every 60s. |
 | **4. Report Generation** | Invoke `defect-analysis-reporter` skill. Save draft to `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`. |
 | **5. Approval** | **STOP. Ask user to review draft. Wait for APPROVE or REJECT.** |
-| **6. Publish** | APPROVE → convert MD→HTML → publish via `confluence` skill. REJECT → broadcast via `message` (Feishu). Final report already exists (promoted in Phase 4a). |
+| **6. Publish** | APPROVE → publish `_REPORT_FINAL.md` via `confluence update ... --format markdown`; if no page exists, create a new Confluence page with the **full postmortem version** from `_REPORT_FINAL.md`. REJECT → broadcast via `message` (Feishu). Final report already exists (promoted in Phase 4a). |
 
 ### Phases (single-defect-analysis.md — Single-Issue only)
 
