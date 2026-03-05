@@ -14,27 +14,82 @@ _Operating instructions for daily monitoring._
 
 
 
-## 🔄 Daily RCA Workflow
+## 🔄 RCA Automation Workflow (Fully Automated)
 
-**Entry Point:** `run-complete-rca-workflow.sh` (single source of truth)
+**Entry Point:** `run-complete-rca-workflow.sh` (single command triggers everything)
 
-**What it does:**
-1. Calls `process-rca.sh` to collect Jira + GitHub data
-2. Spawns AI agent to generate RCA documents
-3. Updates Jira `customfield_10050` (Latest Status) for each issue
-4. Auto-sends Feishu summary to QA group
+### What Happens Automatically:
 
-**Usage:**
-```bash
-bash ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src/run-complete-rca-workflow.sh
+```
+1. User runs: bash run-complete-rca-workflow.sh
+   ↓
+2. Bash: Collects Jira + GitHub data
+   ↓
+3. Bash: Sends Feishu notification → "RCA Workflow Ready: N issues"
+   ↓
+4. Agent (Me): Receives notification
+   ↓
+5. Agent: Spawns N sub-agents (5 concurrent batches)
+   ↓
+6. Sub-agents: Generate RCAs (9-section comprehensive analysis)
+   ↓
+7. Agent: Runs post-rca-workflow.sh
+   ↓
+8. Bash: Updates Jira Latest Status (N issues)
+   ↓
+9. Bash: Sends final Feishu summary
+   ↓
+10. Done! ✅
 ```
 
-**Automation:** Run via cron for daily RCA analysis and Jira updates.
+### My Role (Agent Handler):
 
-**Output:**
+**When I receive Feishu notification:**
+1. Detect "RCA Workflow Ready" message
+2. Read manifest: `rca-manifest-<timestamp>.json`
+3. Spawn sub-agents for each issue (batched):
+   - Batch 1: 5 agents
+   - Wait for completion
+   - Batch 2: 5 agents
+   - ... repeat until all done
+4. Each sub-agent:
+   - Reads `rca-input-<issue>.json`
+   - Generates comprehensive 9-section RCA
+   - Saves to `output/rca/<issue>-rca.md`
+5. After all complete, run:
+   ```bash
+   bash post-rca-workflow.sh <timestamp>
+   ```
+6. Monitor Jira updates and final notification
+
+**Handler Guide:** `projects/rca-daily/.agents/rca-workflow-handler.md`
+
+### Usage:
+
+```bash
+cd ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src
+bash run-complete-rca-workflow.sh
+```
+
+**Then:** Wait 15-20 minutes for completion notification
+
+### Output:
 - RCA documents: `projects/rca-daily/output/rca/<ISSUE_KEY>-rca.md`
+- Manifest: `projects/rca-daily/output/rca-manifest-<timestamp>.json`
 - Logs: `projects/rca-daily/output/logs/`
-- Feishu summary: Auto-sent to `oc_f15b73b877ad243886efaa1e99018807`
+- Feishu notifications: 2 (trigger + completion)
+
+### Status Monitoring:
+
+Check active sub-agents:
+```javascript
+subagents(action: "list")
+```
+
+Count generated RCAs:
+```bash
+ls -1 ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca/*.md | wc -l
+```
 
 
 **Before creating files, consult `WORKSPACE_RULES.md`**

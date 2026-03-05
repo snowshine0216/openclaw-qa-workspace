@@ -84,9 +84,48 @@ TRIGGER_FILE="${OUTPUT_DIR}/.rca-trigger-${TIMESTAMP}"
 echo "${MANIFEST_FILE}" > "${TRIGGER_FILE}"
 echo "✅ Trigger file created: ${TRIGGER_FILE}"
 echo ""
+
+# Step 2b: Notify agent via Feishu to spawn RCA sub-agents
 echo "========================================="
-echo "⏸️  Pausing here. Agent will continue RCA generation."
+echo "📤 Step 2b: Notifying agent to process RCA manifest"
 echo "========================================="
+echo ""
+
+NOTIFICATION_MESSAGE="🤖 **RCA Workflow Ready**
+
+Data collection complete for **${RCA_INPUTS} issues**.
+
+**Manifest:** \`rca-manifest-${TIMESTAMP}.json\`
+**Timestamp:** ${TIMESTAMP}
+
+Please process the manifest to generate RCAs, update Jira, and send final notification."
+
+# Try OpenClaw CLI first, fall back to logging
+if command -v openclaw &> /dev/null; then
+    echo "Sending notification via OpenClaw CLI..."
+    if openclaw message send \
+        --channel feishu \
+        --target "${FEISHU_CHAT_ID}" \
+        --message "${NOTIFICATION_MESSAGE}" 2>&1; then
+        echo "✅ Feishu notification sent successfully"
+    else
+        echo "⚠️  OpenClaw CLI failed. Notification logged to manifest."
+    fi
+else
+    echo "⚠️  OpenClaw CLI not available. Notification logged to manifest."
+fi
+
+echo ""
+echo "========================================="
+echo "⏸️  Data collection complete. Waiting for agent."
+echo "========================================="
+echo ""
+echo "Agent will:"
+echo "  1. Read manifest: ${MANIFEST_FILE}"
+echo "  2. Spawn ${RCA_INPUTS} sub-agents to generate RCAs"
+echo "  3. Run post-workflow script to update Jira"
+echo "  4. Send final Feishu summary"
+echo ""
 exit 0
 
 
