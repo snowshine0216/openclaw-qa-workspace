@@ -49,6 +49,7 @@ Key rules:
 | reporter | Reporting | Sonnet 4.5 | Reports, Jira updates |
 | config | Config expert | Opus 4.6 | OpenClaw configuration |
 
+
 ## Error Handling
 
 ### Agent Fails to Complete

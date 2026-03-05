@@ -12,102 +12,30 @@ _Operating instructions for daily monitoring._
 6. Read `MEMORY.md` (monitoring patterns)
 7. Read `WORKSPACE_RULES.md` (file organization)
 
-## Core Workflow: Daily Checks
 
-### Trigger: Cron Job (Setup Later)
-```
-Daily at 09:00 Asia/Shanghai:
-  1. Run Jira checks
-  2. Run CI checks
-  3. Generate daily summary
-  4. Report to master or Snow
-```
 
-### Phase 1: Jira Checks
-```
-Use jira-cli skill:
-  1. Fetch issues with status "Ready for Testing"
-  2. Filter by project (e.g., BCIN)
-  3. Check for blockers (priority: Blocker, Critical)
-  4. Export to: projects/jira-exports/YYYY-MM-DD.json
-```
+## 🔄 Daily RCA Workflow
 
-Example commands:
+**Entry Point:** `run-complete-rca-workflow.sh` (single source of truth)
+
+**What it does:**
+1. Calls `process-rca.sh` to collect Jira + GitHub data
+2. Spawns AI agent to generate RCA documents
+3. Updates Jira `customfield_10050` (Latest Status) for each issue
+4. Auto-sends Feishu summary to QA group
+
+**Usage:**
 ```bash
-# Fetch issues ready for testing
-jira issue list --status "Ready for Testing" --project BCIN
-
-# Check blockers
-jira issue list --priority Blocker,Critical --project BCIN
-
-# Get issue details
-jira issue view BCIN-1234
+bash ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src/run-complete-rca-workflow.sh
 ```
 
-### Phase 2: CI/Jenkins Checks
+**Automation:** Run via cron for daily RCA analysis and Jira updates.
 
-```
-Use the `jenkins-analysis` project scripts:
-  1. Execute `projects/jenkins-analysis/scripts/analyzer.sh` to fetch results
-  2. Process build data and update the database (`db_writer.js`)
-  3. Identify failing jobs, check for flaky tests
-  4. Generate markdown and DOCX reports using `report_generator.js` and `md_to_docx.js`
-```
+**Output:**
+- RCA documents: `projects/rca-daily/output/rca/<ISSUE_KEY>-rca.md`
+- Logs: `projects/rca-daily/output/logs/`
+- Feishu summary: Auto-sent to `oc_f15b73b877ad243886efaa1e99018807`
 
-### Phase 3: Generate Daily Summary
-```
-Aggregate findings:
-  1. Count issues by status and priority
-  2. List failing CI jobs
-  3. Highlight urgent items (blockers, critical failures)
-  4. Format for readability
-  5. Save to: projects/test-reports/daily/YYYY-MM-DD.md
-```
-
-Summary template:
-```markdown
-# Daily QA Check - YYYY-MM-DD
-
-## Jira Status
-- **Ready for Testing:** X issues
-  - High priority: [BCIN-1234, BCIN-1235]
-  - Medium priority: [BCIN-1236]
-- **Blockers:** Y issues
-  - [BCIN-1230] Description
-- **In Progress:** Z issues
-
-## CI Status
-- **Failing Jobs:** N
-  - api-tests: [View](link)
-  - ui-smoke-tests: [View](link)
-- **Flaky Tests:** M
-  - test_login_flow (3 failures in 5 runs)
-
-## Action Items
-1. Test high-priority issues: BCIN-1234, BCIN-1235
-2. Investigate ui-smoke-tests failure
-3. Review blocker BCIN-1230
-
-## Summary
-Brief overview of the day's findings and priorities.
-```
-
-### Phase 4: Report
-```
-Send summary to master agent:
-  - Use sessions_send if master is available
-  - Include summary text
-  - Attach daily report path
-
-Or report directly to Snow if configured
-```
-
-## File Organization
-
-**All daily outputs go to projects/:**
-- Jira exports: `projects/jira-exports/YYYY-MM-DD.json`
-- CI reports: `projects/ci-reports/YYYY-MM-DD.json`
-- Daily summaries: `projects/test-reports/daily/YYYY-MM-DD.md`
 
 **Before creating files, consult `WORKSPACE_RULES.md`**
 
@@ -128,20 +56,8 @@ Record to `agents/qa-daily/MEMORY.md`:
 
 ## Jira Integration
 
-Configuration already exists. Key commands:
+Configuration already exists. The token is in .evn file. 
 
-```bash
-# List issues
-jira issue list --status <status> --project <project>
-
-# View issue
-jira issue view <issue-key>
-
-# Search with JQL
-jira issue list --jql "project = BCIN AND status = 'Ready for Testing'"
-```
-
-Save Jira credentials path to `TOOLS.md` if not already there.
 
 ## CI/Jenkins Integration
 
@@ -156,53 +72,8 @@ Integration is handled by the `jenkins-analysis` project.
 ### ANDROID JENKINS
 Integration is located in `android-jenkins-analysis`. refer to `README.md` for details
 
-## Heartbeat Protocol
 
-**This agent has a HEARTBEAT.md file for proactive checks.**
 
-When cron triggers or heartbeat poll arrives:
-1. Run daily checks (Jira + CI)
-2. Generate summary
-3. Report findings
-4. Reply `HEARTBEAT_OK` only if no issues found
-
-If issues found, report them instead of `HEARTBEAT_OK`.
-
-## Error Handling
-
-### Jira API Fails
-- Log error to daily report
-- Note in summary: "Jira check failed - investigate"
-- Report to master
-
-### Jenkins API Fails
-- Log error to daily report
-- Note in summary: "CI check failed - investigate"
-- Report to master
-
-### No Issues Found
-- Generate summary: "All clear"
-- Save to daily report
-- Reply `HEARTBEAT_OK`
-
-## Reporting Format
-
-**Keep it concise and actionable.**
-
-Good:
-```
-📋 Daily Check - 2026-02-23
-Jira: 3 ready for testing (BCIN-1234, BCIN-1235, BCIN-1236)
-CI: 2 failing jobs (api-tests, ui-smoke-tests)
-Action: Test BCIN-1234 first (critical)
-```
-
-Bad:
-```
-I checked Jira today and found some issues that might be ready for testing.
-There were a few things in the CI that looked like they might have failed.
-Let me know if you want more details...
-```
 
 ## Memory
 
