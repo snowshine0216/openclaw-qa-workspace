@@ -59,21 +59,6 @@ Run from repository root:
 ./src/sync-skills.sh
 ```
 
-## OpenClaw Agent Design Review Gate
-
-OpenClaw design tasks now use a two-step specialist flow:
-
-1. `openclaw-agent-designer` drafts the agent/workflow design.
-2. `openclaw-agent-design-reviewer` runs a blocking quality review.
-
-Reviewer checks include:
-- path validity and OpenClaw pathing best practices
-- test/smoke evidence for newly introduced scripts/workflows
-- documentation coverage and explicit user-facing `README.md` mention
-
-Review artifacts default to:
-- `projects/agent-design-review/<design-id>/design_review_report.md`
-- `projects/agent-design-review/<design-id>/design_review_report.json`
 
 ## QA Test Key Points Interactive Page
 
@@ -140,3 +125,118 @@ Full usage and troubleshooting:
 - refer to workspace-tester/tools/sitemap-generator/README.md for more details
 - to check if gh is setup correctly, run `gh auth status -h github.com`
 
+
+## Enable QMD and Memory Search for OpenClaw
+
+### QMD setup
+| Requirement | Details |
+|-------------|---------|
+| **Runtime** | Node.js >= 22 (prefer Node over Bun on macOS — see [qmd#184](https://github.com/tobi/qmd/issues/184)) |
+| **Storage** | Index only (~tens of MB); no model download for BM25 |
+| **macOS** | `brew install sqlite` (for FTS5 extensions) |
+
+**Environment variables (optional, Mac Intel):**
+
+```bash
+export NODE_LLAMA_CPP_CMAKE_OPTION_GGML_CUDA=OFF
+```
+
+**Install and configure:**
+
+```bash
+# Install qmd globally
+npm install -g @tobilu/qmd
+
+# Add site-knowledge as a collection (run from workspace-tester root)
+qmd collection add memory/site-knowledge --name site-knowledge --mask "**/*.md"
+
+# BM25 index is built automatically; no qmd embed needed
+```
+
+**Search command (BM25 only):**
+
+```bash
+ qmd search "filter" -c site-knowledge --json -n 10
+```
+response
+```json
+[
+  {
+    "docid": "#783738",
+    "score": 0,
+    "file": "qmd://site-knowledge/filter.md",
+    "title": "Site Knowledge: Filter Domain",
+    "snippet": "@@ -1,3 @@ (0 before, 151 after)\n# Site Knowledge: Filter Domain\n\n## Overview"
+  },
+  {
+    "docid": "#cd7aaa",
+    "score": 0,
+    "file": "qmd://site-knowledge/common.md",
+    "title": "Site Knowledge: Common Domain",
+    "snippet": "@@ -5,4 @@ (4 before, 324 after)\n- **Domain key:** `common`\n- **Components covered:** Alert, AntdMessage, AuthoringFilters, Checkbox, CollaborationDB, Email, EmbedPromptEditor, FilterCapsule, FilterDropdown, FilterElement, FilterPanel, FilterSearch, FilterSlider, FilterSummary, FontPicker, for, HamburgerMenu, Legend, LibraryFilt..."
+  }
+]
+```
+
+### Memory search setup
+### 3.2 OpenClaw memorySearch Setup
+
+When the Tester Agent runs inside OpenClaw, add `memory/site-knowledge` to the watched paths.
+
+**Minimal config:**
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "memorySearch": {
+        "enabled": true,
+        // "extraPaths": ["memory/site-knowledge"],
+        "sync": { "watch": true }
+      }
+    }
+  }
+}
+```
+
+**With OpenRouter embeddings:**
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "memorySearch": {
+        "enabled": true,
+        // "extraPaths": ["memory/site-knowledge"],
+        "provider": "openai",
+        "model": "openai/text-embedding-3-small",
+        "remote": {
+          "baseUrl": "https://openrouter.ai/api/v1/",
+          "apiKey": "${OPENROUTER_API_KEY}"
+        },
+        "sync": { "watch": true },
+        "query": { "maxResults": 8, "hybrid": { "enabled": true } },
+        "cache": { "enabled": true, "maxEntries": 50000 }
+      }
+    }
+  }
+}
+```
+### How to Trigger MemorySearch
+the memory_search tool automatically searches across:
+- MEMORY.md (long-term memory)
+- memory/*.md files (including your memory/site-knowledge/ directory)
+
+### Basic Usage
+```bash
+memory_search(query: "report editor")
+```
+
+### For Report Editor Topics
+```bash
+memory_search(query: "report editor WDIO page objects locators")
+memory_search(query: "report editor UI components interactions")
+memory_search(query: "report editor test automation patterns")
+```
+
+                                             
