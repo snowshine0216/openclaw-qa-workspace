@@ -35,27 +35,6 @@ Follow-up (outside this design-only change):
 2. Align `.agents/workflows/feature-test.md` and `.agents/workflows/defect-test.md` when created.
 3. Align `scripts/check_resume.sh` behavior to this design contract.
 
-### 0.4 Path resolution base (single execution context)
-
-All operational paths and commands in this document are resolved from:
-
-- `workspace-tester/` as the working directory (CWD base)
-
-Path style rule:
-
-1. Use workspace-root-relative paths only (example: `projects/test-cases/BCIN-1234/task.json`).
-2. For sibling workspaces, use explicit CWD-resolvable relative paths (`../workspace-planner/...`, `../workspace-reporter/...`).
-3. Do not mix repo-root-prefixed paths and CWD-relative paths in the same command contract.
-4. Legacy `memory/tester-flow/runs/...` paths may appear only in migration compatibility notes.
-
-### 0.5 Gate compatibility command (legacy canonical form)
-
-For OpenClaw design-review compatibility during migration, keep this exact canonical verification command in the design:
-
-```bash
-jq -r '.notification_pending // empty' memory/tester-flow/runs/<work_item_key>/run.json
-```
-
 ---
 
 ## 1. Site Knowledge Search Design
@@ -204,10 +183,12 @@ Contract fields:
 
 - `run_key`: string
 - `mode`: `feature_test | defect_test`
-- `overall_status`: `plan_check | plan_ready | waiting_for_reporter | testing | test_complete | completed | failed`
+- `overall_status`: `plan_check | plan_ready | test_env_ready | waiting_for_reporter | testing | test_complete | completed | failed`
 - `current_phase`: string
 - `issue_key`: string
 - `plan_path`: string or null
+- `testcase_path`: string or null (full path to resolved testcase.md)
+- `testcase_resolved_at`: ISO8601 or null
 - `site_context_path`: string or null
 - `result`: `PASS | FAIL | BLOCKED | null`
 - `evidence_path`: string or null
@@ -273,8 +254,8 @@ Trigger:
 Default plan resolution order:
 
 1. explicit input path
-2. `../workspace-planner/projects/test-plans/<issue-key>/qa-plan-final.md`
-3. legacy fallback: `../workspace-planner/projects/test-plans/<issue-key>/test-plan.md`
+2. `workspace-planner/projects/test-plans/<issue-key>/qa-plan-final.md`
+3. legacy fallback: `workspace-planner/projects/test-plans/<issue-key>/test-plan.md`
 
 ### Phase 0: Idempotency and Run Preparation
 
@@ -334,14 +315,45 @@ Verification:
 jq -r '.plan_path,.planner_invoked,.overall_status' projects/test-cases/BCIN-1234/task.json
 ```
 
-### Phase 2: Site Knowledge Search
+### Phase 2: Read Test Environment and Objects
 
 Actions:
 
-1. Derive keywords from issue + plan components + domain labels.
-2. Invoke `site-knowledge-search` skill.
-3. Write `site_context.md` to run root.
-4. Record freshness timestamps in `run.json`.
+1. Check existence of `workspace-planner/projects/feature-plan/<issue-key>/testcase.md`.
+2. If no markdown testcase: require user to upload in chat (agent saves to path) or place file in folder and confirm. Create folder if missing. Validate testcase markdown (non-empty with at least one testcase section/item).
+3. If testcase.md exists: ask user "Do you need to refresh the test environment and objects? (Y/N)". If Y, ask for new file; if N, proceed.
+4. Persist `testcase_path` in `task.json`.
+
+User Interaction:
+
+1. Blocked (no testcase.md): upload file or place in folder and confirm.
+2. Blocked (refresh requested): provide new file.
+3. Done: proceed to site-knowledge-search.
+
+State Updates:
+
+1. `task.json.current_phase = "phase_2_test_env"`
+2. `task.json.testcase_path` = full path to testcase.md
+3. `task.json.overall_status = "test_env_ready"`
+4. `task.json.testcase_resolved_at` = ISO8601
+
+Verification:
+
+```bash
+test -f ../workspace-planner/projects/feature-plan/BCIN-1234/testcase.md && echo OK
+jq -r '.testcase_path,.overall_status' projects/test-cases/BCIN-1234/task.json
+```
+
+### Phase 3: Site Knowledge Search
+
+Actions:
+
+1. Prerequisite: Phase 2 (testcase.md) must be resolved.
+2. Derive keywords from issue + plan components + domain labels + testcase.md.
+   Example: `keywords="create report with report filter" domains=["filter","report-editor"]`
+3. Invoke `site-knowledge-search` skill.
+4. Write `site_context.md` to `projects/test-cases/<key>/site_context.md`.
+5. Record freshness timestamps in `run.json`.
 
 User Interaction:
 
@@ -352,7 +364,7 @@ User Interaction:
 
 State Updates:
 
-1. `task.json.current_phase = "phase_2_site_knowledge"`
+1. `task.json.current_phase = "phase_3_site_knowledge"`
 2. `task.json.site_context_path` set
 3. `task.json.overall_status = "testing"`
 4. `run.json.site_context_generated_at` set
@@ -364,11 +376,11 @@ test -f projects/test-cases/BCIN-1234/site_context.md && echo OK
 jq -r '.site_context_path,.overall_status' projects/test-cases/BCIN-1234/task.json
 ```
 
-### Phase 3: Execute Test Cases
+### Phase 4: Execute Test Cases
 
 Actions:
 
-1. Read `site_context_path` before each test case.
+1. Read `testcase_path` (test environment and objects) and `site_context_path` before each test case.
 2. Execute cases via Playwright MCP (`mcporter`) and capture evidence.
 3. If locator guidance is insufficient, refresh site knowledge once, then retry per policy.
 4. Record PASS/FAIL/BLOCKED per case.
@@ -382,7 +394,7 @@ User Interaction:
 
 State Updates:
 
-1. `task.json.current_phase = "phase_3_execution"`
+1. `task.json.current_phase = "phase_4_execution"`
 2. keep `task.json.overall_status = "testing"`
 3. update progress timestamps
 
@@ -392,7 +404,7 @@ Verification:
 ls -1 projects/test-cases/BCIN-1234/screenshots | head
 ```
 
-### Phase 4: Reporting and Defect Gate
+### Phase 5: Reporting and Defect Gate
 
 Actions:
 
@@ -410,7 +422,7 @@ User Interaction:
 
 State Updates:
 
-1. `task.json.current_phase = "phase_4_reporting"`
+1. `task.json.current_phase = "phase_5_reporting"`
 2. set `result`, `evidence_path`, `test_completed_at`
 3. set `task.json.overall_status = "test_complete"`
 
@@ -421,7 +433,7 @@ test -f projects/test-cases/BCIN-1234/reports/execution-summary.md && echo OK
 jq -r '.result,.overall_status' projects/test-cases/BCIN-1234/task.json
 ```
 
-### Phase 5: Completion Notification
+### Phase 6: Completion Notification
 
 Actions:
 
@@ -438,7 +450,7 @@ User Interaction:
 
 State Updates:
 
-1. `task.json.current_phase = "phase_5_notify"`
+1. `task.json.current_phase = "phase_6_notify"`
 2. `task.json.overall_status = "completed"` only after completion contract is satisfied
 3. update notification fields in `run.json`
 
@@ -446,8 +458,6 @@ Verification:
 
 ```bash
 jq -r '.notification_pending // empty' projects/test-cases/BCIN-1234/run.json
-# migration compatibility check (current AGENTS gate)
-jq -r '.notification_pending // empty' memory/tester-flow/runs/BCIN-1234/run.json
 jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
 ```
 
@@ -456,7 +466,8 @@ jq -r '.overall_status' projects/test-cases/BCIN-1234/task.json
 | From | Event | To |
 |------|-------|----|
 | `plan_check` | plan resolved | `plan_ready` |
-| `plan_ready` | site context generated | `testing` |
+| `plan_ready` | testcase.md resolved | `test_env_ready` |
+| `test_env_ready` | site context generated | `testing` |
 | `testing` | report generated | `test_complete` |
 | `test_complete` | notify contract completed | `completed` |
 | any | unrecoverable error | `failed` |
@@ -477,12 +488,12 @@ Trigger:
 
 Reporter integration source workflow:
 
-- `../workspace-reporter/.agents/workflows/single-defect-analysis.md`
+- `workspace-reporter/.agents/workflows/single-defect-analysis.md`
 
 Canonical reporter artifacts used by tester:
 
-- `../workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md`
-- `../workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json`
+- `workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/<ISSUE_KEY>_TESTING_PLAN.md`
+- `workspace-reporter/projects/defects-analysis/<ISSUE_KEY>/tester_handoff.json`
 
 ### Phase 0: Idempotency and Reporter Decision
 
@@ -535,8 +546,8 @@ State Updates:
 Verification:
 
 ```bash
-test -f ../workspace-reporter/projects/defects-analysis/BCIN-7890/BCIN-7890_TESTING_PLAN.md && echo OK
-test -f ../workspace-reporter/projects/defects-analysis/BCIN-7890/tester_handoff.json && echo OK
+test -f workspace-reporter/projects/defects-analysis/BCIN-7890/BCIN-7890_TESTING_PLAN.md && echo OK
+test -f workspace-reporter/projects/defects-analysis/BCIN-7890/tester_handoff.json && echo OK
 ```
 
 ### Phase 2: Site Knowledge Search
@@ -644,8 +655,6 @@ Verification:
 
 ```bash
 jq -r '.notification_pending // empty' projects/test-cases/BCIN-7890/run.json
-# migration compatibility check (current AGENTS gate)
-jq -r '.notification_pending // empty' memory/tester-flow/runs/BCIN-7890/run.json
 jq -r '.overall_status' projects/test-cases/BCIN-7890/task.json
 ```
 

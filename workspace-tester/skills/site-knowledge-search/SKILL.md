@@ -42,9 +42,9 @@ Include these sections:
 
 | Condition | Action |
 |-----------|--------|
-| `qmd` unavailable | Continue with `memory_search` only; record warning in site_context.md |
-| `memory_search` unavailable | Continue with `qmd` only; record warning in site_context.md |
-| Both fail | Write explicit failure note to site_context.md; continue in degraded execution mode |
+| `qmd` unavailable | Continue with `memory_search` only; record warning in site_context.md and append with the reason why qmd is unavailable |
+| `memory_search` unavailable | Continue with `qmd` only; record warning in site_context.md and append with the reason why memory_search is unavailable |
+| Both fail | Write explicit failure note to site_context.md; Stop and notify user about the failure. |
 
 ## Keyword and Domain Derivation
 

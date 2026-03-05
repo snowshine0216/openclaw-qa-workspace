@@ -82,10 +82,11 @@ Trigger the feature-test workflow (file: `.agents/workflows/feature-test.md`)
   ↓
 0. Idempotency & Run Preparation — check_resume.sh; archive if overwrite
 1. QA Plan Resolution — explicit path → workspace-planner → legacy fallback
-2. Site Knowledge Search — site-knowledge-search skill → site_context.md
-3. Execute Test Cases — Playwright MCP / mcporter; capture evidence
-4. Reporting & Defect Gate — test-report skill; bug-report-formatter; Jira (user approval)
-5. Completion Notification — Feishu summary
+2. Read Test Environment and Objects — lookup `workspace-planner/projects/feature-plan/<issue-key>/testcase.md`; user upload/refresh if needed
+3. Site Knowledge Search — site-knowledge-search skill → site_context.md
+4. Execute Test Cases — Playwright MCP / mcporter; capture evidence
+5. Reporting & Defect Gate — test-report skill; bug-report-formatter; Jira (user approval)
+6. Completion Notification — Feishu summary
 ```
 
 ---
