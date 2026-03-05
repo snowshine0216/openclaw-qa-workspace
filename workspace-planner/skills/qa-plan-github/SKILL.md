@@ -101,10 +101,14 @@ gh pr diff <pr_number> --repo owner/repo
 
 **For each significant change**:
 1. **Identify affected functionality**
-2. **Determine test scope** (unit, integration, E2E)
-3. **List test scenarios**
+2. **Determine test scope** (`COMP` or `XFUNC`)
+3. **List user-facing test scenarios** (manual-observable outcomes first)
 4. **Note edge cases and risks**
 5. **Broader Focus for Non-Backend Features**: Transcend the raw code diffs. If the PR affects client-facing functionality, project those code changes into E2E user-experience impacts and express the scenarios in user-facing, behavioral terms.
+
+**User-facing writing rule (mandatory)**:
+- Scenario descriptions must be actionable for QA without source-code inspection.
+- Internal function/flag/class names are allowed in traceability output only, not in scenario text.
 
 ### Multi-Repo Analysis
 
@@ -129,7 +133,51 @@ Change: Added email validation in src/utils/validation.ts
 
 Create a markdown file containing free-form findings: `projects/feature-plan/<feature_id>/context/qa_plan_github_<feature_id>.md`
 
-*Note: You do NOT need to follow a strict 9-section template layout. Output the extracted code changes, technical risks, and scenario mappings freely so it can be merged by `qa-plan-synthesize` later.*
+*Note: You do NOT need to follow a strict 9-section template layout. Output extracted code changes, technical risks, and scenario mappings freely so it can be merged by `qa-plan-synthesize` later.*
+
+### Step 5b: Dual Output Contract (Mandatory)
+
+Produce two artifacts:
+
+1. Main summary (user-facing only):
+   - `projects/feature-plan/<feature_id>/context/qa_plan_github_<feature_id>.md`
+   - Contains scenarios written as user actions + observable outcomes.
+   - No internal verification wording in scenario text.
+
+2. Traceability companion (code vocabulary allowed):
+   - `projects/feature-plan/<feature_id>/context/qa_plan_github_traceability_<feature_id>.md`
+   - Contains file/function/method/flag references used only for `Related Code Change` mapping in synthesis.
+
+Traceability file minimum structure:
+```markdown
+# GitHub Traceability: [Feature]
+
+| Scenario ID | Repo/File | Function/Method/Flag | Why It Matters |
+|-------------|-----------|----------------------|----------------|
+| T-1 | src/path/file.ts | functionName / flagName | [Mapping note for synthesis] |
+```
+
+Both artifacts are required when GitHub input is provided.
+
+**Test Scope Classification** (required for each change):
+| Scope | Definition | Where It Goes in QA Plan |
+|-------|-------------|--------------------------|
+| **COMP** (Component) | Single file/component; no cross-layer flow; verifiable by unit or narrow integration test | Manual table if user-observable; else AUTO |
+| **XFUNC** (Cross-Functional / E2E) | Spans UI + API + state; user flow; requires browser or full stack | Manual Test Key Points (user-facing steps) |
+
+**Rule**: If a change affects a user-visible flow (button click → API → UI update), mark **XFUNC**. If it is internal (e.g., `toHex()` utility, flag lifecycle), mark **COMP** and note "AUTO if not user-observable".
+
+**Additional required section in main summary**:
+
+```markdown
+## 🔗 E2E Scenarios to Add (from Code Analysis)
+
+| Scenario | Trigger (User Action) | Observable Outcome | Related Code |
+|----------|------------------------|--------------------|--------------|
+| [Scenario discovered from diff] | [How user triggers it] | [What QA can observe in UI/network] | [Short code traceability ref] |
+```
+
+For each XFUNC change, explicitly ask: "What user flow exercises this?" If not already covered by Jira ACs, add it to this section.
 
 ```markdown
 # GitHub Domain Summary: [Feature Name] - PR Analysis
@@ -159,26 +207,28 @@ Create a markdown file containing free-form findings: `projects/feature-plan/<fe
 
 ### High-Risk Changes
 
-| File | Change Type | Risk | Test Priority |
-|------|-------------|------|---------------|
-| src/auth/middleware.ts | Modified auth logic | High | P0 |
-| db/migrations/001_add_user_roles.sql | Schema change | High | P0 |
+| File | Change Type | Risk | Test Scope | Priority |
+|------|-------------|------|-------------|----------|
+| src/auth/middleware.ts | Modified auth logic | High | XFUNC | P0 |
+| db/migrations/001_add_user_roles.sql | Schema change | High | XFUNC | P0 |
 
 ### Medium-Risk Changes
 
-| File | Change Type | Risk | Test Priority |
-|------|-------------|------|---------------|
-| src/api/users.ts | New endpoint | Medium | P1 |
-| src/services/email.ts | Email service update | Medium | P1 |
+| File | Change Type | Risk | Test Scope | Priority |
+|------|-------------|------|-------------|----------|
+| src/api/users.ts | New endpoint | Medium | XFUNC | P1 |
+| src/services/email.ts | Email service update | Medium | COMP | P1 |
 
 ### Low-Risk Changes
 
-| File | Change Type | Risk | Test Priority |
-|------|-------------|------|---------------|
-| src/components/Button.tsx | UI update | Low | P2 |
-| src/types/user.ts | Type definition | Low | P2 |
+| File | Change Type | Risk | Test Scope | Priority |
+|------|-------------|------|-------------|----------|
+| src/components/Button.tsx | UI update | Low | XFUNC | P2 |
+| src/types/user.ts | Type definition | Low | COMP | P2 |
 
-## 🧪 Test Scenarios by Component
+## 🧪 Test Scenarios by Functional User Flow
+
+Use user-facing flow groupings (for example `Pause Mode Recovery`, `Prompt Error Handling`, `Scope Boundaries`), not implementation buckets. Keep code-level traceability in the separate traceability artifact.
 
 ### Backend Testing
 
@@ -351,6 +401,7 @@ projects/feature-plan/<feature_id>/context/
 **Naming Convention**:
 ```
 qa_plan_github_<feature_id>.md
+qa_plan_github_traceability_<feature_id>.md
 ```
 
 ## Advanced Analysis Techniques
@@ -388,7 +439,7 @@ Flag security-sensitive changes:
 ## Integration with Other Skills
 
 This skill outputs data consumed by:
-- `qa-plan-synthesize`: Merges with design and Jira analysis
+- `qa-plan-synthesize`: Merges user-facing summary with traceability companion and Jira/Figma analysis
 - `qa-plan-review`: Reviews test coverage completeness
 - `xmind-generator`: Visualizes code change impact in mind map
 
@@ -456,8 +507,8 @@ If the PR description is vague, document:
 4. Analyze remaining code changes
 5. Map changes to test scenarios
 6. Identify risk areas
-7. Generate `projects/feature-plan/user-auth/context/qa_plan_github_user-auth.md`
-8. Save reference data for synthesize agent
+7. Generate user-facing summary: `projects/feature-plan/user-auth/context/qa_plan_github_user-auth.md`
+8. Generate code traceability companion: `projects/feature-plan/user-auth/context/qa_plan_github_traceability_user-auth.md`
 
 ## Notes
 

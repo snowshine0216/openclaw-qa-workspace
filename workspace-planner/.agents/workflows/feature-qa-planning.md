@@ -27,15 +27,84 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
    (
      ../scripts/retry.sh 3 2 jira issue view <KEY> --format json > context/jira.json &
      ../scripts/retry.sh 3 2 confluence read <URL> > context/confluence.md &
-     ../scripts/retry.sh 3 2 gh pr view <URL> --json title,body,commits,files > context/github_pr.json &
-     gh pr diff <URL> > context/github_diff.md &
+
+     # One or more PR URLs can be provided.
+     # Parse each URL as .../<owner>/<repo>/pull/<id>.
+     # Use owner+repo+pr-id filenames to avoid collisions across forks/orgs.
+     # Example: https://github.com/owner/repo/pull/123
+     #   diff: context/github_owner_repo_pr123.diff
+     #   meta: context/github_pr_owner_repo_pr123.json
+     # Populate PR_URLS from user input. Keep empty when no GitHub PR URLs are provided.
+     PR_URLS=()
+     # Example:
+     # PR_URLS+=("https://github.com/owner/repo/pull/123")
+     # PR_URLS+=("https://github.com/owner/repo/pull/456")
+     if [ "${#PR_URLS[@]}" -gt 0 ]; then
+       PR_META_FILES=()
+       PR_DIFF_FILES=()
+       for PR_URL in "${PR_URLS[@]}"; do
+         OWNER="$(echo "$PR_URL" | awk -F/ '{print tolower($(NF-3))}')"
+         REPO="$(echo "$PR_URL" | awk -F/ '{print tolower($(NF-2))}')"
+         PR_ID="$(echo "$PR_URL" | awk -F/ '{print $NF}')"
+         META_FILE="context/github_pr_${OWNER}_${REPO}_pr${PR_ID}.json"
+         DIFF_FILE="context/github_${OWNER}_${REPO}_pr${PR_ID}.diff"
+         PR_META_FILES+=("$META_FILE")
+         PR_DIFF_FILES+=("$DIFF_FILE")
+         ../scripts/retry.sh 3 2 gh pr view "$PR_URL" --json title,body,commits,files > "$META_FILE" &
+         gh pr diff "$PR_URL" > "$DIFF_FILE" &
+       done
+     fi
+
+     # Always synchronize background jobs (Jira/Confluence and optional GitHub jobs)
+     # before leaving Phase 1 fetch.
      wait
+
+     if [ "${#PR_URLS[@]}" -gt 0 ]; then
+       # Backward-compatible aliases for downstream consumers:
+       # 1) Keep legacy context/github_pr.json as single-PR-shaped payload
+       # 2) Aggregate all per-PR diffs into legacy context/github_diff.md
+       if [ "${#PR_META_FILES[@]}" -eq 0 ] || [ "${#PR_DIFF_FILES[@]}" -eq 0 ]; then
+         echo "ERROR: No GitHub PR artifacts generated from provided PR URLs." >&2
+         exit 1
+       fi
+
+       if [ "${#PR_META_FILES[@]}" -eq 1 ]; then
+         cp "${PR_META_FILES[0]}" context/github_pr.json
+       else
+         # Preserve legacy schema for old consumers by keeping github_pr.json as a single PR object.
+         cp "${PR_META_FILES[0]}" context/github_pr.json
+         # Full multi-PR metadata set for updated consumers.
+         jq -s '.' "${PR_META_FILES[@]}" > context/github_pr_multi.json
+       fi
+
+       if [ "${#PR_DIFF_FILES[@]}" -eq 1 ]; then
+         cp "${PR_DIFF_FILES[0]}" context/github_diff.md
+       else
+         cat "${PR_DIFF_FILES[@]}" > context/github_diff.md
+       fi
+     fi
    )
    ```
+1b. **GitHub Diff Validation** (required when any GitHub PR URL is provided):
+   - Build expected PR list from provided PR URLs: each `.../<owner>/<repo>/pull/<id>` maps to:
+     - `context/github_<owner>_<repo>_pr<id>.diff` (required)
+     - `context/github_pr_<owner>_<repo>_pr<id>.json` (required)
+   - Validate each expected per-PR artifact: `missing` or `0 bytes` => FAIL for that PR.
+   - Guard against silent partial fetch:
+     - non-empty per-PR diff count MUST equal number of PR URLs
+     - non-empty per-PR metadata count MUST equal number of PR URLs
+   - Validate legacy aliases for downstream compatibility:
+     - `context/github_diff.md` must exist and be non-empty when GitHub PR URL(s) are provided.
+     - `context/github_pr.json` must exist and be non-empty when GitHub PR URL(s) are provided.
+   - For multi-PR runs, `context/github_pr_multi.json` should also exist and be non-empty for full PR coverage checks.
+   - If any expected artifact fails validation: STOP and notify user:
+     - `"GitHub artifact(s) empty or missing for PR(s): [owner/repo#pr list]. The PR may be inaccessible, the URL may be wrong, or repo auth may be insufficient. Please verify PR URLs/access and retry. Cannot proceed without code changes."`
+   - Do NOT proceed to Phase 2a or 2b until all expected GitHub artifacts are non-empty.
+   - If no GitHub PR URL is provided, skip this validation entirely (GitHub remains optional).
 2. **Figma Context**: Use `agent-browser` (CLI) or `browser-use` with the `qa-plan-figma` skill to extract image contexts and UX expectations (if a Figma URL is provided). Save output to `context/figma.md`.
 *(Note: Steps 2 and 3 should be executed via concurrent agent tool calls or subagents while the bash script runs).*
 3. Update `task.json` current_phase to `understanding_check`.
-4. **Understanding Check & Background Research**: 
+4. **Understanding Check & Background Research**:
    - Summarize your current understanding of the feature based on the gathered context so far and present it to the user.
    - Evaluate if additional domain knowledge or background information is needed. If so, prompt the user for permission to execute the `tavily-search` skill.
    - If executed, compile the `tavily-search` output and save it to `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature-id>.md`. Record in `task.json` that background research was completed (e.g. `tavily_supplement: completed`).
@@ -64,6 +133,7 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
    - `qa-plan-atlassian` -> `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature-id>.md`
    - `qa-plan-figma` -> `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature-id>.md` (if Figma url present)
    - `qa-plan-github` -> `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature-id>.md` (if GitHub PR present)
+   - `qa-plan-github` traceability -> `projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_<feature-id>.md` (if GitHub PR present)
    - `tavily-search` -> `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature-id>.md` (**only if** background research is needed **and** not already executed in Phase 1; check `task.json` `tavily_supplement` or presence of `qa_plan_background_<feature-id>.md`)
    *(To spawn in parallel, execute multiple task tool calls or use `sessions_spawn` if supported).*
 4. **Wait for all spawned analysis tasks to complete** — including defect analysis approval. Phase 2b synthesis does **not** start until all parallel tasks (including defect) are done.
@@ -72,9 +142,20 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 
 ## 2b. Synthesize QA Plan
 1. Update `task.json` current_phase to `strategy_confirmation`.
-2. **Strategy Display**: Before synthesizing, explicitly declare the adopted testing strategy to the user. If the feature is not strictly backend-only, emphasize that the strategy will focus heavily on End-to-End (E2E) workflows, overall test coverage, and User Experience (UX), with user-facing 'Test Key Points'. **ONLY proceed to synthesis upon user approval.**
+2. **Strategy Display**: Before synthesizing, explicitly declare the adopted testing strategy to the user. If the feature is not strictly backend-only, emphasize E2E user flows, overall test coverage, and UX with user-facing `Test Key Points`. The strategy declaration MUST include and commit to all 6 rules below, then request user approval before proceeding:
+   - R1: No JavaScript/Java function names, flag names, or internal state names in `Test Key Points` and `Expected Results`.
+   - R2: Every `Expected Results` sentence must be verifiable from browser UI or browser Network tab, without debugger/console/source-code inspection.
+   - R3: Every P0/P1 manual row must have numbered action steps (or Given/When/Then equivalent).
+   - R4: Distinct user paths (for example `OK` vs `Cancel`) must be separate rows.
+   - R5: Every P0/P1 manual row must include `FAILS if:` in `Expected Results`.
+   - R6: Unit/API-only checks must go to `### AUTO: Automation-Only Tests`.
+   - Required approval prompt text:
+     - `"I will apply R1-R6 during synthesis to produce user-executable Test Key Points. Proceed?"`
 3. Call the `qa-plan-synthesize` skill, passing the paths of the generated domain summaries in the `context/` folder, including `qa_plan_background_<feature-id>.md` (if it exists) and **`qa_plan_defect_analysis_<feature-id>.md`** (if defect analysis completed — see Phase 2a).
-4. Direct the skill to synthesize the specific domain summaries into a single comprehensive Test Plan following the exact 9-section layout. Map Jira ACs to GitHub Code Changes to build the final `Test Key Points` table.
+4. Direct the skill to synthesize the specific domain summaries into a single comprehensive Test Plan following the exact 9-section layout. Map Jira ACs to GitHub Code Changes to build the final `Test Key Points` table, and enforce routing rules:
+   - Use GitHub `Test Scope` to route scenarios: XFUNC -> manual user-facing rows; COMP + not user-observable -> `AUTO` section.
+   - Incorporate GitHub `E2E Scenarios to Add` into the final plan (do not drop them).
+   - Keep code-level references in `Related Code Change` only; keep `Test Key Points` and `Expected Results` user-facing.
 5. Save the generated draft to `projects/feature-plan/<feature-id>/drafts/qa_plan_v1.md`.
 6. Update `task.json` phase to `review_refactor`.
 
@@ -82,12 +163,21 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
 1. Spawn a sub-agent strictly using the `qa-plan-review` skill. Feed it the **latest draft** (e.g. `drafts/qa_plan_v1.md` — resolve from `task.json` `latest_draft_version` or scan `drafts/qa_plan_v*.md`) and these intermediate artifacts from Phase 2:
    - `projects/feature-plan/<feature-id>/context/jira.json`
    - `projects/feature-plan/<feature-id>/context/github_pr.json`
-   - `projects/feature-plan/<feature-id>/context/github_diff.md`
+   - `projects/feature-plan/<feature-id>/context/github_pr_multi.json` (if multiple PRs were provided)
+   - `projects/feature-plan/<feature-id>/context/github_pr_*_*_pr*.json` (all per-PR metadata files)
+   - `projects/feature-plan/<feature-id>/context/github_diff.md` (legacy alias if present)
+   - `projects/feature-plan/<feature-id>/context/github_*_*_pr*.diff` (all per-PR diffs)
+   - `projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_<feature-id>.md` (if present)
    - `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature-id>.md` (if it exists)
    *(Note: Do NOT pass `qa_plan_final.md` — it does not exist until Phase 4.)*
-2. Ask the reviewer sub-agent to find any logical gaps, missing edge cases, or untouched requirements. Produce a `review_feedback.md`.
-3. If issues are found, amend the draft (e.g. `drafts/qa_plan_v1.md`) to the next version (e.g. `drafts/qa_plan_v2.md`) based on review result. Update `task.json` `latest_draft_version`.
-4. Update `task.json` phase to `publication`.
+2. Ask the reviewer sub-agent to find logical gaps, missing edge cases, untouched requirements, and User Executability violations (UE-1..UE-6). Capture the report artifact path returned by `qa-plan-review` (expected format: `qa_plan_review_<feature_id>_<date>.md`) as `REVIEW_REPORT_PATH`.
+3. If review status is `Approved`, update `task.json` phase to `publication`.
+4. If review status is `Requires Updates`:
+   - Invoke `qa-plan-refactor` skill with the latest draft and `REVIEW_REPORT_PATH`.
+   - Re-run `qa-plan-review` on the refactored draft.
+   - Maximum 2 refactor rounds. If status is still `Requires Updates` after round 2, stop and return findings to user for manual decision.
+   - If status becomes `Approved` in any round, proceed to Phase 4.
+5. If review status is `Rejected`, stop and return findings to user; do not auto-publish.
 
 ## 4. Publication
 1. Copy the final approved draft (latest from `drafts/qa_plan_v*.md`) to `projects/feature-plan/<feature-id>/qa_plan_final.md`. If `qa_plan_final.md` already exists (e.g. from Full Regenerate), archive it first to `archive/qa_plan_final_<YYYYMMDD>.md`.
@@ -106,7 +196,10 @@ Use this workflow to ingest feature artifacts (like Jira keys, Confluence URLs, 
    - The Confluence page ID (from user input or `task.json` `confluence_page_id`)
    - `projects/feature-plan/<feature-id>/context/jira.json`
    - `projects/feature-plan/<feature-id>/context/github_pr.json`
+   - `projects/feature-plan/<feature-id>/context/github_pr_multi.json` (if multiple PRs were provided)
+   - `projects/feature-plan/<feature-id>/context/github_pr_*_*_pr*.json` (all per-PR metadata files)
    - `projects/feature-plan/<feature-id>/context/github_diff.md`
+   - `projects/feature-plan/<feature-id>/context/github_*_*_pr*.diff` (all per-PR diffs)
    - `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature-id>.md` (if it exists)
    - `projects/feature-plan/<feature-id>/qa_plan_final.md`
 2. The skill will review the live Confluence page across three axes: **Formatting**, **Structure**, and **Cross-Artifact Accuracy**.

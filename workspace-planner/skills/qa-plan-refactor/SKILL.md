@@ -84,6 +84,14 @@ TODO:
 ...
 ```
 
+If review report includes User Executability checks (UE-1..UE-6), map each failing UE item to refactor tasks immediately:
+- UE-1 -> Replace internal code vocabulary in manual columns with user-visible outcomes.
+- UE-2 -> Rewrite expected results to UI/Network-observable outcomes.
+- UE-3 -> Add numbered manual action steps for each failing P0/P1 row.
+- UE-4 -> Split multi-path outcomes into separate rows.
+- UE-5 -> Add `FAILS if:` to each failing P0/P1 row.
+- UE-6 -> Move non-manual checks to `### AUTO: Automation-Only Tests`.
+
 ### Step 3: Implement Action Items
 
 For **each action item**, follow this process:
@@ -198,6 +206,12 @@ For **each action item**, follow this process:
 | **Add technical details** | Include function names, API endpoints, exact values |
 | **Fill coverage gaps** | Add test scenarios for uncovered requirements |
 | **Improve risk mitigation** | Add code references, specific implementation details |
+| **UE-1 violation** | Remove internal function/flag/state wording from manual columns; keep technical identifiers in `Related Code Change` only |
+| **UE-2 violation** | Rewrite expected results into browser-observable outcomes |
+| **UE-3 violation** | Convert label-only rows into executable numbered steps |
+| **UE-4 violation** | Split combined outcomes (`OK`/`Cancel`) into separate rows |
+| **UE-5 violation** | Add explicit `FAILS if:` signatures |
+| **UE-6 violation** | Relocate unit/API-only checks to `AUTO` subsection |
 
 ### Step 5: Update Review Findings
 
