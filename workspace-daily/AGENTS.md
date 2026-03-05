@@ -91,7 +91,6 @@ Count generated RCAs:
 ls -1 ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca/*.md | wc -l
 ```
 
-
 **Before creating files, consult `WORKSPACE_RULES.md`**
 
 ## Memory Management
