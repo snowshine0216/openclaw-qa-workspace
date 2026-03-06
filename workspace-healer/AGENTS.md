@@ -140,10 +140,8 @@ When validated:
 
 - **Main config:** `~/.openclaw/openclaw.json`
 - **Credentials:** `~/.openclaw/credentials/`
-- **Agent state:** `~/.openclaw/agents/<agentId>/agent/`
-- **Sessions:** `~/.openclaw/agents/<agentId>/sessions/`
-- **Skills:** `~/.openclaw/skills/` (managed)
-- **Workspace skills:** `workspace/skills/` (per-workspace)
+
+
 
 ## Documentation Navigation
 

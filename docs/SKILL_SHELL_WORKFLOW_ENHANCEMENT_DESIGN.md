@@ -1,9 +1,9 @@
-# Skill Shell Workflow Enhancement — Design Doc
+# Skill Workflow Enhancement — OpenClaw Skill-First Design
 
-> **Design ID:** `skill-shell-workflow-v1`
-> **Date:** 2026-03-05
+> **Design ID:** `skill-shell-workflow-v2`
+> **Date:** 2026-03-06
 > **Status:** Draft
-> **Scope:** Enhance `openclaw-agent-design` and `openclaw-agent-design-review` skills to replace the NLG-described workflow sections with concrete shell-script-driven automation, following the RCA Daily workflow pattern.
+> **Scope:** Refactor OpenClaw workflow design from a shell-script-centric enhancement into a canonical skill-first architecture for `openclaw-agent-design` and `openclaw-agent-design-review`.
 >
 > **Constraint:** This is a design artifact only. Do not implement until approved by user.
 
@@ -13,477 +13,363 @@
 
 ### Current State
 
-Both skills currently describe workflow execution in **NLG (natural language)** form:
+The existing design in this file focuses on one narrow improvement: replacing natural-language workflow prose with concrete shell orchestration for `openclaw-agent-design` and `openclaw-agent-design-review`.
 
-- `openclaw-agent-design` — Section 4 (Workflow Design) describes phases as prose instructions for a human/agent reader to interpret.
-- `openclaw-agent-design-review` — Review Process uses NLG steps, and its bundled scripts (`validate_paths.sh`, `check_design_evidence.sh`) are referenced but never composed into a runnable orchestration layer.
+That solved part of the execution ambiguity, but it still leaves the larger OpenClaw design problem under-specified:
 
+- workflow intent is still framed around scripts rather than reusable skills,
+- shared capabilities are not consistently modeled as shared skills,
+- new-agent design and existing-agent function redesign are not covered by one portable rule set,
+- reviewer gates focus on shell compliance more than OpenClaw skill architecture,
+- path conventions:  `.agents/skills/...` as primary
 ### Pain Points
 
 | # | Problem |
 |---|---------|
-| 1 | NLG phases are ambiguous — agents re-interpret them differently each run, causing non-reproducible results. |
-| 2 | No single entry-point to run the full pipeline; each phase depends on agent memory of prior-phase output. |
-| 3 | Agent spawning (`sessions_spawn`) only works in CLI mode. Automation needs `generate-rcas-via-agent.js`-style Node.js spawning instead. |
-| 4 | Feishu notification is described in NLG but has no guaranteed delivery path (no fallback file written by script). |
-| 5 | Code quality: existing scripts mix data collection, orchestration, and side effects inside one monolithic function. |
+| 1 | Shell scripts improve determinism, but shell alone is not the right abstraction boundary for OpenClaw workflows. |
+| 2 | Reusable behaviors such as Jira lookup, Confluence publishing, and Feishu notification risk being embedded per workflow instead of shared as skills. |
+| 3 | There is no single canonical rule for where a capability should live: `.agents/skills/` vs `<workspace>/skills/`. |
+| 4 | Existing-agent function redesign is not clearly treated as the same class of design work as new-agent design. |
+| 5 | The review model does not yet fully enforce OpenClaw principles: skill accumulation, reuse, idempotent workflow design, and reviewer-gated architecture quality. |
+| 6 | `.cursor/skills/...` references in the older design obscure the canonical shared-skill layout expected by current OpenClaw practice. |
 
 ### Target State
 
-Replace NLG workflow sections with **shell script orchestrators** that:
+Refactor this design so that OpenClaw workflows are modeled as **skills first** and **shell second**:
 
-1. Are deterministic and idempotent.
-2. Produce a manifest (JSON) for agent reading.
-3. Spawn sub-agents via `generate-rcas-via-agent.js`-style Node.js (not `sessions_spawn`).
-4. Handle Feishu notifications with file-based fallback persistence.
-5. Follow functional + modular coding standards (each function ≤ 20 lines, pure where possible, TDD stubs included).
+1. **All workflow entrypoints are skills**.
+   - New workflows must be represented by a skill entrypoint.
+   - Existing-agent functions being redesigned must be re-expressed as skills or as compositions of skills.
 
----
+2. **Shared vs local placement is explicit**.
+   - Shared, reusable capabilities go in `.agents/skills/<skill-name>/`.
+   - Agent- or workspace-specific capabilities go in `<workspace>/skills/<skill-name>/`.
 
-## 1. Design Deliverables
+3. **Shell scripts remain internal implementation details**.
+   - Shell and Node helpers live under a skill's `scripts/` directory.
+   - They support the skill contract; they do not replace the skill abstraction.
 
-| Action | Path | Notes |
-|--------|------|-------|
-| UPDATE | `.cursor/skills/openclaw-agent-design/SKILL.md` | Replace Section 4 NLG default with shell-script default |
-| UPDATE | `.cursor/skills/openclaw-agent-design/reference.md` | Add shell workflow architecture diagram, script conventions |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/run-agent-workflow.sh` | Main orchestrator entry point |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/create-manifest.sh` | Collects inputs → writes manifest JSON |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/spawn-agents.js` | Node.js sub-agent spawner (replaces sessions_spawn) |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/post-workflow.sh` | Jira update + Feishu notification phase |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/lib/manifest.sh` | Pure manifest read/write helpers |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/lib/feishu.sh` | Feishu send + fallback helpers |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/lib/logging.sh` | Structured log helpers |
-| CREATE | `.cursor/skills/openclaw-agent-design/scripts/test/run-agent-workflow.test.sh` | Smoke/unit test harness |
-| UPDATE | `.cursor/skills/openclaw-agent-design-review/SKILL.md` | Add shell-script review checklist gate |
-| UPDATE | `.cursor/skills/openclaw-agent-design-review/reference.md` | Add shell script quality rubric |
-| UPDATE | `.cursor/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh` | Extend to check shell-script contract compliance |
-| UPDATE | `AGENTS.md` | Sync: document shell-workflow path, new scripts |
+4. **OpenClaw design and review stay the canonical pattern**.
+   - `openclaw-agent-design` defines how to design new or existing agent workflows in a skill-first way.
+   - `openclaw-agent-design-review` validates path placement, reuse, OpenClaw compatibility, and implementation discipline.
+
+5. **Existing shared skills are reused directly where possible**.
+   - Use `jira-cli`, `confluence`, and `feishu-notify` as existing shared capabilities instead of inventing wrapper skills by default.
+
+6. **The design stays compatible with OpenClaw guidance**.
+   - Follow `clawddocs`, `agent-idempotency`, skill accumulation, explicit reviewer gates, and modular reusable capability design.
 
 ---
 
-## 2. AGENTS.md Sync
+## 1. Design Principles
 
-Sections to update in the root-level `AGENTS.md`:
+### 1.1 Canonical OpenClaw Compatibility Rules
 
-- **Skills Reference**: note that `openclaw-agent-design` now supports shell-script workflow mode alongside NLG mode.
-- **Conventions**: add "Shell Workflow" section with entry-point convention (`scripts/run-agent-workflow.sh`).
-- **Agent Spawning**: document that sub-agents must use `spawn-agents.js` (NOT `sessions_spawn`) to remain compatible with non-CLI contexts.
+This design must remain compatible with the current OpenClaw skill model described by `clawddocs`, `openclaw-agent-design`, and `docs/bestpractice-openclaw.md`:
 
----
+- **Skill-first accumulation** — durable value should be stored in reusable skills, not hidden inside one-off workflow prose or scripts.
+- **Error → rule → skill** — recurring patterns should be encoded once in a skill and reused.
+- **Idempotent workflows** — workflow entrypoints must remain compatible with `agent-idempotency` Phase 0 thinking.
+- **Agent as orchestrator** — OpenClaw workflows should decompose work and assign specialized responsibilities to reusable skills.
+- **Review-gated evolution** — design changes are not final until `openclaw-agent-design-review` returns `pass` or `pass_with_advisories`.
 
-## 3. Workflow Architecture
+### 1.2 Canonical Path Rules
 
-The new shell-script workflow mirrors the RCA Daily pattern:
+Treat these locations as canonical for this design:
 
-```
-  Bash Script (run-agent-workflow.sh)
-        │
-        ├── Step 1: check_resume.sh (idempotency gate)
-        │         └── exits early if FINAL_EXISTS + user pick is "use existing"
-        │
-        ├── Step 2: create-manifest.sh
-        │         └── writes output/<key>/manifest-<timestamp>.json
-        │
-        └── Step 3: spawn-agents.js <manifest>
-                  └── reads manifest
-                  └── spawns N sub-agents via OpenClaw agent API (NOT sessions_spawn)
-                  └── writes trigger file for post-workflow
-                        │
-                        ▼
-             post-workflow.sh (called by agent after sub-agents complete)
-                  ├── Step A: Jira update per output artifact
-                  └── Step B: Feishu notification
-                            └── on failure: persists payload → run.json.notification_pending
-```
+| Kind | Canonical Location | Rule |
+|------|--------------------|------|
+| Shared OpenClaw skill | `.agents/skills/<skill-name>/` | Use when the capability is reusable across agents or workspaces |
+| Workspace-local skill | `<workspace>/skills/<skill-name>/` | Use when the capability is tightly bound to one workspace or agent family |
+| Skill implementation helpers | `<skill-root>/scripts/` | Shell/Node execution details that support the skill contract |
+| Skill references/examples | `<skill-root>/reference.md`, `references/`, `examples.md` | Human-readable design guidance and review criteria |
 
-**Key constraint**: `spawn-agents.js` must **not** use `sessions_spawn` (CLI-only). It uses the same pattern as `generate-rcas-via-agent.js` — prints a structured manifest to stdout for the calling OpenClaw agent to act on, OR uses OpenClaw's REST agent-spawn API if available in the execution context.
+`.cursor/skills/...` may still exist as compatibility or legacy implementation detail during migration, but this design must present `.agents/skills/...` as the source-of-truth location for shared OpenClaw skills.
+
+### 1.3 Applicability
+
+This design applies to both of the following:
+
+1. **New agent or workflow design**
+   - Example: introducing a new OpenClaw agent capability with one or more entrypoint skills.
+
+2. **Existing agent function redesign**
+   - Example: taking a large monolithic workflow or one-off automation path and refactoring it into skill entrypoints plus reusable shared or local skills.
 
 ---
 
-## 4. Script Design (TDD + Functional + Modular)
+## 2. Skill-First Architecture
 
-### Rules applied to all scripts
+### 2.1 Skill Classes
 
-1. Each function: max 20 lines.
-2. No mutation of global state inside functions — pass args, return/echo results.
-3. No side effects inside pure helper functions (lib/*.sh).
-4. Every script has a corresponding test stub in `test/`.
-5. All scripts begin with `set -euo pipefail`.
+All workflow logic in this design belongs to one of these classes:
 
----
+1. **Entrypoint Skills**
+   - The user- or agent-facing workflow contract.
+   - Responsible for orchestration, state transitions, and delegating to other skills.
+   - For OpenClaw design work, `openclaw-agent-design` and `openclaw-agent-design-review` are canonical examples.
 
-### 4.1 `scripts/lib/logging.sh` — Structured log helpers
+2. **Shared Building-Block Skills**
+   - Reusable capabilities that serve multiple agents.
+   - Must live under `.agents/skills/`.
+   - Existing examples to reuse directly when applicable:
+     - `jira-cli`
+     - `confluence`
+     - `feishu-notify`
 
-**Purpose**: Provide `log_info`, `log_error`, `log_step` functions with timestamps. Zero side effects — just echo to stderr/stdout.
+3. **Workspace-Local Skills**
+   - Skills whose assumptions are specific to a single workspace, project family, or agent domain.
+   - Must live under `<workspace>/skills/`.
 
-```bash
-#!/usr/bin/env bash
-# lib/logging.sh — Pure logging helpers. Source this file; do not execute directly.
+### 2.2 Placement Decision Rules
 
-log_info()  { echo "[INFO]  $(date -u +%FT%TZ) $*" >&2; }
-log_error() { echo "[ERROR] $(date -u +%FT%TZ) $*" >&2; }
-log_step()  { echo ""; echo "=== $* ==="; echo ""; }
-```
+Use these rules during design and review:
 
-**Test stub** (`test/lib/logging.test.sh`):
-```bash
-source ../lib/logging.sh
-log_info "test info"   # expect: [INFO] ... test info
-log_error "test error" # expect: [ERROR] ... test error
-```
+| Question | If Yes | If No |
+|----------|--------|-------|
+| Is this capability reusable by multiple agents or workspaces? | Put it in `.agents/skills/` | Continue evaluating |
+| Is this capability tightly coupled to one workspace's data, outputs, or process? | Put it in `<workspace>/skills/` | Continue evaluating |
+| Does the workflow need only an orchestration contract while reusing existing shared capabilities? | Create or update an entrypoint skill only | Do not create duplicate shared wrappers |
+| Is the proposed new skill duplicating an existing shared skill such as `jira-cli`, `confluence`, or `feishu-notify`? | Reject or justify as a real contract gap | Proceed |
 
----
+### 2.3 Shell and Node Role
 
-### 4.2 `scripts/lib/manifest.sh` — Manifest read/write helpers
+Shell and Node remain valid implementation tools, but only at the skill implementation layer:
 
-**Purpose**: Create, read, and validate the JSON manifest file. Pure functions; caller passes paths as args.
+- `SKILL.md` defines the public workflow contract.
+- `scripts/` implements executable helpers and orchestration.
+- `scripts/lib/` contains pure or near-pure reusable helpers.
+- `scripts/test/` contains focused test coverage for the script layer.
 
-Planned function signatures:
-- `manifest_create <output_dir> <timestamp> <total>` → prints manifest JSON skeleton to stdout
-- `manifest_add_entry <issue_key> <input_file> <output_file>` → prints one JSON entry to stdout
-- `manifest_validate <manifest_path>` → exits non-zero if required fields missing
-
-Each function: ≤ 20 lines, no global state mutation.
-
-**TDD stub** (`test/lib/manifest.test.sh`):
-```bash
-source ../lib/manifest.sh
-# Test: manifest_create emits valid JSON
-result=$(manifest_create "/tmp/out" "20260305-120000" "3")
-echo "$result" | jq '.total_issues' # expect: 3
-
-# Test: manifest_validate rejects missing timestamp
-echo '{"rca_inputs":[]}' | manifest_validate /dev/stdin && exit 1 || echo "PASS"
-```
+A design is non-compliant if it describes a workflow primarily as a shell script bundle without also defining the skill contract, placement, and reuse model.
 
 ---
 
-### 4.3 `scripts/lib/feishu.sh` — Feishu send + fallback helpers
+## 3. OpenClaw Design Workflow Requirements
 
-**Purpose**: Send Feishu notification via `send-feishu-notification.js`. On failure, write the pending payload to `run.json`.
+### 3.1 `openclaw-agent-design` Mandatory Process
 
-Planned functions:
-- `feishu_send <summary_file> <chat_id>` → calls Node script, returns exit code
-- `feishu_persist_fallback <run_json_path> <payload>` → writes `notification_pending` field to run.json
-- `feishu_retry_if_pending <run_json_path> <chat_id>` → reads pending payload; retries if non-null
+Refactor the design expectations for `openclaw-agent-design` so every design run follows this order:
 
-Each function: ≤ 20 lines.
+1. **Consult `clawddocs`**
+   - Confirm current OpenClaw conventions, workspace structure, and integration expectations.
 
-**TDD stub** (`test/lib/feishu.test.sh`):
-```bash
-source ../lib/feishu.sh
-# Test: feishu_persist_fallback writes correct JSON
-feishu_persist_fallback /tmp/run.json "test payload"
-jq -r '.notification_pending' /tmp/run.json # expect: "test payload"
-```
+2. **Apply `agent-idempotency`**
+   - Define Phase 0 state handling, resume behavior, archive-before-overwrite policy, and task/run state artifacts where persistent outputs are produced.
+   - Every entrypoint skill must start by checking existing status using the current Phase 0 / `REPORT_STATE` model before creating new artifacts or advancing workflow phases. Use `.agents/skills/openclaw-agent-design/reference.md` as the canonical source for the current `REPORT_STATE` contract and state-machine expectations.
+   - Existing `task.json` and `run.json` semantics are preserved by default; any design change must be additive, backward-compatible, and explicitly justified in the design doc and corresponding reviewer report.
 
----
+3. **Use `skill-creator` for all new or materially reworked skills**
+   - Any newly introduced shared or local skill must be designed through `skill-creator`.
+   - This applies to both new-agent design and existing-agent function redesign.
 
-### 4.4 `scripts/create-manifest.sh` — Data collection → manifest
+4. **Use `code-structure-quality` during design**
+   - Enforce clear ownership boundaries.
+   - Separate skill contract, orchestration logic, and side-effect adapters.
+   - Keep shared behaviors DRY with one canonical owner.
 
-**Purpose**: Scans the output directory for `<key>-input-*.json` files, calls `manifest_create` + `manifest_add_entry`, and writes the final manifest file. Calls `log_step` / `log_info`.
+5. **Invoke `openclaw-agent-design-review`**
+   - P0/P1 findings block finalization.
+   - The design is not complete until reviewer output is `pass` or `pass_with_advisories`.
 
-Decomposed into:
-- `find_input_files <output_dir>` → prints file list
-- `build_manifest <output_dir> <timestamp>` → orchestrates creation of full manifest JSON
-- `write_manifest <json> <manifest_path>` → atomic write (tmp → rename)
-- `main` — ≤ 20 lines driver
+### 3.2 Required Design Outputs
 
-**TDD stub** (`test/create-manifest.test.sh`):
-```bash
-# Setup: create mock input files
-mkdir -p /tmp/test-out
-echo '{"issue_key":"BCIN-001","rca_output_path":"/tmp/out/001.md"}' > /tmp/test-out/test-input-BCIN-001.json
+Every OpenClaw workflow design should describe:
 
-bash create-manifest.sh /tmp/test-out 20260305-000000
-jq '.total_issues' /tmp/test-out/manifest-*.json # expect: 1
-```
+- the entrypoint skill or skills,
+- whether each capability is shared or workspace-local,
+- which existing shared skills are reused directly,
+- where shell/Node helpers live inside the skill,
+- how idempotent state or resume behavior works when persistent artifacts exist,
+- how the workflow begins with existing-status detection and preserves current `task.json` / `run.json` semantics unless an additive schema change is justified in the design doc and reviewer report,
+- what reviewer gates apply before finalization,
+- what `AGENTS.md` updates are needed to keep routing and skill references synchronized.
 
----
+### 3.3 Direct Reuse of Existing Shared Skills
 
-### 4.5 `scripts/spawn-agents.js` — Sub-agent spawner (Node.js)
+By default, designs should reuse these existing shared capabilities directly:
 
-**Purpose**: Read manifest JSON. For each entry, emit a structured `AGENT_SPAWN_REQUEST:` line to stdout. The calling OpenClaw agent reads stdout and performs the actual spawning. Mirrors `generate-rcas-via-agent.js` stdout handoff pattern exactly.
+| Capability | Existing Shared Skill | Default Design Rule |
+|-----------|-----------------------|---------------------|
+| Jira issue search/update/transition | `jira-cli` | Reuse directly unless a new domain-specific contract is truly needed |
+| Confluence read/publish/navigation | `confluence` | Reuse directly for documentation publishing or retrieval |
+| Feishu completion/alert messaging | `feishu-notify` | Reuse directly for notification phases and fallback messaging design |
 
-> **Critical design constraint**: `sessions_spawn` is CLI-only. `spawn-agents.js` must use the **stdout handoff pattern** — the same approach as `generate-rcas-via-agent.js`:
-> - Print `MANIFEST_JSON:` + structured JSON to stdout.
-> - The calling OpenClaw agent reads stdout, picks up the manifest, and spawns sub-agents itself.
-> - Do **not** call the OpenClaw REST API directly. Do **not** use `sessions_spawn`.
-
-Decomposed into:
-- `readManifest(manifestPath)` → `Manifest` — pure, no side effects
-- `buildSpawnLine(entry)` → `string` — pure, formats `AGENT_SPAWN_REQUEST: <json>` stdout line
-- `emitSpawnLines(manifest)` → `void` — maps entries through `buildSpawnLine`, prints each to stdout
-- `printManifestSummary(manifest)` → `void` — prints `MANIFEST_JSON: <json>` header line
-- `main()` — ≤ 20 lines, handles CLI args + error exit
-
-**stdout handoff contract** (matches `generate-rcas-via-agent.js`):
-```
-MANIFEST_JSON: {"timestamp":"...","total_issues":2,...}
-AGENT_SPAWN_REQUEST: {"issue_key":"BCIN-001","input_file":"...","output_file":"..."}
-AGENT_SPAWN_REQUEST: {"issue_key":"BCIN-002","input_file":"...","output_file":"..."}
-✅ Manifest ready for agent processing
-👉 Next: OpenClaw agent should process each AGENT_SPAWN_REQUEST line
-```
-
-**TDD stub** (`test/spawn-agents.test.js`):
-```js
-const { readManifest, buildSpawnLine, emitSpawnLines } = require('./spawn-agents');
-
-// Test: readManifest returns parsed object
-const m = readManifest('./fixtures/manifest-sample.json');
-assert.strictEqual(m.total_issues, 2);
-
-// Test: buildSpawnLine produces correct stdout format
-const line = buildSpawnLine({ issue_key: 'BCIN-001', input_file: '/tmp/f.json', output_file: '/tmp/o.md' });
-assert.ok(line.startsWith('AGENT_SPAWN_REQUEST:'));
-assert.ok(JSON.parse(line.replace('AGENT_SPAWN_REQUEST: ', '')).issue_key === 'BCIN-001');
-
-// Test: sessions_spawn must NOT appear anywhere in spawn-agents.js
-const src = require('fs').readFileSync('./spawn-agents.js', 'utf8');
-assert.ok(!src.includes('sessions_spawn'), 'SHELL-001 violation: sessions_spawn found');
-```
+Do not create wrapper skills for these by default. A wrapper is allowed only when the workflow needs a stable higher-level contract that cannot be expressed cleanly by direct reuse.
 
 ---
 
-### 4.6 `scripts/post-workflow.sh` — Jira update + Feishu notification
+## 4. Reviewer Model for `openclaw-agent-design-review`
 
-**Purpose**: Called after all sub-agents have completed. Loops over output `.md` files, updates Jira, then sends Feishu summary. Uses `lib/feishu.sh` for fallback persistence.
+### 4.1 Reviewer Scope Expansion
 
-Decomposed into:
-- `update_jira_for_all <rca_dir> <script_dir>` → loops rca files, calls `update-jira-latest-status.sh`
-- `generate_summary <rca_dir> <output_dir> <timestamp>` → writes `feishu-summary-*.md`
-- `notify_feishu <summary_file> <chat_id> <run_json>` → calls `feishu_send`; on fail calls `feishu_persist_fallback`
-- `main` — ≤ 20 lines driver
+Refactor the review model so `openclaw-agent-design-review` validates not only shell-script discipline, but also OpenClaw skill architecture quality.
 
-**TDD stub** (`test/post-workflow.test.sh`):
-```bash
-# Test: generate_summary produces table with correct row count
-mkdir -p /tmp/rca
-echo "## 1. Incident Summary" >> /tmp/rca/BCIN-001-rca.md
-bash post-workflow.sh --dry-run /tmp/rca
-cat /tmp/out/feishu-summary-*.md | grep "BCIN-001" || exit 1
-```
+The reviewer must check:
 
----
+1. **Canonical placement**
+   - Shared capabilities are placed in `.agents/skills/`.
+   - Workspace-specific capabilities are placed in `<workspace>/skills/`.
 
-### 4.7 `scripts/run-agent-workflow.sh` — Main entry point
+2. **Skill-first workflow definition**
+   - The workflow is defined through skill entrypoints, not only NLG or shell artifacts.
 
-**Purpose**: Orchestrates the full pipeline. Delegates each step to sub-scripts. Never contains business logic — only step sequencing.
+3. **Existing skill reuse**
+   - The design reuses `jira-cli`, `confluence`, and `feishu-notify` directly when they fit.
 
-```
-run-agent-workflow.sh <key> [--dry-run]
-  Step 1: check_resume.sh <key>          → idempotency gate
-  Step 2: create-manifest.sh             → build manifest
-  Step 3: node spawn-agents.js <manifest> → spawn sub-agents
-  Step 4: [wait signal] post-workflow.sh  → Jira + Feishu
-```
+4. **OpenClaw compatibility**
+   - The design aligns with `clawddocs`, skill accumulation, idempotency thinking, and reviewer-gated finalization.
 
-**TDD stub** (`test/run-agent-workflow.test.sh`):
-```bash
-# Smoke test: dry-run completes without error
-bash run-agent-workflow.sh BCIN-TEST --dry-run
-echo $? # expect: 0
-```
+5. **State-machine non-regression**
+   - The design preserves the current Phase 0 existing-status check and does not break current `task.json` / `run.json` semantics unless an additive change is explicitly justified in the design doc and reviewer report.
 
----
+6. **Implementation discipline**
+   - Shell/Node helpers are modular and subordinate to the skill contract.
+   - Side effects are isolated from reusable helpers.
+   - Tests are planned for non-trivial script behavior.
 
-## 5. Updates to `openclaw-agent-design` SKILL.md
+### 4.2 Reviewer Findings
 
-### Section 4 replacement: Workflow Design (Shell + NLG coexistence)
-
-**Replace**:
-> `## 4. Workflow Design (NLG)` — *Default: NLG workflow. Phases are plain-language instructions. Use bash scripts only when the design explicitly requires automation.*
-
-**With**:
-> `## 4. Workflow Design`
->
-> Shell scripts are the **default** for all automatable phases (data collection, manifest creation, agent spawning, Jira updates, Feishu notification).
->
-> NLG phases **coexist** for phases that explicitly require a **human confirmation gate** — for example:
-> - Phase 0: user selects resume / regenerate / skip option
-> - Any phase where destructive action requires explicit approval
->
-> Rule: if a phase can run unattended without human judgment, it **must** be a shell script. If it requires stopping for user input, it **must** be NLG with explicit `User Interaction` block.
-
-### Design Deliverables table change
-
-Replace `CREATE | .agents/workflows/<name>.md | NLG workflow` row with:
-
-| Action | Path | Notes |
-|--------|------|-------|
-| CREATE | `scripts/run-<name>-workflow.sh` | Main orchestrator |
-| CREATE | `scripts/create-manifest.sh` | Data collection → manifest |
-| CREATE | `scripts/spawn-agents.js` | Sub-agent spawner (not sessions_spawn) |
-| CREATE | `scripts/post-workflow.sh` | Jira + Feishu post steps |
-| CREATE | `scripts/lib/manifest.sh` | Manifest helpers |
-| CREATE | `scripts/lib/feishu.sh` | Feishu + fallback helpers |
-| CREATE | `scripts/lib/logging.sh` | Logging helpers |
-| CREATE | `scripts/test/` | TDD smoke tests |
-
-### Key Rules section addition
-
-```
-### Shell + NLG Hybrid Workflow
-
-- Automatable phases: MUST be shell scripts (data collection, manifest, spawning, Jira, Feishu).
-- Human confirmation phases: MUST be NLG with explicit User Interaction block (Done / Blocked / Questions / Assumption policy).
-- Sub-agent spawning: ALWAYS use spawn-agents.js stdout handoff pattern; NEVER use sessions_spawn.
-- Feishu notifications: ALWAYS go through lib/feishu.sh with run.json.notification_pending fallback.
-- All scripts: each function max 20 lines; TDD stubs in scripts/test/ before implementation.
-- lib/ helpers: pure functions only — no side effects, no global state mutation.
-```
-
-### Migration note (out of scope for this design)
-
-All existing NLG-only workflow `.md` files (e.g. `feature-qa-planning.md`, `qa-summary.md`) will require migration to the shell+NLG hybrid pattern in future designs. This design establishes the canonical pattern; migration of existing workflows is tracked separately.
-
----
-
-## 6. Updates to `openclaw-agent-design-review` SKILL.md
-
-### New Quality Gate: Shell Script Compliance
-
-Add a new gate to the Review Process (Step 3.5):
-
-**3.5 Shell Script Contract Check** — Verify the following when design prescribes shell workflow:
-
-| Check | Severity if Missing |
-|-------|-------------------|
-| `run-<name>-workflow.sh` exists or is in deliverables | P1 |
-| `spawn-agents.js` used instead of `sessions_spawn` | P0 |
-| Each function ≤ 20 lines (checked by `check_design_evidence.sh`) | P1 |
-| `lib/feishu.sh` (or equivalent) used for notification | P1 |
-| `notification_pending` fallback written to `run.json` | P1 |
-| TDD test stubs exist in `scripts/test/` | P1 |
-| Scripts are modular (no monolithic files > 100 lines) | P2 |
-
-### New Finding IDs
+Add reviewer findings that cover the new design contract:
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| `SHELL-001` | P0 | Design uses `sessions_spawn` instead of `spawn-agents.js` |
-| `SHELL-002` | P1 | Shell script function exceeds 20-line limit |
-| `SHELL-003` | P1 | No `lib/feishu.sh` fallback for notification |
-| `SHELL-004` | P1 | Missing `run.json.notification_pending` write on Feishu failure |
-| `SHELL-005` | P1 | Missing TDD test stubs for new scripts |
-| `SHELL-006` | P2 | Main workflow script mixes orchestration and business logic |
+| `SKILL-001` | P0 | Workflow is not modeled as a skill entrypoint |
+| `SKILL-002` | P1 | Shared capability is placed outside `.agents/skills/` without justification |
+| `SKILL-003` | P1 | Workspace-specific capability is incorrectly proposed as a shared skill |
+| `SKILL-004` | P1 | Existing shared skill reuse was skipped without justified contract gap |
+| `SKILL-005` | P1 | `skill-creator` was not required for new or materially redesigned skills |
+| `SKILL-006` | P1 | `code-structure-quality` was not applied to skill boundary design |
+| `SKILL-007` | P1 | Design ignores OpenClaw compatibility expectations from `clawddocs` or `agent-idempotency` |
+| `SKILL-008` | P1 | Design bypasses the current Phase 0 existing-status check or breaks `task.json` / `run.json` semantics without additive change justification recorded in the design doc and reviewer report |
+| `SHELL-001` | P1 | Shell or Node scripts are treated as the primary workflow abstraction instead of skill internals |
+| `SHELL-002` | P1 | Script design mixes orchestration, data transformation, and side effects without clear boundaries |
+| `SHELL-003` | P2 | Script test strategy is missing for non-trivial helper or orchestration behavior |
 
-### `check_design_evidence.sh` extension
+### 4.3 Review Artifacts
 
-Add checks:
-- `grep -r "sessions_spawn"` in script files → fail if found (SHELL-001)
-- Count lines per function: `awk '/^[a-z_]*()/{...}` → flag if > 20 (SHELL-002)
-- Verify `scripts/test/` directory exists and has ≥ 1 `.test.sh` or `.test.js` file (SHELL-005)
+The reviewer output contract remains:
 
----
+- review report markdown artifact path,
+- review report JSON artifact path,
+- final status: `pass`, `pass_with_advisories`, or `fail`.
 
-## 7. State Schemas
-
-### task.json
-
-Path: `projects/<type>/<key>/task.json`
-
-```json
-{
-  "run_key": "BCIN-1234",
-  "overall_status": "in_progress",
-  "current_phase": "phase_2_manifest",
-  "manifest_path": "output/<key>/manifest-20260305-120000.json",
-  "created_at": "2026-03-05T04:00:00Z",
-  "updated_at": "2026-03-05T04:05:00Z"
-}
-```
-
-Write rule: every shell script step updates `updated_at`. Use atomic write (tmp → rename via `jq > tmp && mv tmp dest`).
-
-### run.json
-
-Path: `projects/<type>/<key>/run.json`
-
-```json
-{
-  "data_fetched_at": "2026-03-05T04:00:00Z",
-  "manifest_created_at": "2026-03-05T04:01:00Z",
-  "agents_spawned_at": "2026-03-05T04:02:00Z",
-  "post_workflow_at": null,
-  "notification_pending": null,
-  "updated_at": "2026-03-05T04:02:00Z"
-}
-```
-
-`notification_pending`: set to full Feishu payload string on send failure. On next `run-agent-workflow.sh` resume, `lib/feishu.sh:feishu_retry_if_pending` checks and retries before any phase.
+The review is blocking for P0/P1 findings.
 
 ---
 
-## 8. Files To Create / Update
+## 5. Shell Implementation Pattern Inside Skills
 
-1. `.cursor/skills/openclaw-agent-design/SKILL.md` — **UPDATE** (Section 4 + Key Rules)
-2. `.cursor/skills/openclaw-agent-design/reference.md` — **UPDATE** (add architecture diagram + script conventions)
-3. `.cursor/skills/openclaw-agent-design/scripts/run-agent-workflow.sh` — **CREATE**
-4. `.cursor/skills/openclaw-agent-design/scripts/create-manifest.sh` — **CREATE**
-5. `.cursor/skills/openclaw-agent-design/scripts/spawn-agents.js` — **CREATE**
-6. `.cursor/skills/openclaw-agent-design/scripts/post-workflow.sh` — **CREATE**
-7. `.cursor/skills/openclaw-agent-design/scripts/lib/manifest.sh` — **CREATE**
-8. `.cursor/skills/openclaw-agent-design/scripts/lib/feishu.sh` — **CREATE**
-9. `.cursor/skills/openclaw-agent-design/scripts/lib/logging.sh` — **CREATE**
-10. `.cursor/skills/openclaw-agent-design/scripts/test/` (smoke tests) — **CREATE**
-11. `.cursor/skills/openclaw-agent-design-review/SKILL.md` — **UPDATE** (new gate + finding IDs)
-12. `.cursor/skills/openclaw-agent-design-review/reference.md` — **UPDATE** (SHELL-* rubric)
-13. `.cursor/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh` — **UPDATE** (SHELL-001..005 checks)
-14. `AGENTS.md` — **UPDATE** (shell workflow conventions, spawner note)
+### 5.1 When Shell Is Appropriate
 
----
+Shell should be used when a skill needs deterministic local orchestration, filesystem coordination, CLI composition, or a small executable pipeline.
 
-## 9. Environment Setup
+Examples:
+- preparing manifest/state files,
+- collecting inputs for a skill run,
+- coordinating local CLI tools,
+- writing resumable execution checkpoints,
+- invoking existing shared skills from a stable wrapper script inside the skill.
 
-Scripts require:
-- `jq` ≥ 1.6
-- `node` ≥ 18 (via `nvm use default`)
-- `bash` ≥ 5 (macOS: install via Homebrew — `brew install bash`)
-- `send-feishu-notification.js` available at a known relative path (configured via `FEISHU_SCRIPT_PATH` env var)
+### 5.2 Script Structure Rules
 
-```bash
-# Verify environment
-jq --version
-node --version
-bash --version
-```
+When a skill includes shell or Node helpers, use this structure:
 
----
+| Path | Purpose |
+|------|---------|
+| `<skill-root>/scripts/run-*.sh` | thin entrypoint driver |
+| `<skill-root>/scripts/lib/*.sh` | pure or narrowly scoped reusable helpers |
+| `<skill-root>/scripts/*.js` | Node helpers for structured JSON or multi-step CLI orchestration |
+| `<skill-root>/scripts/test/` | focused tests for helpers and drivers |
 
-## 10. README Impact
+### 5.3 Script Quality Rules
 
-- `.cursor/skills/openclaw-agent-design/README.md` (if exists): **update** — document shell workflow entry point and TDD conventions.
-- `workspace-daily/README.md`: **no change** — this design is skill-level only.
-- `docs/README.md`: **not applicable** — docs folder has no README at present.
+These rules remain valid from the earlier v1 shell design, but they now apply inside the skill architecture:
 
----
+- use `set -euo pipefail` in shell entrypoints,
+- keep helpers small and composable,
+- isolate side effects from data transformation logic,
+- write state artifacts atomically where practical,
+- define resumable behavior when persistent outputs matter,
+- include focused tests for non-trivial scripts,
+- avoid monolithic script bundles that become the de facto workflow definition.
 
-## 11. Quality Gates
+### 5.4 Feishu, Jira, and Confluence Integration
 
-- [ ] Deliverables table complete with explicit paths and CREATE/UPDATE actions
-- [ ] AGENTS.md sync sections listed (shell workflow conventions, spawner note)
-- [ ] Environment setup addressed
-- [ ] Shell script architecture diagram present
-- [ ] `spawn-agents.js` design explicitly precludes `sessions_spawn`
-- [ ] Per-script TDD stubs defined
-- [ ] All functions documented with ≤ 20 line target
-- [ ] `lib/feishu.sh` fallback → `run.json.notification_pending` contract defined
-- [ ] `openclaw-agent-design-review` SHELL-* gate matrix defined
-- [ ] README impact explicitly addressed
-- [ ] Reviewer status (`openclaw-agent-design-review`): pending — run after approval
+Script helpers must not hard-code workflow-local copies of shared integrations when the shared skill already exists.
+
+Use design contracts that point to:
+- `jira-cli` for Jira interaction,
+- `confluence` for Confluence interaction,
+- `feishu-notify` for Feishu notification.
+
+If a local script adapts one of these capabilities, the script should be a thin adapter owned by the entrypoint skill, not a new duplicate integration layer.
 
 ---
 
-## 12. References
+## 6. Design Deliverables
 
-- RCA Daily workflow (pattern source):
-  - `workspace-daily/projects/rca-daily/src/run-complete-rca-workflow.sh`
-  - `workspace-daily/projects/rca-daily/src/post-rca-workflow.sh`
-  - `workspace-daily/projects/rca-daily/src/generate-rcas-via-agent.js`
-- Skill being updated: `.cursor/skills/openclaw-agent-design/SKILL.md`
-- Review skill being updated: `.cursor/skills/openclaw-agent-design-review/SKILL.md`
-- Existing review scripts: `.cursor/skills/openclaw-agent-design-review/scripts/`
-- Agent idempotency: `.cursor/skills/agent-idempotency/SKILL.md`
-- Skill creator: `.cursor/skills/skill-creator/SKILL.md`
+Refactor the deliverables expected from this design as follows:
+
+| Action | Path | Notes |
+|--------|------|-------|
+| UPDATE | `.agents/skills/openclaw-agent-design/SKILL.md` | Make skill-first workflow design the default contract |
+| UPDATE | `.agents/skills/openclaw-agent-design/reference.md` | Add placement rules, skill classes, and shell-inside-skill conventions |
+| UPDATE | `.agents/skills/openclaw-agent-design-review/SKILL.md` | Expand review gates to cover skill placement, reuse, and OpenClaw compatibility |
+| UPDATE | `.agents/skills/openclaw-agent-design-review/reference.md` | Keep reviewer rubric aligned until review internals are fully migrated |
+| UPDATE | `.agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh` | Extend checks to cover skill-first architecture evidence |
+| UPDATE | `AGENTS.md` | Sync canonical shared/local skill placement and required design/review process |
+| UPDATE | `docs/SKILL_WORKFLOW_V2_PORTABLE_DESIGN.md` | Keep high-level portable design language aligned with this canonical OpenClaw-focused version |
+
+If future implementation introduces script assets under `openclaw-agent-design`, those scripts belong under the relevant skill directory in `.agents/skills/.../scripts/`.
+
+---
+
+## 7. AGENTS.md Sync Requirements
+
+Root `AGENTS.md` and relevant workspace guidance should stay aligned with this design:
+
+- state that workflow entrypoints are skills,
+- state that shared skills live in `.agents/skills/`,
+- state that workspace-local skills live in `<workspace>/skills/`,
+- require `skill-creator` and `code-structure-quality` for design work,
+- require `openclaw-agent-design-review` before finalization,
+- list reusable shared skills such as `jira-cli`, `confluence`, and `feishu-notify` as default building blocks where applicable.
+
+---
+
+## 8. README Impact
+
+- `.agents/skills/openclaw-agent-design/README.md`: **not applicable** — the skill currently does not include a separate README and the canonical contract lives in `SKILL.md` and `reference.md`.
+- `.agents/skills/openclaw-agent-design-review/README.md`: **not applicable** — the reviewer contract is documented in `SKILL.md` and `reference.md`.
+- Root `README.md`: **no change** — this design only changes OpenClaw skill contracts and review rules.
+
+---
+
+## 9. Quality Gates
+
+- [ ] Design defines workflow entrypoints as skills, not only scripts or prose
+- [ ] Shared vs workspace-local skill placement is explicit and justified
+- [ ] `.agents/skills/` is treated as the canonical shared-skill location
+- [ ] Both new-agent design and existing-agent function redesign are covered
+- [ ] `clawddocs` compatibility is explicitly addressed
+- [ ] `agent-idempotency` Phase 0 expectations are preserved where persistent outputs exist
+- [ ] Workflow starts with existing-status detection using current Phase 0 / `REPORT_STATE` semantics
+- [ ] Existing `task.json` / `run.json` semantics are preserved unless additive changes are explicitly justified in the design doc and reviewer report
+- [ ] `skill-creator` is required for new or materially redesigned skills
+- [ ] `code-structure-quality` is required for skill boundary and ownership design
+- [ ] Existing shared skills `jira-cli`, `confluence`, and `feishu-notify` are reused directly by default
+- [ ] Reviewer findings cover placement, reuse, OpenClaw compatibility, and shell-inside-skill discipline
+- [ ] Shell implementation guidance is retained as an internal skill-layer rule, not the primary architecture
+
+---
+
+## 10. References
+
+- Canonical OpenClaw design skill: `.agents/skills/openclaw-agent-design/SKILL.md`
+- Canonical OpenClaw design reference: `.agents/skills/openclaw-agent-design/reference.md`
+- Review wrapper skill: `.agents/skills/openclaw-agent-design-review/SKILL.md`
+- Canonical review skill: `.agents/skills/openclaw-agent-design-review/SKILL.md`
+- OpenClaw best practices: `docs/bestpractice-openclaw.md`
+- Portable supporting design: `docs/SKILL_WORKFLOW_V2_PORTABLE_DESIGN.md`
+- Shared documentation skill: `.agents/skills/clawddocs/SKILL.md`

@@ -1,0 +1,5 @@
+without_skill baseline run complete.
+- Did not read or use code-quality-orchestrator/SKILL.md.
+- Built a self-contained parser feature + tests under run-1/implementation.
+- Followed pre-code requirement-to-test matrix and TDD (red -> green -> refactor).
+- Final test status: 7 passed, 0 failed.

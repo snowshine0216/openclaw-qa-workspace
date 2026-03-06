@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feishu Notify"
+  short_description: "Send Feishu chat notifications"
+  default_prompt: "Use $feishu-notify to send a workspace-aware Feishu update from a file or inline message."

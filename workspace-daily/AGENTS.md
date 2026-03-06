@@ -12,122 +12,8 @@ _Operating instructions for daily monitoring._
 6. Read `MEMORY.md` (monitoring patterns)
 7. Read `WORKSPACE_RULES.md` (file organization)
 
-
-
-## 🔄 RCA Automation Workflow (Fully Automated)
-
-**Entry Point:** `run-complete-rca-workflow.sh` (single command triggers everything)
-
-### What Happens Automatically:
-
-```
-1. User runs: bash run-complete-rca-workflow.sh
-   ↓
-2. Bash: Collects Jira + GitHub data
-   ↓
-3. Bash: Sends Feishu notification → "RCA Workflow Ready: N issues"
-   ↓
-4. Agent (Me): Receives notification
-   ↓
-5. Agent: Spawns N sub-agents (5 concurrent batches)
-   ↓
-6. Sub-agents: Generate RCAs (9-section comprehensive analysis)
-   ↓
-7. Agent: Runs post-rca-workflow.sh
-   ↓
-8. Bash: Updates Jira Latest Status (N issues)
-   ↓
-9. Bash: Sends final Feishu summary
-   ↓
-10. Done! ✅
-```
-
-### My Role (Agent Handler):
-
-**When I receive Feishu notification:**
-1. Detect "RCA Workflow Ready" message
-2. Read manifest: `rca-manifest-<timestamp>.json`
-3. Spawn sub-agents for each issue (batched):
-   - Batch 1: 5 agents
-   - Wait for completion
-   - Batch 2: 5 agents
-   - ... repeat until all done
-4. Each sub-agent:
-   - Reads `rca-input-<issue>.json`
-   - Generates comprehensive 9-section RCA
-   - Saves to `output/rca/<issue>-rca.md`
-5. After all complete, run:
-   ```bash
-   bash post-rca-workflow.sh <timestamp>
-   ```
-6. Monitor Jira updates and final notification
-
-**Handler Guide:** `projects/rca-daily/.agents/rca-workflow-handler.md`
-
-### Usage:
-
-```bash
-cd ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/src
-bash run-complete-rca-workflow.sh
-```
-
-**Then:** Wait 15-20 minutes for completion notification
-
-### Output:
-- RCA documents: `projects/rca-daily/output/rca/<ISSUE_KEY>-rca.md`
-- Manifest: `projects/rca-daily/output/rca-manifest-<timestamp>.json`
-- Logs: `projects/rca-daily/output/logs/`
-- Feishu notifications: 2 (trigger + completion)
-
-### Status Monitoring:
-
-Check active sub-agents:
-```javascript
-subagents(action: "list")
-```
-
-Count generated RCAs:
-```bash
-ls -1 ~/Documents/Repository/openclaw-qa-workspace/workspace-daily/projects/rca-daily/output/rca/*.md | wc -l
-```
-
-**Before creating files, consult `WORKSPACE_RULES.md`**
-
-## Memory Management
-
-### Daily Logs (Shared)
-Record to `memory/YYYY-MM-DD.md`:
-- What was checked (Jira query, CI jobs)
-- Findings summary
-- Issues reported
-
-### Long-Term Memory (Your Own)
-Record to `agents/qa-daily/MEMORY.md`:
-- Common Jira query patterns
-- Jenkins job monitoring tips
-- Patterns in flaky tests
-- Typical blockers and resolutions
-
-## Jira Integration
-
-Configuration already exists. The token is in .evn file. 
-
-
-## CI/Jenkins Integration
-
-### WEB LIBRARY
-
-Integration is handled by the `jenkins-analysis` project.
-1. Authenticate with Jenkins using configured credentials.
-2. Scripts like `analyzer.sh` fetch build statuses.
-3. Node.js scripts (`report_generator.js`, `md_to_docx.js`) parse results, identify failures, and generate comprehensive reports.
-4. Data is stored in SQLite for historical tracking and trend analysis.
-
-### ANDROID JENKINS
-Integration is located in `android-jenkins-analysis`. refer to `README.md` for details
-
-
-
+## Mandatory Skills
+- use `code-quality-orchestrator` for all coding tasks.
 
 ## Memory
 
@@ -170,8 +56,11 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 - ✅ Write: "Slack integration configured in `~/.openclaw/openclaw.json`"
 - ✅ Write: "GitHub Copilot auth stored in `~/.openclaw/credentials/`"
+- ✅ Write: "Feishu chat-id stored in `TOOLS.md`"
 - ✅ Reference file paths, never actual secrets
-- ✅ Read: "Jenkins credentials stored in `.env`"
+- ✅ Read: "Jenkins credentials from `.env`"
+- ✅ Read: "Jira credentials from `.env`"
+- ✅ Read: "Feishu chat-id from `TOOLS.md`"
 
 **If I accidentally write a secret:**
 
@@ -187,9 +76,7 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **Feishu Chat-id**: always look up in `TOOLS.md`.
 
-**CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
 
-And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 
 
 ## 💓 Heartbeats - Be Proactive!

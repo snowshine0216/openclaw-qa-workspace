@@ -15,6 +15,7 @@ These skills should exist only once in `.agents/skills` and be referenced from w
 | capability-evolver / evolver | `.agents/skills` | Shared meta/experiment utility |
 | clawddocs | `.agents/skills` | Shared docs helper |
 | code-structure-quality | `.agents/skills` | Shared quality helper |
+| code-quality-orchestrator | `.agents/skills` | Shared orchestration helper for write -> review -> refactor quality loops |
 | confluence | `.agents/skills` | Shared docs/integration |
 | database | `.agents/skills` | Shared DB helper |
 | deep-research | `.agents/skills` | Shared research helper |
@@ -113,6 +114,7 @@ Implementation rule of thumb:
 ## Implementation Status (2026-03-06)
 
 - **Shared skills**: Copied to `.agents/skills` with real content (agent-browser, brave-search, browser-use, bug-report-formatter, capability-evolver, evolver, clawddocs, confluence, database, deep-research, github, humanizer, jira-cli, mcporter, nano-pdf, notion, obsidian, readme-gen, self-improving-agent, sql-toolkit, summarize, tavily-search, test-case-generator, test-patterns, microstrategy-qa-workflow). OpenClaw design skills (agent-idempotency, code-structure-quality, docs-organization-governance, function-test-coverage, openclaw-agent-design, robust-agent-design) remain as symlinks to `.cursor/skills`.
+- **New shared orchestrator**: Added `code-quality-orchestrator` in `.agents/skills` for strict `write (TDD) -> review -> refactor -> retest` workflows that compose existing quality/review skills.
 - **Removed skills**: Deleted gemini, auto-updater, himalaya, humanize-ai-text, model-usage, stock-analysis, storybook-gen, homeassistant, marketing-mode, openclaw-agent-mgmt, postgres, rate-limiter, slack, swagger-gen, wacli, web-deploy, wed, blogwatcher, youtube-watcher from all workspaces.
 - **Workspace-specific moves**: qa-test-keypoints-map moved from planner to tester; senior-backend removed from workspace and daily (healer only); vercel-react-best-practices removed from tester; microstrategy-* consolidated in tester only.
 - **Shared-skill dedup**: Removed duplicate copies of shared skills from all workspace-*/skills folders.

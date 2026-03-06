@@ -1,11 +1,11 @@
 ---
 name: jira-cli
-description: Interact with Jira from the command line to create, list, view, edit, and transition issues, manage sprints and epics, and perform common Jira workflows. Use when the user asks about Jira tasks, tickets, issues, sprints, or needs to manage project work items.
+description: Interact with Jira from the command line to create, list, view, edit, and transition issues, manage sprints and epics, and perform common Jira workflows. Use when the user asks about Jira tasks, tickets, issues, sprints, or needs to manage project work items. For JQL searches, use the provided wrapper script so Jira credentials come from the agent workspace `.env` and project-less JQL is expanded across accessible projects.
 license: MIT
-compatibility: Requires jira-cli installed (https://github.com/ankitpokhrel/jira-cli) and configured with `jira init`. Requires JIRA_API_TOKEN environment variable.
+compatibility: Requires jira-cli installed (https://github.com/ankitpokhrel/jira-cli) and configured with `jira init`. Wrapper scripts read `JIRA_API_TOKEN` from the active OpenClaw agent workspace `.env` when present, otherwise from the repo root `.env`.
 metadata:
   author: Colby Timm
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Jira CLI
@@ -23,8 +23,42 @@ Interact with Atlassian Jira from the command line using [jira-cli](https://gith
 ## Prerequisites
 
 1. Install jira-cli: `brew install ankitpokhrel/jira-cli/jira-cli` (macOS) or download from [releases](https://github.com/ankitpokhrel/jira-cli/releases)
-2. Set API token: `export JIRA_API_TOKEN="your-token"`
+2. Add Jira settings to the relevant agent `.env` file:
+
+```bash
+JIRA_API_TOKEN=<jira-api-token>
+JIRA_BASE_URL=<jira-base-url>
+```
+
 3. Initialize: `jira init` and follow prompts
+
+## Script Entry Points
+
+Use these scripts when working from Codex/OpenClaw:
+
+```bash
+# Shared non-JQL Jira wrapper
+bash .agents/skills/jira-cli/scripts/jira-run.sh issue view ABC-1 --plain
+
+# Canonical JQL search wrapper
+bash .agents/skills/jira-cli/scripts/search-jira.sh --jql "status = 'In Progress'" --plain
+
+# Existing issue creation helper
+bash .agents/skills/jira-cli/scripts/create_ciad_issue.sh
+```
+
+### `jira-run.sh` behavior
+
+- Loads Jira credentials from the active agent workspace `.env` when the agent knows its workspace, with repo root `.env` as fallback.
+- Forwards any non-JQL Jira CLI command unchanged after loading credentials.
+
+### `search-jira.sh` behavior
+
+- Loads Jira credentials from the active agent workspace `.env` when the agent knows its workspace, with repo root `.env` as fallback.
+- If JQL already contains a `project` clause, runs it as-is.
+- If JQL omits `project`, fetches accessible Jira project keys and rewrites the query to `project in (...) AND (...)`.
+- Caches project keys in `tmp/jira/project-keys.json` and refreshes the cache once per day.
+- If refresh fails and an older cache exists, uses the stale cache and warns.
 
 ## Issue Commands
 
@@ -46,8 +80,11 @@ jira issue list -yHigh
 # List issues with multiple filters
 jira issue list -a$(jira me) -s"To Do" -yHigh --created week
 
-# List issues with raw JQL
-jira issue list -q "project = PROJ AND status = 'In Progress'"
+# Preferred raw JQL search from OpenClaw/Codex
+bash .agents/skills/jira-cli/scripts/search-jira.sh --jql "status = 'In Progress'" --plain
+
+# Explicit-project JQL stays unchanged
+bash .agents/skills/jira-cli/scripts/search-jira.sh --jql "project = PROJ AND status = 'In Progress'" --raw
 
 # Plain text output for scripting
 jira issue list --plain --columns key,summary,status --no-headers
@@ -302,3 +339,4 @@ jira issue move BUG-123 "In Progress"
 - Some features may vary between Jira Cloud and Server
 - Complex custom fields may require `--custom` flag with field IDs
 - Rate limits apply based on Jira instance configuration
+- `search-jira.sh` expects `jq` to be available for the daily project-key cache file

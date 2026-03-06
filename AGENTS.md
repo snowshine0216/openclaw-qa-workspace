@@ -8,19 +8,22 @@ This repository is configured for Codex multi-agent execution with reusable skil
 - If a deeper `AGENTS.md` exists in a subdirectory, that deeper file overrides this one for that subtree.
 - Treat `.cursor` as source-of-truth for specialist prompts and command playbooks.
 
+## Mandatory Skills
+- use `code-quality-orchestrator` for all code quality work.
+
 ## Specialist Agents
 
 Use these specialists from `.codex/config.toml`:
 
 1. `openclaw-agent-designer`
-- Purpose: design OpenClaw agents/workflows.
+- Purpose: design OpenClaw agents/workflows and existing-agent function refactors in a skill-first way.
 - Mandatory skill: `$openclaw-agent-design`.
-- Mandatory process: Phase 0 must pass `$agent-idempotency` review before finalization.
+- Mandatory process: preserve the current Phase 0 / `REPORT_STATE` model, use `$skill-creator` for new or materially redesigned skills, use `$code-structure-quality` for boundary design, and pass `$openclaw-agent-design-review` before finalization.
 
 2. `openclaw-agent-design-reviewer`
 - Purpose: review OpenClaw agent/workflow designs before finalization.
 - Mandatory skill: `$openclaw-agent-design-review`.
-- Mandatory process: P0/P1 findings block approval; must output review report artifacts.
+- Mandatory process: P0/P1 findings block approval; reviewer must validate shared-vs-local skill placement, existing Phase 0 / `REPORT_STATE` preservation, and output review report artifacts.
 
 3. `playwright-test-planner`
 - Purpose: explore UI and create comprehensive plan docs.
@@ -43,7 +46,7 @@ Use these specialists from `.codex/config.toml`:
 For OpenClaw agent design work, orchestrate in strict order:
 
 1. `openclaw-agent-designer` drafts/updates design artifacts.
-2. `openclaw-agent-design-reviewer` validates paths, test evidence, and documentation coverage.
+2. `openclaw-agent-design-reviewer` validates skill-first workflow design, shared-vs-local placement, Phase 0 non-regression, path validity, validation evidence, and documentation coverage.
 3. If reviewer returns `fail`, loop back to designer until reviewer returns `pass` or `pass_with_advisories`.
 
 For test automation work, orchestrate in strict order unless explicitly overridden:
@@ -79,6 +82,7 @@ Handoff rules:
 - `workspace-*/skills` folders (e.g. `workspace-planner/skills`, `workspace-reporter/skills`, `workspace-tester/skills`, `workspace-healer/skills`, `workspace-daily/skills`, `workspace/skills`) contain skills that are specific to that agent/workspace.
 - For the current mapping of which skills live where (including removals), see `docs/SKILL_FOLDER_REFACTOR_PLAN.md`.
 - Reuse existing shared skills before creating new ones; when adding a new skill, decide explicitly whether it should be shared (`.agents/skills`) or workspace-local (`workspace-*/skills`).
+- For OpenClaw design work, prefer direct reuse of existing shared skills such as `jira-cli`, `confluence`, and `feishu-notify` before introducing wrappers or duplicate integrations.
 
 ## Command Playbooks (.cursor/commands)
 

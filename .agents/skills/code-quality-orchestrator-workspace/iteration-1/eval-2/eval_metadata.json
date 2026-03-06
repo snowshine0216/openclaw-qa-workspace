@@ -1,0 +1,39 @@
+{
+  "eval_id": 2,
+  "eval_name": "refactor-structure-and-function-length",
+  "prompt": "Refactor a bloated service module while preserving behavior. Enforce DRY, functional boundaries, and function <=20 lines with justified exceptions.",
+  "assertions": [
+    {
+      "text": "Mentions DRY improvements",
+      "type": "contains",
+      "pattern": "DRY"
+    },
+    {
+      "text": "Mentions functional boundaries or pure vs side-effect split",
+      "type": "contains_any",
+      "pattern": [
+        "functional",
+        "pure logic",
+        "side-effect"
+      ]
+    },
+    {
+      "text": "Mentions function length policy (<= 20)",
+      "type": "contains_any",
+      "pattern": [
+        "<= 20",
+        "<=20",
+        "20 lines"
+      ]
+    },
+    {
+      "text": "Includes regression or retest statement",
+      "type": "contains_any",
+      "pattern": [
+        "regression",
+        "retest",
+        "re-run"
+      ]
+    }
+  ]
+}

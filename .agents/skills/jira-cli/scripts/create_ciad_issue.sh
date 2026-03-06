@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 # Jira Issue Creator for CIAD Project
 # Issue: Tab restoration issue after login
 
-source ~/.bash_profile
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+WRAPPER_SCRIPT="$SCRIPT_DIR/jira-run.sh"
 
-jira issue create \
+bash "$WRAPPER_SCRIPT" issue create \
   -p CIAD \
   -t Defect \
   -y High \

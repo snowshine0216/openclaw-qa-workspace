@@ -74,6 +74,14 @@ Agent-scoped skills live only in that workspace’s `skills/` folder:
 ### Usage of Shared Skills
 - skills under `.agents/skills` are available to codex
 - for openclaw, needs coping skills into `~/.openclaw/skills`
+- for global skills that installed from skills.sh, needs manually install (so it's easy to keep up to date).
+```bash
+npx skills add https://github.com/anthropics/skills --skill skill-creator
+npx skills add https://github.com/vercel-labs/skills --skill find-skills
+npx skills add https://github.com/obra/superpowers --skill requesting-code-review
+npx skills add https://github.com/obra/superpowers --skill receiving-code-review
+npx skills add https://github.com/vercel-labs/agent-browser --skill agent-browser
+```
 
 
 ## QA Test Key Points Interactive Page
