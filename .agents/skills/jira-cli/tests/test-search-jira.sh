@@ -2,21 +2,21 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-SEARCH_SCRIPT="$SCRIPT_DIR/search-jira.sh"
-WRAPPER_SCRIPT="$SCRIPT_DIR/jira-run.sh"
+WRAPPER_SCRIPT="$SCRIPT_DIR/../scripts/jira-run.sh"
+SEARCH_SCRIPT="$SCRIPT_DIR/../scripts/search-jira.sh"
 ORIG_PATH=$PATH
-
-reset_overrides() {
-  unset JIRA_PROJECT_CACHE_FILE
-  unset JIRA_SKILL_REPO_ROOT
-  unset JIRA_STUB_LOG
-  unset JIRA_STUB_PROJECT_LIST_FAIL
-  unset JIRA_STUB_PROJECT_LIST_OUTPUT_FILE
-}
 
 fail() {
   echo "FAIL: $*" >&2
   exit 1
+}
+
+reset_overrides() {
+  unset JIRA_PROJECT_CACHE_FILE
+  unset JIRA_STUB_PROJECT_LIST_FAIL
+  unset JIRA_STUB_PROJECT_LIST_OUTPUT_FILE
+  unset JIRA_STUB_LOG
+  unset JIRA_SKILL_REPO_ROOT
 }
 
 assert_contains() {
@@ -230,21 +230,11 @@ NAME KEY TYPE
 Alpha ABC software
 PROJECTS
   set +e
-  (
-    cd "$root/workspace-planner" && env \
-      PATH="$bin:$ORIG_PATH" \
-      JIRA_STUB_LOG="$log" \
-      JIRA_STUB_PROJECT_LIST_FAIL=1 \
-      JIRA_STUB_PROJECT_LIST_OUTPUT_FILE="$projects" \
-      JIRA_SKILL_REPO_ROOT="$root" \
-      bash "$SEARCH_SCRIPT" --jql "status = Open"
-  ) >/dev/null 2>"$stderr"
+  PATH="$bin:$ORIG_PATH" JIRA_STUB_LOG="$log" JIRA_STUB_PROJECT_LIST_FAIL=1 JIRA_STUB_PROJECT_LIST_OUTPUT_FILE="$projects" JIRA_SKILL_REPO_ROOT="$root" run_search "$root/workspace-planner" --jql "status = Open" > /dev/null 2>"$stderr"
   status=$?
   set -e
-  if [[ $status -eq 0 ]]; then
-    fail "expected command to fail without cache"
-  fi
-  assert_file_contains "$stderr" "Unable to refresh Jira project keys"
+  [[ "$status" -ne 0 ]] || fail "expected missing-cache search to fail"
+  assert_file_contains "$stderr" "no cache is available"
 }
 
 main() {

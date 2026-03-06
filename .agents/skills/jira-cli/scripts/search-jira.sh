@@ -3,10 +3,10 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 WRAPPER_SCRIPT="$SCRIPT_DIR/jira-run.sh"
-# shellcheck source=./jira-env.sh
-source "$SCRIPT_DIR/jira-env.sh"
-# shellcheck source=./jira-jql.sh
-source "$SCRIPT_DIR/jira-jql.sh"
+# shellcheck source=./lib/jira-env.sh
+source "$SCRIPT_DIR/lib/jira-env.sh"
+# shellcheck source=./lib/jira-jql.sh
+source "$SCRIPT_DIR/lib/jira-jql.sh"
 
 run_jira() {
   bash "$WRAPPER_SCRIPT" "$@"
