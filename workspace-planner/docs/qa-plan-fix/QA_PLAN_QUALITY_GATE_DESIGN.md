@@ -70,7 +70,7 @@ Phase 3: Review  ← RC-1 to RC-6 are NOT CAUGHT here
 | `skills/qa-plan-synthesize/SKILL.md` | Add quality rules + soft-warning self-healing + Step 3b translation pass + scope/E2E routing | P0 — root cause fix |
 | `skills/qa-plan-review/SKILL.md` | Add new mandatory review axis | P0 — catching gate |
 | `skills/qa-plan-github/SKILL.md` | Add Step 5b, Test Scope column, E2E Scenarios to Add, separate traceability file | P0 — source-side guard |
-| `.agents/workflows/feature-qa-planning.md` | Phase 1 Step 1b (empty diff); Phase 2b enhancements; Phase 3 wire qa-plan-refactor on FAIL | P0 — workflow guard |
+| `skills/feature-qa-planning-orchestrator/SKILL.md` | Phase 1 Step 1b (empty diff); synthesis enhancements; review/refactor wiring on FAIL | P0 — orchestrator guard |
 | `skills/qa-plan-refactor/SKILL.md` | Add UE-1..UE-6 → refactor action mapping; wire into workflow | P0 — post-review fix |
 | `AGENTS.md` | No change — already delegates to skill files | — |
 

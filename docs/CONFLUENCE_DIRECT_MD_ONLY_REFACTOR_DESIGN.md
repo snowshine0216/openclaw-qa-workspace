@@ -19,7 +19,7 @@ Date: 2026-03-05
 | `workspace-planner/scripts/confluence/` | **Delete** entire directory |
 | `workspace-reporter/scripts/confluence` | **Remove** symlink (points to deleted dir) |
 | `workspace-planner/AGENTS.md` | Replace convert-then-publish with direct md publish |
-| `workspace-planner/.agents/workflows/feature-qa-planning.md` | Use `--format markdown`; remove md-to-confluence step |
+| `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md` | Use `--format markdown`; remove md-to-confluence step |
 | `workspace-reporter/AGENTS.md` | Replace MD→HTML→publish with direct md publish |
 | `workspace-reporter/.agents/workflows/defect-analysis.md` | Use `--format markdown`; remove md-to-confluence step |
 | `workspace-planner/docs/workflow-updates-2026-02-25.md` | Update Confluence publish instructions |
@@ -35,9 +35,9 @@ Date: 2026-03-05
 2. Remove symlink `workspace-reporter/scripts/confluence` (or the `confluence/` entry under `scripts/`).
 3. Update `workspace-reporter/scripts/README.md` — remove the `confluence/` symlink row.
 
-### 3.2 Update feature-qa-planning workflow
+### 3.2 Update `feature-qa-planning-orchestrator`
 
-In `workspace-planner/.agents/workflows/feature-qa-planning.md` Phase 4:
+In `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md` Phase 5:
 
 **Before:**
 ```bash

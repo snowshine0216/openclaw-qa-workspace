@@ -16,7 +16,7 @@ For reporter postmortem outputs, when no existing page is available, create a ne
 
 ## Files Updated
 
-### 1. `.agents/workflows/feature-qa-planning.md`
+### 1. `.agents/workflows/feature-qa-planning.md` → replaced by `skills/feature-qa-planning-orchestrator/SKILL.md`
 **Section**: Phase 4 - Publication
 
 **Changes**:

@@ -74,7 +74,7 @@ _Test planning patterns and best practices._
 **Lesson**: Confluence uses HTML storage format, NOT Markdown. NEVER publish raw `.md` files directly.
 
 **✅ Correct Process:**
-Always follow the specific publication steps outlined in the Feature QA Planning Workflow (`.agents/workflows/feature-qa-planning.md`).
+Always follow the specific publication steps outlined in `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`.
 
 **Date Learned**: 2026-02-25  
 **Context**: BCED-4198 QA plan published incorrectly, had to fix and republish

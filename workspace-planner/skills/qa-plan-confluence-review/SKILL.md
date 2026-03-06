@@ -1,6 +1,6 @@
 ---
 name: qa-plan-confluence-review
-description: Full quality gate for a published QA Plan Confluence page. Verifies formatting compliance (emoji headers, numbered sub-categories, table restrictions), structural completeness (all required sections present), and cross-artifact accuracy (Jira AC coverage, PR coverage, Figma notes). Invoked after publication in the feature-qa-planning workflow.
+description: Full quality gate for a published QA Plan Confluence page. Verifies formatting compliance (emoji headers, numbered sub-categories, table restrictions), structural completeness (all required sections present), and cross-artifact accuracy (Jira AC coverage, PR coverage, Figma notes). Invoked after publication in `feature-qa-planning-orchestrator`.
 ---
 
 # `qa-plan-confluence-review` Skill
@@ -273,7 +273,7 @@ If a Figma URL is present in the Summary table:
 
 Save the review result to:
 ```
-projects/feature-plan/<feature-id>/qa_plan_confluence_review.md
+projects/feature-plan/<feature-id>/qa_plan_confluence_review_v<N>.md
 ```
 
 ### Review File Format
@@ -321,5 +321,27 @@ projects/feature-plan/<feature-id>/qa_plan_confluence_review.md
 ## After Review
 
 - **PASS (no issues, warnings only):** Update `task.json` phase to `completed`. Surface all warnings in the chat for human review. Do not block the workflow.
-- **FAIL (issues requiring generation fix):** Do NOT mark as completed. Log which checks failed and what needs to be fixed. Return to Phase 2 (QA Plan Generation) or Phase 3 (Review & Refactor) with the specific fix list.
+- **FAIL (issues requiring generation fix):** Do NOT mark as completed. Log which checks failed and what needs to be fixed. Return to the planner review/refactor loop, or to plan generation only if the orchestrator explicitly determines the fix requires regenerating the draft.
 - **FAIL (Confluence-side manual fixes):** Provide exact corrected text for the human to apply directly in Confluence. Once human confirms the fix, re-run this skill to verify.
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing review contract above.
+
+### Invocation Source
+
+This skill is invoked by `feature-qa-planning-orchestrator`, not the removed legacy workflow file.
+
+### Versioned Output
+
+Write live review artifacts as:
+- `projects/feature-plan/<feature-id>/qa_plan_confluence_review_v<N>.md`
+
+Do not overwrite the previous live review artifact.
+
+### Loopback Contract
+
+Classify failures into:
+- generation fix required → return to planner review/refactor loop
+- Confluence-only manual fix required → present corrected text to the user
+- pass → planner may complete the run

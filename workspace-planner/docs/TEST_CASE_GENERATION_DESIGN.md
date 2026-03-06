@@ -156,7 +156,7 @@ attribute form updates, and reprompt flows.
 
 ### Phase 0 — Idempotency Check & Pre-Flight (Always First)
 
-**Design Reference:** Phase 0 aligns with **agent-idempotency** skill and **openclaw-agent-design** check-resume pattern. See reference workflows: `workspace-reporter/.agents/workflows/qa-summary.md`, `workspace-planner/.agents/workflows/feature-qa-planning.md`.
+**Design Reference:** Phase 0 aligns with **agent-idempotency** skill and **openclaw-agent-design** check-resume pattern. See reference workflows: `workspace-reporter/.agents/workflows/qa-summary.md`, `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`.
 
 **Steps (never skip):**
 
@@ -179,7 +179,7 @@ attribute form updates, and reprompt flows.
 **Cache freshness display (required):** Before presenting options, state data ages explicitly:
 > *"[Feature-id] test specs were last generated on 2026-01-28 (3 days ago). QA plan: 5 days old. Specs: 5/5 complete."*
 
-**Task file:** Use `testcase_task.json` in `projects/feature-plan/<feature-id>/` to avoid conflict with the feature-qa-planning workflow's `task.json`. Implements state machine per openclaw-agent-design §3.
+**Task file:** Use `testcase_task.json` in `projects/feature-plan/<feature-id>/` to avoid conflict with the `feature-qa-planning-orchestrator` skill's `task.json`. Implements state machine per openclaw-agent-design §3.
 
 ```json
 {
@@ -405,7 +405,7 @@ The Tester reads the `.md` files, generates `tests/specs/<domain>/<feature>/*.sp
    - **Confirm with user:** Summarize your understanding and wait for approval before proceeding
 
 2. **Create QA Plan:**
-   Trigger the `/feature-qa-planning` workflow (`.agents/workflows/feature-qa-planning.md`). Pass the feature ID and all available artifacts (Jira key, Confluence URL, GitHub PR, Figma URL). The workflow handles context gathering, synthesis, review, and publication to `qa_plan_final.md`.
+   Trigger the `feature-qa-planning-orchestrator` skill (`workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`). Pass the feature ID and all available artifacts (Jira key, Confluence URL, GitHub PR, Figma URL). The skill handles context gathering, synthesis, review, and publication to `qa_plan_final.md`.
 
 3. **Transition to Scenario 1:**
    Once `qa_plan_final.md` is ready, run **Scenario 1 Phase 0** (idempotency check via `check_resume_testcase.sh` for `testcase_task.json` and specs), then proceed through Phases 1–5 as normal.
@@ -418,7 +418,7 @@ Two task files are used to avoid conflicts when both workflows run for the same 
 
 | Directory | Task File | Owned by |
 |-----------|-----------|----------|
-| `projects/feature-plan/<feature-id>/` | `task.json` | `feature-qa-planning` workflow |
+| `projects/feature-plan/<feature-id>/` | `task.json` | `feature-qa-planning-orchestrator` skill |
 | `projects/feature-plan/<feature-id>/` | `testcase_task.json` | This workflow (test case generation) |
 | `projects/testcase-plan/<feature-id>/` | `task.json` | Standalone test case generation (no feature-plan) |
 
@@ -555,7 +555,7 @@ Before finalizing this design or workflow implementation:
 
 ## References
 
-- [feature-qa-planning.md](../.agents/workflows/feature-qa-planning.md) — Upstream workflow (creates `qa_plan_final.md`); Phase 0 reference
+- [feature-qa-planning-orchestrator](../skills/feature-qa-planning-orchestrator/SKILL.md) — Upstream skill (creates `qa_plan_final.md`); Phase 0 reference
 - [test-case-generator skill](../skills/test-case-generator/SKILL.md) — Core skill for step synthesis
 - [TESTER_AGENT_DESIGN.md](../../workspace-tester/docs/TESTER_AGENT_DESIGN.md) — Tester layout, seed.spec.ts, Generator/Healer flow
 - [TESTER_AUTOMATION_DESIGN.md](../../docs/TESTER_AUTOMATION_DESIGN.md) — Agent roles, Playwright-CLI exclusivity, Healer routing
@@ -594,12 +594,12 @@ description: Generate Playwright-compatible Markdown spec files from an existing
 ```
 ## Entry Point Detection
   if qa_plan_final.md exists → Scenario 1: Phase 0
-  else                       → Scenario 2: Context Enrichment → /feature-qa-planning → Phase 0
+  else                       → Scenario 2: Context Enrichment → `feature-qa-planning-orchestrator` → Phase 0
 
 ## Scenario 2 — No QA Plan (Pre-step)
   1. Context Enrichment (clawddocs / tavily-search / confluence)
   2. Confirm understanding with user
-  3. Trigger /feature-qa-planning workflow
+  3. Trigger `feature-qa-planning-orchestrator` skill
   4. Once qa_plan_final.md ready → proceed to Phase 0
 
 ## Phase 0 — Idempotency Check & Pre-Flight
@@ -631,7 +631,7 @@ description: Generate Playwright-compatible Markdown spec files from an existing
   5.2 Tester handoff only after explicit human approval (Option A with read-probe by default)
 ```
 
-**Task file ownership** (to avoid conflict with `/feature-qa-planning`):
+**Task file ownership** (to avoid conflict with `feature-qa-planning-orchestrator`):
 - This workflow owns `testcase_task.json` (never `task.json`)
 
 ---
@@ -653,7 +653,7 @@ Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case
   ↓
 Entry routing:
   • qa_plan_final.md EXISTS → Phase 0 (existence check)
-  • No qa_plan_final.md   → Scenario 2 (context enrichment → /feature-qa-planning → Phase 0)
+  • No qa_plan_final.md   → Scenario 2 (context enrichment → `feature-qa-planning-orchestrator` → Phase 0)
 
 Key phases:
   0. Existence check — classify state, initialize testcase_task.json
@@ -663,7 +663,7 @@ Key phases:
   4. Generate Markdown specs — one .md per scenario via test-case-generator skill
   5. Feishu DM + Tester Agent handoff (human approval required before handoff)
 
-State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
+State file: testcase_task.json (separate from task.json owned by `feature-qa-planning-orchestrator`)
 Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
 ```
 

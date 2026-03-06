@@ -694,3 +694,26 @@ Consider different perspectives:
 - Always provide specific recommendations with examples
 - Link findings to source documents when available
 - Update review status after refactoring addresses issues
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing review contract above.
+
+### User Executability Blocking Gate
+
+Treat the following as blocking conditions for manual QA sections:
+- `UE-1` internal code vocabulary appears in `Test Key Points` or `Expected Results`
+- `UE-2` expected results are not browser-observable or browser-network-observable
+- `UE-3` P0/P1 rows lack actionable numbered steps or Given/When/Then structure
+- `UE-4` distinct user paths are collapsed into a single row
+- `UE-5` P0/P1 rows are missing `FAILS if:`
+- `UE-6` unit/API-only checks remain in manual sections instead of `AUTO`
+
+If any UE item fails, status cannot be `Approved`.
+
+### Output Status Contract
+
+Continue producing the existing detailed review artifact, but ensure the summary clearly resolves to one of:
+- `Approved`
+- `Requires Updates`
+- `Rejected`

@@ -542,3 +542,44 @@ Code: "Password sent in plain text"
 - The plan should be ready for review by `qa-plan-review` skill
 - Include enough detail for engineers to understand test scope
 - Keep language professional and user-facing
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing contract above.
+
+### Additional Optional Input
+
+If present, read:
+- `projects/feature-plan/<feature-id>/context/qa_plan_defect_analysis_<feature-id>.md`
+
+Use defect-analysis content to enrich `Background` and `Test Key Points`.
+Do not automatically merge it into `Risk & Mitigation`.
+
+### Translation Pass (Mandatory)
+
+Before writing any manual QA row:
+1. scan GitHub-derived content for function names, class names, flags, and internal response terms
+2. translate them into user-facing outcomes
+3. keep code vocabulary only in `Related Code Change` or traceability references
+4. if no manual observation exists, route the case to `### AUTO: Automation-Only Tests`
+
+### User Executability Self-Check (Mandatory)
+
+Before saving the draft, run this checklist on manual sections:
+- no internal code vocabulary in `Test Key Points` or `Expected Results`
+- expected results are browser-visible or browser-network-observable
+- P0/P1 rows include numbered steps or Given/When/Then structure
+- multi-path rows are split
+- P0/P1 rows include `FAILS if:`
+- unit/API-only checks are moved to `### AUTO: Automation-Only Tests`
+
+If violations are found:
+1. fix them automatically
+2. re-run the checklist
+3. stop after 2 repair rounds and leave a soft warning for the review gate if issues remain
+
+### Dynamic Draft Versioning (Mandatory)
+
+Determine the next draft path from `task.json.latest_draft_version` or `drafts/qa_plan_v*.md`.
+Write only to `drafts/qa_plan_v<N+1>.md` and update `task.json.latest_draft_version`.
+Never overwrite the previous draft.

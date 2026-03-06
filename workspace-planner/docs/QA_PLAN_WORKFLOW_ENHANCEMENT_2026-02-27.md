@@ -13,7 +13,7 @@ The QA plan workflow produced documents with inconsistent formatting that made t
 - QA Summary appeared mid-document rather than at the end, breaking the natural reading flow.
 - After the reporter publishes its QA Summary to Confluence, the reporter was replacing the entire `QA Summary` section, discarding the Code Changes table the planner had already published.
 - The `qa-plan-confluence-review` skill existed but was a copy of `qa-summary-review` — it was not tailored to QA plan pages at all.
-- The feature-qa-planning workflow had no step to verify the Confluence page after publication.
+- The legacy `feature-qa-planning` workflow had no step to verify the Confluence page after publication. This behavior is now owned by `feature-qa-planning-orchestrator`.
 
 ---
 
@@ -135,7 +135,7 @@ The skill is now a full quality gate for published QA Plan Confluence pages, rev
 
 ### Change 3 — Feature QA Planning Workflow (`feature-qa-planning.md`)
 
-**File:** `workspace-planner/.agents/workflows/feature-qa-planning.md`
+**File (legacy, now replaced):** `workspace-planner/.agents/workflows/feature-qa-planning.md` → `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
 
 Added **Phase 5: Confluence Content Review** after the existing Phase 4 (Publication).
 
@@ -220,7 +220,7 @@ Updated all checks to reflect the new 2–10 section numbering:
 | `workspace-planner/skills/qa-plan-architect-orchestrator/SKILL.md` | Enhanced — formatting rules, restricted tables, QA Summary = Code Changes only at end |
 | `workspace-planner/skills/qa-plan-confluence-review/SKILL.md` | Rewritten — full QA plan Confluence review (was a copy of qa-summary-review) |
 | `workspace-planner/skills/qa-plan-review/SKILL.md` | Updated — structural checklist reflects new formatting rules |
-| `workspace-planner/.agents/workflows/feature-qa-planning.md` | Enhanced — added Phase 5: Confluence Content Review |
+| `workspace-planner/.agents/workflows/feature-qa-planning.md` | Historical note — behavior now lives in `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md` |
 | `workspace-reporter/skills/qa-summary/SKILL.md` | Enhanced — append strategy, new Defects Code Changes section, sections 2–10 |
 | `workspace-reporter/skills/qa-summary-review/SKILL.md` | Updated — all checks realigned to sections 2–10 |
 
@@ -259,7 +259,7 @@ The following items are proposed for implementation but require review before pr
 **Files to update:**
 - `workspace-planner/skills/qa-plan-architect-orchestrator/` → rename to `workspace-planner/skills/qa-plan-synthesize/`
 - `workspace-planner/skills/qa-plan-synthesize/SKILL.md` — frontmatter `name`, references
-- `workspace-planner/.agents/workflows/feature-qa-planning.md` — Phase 2 invokes `qa-plan-synthesize`
+- `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md` — Phase 3 invokes `qa-plan-synthesize`
 - `workspace-planner/AGENTS.md` — master orchestrator step references
 - `workspace-planner/docs/QA_PLAN_WORKFLOW_ENHANCEMENT_2026-02-27.md` — all references in this doc
 
@@ -383,7 +383,7 @@ Before Phase 2a, determine which sources exist. Spawn only the skills that have 
 - `ls /Users/xuyin/Documents/FeatureTest/QAPlans/qa_plan_*`
 - Default output: `/Users/xuyin/Documents/FeatureTest/QAPlans/`
 
-**Correct convention** (from feature-qa-planning workflow):
+**Correct convention** (from `feature-qa-planning-orchestrator`):
 - Input domain summaries: `projects/feature-plan/<feature-id>/context/qa_plan_<source>_<feature-id>.md`
 - Output consolidated plan: `projects/feature-plan/<feature-id>/drafts/qa_plan_v1.md` (or `qa_plan_final.md`)
 

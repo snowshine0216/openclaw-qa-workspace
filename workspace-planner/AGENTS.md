@@ -22,9 +22,9 @@ When the user provides feature artifacts (Jira, PR, Figma), assume the **Master 
 ```
 Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
   ↓
-Trigger the `/feature-qa-planning` workflow (file: `.agents/workflows/feature-qa-planning.md`)
+Trigger the `feature-qa-planning-orchestrator` skill (file: `skills/feature-qa-planning-orchestrator/SKILL.md`)
   ↓
-1. Initialization: Run `scripts/check_resume.sh` and initialize `projects/feature-plan/<feature-id>/task.json`.
+1. Phase 0 Initialization: Run `projects/feature-plan/scripts/check_resume.sh` from the feature directory and initialize or update `projects/feature-plan/<feature-id>/task.json` plus `run.json`.
 2. Context Gathering & Analysis: Spawn parallel tasks (e.g., `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`) to fetch artifacts and generate domain summaries into `context/`.
 3. Generation: Instruct `qa-plan-synthesize` to synthesize a comprehensive Test Plan from the domain summaries.
 4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
@@ -46,7 +46,7 @@ Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case
   ↓
 Entry routing:
   • qa_plan_final.md EXISTS → Phase 0 (existence check)
-  • No qa_plan_final.md   → Scenario 2 (context enrichment → /feature-qa-planning → Phase 0)
+  • No qa_plan_final.md   → Scenario 2 (context enrichment → `feature-qa-planning-orchestrator` → Phase 0)
 
 Key phases:
   0. Existence check — classify state, initialize testcase_task.json
@@ -56,7 +56,7 @@ Key phases:
   4. Generate Markdown specs — one .md per scenario via test-case-generator skill
   5. Feishu DM + Tester Agent handoff (human approval required before handoff)
 
-State file: testcase_task.json (separate from task.json owned by /feature-qa-planning)
+State file: testcase_task.json (separate from task.json owned by `feature-qa-planning-orchestrator`)
 Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
 ```
 

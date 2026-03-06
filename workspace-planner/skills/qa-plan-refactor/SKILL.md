@@ -519,3 +519,25 @@ Before completing refactor, verify:
 - Update review status only when ALL action items complete
 - Maintain atomicity: QA plan and review findings updated together
 - Ready for re-review cycle if user requests or if major gaps remain
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing refactor contract above.
+
+### UE Fix Mapping
+
+Map blocking UE findings as follows:
+- `UE-1` → replace internal code wording with user-facing language
+- `UE-2` → rewrite expected results to observable outcomes
+- `UE-3` → add numbered steps or Given/When/Then structure
+- `UE-4` → split multi-path rows
+- `UE-5` → add `FAILS if:`
+- `UE-6` → move the scenario to `### AUTO: Automation-Only Tests`
+
+### Dynamic Draft Versioning
+
+Write the refactored plan to the next draft version:
+- `drafts/qa_plan_v<N+1>.md`
+
+Use `task.json.latest_draft_version` or scan existing drafts to determine `N`.
+Never overwrite the previous draft file in place.

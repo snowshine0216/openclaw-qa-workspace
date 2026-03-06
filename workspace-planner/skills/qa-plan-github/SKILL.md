@@ -516,3 +516,31 @@ If the PR description is vague, document:
 - Link test scenarios to specific file paths
 - Estimate test effort where possible
 - Flag any security concerns immediately
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing contract above.
+
+### User-Facing Scenario Output (Mandatory)
+
+For each scenario that feeds manual QA planning, output **two representations**:
+1. **Code Reference** for traceability only
+2. **User-Facing Scenario** for `Test Key Points` and `Expected Results`
+
+Code references may contain functions, classes, flags, and endpoint details.
+User-facing scenarios must not.
+
+### Traceability Artifact (Mandatory)
+
+Also write:
+- `projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_<feature-id>.md`
+
+This file is the canonical place for code-level vocabulary that should not appear in manual QA wording.
+
+### Test Scope Routing
+
+Add an explicit `Test Scope` classification in the analysis output:
+- `XFUNC` → manual, user-facing scenarios
+- `COMP` → route to `AUTO: Automation-Only Tests` when the behavior is not user-observable
+
+Preserve `E2E Scenarios to Add` explicitly so synthesis cannot drop them.
