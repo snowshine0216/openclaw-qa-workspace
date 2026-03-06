@@ -74,9 +74,11 @@ Handoff rules:
 
 ## Skills Loading Model
 
-- Project skills are loaded from `.agents/skills`.
-- `.agents/skills` contains symlinks to `.cursor/skills/*` and wrapper skills for playwright specialist docs.
-- Reuse existing skills before creating duplicate instructions.
+- Project skills are loaded from `.agents/skills` (shared/global) and from each `workspace-*/skills` folder (agent-specific).
+- `.agents/skills` is the canonical home for shared/global skills (used by multiple agents). Workspaces should reference these via symlinks or thin wrappers instead of duplicating them.
+- `workspace-*/skills` folders (e.g. `workspace-planner/skills`, `workspace-reporter/skills`, `workspace-tester/skills`, `workspace-healer/skills`, `workspace-daily/skills`, `workspace/skills`) contain skills that are specific to that agent/workspace.
+- For the current mapping of which skills live where (including removals), see `docs/SKILL_FOLDER_REFACTOR_PLAN.md`.
+- Reuse existing shared skills before creating new ones; when adding a new skill, decide explicitly whether it should be shared (`.agents/skills`) or workspace-local (`workspace-*/skills`).
 
 ## Command Playbooks (.cursor/commands)
 

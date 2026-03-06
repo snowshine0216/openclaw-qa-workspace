@@ -1,0 +1,9 @@
+{
+  "issue_key": "BCIN-1234",
+  "issue_summary": "Test defect for RCA workflow",
+  "automation_status": "Yes",
+  "pr_list": "https://github.com/org/repo/pull/42",
+  "jira_json_path": "/tmp/jira-BCIN-1234.json",
+  "pr_data_path": "/tmp/pr-data-BCIN-1234.txt",
+  "rca_output_path": "/tmp/output/rca/BCIN-1234-rca.md"
+}

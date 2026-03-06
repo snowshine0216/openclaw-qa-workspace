@@ -44,20 +44,36 @@ npm install -g mcporter
 3. install playwright mcp server:  ```npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest" ```
 4. list installed servers: ```mcporter list```
 
-## Workspace Planner Skill Linking
+## Skills Structure
 
-Use the sync script at `src/sync-skills.sh` to link missing skills safely.
+Skills are organized by scope. See `docs/SKILL_FOLDER_REFACTOR_PLAN.md` for the full mapping.
 
-What it does (`link-missing-only`, no overwrite):
-- Syncs missing entries from `.cursor/skills` into `workspace-planner/skills`.
-- Syncs missing entries from `workspace-planner/skills` into `.agents/skills`.
-- Preserves all existing files/symlinks in both destination folders.
+### Shared skills → `.agents/skills`
 
-Run from repository root:
+Shared/global skills used by multiple workspaces live in `.agents/skills`. Workspaces reference these via symlinks or thin wrappers instead of duplicating.
 
-```bash
-./src/sync-skills.sh
-```
+**Categories:** utilities (agent-browser, brave-search, browser-use, mcporter), QA (bug-report-formatter, test-case-generator, test-patterns, microstrategy-qa-workflow), docs (clawddocs, confluence, nano-pdf, notion, obsidian, readme-gen, summarize), integrations (github, jira-cli), quality (code-structure-quality, docs-organization-governance, function-test-coverage), OpenClaw design (openclaw-agent-design, openclaw-agent-design-review, robust-agent-design), DB (database, sql-toolkit), and meta (capability-evolver, evolver, humanizer, self-improving-agent).
+
+### Workspace-specific skills → `workspace-*/skills`
+
+Agent-scoped skills live only in that workspace’s `skills/` folder:
+
+| Workspace | Examples |
+| --- | --- |
+| `workspace-planner/skills` | performance-test-designer, qa-plan-* |
+| `workspace-reporter/skills` | defect-analysis-reporter, qa-summary, qa-summary-review, report-quality-reviewer |
+| `workspace-tester/skills` | qa-test-keypoints-map, migration-quality-check, playwright-*, site-knowledge-search, test-report, microstrategy-*-test, close-test-sets |
+| `workspace-daily/skills` | qa-daily-workflow, jenkins, jenkins-runtime-entrypoints |
+| `workspace-healer/skills` | senior-backend, ai-component, nextjs-expert, react-expert, shadcn-ui, vercel-* |
+
+### Rule of thumb
+
+- **Shared:** skill appears in multiple workspaces and matches a shared pattern → consolidate into `.agents/skills`.
+- **Workspace-only:** skill is tied to a single agent’s responsibilities → keep in that workspace and remove extra copies.
+
+### Usage of Shared Skills
+- skills under `.agents/skills` are available to codex
+- for openclaw, needs coping skills into `~/.openclaw/skills`
 
 
 ## QA Test Key Points Interactive Page
