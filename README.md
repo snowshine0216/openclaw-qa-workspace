@@ -1,4 +1,4 @@
-# opeclaw-qa-workspace
+# openclaw-qa-workspace
 
 ## Setup Requirements
 
@@ -130,7 +130,7 @@ Detailed usage guide:
 
 ## Site Knowledge Generator
 
-The Site Knowledge System generator for Tester Agent lives at:
+The Site Knowledge System generator for the Tester Agent lives at:
 
 `workspace-tester/tools/sitemap-generator`
 
@@ -144,7 +144,7 @@ npm run generate:domains -- --repo ../../projects/wdio --output ./config/domains
 npm run generate:sitemap -- --repo ../../projects/wdio --domains all --output-dir ../../memory/site-knowledge
 ```
 
-Direct node commands:
+Direct Node.js command:
 
 ```bash
 cd workspace-tester/tools/sitemap-generator
@@ -155,22 +155,20 @@ Full usage and troubleshooting:
 
 - `workspace-tester/tools/sitemap-generator/README.md`
 
-
-### GH setup and generate site knowledge
-- refer to workspace-tester/tools/sitemap-generator/README.md for more details
-- to check if gh is setup correctly, run `gh auth status -h github.com`
-
+### GitHub setup for site knowledge
+- Refer to `workspace-tester/tools/sitemap-generator/README.md` for full details.
+- To verify GitHub CLI authentication, run `gh auth status -h github.com`.
 
 ## Enable QMD and Memory Search for OpenClaw
 
 ### QMD setup
 | Requirement | Details |
-|-------------|---------|
-| **Runtime** | Node.js >= 22 (prefer Node over Bun on macOS — see [qmd#184](https://github.com/tobi/qmd/issues/184)) |
-| **Storage** | Index only (~tens of MB); no model download for BM25 |
-| **macOS** | `brew install sqlite` (for FTS5 extensions) |
+| --- | --- |
+| **Runtime** | Node.js >= 22. Prefer Node over Bun on macOS — see [qmd#184](https://github.com/tobi/qmd/issues/184). |
+| **Storage** | Index only (~tens of MB); no model download is needed for BM25. |
+| **macOS** | Run `brew install sqlite` for FTS5 extensions. |
 
-**Environment variables (optional, Mac Intel):**
+**Environment variable (optional, Mac Intel):**
 
 ```bash
 export NODE_LLAMA_CPP_CMAKE_OPTION_GGML_CUDA=OFF
@@ -179,21 +177,20 @@ export NODE_LLAMA_CPP_CMAKE_OPTION_GGML_CUDA=OFF
 **Install and configure:**
 
 ```bash
-# Install qmd globally
 npm install -g @tobilu/qmd
-
-# Add site-knowledge as a collection (run from workspace-tester root)
 qmd collection add memory/site-knowledge --name site-knowledge --mask "**/*.md"
-
-# BM25 index is built automatically; no qmd embed needed
 ```
+
+BM25 indexing is built automatically, so no `qmd embed` step is required.
 
 **Search command (BM25 only):**
 
 ```bash
- qmd search "filter" -c site-knowledge --json -n 10
+qmd search "filter" -c site-knowledge --json -n 10
 ```
-response
+
+Example response:
+
 ```json
 [
   {
@@ -213,8 +210,7 @@ response
 ]
 ```
 
-### Memory search setup
-### 3.2 OpenClaw memorySearch Setup
+### Memory Search Setup
 
 When the Tester Agent runs inside OpenClaw, add `memory/site-knowledge` to the watched paths.
 
@@ -257,17 +253,18 @@ When the Tester Agent runs inside OpenClaw, add `memory/site-knowledge` to the w
   }
 }
 ```
-### How to Trigger MemorySearch
-the memory_search tool automatically searches across:
-- MEMORY.md (long-term memory)
-- memory/*.md files (including your memory/site-knowledge/ directory)
 
-### Basic Usage
+### How to Trigger Memory Search
+The `memory_search` tool automatically searches across:
+- `MEMORY.md` for long-term memory
+- `memory/*.md` files, including `memory/site-knowledge/`
+
+### Basic usage
 ```bash
 memory_search(query: "report editor")
 ```
 
-### For Report Editor Topics
+### Report Editor examples
 ```bash
 memory_search(query: "report editor WDIO page objects locators")
 memory_search(query: "report editor UI components interactions")
