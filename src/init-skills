@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SOURCE_DIR="${REPO_ROOT}/.agents/skills"
+TARGET_DIR="${HOME}/.openclaw/skills"
+
+log() {
+  printf '%s\n' "$1"
+}
+
+require_directory() {
+  local path="$1"
+  local label="$2"
+
+  if [ ! -d "$path" ]; then
+    log "error: ${label} not found: ${path}"
+    exit 1
+  fi
+}
+
+copy_directory_contents() {
+  local source_path="$1"
+  local target_path="$2"
+
+  mkdir -p "$target_path"
+
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a "$source_path/" "$target_path/"
+    return
+  fi
+
+  cp -R "$source_path/." "$target_path/"
+}
+
+copy_skill() {
+  local source_path="$1"
+  local skill_name
+  local target_path
+
+  skill_name="$(basename "$source_path")"
+  target_path="${TARGET_DIR}/${skill_name}"
+
+  copy_directory_contents "$source_path" "$target_path"
+  log "copied: ${skill_name}"
+}
+
+main() {
+  require_directory "$SOURCE_DIR" "source skills directory"
+  mkdir -p "$TARGET_DIR"
+
+  local copied_count=0
+  local source_path
+
+  for source_path in "$SOURCE_DIR"/*; do
+    [ -d "$source_path" ] || continue
+    copy_skill "$source_path"
+    copied_count=$((copied_count + 1))
+  done
+
+  log "done: copied ${copied_count} skill(s) from ${SOURCE_DIR} to ${TARGET_DIR}"
+}
+
+main "$@"
