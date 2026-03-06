@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-	 <TestSuite id='02' name='DossierLinkingPassFilter.spec.js'>
-		<TC>TC58907</TC>
-		<TC>TC66263</TC>
-		<TC>TC67279</TC>
-    </TestSuite>
-</root>

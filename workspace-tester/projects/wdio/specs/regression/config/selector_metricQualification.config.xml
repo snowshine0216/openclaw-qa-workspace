@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='MetricQualification.spec.js'>
-        <TC>TC80359</TC>
-        <TC>TC80360</TC>
-        <TC>TC80361</TC>
-        <TC>TC80362</TC>
-    </TestSuite>
-</root>

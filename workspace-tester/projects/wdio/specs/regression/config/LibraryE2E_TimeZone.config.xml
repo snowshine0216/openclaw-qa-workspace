@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='LibraryE2E_TimeZone.spec.js'>
-        <TC>TC79640_01</TC>
-        <TC>TC79640_02</TC>
-        <TC>TC79640_03</TC>
-        <TC>TC79640_04</TC>
-   </TestSuite>
-</root>

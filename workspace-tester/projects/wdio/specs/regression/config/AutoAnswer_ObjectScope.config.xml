@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='AutoAnswers_ObjectScope.spec.js'>
-    	<TC>TC95328_01</TC>
-    	<TC>TC95328_02</TC>
-    	<TC>TC95328_03</TC>
-    </TestSuite>
-</root>

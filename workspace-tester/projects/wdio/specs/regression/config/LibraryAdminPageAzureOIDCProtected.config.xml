@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='LibraryAdminPageAzureOIDCProtected.spec.js'>
-    	<TC>TC90295</TC>
-    </TestSuite>
-</root>

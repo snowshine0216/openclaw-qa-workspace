@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Slider.spec.js'>
-        <TC>TC80401</TC>
-        <TC>TC80402</TC>
-        <TC>TC80403</TC>
-        <TC>TC80404</TC>
-    </TestSuite>
-</root>

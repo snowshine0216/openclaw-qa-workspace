@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='CollaborationE2E_perBuild.spec.js'>
-        <TC>TC75812_01</TC>
-        <TC>TC75812_02</TC>
-        <TC>TC65479</TC>
-   </TestSuite>
-</root>

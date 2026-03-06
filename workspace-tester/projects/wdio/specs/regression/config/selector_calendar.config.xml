@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Calendar.spec.js'>
-        <TC>TC80323</TC>
-        <TC>TC80324</TC>
-        <TC>TC80325</TC>
-        <TC>TC80326</TC>
-    </TestSuite>
-</root>

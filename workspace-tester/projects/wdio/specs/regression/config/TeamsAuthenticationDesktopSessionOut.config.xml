@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SessionOutTeamsAuthentication.spec.js'>
-        <TC>TC93133</TC>
-        <TC>TC93135</TC>
-        <TC>TC91312</TC>
-        <TC>TC93136</TC>
-    </TestSuite>
-</root>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='DatasetsTocPanel.spec.ts'>
-        <TC>BCED-2102</TC>
-    </TestSuite>
-</root>

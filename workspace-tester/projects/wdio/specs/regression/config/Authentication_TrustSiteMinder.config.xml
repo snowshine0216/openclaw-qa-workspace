@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='TrustSiteMinder.spec.js'>
-    	<TC>TC89724</TC>
-    </TestSuite>
-    <TestSuite id='02' name='TrustSiteMinderSeamlessLogin.spec.js'>
-        <TC>TC89723</TC>
-    </TestSuite>
-</root>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ReportEditor_gridView.spec.js'>
-        <TC>TC86139_01</TC>
-        <TC>TC86139_02</TC>
-    </TestSuite>
-</root>

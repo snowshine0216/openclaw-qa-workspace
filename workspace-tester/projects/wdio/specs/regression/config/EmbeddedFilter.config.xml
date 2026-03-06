@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='EmbeddedFilter.spec.js'>
-        <TC>TC69470</TC>
-        <TC>TC69660</TC>
-    </TestSuite>
-</root>

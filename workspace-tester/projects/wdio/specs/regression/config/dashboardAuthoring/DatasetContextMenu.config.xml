@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='Dataset_ContextMenu_Report.spec.js'>
-        <TC>60993_1</TC>
-        <TC>60993_2</TC>
-        <TC>60993_3</TC>
-    </TestSuite>
-</root>

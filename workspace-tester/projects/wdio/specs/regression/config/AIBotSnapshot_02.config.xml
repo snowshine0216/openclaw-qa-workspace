@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='03' name='03_CopyDownload.spec.js'>
-        <TC>TC92415_2</TC>
-        <TC>TC92415_1</TC>
-        <TC>TC93553_4</TC>
-    </TestSuite> 
-</root>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='shareBotInWebTeams.spec.js'>
-    	<TC>TC92863_01</TC>
-    	<TC>TC92863_02</TC>
-    	<TC>TC92863_03</TC> 
-    </TestSuite>
-</root>

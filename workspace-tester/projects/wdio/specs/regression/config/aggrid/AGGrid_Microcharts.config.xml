@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='AGGrid_Microcharts.spec.js'>
-        <TC>TC71125</TC>
-        <TC>TC71126_01</TC>
-        <TC>TC71126_02</TC>
-        <TC>TC71099</TC>
-    </TestSuite>
-</root>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Report_perbuild.spec.js'>
-        <TC>TC84700_1</TC>
-        <TC>TC84700_2</TC>
-    </TestSuite>
-</root>

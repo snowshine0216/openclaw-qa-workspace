@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='NormalGrid_CopyCell.spec.js'>
-        <TC>TC64355_1</TC>
-        <TC>TC64355_2</TC>
-        <TC>TC64355_3</TC>
-    </TestSuite>
-</root>

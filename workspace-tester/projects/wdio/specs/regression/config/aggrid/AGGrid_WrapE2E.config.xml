@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='E2E_AGGrid_TextWrap.spec.js'>
-        <TC>TC99325_1</TC>
-        <TC>TC99325_2</TC>
-        <TC>TC99325_3</TC>
-        <TC>TC99325_4</TC>
-    </TestSuite>
-</root>

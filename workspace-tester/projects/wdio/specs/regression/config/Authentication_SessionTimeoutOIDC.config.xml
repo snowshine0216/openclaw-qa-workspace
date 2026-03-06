@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SessionTimeoutAlertWhenOIDC.spec.js'>
-        <TC>TC97817</TC>
-    </TestSuite>
-</root>

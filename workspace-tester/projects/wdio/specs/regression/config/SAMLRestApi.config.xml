@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<root>
-    <TestSuite id='01' name='SAMLRestApi.spec.js'>
-        <TC>BCSA-3078_1</TC>
-        <TC>BCSA-3078_2</TC>
-        <TC>BCSA-3078_3</TC>
-    </TestSuite>
-</root>

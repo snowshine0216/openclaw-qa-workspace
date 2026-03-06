@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='LibraryE2E_DuplicateToMyReport.spec.js'>
-        <TC>TC98195_11</TC>
-    </TestSuite>
-</root>
-

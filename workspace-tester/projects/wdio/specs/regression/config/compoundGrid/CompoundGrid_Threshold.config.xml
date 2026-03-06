@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='CompoundGrid_Threshold.spec.js'>
-        <TC>TC62631_08</TC>
-    </TestSuite>
-</root>

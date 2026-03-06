@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-	 <TestSuite id='01' name='DossierLinkingPassInCanvasSelector.spec.js'>
-		<TC>TC85331</TC>
-		<TC>TC85332</TC>
-		<TC>TC85333</TC>
-    </TestSuite>
-</root>

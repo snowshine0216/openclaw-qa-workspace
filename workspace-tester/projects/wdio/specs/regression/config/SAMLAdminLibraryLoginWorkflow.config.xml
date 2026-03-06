@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SAMLAdminLibraryLoginWorkflow.spec.js'>
-        <TC>TC90333_01</TC>
-        <TC>TC90333_02</TC>
-        <TC>TC90333_03</TC>
-    </TestSuite>
-</root>

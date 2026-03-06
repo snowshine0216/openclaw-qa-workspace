@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='02' name='VizTargetDDIC.spec.js'>
-        <TC>TC98287_1</TC>
-        <TC>TC98287_2</TC>
-        <TC>TC98287_3</TC>
-    </TestSuite>
-</root>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='RSD_Transaction_Regression.spec.js'>
-        <TC>TC18090</TC> 
-        <TC>TC18091</TC>
-        <TC>TC18088</TC>
-        <TC>TC66368</TC>
-    </TestSuite>
-</root>

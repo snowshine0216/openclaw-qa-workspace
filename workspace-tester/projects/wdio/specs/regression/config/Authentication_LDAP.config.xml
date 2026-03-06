@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='06' name='authentication_LDAP.spec.js'>
-        <TC>TC15683</TC>
-    </TestSuite>
-</root>

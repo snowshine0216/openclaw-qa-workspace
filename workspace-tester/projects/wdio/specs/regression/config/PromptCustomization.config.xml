@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='PromptCustomization.spec.js'>
-        <TC>TC92867</TC>
-        <TC>TC92869_01</TC>
-        <TC>TC92869_02</TC>
-    </TestSuite>
-</root>

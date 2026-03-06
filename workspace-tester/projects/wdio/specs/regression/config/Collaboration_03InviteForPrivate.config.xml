@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='03InviteForPrivate.spec.js'>
-        <TC>TC67164_01</TC>
-        <TC>TC67164_02</TC>
-        <TC>TC67164_03</TC>
-        <TC>TC67164_04</TC>
-   </TestSuite>
-</root>

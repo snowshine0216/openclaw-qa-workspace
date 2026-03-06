@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ReportEditor_join.spec.js'>
-        <TC>TC85614_01</TC>
-        <TC>TC85614_02</TC>
-        <TC>TC85614_03</TC>
-    </TestSuite>
-</root>

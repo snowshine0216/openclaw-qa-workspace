@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='RestoreSession.spec.js'>
-        <TC>BCSA-2933_1</TC>
-        <TC>BCSA-2933_2</TC>
-    </TestSuite>
-</root>

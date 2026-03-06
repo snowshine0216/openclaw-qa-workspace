@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='05MuteForPrivate.spec.js'>
-        <TC>TC67166_01</TC>
-   </TestSuite>
-</root>

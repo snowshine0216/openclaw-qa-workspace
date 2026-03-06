@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='libraryVisualizationSanity.spec.js'>
-        <TC>TC92806</TC>
-    </TestSuite>
-</root>

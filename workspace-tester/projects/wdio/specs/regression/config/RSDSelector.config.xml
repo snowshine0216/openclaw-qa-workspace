@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='RsdSelector.spec.js'>
-        <TC>TC73431</TC>
-    </TestSuite>
-</root>

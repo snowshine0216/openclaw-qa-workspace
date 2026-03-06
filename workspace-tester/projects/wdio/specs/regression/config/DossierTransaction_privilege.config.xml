@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='PyTXN_Actions_Privilege.spec.js'>
-        <TC>TC91680_1</TC>
-        <TC>TC91680_2</TC>
-        <TC>TC91680_3</TC>
-    </TestSuite>
-</root>

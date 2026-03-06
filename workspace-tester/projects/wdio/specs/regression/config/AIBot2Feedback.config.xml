@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Bot2_Feedback.spec.js'>
-        <TC>TC99026_01</TC>
-        <TC>TC99026_02</TC>
-        <TC>TC99026_03</TC>
-    </TestSuite>
-</root>

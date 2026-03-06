@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Library_Subscribe_PDF.spec.js'>
-        <TC>TC79674</TC>
-        <TC>TC79675</TC>
-        <TC>TC97317</TC>
-        <TC>TC79676</TC>
-    </TestSuite>
-</root>

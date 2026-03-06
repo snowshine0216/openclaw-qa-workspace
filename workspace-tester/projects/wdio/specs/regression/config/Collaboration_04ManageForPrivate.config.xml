@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='04ManageForPrivate.spec.js'>
-        <TC>TC67167_01</TC>
-        <TC>TC67167_02</TC>
-        <TC>TC67152</TC>
-        <TC>TC67171</TC>
-   </TestSuite>
-</root>

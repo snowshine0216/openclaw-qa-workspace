@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='DossierPanelStack.spec.js'>
-        <TC>TC74080</TC>
-        <TC>TC74081</TC>
-        <TC>TC74082</TC>
-        <TC>TC82766</TC>
-   </TestSuite>
-</root>

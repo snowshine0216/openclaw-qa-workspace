@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SessionTimeoutStandardInCustomApp.spec.js'>
-    	<TC>TC86312</TC>
-        <TC>TC91478</TC>
-        <TC>TC91479</TC>
-    </TestSuite>
-</root>

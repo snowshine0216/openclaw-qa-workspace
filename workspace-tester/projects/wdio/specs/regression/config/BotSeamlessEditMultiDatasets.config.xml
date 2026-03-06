@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='BotSeamlessEditOnMultipleDatasets.spec.js'>
-    	<TC>TC95442_01</TC>
-        <!-- <TC>TC95444_01</TC>
-        <TC>TC95444_02</TC>  do not run due to it's related to save as-->
-    </TestSuite>
-</root>

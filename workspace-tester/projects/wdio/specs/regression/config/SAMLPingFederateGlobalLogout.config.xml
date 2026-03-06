@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SAMLPingFederateGlobalLogout.spec.js'>
-        <TC>TC83661</TC>
-        <TC>TC83694</TC>
-    </TestSuite>
-</root>

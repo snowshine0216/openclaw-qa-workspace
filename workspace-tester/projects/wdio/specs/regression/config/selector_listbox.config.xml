@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ListBox.spec.js'>
-        <TC>TC80355</TC>
-        <TC>TC80356</TC>
-        <TC>TC80357</TC>
-        <TC>TC80358</TC>
-    </TestSuite>
-</root>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='04' name='ShareBookmark_ErrorHandling.spec.js'>
-    	<TC>TC68670</TC>
-    </TestSuite>
-</root>

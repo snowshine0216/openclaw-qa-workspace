@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ReportEditorContextualLinking.spec.js'>
-        <TC>TC85123</TC>
-        <TC>TC85124</TC>
-        <TC>TC85128</TC>
-        <TC>TC87388</TC>
-    </TestSuite>
-</root>

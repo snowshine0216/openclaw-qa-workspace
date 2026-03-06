@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ReportEditor_displayAttributeForm.spec.js'>
-        <TC>TC86138</TC>
-        <TC>TC86138_1</TC>
-    </TestSuite>
-</root>

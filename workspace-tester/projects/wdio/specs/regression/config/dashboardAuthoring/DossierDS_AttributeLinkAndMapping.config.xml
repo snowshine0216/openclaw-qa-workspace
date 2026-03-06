@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='DossierDS_AttributeLinkAndMapping.spec.js'>
-        <TC>TC4990</TC>
-        <TC>TC4280</TC>
-        <TC>TC58143</TC>
-    </TestSuite>
-</root>

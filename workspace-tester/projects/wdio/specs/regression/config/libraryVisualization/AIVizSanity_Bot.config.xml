@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='AIVizSanity.spec.js'>
-        <TC>TC93972_1</TC>
-    </TestSuite>
-</root>

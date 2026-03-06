@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='CreateNewDashboardtoCheckExecutionMode.spec.js'>
-        <TC>TC99388_1</TC>
-        <TC>TC99388_2</TC>
-        <TC>TC99388_3</TC>
-    </TestSuite>
-</root>

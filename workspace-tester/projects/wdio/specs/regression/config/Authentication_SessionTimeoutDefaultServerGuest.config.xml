@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SessionTimeoutDefaultServerGuest.spec.js'>
-        <TC>TC85536</TC>
-    </TestSuite>
-</root>

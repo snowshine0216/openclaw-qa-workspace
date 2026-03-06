@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='NormalGrid_KeepOnly.spec.js'>
-        <TC>TC2270</TC>
-    </TestSuite>
-</root>

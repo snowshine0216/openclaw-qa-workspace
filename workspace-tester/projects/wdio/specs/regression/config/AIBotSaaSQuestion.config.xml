@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ChatPanelSaaSQuestion.spec.js'>
-        <TC>TC93107_1</TC>
-        <TC>TC93107_2</TC>
-        <TC>TC93107_3</TC>
-        <TC>TC93107_4</TC>
-    </TestSuite>
-</root>

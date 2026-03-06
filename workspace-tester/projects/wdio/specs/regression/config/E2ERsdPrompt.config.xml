@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='E2E_RSD_Prompt.spec.js'>
-        <TC>TC65589_01</TC>        
-        <TC>TC65589_02</TC>        
-   </TestSuite>
-   
-</root>

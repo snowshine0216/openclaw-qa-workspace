@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Library_Subscribe_GroupAsRecipient.spec.js'>
-        <TC>TC98932_1</TC>
-        <TC>TC98932_2</TC>
-        <TC>TC98932_3</TC>
-        <TC>TC98932_4</TC>
-    </TestSuite>
-</root>

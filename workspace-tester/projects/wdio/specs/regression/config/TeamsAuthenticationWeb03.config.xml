@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='WebTeamsAuthentication.spec.js'>
-    	<TC>TC93029</TC>
-        <TC>TC93030</TC>
-        <TC>TC93031</TC>
-    </TestSuite>
-</root>

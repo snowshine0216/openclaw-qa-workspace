@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Bot2_FollowUp.spec.js'>
-        <TC>TC99019_1</TC>
-        <TC>TC99019_2</TC>
-        <TC>TC99019_3</TC>
-        <TC>TC99019_4</TC>
-    </TestSuite>
-</root>

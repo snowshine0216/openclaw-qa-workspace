@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='LinkBar.spec.js'>
-        <TC>TC80351</TC>
-        <TC>TC80352</TC>
-        <TC>TC80353</TC>
-        <TC>TC80354</TC>
-    </TestSuite>
-</root>

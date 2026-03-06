@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ProjectFilter.spec.ts'>
-        <TC>TC99119</TC>
-    </TestSuite>
-</root>

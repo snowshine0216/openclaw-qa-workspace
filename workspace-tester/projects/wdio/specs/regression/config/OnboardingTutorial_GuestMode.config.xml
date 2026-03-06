@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Guest_OnboardingTutorial.spec.js'>
-        <TC>TC58905</TC>
-        <TC>TC96865</TC>
-    </TestSuite>
-</root>

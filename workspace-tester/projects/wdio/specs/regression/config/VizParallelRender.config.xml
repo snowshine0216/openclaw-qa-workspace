@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='F43664E2E.spec.js'>
-        <TC>TC99547_1</TC>
-        <TC>TC99547_2</TC>
-        <TC>TC99547_3</TC>
-        <TC>TC99547_4</TC>
-    </TestSuite>
-</root>

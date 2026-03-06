@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='SAMLURLWhiteList.spec.js'>
-        <TC>TC78843</TC>
-    </TestSuite>
-</root>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='NormalGrid_DerivedObject.spec.js'>
-        <TC>TC75245</TC>
-    </TestSuite>
-</root>

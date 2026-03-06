@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='Library_Subscribe_Excel.spec.js'>
-        <TC>TC77883</TC> 
-        <TC>TC77894</TC>
-        <TC>TC77895</TC> 
-        <TC>TC78675</TC> 
-    </TestSuite>
-</root>

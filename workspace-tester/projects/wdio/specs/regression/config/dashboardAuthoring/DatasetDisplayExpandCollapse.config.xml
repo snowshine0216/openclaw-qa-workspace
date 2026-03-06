@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='DatasetDisplayExpandCollapse.spec.js'>
-        <TC>TC60987-1</TC>
-        <TC>TC60987-2</TC>
-        <TC>TC60987-3</TC>
-        <TC>TC4992</TC>
-    </TestSuite>
-</root>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='OIDCOktaGlobalLogout.spec.js'>
-        <TC>TC88969</TC>
-        <TC>TC88971</TC>
-        <TC>TC89121</TC>
-        <TC>TC89130</TC>
-    </TestSuite>
-</root>

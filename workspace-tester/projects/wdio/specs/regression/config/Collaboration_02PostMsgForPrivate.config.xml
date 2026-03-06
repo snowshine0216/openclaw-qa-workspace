@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='02PostMsgForPrivate.spec.js'>
-        <TC>TC69679_01</TC>
-        <TC>TC69679_02</TC>
-   </TestSuite>
-</root>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='NormalGrid_OutlineMode.spec.js'>
-        <TC>TC60779</TC>
-        <TC>TC41289_1</TC>
-        <TC>TC41289_2</TC>
-        <TC>TC61113</TC>
-    </TestSuite>
-</root>

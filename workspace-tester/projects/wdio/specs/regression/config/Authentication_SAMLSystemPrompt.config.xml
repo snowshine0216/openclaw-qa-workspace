@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='samlLogin.spec.js'>
-        <TC>TC99103_1</TC>
-        <TC>TC99103_3</TC>
-        <TC>TC99103_4</TC>
-        <TC>TC99103_5</TC>
-    </TestSuite>
-</root>

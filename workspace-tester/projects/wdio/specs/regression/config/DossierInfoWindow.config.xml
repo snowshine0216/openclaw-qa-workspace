@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-   <TestSuite id='01' name='DossierInfoWindow.spec.js'>
-        <TC>TC80480</TC>
-        <TC>TC80481</TC>
-        <TC>TC80482</TC>
-   </TestSuite>
-</root>

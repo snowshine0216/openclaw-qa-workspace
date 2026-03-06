@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ButtonBar.spec.js'>
-        <TC>TC80312</TC>
-        <TC>TC80320</TC>
-        <TC>TC80321</TC>
-        <TC>TC80322</TC>
-    </TestSuite>
-</root>

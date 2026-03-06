@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ReportEditor_subtotals.spec.js'>
-        <TC>TC85744</TC>
-        <TC>TC84646_1</TC>
-        <TC>TC84646_2</TC>
-    </TestSuite>
-</root>

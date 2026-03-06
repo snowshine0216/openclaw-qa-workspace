@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='nestedGroup.spec.js'>
-        <TC>TC97691</TC>
-    </TestSuite>
-</root>

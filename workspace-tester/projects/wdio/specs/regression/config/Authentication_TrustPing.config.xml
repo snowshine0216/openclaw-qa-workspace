@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='TrustPingFederate.spec.js'>
-    	<TC>TC72260</TC>
-    </TestSuite>
-    <TestSuite id='02' name='TrustSeamlessLogin.spec.js'>
-        <TC>TC84535</TC>
-    </TestSuite>
-</root>

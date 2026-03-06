@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='ObjectSizing.spec.js'>
-        <TC>TC75869</TC>
-        <TC>TC78911</TC>
-        <TC>TC78917</TC>
-    </TestSuite>
-	
-</root>

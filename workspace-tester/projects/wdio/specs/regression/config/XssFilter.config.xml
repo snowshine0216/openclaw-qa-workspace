@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='XssFilter.spec.js'>
-    	<TC>TC73252</TC>
-    	<TC>TC73254</TC>
-    	<TC>TC73255</TC>
-    	<TC>TC73256</TC>
-    </TestSuite>
-</root>

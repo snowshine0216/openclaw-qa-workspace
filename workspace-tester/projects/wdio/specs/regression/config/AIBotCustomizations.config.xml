@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='BotCustomization.spec.js'>
-        <TC>TC97710_01</TC>
-        <TC>TC97710_02</TC>
-        <TC>TC97710_03</TC>
-    </TestSuite>
-</root>

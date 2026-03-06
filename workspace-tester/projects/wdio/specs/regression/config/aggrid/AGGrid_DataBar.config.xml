@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='1' name='DataBar.spec.js'>
-        <TC>TC98745</TC>
-        <TC>TC98746</TC>
-        <TC>BCIN-6754</TC>
-    </TestSuite>
-</root>

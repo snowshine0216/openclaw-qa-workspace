@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<root>
-    <TestSuite id='01' name='OAuth2RestApi.spec.js'>
-        <TC>TC_BCSA-3610_0</TC>
-        <TC>TC_BCSA-3610_1</TC>
-        <TC>TC_BCSA-3610_2</TC>
-    </TestSuite>
-</root>
