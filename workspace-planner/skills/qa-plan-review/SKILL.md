@@ -37,6 +37,7 @@ Based on `@.cursor/commands/qa-plan-review.md`, review against these criteria:
 | **Risk Authenticity** | Mitigations are technically feasible and specific |
 | **Traceability** | Links back to requirements, code, design |
 | **Completeness** | No gaps between requirements and tests |
+| **User Executability** | Manual test rows are executable by QA without source-level inspection |
 
 ## Workflow
 
@@ -178,9 +179,47 @@ Mitigation: Use parameterized queries with prepared statements (implemented in l
 Code: src/api/users/search.ts:38-42
 ```
 
+### Step 6b: User Executability Check (Blocking Gate)
+
+Run this check on every manual Test Key Points row. Any failure is a **P0 blocking gap**:
+
+- UE-1: No internal code vocabulary in `Test Key Points` or `Expected Results`
+  - Fail examples: `cmdMgr.reset()`, `reCreateInstance()`, `isModelingServiceManipulation`, `returns { handled: false }`, internal component names as verification targets.
+  - Exception: code terms are allowed in `Related Code Change` column only.
+- UE-2: `Expected Results` are browser-observable (UI or Network tab)
+  - Fail if verification requires breakpoints, console injection, source reading, or runtime state inspection.
+- UE-3: P0/P1 rows include user action sequence
+  - Fail if row is a label-only phrase with no executable steps.
+- UE-4: Multi-path scenarios are split
+  - Fail if one row combines distinct outcomes (`OK` vs `Cancel`) without separate rows.
+- UE-5: P0/P1 rows include `FAILS if:`
+  - Fail if no explicit failure signature is present.
+- UE-6: Unit/API-only checks are segregated to AUTO
+  - Fail if manual tables include direct function calls, crafted HTTP payload checks, or race-condition injection checks.
+
+Scoring and approval impact:
+- Add `User Executability` as a first-class review criterion.
+- If any UE check fails, review status cannot be Approved.
+
+Updated rubric:
+
+| Criterion | Weight |
+|-----------|--------|
+| Structural Integrity | 1x |
+| Technical Depth | 1x |
+| Edge Case Coverage | 1x |
+| Risk Authenticity | 1x |
+| Traceability | 1x |
+| Completeness | 1x |
+| User Executability | 1x |
+
 ### Step 7: Generate Review Report
 
 Create review findings file: `qa_plan_review_<feature_id>_<date>.md`
+
+Status contract (mandatory):
+- Overall review status must use one of: `Approved`, `Requires Updates`, `Rejected`.
+- `PASS` / `FAIL` labels are allowed only inside sub-check sections (for example User Executability table), not as the overall review status field.
 
 ```markdown
 # QA Plan Review: [Feature Name]
@@ -207,6 +246,21 @@ Create review findings file: `qa_plan_review_<feature_id>_<date>.md`
 - Security testing could be more thorough
 
 **Overall Score**: 7.5/10
+
+## 🔍 User Executability Check
+
+| Check | Status | Failing Rows |
+|-------|--------|--------------|
+| UE-1: No internal code vocabulary | ✅ / ❌ | [Row IDs] |
+| UE-2: Expected Results are browser-observable | ✅ / ❌ | [Row IDs] |
+| UE-3: Action sequence present on P0/P1 | ✅ / ❌ | [Row IDs] |
+| UE-4: Multi-path rows split | ✅ / ❌ | [Row IDs] |
+| UE-5: `FAILS if:` present on P0/P1 | ✅ / ❌ | [Row IDs] |
+| UE-6: Unit/API rows moved to AUTO | ✅ / ❌ | [Row IDs] |
+
+**User Executability Verdict**:
+- ✅ PASS — manual rows are executable and publishable
+- ❌ FAIL — return to synthesize/refactor with row-level fixes
 
 ### Strengths ✅
 
@@ -640,3 +694,26 @@ Consider different perspectives:
 - Always provide specific recommendations with examples
 - Link findings to source documents when available
 - Update review status after refactoring addresses issues
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing review contract above.
+
+### User Executability Blocking Gate
+
+Treat the following as blocking conditions for manual QA sections:
+- `UE-1` internal code vocabulary appears in `Test Key Points` or `Expected Results`
+- `UE-2` expected results are not browser-observable or browser-network-observable
+- `UE-3` P0/P1 rows lack actionable numbered steps or Given/When/Then structure
+- `UE-4` distinct user paths are collapsed into a single row
+- `UE-5` P0/P1 rows are missing `FAILS if:`
+- `UE-6` unit/API-only checks remain in manual sections instead of `AUTO`
+
+If any UE item fails, status cannot be `Approved`.
+
+### Output Status Contract
+
+Continue producing the existing detailed review artifact, but ensure the summary clearly resolves to one of:
+- `Approved`
+- `Requires Updates`
+- `Rejected`

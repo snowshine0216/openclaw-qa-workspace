@@ -49,7 +49,7 @@ Create a wrapper only when direct reuse cannot express the needed higher-level c
 
 Reference workflows:
 - `workspace-reporter/.agents/workflows/qa-summary.md`
-- `workspace-planner/.agents/workflows/feature-qa-planning.md`
+- `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
 
 ## `task.json` Example
 

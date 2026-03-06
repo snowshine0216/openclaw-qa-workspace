@@ -243,25 +243,26 @@ For each extracted PR URL (batch max 5 at a time):
 *Goal: Distribute the approved report.*
 
 **If APPROVED:**
-1. Convert to Confluence storage format:
-   ```bash
-   node scripts/confluence/md-to-confluence.js \
-     projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md \
-     projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_confluence.html
-   ```
-2. Publish:
+1. Publish approved markdown directly to an existing Confluence page:
    ```bash
    confluence update <page-id> \
-     --file projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_confluence.html \
-     --format storage
+     --file projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md \
+     --format markdown
    ```
-   ⚠️ **NEVER publish raw Markdown** — Confluence requires HTML storage format.
+   Set `TARGET_PAGE_ID=<page-id>` for the verification step.
+2. If no existing page is available, create a new Confluence page with the **full postmortem version**:
+   ```bash
+   confluence create "<FEATURE_KEY> QA Postmortem" <SPACEKEY> \
+     --file projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_FINAL.md \
+     --format markdown
+   ```
+   Capture and persist the created page ID in `task.json` for future updates. Use the updated/created page ID as `TARGET_PAGE_ID`.
 3. **Post-Update Confluence Formatting Self-Check:**
    - Immediately read back the page to verify structural formatting:
      ```bash
-     confluence read <page-id> --format storage > /tmp/defect_confluence_readback.html
+     confluence read <TARGET_PAGE_ID> --format markdown > /tmp/defect_confluence_readback.md
      ```
-   - Verify section headings are present, no raw Markdown leaked through, and well-formed tables.
+   - Verify section headings are present and tables/lists render correctly.
    - On pass: Log `✅ Confluence formatting self-check passed.`
    - On fail: Present issue to user. Ask: *(A) Attempt auto-fix and re-publish, or (B) Notify me to fix manually?*
 

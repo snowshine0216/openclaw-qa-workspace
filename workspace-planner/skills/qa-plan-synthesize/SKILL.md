@@ -19,6 +19,7 @@ Consolidate QA domain summaries from Figma design analysis, GitHub PR analysis, 
 At least ONE of the following domain summaries should exist:
 - `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature_id>.md`
+- `projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_<feature_id>.md` (Optional but recommended when GitHub summary exists)
 - `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature_id>.md`
 - `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature_id>.md` (Optional)
 - `projects/feature-plan/<feature-id>/context/qa_plan_defect_analysis_<feature_id>.md` (Optional — from defect analysis sub-agent)
@@ -39,7 +40,8 @@ Ask user which summaries to consolidate if multiple exist, or auto-detect the mo
 
 Read each available domain summary file:
 1. **Figma summary**: UI components, visual tests, E2E workflows
-2. **GitHub summary**: Code changes, risk areas, technical considerations
+2. **GitHub summary**: User-facing code-change scenarios, risk areas, technical considerations
+   - If present, read traceability companion file: `qa_plan_github_traceability_<feature_id>.md` (code refs for Related Code Change only)
 3. **Atlassian summary**: Requirements, acceptance criteria, business context
 4. **Background summary** (Optional): Additional domain knowledge gathered via web search
 5. **Defect Analysis summary** (Optional): Read after Atlassian if `qa_plan_defect_analysis_<feature-id>.md` exists. Extract: Executive Summary, Risk Analysis by Functional Area, Recommended QA Focus Areas, Affected Customers field.
@@ -51,6 +53,7 @@ Read each available domain summary file:
 - Reference data
 - Coverage metrics
 - Domain context (to inform comprehensive generation and gap analysis)
+- Test Scope from GitHub (`COMP` / `XFUNC`) and `E2E Scenarios to Add` rows
 
 ### Step 3: Consolidate Information
 
@@ -61,12 +64,72 @@ Read each available domain summary file:
 | **Summary** | Combine all sources into one table |
 | **Background** | Use Atlassian (requirements) as primary; number subsections. **Defect Analysis:** If `Affected Customers` non-empty → inject `### 📢 Business Context`; if internal-only → inject `### 🩺 Defect Health`. If both apply, include both subheadings. |
 | **QA Goals** | Merge all goals, deduplicate; use numbered sub-categories (1. E2E, 2. FUN, … 10. AUTO) with bullet items |
-| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. **Organize by functional behavior category** (e.g., error recovery scenarios, prompt flows, scope/boundary), **NOT by repo or source**. Each table row MUST integrate ALL relevant code changes across repos inline (e.g., `shared-recover-from-error.ts; **biweb**: RWManipulationBuilder.java; **mojojs**: RootController.js`). Add `#` column for numbered row IDs (e.g., 1.1, 1.2). **Merge all defect-derived content here** (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus checklists). Do **not** map defect findings to Risk & Mitigation. Columns MUST BE: # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results. Mark defect-derived rows with `[Regression]` or `[Defect Fix Verification]` in Related Code Change/AC column. **⚠️ ANTI-PATTERN: Do NOT create separate tables per repo** (e.g., "Server-Side API (from biweb)", "Mojo cmdMgr (from mojojs)"). Instead, merge repo-specific code changes into the functional scenario table where they are tested. |
+| **Test Key Points** | GENERATE tables here by mapping Atlassian ACs to GitHub Code Changes. **Organize by functional behavior category** (e.g., error recovery scenarios, prompt flows, scope/boundary), **NOT by repo or source**. Each table row MUST integrate ALL relevant code changes across repos inline (e.g., `shared-recover-from-error.ts; **biweb**: RWManipulationBuilder.java; **mojojs**: RootController.js`). Add `#` column for numbered row IDs (e.g., 1.1, 1.2). **Merge all defect-derived content here** (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus checklists). Do **not** map defect findings to Risk & Mitigation. Columns MUST BE: # | Priority | Test Scope | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results. Mark defect-derived rows with `[Regression]` or `[Defect Fix Verification]` in Related Code Change/AC column. **⚠️ ANTI-PATTERN: Do NOT create separate tables per repo** (e.g., "Server-Side API (from biweb)", "Mojo cmdMgr (from mojojs)"). Instead, merge repo-specific code changes into the functional scenario table where they are tested. |
 | **Risk & Mitigation** | Merge risk tables; use numbered sub-sections (1. Technical, 2. Data, 3. UX); keep tables. Do **not** merge defect analysis findings into this section. |
 | **Defect Analysis** | Merge all findings (Risk Analysis by Functional Area, Recommended QA Focus Areas, Testing Focus) into `## 🧪 Test Key Points` only. Do **not** map to Risk & Mitigation. See mapping rules below. |
 | **Consolidated Reference Data** | Aggregate source docs, stakeholders, test data, dependencies; bullets only (no tables) |
 | **Sign-off Checklist** | Checklists per team; use numbered subsections |
 | **QA Summary** | Code Changes table only (columns: PR, Files Changed, PR Summary); placed at end of document |
+
+## Test Key Points Quality Rules
+
+Apply these rules before writing any manual Test Key Points row:
+
+1. Rule R1: No internal function/flag/class names in `Test Key Points` or `Expected Results`.
+   - WRONG: `Verify cancelRequests callback calls cmdMgr.reset()`
+   - RIGHT: `After recovery, Undo is disabled in Edit menu.`
+2. Rule R2: Every `Expected Results` sentence must be manually observable in browser UI or browser Network tab.
+   - WRONG: `isModelingServiceManipulation=true`
+   - RIGHT: `Grid returns to pause mode and Undo is disabled.`
+   - FAIL condition: if verification needs breakpoints, console injection, source reading, or runtime state introspection.
+3. Rule R3: Every P0/P1 manual row must have executable user actions (numbered steps or Given/When/Then).
+4. Rule R4: Distinct user paths are separate rows (for example `OK` path and `Cancel` path).
+5. Rule R5: Every P0/P1 manual row includes a `FAILS if:` sentence in `Expected Results`.
+6. Rule R6: Unit/API-only checks go under `### AUTO: Automation-Only Tests`, not in manual tables.
+
+### Translation Guide (Code Facts -> User-Facing Outcomes)
+
+Use this guide during synthesis. Extend with inferred mappings when needed.
+
+| Code Pattern | User-Facing Translation |
+|--------------|-------------------------|
+| `cmdMgr.reset()` called | Undo button is disabled / no undo history |
+| `isReCreateReportInstance = true` | Second recovery attempt completes without stuck state |
+| `mstrApp.appState = DEFAULT` | Grid shows pause-mode layout (no stale running rows) |
+| `recoverReportFromError returns { handled: false }` | AUTO-only (not user-visible) |
+| `PUT /model/reports` error | Error shown but grid remains usable (or specific pause-mode transition) |
+| `stid=-1` + `noActionMode=true` | Report returns to pause mode and user stays in report view |
+
+### Scope and E2E Routing Rules
+
+- If scenario scope is `XFUNC`, keep in manual tables with user-facing action steps.
+- If scope is `COMP` and not user-observable, move to `### AUTO: Automation-Only Tests`.
+- Merge `E2E Scenarios to Add` from GitHub summary into the final manual scenarios (do not drop).
+- Multi-repo aggregation rule: if one repo is `COMP` and another is `XFUNC` for the same scenario, use dominant scope `XFUNC`.
+
+### Step 3b: Translation Pass (Before Writing Plan)
+
+Before generating any row:
+1. Scan GitHub summaries for function names, method names, flags, and class identifiers.
+2. Replace candidate internal terms in `Test Key Points` / `Expected Results` using the Translation Guide.
+3. If mapping is missing, infer a user-observable behavior and use that phrasing; do not copy internal term into manual columns.
+4. Keep code vocabulary only in `Related Code Change` column and traceability context.
+
+### Step 3c: Pre-Save Self-Check (Soft Warning + Self-Healing)
+
+Run this checklist on manual sections before saving draft:
+- [ ] No internal code vocabulary in `Test Key Points` / `Expected Results`
+- [ ] `Expected Results` browser-observable only
+- [ ] P0/P1 rows include numbered steps
+- [ ] Multi-path scenarios split into separate rows
+- [ ] P0/P1 rows include `FAILS if:`
+- [ ] Unit/API-only rows moved to `### AUTO: Automation-Only Tests`
+
+If violations exist:
+1. Annotate violations.
+2. Auto-fix (translate wording, split rows, add `FAILS if:`, move to AUTO).
+3. Re-run checklist up to 2 iterations.
+4. If still failing after 2 iterations, emit a soft warning and continue; downstream review gate will block publication.
 
 ### Step 4: Generate Comprehensive Plan
 
@@ -192,22 +255,28 @@ Read each available domain summary file:
 
 ### 1. [Functional Scenario Category Name]
 
-| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
-|---|----------|---------------------|---------------------|-----------------|------------------|
-| 1.1 | P0 | `frontend/component.ts` → function(); **backend**: `ApiHandler.java` → method(); **shared-lib**: `util.js` → helper() | Given [precondition], when [action], then [outcome] | [Concrete test steps integrating all repos] | [Observable result covering full stack] |
-| 1.2 | P1 | ... | ... | ... | ... |
+| # | Priority | Test Scope | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|------------|---------------------|---------------------|-----------------|------------------|
+| 1.1 | P0 | XFUNC | `frontend/component.ts` → function(); **backend**: `ApiHandler.java` → method(); **shared-lib**: `util.js` → helper() | Given [precondition], when [action], then [outcome] | 1. [User action] 2. [User action] 3. [User action] | [Observable result covering full stack]. FAILS if: [clear failure signature] |
+| 1.2 | P1 | COMP/XFUNC | ... | ... | ... | ... |
 
 ### 2. [Another Functional Scenario Category]
 
-| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
-|---|----------|---------------------|---------------------|-----------------|------------------|
-| 2.1 | P0 | ... | ... | ... | ... |
+| # | Priority | Test Scope | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|------------|---------------------|---------------------|-----------------|------------------|
+| 2.1 | P0 | XFUNC | ... | ... | ... | ... |
 
 ### N. Edge Cases & Negative Tests
 
-| # | Priority | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
-|---|----------|---------------------|---------------------|-----------------|------------------|
-| N.1 | P1 | ... | ... | ... | ... |
+| # | Priority | Test Scope | Related Code Change | Acceptance Criteria | Test Key Points | Expected Results |
+|---|----------|------------|---------------------|---------------------|-----------------|------------------|
+| N.1 | P1 | XFUNC | ... | ... | ... | ... |
+
+### AUTO: Automation-Only Tests
+
+| # | Priority | Test Scope | Test Type | Related Code Change | Automation Focus |
+|---|----------|------------|-----------|---------------------|------------------|
+| A.1 | P1 | COMP | Unit/API/Integration | `shared/utility.ts` → helper() | [Programmatic verification that is not manually observable] |
 
 > **⚠️ ANTI-PATTERN — Do NOT do this:**
 > ```
@@ -473,3 +542,44 @@ Code: "Password sent in plain text"
 - The plan should be ready for review by `qa-plan-review` skill
 - Include enough detail for engineers to understand test scope
 - Keep language professional and user-facing
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing contract above.
+
+### Additional Optional Input
+
+If present, read:
+- `projects/feature-plan/<feature-id>/context/qa_plan_defect_analysis_<feature-id>.md`
+
+Use defect-analysis content to enrich `Background` and `Test Key Points`.
+Do not automatically merge it into `Risk & Mitigation`.
+
+### Translation Pass (Mandatory)
+
+Before writing any manual QA row:
+1. scan GitHub-derived content for function names, class names, flags, and internal response terms
+2. translate them into user-facing outcomes
+3. keep code vocabulary only in `Related Code Change` or traceability references
+4. if no manual observation exists, route the case to `### AUTO: Automation-Only Tests`
+
+### User Executability Self-Check (Mandatory)
+
+Before saving the draft, run this checklist on manual sections:
+- no internal code vocabulary in `Test Key Points` or `Expected Results`
+- expected results are browser-visible or browser-network-observable
+- P0/P1 rows include numbered steps or Given/When/Then structure
+- multi-path rows are split
+- P0/P1 rows include `FAILS if:`
+- unit/API-only checks are moved to `### AUTO: Automation-Only Tests`
+
+If violations are found:
+1. fix them automatically
+2. re-run the checklist
+3. stop after 2 repair rounds and leave a soft warning for the review gate if issues remain
+
+### Dynamic Draft Versioning (Mandatory)
+
+Determine the next draft path from `task.json.latest_draft_version` or `drafts/qa_plan_v*.md`.
+Write only to `drafts/qa_plan_v<N+1>.md` and update `task.json.latest_draft_version`.
+Never overwrite the previous draft.

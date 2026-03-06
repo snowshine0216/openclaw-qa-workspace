@@ -84,6 +84,14 @@ TODO:
 ...
 ```
 
+If review report includes User Executability checks (UE-1..UE-6), map each failing UE item to refactor tasks immediately:
+- UE-1 -> Replace internal code vocabulary in manual columns with user-visible outcomes.
+- UE-2 -> Rewrite expected results to UI/Network-observable outcomes.
+- UE-3 -> Add numbered manual action steps for each failing P0/P1 row.
+- UE-4 -> Split multi-path outcomes into separate rows.
+- UE-5 -> Add `FAILS if:` to each failing P0/P1 row.
+- UE-6 -> Move non-manual checks to `### AUTO: Automation-Only Tests`.
+
 ### Step 3: Implement Action Items
 
 For **each action item**, follow this process:
@@ -198,6 +206,12 @@ For **each action item**, follow this process:
 | **Add technical details** | Include function names, API endpoints, exact values |
 | **Fill coverage gaps** | Add test scenarios for uncovered requirements |
 | **Improve risk mitigation** | Add code references, specific implementation details |
+| **UE-1 violation** | Remove internal function/flag/state wording from manual columns; keep technical identifiers in `Related Code Change` only |
+| **UE-2 violation** | Rewrite expected results into browser-observable outcomes |
+| **UE-3 violation** | Convert label-only rows into executable numbered steps |
+| **UE-4 violation** | Split combined outcomes (`OK`/`Cancel`) into separate rows |
+| **UE-5 violation** | Add explicit `FAILS if:` signatures |
+| **UE-6 violation** | Relocate unit/API-only checks to `AUTO` subsection |
 
 ### Step 5: Update Review Findings
 
@@ -505,3 +519,25 @@ Before completing refactor, verify:
 - Update review status only when ALL action items complete
 - Maintain atomicity: QA plan and review findings updated together
 - Ready for re-review cycle if user requests or if major gaps remain
+
+## 2026-03-06 Redesign Addendum
+
+Apply these rules in addition to the existing refactor contract above.
+
+### UE Fix Mapping
+
+Map blocking UE findings as follows:
+- `UE-1` → replace internal code wording with user-facing language
+- `UE-2` → rewrite expected results to observable outcomes
+- `UE-3` → add numbered steps or Given/When/Then structure
+- `UE-4` → split multi-path rows
+- `UE-5` → add `FAILS if:`
+- `UE-6` → move the scenario to `### AUTO: Automation-Only Tests`
+
+### Dynamic Draft Versioning
+
+Write the refactored plan to the next draft version:
+- `drafts/qa_plan_v<N+1>.md`
+
+Use `task.json.latest_draft_version` or scan existing drafts to determine `N`.
+Never overwrite the previous draft file in place.

@@ -1,0 +1,31 @@
+{
+  "design_id": "feature-qa-planning-redesign-2026-03-06",
+  "overall_status": "pass",
+  "severity_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "findings": [],
+  "required_fixes": [],
+  "advisories": [
+    "Confirm at implementation time that workspace-planner/.agents/workflows/feature-qa-planning.md is removed immediately after workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md becomes the canonical entrypoint, with workspace-planner/AGENTS.md updated in the same change set."
+  ],
+  "reviewed_paths": [
+    "workspace-planner/docs/FEATURE_QA_PLANNING_REDESIGN_2026-03-06.md",
+    ".agents/skills/openclaw-agent-design/SKILL.md",
+    ".agents/skills/openclaw-agent-design/reference.md",
+    ".agents/skills/openclaw-agent-design-review/SKILL.md",
+    ".agents/skills/openclaw-agent-design-review/reference.md",
+    ".agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh",
+    ".agents/skills/agent-idempotency/SKILL.md",
+    ".agents/skills/code-structure-quality/SKILL.md",
+    ".agents/skills/clawddocs/SKILL.md",
+    "workspace-planner/docs/qa-plan-fix/QA_PLAN_FIX_PLAN.md",
+    "workspace-planner/docs/qa-plan-fix/QA_PLAN_QUALITY_GATE_DESIGN.md",
+    "workspace-planner/docs/QA_PLAN_DEFECT_ANALYSIS_INTEGRATION_DESIGN.md",
+    "workspace-planner/docs/IDEMPOTENCY_REVIEW_QA_PLAN_WORKFLOW.md",
+    "workspace-planner/docs/QA_PLAN_WORKFLOW_ENHANCEMENT_2026-02-27.md"
+  ],
+  "timestamp_utc": "2026-03-06T08:34:53Z"
+}

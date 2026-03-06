@@ -13,7 +13,7 @@
 ## 📝 Files Updated
 
 ### Core Workflow Documents
-1. **`.agents/workflows/feature-qa-planning.md`** ✅
+1. **`.agents/workflows/feature-qa-planning.md`** ✅ historical, now replaced by `skills/feature-qa-planning-orchestrator/SKILL.md`
    - Phase 4 expanded with conversion steps
    - Added `--format storage` requirement
    - Added verification step
