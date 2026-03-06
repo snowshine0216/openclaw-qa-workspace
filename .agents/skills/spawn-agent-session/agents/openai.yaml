@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spawn Agent Session"
+  short_description: "Normalize reusable session spawn requests."
+  default_prompt: "Normalize spawn inputs into a reusable session request and emit a structured caller handoff contract."
