@@ -1,0 +1,31 @@
+{
+  "eval_id": 3,
+  "eval_name": "design-doc-traceability",
+  "prompt": "Implement a feature from this design doc excerpt and show requirement-to-test traceability before writing code.",
+  "assertions": [
+    {
+      "text": "Includes requirement-to-test mapping table or matrix",
+      "type": "contains_any",
+      "pattern": [
+        "Req ID",
+        "requirement-to-test",
+        "traceability",
+        "Behavior/Test Matrix"
+      ]
+    },
+    {
+      "text": "Mentions TDD order or red-green-refactor",
+      "type": "contains_any",
+      "pattern": [
+        "red -> green -> refactor",
+        "red-green-refactor",
+        "TDD"
+      ]
+    },
+    {
+      "text": "Includes final Quality Gates section",
+      "type": "contains",
+      "pattern": "Quality Gates"
+    }
+  ]
+}

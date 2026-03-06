@@ -1,0 +1,33 @@
+{
+  "eval_id": 4,
+  "eval_name": "review-disposition-correctness",
+  "prompt": "After code review, handle 5 review comments where 2 are technically incorrect. Apply correct feedback and reject incorrect points with rationale.",
+  "assertions": [
+    {
+      "text": "Includes accepted and rejected review findings",
+      "type": "contains_all",
+      "pattern": [
+        "accepted",
+        "rejected"
+      ]
+    },
+    {
+      "text": "Provides rationale for rejected findings",
+      "type": "contains_any",
+      "pattern": [
+        "rationale",
+        "because",
+        "technical reason"
+      ]
+    },
+    {
+      "text": "Mentions retest/revalidation after fixes",
+      "type": "contains_any",
+      "pattern": [
+        "retest",
+        "re-run",
+        "regression"
+      ]
+    }
+  ]
+}

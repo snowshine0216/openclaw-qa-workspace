@@ -1,0 +1,29 @@
+{
+  "skill_name": "code-quality-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implement a new parser function from requirements. Use TDD and ensure unit + integration tests with minimal mocks. Then do review and refactor.",
+      "expected_output": "Output includes failing-tests-first plan, explicit call order of integrated skills, review disposition, and final quality gates.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Refactor a bloated service module while preserving behavior. Enforce DRY, functional boundaries, and function <=20 lines with justified exceptions.",
+      "expected_output": "Output includes structure review, function-length checks, exception logs if needed, and passing regression tests.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Implement a feature from this design doc excerpt and show requirement-to-test traceability before writing code.",
+      "expected_output": "Output includes design-doc-to-test matrix, UT/integration mapping, TDD sequence, and final gate checklist.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "After code review, handle 5 review comments where 2 are technically incorrect. Apply correct feedback and reject incorrect points with rationale.",
+      "expected_output": "Output shows receiving-code-review behavior: verified acceptance/rejection decisions and retesting after fixes.",
+      "files": []
+    }
+  ]
+}

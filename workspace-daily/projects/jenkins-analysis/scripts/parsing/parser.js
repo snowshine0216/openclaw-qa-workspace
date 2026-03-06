@@ -12,6 +12,100 @@ const {
   deduplicateRetries
 } = require('./deduplication');
 
+const SUPPORTED_ID_PATTERN = '(?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)\\d+[^\\]]*';
+
+const inferFailureTypeFromMessage = (failureMsg) => {
+  if (!failureMsg) return 'generic_failure';
+  const msg = failureMsg.toLowerCase();
+  if (msg.includes('screenshot') && msg.includes("doesn't match")) return 'screenshot_mismatch';
+  if (msg.includes('expected') || msg.includes('expect(') || msg.includes('assert')) return 'assertion_failure';
+  if (msg.includes('timeout') || msg.includes('timed out')) return 'timeout';
+  if (msg.includes('stale element')) return 'stale_element';
+  if (msg.includes('element') && (msg.includes('not found') || msg.includes("wasn't found"))) return 'element_not_found';
+  return 'generic_failure';
+};
+
+const extractFailureMsgFromBlock = (caseBlock) => {
+  const lines = caseBlock
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    if (/^[✕x●]/.test(line)) continue;
+    if (line.startsWith('at ')) continue;
+    if (/^\d+\s+\|/.test(line)) continue;
+    if (/^\^+$/.test(line)) continue;
+    return line.replace(/^Error:\s*/, '').slice(0, 300);
+  }
+
+  return 'Test failed';
+};
+
+const extractJestErrorContext = (caseBlock) => {
+  const lines = caseBlock.split('\n').map(line => line.trimEnd());
+  const startIndex = lines.findIndex(line =>
+    /^\s*(?:Error:|expect\(|Expected:|Received:|- Failed:)/.test(line)
+  );
+
+  if (startIndex === -1) return null;
+
+  const collected = [];
+  for (let i = startIndex; i < lines.length; i++) {
+    const line = lines[i];
+    if (collected.length > 0 && line.trim() === '') break;
+    collected.push(line);
+    if (collected.length >= 12) break;
+  }
+
+  return collected.join('\n').trim() || null;
+};
+
+const normalizeJestCaseName = (name) => {
+  return (name || '').replace(/\s+/g, ' ').trim();
+};
+
+const extractJestDetailBlocks = (fileBlock) => {
+  const DETAIL_RE = new RegExp(
+    `^\\s*●\\s+(?:.+?\\s>\\s+)?\\[(${SUPPORTED_ID_PATTERN})\\]\\s+(.+?)\\s*$`,
+    'gm'
+  );
+  const detailMatches = [...fileBlock.matchAll(DETAIL_RE)];
+
+  return detailMatches.map((match, index) => {
+    const start = match.index;
+    const end = detailMatches[index + 1]?.index || fileBlock.length;
+    return {
+      tcId: match[1].trim(),
+      tcName: normalizeJestCaseName(match[2]),
+      startIndex: start,
+      block: fileBlock.slice(start, end),
+      consumed: false
+    };
+  });
+};
+
+const pickJestDetailBlock = (detailBlocks, tcId, tcName) => {
+  const normalizedTcName = normalizeJestCaseName(tcName);
+  const exactIndex = detailBlocks.findIndex((entry) => (
+    !entry.consumed && entry.tcId === tcId && entry.tcName === normalizedTcName
+  ));
+  if (exactIndex !== -1) {
+    detailBlocks[exactIndex].consumed = true;
+    return detailBlocks[exactIndex].block;
+  }
+
+  const tcOnlyIndex = detailBlocks.findIndex((entry) => (
+    !entry.consumed && entry.tcId === tcId
+  ));
+  if (tcOnlyIndex !== -1) {
+    detailBlocks[tcOnlyIndex].consumed = true;
+    return detailBlocks[tcOnlyIndex].block;
+  }
+
+  return '';
+};
+
 /**
  * Parse a single run block and extract ALL failures within it
  * Returns an array of failure objects (one run block can have multiple screenshot failures)
@@ -25,7 +119,7 @@ const parseRunBlock = (runBlock, fileName, tcInfo) => {
   const results = [];
   
   // Extract ALL screenshot failures in this run block
-  const SCREENSHOT_RE = /- Failed:Screenshot\s+"((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)[^"]+)\s+-\s+(.+?)"\s+doesn't match the baseline\.\s+Visit\s+(http:\/\/[^:]+:3000\/projects\/[^\/]+\/suites\/[^\/]+\/runs\/\d+#test_\d+)\s+for details/g;
+  const SCREENSHOT_RE = /(?:- Failed:)?\s*Screenshot\s+"((?:TC|QAC-|BCIN-|TSTR-|BUG-|TASK-)[^"]+)\s+-\s+(.+?)"\s+doesn't match(?:\s+the\s+baseline)?\.?(?:\s+Visit\s+(http:\/\/[^\s]+)\s+for details)?/g;
   
   for (const match of runBlock.matchAll(SCREENSHOT_RE)) {
     const [, stepId, stepName, snapshotUrl] = match;
@@ -39,7 +133,7 @@ const parseRunBlock = (runBlock, fileName, tcInfo) => {
       failureType: 'screenshot_mismatch',
       failureMsg: `Screenshot "${stepId} - ${stepName}" doesn't match the baseline.`,
       fullErrorMsg: extractFullError(runBlock),
-      snapshotUrl
+      snapshotUrl: snapshotUrl || extractSpectreUrl(runBlock)
     });
   }
   
@@ -83,6 +177,70 @@ const parseRunBlock = (runBlock, fileName, tcInfo) => {
   }
   
   return results;
+};
+
+/**
+ * Jest parser: Handles "FAIL specs/...spec.js" blocks and test-level failures
+ * Uses TC tags in test names: "✕ [TC123] some test"
+ */
+const extractFailuresFromLogJest = (consoleText) => {
+  const results = [];
+  const FILE_HEADER_RE = /^FAIL\s+([^\s]+\.spec\.js)\s*$/gm;
+  const CASE_RE = new RegExp(
+    `^\\s*[✕x]\\s+\\[(${SUPPORTED_ID_PATTERN})\\]\\s+(.+?)(?:\\s+\\(\\d+\\s*ms\\))?\\s*$`,
+    'gm'
+  );
+  const SCREENSHOT_RE = new RegExp(
+    `Screenshot\\s+"((${SUPPORTED_ID_PATTERN})\\s+-\\s+(.+?))"\\s+doesn't match(?:\\s+the\\s+baseline)?\\.?(?:\\s|$)`,
+    'i'
+  );
+
+  const fileHeaders = [...consoleText.matchAll(FILE_HEADER_RE)];
+  for (let fileIndex = 0; fileIndex < fileHeaders.length; fileIndex++) {
+    const currentHeader = fileHeaders[fileIndex];
+    const fileName = currentHeader[1];
+    const start = currentHeader.index + currentHeader[0].length;
+    const end = fileHeaders[fileIndex + 1]?.index || consoleText.length;
+    const fileBlock = consoleText.slice(start, end);
+    const caseMatches = [...fileBlock.matchAll(CASE_RE)];
+    const detailBlocks = extractJestDetailBlocks(fileBlock);
+    const firstDetailStart = detailBlocks[0]?.startIndex ?? fileBlock.length;
+
+    for (let i = 0; i < caseMatches.length; i++) {
+      const caseMatch = caseMatches[i];
+      const tcId = caseMatch[1].trim();
+      const tcName = caseMatch[2].trim();
+      const start = caseMatch.index;
+      const nextCaseStart = caseMatches[i + 1]?.index || fileBlock.length;
+      const end = Math.min(nextCaseStart, firstDetailStart);
+      const summaryBlock = fileBlock.slice(start, end);
+      const detailBlock = pickJestDetailBlock(detailBlocks, tcId, tcName);
+      const caseBlock = detailBlock ? `${summaryBlock}\n${detailBlock}` : summaryBlock;
+
+      const screenshotMatch = caseBlock.match(SCREENSHOT_RE);
+      const screenshotStepId = screenshotMatch ? screenshotMatch[2].trim() : tcId;
+      const screenshotStepName = screenshotMatch ? screenshotMatch[3].trim() : tcName;
+      const snapshotUrl = extractSpectreUrl(caseBlock);
+      const failureMsg = screenshotMatch
+        ? `Screenshot "${screenshotStepId} - ${screenshotStepName}" doesn't match the baseline.`
+        : extractFailureMsgFromBlock(caseBlock);
+
+      results.push({
+        fileName,
+        tcId,
+        tcName,
+        stepId: screenshotStepId,
+        stepName: screenshotStepName,
+        runLabel: 'run_1',
+        failureType: screenshotMatch ? 'screenshot_mismatch' : inferFailureTypeFromMessage(failureMsg),
+        failureMsg,
+        fullErrorMsg: extractFullError(caseBlock) || extractJestErrorContext(caseBlock),
+        snapshotUrl: snapshotUrl || null
+      });
+    }
+  }
+
+  return deduplicateRetries(results);
 };
 
 /**
@@ -248,7 +406,8 @@ const extractFailuresFromLogLegacy = (consoleText) => {
  * Parsing strategy (in order):
  * 1. Try file-based V2 parser (specs/...spec.js pattern)
  * 2. Try worker-ID format parser ([0-1] Error in "..." pattern)
- * 3. Fall back to legacy parser ([TC_ID] Name: pattern)
+ * 3. Try Jest "FAIL specs/...spec.js" parser
+ * 4. Fall back to legacy parser ([TC_ID] Name: pattern)
  */
 const extractFailuresFromLog = (consoleText) => {
   const results = [];
@@ -292,11 +451,19 @@ const extractFailuresFromLog = (consoleText) => {
     return workerFailures;
   }
   
-  // Step 3: Fallback to legacy parser
-  console.log('⚠️ Using legacy parser (no file pattern or worker-ID format found)');
+  // Step 3: Try Jest format parser
+  const jestFailures = extractFailuresFromLogJest(consoleText);
+  if (jestFailures.length > 0) {
+    console.log(`✅ Jest parser extracted ${jestFailures.length} failures`);
+    return jestFailures;
+  }
+  
+  // Step 4: Fallback to legacy parser
+  console.log('⚠️ Using legacy parser (no file pattern, worker-ID format, or Jest FAIL block found)');
   return extractFailuresFromLogLegacy(consoleText);
 };
 
 module.exports = {
-  extractFailuresFromLog
+  extractFailuresFromLog,
+  extractFailuresFromLogJest
 };

@@ -1,0 +1,35 @@
+{
+  "eval_id": 1,
+  "eval_name": "tdd-feature-from-requirements",
+  "prompt": "Implement a new parser function from requirements. Use TDD and ensure unit + integration tests with minimal mocks. Then do review and refactor.",
+  "assertions": [
+    {
+      "text": "Includes Behavior/Test Matrix section",
+      "type": "contains",
+      "pattern": "Behavior/Test Matrix"
+    },
+    {
+      "text": "Includes Unit and Integration coverage statements",
+      "type": "contains_all",
+      "pattern": [
+        "Unit",
+        "Integration"
+      ]
+    },
+    {
+      "text": "Includes Review Findings Disposition section",
+      "type": "contains",
+      "pattern": "Review Findings Disposition"
+    },
+    {
+      "text": "Includes Refactor Summary section",
+      "type": "contains",
+      "pattern": "Refactor Summary"
+    },
+    {
+      "text": "Includes final Quality Gates checklist",
+      "type": "contains",
+      "pattern": "Quality Gates"
+    }
+  ]
+}

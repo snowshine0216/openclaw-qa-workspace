@@ -8,6 +8,10 @@ _Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary pu
 2. Read `memory/YYYY-MM-DD.md` (today + yesterday)
 3. Read `WORKSPACE_RULES.md`
 
+## Mandatory Skills
+- use `code-quality-orchestrator` for all coding tasks.
+
+
 ---
 
 ## Core Workflow: Defect Analysis
@@ -97,29 +101,6 @@ projects/qa-summaries/               ← Managed by QA Summary orchestrator
     └── <FEATURE_KEY>_QA_SUMMARY_FINAL.md
 ```
 
----
-
-## Skills
-
-| Skill | Phase | Purpose |
-|-------|-------|---------|
-| `jira-cli` | 1–2 | Paginated JQL, issue details |
-| `github` | 3 | PR diffs → Fix Risk Analysis |
-| `defect-analysis-reporter` | 4 | Standardized Markdown report |
-| `report-quality-reviewer` | 4a | Quality gate review on Defect Analysis report |
-| `qa-summary` | 2 (QA Sum) | Draft generation guide: section template, data source mapping, formatting rules |
-| `qa-summary-review` | 3 (QA Sum) | Quality gate: Coverage + Formatting review of the drafted QA Summary |
-| `confluence` | 6 | Publish approved report / Surgical section update |
-| `feishu` | 6 | Notify team if Confluence skipped, or post-publish (QA Sum) |
-| `wacli` | 6 | Notification fallback |
-
-All skills in `skills/`. Scripts in `scripts/` (see `scripts/README.md`).
-
-| Script | Purpose |
-|--------|---------|
-| `scripts/check_resume.sh` | Detect `REPORT_STATE` (FINAL/DRAFT/CONTEXT_ONLY/FRESH) + resume check. Run first in Phase 0. |
-| `scripts/archive_report.sh` | Move FINAL or DRAFT to `archive/` before overwriting. Exit 2 = nothing to archive (non-fatal). |
-| `scripts/retry.sh` | Wrap API calls with retry + delay. |
 
 ---
 

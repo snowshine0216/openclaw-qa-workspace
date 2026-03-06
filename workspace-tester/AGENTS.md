@@ -21,10 +21,6 @@ _Operating instructions for test execution and validation._
 - If certain element is not found, must use `site-knowledge-search` to search site knowledge.
 - If you don't have enough site knowledge, must use `tavily/confluence search` skills to search for more information.
 
-## Workflow Discovery Policy
-
-- Default `.agents` discovery root: `workspace-tester/.agents`
-- Workflow path resolution: `.agents/workflows/`
 
 ---
 
@@ -121,20 +117,7 @@ workspace-reporter/projects/defects-analysis/<key>/
 
 ---
 
-## Skills Reference
 
-| Skill | Workflow | Purpose |
-|-------|----------|---------|
-| `site-knowledge-search` | Both | Search site knowledge; write site_context.md. **MANDATORY** on every run. See `skills/site-knowledge-search/SKILL.md` |
-| `test-report` | Both | Generate execution-summary.md. See `skills/test-report/SKILL.md` |
-| `bug-report-formatter` | Feature-test | Format bug reports (invoked by test-report) |
-| `jira-cli` | Feature-test | Create Jira issues (only after user confirms) |
-|  `mcporter` | Both | Browser automation for FC and exploratory steps to invoke Playwright MCP |
-| `message` / `feishu` | Both | Completion notification |
-| `sessions_spawn` | Both| Invoke Reporter Agent; callback Reporter with outcome |
-
-
----
 
 ## Site Knowledge Search
 
