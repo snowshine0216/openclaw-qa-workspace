@@ -42,6 +42,8 @@ test('normalizes a canonical single request with OpenClaw sessions_spawn args', 
     label: 'rca-BCIN-1234',
     mode: 'run',
     runtime: 'subagent',
+    attachments: [{ name: 'rca-input.json', path: '/tmp/rca-input-BCIN-1234.json' }],
+    thread: false,
   });
 });
 
@@ -132,6 +134,8 @@ test('normalizes a legacy RCA manifest into OpenClaw-ready requests', () => {
     label: 'rca-BCIN-1234',
     mode: 'run',
     runtime: 'subagent',
+    attachments: [{ name: 'input.json', path: '/tmp/output/rca-input-BCIN-1234.json' }],
+    thread: false,
   });
 });
 

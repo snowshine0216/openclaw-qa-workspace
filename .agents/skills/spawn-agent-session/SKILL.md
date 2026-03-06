@@ -11,7 +11,7 @@ Normalize spawn inputs before any workflow calls session-spawning tools directly
 
 1. Prepare either a canonical single-request JSON object or a legacy RCA manifest JSON file.
 2. Run `node .agents/skills/spawn-agent-session/scripts/normalize-spawn-request.js <input-file> ...flags`.
-3. Pass `requests[].openclaw.args` directly to OpenClaw `sessions_spawn(...)`, or use the full JSON when the caller also needs handoff metadata.
+3. Pass `requests[].openclaw.args` directly to OpenClaw `sessions_spawn(...)`; it preserves the normalized `attachments` and `thread` values alongside the required spawn fields.
 
 ## Use This Skill
 

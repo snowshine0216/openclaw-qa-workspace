@@ -16,7 +16,7 @@ Attachment objects must include `name` plus either string `path` or string `cont
 
 ## Canonical Output Shape
 
-The helper keeps the normalized request in snake_case for caller-side contracts and also emits an OpenClaw-ready `sessions_spawn` payload in camelCase.
+The helper keeps the normalized request in snake_case for caller-side contracts and also emits an OpenClaw-ready `sessions_spawn` payload in camelCase. The OpenClaw projection preserves `attachments` and `thread` so documented canonical inputs are not lost at the tool boundary.
 
 
 ```json
@@ -47,7 +47,14 @@ The helper keeps the normalized request in snake_case for caller-side contracts 
           "agentId": "gpt-5.3-codex",
           "label": "rca-BCIN-1234",
           "mode": "run",
-          "runtime": "subagent"
+          "runtime": "subagent",
+          "attachments": [
+            {
+              "name": "rca-input.json",
+              "path": "/tmp/rca-input-BCIN-1234.json"
+            }
+          ],
+          "thread": false
         }
       },
       "handoff": {
@@ -94,7 +101,7 @@ The helper maps legacy `input_file` to a single attachment and maps legacy `outp
 
 ## CLI and TUI Compatibility
 
-This skill only normalizes payloads. It does not call spawn APIs directly. Use `requests[].openclaw.args` as the argument object for `sessions_spawn(...)`.
+This skill only normalizes payloads. It does not call spawn APIs directly. Use `requests[].openclaw.args` as the argument object for `sessions_spawn(...)`; the payload preserves canonical `attachments` and `thread` when present.
 
 That boundary keeps the contract reusable across:
 - CLI flows that later call a session-spawn tool

@@ -87,6 +87,8 @@ const buildOpenClawArgs = (request, label) => ({
   label,
   mode: request.mode,
   runtime: request.runtime,
+  attachments: request.attachments,
+  thread: request.thread,
 });
 
 const buildOpenClawPayload = (request, label) => ({
