@@ -2,47 +2,52 @@
 
 ## Setup Requirements
 
-### .env setup
-- copy .env.example and update the placeholder value
-- in root folder, create .env file and update the placeholder value
+### `.env` setup
+- Copy `.env.example` and replace the placeholder values.
+- Create `.env` in the repository root and update the required values:
 ```bash
 mcp360_token=<mcp360_token>
 ```
+
 ### Jira setup
-1. Skills needed: jira-cli
-2. instal jira-cli for mac os; (for other os, [please refer to github] (https://github.com/ankitpokhrel/jira-cli/wiki/Installation))
-``` bash
+1. Required skill: `jira-cli`
+2. Install `jira-cli` on macOS. For other platforms, refer to the [GitHub installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/Installation).
+```bash
 brew tap ankitpokhrel/jira-cli
 brew install jira-cli
 ```
-3. jira token installation
-- [for self usage](https://github.com/ankitpokhrel/jira-cli)
-- for project purpose. add below to .env file
+3. Configure Jira authentication:
+- For personal usage, refer to the [`jira-cli` documentation](https://github.com/ankitpokhrel/jira-cli).
+- For this project, add the following values to `.env`:
 ```bash
 JIRA_API_TOKEN=<jira-api-token>
 JIRA_BASE_URL=<jira-base-url>
 ```
-- [to refresh your token](https://id.atlassian.com/manage-profile/security/api-tokens)
+- To refresh your token, use the [Atlassian API token page](https://id.atlassian.com/manage-profile/security/api-tokens).
+4. Run `jira init` to finish setup.
 
-4. run `jira init` to setup environment
-
-### Confluence Setup
-1. Skills needed: confluence-cli
-2. instal confluence-cli for mac os; (for other os, [please refer to github] (https://github.com/pchuri/confluence-cli))
-``` bash
+### Confluence setup
+1. Required skill: `confluence-cli`
+2. Install `confluence-cli` on macOS. For other platforms, refer to the [GitHub project](https://github.com/pchuri/confluence-cli).
+```bash
 npm install -g confluence-cli
 ```
-3. run `confluence init` to setup environment
+3. Run `confluence init` to finish setup.
 
-
-### mcporter setup
-1. Skills needed: mcporter
-2. instal mcporter for mac os; (for other os, [please refer to github] (https://github.com/mcporter-dev/mcporter))
-``` bash
+### Mcporter setup
+1. Required skill: `mcporter`
+2. Install `mcporter` on macOS. For other platforms, refer to the [GitHub project](https://github.com/mcporter-dev/mcporter).
+```bash
 npm install -g mcporter
 ```
-3. install playwright mcp server:  ```npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest" ```
-4. list installed servers: ```mcporter list```
+3. Install the Playwright MCP server:
+```bash
+npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest"
+```
+4. List installed servers:
+```bash
+mcporter list
+```
 
 ## Skills Structure
 
@@ -72,9 +77,15 @@ Agent-scoped skills live only in that workspace’s `skills/` folder:
 - **Workspace-only:** skill is tied to a single agent’s responsibilities → keep in that workspace and remove extra copies.
 
 ### Usage of Shared Skills
-- skills under `.agents/skills` are available to codex
-- for openclaw, needs coping skills into `~/.openclaw/skills`
-- for global skills that installed from skills.sh, needs manually install (so it's easy to keep up to date).
+- Skills under `.agents/skills` are available to Codex directly from this repository.
+- OpenClaw loads skills from `~/.openclaw/skills`, so initialize the shared local skills with either command:
+```bash
+./src/init-skills
+make init-skills
+```
+- `init-skills` resolves the repository path relative to the script location and copies every skill from `.agents/skills` into `~/.openclaw/skills` without hard-coded absolute paths.
+- `make init-skills` is a convenience wrapper around the same script.
+- Global third-party skills that come from external repositories should still be installed manually so they stay explicit and easy to update:
 ```bash
 npx skills add https://github.com/anthropics/skills --skill skill-creator
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
