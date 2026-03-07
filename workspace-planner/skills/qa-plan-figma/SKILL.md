@@ -10,6 +10,7 @@ Generate comprehensive QA domain summaries by analyzing Figma designs, focusing 
 ## When to Use
 
 - User provides a Figma URL or file key for QA planning
+- A Figma URL is discovered from Jira or Confluence web links during context gathering
 - User asks to "extract UI testing context from Figma design"
 - User mentions "UI testing from design" or "E2E workflow from Figma"
 - Creating test findings based on design specifications
@@ -21,7 +22,11 @@ Generate comprehensive QA domain summaries by analyzing Figma designs, focusing 
 
 ## Workflow
 
-### Step 0: Read the Figma Design & Create Reference Materials
+### Step 0: Resolve the Figma Link and Create Reference Materials
+
+If the user did not provide a Figma URL directly, first look for a persisted `figma_link_<feature-id>.md` artifact from Jira/Confluence context gathering and use that discovered link.
+
+### Step 1: Read the Figma Design & Create Reference Materials
 
 **0.1: Fetch Figma Design Data**
 - If full nodes are too large, split design into smaller frames

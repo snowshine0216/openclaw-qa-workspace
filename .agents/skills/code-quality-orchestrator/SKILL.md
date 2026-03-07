@@ -33,6 +33,60 @@ Do not skip calls. If a call cannot run, state the blocker and stop.
 
 Use the gate checklist in `references/workflow-checklist.md`.
 
+## Directory Structure
+
+Avoid flat layouts. Use layered structure so scripts, reusable logic, and tests have clear homes.
+
+### Preferred Structure
+
+```
+<skill-or-project>/
+├── scripts/           # Entry points, CLI, orchestration
+│   ├── lib/           # Shared logic, helpers, pure functions
+│   │   ├── foo.js
+│   │   └── bar.js
+│   ├── main.sh
+│   └── run-foo.sh
+├── tests/             # Test specs (mirror lib/ or scripts/)
+│   ├── test-foo.js
+│   └── test-bar.js
+└── ...
+```
+
+Rules:
+
+- **scripts/** — Entry points and orchestration only. Keep thin; delegate to `lib/`.
+- **scripts/lib/** — Reusable logic, pure functions, helpers. Testable in isolation.
+- **tests/** — Dedicated test folder. Do not colocate tests inside `scripts/` or `lib/` as flat siblings.
+
+### Anti-Patterns (Flat Structure)
+
+```
+# BAD: everything in one flat folder
+scripts/
+├── main.sh
+├── foo.js
+├── bar.js
+├── test-foo.js
+└── test-bar.js
+```
+
+```
+# BAD: tests mixed with implementation
+scripts/
+├── lib/
+│   ├── foo.js
+│   └── test-foo.js   # tests belong in tests/
+```
+
+### When to Apply
+
+- Creating new skills or projects.
+- Adding scripts to existing skills.
+- Refactoring flat layouts into `scripts/` → `lib/` + `tests/`.
+
+Invoke `code-structure-quality` to validate structure during implementation and refactor phases.
+
 ## Workflow
 
 ### Phase 0: Scope and Behavior Matrix
@@ -97,11 +151,13 @@ Use this exact `Quality Gates` checklist:
 - [ ] Integration coverage for changed collaboration/IO flows
 - [ ] Bare-minimum mocks used
 - [ ] DRY ownership and structure constraints satisfied
+- [ ] Directory structure: scripts → lib, tests in dedicated folder (no flat layout)
 - [ ] Function length policy satisfied or exceptions logged
 - [ ] Final tests pass
 
 ## Anti-Patterns
 
+- Flat directory layout: scripts, lib, and tests in one folder without separation.
 - Writing production code before failing tests exist.
 - Mocking internal implementation details instead of testing behavior.
 - Skipping review and moving directly to refactor.

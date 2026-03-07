@@ -139,6 +139,33 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 
+### 🛠️ Using Skills - MANDATORY PROTOCOL
+
+**Before using ANY skill:**
+
+1. **Read the skill's SKILL.md first** — check Prerequisites section
+2. **Verify prerequisites are met** before running commands:
+   - Check if tools are installed
+   - Check if config files exist (read, don't assume)
+   - Check if credentials/env vars are set
+3. **Never blindly overwrite files** (especially `.env`, config files):
+   - Always `read` first to see what's there
+   - Only create/modify if needed
+   - Use `>>` to append, not `>` to overwrite
+4. **If a command fails, check prerequisites again** before retrying
+
+**Example (jira-cli):**
+```bash
+# ✅ CORRECT
+cat ~/.config/.jira/.config.yml  # Check if jira init was run
+cat .env  # Check if credentials exist before creating
+# Only then run jira commands
+
+# ❌ WRONG
+jira issue view ISSUE-123  # Just run and see what happens
+cat > .env << EOF  # Blindly overwrite
+```
+
 
 
 ## 💓 Heartbeats - Be Proactive!

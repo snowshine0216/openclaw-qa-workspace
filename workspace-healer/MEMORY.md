@@ -57,10 +57,7 @@ _Knowledge accumulated about agents, skills, code patterns, and configurations._
 
 ## Lessons Learned
 
-### 2026-03-07: Role Expansion
-- Primary role shifted from pure config to agent development
-- New priorities: agent setup → skills → coding → config
-- Added `skill-creator` and `code-quality-orchestrator` workflows
+- Snow preference: when I update shared skills that exist in both the workspace and `~/.agents`, sync both copies by default, but record this convention only in memory unless explicitly asked to document it elsewhere.
 
 ## Config Backup Strategy
 
