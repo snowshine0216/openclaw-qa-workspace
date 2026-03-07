@@ -23,11 +23,22 @@ The main synthesizer must not act as the sole author of all test cases from raw 
 
 ## Output Modes
 
-| `output_mode` | Used in | Produces |
-|---|---|---|
-| `"qa_plan_only"` | Phase 2 (QA plan draft sub-agent) | `drafts/qa_plan_v<N+1>.md` — all sections EXCEPT test key points |
-| `"xmind_only"` | Phase 3 (main agent synthesis) | `drafts/test_key_points_xmind_v<N+1>.md` — unified XMind test cases |
-| `"dual"` | Legacy / one-shot runs | Both outputs |
+**Default: `"xmind_only"`** — use this unless you have a specific reason not to.
+
+| `output_mode` | Default? | Used in | Produces |
+|---|---|---|---|
+| `"xmind_only"` | ✅ **Default** | Phase 3 (main agent synthesis) | `drafts/test_key_points_xmind_v<N+1>.md` — unified XMind test cases |
+| `"qa_plan_only"` | — | Phase 2 (QA plan draft sub-agent) | `drafts/qa_plan_v<N+1>.md` — all sections EXCEPT test key points |
+| `"dual"` | — | Legacy / one-shot runs without Phase 2 sub-agents | Both outputs in one pass |
+
+### When to use which mode
+
+```
+Do you have sub_test_cases_*.md files already generated (Phase 2 done)?
+  YES → use "xmind_only"   ← most common, this is the default
+  NO, and you only want the QA plan narrative sections → use "qa_plan_only"
+  NO, and you want everything in one shot (no sub-agents) → use "dual"
+```
 
 ## Prerequisites
 
