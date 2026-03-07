@@ -17,40 +17,128 @@ The main synthesizer must not act as the sole author of all test cases from raw 
 
 ## When to Use
 
-- User has run multiple QA domain analysis skills (figma, github, atlassian)
+- Orchestrator calls this skill in **Phase 2** (QA plan draft sections only — no test key points)
+- Orchestrator calls this skill in **Phase 3** (XMind test case synthesis from sub test case files)
 - User asks to "consolidate QA plans" or "merge QA analysis"
-- User wants a "comprehensive QA plan" combining all sources
-- Orchestrator calls this skill in Phase 2 (Synthesis)
+
+## Output Modes
+
+| `output_mode` | Used in | Produces |
+|---|---|---|
+| `"qa_plan_only"` | Phase 2 (QA plan draft sub-agent) | `drafts/qa_plan_v<N+1>.md` — all sections EXCEPT test key points |
+| `"xmind_only"` | Phase 3 (main agent synthesis) | `drafts/test_key_points_xmind_v<N+1>.md` — unified XMind test cases |
+| `"dual"` | Legacy / one-shot runs | Both outputs |
 
 ## Prerequisites
 
-At least ONE of the following domain summaries should exist:
-- `projects/feature-plan/<feature-id>/context/qa_plan_figma_<feature_id>.md`
-- `projects/feature-plan/<feature-id>/context/qa_plan_github_<feature_id>.md`
-- `projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_<feature_id>.md` (Required for P1 assignment)
-- `projects/feature-plan/<feature-id>/context/qa_plan_atlassian_<feature_id>.md`
-- `projects/feature-plan/<feature-id>/context/qa_plan_background_<feature_id>.md` (Optional)
-- `projects/feature-plan/<feature-id>/context/qa_plan_defect_analysis_<feature_id>.md` (Optional)
+For `qa_plan_only` mode — at least ONE context summary must exist:
+- `context/qa_plan_atlassian_<feature-id>.md`
+- `context/qa_plan_github_<feature-id>.md`
+- `context/qa_plan_github_traceability_<feature-id>.md` (Required for P1 assignment)
+- `context/qa_plan_figma_<feature-id>.md` (Optional)
+- `context/qa_plan_background_<feature-id>.md` (Optional)
+
+For `xmind_only` mode — at least ONE sub test case file must exist:
+- `context/sub_test_cases_jira_<feature-id>.md`
+- `context/sub_test_cases_confluence_<feature-id>.md`
+- `context/sub_test_cases_github_<feature-id>.md`
+- `context/sub_test_cases_figma_<feature-id>.md` (Optional)
+
+Research files (optional but used during Synthesis Step B):
+- `research_*.md` in the feature folder
 
 ## Input Parameters
 
 ```javascript
+// Phase 2 — QA plan draft only
 {
   feature_id: "BCIN-6709",
+  output_mode: "qa_plan_only",
   context_files: [
     "context/qa_plan_atlassian_BCIN-6709.md",
     "context/qa_plan_github_BCIN-6709.md",
     "context/qa_plan_github_traceability_BCIN-6709.md",
-    "context/qa_plan_figma_BCIN-6709.md"
+    "context/qa_plan_figma_BCIN-6709.md"          // if exists
   ],
-  output_mode: "dual", // "single" (legacy) or "dual" (new)
+  output: "drafts/qa_plan_v<N+1>.md",
+  priority_rules: "docs/priority-assignment-rules.md"
+}
+
+// Phase 3 — XMind test case synthesis only
+{
+  feature_id: "BCIN-6709",
+  output_mode: "xmind_only",
+  sub_testcase_files: [                            // PRIMARY inputs for synthesis
+    "context/sub_test_cases_jira_BCIN-6709.md",
+    "context/sub_test_cases_confluence_BCIN-6709.md",
+    "context/sub_test_cases_github_BCIN-6709.md",
+    "context/sub_test_cases_figma_BCIN-6709.md"   // if exists
+  ],
+  context_files: [                                 // SECONDARY — used for research step only
+    "context/qa_plan_atlassian_BCIN-6709.md",
+    "context/qa_plan_github_BCIN-6709.md",
+    "context/qa_plan_github_traceability_BCIN-6709.md"
+  ],
+  research_files: [                                // TERTIARY — used for research step only
+    "research_modeling_service.md"                 // any research_*.md files present
+  ],
+  output: "drafts/test_key_points_xmind_v<N+1>.md",
+  priority_rules: "docs/priority-assignment-rules.md"
+}
+
+// Legacy dual mode
+{
+  feature_id: "BCIN-6709",
+  output_mode: "dual",
+  context_files: [...],
   outputs: {
     main_plan: "drafts/qa_plan_v<N+1>.md",
-    xmind_tests: "test_key_points_xmind.md"
+    xmind_tests: "drafts/test_key_points_xmind_v<N+1>.md"
   },
-  priority_rules: "docs/priority-assignment-rules.md" // path to priority logic
+  priority_rules: "docs/priority-assignment-rules.md"
 }
 ```
+
+## Core Synthesis Protocol (Mandatory — 3-Step)
+
+Before running any step below, apply this top-level synthesis protocol to ALL input items:
+
+### Synthesis Step A: Collect Everything (Merge First)
+1. Read every `sub_testcase_files` input in order: jira → confluence → github → figma (if present).
+2. Copy ALL items from ALL files into one combined raw list. Do NOT filter, skip, or evaluate any item at this stage — not for vagueness, not for technicality, not for apparent duplication.
+3. Annotate each item with its source file (e.g. `[src: confluence]`, `[src: jira]`) so Step C can track origin.
+4. Retain duplicates — they will be merged in Step C only after Step B resolves actionability.
+
+### Synthesis Step B: Research Non-Actionable Items
+An item is **non-actionable** if it contains:
+- Abstract category descriptions without concrete user steps (e.g., "normal report manipulations", "modeling-service-based change")
+- Code-internal terminology that cannot be directly observed in the UI (e.g., "cmdMgr.reset() called", "isReCreateReportInstance flag")
+- Vague conditionals ("when an error occurs", "after recovery") with no specified trigger action
+
+For each non-actionable item:
+
+1. **Search available context first** (in priority order):
+   - Existing research files: `research_*.md` in the feature folder
+   - Confluence design doc: `context/confluence.md` or `context/qa_plan_atlassian_*.md`
+   - GitHub diffs and summaries: `context/qa_plan_github_*.md`, `context/github_*_summary.txt`
+   - Traceability file: `context/qa_plan_github_traceability_*.md`
+
+2. **Try to resolve**:
+   - If context clarifies the action → rewrite item as concrete user action + observable result
+   - Example: "modeling-service manipulation" → resolve to specific UI actions (e.g., "Change join type via right-click menu", "Modify row limit in Advanced Properties", "Add/remove template attribute")
+   - Example: "normal report manipulations" → resolve to specific UI actions (e.g., "Change cell font", "Resize column width", "Reorder rows")
+
+3. **If research cannot resolve**:
+   - Keep the item in the output
+   - Append a comment: `<!-- TODO: Cannot specify concrete action — clarify what user steps trigger this behavior -->`
+   - Do NOT delete or skip the item
+
+### Synthesis Step C: Deduplicate
+- After all items are collected and researched, identify semantic duplicates
+- Merge duplicates into the most specific/concrete version
+- Keep source attribution (which domain each item came from)
+
+---
 
 ## Workflow
 
@@ -226,6 +314,8 @@ Use `templates/test-case-template.md` as the authoring scaffold, but strip all i
 8. **Annotation removal**: Strip placeholders such as `[(STEP)]`, `[(EXPECTED RESULT)]`, `([MAIN CATEGORY WITH PRIORITY])`, and similar template notes before saving final markdown
 
 ### Step 4: Translation + Actionability Pass (Mandatory)
+
+> **Note**: Steps A–C of the Core Synthesis Protocol above must complete before this step. By the time you reach Step 4, all items have already been researched and the non-actionable ones have been rewritten or flagged with `<!-- TODO -->`. This step finalizes the translation pass.
 
 Before writing any test scenario, translate code vocabulary:
 
@@ -465,5 +555,5 @@ Full rules documented in `docs/priority-assignment-rules.md`, summarized here:
 
 ---
 
-**Last Updated**: 2026-03-07  
-**Status**: Active — Enhanced with dual-output and smart priority assignment
+**Last Updated**: 2026-03-07
+**Status**: Active — output_mode split (qa_plan_only / xmind_only / dual), sub_testcase_files as primary xmind input, 3-step synthesis protocol (Collect → Research → Deduplicate)
