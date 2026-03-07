@@ -1,8 +1,46 @@
-# MEMORY.md - OpenClaw Config Agent Long-Term Memory
+# MEMORY.md - Agent Development & Configuration Long-Term Memory
 
-_Configuration knowledge and lessons learned._
+_Knowledge accumulated about agents, skills, code patterns, and configurations._
 
-## Common Config Patterns
+## Agent Design Patterns
+
+*(To be filled as you design agents)*
+
+### Workspace Structure Best Practices
+- Always include: SOUL.md, AGENTS.md, IDENTITY.md, USER.md, TOOLS.md, MEMORY.md
+- Create memory/ directory for daily logs
+- Use skills/ for agent-specific skills
+
+## Skills Creation Patterns
+
+*(To be filled as you create skills)*
+
+### Skill Triggers
+- Be specific about when skill activates
+- Include both positive (use when) and negative (do NOT use for) examples
+
+### Skill Workflows
+- Break into clear phases
+- Document tools needed at each phase
+- Include validation steps
+
+## Code Quality Patterns
+
+*(To be filled as you review code)*
+
+### TDD Workflow
+- Write test first, see it fail
+- Implement minimal code to pass
+- Refactor while tests stay green
+- Coverage target: ≥80%
+
+### Code Structure
+- Functions ≤20 lines (document exceptions)
+- Clear separation: pure logic vs side effects
+- DRY principle applied
+- Modular boundaries
+
+## Configuration Patterns
 
 ### Routing Best Practices
 - Most specific bindings first (peer → guild → account → channel)
@@ -19,7 +57,10 @@ _Configuration knowledge and lessons learned._
 
 ## Lessons Learned
 
-*(To be filled as you solve config issues)*
+### 2026-03-07: Role Expansion
+- Primary role shifted from pure config to agent development
+- New priorities: agent setup → skills → coding → config
+- Added `skill-creator` and `code-quality-orchestrator` workflows
 
 ## Config Backup Strategy
 
@@ -29,4 +70,4 @@ _Configuration knowledge and lessons learned._
 
 ---
 
-*Last updated: 2026-02-23*
+*Last updated: 2026-03-07*
