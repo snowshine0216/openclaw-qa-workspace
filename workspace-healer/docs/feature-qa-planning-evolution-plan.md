@@ -120,34 +120,41 @@ Evolve the `feature-qa-planning-orchestrator` skill to:
 
 ### Phase 6: Recovery Plan for Test-Case Quality Gaps
 - [ ] 6.1: Rebuild context acquisition quality gates
-  - [ ] Require Jira issue content fetch success for the main feature and all related issues discovered via Jira skill query and comment references
-  - [ ] Persist Jira issue content into standard context artifacts (not just summaries)
-  - [ ] Extract Figma links from Jira/Confluence web links when present
-  - [ ] Fail generation if required Jira content is missing
+  - [x] Require Jira issue content fetch success for the main feature and all related issues discovered via Jira skill query and comment references
+  - [x] Persist Jira issue content into standard context artifacts (not just summaries)
+  - [x] Extract Figma links from Jira/Confluence web links when present
+  - [x] Fail generation if required Jira content is missing
 - [ ] 6.2: Rebuild GitHub acquisition quality gates
-  - [ ] Require GitHub diff fetch success when PR URLs are provided or discovered from Jira/comments
-  - [ ] Persist GitHub diff evidence and traceability artifacts into context/
-  - [ ] Fail generation if required GitHub diff content is missing
-- [ ] 6.3: Tighten test-case generation rules
-  - [ ] Enforce strict category coverage from `templates/test-case-template.md`
-  - [ ] Keep every template category even if not applicable
-  - [ ] Add one-sentence explanation leaf for non-applicable categories
-  - [ ] Rewrite vague or technical items into executable user actions with concrete triggers
-  - [ ] Add explicit supported vs unsupported error boundaries when relevant
-  - [ ] Add missing domains such as Workstation and i18n when required by feature context
-- [ ] 6.4: Strengthen review/refactor quality gates
+  - [x] Require GitHub diff fetch success when PR URLs are provided or discovered from Jira/comments
+  - [x] Persist GitHub diff evidence and traceability artifacts into context/
+  - [x] Fail generation if required GitHub diff content is missing
+- [ ] 6.3: Re-architect test-case generation around subagents
+  - [ ] Make priority rules mandatory in synthesis and review skills
+  - [ ] Spawn subagents per source/domain to create sub test cases using the template
+  - [ ] Require Jira sub test cases, Confluence sub test cases, and GitHub sub test cases before final synthesis
+  - [ ] Synthesize domain sub test cases into one unified test-case draft
+- [ ] 6.4: Re-architect review around subagents
+  - [ ] Spawn Jira review subagent
+  - [ ] Spawn Confluence review subagent
+  - [ ] Spawn GitHub review subagent
+  - [ ] Synthesize review findings into one action list
+- [ ] 6.5: Strengthen quality gates
   - [ ] Reject outputs missing template categories
   - [ ] Reject outputs with vague trigger conditions
   - [ ] Reject outputs without sufficient Jira/Confluence/GitHub grounding
+  - [ ] Reject outputs with incorrect priority assignment
   - [ ] Reject outputs that are not executable by QA
-- [ ] 6.5: Add automated coverage
-  - [ ] Add unit tests for category completeness and annotation stripping rules
-  - [ ] Add integration tests for context-fetch requirements and generation gates
-  - [ ] Add regression fixtures for BCIN-6709-style scenarios
-- [ ] 6.6: Re-run BCIN-6709 end-to-end after fixes
-  - [ ] Re-fetch Jira/linked issues
-  - [ ] Re-fetch GitHub diffs
-  - [ ] Re-generate draft outputs
+- [ ] 6.6: Add automated coverage
+  - [x] Add unit tests for category completeness and annotation stripping rules
+  - [x] Add integration tests for context-fetch requirements and generation gates
+  - [ ] Add regression fixtures for sub test-case generation and synthesis
+- [ ] 6.7: Re-test sub test-case generation
+  - [ ] Spawn domain-specific sub test-case generation runs
+  - [ ] Verify each subagent stays within its source scope
+  - [ ] Verify main synthesis uses all sub test-case artifacts
+- [ ] 6.8: Re-run BCIN-6709 end-to-end after fixes
+  - [ ] Re-generate draft outputs from domain sub test cases
+  - [ ] Run domain review subagents and synthesize findings
   - [ ] Run review/refactor again
   - [ ] Re-publish only with user approval
 

@@ -1,19 +1,40 @@
 # Examples: Jira CLI Skill
 
-## Update issue description from RCA markdown
+## Update issue description from RCA markdown (MERGE mode - default)
+
+**By default, this will MERGE new content with existing description** (safe, non-destructive):
 
 ```bash
 bash .agents/skills/jira-cli/scripts/build-adf.sh \
   .agents/skills/jira-cli/scripts/templates/sample-rca.md \
   /tmp/BCIN-5286-description.json
 
+# Preview merge result
 bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
   --issue BCIN-5286 \
   --description-file /tmp/BCIN-5286-description.json \
   --update-description
+
+# Post merged description
+bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
+  --issue BCIN-5286 \
+  --description-file /tmp/BCIN-5286-description.json \
+  --update-description \
+  --post
 ```
 
-Add `--post` only when the target issue is a sandbox issue and you are ready to write.
+## Update issue description (OVERWRITE mode - explicit)
+
+**Use --overwrite to replace description entirely** (destructive, skips merge):
+
+```bash
+bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
+  --issue BCIN-5286 \
+  --description-file /tmp/BCIN-5286-description.json \
+  --update-description \
+  --overwrite \
+  --post
+```
 
 ## Resolve a mention target from email
 
@@ -43,7 +64,7 @@ bash .agents/skills/jira-cli/scripts/build-comment-payload.sh \
   --output /tmp/BCIN-5286-comment.json
 ```
 
-## Publish description and comment together on a sandbox issue
+## Publish description and comment together on a sandbox issue (MERGE mode)
 
 ```bash
 bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
@@ -54,6 +75,8 @@ bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
   --add-comment \
   --post
 ```
+
+This will **merge** the new description with existing content, then add a comment.
 
 ## Partial-success path when owner resolution is missing
 

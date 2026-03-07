@@ -18,12 +18,22 @@ Perform rigorous, professional review of QA plans to ensure technical excellence
 
 **Required Files**:
 - Comprehensive QA plan file (from orchestrator or manual creation)
+- Current intermediate artifacts used to generate the draft
 
-**Optional Context**:
-- Background context (Tavily search outputs)
-- Design documents (Confluence)
-- Code changes (GitHub PR)
-- Requirements (Jira issues)
+**Mandatory Review Context**:
+- Background context artifacts
+- Design documents (Confluence artifacts and/or live Confluence lookup)
+- Code changes (GitHub PR/compare artifacts)
+- Requirements (Jira issue artifacts)
+
+Do not review the draft in isolation when intermediate artifacts exist. Artifact-grounded review is mandatory.
+
+When the orchestrator supports domain review subagents, the main review flow must spawn separate review passes for Jira, Confluence, and GitHub before synthesizing one combined review outcome.
+
+After the combined review, run a focused priority review pass on the test-case artifact:
+- re-check P0 vs P1 vs P2 vs P3 against the evidence-based priority rules
+- downgrade scenarios that cannot be defended as direct core-fix / changed-behavior coverage
+- move mixed-priority categories to sub-category or scenario-level priority markers when needed
 
 ## Review Framework
 
@@ -48,8 +58,14 @@ For the separate test-case markdown artifact, additionally verify:
 - triggers are specific enough for QA to execute without guessing
 - expected results are observable by QA
 - final exported markdown is clean and free of template instructions
-- Workstation / i18n / xfunc coverage appears when required by Jira, Confluence, or GitHub evidence
+- Workstation / i18n / xfunc coverage appears when required by Jira, Confluence, GitHub, background, or Figma evidence
+- every major scenario can be traced back to current intermediate artifacts or justified by follow-up research performed during review
+- P1 scenarios are truly direct-change/core-fix scenarios
+- P2 scenarios are affected-area / xfunc / compatibility scenarios
+- P3 scenarios are retained-template / low-priority / nice-to-have scenarios
+- if a scenario cannot be defended as P1 from evidence, it must not remain P1
 | **Actionability of Test Cases** | Headings and scenarios are written as user-observable actions, not implementation jargon |
+| **Priority Correctness** | P1/P2/P3 are assigned according to the skill's mandatory evidence-based priority rules |
 
 ## Workflow
 
@@ -63,30 +79,35 @@ projects/feature-plan/<feature-id>/drafts/qa_plan_v<N>.md   # N = latest version
 # or: projects/feature-plan/<feature-id>/qa_plan_final.md
 ```
 
-### Step 2: Gather Context (Optional but Recommended)
+### Step 2: Gather Context (Mandatory When Artifacts Exist)
+
+Read the current intermediate artifacts first to verify claims. This is required when the orchestrator/context-gathering workflow has already produced Jira, Confluence, GitHub, background, or Figma artifacts.
+
+If the draft is unclear, under-evidenced, or ambiguous after reading the current artifacts, do follow-up research before finalizing review findings.
 
 **Read source documents** to verify claims:
 
-**Atlassian (Requirements)**:
+**Atlassian (Requirements / Design)**:
+- Read current Jira and Confluence intermediate artifacts first.
+- If not clear enough, use the canonical shared skills to research live sources:
+
+```bash
+# Jira follow-up research
+cd /path/to/workspace-planner
+source ~/.openclaw/skills/jira-cli/scripts/lib/jira-env.sh
+load_jira_env
+jira issue view <ISSUE-KEY> --plain --comments 50
+bash ~/.openclaw/skills/jira-cli/scripts/search-jira.sh --jql '<JQL>' --plain
 ```
-Tool: CallMcpTool
-Server: user-mcp-atlassian
-Tool Name: confluence_get_page
-Arguments: { "page_id": "<from QA plan>" }
+
+```bash
+# Confluence follow-up research
+# Use the canonical shared confluence skill workflow / wrapper path
 ```
 
 **GitHub (Code Changes)**:
-```
-Tool: CallMcpTool
-Server: user-github
-Tool Name: pull_request_read
-Arguments: {
-  "method": "get_diff",
-  "owner": "<owner>",
-  "repo": "<repo>",
-  "pullNumber": <number>
-}
-```
+- Read current GitHub intermediate artifacts first.
+- If not clear enough, use the canonical shared GitHub skill/workflow to inspect PRs, diffs, and compare evidence.
 
 **For large contexts**: Save key findings to temp file:
 ```

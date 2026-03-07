@@ -188,9 +188,28 @@ Required `run.json` fields:
 
 **Note**: Phase 2 (Domain Analysis) is now merged into Phase 1 via sub-agents. Legacy Phase 2 removed.
 
-### Phase 2 — Synthesis and Dual-Output Generation (UPDATED)
+### Phase 2 — Domain Sub Test-Case Generation (UPDATED)
 
-**Overview**: Synthesize all context into TWO outputs: main QA plan + XMind test cases.
+**Overview**: Spawn domain-specific subagents to generate sub test cases from their own evidence before any main synthesis happens.
+
+Required domain generation subagents:
+- Jira / requirements sub test-case generator
+- Confluence / design sub test-case generator
+- GitHub / code-change sub test-case generator
+- Figma / UI sub test-case generator when Figma evidence is available
+
+Each domain subagent must:
+- use the test-case template as its scaffold
+- stay within its own source evidence scope
+- generate a domain-level sub test-case artifact
+- assign priorities using the mandatory priority rules
+- avoid final synthesis across other domains
+
+The main agent then synthesizes those sub test-case artifacts into the unified test-case draft.
+
+### Phase 3 — Synthesis and Dual-Output Generation (UPDATED)
+
+**Overview**: Synthesize all context plus domain sub test-case artifacts into TWO outputs: main QA plan + XMind test cases.
 
 1. Set `task.json.current_phase` to `phase_2_synthesis`; set `task.json.phases.plan_generation.status` to `in_progress`; update `task.json.updated_at`.
 
@@ -236,7 +255,18 @@ Required `run.json` fields:
 
 8. When synthesis completes, set `task.json.phases.plan_generation.status` to `completed`, record both output paths, update `task.json.updated_at`, and advance `task.json.current_phase` to `phase_3_review_refactor`.
 
-### Phase 3 — Review and Refactor Loop (UPDATED)
+### Phase 4 — Domain Review Loop (UPDATED)
+
+Spawn review subagents by domain/context before final refactor:
+- Jira review subagent
+- Confluence review subagent
+- GitHub review subagent
+- Figma review subagent when Figma evidence materially shaped output
+
+Each review subagent must review the generated outputs against its own domain evidence and return source-grounded findings only.
+The main agent then synthesizes those findings into one refactor action list.
+
+### Phase 5 — Review and Refactor Loop (UPDATED)
 
 1. Set `task.json.current_phase` to `phase_3_review_refactor`; set `task.json.phases.review_refactor.status` to `in_progress`; update `task.json.updated_at`.
 

@@ -50,10 +50,21 @@ bash .agents/skills/jira-cli/scripts/build-comment-payload.sh \
   --text "Executive summary is ready." \
   --mentions-file .agents/skills/jira-cli/scripts/templates/mentions.sample.json \
   --output /tmp/comment.json
+
+# Merge mode (DEFAULT): appends new content to existing description
 bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
   --issue ABC-1 \
   --description-file output.json \
-  --update-description
+  --update-description \
+  --post
+
+# Overwrite mode (EXPLICIT): replaces description entirely
+bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
+  --issue ABC-1 \
+  --description-file output.json \
+  --update-description \
+  --overwrite \
+  --post
 ```
 
 ## Recommended Workflow
@@ -63,7 +74,9 @@ bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
 3. Resolve mention candidates with `scripts/resolve-jira-user.sh`; it prefers exact matches, supports safe direct accountId bypass, and returns explicit candidate lists when the result is ambiguous.
 4. Build the final comment payload with `scripts/build-comment-payload.sh`.
 5. Preview the final description/comment payloads with `scripts/jira-publish-playground.sh`.
-6. Add `--post` only when writing to a sandbox issue is intended.
+6. **By default, `--update-description` merges new content with existing description** (safe, non-destructive).
+7. Use `--overwrite` flag only when you need to replace the description entirely (destructive).
+8. Add `--post` only when writing to a sandbox issue is intended.
 
 ## Manual Testing Playground
 
