@@ -65,3 +65,42 @@ bash .agents/skills/jira-cli/scripts/build-comment-payload.sh \
 ```
 
 Use only the fixed stakeholder mention until owner evidence is traceable.
+
+## Find issues linked or parented to a Jira ticket
+
+```bash
+bash .agents/skills/jira-cli/scripts/search-jira.sh \
+  --jql 'issue in linkedIssues("BCIN-6709") OR parent = BCIN-6709 OR "Parent Link" = BCIN-6709' \
+  --plain \
+  --columns key,summary,status,priority,assignee
+```
+
+Use this when you want a single query that catches standard links, subtasks, and Advanced Roadmaps parent links.
+
+## Find this week's high-priority issues across multiple projects
+
+```bash
+bash .agents/skills/jira-cli/scripts/search-jira.sh \
+  --jql 'project in (BCFR, BCEN, BCED, BCDA, BCVE, BCIN) AND priority in (High, Highest) AND created >= startOfWeek()' \
+  --plain \
+  --columns key,summary,priority,status,assignee
+```
+
+Adjust the project list, priority set, or date window to match the reporting scope you need.
+
+## Inspect a single issue before building follow-up JQL
+
+```bash
+bash .agents/skills/jira-cli/scripts/jira-run.sh issue view BCIN-6709 --raw | jq '{
+  key: .key,
+  parent: .fields.parent.key,
+  issuelinks: [.fields.issuelinks[]? | {
+    type: .type.name,
+    inward: .inwardIssue.key,
+    outward: .outwardIssue.key
+  }],
+  subtasks: [.fields.subtasks[]? | {key, summary: .fields.summary}]
+}'
+```
+
+Use raw issue output when you need to confirm which relationship fields are populated before writing a broader search.

@@ -69,7 +69,7 @@ jira_read_env_var() {
 }
 
 load_jira_env() {
-  local env_file token base_url
+  local env_file token base_url server_url
   env_file=$(jira_env_file)
   [[ -n "$env_file" ]] || {
     echo "Unable to find Jira .env file in workspace or repo root" >&2
@@ -77,10 +77,15 @@ load_jira_env() {
   }
   token=$(jira_read_env_var JIRA_API_TOKEN "$env_file")
   base_url=$(jira_read_env_var JIRA_BASE_URL "$env_file")
+  server_url=$(jira_read_env_var JIRA_SERVER "$env_file")
   [[ -n "$token" ]] || {
     echo "JIRA_API_TOKEN is missing from $env_file" >&2
     return 1
   }
   export JIRA_API_TOKEN="$token"
-  [[ -n "$base_url" ]] && export JIRA_BASE_URL="$base_url"
+  if [[ -n "$base_url" ]]; then
+    export JIRA_BASE_URL="$base_url"
+  elif [[ -n "$server_url" ]]; then
+    export JIRA_BASE_URL="$server_url"
+  fi
 }

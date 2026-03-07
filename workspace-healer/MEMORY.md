@@ -19,7 +19,7 @@ _Configuration knowledge and lessons learned._
 
 ## Lessons Learned
 
-*(To be filled as you solve config issues)*
+- Snow preference: when I update shared skills that exist in both the workspace and `~/.agents`, sync both copies by default, but record this convention only in memory unless explicitly asked to document it elsewhere.
 
 ## Config Backup Strategy
 

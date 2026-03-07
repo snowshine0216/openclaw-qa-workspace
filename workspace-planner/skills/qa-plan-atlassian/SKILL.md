@@ -1,6 +1,6 @@
 ---
 name: qa-plan-atlassian
-description: Generate QA domain summaries by analyzing Atlassian Confluence design documents and Jira issues to understand requirements and background. Use when the user asks to extract QA findings from Confluence, analyze Jira tickets for testing, or mentions "QA summary from requirements", "Confluence analysis", or "Jira issue testing".
+description: Generate QA domain summaries by analyzing Atlassian Confluence design documents and Jira issues to understand requirements and background. Sub-agent compatible — can be spawned by orchestrator for parallel context gathering. Always fetches linked Jira issues plus testing-relevant issue references surfaced in Jira comments; fails closed when required Jira issue content is missing.
 ---
 
 # QA Plan Domain Summary Generator from Atlassian (Confluence & Jira)
@@ -9,20 +9,59 @@ Generate comprehensive QA domain summaries by analyzing Confluence design docume
 
 ## When to Use
 
+### Direct Invocation
 - User provides Confluence page URL or Jira issue key
 - User asks to "extract requirements for QA plan"
 - User mentions "analyze design doc for testing" or "Jira ticket QA"
-- Creating test findings based on product specifications
+
+### Sub-Agent Spawning (NEW)
+- Orchestrator spawns this skill as a sub-agent in Phase 1
+- Receives context via `sessions_spawn` attachment:
+  ```json
+  {
+    "feature_id": "BCIN-6709",
+    "jira_key": "BCIN-6709",
+    "confluence_url": "https://...",
+    "search_enabled": false  // conditional search flag from orchestrator
+  }
+  ```
+
+## Sub-Agent Contract (NEW)
+
+**Input** (from orchestrator via attachment `context.json`):
+```json
+{
+  "feature_id": "BCIN-6709",
+  "jira_key": "BCIN-6709",
+  "confluence_url": "https://microstrategy.atlassian.net/wiki/...",
+  "search_enabled": false  // true if Jira has linked/child issues
+}
+```
+
+**Output** (to standard location):
+```
+projects/feature-plan/<feature_id>/context/qa_plan_atlassian_<feature_id>.md
+```
+
+**Completion Signal**:
+- Write output file
+- Return success message with file path
+- Orchestrator detects completion via `subagents(action=list)` status check
 
 ## Prerequisites
 
-**MCP Server Required**: `user-mcp-atlassian` must be configured and accessible.
+**Required shared skills for live fetches**:
+- `~/.openclaw/skills/jira-cli` for Jira issue reads
+- `~/.openclaw/skills/confluence` for Confluence page reads/searches when needed
 
-Verify Atlassian MCP access:
-```bash
-# Check if Atlassian MCP is available
-ls /Users/xuyin/.cursor/projects/*/mcps/user-mcp-atlassian/tools/
-```
+Sub-agents handling Atlassian fetches MUST read those canonical shared skill files first and use their documented wrapper/entrypoint commands instead of bare local CLI.
+If a workspace-level mirror exists, keep it synced with the shared source, but do not treat the workspace copy as the source of truth.
+
+**Auth precheck is mandatory**:
+- verify the Jira wrapper path can access the target issue before full fetch
+- verify the Confluence wrapper/path can access the target page before broader search/fetch
+- if either precheck fails, STOP and report the blocker
+- when using workspace `.env`, check both `JIRA_BASE_URL` and `JIRA_SERVER` as possible Jira server/base-url keys before concluding config is missing
 
 ## Available Atlassian MCP Tools
 
@@ -37,6 +76,44 @@ ls /Users/xuyin/.cursor/projects/*/mcps/user-mcp-atlassian/tools/
 - `jira_get_project_issues` - Get all project issues
 
 ## Workflow
+
+### Step 0: Jira Fetch Rules (Mandatory)
+
+When a Jira ticket is provided, ALWAYS fetch:
+- the main Jira issue
+- all related issues discovered from the Jira skill query path for the feature
+- any Jira issue references surfaced in Jira comments when they materially affect testing
+
+Do NOT require subtasks for this workflow.
+
+Do not rely only on `issuelinks` from a single issue view. Use the Jira skill's broader related-issue query example to discover the effective issue set for testing.
+
+If any required Jira issue content cannot be fetched, or if a required issue is missing a usable summary/description, STOP and return a blocker to the orchestrator so the user can decide whether to continue.
+
+### Step 0b: Conditional Search Decision
+
+**When spawned as sub-agent**, check `search_enabled` flag from context:
+
+```javascript
+const context = JSON.parse(attachment_content); // from sessions_spawn
+const { feature_id, jira_key, confluence_url, search_enabled } = context;
+
+if (search_enabled) {
+  // Jira has linked/child issues → search Confluence for related pages
+  console.log("Linked issues detected — enabling Confluence search");
+} else {
+  // No linked issues → use only provided design doc URL
+  console.log("No linked issues — skipping Confluence search");
+}
+```
+
+**Search Decision Logic** (performed by orchestrator before spawning):
+```javascript
+// Orchestrator Phase 0:
+const issue = await jira.getIssue(jira_key);
+const hasLinkedIssues = issue.fields.issuelinks?.length > 0;
+const search_enabled = hasLinkedIssues;
+```
 
 ### Step 1: Extract Atlassian References
 
@@ -54,19 +131,12 @@ https://example.atlassian.net/browse/PROJ-123
 
 ### Step 2: Read Design Document from Confluence
 
-Use Atlassian MCP to read the design specification:
+Preferred live-fetch path:
+1. Read and follow the shared `confluence` skill
+2. Use the skill-defined read/search workflow first
+3. Run access precheck against the target page before broader searches
 
-```
-Tool: CallMcpTool
-Server: user-mcp-atlassian
-Tool Name: confluence_get_page
-Arguments:
-{
-  "page_id": "123456789",
-  "include_metadata": true,
-  "convert_to_markdown": true
-}
-```
+If the Confluence skill provides multiple read paths, prefer the canonical one documented there. Do not skip the skill and jump straight to ad-hoc local commands.
 
 **Alternative**: Search by title if page ID unknown:
 ```
@@ -83,25 +153,41 @@ Arguments:
 
 ### Step 3: Read Jira Issue Details
 
-Use Atlassian MCP to read the ticket:
+Preferred live-fetch path:
+1. Read and follow the shared `jira-cli` skill
+2. Use its wrapper/entrypoint path first, not bare `jira issue view`
+3. Run auth precheck before bulk fetching
 
+Example wrapper path from the shared skill (run from the workspace that owns the `.env`, such as `workspace-planner/`):
+```bash
+cd /path/to/workspace-planner
+source ~/.openclaw/skills/jira-cli/scripts/lib/jira-env.sh
+load_jira_env
+jira issue view PROJ-123 --plain
 ```
-Tool: CallMcpTool
-Server: user-mcp-atlassian
-Tool Name: jira_get_issue
-Arguments:
-{
-  "issue_key": "PROJ-123"
-}
-```
+
+Only if the skill-defined primary path is unavailable should you use an approved secondary path documented by that skill. Do not invent a raw fallback first.
 
 **Extract from Jira**:
 - Issue summary and description
 - Acceptance criteria
-- Linked issues (related, blocks, blocked by)
+- Related issues discovered from the Jira query path
 - Comments (design clarifications)
+- Issue references mentioned in comments when they materially affect testing
+- Web links, including any Figma links
 - Attachments (mockups, specs)
 - Custom fields (story points, sprint, etc.)
+
+Persist raw evidence into `context/` in addition to the summary:
+- `jira_issue_<issue-key>.md` for the main issue
+- `jira_issue_<issue-key>.md` for each required related/comment-discovered issue
+- `jira_related_issues_<feature-id>.md` for the discovered issue-set listing
+- `figma_link_<feature-id>.md` when a Figma URL is found in Jira or Confluence web links
+
+Required gate before summary generation:
+- every required issue must have usable summary + description evidence on disk
+- if Jira or Confluence contains a Figma link, persist it explicitly for downstream Figma analysis
+- otherwise stop and surface the blocker
 
 ### Step 4: Analyze Requirements
 

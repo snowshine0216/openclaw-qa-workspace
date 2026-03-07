@@ -1,6 +1,6 @@
 ---
 name: qa-plan-github
-description: Generate QA domain summaries by analyzing GitHub pull request diffs to identify code changes and risk areas. Use when the user asks to extract QA findings from PR, analyze code changes for testing, or mentions "QA summary from GitHub", "PR testing", or "code change analysis".
+description: Generate QA domain summaries by analyzing GitHub pull request diffs to identify code changes and risk areas. Sub-agent compatible — can be spawned by orchestrator for parallel context gathering. Always fetches diffs for provided PR URLs and testing-relevant PR references discovered from Jira content/comments; fails closed when required GitHub diff evidence is missing.
 ---
 
 # QA Plan Domain Summary Generator from GitHub Pull Requests
@@ -9,20 +9,64 @@ Generate comprehensive QA domain summaries by analyzing GitHub PR diffs, identif
 
 ## When to Use
 
+### Direct Invocation
 - User provides a GitHub PR URL or PR number
 - User asks to "extract QA context from GitHub PR"
 - User mentions "analyze code changes for testing" or "PR risk analysis"
-- Creating test findings based on code implementation
+
+### Sub-Agent Spawning (NEW)
+- Orchestrator spawns this skill as a sub-agent in Phase 1
+- Receives context via `sessions_spawn` attachment:
+  ```json
+  {
+    "feature_id": "BCIN-6709",
+    "github_pr_urls": [
+      "https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport",
+      "https://github.com/mstr-kiai/biweb/compare/m2021...revertReport"
+    ]
+  }
+  ```
+
+## Sub-Agent Contract (NEW)
+
+**Input** (from orchestrator via attachment `context.json`):
+```json
+{
+  "feature_id": "BCIN-6709",
+  "github_pr_urls": [
+    "https://github.com/owner/repo/compare/base...head",
+    ...
+  ]
+}
+```
+
+**Output** (to standard location):
+```
+projects/feature-plan/<feature_id>/context/qa_plan_github_<feature_id>.md
+projects/feature-plan/<feature_id>/context/qa_plan_github_traceability_<feature_id>.md
+projects/feature-plan/<feature_id>/context/github_diff_<repo-or-pr>.md
+```
+
+**Dual Output Requirement** (mandatory):
+1. **User-facing summary**: Scenarios written as user actions + observable outcomes (NO code vocabulary)
+2. **Traceability companion**: File/function/flag references for P1 priority mapping
+
+**Completion Signal**:
+- Write both output files
+- Return success message with file paths
+- Orchestrator detects completion via `subagents(action=list)` status check
 
 ## Prerequisites
 
-**GitHub MCP Server Required**: GitHub MCP server must be configured.
+**Required shared skill for live fetches**:
+- use the canonical shared GitHub skill/workflow under `~/.openclaw/skills` first
 
-**Note**: If GitHub MCP is not available, use the GitHub CLI tool (`gh`) as fallback:
-```bash
-gh pr view <pr_number> --json files,additions,deletions,body,title
-gh pr diff <pr_number>
-```
+Sub-agents handling GitHub fetches MUST read that canonical shared skill first and use its documented wrapper/entrypoint path before falling back to raw local commands.
+If a workspace-level mirror exists, keep it synced with the shared source, but do not treat the workspace copy as canonical.
+
+**Auth precheck is mandatory**:
+- verify the primary GitHub fetch path can read the target PR/diff before full fetch
+- if the precheck fails, STOP and report the blocker
 
 ## File Filtering Rules
 
@@ -41,6 +85,17 @@ gh pr diff <pr_number>
 
 ## Workflow
 
+### Step 0: GitHub Diff Fetch Rules (Mandatory)
+
+When PR URLs are provided, ALWAYS fetch their diffs.
+When Jira issue comments surface GitHub PR references that materially affect testing, ALSO fetch those diffs.
+The required GitHub evidence set is the union of:
+- all user-provided PR/compare URLs
+- all PR/compare URLs discovered from Jira comments that materially affect testing
+
+Persist diff evidence into `context/` before writing the summary.
+If any required diff cannot be fetched, STOP and return a blocker to the orchestrator so the user can decide whether to continue.
+
 ### Step 1: Extract PR Information
 
 **From PR URL**: Extract owner, repo, and PR number:
@@ -58,27 +113,12 @@ https://github.com/owner/repo/pull/123
 
 ### Step 2: Read PR Changes
 
-**Option A: Using GitHub MCP** (when available):
-```
-Tool: CallMcpTool
-Server: github-mcp-server
-Tool Name: pull_request_read
-Arguments:
-{
-  "owner": "owner-name",
-  "repo": "repo-name",
-  "pull_number": 123
-}
-```
+Preferred live-fetch path:
+1. Read and follow the relevant shared GitHub skill/workflow first
+2. Use its documented wrapper/entrypoint and auth precheck
+3. Fetch PR overview and full diff through that path
 
-**Option B: Using GitHub CLI** (fallback):
-```bash
-# Get PR overview
-gh pr view <pr_number> --repo owner/repo --json title,body,files,additions,deletions
-
-# Get full diff
-gh pr diff <pr_number> --repo owner/repo
-```
+Only if the shared skill explicitly documents a secondary path should you use it. For compare URLs, resolve them into owner/repo/base...head and fetch evidence via authenticated `gh api repos/<owner>/<repo>/compare/<base>...<head>` or the equivalent skill-defined path. Do not jump straight to ad-hoc raw commands without first following the skill-defined flow.
 
 ### Step 3: Analyze Code Changes
 
