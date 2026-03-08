@@ -19,14 +19,14 @@ flowchart TB
         CLASSIFY["Classify state:<br/>FINAL_EXISTS | DRAFT_EXISTS | CONTEXT_ONLY | FRESH"]
         DECISION{"smart_refresh +<br/>FINAL_EXISTS?"}
         EXIT0["Exit 0 (skip run)"]
-        PREP["full_regenerate: archive then wipe<br/>fresh: wipe only<br/>smart_refresh: no change"]
+        PREP["full_regenerate: archive then wipe<br/>fresh: wipe only<br/>smart_refresh: resume in place"]
         INIT["Init task.json, run.json"]
     end
 
-    subgraph phases["Phases 1–5 (each skipped if already completed)"]
+    subgraph phases["Phases 1–5 (autonomous; each skipped if already completed)"]
         P1["Phase 1: Fetch Owners<br/>Owner API → manifest.json"]
         P2["Phase 2: Fetch Issues<br/>Jira + GitHub PR diffs per issue"]
-        P3["Phase 3: Generate RCAs<br/>Spawn sub-agents via openclaw"]
+        P3["Phase 3: Generate RCAs<br/>Spawn + wait for sub-agents via openclaw"]
         P4["Phase 4: Publish to Jira<br/>Append description (MERGE) + comment with mentions (tqang, owner)"]
         P5["Phase 5: Finalize<br/>Daily summary + send to Feishu"]
     end
@@ -50,6 +50,8 @@ flowchart TB
 ---
 
 ## 0. Environment Setup
+
+This workflow is **fully autonomous**. OpenClaw scheduling invokes `scripts/run.sh`; no interactive confirmation or manual checkpoint is part of normal execution.
 
 Runtime prerequisites:
 
@@ -135,6 +137,7 @@ Fields available:
 Write the completed RCA to rca_output_path.
 File must exist on disk when the sub-agent session ends.
 Announce completion with: "RCA complete: <ISSUE_KEY>"
+If generation fails, announce completion with: "RCA failed: <ISSUE_KEY>" and include a one-line reason.
 
 ## RCA Document Structure (9 sections)
 1. Incident Summary — 2–3 sentence overview
@@ -155,9 +158,47 @@ Do not fabricate context. If data is missing, state "Data unavailable" in the re
 - Each section must be present even if short.
 - Section 5 (Five Whys) must have at least 3 "why" levels.
 - Do not copy-paste Jira description verbatim — synthesize.
+- Use `## 1. ...` through `## 9. ...` headings exactly so downstream scripts can parse section 1 reliably.
+- Keep the document concise; target less than 300 words unless source material requires a slightly longer explanation.
+- If supplemental CLI lookups still leave a gap, write `Data unavailable` instead of guessing.
 ```
 
-### 3.2 `workspace-daily/skills/rca-orchestrator/SKILL.md`
+### 3.2 `.agents/skills/rca/reference.md`
+
+Classification: **shared**
+
+This reference file supports `.agents/skills/rca/SKILL.md`. It is the canonical format and fallback guide for a single RCA output.
+
+Key sections in the `reference.md`:
+
+```markdown
+## Field Map
+- `issue_key` → RCA title and references section
+- `issue_summary` → Incident Summary / What Happened context
+- `jira_json_path` → source of timeline, customer, comments, status changes
+- `pr_data_path` → source of corrective/preventive actions and Five Whys evidence
+- `automation_status` → Automation Status section
+- `pr_list` → References and Automation Status sections
+
+## Required Markdown Template
+# RCA for <ISSUE_KEY>
+## 1. Incident Summary
+## 2. References
+## 3. Timeline (UTC)
+## 4. What Happened
+## 5. Five Whys
+## 6. Why It Was Not Discovered Earlier
+## 7. Corrective Actions
+## 8. Preventive Actions
+## 9. Automation Status
+
+## Missing-Data Rules
+- Missing customer or timestamp data → `Data unavailable`
+- No PRs found → say so explicitly in sections 2, 5, 7, and 9 as needed
+- Conflicting evidence between Jira and PR diff → prefer the most concrete timestamped source and note the ambiguity briefly
+```
+
+### 3.3 `workspace-daily/skills/rca-orchestrator/SKILL.md`
 
 Classification: **workspace-local**
 
@@ -179,11 +220,11 @@ refresh_mode options:
   fresh             Same as full_regenerate but no archive step.
 
 ## Phase Responsibilities
-Phase 0 — Resume check: classify run state, present options, do NOT overwrite without confirmation.
+Phase 0 — Resume check: classify run state and decide autonomously whether to stop, resume, or reset.
 Phase 1 — Owner API fetch + manifest: builds the issue list for the day.
 Phase 2 — Data fetch: Jira details + GitHub PR diffs per issue.
-Phase 3 — RCA generation: spawns sub-agents via sessions_spawn.
-Phase 4 — Jira publish: ADF update to customfield_10050 + executive summary comment.
+Phase 3 — RCA generation: spawn sub-agents in batches, wait for completion, and record terminal status for every issue.
+Phase 4 — Jira publish: append/merge RCA content into Jira description and post the executive-summary comment.
 Phase 5 — Finalize: daily summary markdown + Feishu notification.
 
 ## Artifact Locations
@@ -201,11 +242,38 @@ run.json  — timestamps, spawn sessions, Jira publish results
 
 ## Error Policy
 - Phase 0 classification of FINAL_EXISTS in smart_refresh mode → exit 0, no re-run.
-- Partial issue failures in Phase 3/4 → mark as failed in task.json, continue remaining issues.
+- Partial issue failures in Phase 3/4 → persist per-issue terminal status and continue remaining issues.
 - Feishu failure → persist payload in run.json.notification_pending, do not block completion.
 ```
 
-### 3.3 `workspace-daily/skills/rca-orchestrator/README.md`
+### 3.4 `workspace-daily/skills/rca-orchestrator/reference.md`
+
+Classification: **workspace-local**
+
+This reference file supports the orchestrator skill. It exists so the runtime contract lives in one place instead of being spread across comments in shell scripts.
+
+Key sections in the `reference.md`:
+
+```markdown
+## Refresh Modes
+- `smart_refresh`: if `REPORT_STATE=FINAL_EXISTS`, stop successfully; otherwise resume from incomplete phases in-place
+- `full_regenerate`: archive prior outputs, wipe run state, and rebuild from Phase 0
+- `fresh`: wipe run state without archive, then rebuild from Phase 0
+
+## Phase Transition Rules
+- Phase 4 starts only after Phase 3 has produced a terminal generation result for every issue
+- Phase 5 starts only after Phase 4 has produced a terminal Jira publish result for every issue
+- Missing RCA output file after Phase 3 terminal failure is treated as a publish-time failure, not a retry trigger
+
+## Run Folder Semantics
+- `manifest.json`: issue list for the day
+- `manifest-gen.json`: RCA generation manifest built from Phase 2 outputs
+- `spawn-results.json`: blocking Phase 3 result produced by the spawn helper
+- `task.json`: phase and per-issue state
+- `run.json`: timestamps, spawn session metadata, Jira publish results, notification state
+```
+
+### 3.5 `workspace-daily/skills/rca-orchestrator/README.md`
 
 **Purpose:** Usage documentation. Scheduling is configured in OpenClaw, not here.
 
@@ -295,8 +363,14 @@ REFRESH_MODE="${2:-smart_refresh}"
 
 log_info "=== RCA Daily Run: ${RUN_DATE} [${REFRESH_MODE}] ==="
 
-# Phase 0: Classify existing state; initialize task.json / run.json
-bash "${SCRIPT_DIR}/phase0_check_resume.sh" "${RUN_DATE}" "${REFRESH_MODE}"
+# Phase 0: Classify existing state; decide whether to stop or continue
+phase0_output=$(bash "${SCRIPT_DIR}/phase0_check_resume.sh" "${RUN_DATE}" "${REFRESH_MODE}")
+echo "${phase0_output}" | tee -a "$(run_dir "${RUN_DATE}")/logs/run-${RUN_DATE}.log"
+
+if echo "${phase0_output}" | grep -q '^RUN_DECISION=stop$'; then
+  log_info "Phase 0 requested autonomous stop; run exits successfully."
+  exit 0
+fi
 
 # Phase 1: Fetch owner API, build manifest.json
 if phase_not_done "${RUN_DATE}" "phase_1_manifest"; then
@@ -313,7 +387,7 @@ if phase_not_done "${RUN_DATE}" "phase_3_generate_rca"; then
   bash "${SCRIPT_DIR}/phase3_generate_rcas.sh" "${RUN_DATE}"
 fi
 
-# Phase 4: ADF convert, update Jira customfield_10050, post comment
+# Phase 4: ADF convert, append Jira description, post comment
 if phase_not_done "${RUN_DATE}" "phase_4_publish_to_jira"; then
   bash "${SCRIPT_DIR}/phase4_publish_to_jira.sh" "${RUN_DATE}"
 fi
@@ -526,13 +600,27 @@ set_jira_publish_result() {
      .updated_at = $ts' \
     "${run_file}" > "${tmp}" && mv "${tmp}" "${run_file}"
 }
+
+set_task_overall_status() {
+  # set_task_overall_status <run_date> <status>
+  local run_date="$1" status="$2"
+  local task_file
+  task_file="$(run_dir "${run_date}")/task.json"
+  local tmp
+  tmp="$(mktemp)"
+  jq \
+    --arg status "${status}" \
+    --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    '.overall_status = $status | .updated_at = $ts' \
+    "${task_file}" > "${tmp}" && mv "${tmp}" "${task_file}"
+}
 ```
 
 ---
 
 ### 4.4 `scripts/phase0_check_resume.sh` — Resume Check
 
-**Purpose:** Classify the existing state of the run. Initialize `task.json` and `run.json`. In `smart_refresh` mode, exit immediately if a final summary already exists.
+**Purpose:** Classify the existing state of the run and return a machine-readable autonomous decision. In `smart_refresh` mode, a fully completed run returns `RUN_DECISION=stop`; otherwise the workflow initializes or reuses state and returns `RUN_DECISION=continue`.
 
 ```bash
 #!/bin/bash
@@ -577,8 +665,9 @@ main() {
   case "${REFRESH_MODE}" in
     smart_refresh)
       if [[ "${state}" == "FINAL_EXISTS" ]]; then
-        log_info "Final summary already exists. Skipping run (smart_refresh)."
-        exit 0
+        log_info "Final summary already exists. No further work required."
+        echo "RUN_DECISION=stop"
+        return 0
       fi
       ;;
     full_regenerate)
@@ -599,6 +688,7 @@ main() {
   init_task_json "${RUN_DATE}"
   init_run_json "${RUN_DATE}"
   set_task_phase "${RUN_DATE}" "phase_0_prepare_run" "completed"
+  echo "RUN_DECISION=continue"
   log_info "Phase 0 complete."
 }
 
@@ -866,7 +956,7 @@ jq -r '.issue_key,.automation_status' workspace-daily/skills/rca-orchestrator/sc
 
 ### 4.7 `scripts/phase3_generate_rcas.sh` — Agent Spawn for RCA Generation
 
-**Purpose:** Build a generation manifest from `cache/rca-input/` files, then emit the spawn instruction for the OpenClaw orchestrator agent to call `sessions_spawn` once per issue. The shell script prepares the data; the agent drives the spawning.
+**Purpose:** Build a generation manifest from `cache/rca-input/` files, spawn RCA sub-agents in batches of 5, wait for all of them to reach a terminal state, and record the result for every issue before Phase 4 begins.
 
 **Reuses:** `scripts/lib/generate-rcas-via-agent.js` (CREATE — RCA-specific; implement per design spec).
 
@@ -924,30 +1014,47 @@ main() {
   gen_manifest=$(build_generation_manifest)
   log_info "Generation manifest: ${gen_manifest}"
 
-  # Print manifest for agent to consume via sessions_spawn
-  # The orchestrating OpenClaw agent reads this output and calls sessions_spawn
-  # for each entry, batched in groups of 5, waiting for batch completion before next batch.
+  # The Node helper is blocking. It handles:
+  # - sessions_spawn batching (5 issues per batch)
+  # - waiting for each batch to reach terminal status
+  # - writing spawn-results.json with label, session metadata, status, and timestamps
   nvm use default >/dev/null 2>&1 || true
-  node "${SCRIPT_DIR}/lib/generate-rcas-via-agent.js" "${gen_manifest}"
+  node "${SCRIPT_DIR}/lib/generate-rcas-via-agent.js" \
+    --manifest "${gen_manifest}" \
+    --output "${RUN_DIR}/spawn-results.json"
 
-  # Mark items as pending; actual per-issue status updated by sub-agents via task.json
-  local issue_keys
-  issue_keys=$(jq -r '.rca_inputs[].issue_key' "${gen_manifest}")
-  while IFS= read -r ik; do
-    set_task_item "${RUN_DATE}" "${ik}" "spawned"
-  done <<< "${issue_keys}"
+  local results_file="${RUN_DIR}/spawn-results.json"
+  local statuses
+  statuses=$(jq -c '.results[]' "${results_file}")
+  while IFS= read -r item; do
+    local issue_key label status started_at finished_at output_file
+    issue_key=$(echo "${item}" | jq -r '.issue_key')
+    label=$(echo "${item}" | jq -r '.label')
+    status=$(echo "${item}" | jq -r '.status')
+    started_at=$(echo "${item}" | jq -r '.started_at')
+    finished_at=$(echo "${item}" | jq -r '.finished_at')
+    output_file=$(echo "${item}" | jq -r '.output_file')
 
-  # Phase 3 is marked completed by the ORCHESTRATOR AGENT once all sub-agents finish,
-  # not by this shell script. This script only prepares the manifest.
-  log_info "Phase 3 manifest ready. Agent must spawn sub-agents and mark phase complete."
-  log_info "Agent spawn template per issue:"
-  log_info "  sessions_spawn({ agentId: 'reporter', label: 'rca-<ISSUE_KEY>','mode': 'run', runtime: 'subagent', task: 'Generate RCA for <ISSUE_KEY>. Read skill: .agents/skills/rca/SKILL.md. Input: <RUN_DIR>/cache/rca-input/<ISSUE_KEY>.json' })"
+    set_run_field "${RUN_DATE}" \
+      ".spawn_sessions[\"${issue_key}\"] = {label: \"${label}\", status: \"${status}\", started_at: \"${started_at}\", finished_at: \"${finished_at}\"}"
+
+    if [[ "${status}" == "completed" && -f "${output_file}" ]]; then
+      set_task_item "${RUN_DATE}" "${issue_key}" "generated"
+      set_run_field "${RUN_DATE}" ".subtask_timestamps[\"${issue_key}\"] = \"${finished_at}\""
+    else
+      set_task_item "${RUN_DATE}" "${issue_key}" "generation_failed"
+    fi
+  done <<< "${statuses}"
+
+  set_run_field "${RUN_DATE}" ".output_generated_at = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\""
+  set_task_phase "${RUN_DATE}" "phase_3_generate_rca" "completed"
+  log_info "Phase 3 complete. All generation tasks reached terminal status."
 }
 
 main
 ```
 
-**Agent spawn template** (the orchestrator agent executes this for each issue):
+**Agent spawn template** (executed by `generate-rcas-via-agent.js` for each issue):
 ```javascript
 sessions_spawn({
   agentId: "reporter",
@@ -958,15 +1065,16 @@ sessions_spawn({
 Read skill instructions from: .agents/skills/rca/SKILL.md OR ~/openclaw/skills/rca/SKILL.md
 Input JSON: workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/cache/rca-input/BCIN-5286.json
 Output RCA to: workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca/BCIN-5286-rca.md
-Announce: "RCA complete: BCIN-5286" when done.`
+Announce: "RCA complete: BCIN-5286" on success or "RCA failed: BCIN-5286" on failure.`
 })
 ```
 
-**Batching rule:** spawn in groups of 5, wait for each batch to complete before spawning the next.
+**Batching rule:** spawn in groups of 5, wait for each batch to complete before spawning the next. `phase3_generate_rcas.sh` does not return until all batches are terminal.
 
 **Verification:**
 ```bash
 cat workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/manifest-gen.json | jq '.total_issues'
+cat workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/spawn-results.json | jq '.results | length'
 find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca -type f | sort
 ```
 
@@ -974,15 +1082,15 @@ find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca 
 
 ### 4.8 `scripts/phase4_publish_to_jira.sh` — Append Description + Add Comment (per jira-cli examples.md)
 
-**Purpose:** For each completed RCA markdown in `output/rca/`:
+**Purpose:** For each RCA result in `output/rca/`:
 1. Convert to ADF using `build-adf.sh` (shared jira-cli).
-2. **Append** to issue description (MERGE mode) via `jira-publish-playground.sh --update-description`.
+2. **Append** to issue description (MERGE mode) via `jira-publish-playground.sh --update-description --post`.
 3. Build executive-summary comment with **multiple user mentions** (tag tqang, owner, etc.) via `build-comment-payload.sh --mentions-file`.
-4. Post both in one call: `jira-publish-playground.sh --update-description --add-comment --post`.
+4. Post the comment separately via `jira-publish-playground.sh --add-comment --post` so description and comment results can be tracked independently.
 
 **User lookup:** Must support "Xue, Yin" (Last, First) and similar plan names. Use `resolve-jira-user.sh` with fallbacks: exact "Xue, Yin" → "Yin Xue" → "Xue Yin". Fixed stakeholders include tqang (email or display name).
 
-**References:** `.agents/skills/jira-cli/examples.md` (lines 39–87) — resolve user, build comment with mentions, publish description + comment together (MERGE mode).
+**References:** `.agents/skills/jira-cli/examples.md` (lines 39–87) — resolve user, build comment with mentions, and publish description/comment payloads.
 
 **Note:** jira-publish-playground updates the main `description` field. 
 

@@ -51,7 +51,7 @@ validate_context.sh <feature-id> --validate-testcase-executability "<file>"
 - `EX-2` vague user action
 - `EX-3` vague expected result
 - `EX-4` code or implementation wording appears in a manual testcase
-- `EX-5` mixed surfaces collapsed into one testcase
+- `EX-5` multiple surfaces collapsed into one bullet (e.g. "In Workstation or Library Web") without explicit evidence of identical behavior — split into separate bullets per surface
 - `EX-6` manual testcase actually belongs in `AUTO`
 
 ## `mode=review` handlers

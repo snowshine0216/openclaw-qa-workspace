@@ -9,7 +9,10 @@ if [ ! -f "$FILE_PATH" ]; then
   exit 1
 fi
 
-mapfile -t HEADINGS < <(grep '^## ' "$FILE_PATH" | sed -E 's/^##[[:space:]]+//' | sed -E 's/[[:space:]]+-[[:space:]]+P[0-9].*$//' | sed -E 's/[[:space:]]+$//')
+HEADINGS_STR=$(grep '^## ' "$FILE_PATH" | sed -E 's/^##[[:space:]]+//' | sed -E 's/[[:space:]]+-[[:space:]]+P[0-9].*$//' | sed -E 's/[[:space:]]+$//' || true)
+IFS=$'\n' read -r -d '' -a HEADINGS <<EOF_HEADINGS || true
+$HEADINGS_STR
+EOF_HEADINGS
 EXPECTED=("EndToEnd" "Functional" "xFunction" "Error handling / Special cases" "Accessibility" "i18n" "performance" "upgrade / compatability" "Embedding" "AUTO: Automation-Only Tests" "📎 Artifacts Used")
 ALIASES_ENDTOEND=("EndToEnd" "End to End" "End-to-End" "E2E" "User Journey" "User Journeys" "Primary User Flow" "Primary User Flows")
 ALIASES_FUNCTIONAL=("Functional" "Functionality" "Functional Coverage" "Core Functional Coverage" "Core Functional Scenarios" "Core Scenarios")

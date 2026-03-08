@@ -29,12 +29,12 @@ run_child_validator() {
   local file_path="$3"
   local script_path="$SCRIPT_DIR/$script_name"
 
-  if [ ! -x "$script_path" ]; then
+  if [ ! -f "$script_path" ]; then
     echo "VALIDATOR_MISSING: $script_name"
     exit 1
   fi
 
-  if ! "$script_path" "$FEATURE_ID" "$file_path"; then
+  if ! bash "$script_path" "$FEATURE_ID" "$file_path"; then
     echo "${label}_FAILED: $file_path"
     exit 1
   fi

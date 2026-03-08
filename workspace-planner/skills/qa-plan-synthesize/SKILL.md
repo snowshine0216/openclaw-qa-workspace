@@ -79,7 +79,8 @@ If a detail is missing:
 
 ### Step 4: Structural merge rules
 
-- Never merge different surfaces into one testcase unless the evidence confirms identical behavior.
+- **One surface per testcase bullet.** Do not combine surfaces (e.g. "In Workstation or Library Web, do X"). Use separate bullets: "In Workstation, do X" and "In Library Web, do X".
+- **Merge only with explicit evidence.** Combine into one bullet only when Jira, Confluence, or PR explicitly states identical behavior (e.g. "same flow on both surfaces", "parity verified"). Do not infer from similar wording; when in doubt, keep separate.
 - Separate different recovery branches into separate leaves.
 - Keep `Error handling / Special cases` concrete and branch-specific.
 - Keep `📎 Artifacts Used` at the end and list every context or research artifact actually used.

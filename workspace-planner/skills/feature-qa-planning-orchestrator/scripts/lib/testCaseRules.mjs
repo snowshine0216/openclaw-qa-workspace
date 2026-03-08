@@ -239,8 +239,13 @@ export function findExecutabilityIssues(markdown) {
 
         for (const phrase of VAGUE_PHRASES) {
           if (normalized.includes(phrase)) {
+            const issueCode = phrase.includes('result') || phrase.includes('recovered state') || phrase.includes('correct recovery') || phrase.includes('branch behavior')
+              ? 'EXEC_VAGUE_EXPECTED_RESULT'
+              : phrase.includes('action')
+                ? 'EXEC_VAGUE_ACTION'
+                : 'EXEC_VAGUE_TRIGGER';
             issues.push({
-              code: phrase.includes('result') ? 'EXEC_VAGUE_EXPECTED_RESULT' : phrase.includes('action') ? 'EXEC_VAGUE_ACTION' : 'EXEC_VAGUE_TRIGGER',
+              code: issueCode,
               line: lineNumber,
               text,
             });

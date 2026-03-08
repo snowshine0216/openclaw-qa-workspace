@@ -132,7 +132,8 @@ Rewrite them into trigger/action/result language or move the case to `## AUTO: A
 
 ### Surfaces
 
-- Split Workstation and Library Web unless the evidence explicitly confirms identical behavior.
+- **One surface per testcase bullet.** Do not write "In Workstation or Library Web, do X". Use separate bullets per surface.
+- **Merge only with explicit evidence.** Combine surfaces only when Jira, Confluence, or PR explicitly states identical behavior (e.g. "same flow on both surfaces"). Do not infer; when in doubt, keep separate.
 - If a surface is intentionally not covered, say so with `N/A — <reason>` under the relevant heading.
 
 ### Performance
