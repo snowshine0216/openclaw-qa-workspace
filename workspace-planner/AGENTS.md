@@ -27,15 +27,12 @@ _Operating instructions for test planning and strategy._
 ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
-Phase 0 → Idempotency check + preparation
-Phase 1 → Context gathering (spawn qa-plan-write mode=context: atlassian, github, figma)
-Phase 2 → Domain sub test cases (spawn qa-plan-write mode=testcase: atlassian, github, figma)
-Phase 3 → Domain review (spawn qa-plan-review: jira, confluence, github, figma) — review sub_test_cases_*
-Phase 4 → Domain refactor (spawn qa-plan-review mode=refactor: atlassian, github, figma) — apply findings → _v2.md
-Phase 5 → Synthesize (resolve v2/base per domain → unified XMind draft)
-Phase 6 → XMind review (single agent, reuses Phase 3 artifacts)
-Phase 7 → Final refactor
-Phase 8 → Finalize + Feishu notifyT
+Phase 0 → Idempotency check + runtime preparation
+Phase 1 → Context gathering (spawn `qa-plan-write` `mode=context`)
+Phase 2 → Unified QA plan writing (spawn `qa-plan-write` `mode=write-plan`)
+Phase 3 → Unified QA plan review (spawn `qa-plan-review` `mode=review`)
+Phase 4 → Deterministic QA plan refactor (spawn `qa-plan-refactor`)
+Phase 5 → Finalize + Feishu notify
 ```
 
 ### Research Best Practices

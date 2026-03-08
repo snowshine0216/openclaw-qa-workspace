@@ -2,7 +2,7 @@
 # validate_context.sh — Verify required context artifacts exist before phase transition
 # Usage: ./validate_context.sh <feature-id> <artifact-name>...
 # Modes:
-#   --resolve-sub-testcases <domain...>
+#   --resolve-sub-testcases <domain...>  # compatibility mode for legacy synthesize callers
 #   --validate-testcase-structure <file-path>
 #   --validate-testcase-executability <file-path>
 set -euo pipefail

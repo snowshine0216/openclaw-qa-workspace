@@ -1,33 +1,30 @@
 ---
 name: qa-plan-review
-description: Reviews and refactors QA sub-testcase artifacts against the canonical testcase contract. Use in Phase 3 for domain review, Phase 4 for domain refactor, and Phase 6 for consolidated XMind review.
+description: Reviews unified QA-plan drafts against the canonical QA-plan contract. Use after the draft is written to validate coverage, simplicity, structure, wording, and executability before refactor.
 ---
 
 # QA Plan Review
 
-Use this skill in three modes:
-- `mode=review`
-- `mode=refactor`
-- `mode=consolidated`
+Use this skill in `mode=review`.
 
-## Invocation Contract
+## Invocation contract
 
 Input arrives through `context.json`.
 
 ```json
 {
-  "domain": "github",
   "mode": "review",
-  "feature_id": "BCIN-6709"
+  "feature_id": "BCIN-6709",
+  "draft": "drafts/qa_plan_v1.md"
 }
 ```
 
-## Shared Review Contract
+## Shared review contract
 
 Always review against:
 - `references/canonical-testcase-contract.md`
-- `templates/test-case-template.md`
-- relevant cached `context/` artifacts for the current domain
+- `templates/qa-plan-template.md`
+- relevant cached `context/` artifacts
 
 Always run:
 
@@ -40,10 +37,16 @@ validate_context.sh <feature-id> --validate-testcase-executability "<file>"
 
 ### Structural findings
 
-- `ST-1` missing required top-level heading
-- `ST-2` illegal rename of a fixed heading
-- `ST-3` missing `N/A — <reason>` under a fixed heading with no applicable coverage
-- `ST-4` illegal custom top-level heading
+- `ST-1` required section missing
+- `ST-2` section no longer maps cleanly to the required semantic bucket
+- `ST-3` non-applicable section removed instead of marked `N/A`
+- `ST-4` illegal custom top-level section
+
+### Coverage findings
+
+- `CV-1` required behavior missing from the draft
+- `CV-2` available saved evidence not reflected where it should strengthen coverage
+- `CV-3` source family used in the wrong role and distorts the draft
 
 ### Executability findings
 
@@ -51,45 +54,22 @@ validate_context.sh <feature-id> --validate-testcase-executability "<file>"
 - `EX-2` vague user action
 - `EX-3` vague expected result
 - `EX-4` code or implementation wording appears in a manual testcase
-- `EX-5` multiple surfaces collapsed into one bullet (e.g. "In Workstation or Library Web") without explicit evidence of identical behavior — split into separate bullets per surface
-- `EX-6` manual testcase actually belongs in `AUTO`
 
-## `mode=review` handlers
+### Quality findings
 
-### `jira`
+- `QL-1` section is over-compressed and hard to scan
+- `QL-2` wording is repetitive or source-driven instead of user-facing
+- `QL-3` plan shape diverges from the acceptance quality bar of `docs/BCIN-6709_qa_plan.md`
 
-- Compare Atlassian-derived sub testcases against Jira issue details and related issues.
-- Confirm the manual cases are consistent with requirements and concrete enough to execute.
+## Review duties
 
-### `confluence`
-
-- Compare sub testcases against design-document wording and visual flows.
-- Tighten missing trigger, state, or expected-result detail.
-
-### `github`
-
-- Compare sub testcases against traceability and code-change summaries.
-- Ensure code-only checks are not left in manual sections.
-
-### `figma`
-
-- Compare sub testcases against UI evidence and visible interaction detail.
-- Tighten surface names, copy, and visible-state expectations.
-
-## `mode=refactor` handlers
-
-### `atlassian`, `github`, `figma`
-
-- Read the Phase 3 review artifacts relevant to the domain.
-- Apply only the requested structural and executability fixes.
-- Save `_v2` outputs only when content actually changes.
-- Re-run structure and executability validation before finishing.
-
-## `mode=consolidated`
-
-- Review `drafts/test_key_points_xmind_v<N>.md` as the single synthesized draft.
-- Fail the review if any fixed heading is missing, illegally renamed, or left vague.
-- Fail the review if any manual testcase still contains generic recovery language.
+- Confirm the draft preserves the required section set.
+- Confirm the draft is readable, grouped, and concise.
+- Confirm Confluence drives the main behavior.
+- Confirm Jira supplies repro fixtures where available.
+- Confirm GitHub strengthens edge cases and boundaries without leaking code terms into manual steps.
+- Confirm Figma tightens copy and visible-state expectations without inventing unsupported branches.
+- Confirm all reused evidence was saved.
 
 ## Required review output format
 
@@ -102,8 +82,14 @@ Pass | Pass with Findings | Fail
 ## Structural Findings
 - ST-1 ...
 
+## Coverage Findings
+- CV-1 ...
+
 ## Executability Findings
 - EX-1 ...
+
+## Quality Findings
+- QL-1 ...
 
 ## Evidence Gaps
 - Missing or unresolved evidence
@@ -118,7 +104,7 @@ Pass | Pass with Findings | Fail
 ## Approval rule
 
 Do not approve a review artifact if:
-- any fixed heading is missing
-- any fixed heading was renamed
-- any mandatory fixed section was dropped instead of marked `N/A — <reason>`
-- any manual testcase still requires the tester to guess the trigger, action, or visible result
+- any required section is missing
+- a required section was effectively replaced
+- the draft requires the tester to guess trigger, action, or visible result
+- the draft materially fails the acceptance quality bar

@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import {
   CANONICAL_TOP_LEVEL_CATEGORIES,
   findExecutabilityIssues,
@@ -9,34 +12,99 @@ import {
   validateTopLevelStructure,
 } from '../scripts/lib/testCaseRules.mjs';
 
-const VALID_MARKDOWN = `# Feature\n\n## E2E - P1\n\n### Primary user flow\n- In Library Web authoring, open the editor\n  - Verify the report canvas loads\n\n## Core Functional Coverage - P1\n\n### Edit flow\n- In Library Web authoring, add one metric\n  - Verify the metric appears in the grid\n\n## xFunction\n\n### Cross-surface parity\n- In Workstation, repeat the edit flow\n  - Verify the same metric appears in the template\n\n## Error handling / Special cases\n\n### Resume failure branch\n- In Library Web authoring, click Resume Data Retrieval after opening the report in pause mode\n  - Verify the report returns to Data Pause Mode on the same canvas\n\n## Accessibility\n\n### Focus behavior\n- N/A — no new accessibility impact introduced by this scope\n\n## i18n\n\n### Locale behavior\n- N/A — no locale-sensitive change is in scope\n\n## performance\n\n### Performance coverage\n- N/A — no explicit performance-sensitive change in scope\n\n## upgrade / compatability\n\n### Upgrade coverage\n- N/A — no upgrade-specific impact in scope\n\n## Embedding\n\n### Embedding coverage\n- N/A — not an embedding feature\n\n## AUTO: Automation-Only Tests\n\n### Internal-only validation\n- Verify automation-only checks for background retry state\n\n## 📎 Artifacts Used\n\n- context/jira_issue_BCIN-6709.md\n`;
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-test('canonical categories are all required semantically', () => {
-  const missing = findMissingTemplateCategories('# T\n\n## EndToEnd\n');
-  assert.ok(missing.includes('Functional'));
-  assert.ok(missing.includes('📎 Artifacts Used'));
-  assert.equal(missing.length < CANONICAL_TOP_LEVEL_CATEGORIES.length, true);
+const VALID_MARKDOWN = `# Feature
+
+## EndToEnd - P1
+
+### Pause mode | Row-limit error | Resume returns to editable report - P1
+- Open the report in pause mode and click Resume Data Retrieval
+  - Verify the report returns to pause mode on the same canvas
+
+## Functional - Pause Mode
+
+### Pause mode | Retry path | Second action is accepted - P1
+- Trigger the known pause-mode recovery path and click Resume Data Retrieval again
+  - Verify the second request is sent instead of hanging
+
+## Functional - Running Mode
+
+### Running mode | Modeling-service error | Undo is cleared - P1
+- Lower Results Set Row Limit from Advanced Properties and dismiss the error
+  - Verify Undo is disabled after recovery
+
+## Functional - Modeling Service Non-Crash Path
+
+### Non-crash path | View-filter removal | Editor remains interactive - P1
+- Remove an attribute that is used in a view filter
+  - Verify the editor remains interactive after the validation error
+
+## Functional - MDX / Engine Errors
+
+### Engine error | Correct and retry | Editor remains open - P1
+- Trigger the known MDX or engine error fixture and dismiss the dialog
+  - Verify the report remains open for continued editing
+
+## Functional - Prompt Flow
+
+### Prompt flow | Prompt apply error | Prompt answers are preserved - P1
+- Submit the prepared prompt answers that trigger the prompt recovery path
+  - Verify the prompt reopens with the previous answers preserved
+
+## xFunctional
+
+### Cross-flow stability
+- Recover from one supported error and trigger a second supported error in the same session
+  - Verify the second recovery still works
+
+## UI - Messaging
+
+### Report Failed to Run
+- Trigger the recoverable execution failure dialog
+  - Verify the body text says the report cannot be executed and clicking OK returns to Data Pause Mode
+
+## Platform
+
+### Browser coverage
+- N/A — browser sweep is not part of this fixture-level contract test
+`;
+
+test('canonical categories match the generalized QA plan contract', () => {
+  assert.deepEqual(CANONICAL_TOP_LEVEL_CATEGORIES, [
+    'EndToEnd',
+    'Functional - Pause Mode',
+    'Functional - Running Mode',
+    'Functional - Modeling Service Non-Crash Path',
+    'Functional - MDX / Engine Errors',
+    'Functional - Prompt Flow',
+    'xFunctional',
+    'UI - Messaging',
+    'Platform',
+  ]);
 });
 
-test('structure validator accepts aliases only for EndToEnd and Functional', () => {
-  const result = validateTopLevelStructure(VALID_MARKDOWN);
+test('structure validator accepts the BCIN-6709 acceptance artifact', async () => {
+  const acceptancePath = join(__dirname, '..', '..', '..', '..', 'docs', 'BCIN-6709_qa_plan.md');
+  const markdown = await readFile(acceptancePath, 'utf8');
+  const result = validateTopLevelStructure(markdown);
   assert.equal(result.ok, true);
   assert.deepEqual(result.illegalHeadings, []);
   assert.deepEqual(result.missingCategories, []);
 });
 
 test('structure validator rejects illegal custom top-level headings', () => {
-  const markdown = VALID_MARKDOWN.replace('## xFunction', '## UI Testing');
+  const markdown = VALID_MARKDOWN.replace('## UI - Messaging', '## Analytics');
   const result = validateTopLevelStructure(markdown);
   assert.equal(result.ok, false);
-  assert.ok(result.illegalHeadings.includes('UI Testing'));
-  assert.ok(result.missingCategories.includes('xFunction'));
+  assert.ok(result.illegalHeadings.includes('Analytics'));
+  assert.ok(result.missingCategories.includes('UI - Messaging'));
 });
 
 test('executability validator flags vague and technical manual wording', () => {
   const markdown = VALID_MARKDOWN.replace(
-    '### Resume failure branch\n- In Library Web authoring, click Resume Data Retrieval after opening the report in pause mode\n  - Verify the report returns to Data Pause Mode on the same canvas',
-    '### Resume failure branch\n- Recover from a supported report execution or manipulation error\n  - Verify correct recovery\n- cmdMgr.reset()'
+    '### Pause mode | Retry path | Second action is accepted - P1\n- Trigger the known pause-mode recovery path and click Resume Data Retrieval again\n  - Verify the second request is sent instead of hanging',
+    '### Pause mode | Retry path | Second action is accepted - P1\n- Recover from a supported report execution or manipulation error\n  - Verify correct recovery\n- cmdMgr.reset()'
   );
 
   const issues = findExecutabilityIssues(markdown);
@@ -45,10 +113,17 @@ test('executability validator flags vague and technical manual wording', () => {
   assert.ok(issues.some((issue) => issue.code === 'EXEC_CODE_VOCAB_IN_MANUAL'));
 });
 
-test('full markdown validation fails for annotations and contract violations', () => {
+test('full markdown validation fails for annotations and missing plan sections', () => {
   const markdown = stripTemplateAnnotations(`${VALID_MARKDOWN}\n- Trigger error [(STEP)]`);
-  const result = validateTestCaseMarkdown(markdown.replace('## Embedding', '## Platform'));
+  const result = validateTestCaseMarkdown(markdown.replace('## Platform', '## Browser Support'));
   assert.equal(result.ok, false);
-  assert.ok(result.illegalHeadings.includes('Platform'));
-  assert.ok(result.missingCategories.includes('Embedding'));
+  assert.ok(result.illegalHeadings.includes('Browser Support'));
+  assert.ok(result.missingCategories.includes('Platform'));
+});
+
+test('missing-category helper reports removed QA plan sections', () => {
+  const missing = findMissingTemplateCategories('# T\n\n## EndToEnd\n');
+  assert.ok(missing.includes('Functional - Prompt Flow'));
+  assert.ok(missing.includes('UI - Messaging'));
+  assert.ok(missing.includes('Platform'));
 });

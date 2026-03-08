@@ -4,8 +4,6 @@
 
 - `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
 
-The legacy workflow file remains retired. All routing should use the orchestrator skill.
-
 ## Phase 0 State Contract
 
 | `REPORT_STATE` | Meaning | User Options |
@@ -17,7 +15,7 @@ The legacy workflow file remains retired. All routing should use the orchestrato
 
 Never auto-select a destructive option.
 
-## Planner State Files
+## Planner state files
 
 ### `task.json`
 
@@ -28,9 +26,7 @@ Required additive fields:
 - `created_at`
 - `updated_at`
 - `phases`
-- `defect_analysis`
 - `latest_draft_version`
-- `subtask_timestamps`
 - `confluence_page_id` when known
 
 ### `run.json`
@@ -41,39 +37,37 @@ Required fields:
 - `notification_pending`
 - `updated_at`
 
-## Testcase contract summary
+## QA-plan contract summary
 
 Use `references/canonical-testcase-contract.md` as the single source of truth for:
-- canonical top-level heading order
-- rename rules
+- required section order
+- allowed heading flexibility
 - `N/A — <reason>` behavior
 - manual testcase executability requirements
-- manual vs `AUTO` placement
+- source-usage expectations
+
+## Runtime script deployment
+
+Canonical helpers live in:
+- `scripts/lib/save_context.sh`
+- `scripts/lib/validate_context.sh`
+- `scripts/lib/validate_testcase_structure.sh`
+- `scripts/lib/validate_testcase_executability.sh`
+
+At runtime, deploy them into `projects/feature-plan/scripts/` with:
+- `scripts/lib/deploy_runtime_context_tools.sh`
+
+Do not assume the runtime copies already exist.
 
 ## Validation gates by phase
 
-- Phase 2: validate each domain sub-testcase artifact for structure and executability
-- Phase 4: validate each refactored domain artifact before accepting `_v2`
-- Phase 5: validate the synthesized draft before moving to consolidated review
-- Phase 7: validate the final refactored draft before publication
-
-Use these scripts:
-- `validate_context.sh`
-- `validate_testcase_structure.sh`
-- `validate_testcase_executability.sh`
+- Phase 2: validate the unified draft for structure and executability
+- Phase 3: review the validated draft and fail on removed sections or vague manual wording
+- Phase 4: validate the refactored draft before finalization
 
 ## Failure handling
 
 If a validation gate fails:
 - do not silently continue
 - rewrite once inside the current phase when the phase contract allows it
-- if the artifact still fails, stop the workflow and surface the exact structural or executability violations
-
-## Shared Skill Reuse
-
-Use these directly when they fit:
-- `jira-cli`
-- `confluence`
-- `feishu-notify`
-
-Do not introduce a wrapper without a clear contract gap.
+- if the artifact still fails, stop the workflow and surface the exact violations

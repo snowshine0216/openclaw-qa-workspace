@@ -22,23 +22,43 @@ function runScript(scriptPath, filePath) {
   });
 }
 
-test('structure script rejects illegal fixed-heading rename', async () => {
+test('structure script rejects illegal plan heading replacement', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'structure_'));
   const file = join(tmp, 'draft.md');
-  await writeFile(file, '# T\n\n## EndToEnd\n\n### A\n- x\n\n## Functional\n\n### B\n- y\n\n## Platform\n\n- N/A — wrong heading\n');
+  await writeFile(file, '# T\n\n## EndToEnd\n\n### A\n- x\n\n## Functional - Pause Mode\n\n### B\n- y\n\n## Functional - Running Mode\n\n### C\n- z\n\n## Functional - Modeling Service Non-Crash Path\n\n### D\n- z\n\n## Functional - MDX / Engine Errors\n\n### E\n- z\n\n## Functional - Prompt Flow\n\n### F\n- z\n\n## xFunctional\n\n### G\n- z\n\n## Analytics\n\n- N/A — wrong heading\n\n## Platform\n\n### H\n- N/A — test fixture\n');
   const result = await runScript(STRUCTURE_SCRIPT, file);
   assert.notEqual(result.code, 0);
-  assert.match(result.stdout, /ILLEGAL_HEADING: Platform/);
+  assert.match(result.stdout, /ILLEGAL_HEADING: Analytics/);
   await rm(tmp, { recursive: true, force: true });
 });
 
 test('executability script rejects vague manual wording', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'exec_'));
   const file = join(tmp, 'draft.md');
-  await writeFile(file, '# T\n\n## EndToEnd\n\n### A\n- Recover from a supported report execution or manipulation error\n  - Verify correct recovery\n\n## Functional\n\n### B\n- Add one metric\n  - Verify the metric appears\n\n## xFunction\n\n### C\n- N/A — no cross-surface behavior in scope\n\n## Error handling / Special cases\n\n### D\n- N/A — covered above\n\n## Accessibility\n\n### E\n- N/A — no accessibility change\n\n## i18n\n\n### F\n- N/A — no i18n change\n\n## performance\n\n### G\n- N/A — no performance change\n\n## upgrade / compatability\n\n### H\n- N/A — no compatibility change\n\n## Embedding\n\n### I\n- N/A — not an embedding feature\n\n## AUTO: Automation-Only Tests\n\n### J\n- cmdMgr.reset()\n\n## 📎 Artifacts Used\n\n- context/a.md\n');
+  await writeFile(file, '# T\n\n## EndToEnd\n\n### A\n- Recover from a supported report execution or manipulation error\n  - Verify recovery\n\n## Functional - Pause Mode\n\n### B\n- Add one metric\n  - Verify the metric appears\n\n## Functional - Running Mode\n\n### C\n- N/A — covered in another fixture\n\n## Functional - Modeling Service Non-Crash Path\n\n### D\n- N/A — covered in another fixture\n\n## Functional - MDX / Engine Errors\n\n### E\n- N/A — covered in another fixture\n\n## Functional - Prompt Flow\n\n### F\n- N/A — covered in another fixture\n\n## xFunctional\n\n### G\n- N/A — no cross-flow case in this fixture\n\n## UI - Messaging\n\n### H\n- N/A — no copy validation in this fixture\n\n## Platform\n\n### I\n- N/A — no browser sweep in this fixture\n');
   const result = await runScript(EXEC_SCRIPT, file);
   assert.notEqual(result.code, 0);
   assert.match(result.stdout, /EXEC_VAGUE_TRIGGER/);
   assert.match(result.stdout, /EXEC_VAGUE_EXPECTED_RESULT/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('structure script accepts allowed aliases for required sections', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'structure_alias_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, '# T\n\n## E2E - P1\n\n### A\n- Open the report in pause mode\n  - Verify the report stays open\n\n## Pause Mode\n\n### B\n- N/A — no extra pause-mode coverage in this fixture\n\n## Running Mode\n\n### C\n- N/A — no running-mode coverage in this fixture\n\n## Modeling Service Non-Crash Path\n\n### D\n- N/A — no modeling-service non-crash coverage in this fixture\n\n## MDX / Engine Errors\n\n### E\n- N/A — no engine-error coverage in this fixture\n\n## Prompt Flow\n\n### F\n- N/A — no prompt coverage in this fixture\n\n## Cross-Functional\n\n### G\n- N/A — no cross-functional coverage in this fixture\n\n## Messaging\n\n### H\n- N/A — no messaging coverage in this fixture\n\n## Browser Coverage\n\n### I\n- N/A — no platform sweep in this fixture\n');
+  const result = await runScript(STRUCTURE_SCRIPT, file);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /STRUCTURE_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('structure script rejects duplicated required sections', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'structure_dupe_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, '# T\n\n## EndToEnd\n\n### A\n- Open the report\n  - Verify it stays open\n\n## Functional - Pause Mode\n\n### B\n- N/A — fixture\n\n## Functional - Running Mode\n\n### C\n- N/A — fixture\n\n## Functional - Modeling Service Non-Crash Path\n\n### D\n- N/A — fixture\n\n## Functional - MDX / Engine Errors\n\n### E\n- N/A — fixture\n\n## Functional - Prompt Flow\n\n### F\n- N/A — fixture\n\n## xFunctional\n\n### G\n- N/A — fixture\n\n## UI - Messaging\n\n### H\n- N/A — fixture\n\n## Platform\n\n### I\n- N/A — fixture\n\n## Platform\n\n### J\n- N/A — duplicate\n');
+  const result = await runScript(STRUCTURE_SCRIPT, file);
+  assert.notEqual(result.code, 0);
+  assert.match(result.stdout, /DUPLICATE_HEADING: Platform/);
   await rm(tmp, { recursive: true, force: true });
 });

@@ -32,8 +32,60 @@ test('integration: generation must stop when github diff evidence is incomplete'
   assert.deepEqual(diffStatus.missing, ['https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport']);
 });
 
-test('integration: final test case markdown must include all categories and no jargon headings', () => {
-  const markdown = `# BCIN-6709\n\n## EndToEnd - P1\n\n### Continue editing after a max rows error - P1\n- Open report\n\n## Report Creator Dialog - P3\n- Not applicable for this feature because no creation dialog is changed.\n\n## Error handling / Special cases - P1\n- Trigger row limit error\n\n## Security Test - P3\n- Confirm user-facing error messages stay free of internal details.\n\n## Pendo - P3\n- Not applicable for this feature because no analytics instrumentation is changed.\n\n## performance - P2\n- Recovery completes in an acceptable time for report editing.\n\n## Platform - P2\n- Validate in supported browsers.\n\n## upgrade  / compatability - P2\n- Existing consumption mode remains unchanged.\n\n## Accessibility - P2\n- Dialog focus is accessible.\n\n## Embedding - P3\n- Not applicable for this feature because embedding behavior is not changed.\n\n## i18n - P3\n- Not applicable for this feature because no new localized strings are introduced.\n`;
+test('integration: final QA plan markdown accepts the generalized section set', () => {
+  const markdown = `# BCIN-6709
+
+## EndToEnd - P1
+
+### Pause mode | Row-limit error | Keep editing - P1
+- Open a report in pause mode and click Resume Data Retrieval
+  - Verify the report remains in the same session
+
+## Functional - Pause Mode
+
+### Pause retry
+- Trigger the known pause-mode recovery path and click Resume Data Retrieval again
+  - Verify the request is accepted instead of hanging
+
+## Functional - Running Mode
+
+### Running-mode recovery
+- Lower Results Set Row Limit and dismiss the error
+  - Verify Undo is disabled after recovery
+
+## Functional - Modeling Service Non-Crash Path
+
+### View-filter validation
+- Remove an attribute used in a view filter
+  - Verify the editor remains interactive
+
+## Functional - MDX / Engine Errors
+
+### Engine error
+- Trigger the known engine error fixture and dismiss the dialog
+  - Verify the report remains open for continued editing
+
+## Functional - Prompt Flow
+
+### Prompt recovery
+- Submit the prepared prompt answers that trigger prompt recovery
+  - Verify the prompt reopens with the previous answers preserved
+
+## xFunctional
+
+### Cross-flow stability
+- N/A — no cross-flow scenario is in scope for this fixture
+
+## UI - Messaging
+
+### Dialog copy
+- Verify the message says the report cannot be executed and OK returns to Data Pause Mode
+
+## Platform
+
+### Browser coverage
+- N/A — no browser matrix is in scope for this fixture
+`;
   const result = validateTestCaseMarkdown(markdown);
   assert.equal(result.ok, true);
 });

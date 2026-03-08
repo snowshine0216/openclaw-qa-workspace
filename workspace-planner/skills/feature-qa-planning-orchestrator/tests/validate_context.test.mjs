@@ -12,7 +12,59 @@ const VALIDATE_CONTEXT_SRC = join(SCRIPT_DIR, 'validate_context.sh');
 const VALIDATE_STRUCTURE_SRC = join(SCRIPT_DIR, 'validate_testcase_structure.sh');
 const VALIDATE_EXEC_SRC = join(SCRIPT_DIR, 'validate_testcase_executability.sh');
 
-const VALID_MARKDOWN = `# Feature\n\n## EndToEnd\n\n### Main flow\n- In Library Web authoring, open the editor\n  - Verify the editor loads\n\n## Functional\n\n### Edit flow\n- In Library Web authoring, add one metric\n  - Verify the metric appears in the grid\n\n## xFunction\n\n### Cross-surface parity\n- In Workstation, repeat the edit flow\n  - Verify the template updates\n\n## Error handling / Special cases\n\n### Resume failure\n- In Library Web authoring, click Resume Data Retrieval after opening the report in pause mode\n  - Verify the report returns to Data Pause Mode\n\n## Accessibility\n\n### Keyboard\n- N/A — no new accessibility impact introduced\n\n## i18n\n\n### Locale\n- N/A — no locale-sensitive change is in scope\n\n## performance\n\n### Coverage\n- N/A — no explicit performance-sensitive change in scope\n\n## upgrade / compatability\n\n### Coverage\n- N/A — no upgrade-specific impact in scope\n\n## Embedding\n\n### Coverage\n- N/A — not an embedding feature\n\n## AUTO: Automation-Only Tests\n\n### Automation-only\n- Verify internal-only retry handling\n\n## 📎 Artifacts Used\n\n- context/jira_issue_BCIN-6709.md\n`;
+const VALID_MARKDOWN = `# Feature
+
+## EndToEnd
+
+### Main flow
+- Open the report in pause mode and click Resume Data Retrieval
+  - Verify the report stays in the same editing session
+
+## Functional - Pause Mode
+
+### Pause retry
+- Click Resume Data Retrieval again after recovery
+  - Verify the request is accepted instead of hanging
+
+## Functional - Running Mode
+
+### Running-mode recovery
+- Lower Results Set Row Limit and dismiss the error
+  - Verify Undo is disabled after recovery
+
+## Functional - Modeling Service Non-Crash Path
+
+### View-filter validation
+- Remove an attribute used in a view filter
+  - Verify the editor remains interactive
+
+## Functional - MDX / Engine Errors
+
+### Engine error
+- Trigger the known engine error fixture and dismiss the dialog
+  - Verify the report remains open for continued editing
+
+## Functional - Prompt Flow
+
+### Prompt recovery
+- Submit the prepared prompt answers that trigger prompt recovery
+  - Verify the prompt reopens with the previous answers preserved
+
+## xFunctional
+
+### Cross-flow stability
+- N/A — no cross-flow combination is part of this fixture
+
+## UI - Messaging
+
+### Copy validation
+- N/A — no message-copy check is part of this fixture
+
+## Platform
+
+### Browser coverage
+- N/A — no browser sweep is part of this fixture
+`;
 
 async function runScript(scriptPath, args, cwd) {
   return new Promise((resolve, reject) => {
@@ -48,7 +100,16 @@ test('default mode reports CONTEXT_OK when all artifacts exist', async () => {
   await rm(tmp, { recursive: true, force: true });
 });
 
-test('resolve mode prefers v2 when present', async () => {
+test('default mode reports missing artifacts clearly', async () => {
+  const { tmp, scriptsDir } = await setupScripts();
+  const { code, stdout } = await runScript(join(scriptsDir, 'validate_context.sh'), ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'], join(scriptsDir, '..'));
+  assert.notEqual(code, 0);
+  assert.match(stdout, /CONTEXT_MISSING/);
+  assert.match(stdout, /qa_plan_atlassian_BCIN-6709/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('resolve mode prefers v2 when present for legacy callers', async () => {
   const { tmp, scriptsDir } = await setupScripts();
   const ctxDir = join(tmp, 'BCIN-6709', 'context');
   await mkdir(ctxDir, { recursive: true });

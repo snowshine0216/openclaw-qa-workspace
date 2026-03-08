@@ -1,59 +1,69 @@
-# Canonical Testcase Contract
+# Canonical QA Plan Contract
 
-Use this contract for every manual and XMind-style testcase artifact produced by the QA planning workflow.
+Use this contract for every unified QA-plan artifact produced by the QA-planning workflow.
 
-## Canonical top-level headings
+## Required top-level sections
 
 Preserve these semantic buckets in this exact order:
 
 1. `## EndToEnd`
-2. `## Functional`
-3. `## xFunction`
-4. `## Error handling / Special cases`
-5. `## Accessibility`
-6. `## i18n`
-7. `## performance`
-8. `## upgrade / compatability`
-9. `## Embedding`
-10. `## AUTO: Automation-Only Tests`
-11. `## 📎 Artifacts Used`
+2. `## Functional - Pause Mode`
+3. `## Functional - Running Mode`
+4. `## Functional - Modeling Service Non-Crash Path`
+5. `## Functional - MDX / Engine Errors`
+6. `## Functional - Prompt Flow`
+7. `## xFunctional`
+8. `## UI - Messaging`
+9. `## Platform`
 
-## Rename rule
+## Section-flexibility rule
 
-- Only `EndToEnd` and `Functional` may be renamed.
-- A renamed heading must still map to the same semantic bucket.
-- Default allowed aliases for `EndToEnd`: `End to End`, `End-to-End`, `E2E`, `User Journey`, `Primary User Flow`.
-- Default allowed aliases for `Functional`: `Functionality`, `Functional Coverage`, `Core Functional Coverage`, `Core Scenarios`.
-- All remaining top-level headings are fixed. Do not rename, merge, drop, or replace them.
+- `EndToEnd` may be renamed with a close semantic alias such as `End to End` or `E2E`.
+- All other sections must remain present.
+- Small text adjustments are acceptable only if the section still maps clearly to the same semantic bucket.
+- Do not merge, drop, or replace required sections.
 
-## N/A rule for fixed headings
+## N/A rule
 
-- Every fixed heading must remain present even when there is no meaningful coverage.
-- If a fixed heading is not applicable, add one concise leaf node in the section:
-  - `N/A — not applicable for this feature scope`
-  - `N/A — no new accessibility impact introduced`
-  - `N/A — no embedding surface in scope`
+- Every required section must remain present even when there is no meaningful coverage.
+- If a section is not applicable, add one concise leaf node:
+  - `N/A — no messaging change in scope`
+  - `N/A — no cross-functional combination test needed for this feature`
+  - `N/A — browser sweep deferred to release validation`
 
 ## Manual testcase executability contract
 
 Every manual testcase must make these four items explicit:
 
-1. **Surface / location** — where the tester is acting.
-2. **Concrete trigger** — what exact branch, failure, or state is exercised.
-3. **Concrete user action** — what exact UI action is performed.
-4. **Observable expected result** — what visible state proves success.
+1. surface or location
+2. concrete trigger
+3. concrete user action
+4. observable expected result
 
 If one of the four items is unknown:
 - resolve it from cached context first
-- then look up Confluence or background research
+- then look up saved Confluence or background research
+- save any new background artifact before reuse
 - if still unknown, leave `<!-- TODO: specify trigger/action/result -->`
 - never replace the missing detail with vague wording
 
-## Manual vs AUTO rule
+## Source-usage contract
 
-- Keep manually executable checks in the manual sections.
-- Move code-internal-only checks to `## AUTO: Automation-Only Tests`.
-- A tester should not need to infer API payloads, internal flags, or hidden function behavior to execute a manual case.
+- Confluence drives main feature behavior and primary flow.
+- Jira provides repro fixtures, customer-facing failures, and missing coverage.
+- GitHub provides boundary conditions, edge cases, performance-sensitive risk, and automation-only reasoning.
+- Figma/UX evidence tightens wording, visible-state checks, and user workflow clarity.
+- The final plan must not read like per-source silos stitched together.
+
+## Output-quality contract
+
+The final plan should read like `docs/BCIN-6709_qa_plan.md`:
+
+- structured by user-facing behavior
+- concise
+- easy to understand
+- grouped rather than repetitive
+- comments used for rationale, not to carry the manual steps
 
 ## Vagueness blacklist
 
@@ -66,29 +76,3 @@ Do not use wording like:
 - `Matches documented branch behavior`
 
 Rewrite them into explicit trigger/action/result language.
-
-## Examples
-
-### Bad
-
-- `Recover from a supported report execution or manipulation error`
-
-### Better
-
-- `In Library Web authoring, open the report in pause mode, click Resume Data Retrieval, trigger the known Resume Data Retrieval failure branch, and verify the report returns to Data Pause Mode with the grid still on the same canvas`
-
-### Bad
-
-- `Perform another valid editing action`
-
-### Better
-
-- `In the report editor toolbar, remove one metric from the template grid and verify the grid refreshes without redirecting to Library home`
-
-### Bad
-
-- `Verify correct recovery`
-
-### Better
-
-- `Verify the prompt dialog reopens with the previous answers preserved and the user can submit a different value`

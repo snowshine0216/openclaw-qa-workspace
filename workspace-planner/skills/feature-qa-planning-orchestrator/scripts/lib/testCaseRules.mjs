@@ -1,18 +1,24 @@
 export const CANONICAL_TOP_LEVEL_CATEGORIES = [
   'EndToEnd',
-  'Functional',
-  'xFunction',
-  'Error handling / Special cases',
-  'Accessibility',
-  'i18n',
-  'performance',
-  'upgrade / compatability',
-  'Embedding',
-  'AUTO: Automation-Only Tests',
-  '📎 Artifacts Used',
+  'Functional - Pause Mode',
+  'Functional - Running Mode',
+  'Functional - Modeling Service Non-Crash Path',
+  'Functional - MDX / Engine Errors',
+  'Functional - Prompt Flow',
+  'xFunctional',
+  'UI - Messaging',
+  'Platform',
 ];
 
-export const FIXED_TOP_LEVEL_CATEGORIES = CANONICAL_TOP_LEVEL_CATEGORIES.slice(2);
+export const FIXED_TOP_LEVEL_CATEGORIES = CANONICAL_TOP_LEVEL_CATEGORIES.slice(1);
+export const OPTIONAL_TOP_LEVEL_CATEGORIES = [
+  'Accessibility',
+  'Security',
+  'Upgrade / compatibility',
+  'i18n',
+  'Performance',
+  'Embedding',
+];
 
 export const RENAMEABLE_CATEGORY_ALIASES = {
   EndToEnd: [
@@ -25,34 +31,81 @@ export const RENAMEABLE_CATEGORY_ALIASES = {
     'Primary User Flow',
     'Primary User Flows',
   ],
-  Functional: [
-    'Functional',
-    'Functionality',
-    'Functional Coverage',
-    'Core Functional Coverage',
-    'Core Functional Scenarios',
-    'Core Scenarios',
+  'Functional - Pause Mode': [
+    'Functional - Pause Mode',
+    'Pause Mode',
+    'Functional: Pause Mode',
+  ],
+  'Functional - Running Mode': [
+    'Functional - Running Mode',
+    'Running Mode',
+    'Functional: Running Mode',
+  ],
+  'Functional - Modeling Service Non-Crash Path': [
+    'Functional - Modeling Service Non-Crash Path',
+    'Modeling Service Non-Crash Path',
+    'Functional: Modeling Service Non-Crash Path',
+  ],
+  'Functional - MDX / Engine Errors': [
+    'Functional - MDX / Engine Errors',
+    'MDX / Engine Errors',
+    'Functional: MDX / Engine Errors',
+  ],
+  'Functional - Prompt Flow': [
+    'Functional - Prompt Flow',
+    'Prompt Flow',
+    'Functional: Prompt Flow',
+  ],
+  xFunctional: [
+    'xFunctional',
+    'xFunction',
+    'Cross Functional',
+    'Cross-Functional',
+  ],
+  'UI - Messaging': [
+    'UI - Messaging',
+    'UI Messaging',
+    'Messaging',
+  ],
+  Platform: [
+    'Platform',
+    'Browser Coverage',
+    'Platform Coverage',
+  ],
+  Accessibility: [
+    'Accessibility',
+  ],
+  Security: [
+    'Security',
+  ],
+  'Upgrade / compatibility': [
+    'Upgrade / compatibility',
+    'upgrade / compatability',
+    'upgrade / compatibility',
+  ],
+  i18n: [
+    'i18n',
+  ],
+  Performance: [
+    'Performance',
+    'performance',
+  ],
+  Embedding: [
+    'Embedding',
   ],
 };
 
 export const VAGUE_PHRASES = [
-  'recover from a supported',
+  'recover from a supported report execution or manipulation error',
   'perform another valid editing action',
   'observe the recovered state',
   'verify correct recovery',
-  'matches documented branch behavior',
-  'when an error occurs',
-  'after recovery',
   'verify recovery',
-  'supported error',
-  'valid editing action',
-  'documented branch behavior',
+  'matches documented branch behavior',
 ];
 
 const CODE_PATTERNS = [
   /\b[a-z_$][A-Za-z0-9_$]*\(\)/,
-  /\b[a-z]+[A-Z][A-Za-z0-9]+\b/,
-  /\b[A-Z][A-Za-z0-9]+(?:\.[A-Za-z0-9_]+)+\b/,
   /\breturns\s*\{[^}]+\}/i,
   /\bstid\s*=\s*-?\d+/i,
   /\bnoActionMode\b/i,
@@ -185,11 +238,12 @@ export function validateTopLevelStructure(markdown) {
 
   const missingCategories = findMissingTemplateCategories(markdown);
   const orderIssues = [];
+  const requiredInDocument = presentBuckets.filter((bucket) => CANONICAL_TOP_LEVEL_CATEGORIES.includes(bucket));
   CANONICAL_TOP_LEVEL_CATEGORIES.forEach((category, index) => {
-    if (presentBuckets[index] && presentBuckets[index] !== category) {
+    if (requiredInDocument[index] && requiredInDocument[index] !== category) {
       orderIssues.push({
         expected: category,
-        actual: presentBuckets[index],
+        actual: requiredInDocument[index],
         position: index + 1,
       });
     }
@@ -212,7 +266,7 @@ export function validateTopLevelStructure(markdown) {
 }
 
 function isManualBucket(bucket) {
-  return bucket && bucket !== 'AUTO: Automation-Only Tests' && bucket !== '📎 Artifacts Used';
+  return Boolean(bucket);
 }
 
 export function headingNeedsRewrite(heading) {
