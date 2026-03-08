@@ -27,9 +27,22 @@ Use this skill for normal Jira CLI workflows and for Jira REST publish paths tha
 ## Prerequisites
 
 1. Install `jira-cli` and run `jira init`
-2. Add `JIRA_API_TOKEN` and `JIRA_BASE_URL` to the active workspace `.env` or repo-root `.env`
+2. Add `JIRA_API_TOKEN` and `JIRA_BASE_URL` to a `.env` file. **The wrapper scripts (`jira-run.sh`, `search-jira.sh`, etc.) auto-load `.env`** — no manual `source` or `export` needed. Resolution order (first found wins):
+   - `JIRA_ENV_FILE` env var (explicit path)
+   - **Skill folder** (same dir as SKILL.md) — recommended; `cp .env.example .env` there
+   - Workspace root `.env` (OPENCLAW_WORKSPACE or dir with AGENTS.md)
+   - Repo root `.env`
 3. Make sure `jq`, `curl`, and `node` are available for publish/playground scripts
 4. For live publish commands, use a sandbox issue and provide `JIRA_USER_EMAIL` if your local Jira config does not include `login`
+
+## Environment Bootstrap (Required)  
+- Before running any `jira` command from OpenClaw/Codex sessions, first load the skill-local environment if present: 
+```bash
+set -a 
+source ~/.agents/skills/jira-cli/.env >/dev/null 2>&1 || true
+set +a
+jira me
+```
 
 ## Script Entry Points
 
@@ -89,14 +102,17 @@ bash .agents/skills/jira-cli/scripts/jira-publish-playground.sh \
 
 ## Common Jira CLI Commands
 
+Use `jira-run.sh` (not raw `jira`) so credentials are loaded from `.env`:
+
 ```bash
-jira issue list --plain --columns key,summary,status --no-headers
-jira issue view ISSUE-123 --plain
-jira issue edit ISSUE-123 -s "Updated summary"
-jira issue move ISSUE-123 "In Progress"
-jira issue assign ISSUE-123 "$(jira me)"
-jira issue comment add ISSUE-123 "Plain-text comment"
-jira sprint list --current -a"$(jira me)"
+# <skill-path> = jira-cli skill folder (e.g. .agents/skills/jira-cli)
+bash <skill-path>/scripts/jira-run.sh issue list --plain --columns key,summary,status --no-headers
+bash <skill-path>/scripts/jira-run.sh issue view ISSUE-123 --plain
+bash <skill-path>/scripts/jira-run.sh issue edit ISSUE-123 -s "Updated summary"
+bash <skill-path>/scripts/jira-run.sh issue move ISSUE-123 "In Progress"
+bash <skill-path>/scripts/jira-run.sh issue assign ISSUE-123 "$(bash <skill-path>/scripts/jira-run.sh me)"
+bash <skill-path>/scripts/jira-run.sh issue comment add ISSUE-123 "Plain-text comment"
+bash <skill-path>/scripts/jira-run.sh sprint list --current -a"$(bash <skill-path>/scripts/jira-run.sh me)"
 ```
 
 ## Notes

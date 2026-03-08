@@ -14,65 +14,34 @@ _Operating instructions for test planning and strategy._
 
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
+- use `skill-creator` for all skill creation and refactoring tasks.
+- never use web-fetch for below tasks.
+   - use `jira-cli` for all Jira tasks. 
+      - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
+   - use `github` for all github tasks. 
+   - use `confluence` for all confluence tasks.
+
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
-When the user provides feature artifacts (Jira, PR, Figma), assume the **Master Orchestrator** persona.
+ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
-Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
-  ↓
-Trigger the `feature-qa-planning-orchestrator` skill (file: `skills/feature-qa-planning-orchestrator/SKILL.md`)
-  ↓
-1. Phase 0 Initialization: Run `projects/feature-plan/scripts/check_resume.sh` from the feature directory and initialize or update `projects/feature-plan/<feature-id>/task.json` plus `run.json`.
-2. Context Gathering & Analysis: Spawn parallel tasks (e.g., `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`) to fetch artifacts and generate domain summaries into `context/`.
-3. Generation: Instruct `qa-plan-synthesize` to synthesize a comprehensive Test Plan from the domain summaries.
-4. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
-5. Publication:
-   a. Publish markdown directly: `confluence update <page-id> --file qa_plan_final.md --format markdown`
-   b. If no existing page ID is available, create a new page: `confluence create "<title>" <space-key> --file qa_plan_final.md --format markdown`
-   c. Verify page renders correctly
-   d. Complete `task.json`
-```
-
-## Core Workflow: Test Case Generation (Spec Generator)
-
-When the user wants to generate Playwright-compatible test spec files for a feature, trigger this workflow.
-
-```
-Trigger: User asks to generate test cases, test specs, or spec files for a feature ID.
-  ↓
-Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case-generation.md`)
-  ↓
-Entry routing:
-  • qa_plan_final.md EXISTS → Phase 0 (existence check)
-  • No qa_plan_final.md   → Scenario 2 (context enrichment → `feature-qa-planning-orchestrator` → Phase 0)
-
-Key phases:
-  0. Existence check — classify state, initialize testcase_task.json
-  1. Read QA plan & context/ artifacts — derive test objects, data, risks
-  2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
-  3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
-  4. Generate Markdown specs — one .md per scenario via test-case-generator skill
-  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
-
-State file: testcase_task.json (separate from task.json owned by `feature-qa-planning-orchestrator`)
-Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
-```
-
-
-### jira-cli Commands
-```bash
-# Fetch issue details
-jira issue view BCIN-1234
-
-# Export issue for reference
-jira issue view BCIN-1234 --format json > projects/test-plans/BCIN-1234/jira-issue.json
+Phase 0 → Idempotency check + preparation
+Phase 1 → Context gathering (spawn qa-plan-write mode=context: atlassian, github, figma)
+Phase 2 → Domain sub test cases (spawn qa-plan-write mode=testcase: atlassian, github, figma)
+Phase 3 → Domain review (spawn qa-plan-review: jira, confluence, github, figma) — review sub_test_cases_*
+Phase 4 → Domain refactor (spawn qa-plan-review mode=refactor: atlassian, github, figma) — apply findings → _v2.md
+Phase 5 → Synthesize (resolve v2/base per domain → unified XMind draft)
+Phase 6 → XMind review (single agent, reuses Phase 3 artifacts)
+Phase 7 → Final refactor
+Phase 8 → Finalize + Feishu notifyT
 ```
 
 ### Research Best Practices
 When needed, search for testing best practices:
-- Use `tavily/confluence search` for testing patterns
+- Use `tavily-search/confluence search` for testing patterns
+- Use `jira-cli` to search previous related high priority issues
 
 
 ## Memory Management
@@ -167,6 +136,14 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 **Feishu Chat-id**: always look up in `TOOLS.md`.
 
 **CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
+
+**Feature QA planning evidence policy:** For feature QA planning and testcase generation, always use the canonical shared skills in `~/.openclaw/skills` for system-of-record artifacts:
+- Jira → `jira-cli`
+- GitHub → `github`
+- Confluence → `confluence`
+- Figma → browser flow or approved local snapshots
+- Never use `web_fetch` for Jira, GitHub, or Confluence primary evidence collection.
+- During Phase 0, verify access first (`jira me`, `gh auth status`, and Confluence access when needed) before spawning sub-agents.
 
 And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 

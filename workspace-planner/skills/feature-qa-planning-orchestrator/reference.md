@@ -4,7 +4,7 @@
 
 - `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
 
-The legacy file `workspace-planner/.agents/workflows/feature-qa-planning.md` has been removed. All active routing must point to the orchestrator skill.
+The legacy workflow file remains retired. All routing should use the orchestrator skill.
 
 ## Phase 0 State Contract
 
@@ -41,24 +41,33 @@ Required fields:
 - `notification_pending`
 - `updated_at`
 
-## Defect Analysis State Machine
+## Testcase contract summary
 
-`not_applicable -> pending -> in_progress -> completed`
+Use `references/canonical-testcase-contract.md` as the single source of truth for:
+- canonical top-level heading order
+- rename rules
+- `N/A — <reason>` behavior
+- manual testcase executability requirements
+- manual vs `AUTO` placement
 
-Fallback:
-- `pending -> skipped`
-- `in_progress -> skipped`
+## Validation gates by phase
 
-## Draft Versioning
+- Phase 2: validate each domain sub-testcase artifact for structure and executability
+- Phase 4: validate each refactored domain artifact before accepting `_v2`
+- Phase 5: validate the synthesized draft before moving to consolidated review
+- Phase 7: validate the final refactored draft before publication
 
-- Determine next draft from `task.json.latest_draft_version` when present.
-- Fall back to scanning `drafts/qa_plan_v*.md`.
-- Never overwrite an older draft version in place.
+Use these scripts:
+- `validate_context.sh`
+- `validate_testcase_structure.sh`
+- `validate_testcase_executability.sh`
 
-## Confluence Review Versioning
+## Failure handling
 
-- Save live review artifacts as `qa_plan_confluence_review_v<N>.md`.
-- If a new live review is produced, increment the version instead of overwriting the old file.
+If a validation gate fails:
+- do not silently continue
+- rewrite once inside the current phase when the phase contract allows it
+- if the artifact still fails, stop the workflow and surface the exact structural or executability violations
 
 ## Shared Skill Reuse
 

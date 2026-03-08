@@ -2,19 +2,6 @@
 
 _Monitoring patterns and lessons learned._
 
-## Common Jira Queries
-
-```bash
-# Ready for testing
-jira issue list --status "Ready for Testing" --project BCIN
-
-# Blockers
-jira issue list --priority Blocker,Critical --project BCIN
-
-# Recently fixed
-jira issue list --jql "project = BCIN AND status = Fixed AND updated >= -1d"
-```
-
 ## CI/Jenkins Patterns
 
 *(To be filled when Jenkins integration is configured)*

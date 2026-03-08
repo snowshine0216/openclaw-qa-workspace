@@ -112,3 +112,10 @@ Treat each file below as a reusable playbook. Select the closest match by user i
 - Do not finalize OpenClaw design output when reviewer result is `fail`.
 - For Playwright healing, do not exceed 3 rounds; write a healing report on unresolved failures.
 - Always return artifact paths for plan/spec/healing outputs.
+
+## Plan Artifact Standard
+
+- When creating a plan, do not stop at a high-level outline.
+- Plans must be detailed, implementation-ready, and decision-complete.
+- Every plan must state the files to change, files to create, expected content changes, and validation expectations.
+- Use explicit defaults and assumptions when a design choice must be locked before implementation.

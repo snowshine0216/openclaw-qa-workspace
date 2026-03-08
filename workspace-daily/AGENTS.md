@@ -14,6 +14,13 @@ _Operating instructions for daily monitoring._
 
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
+- use `skill-creator` for all skill creation and refactoring tasks.
+- never use web-fetch for below tasks.
+   - use `jira-cli` for all Jira tasks. 
+      - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
+   - use `github` for all github tasks. 
+   - use `confluence` for all confluence tasks.
+
 
 ## Memory
 

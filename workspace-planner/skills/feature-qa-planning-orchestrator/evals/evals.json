@@ -1,0 +1,29 @@
+{
+  "skill_name": "feature-qa-planning-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a QA planning workflow output for a feature where the team wants the first two headings renamed to E2E User Journey and Core Functional Coverage, but every other fixed heading must remain present even when out of scope.",
+      "expected_output": "The generated plan keeps the canonical top-level structure, only renames the EndToEnd and Functional buckets, and uses N/A leaves for fixed headings that are not applicable.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate sub test cases for a feature with no embedding surface, no new locale behavior, and no meaningful performance-sensitive change. Keep those sections visible with concise N/A explanations instead of deleting them.",
+      "expected_output": "The output retains Embedding, i18n, and performance as fixed headings and fills each one with an explicit N/A reason.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Synthesize QA testcases for an error-recovery feature where earlier drafts used vague wording like recover from a supported error or verify correct recovery. Rewrite every manual testcase so the tester can run it without guessing the trigger, action, or visible success condition.",
+      "expected_output": "The output replaces vague recovery wording with concrete surface, trigger, action, and expected-result language or moves automation-only checks into AUTO.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Generate a Figma-driven testcase draft for a UI-only change and make sure the Figma handler uses the same canonical top-level structure as Atlassian and GitHub rather than introducing a separate UI Testing heading.",
+      "expected_output": "The generated Figma draft follows the shared canonical structure and does not create Figma-only top-level headings.",
+      "files": []
+    }
+  ]
+}

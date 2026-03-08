@@ -54,7 +54,34 @@ Typical failures:
 - `P1`: Design bypasses the current existing-status check.
 - `P1`: Design changes `task.json` / `run.json` semantics without additive justification.
 
-### 5) Design Workflow Dependencies
+### 5) Skill Package Content Completeness
+
+Pass conditions:
+- Every created or redesigned skill has an explicit `SKILL.md` content specification.
+- Every created or redesigned skill has an explicit `reference.md` content specification.
+- The design includes package structure expectations and path conventions.
+
+Typical failures:
+- `P1`: Missing detailed `SKILL.md` content specification.
+- `P1`: Missing detailed `reference.md` content specification.
+- `P1`: Package structure is incomplete or underspecified.
+
+### 6) Script-Bearing Package Completeness
+
+Pass conditions:
+- The design uses the deterministic script-bearing rule from `.agents/skills/openclaw-agent-design/reference.md`.
+- Script-bearing skills declare `scripts/test/` as the OpenClaw exception.
+- Every script has function-level responsibilities, inputs, outputs, side effects, and failure modes.
+- Every script has a one-to-one mapped test stub under `scripts/test/`.
+- Docs-only skills are not failed for omitting script-test sections.
+
+Typical failures:
+- `P1`: Missing script inventory or function-level details for a script-bearing skill.
+- `P1`: Missing one-to-one script-to-test mapping.
+- `P1`: Wrong test layout for a script-bearing skill.
+- `P1`: Docs-only skill is incorrectly failed for lacking script-test sections.
+
+### 7) Design Workflow Dependencies
 
 Pass conditions:
 - `clawddocs` is consulted.
@@ -68,18 +95,20 @@ Typical failures:
 - `P1`: Missing `code-structure-quality` requirement.
 - `P1`: Missing blocking reviewer gate.
 
-### 6) Documentation and Validation Completeness
+### 8) Documentation and Validation Completeness
 
 Pass conditions:
 - AGENTS.md sync is explicit.
 - README impact is explicit.
 - Non-trivial scripts include test, smoke, or validation evidence.
+- Reviewer automation is updated to validate the required sections.
 - Output and handoff artifact paths are explicit.
 
 Typical failures:
 - `P1`: No AGENTS.md sync section.
 - `P1`: No README impact section.
 - `P1`: Non-trivial script changes lack validation evidence.
+- `P2`: Reviewer automation checks lag behind the documented standard.
 
 ## Finding IDs
 
@@ -91,18 +120,26 @@ Typical failures:
 - `SKILL-006` (`P1`): `code-structure-quality` was not applied to skill boundary design.
 - `SKILL-007` (`P1`): Design ignores OpenClaw compatibility expectations from `clawddocs` or `agent-idempotency`.
 - `SKILL-008` (`P1`): Design bypasses the current Phase 0 existing-status check or breaks `task.json` / `run.json` semantics without additive change justification recorded in the design doc and reviewer report.
+- `SKILL-009` (`P1`): Missing detailed `SKILL.md` content specification for one or more designed skills.
+- `SKILL-010` (`P1`): Missing detailed `reference.md` content specification for one or more designed skills.
+- `PKG-001` (`P1`): Skill package folder structure is incomplete or does not include required directories.
+- `TEST-001` (`P1`): Script deliverables lack one-to-one test stub mapping.
+- `TEST-002` (`P1`): Script-bearing skill violates the canonical `scripts/test/` layout.
 - `SHELL-001` (`P1`): Shell or Node scripts are treated as the primary workflow abstraction instead of skill internals.
 - `SHELL-002` (`P1`): Script design mixes orchestration, transformation, and side effects without clear boundaries.
-- `SHELL-003` (`P2`): Non-trivial script behavior lacks test, smoke, or validation evidence.
+- `SHELL-003` (`P2`): Non-trivial script behavior lacks strong enough test, smoke, or validation evidence.
+- `SHELL-004` (`P1`): Script function-level responsibilities, IO, or failure details are missing.
+- `EVID-001` (`P1`): No executable validation evidence plan exists for script or test behavior.
+- `EVID-002` (`P2`): Reviewer automation does not yet validate the documented required sections.
 
 ## Suggested JSON Finding Shape
 
 ```json
 {
-  "id": "SKILL-002",
+  "id": "SKILL-009",
   "severity": "P1",
-  "summary": "Shared capability is placed outside .agents/skills/ without justification",
+  "summary": "Missing detailed SKILL.md content specification for a redesigned skill package",
   "evidence": "docs/example-design.md",
-  "recommended_fix": "Move the shared capability under .agents/skills/ or add an explicit justification for why it is not shared."
+  "recommended_fix": "Add a Skills Content Specification subsection that defines purpose, trigger conditions, input/output contracts, workflow responsibilities, error policy, quality rules, classification, placement justification, and reused shared skills."
 }
 ```

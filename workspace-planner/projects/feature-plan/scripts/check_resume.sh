@@ -18,7 +18,7 @@ readonly PLANNER_ROOT="$(cd "$BASE_DIR/../.." && pwd)"
 readonly REPORTER_ROOT="$PLANNER_ROOT/../workspace-reporter"
 readonly DEFECT_REPORT_SRC="${REPORTER_ROOT}/projects/defects-analysis/${FEATURE_ID}/${FEATURE_ID}_REPORT_FINAL.md"
 readonly REPORTER_TASK_FILE="${REPORTER_ROOT}/projects/defects-analysis/${FEATURE_ID}/task.json"
-readonly PLAN_FINAL="$FEATURE_DIR/qa_plan_final.md"
+readonly PLAN_FINAL="$FEATURE_DIR/test_key_points_xmind_final.md"
 readonly CONTEXT_DIR="$FEATURE_DIR/context"
 readonly CONTEXT_JIRA="$CONTEXT_DIR/jira.json"
 readonly ARCHIVE_DIR="$FEATURE_DIR/archive"
@@ -76,12 +76,12 @@ file_mtime_utc() {
   date -r "$file" -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || true
 }
 
-latest_draft_version() {
+latest_xmind_version() {
   local from_task=""
   local task_path=""
-  from_task=$(json_value "$TASK_FILE" '.latest_draft_version')
+  from_task=$(json_value "$TASK_FILE" '.latest_xmind_version')
   if [ -n "$from_task" ] && [ "$from_task" != "null" ]; then
-    task_path="$FEATURE_DIR/drafts/qa_plan_v${from_task}.md"
+    task_path="$FEATURE_DIR/drafts/test_key_points_xmind_v${from_task}.md"
     if [ -f "$task_path" ]; then
       printf '%s\n' "$from_task"
       return 0
@@ -94,7 +94,7 @@ latest_draft_version() {
   fi
 
   local version
-  version=$(ls "$FEATURE_DIR/drafts"/qa_plan_v*.md 2>/dev/null | sed -n 's/.*qa_plan_v\([0-9]*\)\.md/\1/p' | sort -n | tail -1)
+  version=$(ls "$FEATURE_DIR/drafts"/test_key_points_xmind_v*.md 2>/dev/null | sed -n 's/.*xmind_v\([0-9]*\)\.md/\1/p' | sort -n | tail -1)
   echo "${version:-0}"
 }
 
@@ -138,11 +138,11 @@ if [ -f "$PLAN_FINAL" ]; then
   (( ARCHIVE_COUNT > 0 )) && print_status "Archived plans" "$ARCHIVE_COUNT in archive/"
   echo ""
   echo "Options: (A) Use Existing  (B) Smart Refresh  (C) Full Regenerate"
-elif DRAFT_V=$(latest_draft_version) && [ -n "$DRAFT_V" ] && [ "$DRAFT_V" != "0" ] && [ -f "$FEATURE_DIR/drafts/qa_plan_v${DRAFT_V}.md" ]; then
+elif DRAFT_V=$(latest_xmind_version) && [ -n "$DRAFT_V" ] && [ "$DRAFT_V" != "0" ] && [ -f "$FEATURE_DIR/drafts/test_key_points_xmind_v${DRAFT_V}.md" ]; then
   REPORT_STATE="DRAFT_EXISTS"
-  DRAFT_AGE=$(human_age "$(file_mtime_utc "$FEATURE_DIR/drafts/qa_plan_v${DRAFT_V}.md")")
+  DRAFT_AGE=$(human_age "$(file_mtime_utc "$FEATURE_DIR/drafts/test_key_points_xmind_v${DRAFT_V}.md")")
   print_status "REPORT_STATE" "$REPORT_STATE"
-  print_status "Latest draft" "qa_plan_v${DRAFT_V}.md (created: $DRAFT_AGE)"
+  print_status "Latest draft" "test_key_points_xmind_v${DRAFT_V}.md (created: $DRAFT_AGE)"
   print_status "Data fetched" "$DATA_AGE"
   echo ""
   echo "Options: (A) Resume  (B) Smart Refresh  (C) Full Regenerate"
@@ -178,7 +178,7 @@ FEATURE_NAME=$(json_value "$TASK_FILE" '.feature_name')
 UPDATED_AT=$(first_non_empty "$(json_value "$RUN_FILE" '.updated_at')" "$(json_value "$TASK_FILE" '.updated_at')" || true)
 ERROR_COUNT=$(jq -r '.errors // [] | length' "$TASK_FILE" 2>/dev/null || echo "0")
 DEFECT_ANALYSIS=$(first_non_empty "$(json_value "$TASK_FILE" '.defect_analysis')" "not_applicable" || true)
-LATEST_DRAFT=$(latest_draft_version)
+LATEST_DRAFT=$(latest_xmind_version)
 NOTIFICATION_PENDING=$(json_value "$RUN_FILE" '.notification_pending')
 
 if [ "$DEFECT_ANALYSIS" = "in_progress" ] || [ "$DEFECT_ANALYSIS" = "pending" ]; then
@@ -218,7 +218,7 @@ print_status "Feature Name" "${FEATURE_NAME:-unknown}"
 print_status "Overall Status" "${STATUS:-unknown}"
 print_status "Current Phase" "${CURRENT_PHASE:-unknown}"
 print_status "Defect Analysis" "$DEFECT_ANALYSIS"
-print_status "Latest Draft" "${LATEST_DRAFT:-0}"
+print_status "Latest XMind" "${LATEST_DRAFT:-0}"
 print_status "Last Updated" "${UPDATED_AT:-unknown}"
 print_status "Errors" "$ERROR_COUNT"
 if [ -n "$NOTIFICATION_PENDING" ] && [ "$NOTIFICATION_PENDING" != "null" ]; then

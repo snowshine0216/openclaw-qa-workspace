@@ -4,7 +4,7 @@ _Knowledge accumulated about agents, skills, code patterns, and configurations._
 
 ## Agent Design Patterns
 
-*(To be filled as you design agents)*
+- Always use `openclaw-agent-design` for all agent design tasks.
 
 ### Workspace Structure Best Practices
 - Always include: SOUL.md, AGENTS.md, IDENTITY.md, USER.md, TOOLS.md, MEMORY.md
@@ -13,7 +13,7 @@ _Knowledge accumulated about agents, skills, code patterns, and configurations._
 
 ## Skills Creation Patterns
 
-*(To be filled as you create skills)*
+- Always use `skill-creator` for all skill creation and refactoring tasks.
 
 ### Skill Triggers
 - Be specific about when skill activates
@@ -26,7 +26,7 @@ _Knowledge accumulated about agents, skills, code patterns, and configurations._
 
 ## Code Quality Patterns
 
-*(To be filled as you review code)*
+- Always use `code-quality-orchestrator` for all coding tasks.
 
 ### TDD Workflow
 - Write test first, see it fail
@@ -54,10 +54,6 @@ _Knowledge accumulated about agents, skills, code patterns, and configurations._
 - Configuration: `/gateway/configuration`
 - Sandbox: `/tools/sandbox`
 - Channel routing: `/channels/channel-routing`
-
-## Lessons Learned
-
-- Snow preference: when I update shared skills that exist in both the workspace and `~/.agents`, sync both copies by default, but record this convention only in memory unless explicitly asked to document it elsewhere.
 
 ## Config Backup Strategy
 

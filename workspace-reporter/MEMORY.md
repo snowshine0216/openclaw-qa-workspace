@@ -25,16 +25,13 @@ Full design references: `projects/docs/REPORTER_AGENT_DESIGN.md` Section 3, `WOR
 - `task.json` fields: `report_final_at` = timestamp when draft promoted to final (Phase 4a); `report_approved_at` = timestamp of user approval (Phase 5).
 
 ---
+## Tool & Task Execution Rules
 
-## Confluence Safety Rules
-
-These rules prevent accidental erasure of existing page content.
-
-- **Surgical updates only.** Only the `QA Summary` section (1–9) is ever modified. All other sections on the page are untouched.
-- **Never delete existing subsections** within `QA Summary` unless the user explicitly approves removal.
-- **Preserve over placeholder.** If the new draft has `[PENDING]` for a subsection that already has real content on Confluence, keep the existing Confluence content and log a warning: *"⚠️ Section X has existing content on Confluence; new draft is [PENDING]. Keeping existing content."*
-- **Always read before writing.** Run `confluence read <page-id>` first. Never write blind.
-- **Never overwrite full page.** Always merge: add/replace the QA Summary section, preserve everything else.
+- **Atlassian Data (Jira & Confluence):** MUST use the `jira-cli` skill and `confluence` skill to fetch data. NEVER use `web-fetch`.
+- **GitHub Data:** MUST use the `github` skill to fetch data. NEVER use `web-fetch`.
+- **Figma Data:** Use the browser to view Figma data. If it requires login, pause and ask the user to finish the login process, and then continue.
+- **Background Research:** ALWAYS use the `tavily-search` or `confluence` skill for gathering background information when domain knowledge is lacking or context is needed.
+- **Critical Thinking & Domain Knowledge:** ALWAYS be critical about your understanding of a feature. NEVER assume you know everything about the feature. You MUST raise questions and ask the user for clarification before writing a test plan if you are not fully confident about the domain knowledge or requirements.
 
 ---
 
@@ -88,27 +85,4 @@ jira issue list --jql "project in ($PROJECT_KEYS) AND issuetype = Defect AND (pa
 ---
 
 *Last updated: 2026-02-26*
-
-## Critical Lessons Learned
-
-### Confluence Update Behavior (2026-02-26)
-
-**Problem:** Used `confluence update <page-id> --file qa_summary_section.html` directly, which **replaced the entire page content** with only the QA Summary section. All original test planning content was erased.
-
-**Root Cause:** The `confluence update` command with `--file` replaces the **entire page body**, not just a specific section. It does not perform surgical section merging.
-
-**Correct Procedure:**
-1. **Read** current page content: `confluence read <page-id> > current_page.html`
-2. **Merge** new section with existing content: `cat current_page.html > merged.html && cat new_section.html >> merged.html`
-3. **Update** with merged content: `confluence update <page-id> --file merged.html --format storage`
-
-**Never** pass only the new section HTML to `confluence update` — always merge first.
-
-**Fixed:** 2026-02-26 — Restored original content from version 6, appended QA Summary, updated successfully.
-
-**Documentation Updated:**
-- `projects/docs/QA_SUMMARY_AGENT_DESIGN.md` — Added critical warning in Phase 5
-- Workflow steps updated to show explicit 3-step merge process
-
-**Verification:** BCED-4198 page now contains both original test plan + QA Summary sections.
 
