@@ -109,8 +109,22 @@ BCIN-5335_Ability to create cube-based report in Library Web
 ## Accessibility
 
 ## Embedding
+
 ### iFrame Embedding
+- Feature renders correctly inside iFrame container without visual overflow
+- Feature initiates authentication flow without breaking host page session
+- Cross-origin messaging (postMessage) returns correct feature state
+- Feature is usable when host page applies CSP restrictions
+- Feature degrades gracefully when iFrame is resized/collapsed
+- Feature state persists across iFrame reload (if applicable)
+
 ### Native Embedding
+- SDK initializes feature without error in a blank host shell
+- Feature data/callback API matches public SDK contract
+- Feature teardown (unmount/destroy) releases resources without leak
+- Feature respects host-provided theming / CSS variables
+- Feature correctly handles `authToken` injected by host
+- Verify no internal MStr namespace objects exposed to global scope
 
 ## i18n
 

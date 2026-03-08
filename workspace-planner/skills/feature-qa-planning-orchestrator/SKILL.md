@@ -1,6 +1,6 @@
 ---
 name: feature-qa-planning-orchestrator
-description: Canonical workspace-planner entrypoint for end-to-end QA plan generation. Orchestrates Phase 0 idempotency, sub-agent spawning for parallel context gathering, sub-agent spawning for domain sub test case + QA plan draft generation, synthesis, domain review, refactor, and publication.
+description: Canonical workspace-planner entrypoint for end-to-end QA plan generation. Orchestrates 8 phases: Phase 0 idempotency, Phase 1 context gathering (qa-plan-write), Phase 2 sub test cases (qa-plan-write), Phase 3 domain review (qa-plan-review), Phase 4 domain refactor (qa-plan-review mode=refactor), Phase 5 synthesis, Phase 6 XMind review, Phase 7 final refactor, Phase 8 publication.
 ---
 
 # Feature QA Planning Orchestrator
@@ -35,31 +35,31 @@ Working directory:
 - Never silently choose a destructive path.
 - Archive before overwrite.
 - Spawn sub-agents for parallel context gathering (Phase 1) using `spawn-agent-session` skill.
-- Spawn sub-agents for domain sub test case + QA plan draft generation (Phase 2) using `spawn-agent-session` skill.
-- Generate dual outputs: final QA plan + XMind-compatible final test cases.
-- The QA plan MUST follow `templates/qa-plan-template.md` as the final structure.
+- Spawn sub-agents for domain sub test case generation (Phase 2) using `spawn-agent-session` skill.
+- Generate XMind-compatible final test cases as the ONLY output.
 - The test cases MUST follow `templates/test-case-template.md` as the final structure.
-- Evaluation is mandatory for both QA plan and test cases: draft → `qa-plan-review` → `qa-plan-refactor` → final.
+- Evaluation is mandatory for test cases: draft → `qa-plan-review` → `qa-plan-refactor` → final.
 - Implement conditional Confluence search based on Jira linked/child issues, and also require Confluence clarification when generated test areas are vague, technical, or non-actionable so they can be rewritten into user-observable actions.
 - Reuse shared skills directly from `~/.openclaw/skills`: `jira-cli`, `github`, `confluence`, `feishu-notify`, `spawn-agent-session`.
 - Treat `~/.openclaw/skills` as canonical for shared skills. Workspace-root copies are synced mirrors and must stay aligned with the shared source.
 - Primary evidence must come only from canonical source skills: Jira via `jira-cli`, GitHub via `github`, Confluence via `confluence`, and Figma via browser/local snapshots.
 - Never use `web_fetch`, generic browser scraping, or ad hoc HTTP retrieval for Jira, GitHub, or Confluence evidence collection during feature QA planning.
-- `web_fetch` is allowed only for optional background research that is not a system-of-record artifact for the feature.
-- Reuse planner-local skills directly: `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`, `qa-plan-synthesize`, `qa-plan-review`, `qa-plan-refactor`, `qa-plan-confluence-review`.
-- Keep code/internal details out of manual QA rows; user-facing outcomes belong in the final QA plan and final test cases.
-- NEVER publish to Confluence without explicit user approval and a confirmed target page.
+- Reuse planner-local skills directly: `qa-plan-write` (atlassian, github, figma handlers), `qa-plan-synthesize`, `qa-plan-review`, `qa-plan-refactor`.
+- Keep code/internal details out of manual QA rows; user-facing outcomes belong in the final test cases.
+- Send Feishu notification ONLY at the end. DO NOT publish to Confluence.
 
 ## Phase Overview
 
 ```
 Phase 0 → Idempotency check + preparation
-Phase 1 → Context gathering (spawn sub-agents: atlassian, github, figma)
-Phase 2 → Domain sub test cases + QA plan draft (spawn sub-agents: jira_testcase, confluence_testcase, github_testcase, figma_testcase, qa_plan_draft)
-Phase 3 → Synthesize all sub test cases → unified XMind test case draft
-Phase 4 → Domain review (spawn review sub-agents per source)
-Phase 5 → Refactor + finalize both outputs
-Phase 6 → Publication + notification
+Phase 1 → Context gathering (spawn qa-plan-write mode=context: atlassian, github, figma)
+Phase 2 → Domain sub test cases (spawn qa-plan-write mode=testcase: atlassian, github, figma)
+Phase 3 → Domain review (spawn qa-plan-review: jira, confluence, github, figma) — review sub_test_cases_*
+Phase 4 → Domain refactor (spawn qa-plan-review mode=refactor: atlassian, github, figma) — apply findings → _v2.md
+Phase 5 → Synthesize (resolve v2/base per domain → unified XMind draft)
+Phase 6 → XMind review (single agent, reuses Phase 3 artifacts)
+Phase 7 → Final refactor
+Phase 8 → Finalize + Feishu notify
 ```
 
 ## task.json Schema
@@ -69,14 +69,13 @@ Phase 6 → Publication + notification
   "run_key": "BCIN-6709",
   "overall_status": "in_progress",
   "current_phase": "phase_0_preparation",
-  "defect_analysis": "not_applicable",
-  "latest_draft_version": null,
+  "latest_xmind_version": null,
   "search_required": false,
   "spawned_agents": {},
-  "subtask_timestamps": {},
   "phases": {
     "context_gathering": {
       "status": "pending",
+      "spawned_agents": {},
       "artifacts": [],
       "completed_at": null
     },
@@ -86,7 +85,13 @@ Phase 6 → Publication + notification
       "artifacts": [],
       "completed_at": null
     },
-    "qa_plan_draft_generation": {
+    "sub_testcase_review": {
+      "status": "pending",
+      "spawned_agents": {},
+      "artifacts": [],
+      "completed_at": null
+    },
+    "sub_testcase_refactor": {
       "status": "pending",
       "spawned_agents": {},
       "artifacts": [],
@@ -97,13 +102,12 @@ Phase 6 → Publication + notification
       "artifacts": [],
       "completed_at": null
     },
-    "domain_review": {
+    "xmind_review": {
       "status": "pending",
-      "spawned_agents": {},
       "artifacts": [],
       "completed_at": null
     },
-    "review_refactor": {
+    "final_refactor": {
       "status": "pending",
       "iterations": 0,
       "artifacts": [],
@@ -111,8 +115,7 @@ Phase 6 → Publication + notification
     },
     "publication": {
       "status": "pending",
-      "approved": false,
-      "target_page_confirmed": false,
+      "notification_sent": false,
       "completed_at": null
     }
   },
@@ -170,282 +173,249 @@ Phase 6 → Publication + notification
    - Figma → browser or local snapshots only
    - never substitute primary evidence with `web_fetch`
 
-Set `task.json.current_phase` to `phase_0_preparation` on entry; advance to `phase_1_context_acquisition` when complete.
+Set `task.json.current_phase` to `phase_0_preparation` on entry; advance to `phase_1_context_gathering` when complete.
 
 ---
 
 ### Phase 1 — Sub-Agent Context Gathering
 
-**Overview**: Spawn functional-area sub-agents in parallel to acquire raw domain context.
+**Overview**: Spawn `qa-plan-write` handlers in parallel (one per domain) with `mode=context` to fetch raw domain context. Each handler calls `save_context.sh` after every fetch.
 
-**Entry**: Set `task.json.current_phase` to `phase_1_context_acquisition`; set `task.json.phases.context_gathering.status` to `in_progress`; update `task.json.updated_at`.
+**Entry**: Set `task.json.current_phase` to `phase_1_context_gathering`; set `task.json.phases.context_gathering.status` to `in_progress`; update `task.json.updated_at`.
 
-**Sub-agents to spawn**:
+**Deploy scripts** (before spawning): Ensure `projects/feature-plan/scripts/` exists. Copy from `workspace-planner/skills/feature-qa-planning-orchestrator/scripts/lib/` into it: `save_context.sh`, `validate_context.sh`.
+
+**Sub-agents to spawn** (via `spawn-agent-session` with `context.json` attachment):
 
 ```javascript
 const agents_to_spawn = [];
 
 if (jira_key || confluence_url) {
   agents_to_spawn.push({
-    functional_area: "requirements_analysis",
-    skill: "qa-plan-atlassian",
-    context: { feature_id, jira_key, confluence_url, search_enabled: search_required }
+    functional_area: "atlassian",
+    skill: "qa-plan-write",
+    context: { domain: "atlassian", mode: "context", feature_id, jira_key, confluence_url, search_enabled: search_required }
   });
 }
 
 if (github_pr_urls && github_pr_urls.length > 0) {
   agents_to_spawn.push({
-    functional_area: "code_analysis",
-    skill: "qa-plan-github",
-    context: { feature_id, github_pr_urls }
+    functional_area: "github",
+    skill: "qa-plan-write",
+    context: { domain: "github", mode: "context", feature_id, github_pr_urls }
   });
 }
 
 const effective_figma_url = figma_url || discovered_figma_url;
 if (effective_figma_url) {
   agents_to_spawn.push({
-    functional_area: "ui_ux_analysis",
-    skill: "qa-plan-figma",
-    context: { feature_id, figma_url: effective_figma_url }
+    functional_area: "figma",
+    skill: "qa-plan-write",
+    context: { domain: "figma", mode: "context", feature_id, figma_url: effective_figma_url }
   });
 }
 ```
 
-**Spawn** each agent via `spawn-agent-session`. Track each in `task.json.spawned_agents[functional_area]`:
+**Spawn** each via `sessions_spawn()` (via `spawn-agent-session` skill). Attachment shape:
 ```json
 {
-  "session_key": "...",
-  "skill": "qa-plan-atlassian",
-  "phase": "phase_1",
-  "status": "spawned",
-  "spawned_at": "<ISO timestamp>"
+  "name": "context.json",
+  "content": { "domain": "atlassian", "mode": "context", "feature_id": "BCIN-6709", "jira_key": "BCIN-6709", "confluence_url": "..." }
 }
 ```
 
 **Wait for completion**: poll via `subagents(action=list)`. On completion update `status` to `"completed"`.
 
-**Validate outputs** — these files must exist:
+**Validate outputs** — run `validate_context.sh` or check these files exist:
 - `context/qa_plan_atlassian_<feature-id>.md`
-- `context/qa_plan_github_<feature-id>.md`
-- `context/qa_plan_github_traceability_<feature-id>.md`
+- `context/qa_plan_github_<feature-id>.md`, `context/qa_plan_github_traceability_<feature-id>.md`
 - `context/qa_plan_figma_<feature-id>.md` (if Figma agent spawned)
 
-Missing fatal file (e.g., no GitHub output when PRs exist) → stop. Non-fatal (e.g., no Figma) → continue with warning.
+Missing fatal file → stop. Non-fatal (e.g., no Figma) → continue with warning.
 
-**On completion**: set `task.json.phases.context_gathering.status` to `completed`, populate `artifacts[]` with output file paths, update `task.json.updated_at`, advance `current_phase` to `phase_2_sub_testcase_generation`. Update `run.json.data_fetched_at`.
+**On completion**: set `task.json.phases.context_gathering.status` to `completed`, populate `artifacts[]`, update `task.json.updated_at`, advance `current_phase` to `phase_2_sub_testcase_generation`. Update `run.json.data_fetched_at`.
 
 ---
 
-### Phase 2 — Domain Sub Test Case + QA Plan Draft Generation
+### Phase 2 — Domain Sub Test Case Generation
 
-**Overview**: Spawn two groups of sub-agents in parallel:
-- **Group A**: Domain-specific sub test case generators (one per evidence source)
-- **Group B**: QA plan draft generator
+**Overview**: Gate with `validate_context.sh`, then spawn `qa-plan-write` handlers with `mode=testcase` (one per domain) to generate XMind sub test cases from cached context. No live re-fetch.
 
-Both groups run in parallel. Phase 2 is complete only when ALL agents in both groups finish.
+**Entry**: Set `task.json.current_phase` to `phase_2_sub_testcase_generation`; set `task.json.phases.sub_testcase_generation.status` to `in_progress`; update `task.json.updated_at`.
 
-**Entry**: Set `task.json.current_phase` to `phase_2_sub_testcase_generation`; set both `task.json.phases.sub_testcase_generation.status` and `task.json.phases.qa_plan_draft_generation.status` to `in_progress`; update `task.json.updated_at`.
+**Gate**: Run `validate_context.sh` before spawning:
+```bash
+../scripts/validate_context.sh <feature-id> "jira_issue_<main-key>" "qa_plan_atlassian_<feature-id>" "qa_plan_github_traceability_<feature-id>"
+```
+If `CONTEXT_MISSING`, stop and report. If `CONTEXT_OK`, proceed.
 
-#### Group A — Sub Test Case Generation Sub-Agents
+**Sub-agents to spawn** (via `spawn-agent-session` with `context.json` attachment):
 
-Spawn one sub-agent per available evidence domain:
-
-| Agent | Evidence Source | Output Artifact |
+| Agent | Domain | Output Artifact |
 |---|---|---|
-| `jira_testcase` | `context/qa_plan_atlassian_<feature-id>.md` + all `context/jira_issue_*.md` | `context/sub_test_cases_jira_<feature-id>.md` |
-| `confluence_testcase` | `context/qa_plan_atlassian_<feature-id>.md` (Confluence sections) | `context/sub_test_cases_confluence_<feature-id>.md` |
-| `github_testcase` | `context/qa_plan_github_<feature-id>.md` + `context/qa_plan_github_traceability_<feature-id>.md` | `context/sub_test_cases_github_<feature-id>.md` |
-| `figma_testcase` | `context/qa_plan_figma_<feature-id>.md` (if exists) | `context/sub_test_cases_figma_<feature-id>.md` |
+| atlassian_testcase | atlassian | `context/sub_test_cases_atlassian_<feature-id>.md` |
+| github_testcase | github | `context/sub_test_cases_github_<feature-id>.md` |
+| figma_testcase | figma | `context/sub_test_cases_figma_<feature-id>.md` (if Figma context exists) |
 
-Each sub test case generator sub-agent **must**:
-- Use `templates/test-case-template.md` as its scaffold
-- Stay strictly within its own source evidence scope — do NOT cross-reference other domains
-- Assign priorities using the mandatory priority rules from `docs/priority-assignment-rules.md`
-- Use user-observable language only — no code vocabulary
-- NOT perform cross-domain synthesis
-
-Track each in `task.json.phases.sub_testcase_generation.spawned_agents[agent_name]`:
+Attachment shape:
 ```json
-{
-  "session_key": "...",
-  "phase": "phase_2",
-  "status": "spawned",
-  "output_artifact": "context/sub_test_cases_jira_<feature-id>.md",
-  "spawned_at": "<ISO timestamp>"
-}
+{ "domain": "atlassian", "mode": "testcase", "feature_id": "BCIN-6709" }
 ```
 
-#### Group B — QA Plan Draft Generation Sub-Agent
+Each handler reads only its domain's `context/` files and produces XMind-format sub test cases per `templates/test-case-template.md`. No live re-fetch.
 
-Spawn one sub-agent to generate the QA plan draft from all gathered context:
+**Phase 2 Completion**
 
-| Agent | Evidence Sources | Output Artifact |
-|---|---|---|
-| `qa_plan_draft` | All `context/qa_plan_*.md` files | `drafts/qa_plan_v<N+1>.md` |
-
-The QA plan draft sub-agent **must**:
-- Follow `templates/qa-plan-template.md` structure
-- Use `qa-plan-synthesize` skill (main plan sections only — no test key points)
-- Output: Summary, Background, QA Goals, Risk & Mitigation, Reference Data, Sign-off Checklist, QA Summary
-- **Exclude** Test Key Points — those come from Phase 3 synthesis
-
-Track in `task.json.phases.qa_plan_draft_generation.spawned_agents.qa_plan_draft`:
-```json
-{
-  "session_key": "...",
-  "phase": "phase_2",
-  "status": "spawned",
-  "output_artifact": "drafts/qa_plan_v<N+1>.md",
-  "spawned_at": "<ISO timestamp>"
-}
-```
-
-#### Phase 2 Completion
-
-Wait for ALL Group A + Group B agents to finish.
+Wait for all spawned agents to finish.
 
 **Validate outputs**:
-- `context/sub_test_cases_jira_<feature-id>.md` ✓
-- `context/sub_test_cases_confluence_<feature-id>.md` ✓
+- `context/sub_test_cases_atlassian_<feature-id>.md` ✓
 - `context/sub_test_cases_github_<feature-id>.md` ✓
 - `context/sub_test_cases_figma_<feature-id>.md` (if Figma agent spawned) ✓
-- `drafts/qa_plan_v<N+1>.md` ✓
 
 Update `task.json`:
 - `phases.sub_testcase_generation.status` → `completed`; populate `artifacts[]`
-- `phases.qa_plan_draft_generation.status` → `completed`; populate `artifacts[]`
-- `latest_draft_version` → `N+1`
 - `updated_at` → now
-- advance `current_phase` → `phase_3_synthesis`
+- advance `current_phase` → `phase_3_sub_testcase_review`
 
 ---
 
-### Phase 3 — Synthesis: Unified XMind Test Case Draft
+### Phase 3 — Domain Review (Sub Test Cases)
 
-**Overview**: The main agent (not a sub-agent) reads all domain sub test case files and synthesizes them into one unified XMind-compatible test case draft. Uses `qa-plan-synthesize` skill.
+**Overview**: Spawn `qa-plan-review` handlers (domain=jira, confluence, github, figma) to review `sub_test_cases_*` against domain source artifacts. Each handler is domain-isolated.
 
-**Entry**: Set `task.json.current_phase` to `phase_3_synthesis`; set `task.json.phases.synthesis.status` to `in_progress`; update `task.json.updated_at`.
+**Entry**: Set `task.json.current_phase` to `phase_3_sub_testcase_review`; set `task.json.phases.sub_testcase_review.status` to `in_progress`; update `task.json.updated_at`.
 
-Invoke `qa-plan-synthesize` with these inputs:
-
-```javascript
-await qa_plan_synthesize({
-  feature_id,
-  sub_testcase_files: [
-    "context/sub_test_cases_jira_<feature-id>.md",
-    "context/sub_test_cases_confluence_<feature-id>.md",
-    "context/sub_test_cases_github_<feature-id>.md",
-    "context/sub_test_cases_figma_<feature-id>.md"  // if exists
-  ],
-  context_files: [
-    "context/qa_plan_atlassian_<feature-id>.md",
-    "context/qa_plan_github_<feature-id>.md",
-    "context/qa_plan_github_traceability_<feature-id>.md",
-    "context/qa_plan_figma_<feature-id>.md"
-  ],
-  research_files: [
-    "research_*.md"  // any existing research files in the feature folder
-  ],
-  output_mode: "xmind_only",
-  output: "drafts/test_key_points_xmind_v<N+1>.md",
-  priority_rules: "docs/priority-assignment-rules.md"
-});
+**Spawn** via `sessions_spawn()` (via `spawn-agent-session`). Attachment shape:
+```json
+{ "domain": "jira", "feature_id": "BCIN-6709" }
 ```
 
-**Synthesis Contract** (follow 3-step protocol from `qa-plan-synthesize` skill):
-1. **Collect** — pull ALL items from all sub test case files; do NOT discard any item
-2. **Research** — for non-actionable items, search context + research files to specify concrete user actions; if unresolvable add `<!-- TODO: ... -->` comment
-3. **Deduplicate** — merge semantic duplicates into most specific/concrete version
-
-**Output**: `drafts/test_key_points_xmind_v<N+1>.md` — XMind-compatible hierarchical bullet format with P0/P1/P2/P3 markers.
-
-**On completion**: set `task.json.phases.synthesis.status` to `completed`, populate `artifacts[]`, update `task.json.updated_at`, advance `current_phase` to `phase_4_domain_review`.
-
----
-
-### Phase 4 — Domain Review
-
-**Overview**: Spawn review sub-agents — one per evidence domain — to review BOTH outputs (QA plan draft + XMind test case draft) against their own domain evidence. The main agent then synthesizes findings into one refactor action list.
-
-**Entry**: Set `task.json.current_phase` to `phase_4_domain_review`; set `task.json.phases.domain_review.status` to `in_progress`; update `task.json.updated_at`.
-
-Spawn review sub-agents:
-
-| Agent | Reviews Against | Output Artifact |
+| Agent | Domain | Output Artifact |
 |---|---|---|
-| `jira_review` | `context/qa_plan_atlassian_<feature-id>.md` + all Jira issue files | `context/review_jira_<feature-id>.md` |
-| `confluence_review` | `context/qa_plan_atlassian_<feature-id>.md` (Confluence sections) | `context/review_confluence_<feature-id>.md` |
-| `github_review` | `context/qa_plan_github_<feature-id>.md` + traceability | `context/review_github_<feature-id>.md` |
-| `figma_review` | `context/qa_plan_figma_<feature-id>.md` (if Figma materially shaped output) | `context/review_figma_<feature-id>.md` |
+| jira_review | jira | `context/review_jira_<feature-id>.md` |
+| confluence_review | confluence | `context/review_confluence_<feature-id>.md` |
+| github_review | github | `context/review_github_<feature-id>.md` |
+| figma_review | figma | `context/review_figma_<feature-id>.md` (if Figma present) |
 
-Each review sub-agent must:
-- Review BOTH `drafts/qa_plan_v<N>.md` AND `drafts/test_key_points_xmind_v<N>.md`
-- Return source-grounded findings only (no speculation beyond its own domain evidence)
-- Flag: missing coverage, wrong priority, non-actionable steps, vague expected results
+Each handler calls `validate_context.sh` before starting; re-fetches and saves if context missing. Output via `save_context.sh`.
 
-Track in `task.json.phases.domain_review.spawned_agents[agent_name]`.
-
-After all review agents complete, the main agent reads all review artifacts and synthesizes them into `context/review_consolidated_<feature-id>.md` — one prioritized refactor action list.
-
-**On completion**: set `task.json.phases.domain_review.status` to `completed`, populate `artifacts[]`, update `task.json.updated_at`, advance `current_phase` to `phase_5_review_refactor`.
+**On completion**: set `task.json.phases.sub_testcase_review.status` to `completed`, populate `artifacts[]`, advance `current_phase` to `phase_4_sub_testcase_refactor`.
 
 ---
 
-### Phase 5 — Review and Refactor Loop
+### Phase 4 — Domain Refactor (Apply Review Findings)
 
-**Entry**: Set `task.json.current_phase` to `phase_5_review_refactor`; set `task.json.phases.review_refactor.status` to `in_progress`; update `task.json.updated_at`.
+**Overview**: Gate with `validate_context.sh` (all `review_*.md` present), then spawn `qa-plan-review` with `mode=refactor` (domain=atlassian, github, figma) to apply Phase 3 findings to sub test cases.
 
-1. Run `qa-plan-review` skill on **both drafts**:
-   - `drafts/qa_plan_v<N>.md`
-   - `drafts/test_key_points_xmind_v<N>.md`
-   - Using consolidated review findings from `context/review_consolidated_<feature-id>.md`
+**Entry**: Set `task.json.current_phase` to `phase_4_sub_testcase_refactor`; set `task.json.phases.sub_testcase_refactor.status` to `in_progress`; update `task.json.updated_at`.
 
-2. **XMind-specific validation**:
-   - All test scenarios have priority markers (P0/P1/P2/P3)
-   - P0/P1 scenarios trace to GitHub code changes or Jira ACs
-   - Hierarchical bullet structure matches template
-   - Expected results in leaf nodes
-   - No code vocabulary in headings, steps, or expected results
-   - No `<!-- TODO -->` items remaining without user acknowledgment
+**Gate** (all Phase 3 review artifacts required for domains being refactored):
+```bash
+../scripts/validate_context.sh <feature-id> "review_jira_<id>" "review_confluence_<id>" "review_github_<id>"
+# Add "review_figma_<id>" if Figma was spawned in Phase 3
+```
 
-3. If `Requires Updates`, run `qa-plan-refactor` to produce updated drafts. Increment `task.json.phases.review_refactor.iterations`. Review again.
+**Spawn** via `sessions_spawn()`. Attachment shape:
+```json
+{ "domain": "atlassian", "mode": "refactor", "feature_id": "BCIN-6709" }
+```
 
-4. Maximum automatic refactor rounds: **2**.
+| Agent | Domain | Output Artifact |
+|---|---|---|
+| atlassian_refactor | atlassian | `context/sub_test_cases_atlassian_<id>_v2.md` (if changes) |
+| github_refactor | github | `context/sub_test_cases_github_<id>_v2.md` (if changes) |
+| figma_refactor | figma | `context/sub_test_cases_figma_<id>_v2.md` (if Figma + changes) |
 
-5. If unresolved after 2 rounds: set `status` to `failed`, add findings to `task.json.errors`, return to user.
+No-op domains produce no `_v2.md`. Orchestrator treats missing `_v2` as "no changes".
 
-6. Never publish on `Rejected`.
-
-**On completion**: set `task.json.phases.review_refactor.status` to `completed`, record `iterations`, populate `artifacts[]` with final draft paths, update `task.json.updated_at`, advance `current_phase` to `phase_6_publication`.
+**On completion**: set `task.json.phases.sub_testcase_refactor.status` to `completed`, advance `current_phase` to `phase_5_synthesis`.
 
 ---
 
-### Phase 6 — Publication and Notification
+### Phase 5 — Synthesis: Unified XMind Test Case Draft
 
-**Entry**: Set `task.json.current_phase` to `phase_6_publication`; set `task.json.phases.publication.status` to `in_progress`; update `task.json.updated_at`.
+**Overview**: Resolve latest sub test case file per domain (v2 if present, else base), then synthesize into one XMind draft.
 
-1. Ask the user whether they want publication. Pause until answered.
-2. If yes, confirm exact target Confluence page. Pause until confirmed.
-3. Archive existing final outputs before overwrite:
-   - `qa_plan_final.md` → `archive/qa_plan_final_<timestamp>.md`
+**Entry**: Set `task.json.current_phase` to `phase_5_synthesis`; set `task.json.phases.synthesis.status` to `in_progress`; update `task.json.updated_at`.
+
+**Gate**:
+```bash
+# Resolve latest per-domain file (v2 if present, else base). Capture output for sub_testcase_files.
+RESOLVED=$(../scripts/validate_context.sh <feature-id> --resolve-sub-testcases atlassian github figma)
+../scripts/validate_context.sh <feature-id> "qa_plan_github_traceability_<id>"
+```
+
+Parse `RESOLVED` for paths (one per domain, lines before `RESOLVED_OK`). Skip `figma` in `--resolve-sub-testcases` if no Figma context was spawned in Phase 2.
+
+Invoke `qa-plan-synthesize` with:
+- `sub_testcase_files`: resolved paths from gate output (v2 or base per domain)
+- `context_files`: `qa_plan_github_traceability_<id>.md`, `qa_plan_atlassian_<id>.md`, `jira_issue_<key>.md`, `jira_related_issues_<id>.md` (and any `research_bg_*.md` if present)
+- `output`: `drafts/test_key_points_xmind_v<N+1>.md`
+
+**Synthesis Contract**: Collect → Research → Deduplicate (per `qa-plan-synthesize` skill). No `output_mode` — skill is xmind_only.
+
+**Output**: `drafts/test_key_points_xmind_v<N+1>.md`
+
+**On completion**: set `task.json.phases.synthesis.status` to `completed`, advance `current_phase` to `phase_6_xmind_review`.
+
+---
+
+### Phase 6 — XMind Review (Synthesized Draft)
+
+**Overview**: Single agent reviews the synthesized XMind draft. Reuses Phase 3 review artifacts. Loads `docs/priority-assignment-rules.md`. No live re-fetch by default.
+
+**Entry**: Set `task.json.current_phase` to `phase_6_xmind_review`; set `task.json.phases.xmind_review.status` to `in_progress`; update `task.json.updated_at`.
+
+**Gate**: Run `validate_context.sh` before starting (confirm Phase 3 review artifacts exist).
+
+**Invoke** `qa-plan-review` with `mode=consolidated`:
+```json
+{ "mode": "consolidated", "feature_id": "BCIN-6709" }
+```
+
+The skill reviews `drafts/test_key_points_xmind_v<N>.md`:
+- X1: Every `##` category has P1/P2/P3 marker
+- X2: Every `###` sub-category has priority or inherits from parent
+- X3: Leaf nodes contain expected results (observable, no code vocabulary)
+- X4: `## AUTO` section present for code-internal tests
+- X5: `## 📎 Artifacts Used` section present
+
+Output: `context/review_consolidated_<id>.md` via `save_context.sh`.
+
+**On completion**: set `task.json.phases.xmind_review.status` to `completed`, advance `current_phase` to `phase_7_final_refactor`.
+
+---
+
+### Phase 7 — Final Refactor
+
+**Entry**: Set `task.json.current_phase` to `phase_7_final_refactor`; set `task.json.phases.final_refactor.status` to `in_progress`; update `task.json.updated_at`.
+
+1. Run `qa-plan-refactor` on XMind draft using `context/review_consolidated_<id>.md`.
+2. XMind validation (P1/P2/P3, traceability, UE checks).
+3. If `Requires Updates`, refactor again. Max 2 rounds.
+4. If unresolved: set `status` to `failed`, add to `task.json.errors`, return to user.
+
+**On completion**: set `task.json.phases.final_refactor.status` to `completed`, advance `current_phase` to `phase_8_publication`.
+
+---
+
+### Phase 8 — Finalize + Feishu Notify
+
+**Entry**: Set `task.json.current_phase` to `phase_8_publication`; set `task.json.phases.publication.status` to `in_progress`; update `task.json.updated_at`.
+
+1. Ask the user for final approval to complete the workflow. Pause until answered.
+2. Archive existing final outputs before overwrite:
    - `test_key_points_xmind_final.md` → `archive/test_key_points_xmind_final_<timestamp>.md`
-4. Copy approved drafts to finals:
-   - `drafts/qa_plan_v<N>.md` → `qa_plan_final.md`
+3. Copy approved draft to final:
    - `drafts/test_key_points_xmind_v<N>.md` → `test_key_points_xmind_final.md`
-5. Publish `qa_plan_final.md` to Confluence using `confluence` skill.
-6. Update `run.json.output_generated_at`.
-7. Run `qa-plan-confluence-review` → save `qa_plan_confluence_review_v<N>.md`.
-8. Branch on live review verdict:
-   - pass → continue to notification
-   - fix required → loop back to Phase 3 or Phase 5
-9. Send Feishu notification via `feishu-notify`:
+4. Update `run.json.output_generated_at`.
+5. Send Feishu notification via `feishu-notify`:
    ```
    Feature ${feature_id} QA Plan Complete ✅
-   - QA Plan: qa_plan_final.md
    - Test Cases: test_key_points_xmind_final.md
-   - Confluence: [link]
    ```
-10. Set `task.json.current_phase` to `completed`, `overall_status` to `completed`, record completion timestamp.
+6. Set `task.json.current_phase` to `completed`, `overall_status` to `completed`, record completion timestamp.
 
 ---
 
@@ -455,17 +425,19 @@ After all review agents complete, the main agent reads all review artifacts and 
 projects/feature-plan/<feature-id>/task.json
 projects/feature-plan/<feature-id>/run.json
 projects/feature-plan/<feature-id>/context/qa_plan_atlassian_*.md        ← Phase 1
-projects/feature-plan/<feature-id>/context/qa_plan_github_*.md           ← Phase 1
-projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_*.md  ← Phase 1
-projects/feature-plan/<feature-id>/context/sub_test_cases_jira_*.md      ← Phase 2
-projects/feature-plan/<feature-id>/context/sub_test_cases_confluence_*.md ← Phase 2
-projects/feature-plan/<feature-id>/context/sub_test_cases_github_*.md    ← Phase 2
-projects/feature-plan/<feature-id>/context/review_consolidated_*.md      ← Phase 4
-projects/feature-plan/<feature-id>/drafts/qa_plan_v<N>.md                ← Phase 2
-projects/feature-plan/<feature-id>/drafts/test_key_points_xmind_v<N>.md  ← Phase 3
-projects/feature-plan/<feature-id>/qa_plan_final.md                      ← Phase 6
-projects/feature-plan/<feature-id>/test_key_points_xmind_final.md        ← Phase 6
-projects/feature-plan/<feature-id>/qa_plan_confluence_review_v<N>.md     ← Phase 6
+projects/feature-plan/<feature-id>/context/qa_plan_github_*.md            ← Phase 1
+projects/feature-plan/<feature-id>/context/qa_plan_github_traceability_*.md ← Phase 1
+projects/feature-plan/<feature-id>/context/sub_test_cases_atlassian_*.md  ← Phase 2
+projects/feature-plan/<feature-id>/context/sub_test_cases_github_*.md     ← Phase 2
+projects/feature-plan/<feature-id>/context/sub_test_cases_figma_*.md      ← Phase 2 (if Figma)
+projects/feature-plan/<feature-id>/context/review_jira_*.md               ← Phase 3
+projects/feature-plan/<feature-id>/context/review_confluence_*.md         ← Phase 3
+projects/feature-plan/<feature-id>/context/review_github_*.md             ← Phase 3
+projects/feature-plan/<feature-id>/context/review_figma_*.md              ← Phase 3 (if Figma)
+projects/feature-plan/<feature-id>/context/sub_test_cases_*_v2.md        ← Phase 4 (if changes)
+projects/feature-plan/<feature-id>/context/review_consolidated_*.md       ← Phase 6
+projects/feature-plan/<feature-id>/drafts/test_key_points_xmind_v<N>.md   ← Phase 5
+projects/feature-plan/<feature-id>/test_key_points_xmind_final.md         ← Phase 8
 ```
 
 ---
@@ -476,12 +448,11 @@ Before considering the run complete:
 ```bash
 cd workspace-planner/projects/feature-plan/<feature-id>
 ../scripts/check_resume.sh <feature-id>
-jq -r '.current_phase, .overall_status, .latest_draft_version' task.json
+jq -r '.current_phase, .overall_status, .latest_xmind_version' task.json
 jq -r '.phases | keys[]' task.json
 jq -r '.phases | to_entries[] | "\(.key): \(.value.status)"' task.json
 ls context/sub_test_cases_*.md
 ls context/review_*.md
-ls drafts/qa_plan_v*.md
 ls drafts/test_key_points_xmind_v*.md
 ```
 
@@ -496,15 +467,12 @@ ls drafts/test_key_points_xmind_v*.md
 - `feishu-notify`
 
 **Planner-Local Skills** (`workspace-planner/skills/`):
-- `qa-plan-atlassian` — Phase 1 context gathering
-- `qa-plan-github` — Phase 1 context gathering
-- `qa-plan-figma` — Phase 1 context gathering
-- `qa-plan-synthesize` — Phase 2 (QA plan draft sections) + Phase 3 (XMind synthesis)
-- `qa-plan-review` — Phase 5
-- `qa-plan-refactor` — Phase 5
-- `qa-plan-confluence-review` — Phase 6
+- `qa-plan-write` — Phase 1 (mode=context) + Phase 2 (mode=testcase); atlassian, github, figma handlers
+- `qa-plan-review` — Phase 3 (domain review: jira, confluence, github, figma) + Phase 4 (mode=refactor: atlassian, github, figma) + Phase 6 (mode=consolidated: XMind review)
+- `qa-plan-synthesize` — Phase 5 (XMind synthesis)
+- `qa-plan-refactor` — Phase 7 (final refactor)
 
 ---
 
-**Last Updated**: 2026-03-07
-**Status**: Active — Phases clarified, Phase 2 sub test case + QA plan draft tracking added to task.json
+**Last Updated**: 2026-03-08
+**Status**: Active — Phase 5 aligned with qa-plan-synthesize (xmind_only); latest_xmind_version; resolved paths from validate_context.sh
