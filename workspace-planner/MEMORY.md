@@ -69,6 +69,24 @@ _Test planning patterns and best practices._
 
 **Date Learned**: 2026-03-02  
 **Context**: BCIN-6709 QA plan had 9 tables (3 were repo-specific) → refactored to 6 integrated functional tables
+
+#### 🔴 Evidence Retrieval — Never use web_fetch for primary planning artifacts
+**Mistake**: Used `web_fetch` against GitHub compare pages during feature QA planning.  
+**Result**: Hit SSO/login pages, produced misleading access signals, and bypassed the canonical shared-skill workflow.  
+**Lesson**: For feature QA planning and testcase generation, always retrieve system-of-record evidence through the canonical shared skills in `~/.openclaw/skills`:
+- Jira → `jira-cli`
+- GitHub → `github`
+- Confluence → `confluence`
+- Figma → browser or approved local snapshots
+
+**✅ Correct Process:**
+- In Phase 0, verify access first (`jira me`, `gh auth status`, Confluence access when needed)
+- Stop early if any required source is inaccessible
+- Never use `web_fetch` for Jira/GitHub/Confluence primary evidence
+
+**Date Learned**: 2026-03-08  
+**Context**: BCIN-6709 testcase generation hit a false-start because GitHub was attempted through `web_fetch` instead of the canonical `github` skill, while Jira auth also needed an early preflight check
+
 **Mistake**: Published raw Markdown (.md) directly to Confluence  
 **Result**: Ugly plain text with `#`, `**`, `|` visible instead of formatted content  
 **Lesson**: Confluence uses HTML storage format, NOT Markdown. NEVER publish raw `.md` files directly.

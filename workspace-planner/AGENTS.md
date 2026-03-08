@@ -168,6 +168,14 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **CRITICAL RULE:** **ALWAYS** check and utilize the skills available in `openclaw-qa-workspace/.cursor/skills` when creating programs, workflows, or scripts. Reusing built-in skills ensures alignment with the QA workspace standards.
 
+**Feature QA planning evidence policy:** For feature QA planning and testcase generation, always use the canonical shared skills in `~/.openclaw/skills` for system-of-record artifacts:
+- Jira → `jira-cli`
+- GitHub → `github`
+- Confluence → `confluence`
+- Figma → browser flow or approved local snapshots
+- Never use `web_fetch` for Jira, GitHub, or Confluence primary evidence collection.
+- During Phase 0, verify access first (`jira me`, `gh auth status`, and Confluence access when needed) before spawning sub-agents.
+
 And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 
 

@@ -40,8 +40,11 @@ Working directory:
 - The QA plan MUST follow `templates/qa-plan-template.md` as the final structure.
 - Evaluation is mandatory for both QA plan and test cases: draft → `qa-plan-review` → `qa-plan-refactor` → final.
 - Implement conditional Confluence search based on Jira linked/child issues, and also require Confluence clarification when generated test areas are vague, technical, or non-actionable so they can be rewritten into user-observable actions.
-- Reuse shared skills directly from `~/.openclaw/skills`: `jira-cli`, `confluence`, `feishu-notify`, `spawn-agent-session`.
+- Reuse shared skills directly from `~/.openclaw/skills`: `jira-cli`, `github`, `confluence`, `feishu-notify`, `spawn-agent-session`.
 - Treat `~/.openclaw/skills` as canonical for shared skills. Workspace-root copies are synced mirrors and must stay aligned with the shared source.
+- Primary evidence must come only from canonical source skills: Jira via `jira-cli`, GitHub via `github`, Confluence via `confluence`, and Figma via browser/local snapshots.
+- Never use `web_fetch`, generic browser scraping, or ad hoc HTTP retrieval for Jira, GitHub, or Confluence evidence collection during feature QA planning.
+- `web_fetch` is allowed only for optional background research that is not a system-of-record artifact for the feature.
 - Reuse planner-local skills directly: `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma`, `qa-plan-synthesize`, `qa-plan-review`, `qa-plan-refactor`, `qa-plan-confluence-review`.
 - Keep code/internal details out of manual QA rows; user-facing outcomes belong in the final QA plan and final test cases.
 - NEVER publish to Confluence without explicit user approval and a confirmed target page.
@@ -142,17 +145,29 @@ Phase 6 → Publication + notification
    - `CONTEXT_ONLY` → `Generate from Cache | Re-fetch + Regenerate`
    - `FRESH` → proceed
 4. If `DEFECT_ANALYSIS_RESUME` is emitted, follow the resume guidance before moving on.
-5. Initialize or update `task.json` and `run.json` additively using the schemas above.
-6. Determine conditional search requirement:
+5. Run access validation before any evidence gathering:
+   - Jira access: validate with `jira me` or an equivalent `jira-cli` skill path
+   - GitHub access: validate with `gh auth status` via the shared `github` skill path
+   - Confluence access: validate before reading any Confluence evidence
+   - Figma input: confirm local snapshot paths exist or confirm live access through the browser flow
+   - if any required source is inaccessible, stop in Phase 0 and report the exact blocker instead of partially gathering evidence
+6. Initialize or update `task.json` and `run.json` additively using the schemas above.
+7. Determine conditional search requirement:
    - Read Jira issue via `jira-cli`
    - Check `issuelinks[]` only
    - Set `search_required = (issuelinks.length > 0)`
    - Store in `task.json.search_required`
-7. Build required evidence lists before spawning:
+8. Build required evidence lists before spawning:
    - required Jira issues = main issue + all related issues from Jira issuelinks + testing-relevant issue references in Jira comments
    - required GitHub PRs = all user-provided PR URLs + all PR/compare references from Jira comments that materially affect testing
-   - required Figma input = any Figma URL from Jira or Confluence web links
+   - required Figma input = any Figma URL from Jira or Confluence web links, or approved local snapshot folders
    - if any required evidence list cannot be resolved, stop and ask the user whether to continue
+9. Enforce the primary evidence access policy while resolving evidence:
+   - Jira descriptions, comments, ACs, linked issues → shared `jira-cli` skill only
+   - GitHub PRs, compare views, commits, changed files, comments → shared `github` skill only
+   - Confluence pages → shared `confluence` skill only
+   - Figma → browser or local snapshots only
+   - never substitute primary evidence with `web_fetch`
 
 Set `task.json.current_phase` to `phase_0_preparation` on entry; advance to `phase_1_context_acquisition` when complete.
 
