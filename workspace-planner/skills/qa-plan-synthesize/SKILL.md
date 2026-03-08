@@ -77,15 +77,48 @@ If a detail is missing:
 - save newly used background artifacts with `save_context.sh`
 - if still unresolved, keep `<!-- TODO -->`
 
-### Step 4: Structural merge rules
+### Step 4: Subcategory design pass
+
+Before final merge, rebuild the draft into a clear XMind-style tree.
+
+- Under `Functional`, organize by **workflow area first**, not by mixed behavior summaries.
+- Preferred workflow-area buckets include things like:
+  - `Pause mode`
+  - `Consumption mode`
+  - `Switch between pause mode and consumption mode`
+  - `Prompt`
+  - `Reprompt`
+  - `Prompt-in-prompt`
+  - `Undo / Redo`
+  - `Details popup`
+  - `Continued editing after recovery`
+- Under `Error handling / Special cases`, organize by **error family** or **recovery branch**, not by one mixed catch-all group.
+- Under `xFunction`, organize by **cross-surface comparison theme** or **policy comparison theme**.
+- Do not create a subcategory title that joins 3 or more unrelated concepts with commas or `and`.
+- If a subcategory title mixes multiple workflows, split it into smaller subcategories.
+- Prefer 3–5 concise scenario leaves under a subcategory when evidence supports them.
+- Leaf wording should be short and parallel for XMind readability; avoid paragraph-style bullets when a shorter scenario leaf will preserve meaning.
+
+### Step 5: Structural merge rules
 
 - **One surface per testcase bullet.** Do not combine surfaces (e.g. "In Workstation or Library Web, do X"). Use separate bullets: "In Workstation, do X" and "In Library Web, do X".
 - **Merge only with explicit evidence.** Combine into one bullet only when Jira, Confluence, or PR explicitly states identical behavior (e.g. "same flow on both surfaces", "parity verified"). Do not infer from similar wording; when in doubt, keep separate.
+- **Do not deduplicate for convenience.** If two leaves are not clearly true duplicates, preserve both.
 - Separate different recovery branches into separate leaves.
 - Keep `Error handling / Special cases` concrete and branch-specific.
 - Keep `📎 Artifacts Used` at the end and list every context or research artifact actually used.
 
-### Step 5: Priority assignment
+### Step 6: XMind compression pass
+
+Before save, compress verbose testcase wording into concise XMind-style leaves without dropping coverage.
+
+- Keep the hierarchy readable at a glance.
+- Remove repeated setup text from sibling leaves when the subcategory already establishes the context.
+- Prefer concise scenario names plus visible outcome wording over long prose.
+- If a leaf becomes hard to scan in XMind, split it.
+- Do not shorten by deleting coverage; shorten by restructuring.
+
+### Step 7: Priority assignment
 
 - Apply `docs/priority-assignment-rules.md` after normalization and executability rewrite.
 - Preserve the heading order from the canonical contract.

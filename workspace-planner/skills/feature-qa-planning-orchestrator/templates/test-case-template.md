@@ -8,9 +8,15 @@
 
 ## Functional - P1
 
-### <Rename allowed if needed>
-- In <surface>, perform <exact user action>
-  - Verify <visible functional result>
+### <Workflow area 1: pause mode / consumption mode / prompt / undo-redo / details / continued editing>
+- <Concise XMind leaf: trigger or scenario name>
+- <Concise XMind leaf: trigger or scenario name>
+- <Concise XMind leaf: trigger or scenario name>
+
+### <Workflow area 2>
+- <Concise XMind leaf: trigger or scenario name>
+- <Concise XMind leaf: trigger or scenario name>
+- <Concise XMind leaf: trigger or scenario name>
 
 ## xFunction
 

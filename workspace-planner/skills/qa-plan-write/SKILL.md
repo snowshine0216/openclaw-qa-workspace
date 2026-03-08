@@ -50,6 +50,11 @@ Always follow these two sources together:
 - `xFunction`, `Error handling / Special cases`, `Accessibility`, `i18n`, `performance`, `upgrade / compatability`, `Embedding`, `AUTO: Automation-Only Tests`, and `📎 Artifacts Used` are fixed headings.
 - If a fixed heading is not applicable, keep it and add `N/A — <reason>`.
 - Never invent a domain-specific top-level heading such as `UI Testing`, `Security Test`, or `Platform`.
+- Under `Functional`, organize content into clear workflow-based subcategories rather than one large mixed section.
+- Under `Error handling / Special cases`, organize by branch-specific error family or recovery condition.
+- Prefer concise XMind-style leaves under each subcategory instead of long paragraph-style bullets.
+- Do not create a subcategory title that mixes multiple unrelated workflows, such as `pause mode, running mode, prompt, details, and editing`.
+- When in doubt, split into smaller subcategories instead of widening one heading.
 
 ### Manual executability contract
 

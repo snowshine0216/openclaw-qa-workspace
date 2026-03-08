@@ -24,6 +24,9 @@ Optional cached context for clarification:
 - `ST-2` → rename the fixed heading back to the canonical name
 - `ST-3` → add `N/A — <reason>` under the affected fixed heading
 - `ST-4` → move content under the correct canonical heading and remove the illegal top-level heading
+- `ST-5` → split the mixed subcategory into smaller workflow- or branch-specific subcategories
+- `ST-6` → compress verbose leaves into concise XMind-style wording without dropping coverage
+- `ST-7` → rebuild the section into a clearer hierarchy using evidence-backed subcategories
 - `EX-1` → rewrite the testcase trigger so it names the exact branch or condition
 - `EX-2` → rewrite the user action so it states the exact UI operation
 - `EX-3` → rewrite the expected result so it states the visible success condition

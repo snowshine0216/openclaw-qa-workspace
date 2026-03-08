@@ -44,6 +44,9 @@ validate_context.sh <feature-id> --validate-testcase-executability "<file>"
 - `ST-2` illegal rename of a fixed heading
 - `ST-3` missing `N/A — <reason>` under a fixed heading with no applicable coverage
 - `ST-4` illegal custom top-level heading
+- `ST-5` subcategory mixes unrelated workflows instead of using a clear workflow-area grouping
+- `ST-6` leaf wording is too verbose for XMind readability and should be compressed without dropping coverage
+- `ST-7` section lacks clear subcategory structure even though the evidence supports a more readable hierarchy
 
 ### Executability findings
 
