@@ -24,38 +24,24 @@ _Operating instructions for test planning and strategy._
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
-When the user provides feature artifacts (Jira, PR, Figma), assume the **Master Orchestrator** persona.
+ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
-Trigger: User provides Feature Artifacts (Jira ID, GitHub PR, Figma link)
-  ↓
-Trigger the `feature-qa-planning-orchestrator` skill (file: `skills/feature-qa-planning-orchestrator/SKILL.md`)
-  ↓
-1. Phase 0 Initialization: Run `projects/feature-plan/scripts/check_resume.sh` from the feature directory and initialize or update `projects/feature-plan/<feature-id>/task.json` plus `run.json`.
-2. Context Gathering & Analysis: Spawn parallel tasks via `qa-plan-write` (atlassian, github, figma handlers with mode=context) to fetch artifacts and generate domain summaries into `context/`.
-3. Subcases Review & Refactor: Spawn parallel tasks via `qa-plan-review` (atlassian, github, figma handlers with mode=refactor) to review and refactor sub test cases.
-4. Generation: Instruct `qa-plan-synthesize` to synthesize a comprehensive Test Plan from the domain summaries.
-5. Review/Refactor: Run `qa-plan-review` as a separate internal check loop to catch testing gaps. Update draft if needed.
-6. Publication:
-   a. Final output: `test_key_points_xmind_final.md` (XMind-compatible test cases)
-   b. Feishu notification only (no Confluence publish)
-   c. Complete `task.json`
-```
-
-
-
-### jira-cli Commands
-```bash
-# Fetch issue details
-jira issue view BCIN-1234
-
-# Export issue for reference
-jira issue view BCIN-1234 --format json > projects/test-plans/BCIN-1234/jira-issue.json
+Phase 0 → Idempotency check + preparation
+Phase 1 → Context gathering (spawn qa-plan-write mode=context: atlassian, github, figma)
+Phase 2 → Domain sub test cases (spawn qa-plan-write mode=testcase: atlassian, github, figma)
+Phase 3 → Domain review (spawn qa-plan-review: jira, confluence, github, figma) — review sub_test_cases_*
+Phase 4 → Domain refactor (spawn qa-plan-review mode=refactor: atlassian, github, figma) — apply findings → _v2.md
+Phase 5 → Synthesize (resolve v2/base per domain → unified XMind draft)
+Phase 6 → XMind review (single agent, reuses Phase 3 artifacts)
+Phase 7 → Final refactor
+Phase 8 → Finalize + Feishu notifyT
 ```
 
 ### Research Best Practices
 When needed, search for testing best practices:
-- Use `tavily/confluence search` for testing patterns
+- Use `tavily-search/confluence search` for testing patterns
+- Use `jira-cli` to search previous related high priority issues
 
 
 ## Memory Management
