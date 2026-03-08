@@ -121,9 +121,10 @@ Read `domain` and `mode` from the attachment. Branch to the appropriate handler 
 ## Handler: Figma
 
 ### mode=context
-
-1. **Resolve Figma link** from attachment or `figma_link_<id>.md` (from Jira/Confluence).
-2. **Fetch Figma metadata** (Figma MCP or browser flow).
+1. **Resolve Figma**
+- use provided Figma url or `figma_link_<id>.md` (from Jira/Confluence).
+- use provided snapshots in the attachment
+2. **Fetch Figma metadata** (ONLY needed when it's figma url).
 3. **Create** `context/figma/` and save:
    ```bash
    $SCRIPTS/save_context.sh $FEATURE_ID "figma/figma_metadata_${FEATURE_ID}_$(date +%Y-%m-%d)" "$METADATA"
@@ -165,7 +166,7 @@ Read `domain` and `mode` from the attachment. Branch to the appropriate handler 
 - **jira-cli** (atlassian): `~/.openclaw/skills/jira-cli` or workspace equivalent
 - **confluence** (atlassian): `~/.openclaw/skills/confluence`
 - **github** (github): `~/.openclaw/skills/github`
-- **Figma MCP or browser** (figma)
+- **Figma browser** (figma)
 
 Auth precheck before fetch. If precheck fails, STOP and report blocker.
 
