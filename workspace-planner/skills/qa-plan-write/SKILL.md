@@ -1,212 +1,170 @@
 ---
 name: qa-plan-write
-description: Single skill with three domain handlers (atlassian, github, figma) for QA context gathering (Phase 1) and sub test case generation (Phase 2). Replaces qa-plan-atlassian, qa-plan-github, qa-plan-figma. Invoked by feature-qa-planning-orchestrator via sessions_spawn() with domain, mode, and feature_id in attachment. Use when orchestrator spawns domain handlers for context fetching or XMind sub test case generation.
+description: Unified QA planning skill for Atlassian, GitHub, and Figma evidence gathering plus canonical sub-testcase generation. Use when feature-qa-planning-orchestrator needs Phase 1 context fetches or Phase 2 domain testcase drafts that must follow the canonical testcase contract.
 ---
 
-# QA Plan Write — Unified Domain Handler (Atlassian, GitHub, Figma)
+# QA Plan Write
 
-Single skill with **three domain handlers**. Orchestrator invokes via `sessions_spawn()` with `context.json` attachment. Each handler runs in `context` mode (Phase 1: fetch + save) or `testcase` mode (Phase 2: read context + generate XMind sub test cases).
+Use this skill for three domain handlers:
+- `atlassian`
+- `github`
+- `figma`
+
+Each handler supports:
+- `mode=context` for evidence collection only
+- `mode=testcase` for canonical sub-testcase generation from cached context only
 
 ## Invocation Contract
 
-**Input** (from orchestrator via attachment `context.json`):
+Input arrives through `context.json`.
+
 ```json
 {
-  "domain": "atlassian",
-  "mode": "context",
+  "domain": "github",
+  "mode": "testcase",
   "feature_id": "BCIN-6709",
-  "jira_key": "BCIN-6709",
-  "confluence_url": "https://..."
+  "github_pr_urls": ["https://github.com/org/repo/pull/123"]
 }
 ```
 
-| `mode` | Phase | Behavior |
-|--------|-------|----------|
-| `context` | 1 | Fetch raw source data → call `save_context.sh` for every artifact. **No test case generation.** |
-| `testcase` | 2 | Read existing `context/` files → generate XMind sub test cases → call `save_context.sh` for output. **No live re-fetch.** |
-| `full` | Dev only | Runs `context` then `testcase`. Never used by orchestrator. |
+Resolve scripts from `projects/feature-plan/scripts/` and use:
 
-**Script path**: Resolve `projects/feature-plan/scripts/` relative to workspace root (e.g. `workspace-planner/projects/feature-plan/scripts/`). Set `SCRIPTS` and call:
 ```bash
 "$SCRIPTS/save_context.sh" "$FEATURE_ID" "<artifact_name>" "<content_or_file>"
-```
-Call immediately after every fetch.
-
-**`mode=testcase` guard**: If required context file is missing, exit with:
-```
-ERROR: Missing context file: context/qa_plan_atlassian_BCIN-6709.md
-Run Phase 1 first: qa-plan-write --domain atlassian --mode context --feature-id BCIN-6709
+"$SCRIPTS/validate_context.sh" "$FEATURE_ID" --validate-testcase-structure "<file>"
+"$SCRIPTS/validate_context.sh" "$FEATURE_ID" --validate-testcase-executability "<file>"
 ```
 
----
+If required context is missing in `mode=testcase`, stop and report the missing artifact. Do not re-fetch live data in `mode=testcase`.
 
-## Handler Selection
+## Shared Contract for `mode=testcase`
 
-Read `domain` and `mode` from the attachment. Branch to the appropriate handler below.
+Always follow these two sources together:
+- `workspace-planner/skills/feature-qa-planning-orchestrator/references/canonical-testcase-contract.md`
+- `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md`
 
----
+### Structural rules
+
+- Preserve the canonical top-level structure in the required order.
+- Only `EndToEnd` and `Functional` may be renamed.
+- `xFunction`, `Error handling / Special cases`, `Accessibility`, `i18n`, `performance`, `upgrade / compatability`, `Embedding`, `AUTO: Automation-Only Tests`, and `📎 Artifacts Used` are fixed headings.
+- If a fixed heading is not applicable, keep it and add `N/A — <reason>`.
+- Never invent a domain-specific top-level heading such as `UI Testing`, `Security Test`, or `Platform`.
+
+### Manual executability contract
+
+Every manual testcase must state:
+1. surface / location
+2. concrete trigger
+3. concrete user action
+4. observable expected result
+
+If any of the four items is missing:
+- search cached context first
+- then use Confluence or background research and save the result with `save_context.sh`
+- if still unresolved, leave `<!-- TODO: specify trigger/action/result -->`
+- do not fill the gap with generic wording
+
+### Vagueness blacklist
+
+Do not write phrases like:
+- `Recover from a supported report execution or manipulation error`
+- `Perform another valid editing action`
+- `Observe the recovered state`
+- `Verify correct recovery`
+- `Matches documented branch behavior`
+
+Rewrite them into trigger/action/result language or move the case to `## AUTO: Automation-Only Tests` if it is not manually executable.
 
 ## Handler: Atlassian
 
-### mode=context
+### `mode=context`
 
-1. **Fetch Jira** (use `jira-cli` skill): main issue + related issues from Jira query path.
-2. **Save immediately** after each fetch:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "jira_issue_${ISSUE_KEY}" "$(jira issue view $ISSUE_KEY --plain)"
-   $SCRIPTS/save_context.sh $FEATURE_ID "jira_related_issues_${FEATURE_ID}" "$RELATED_LIST"
-   ```
-3. **Fetch Confluence** (use `confluence` skill) if design doc URL provided.
-4. **Save**:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "qa_plan_atlassian_${FEATURE_ID}" "$DOMAIN_SUMMARY"
-   ```
-5. If Figma URL found in Jira/Confluence: `save_context.sh` for `figma_link_${FEATURE_ID}`.
+- Fetch Jira issue content and linked issue content with `jira-cli`.
+- Fetch Confluence design material with `confluence` when a design URL is available.
+- Save each raw artifact immediately with `save_context.sh`.
+- Save an evidence summary as `qa_plan_atlassian_<feature-id>.md`.
+- Save any discovered Figma link as `figma_link_<feature-id>.md`.
 
-**Artifacts saved**:
-- `jira_issue_<key>.md`, `jira_related_issues_<id>.md`, `qa_plan_atlassian_<id>.md`, `figma_link_<id>.md` (if present)
+### `mode=testcase`
 
-**Phase 1 outputs domain context only** — no test scenarios, no QA Domain Summary table.
-
-### mode=testcase
-
-1. **Validate** required files exist: `jira_issue_<main>.md`, `qa_plan_atlassian_<id>.md`, related issues.
-2. Read context files. Generate sub test cases in **XMind branch format** per `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md`.
-3. Every action item must be **user-observable** (not Jira field names or ACs verbatim).
-4. Non-actionable ACs → apply resolution chain (context → Confluence → Tavily → `<!-- TODO -->`). Save each search via `save_context.sh`.
-5. **Save output**:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "sub_test_cases_atlassian_${FEATURE_ID}" "$OUTPUT"
-   ```
-
-**Output**: `context/sub_test_cases_atlassian_<id>.md`
-
----
+- Read `jira_issue_<id>.md`, `jira_related_issues_<id>.md`, and `qa_plan_atlassian_<id>.md`.
+- Generate canonical XMind-style sub testcases using only cached context.
+- Keep all fixed headings present.
+- Make `Error handling / Special cases` concrete by naming the exact error branch or special condition.
+- Add `Accessibility`, `i18n`, `performance`, `upgrade / compatability`, and `Embedding` coverage only when supported by evidence; otherwise keep the heading with `N/A — <reason>`.
+- Save output as `sub_test_cases_atlassian_<feature-id>.md`.
 
 ## Handler: GitHub
 
-### mode=context
+### `mode=context`
 
-1. **Fetch PR diffs** (use `github` skill) for all `github_pr_urls` in attachment.
-2. **Save** after each fetch:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "github_diff_<repo>" /tmp/diff.md
-   ```
-3. **Build traceability** (file/function → scenario mapping). Save:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "qa_plan_github_traceability_${FEATURE_ID}" "$TRACEABILITY"
-   $SCRIPTS/save_context.sh $FEATURE_ID "qa_plan_github_${FEATURE_ID}" "$USER_FACING_SUMMARY"
-   ```
+- Fetch PR diffs and compare views with `github`.
+- Build a traceability artifact that maps code facts to user-facing scenario implications.
+- Save raw diff artifacts and save the summary as `qa_plan_github_<feature-id>.md`.
+- Save the traceability artifact as `qa_plan_github_traceability_<feature-id>.md`.
 
-**Artifacts saved**:
-- `github_diff_<repo>.md`, `qa_plan_github_<id>.md`, `qa_plan_github_traceability_<id>.md`
+### `mode=testcase`
 
-**Phase 1 outputs diffs + traceability only** — no user-facing scenario generation.
-
-### mode=testcase
-
-1. **Validate** required files: at least one `github_diff_<repo>.md`, `qa_plan_github_traceability_<id>.md`.
-2. Read context. Generate sub test cases in XMind format per template.
-3. Organize by **user-facing functional scenario** (not by repo). Code-only changes → `## AUTO: Automation-Only Tests`.
-4. Non-actionable code refs → resolution chain → `save_context.sh`.
-5. **Save**:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "sub_test_cases_github_${FEATURE_ID}" "$OUTPUT"
-   ```
-
-**Output**: `context/sub_test_cases_github_<id>.md`
-
----
+- Read `qa_plan_github_<id>.md`, `qa_plan_github_traceability_<id>.md`, and fetched diff artifacts.
+- Organize scenarios by user-facing behavior, never by repo name.
+- Keep code references out of manual testcase wording.
+- Move internal-only checks to `## AUTO: Automation-Only Tests`.
+- Save output as `sub_test_cases_github_<feature-id>.md`.
 
 ## Handler: Figma
 
-### mode=context
-1. **Resolve Figma**
-- use provided Figma url or `figma_link_<id>.md` (from Jira/Confluence).
-- use provided snapshots in the attachment
-2. **Fetch Figma metadata** (ONLY needed when it's figma url).
-3. **Create** `context/figma/` and save:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "figma/figma_metadata_${FEATURE_ID}_$(date +%Y-%m-%d)" "$METADATA"
-   $SCRIPTS/save_context.sh $FEATURE_ID "qa_plan_figma_${FEATURE_ID}" "$DOMAIN_SUMMARY"
-   ```
+### `mode=context`
 
-**Artifacts saved**:
-- `figma/figma_metadata_<id>_<date>.md`, `qa_plan_figma_<id>.md`
+- Resolve the Figma URL or approved snapshots.
+- Save fetched metadata or snapshot-derived notes under `context/figma/`.
+- Save a user-facing evidence summary as `qa_plan_figma_<feature-id>.md`.
 
-**Skipped** if no Figma URL or snapshots (orchestrator does not spawn).
+### `mode=testcase`
 
-### mode=testcase
+- Read `qa_plan_figma_<id>.md` plus any `context/figma/` artifacts.
+- Generate the same canonical heading structure used by Atlassian and GitHub.
+- Do not generate `## UI Testing` or any Figma-only top-level structure.
+- Use Figma only to tighten surface, interaction, copy, and visible-state detail.
+- Save output as `sub_test_cases_figma_<feature-id>.md`.
 
-1. **Validate** required files: `figma/figma_metadata_<id>_*.md`, `qa_plan_figma_<id>.md`.
-2. Read context. Generate sub test cases in XMind format. Hierarchy: `## UI Testing`, `### Component Name`, bullet steps → leaf expected result.
-3. Non-actionable Figma annotations → resolution chain → `save_context.sh`.
-4. **Save**:
-   ```bash
-   $SCRIPTS/save_context.sh $FEATURE_ID "sub_test_cases_figma_${FEATURE_ID}" "$OUTPUT"
-   ```
+## Evidence-driven applicability rules
 
-**Output**: `context/sub_test_cases_figma_<id>.md`
+### Surfaces
 
----
+- Split Workstation and Library Web unless the evidence explicitly confirms identical behavior.
+- If a surface is intentionally not covered, say so with `N/A — <reason>` under the relevant heading.
 
-## Non-Actionable Resolution Chain (All Handlers)
+### Performance
 
-1. Search `context/` files first.
-2. If not resolved: Confluence search via `confluence` skill → `save_context.sh` before use.
-3. If still not resolved: `tavily-search` skill → `save_context.sh`.
-4. If all fail: keep item with `<!-- TODO: Cannot determine concrete user action — found in [source] -->` — **NEVER remove**.
+- Do not auto-generate performance coverage just because a feature is user-facing.
+- Add concrete performance cases only when requirements, design notes, or code evidence indicate performance-sensitive behavior.
+- Otherwise write `N/A — no explicit performance-sensitive change in scope`.
 
-**Naming**: `research_bg_<domain>_<query-slug>_<id>.md`
+### Embedding
 
----
+- Add embedding cases only when Jira, Confluence, or PR evidence shows an embedding surface or host integration.
+- Do not infer embedding from the word `Library` alone.
+- Otherwise write `N/A — not an embedding feature`.
 
-## Prerequisites
+## Resolution Chain
 
-- **jira-cli** (atlassian): `~/.openclaw/skills/jira-cli` or workspace equivalent
-- **confluence** (atlassian): `~/.openclaw/skills/confluence`
-- **github** (github): `~/.openclaw/skills/github`
-- **Figma browser** (figma)
+For any missing manual detail:
+1. search cached `context/` artifacts
+2. search Confluence or approved background material
+3. save any new evidence with `save_context.sh`
+4. if still unresolved, leave `<!-- TODO -->`
 
-Auth precheck before fetch. If precheck fails, STOP and report blocker.
+## Validation Before Save
 
----
-
-## Generation Rules (mode=testcase)
-
-When generating sub test cases, enforce the following dimensional rules:
-
-**1. Surface Coverage Rule**
-- Identify all applicable surfaces from Jira ACs, Confluence design docs, and PR diffs (e.g., Workstation, Library Web, BI Web, Library Mobile, Embedding).
-- For each test scenario, produce a sub-item per applicable surface.
-- If a surface is intentionally excluded or not applicable, add a leaf node explicitly stating: `N/A — [reason]`.
-- **Never** merge Workstation and Library behaviors into the same leaf node unless the PR diff confirms identical code execution paths.
-
-**2. Embedding Rule**
-- If the PR diff touches embedding adapter/SDK layers OR Jira AC mentions "embedding", "Library", "iFrame", or "Native":
-  - Generate concrete sub-cases for both **iFrame Embedding** (e.g., cross-origin messaging, auth, CSP restrictions) and **Native Embedding** (e.g., SDK initialization, teardown).
-- If not applicable, add a leaf node: `N/A — not an embedding feature`.
-
-**3. Performance Rule**
-- Always generate at least a "Baseline Load Time" and "Large Data" sub-case unless the PR is strictly UI-only (CSS/style changes with no data fetching).
-- If Jira ACs or Design Docs specify concrete SLAs, use them. Otherwise, use defaults: Dashboard <5s, Filter <2s, Export <15s, API <500ms.
-- For complex performance requirements or if a dedicated Performance AC exists, link to or delegate to a full plan via the `performance-test-designer` skill.
-
----
-
-## Output Format (mode=testcase)
-
-Follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` scaffold exactly:
-
-- `## <Category> - P1/P2/P3`
-- `### <Sub-category>`
-- Bullet steps with indentation; leaf nodes = expected results
-- `## AUTO: Automation-Only Tests` for code-internal, non-user-observable items
-
----
+Before finalizing any `mode=testcase` artifact:
+1. run testcase structure validation
+2. run testcase executability validation
+3. if validation fails, rewrite once and validate again
+4. if validation still fails, stop and report the violations instead of saving a weak draft
 
 ## Integration
 
-Outputs consumed by:
-- **Phase 5** (`qa-plan-synthesize`): merges sub test cases into unified XMind
-- **Phase 3** (`qa-plan-review`): domain review agents read these artifacts
+Outputs from this skill are consumed by:
+- `qa-plan-review` in Phase 3
+- `qa-plan-synthesize` in Phase 5

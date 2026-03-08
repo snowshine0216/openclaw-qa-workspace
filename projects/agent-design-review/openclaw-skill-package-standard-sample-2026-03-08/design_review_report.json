@@ -1,0 +1,32 @@
+{
+  "design_id": "openclaw-skill-package-standard-sample-2026-03-08",
+  "overall_status": "pass",
+  "severity_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "findings": [],
+  "required_fixes": [],
+  "advisories": [],
+  "reviewed_paths": [
+    "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/sample_design.md",
+    "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/path_inventory.txt",
+    ".agents/skills/openclaw-agent-design/SKILL.md",
+    ".agents/skills/openclaw-agent-design/reference.md",
+    ".agents/skills/openclaw-agent-design-review/SKILL.md",
+    ".agents/skills/openclaw-agent-design-review/reference.md",
+    ".agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh",
+    ".agents/skills/openclaw-agent-design-review/scripts/validate_paths.sh",
+    ".agents/skills/openclaw-agent-design-review/scripts/test/check_design_evidence.test.js",
+    ".agents/skills/openclaw-agent-design-review/scripts/test/validate_paths.test.js"
+  ],
+  "timestamp_utc": "2026-03-08T00:00:00Z",
+  "evidence_artifacts": {
+    "design_markdown": "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/sample_design.md",
+    "path_inventory": "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/path_inventory.txt",
+    "evidence_check": "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/evidence_check.txt",
+    "path_check": "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/path_check.txt",
+    "test_run": "projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/test_run.txt"
+  }
+}

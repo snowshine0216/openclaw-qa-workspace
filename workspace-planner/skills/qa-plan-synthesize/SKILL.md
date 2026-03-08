@@ -1,190 +1,121 @@
 ---
 name: qa-plan-synthesize
-description: Synthesizes domain sub test-case artifacts (atlassian, github, figma) into a single XMind-compatible test case draft. Use when the orchestrator has completed Phase 4 and needs to merge sub_test_cases_*.md (or _v2.md) into one unified draft. Always produces drafts/test_key_points_xmind_v<N+1>.md only — no QA plan narrative.
+description: Synthesizes domain sub-testcase artifacts into one canonical XMind-compatible draft. Use when feature-qa-planning-orchestrator reaches Phase 5 and needs a merged draft that passes structure and executability validation.
 ---
 
-# QA Plan Synthesize (Phase 5 — XMind Only)
+# QA Plan Synthesize
 
-Consolidate domain sub test-case artifacts into **one output**: an XMind-compatible test-case draft with P1/P2/P3 priority assignment.
-
-**Single responsibility**: `xmind_only`. No QA plan narrative generation.
-
-## When to Use
-
-- Orchestrator calls this skill in **Phase 5** after Phase 4 refactor completes
-- User asks to "synthesize test cases" or "merge sub test cases into XMind"
+Produce exactly one output: `drafts/test_key_points_xmind_v<N+1>.md`.
 
 ## Prerequisites
 
-The orchestrator MUST call `validate_context.sh` before invoking synthesis:
+The orchestrator must pass resolved paths and must call:
 
 ```bash
-# Resolve latest per-domain file (v2 if present, else base)
 validate_context.sh <feature-id> --resolve-sub-testcases atlassian github figma
 validate_context.sh <feature-id> "qa_plan_github_traceability_<id>"
 ```
 
-The synthesizer receives **resolved paths** from the orchestrator. It does NOT re-infer paths — it uses exactly the paths passed in.
+The synthesizer uses only the paths it receives. It does not re-infer paths.
 
-## Input Parameters
+## Required references
 
-```javascript
+Always use:
+- `references/canonical-testcase-contract.md`
+- `templates/test-case-template.md`
+- `docs/priority-assignment-rules.md`
+
+## Input contract
+
+```json
 {
-  feature_id: "BCIN-6709",
-  sub_testcase_files: [                    // Resolved paths from orchestrator (v2 or base per domain)
-    "context/sub_test_cases_atlassian_BCIN-6709_v2.md",   // or base if Phase 4 was no-op
+  "feature_id": "BCIN-6709",
+  "sub_testcase_files": [
+    "context/sub_test_cases_atlassian_BCIN-6709_v2.md",
     "context/sub_test_cases_github_BCIN-6709.md",
-    "context/sub_test_cases_figma_BCIN-6709.md"          // if Figma present
+    "context/sub_test_cases_figma_BCIN-6709.md"
   ],
-  context_files: [                          // Secondary — used for research step only
-    "context/qa_plan_github_traceability_BCIN-6709.md",   // Required for P1 assignment
-    "context/qa_plan_atlassian_BCIN-6709.md",
-    "context/jira_issue_BCIN-6709.md",
-    "context/jira_related_issues_BCIN-6709.md"
+  "context_files": [
+    "context/qa_plan_github_traceability_BCIN-6709.md",
+    "context/qa_plan_atlassian_BCIN-6709.md"
   ],
-  output: "drafts/test_key_points_xmind_v<N+1>.md",
-  priority_rules: "docs/priority-assignment-rules.md"
+  "output": "drafts/test_key_points_xmind_v<N+1>.md"
 }
 ```
 
-**v2-vs-base rule**: For each domain, use exactly the path provided. Never mix `_v2.md` for one domain and base for the same domain in the same run. The orchestrator has already resolved this via `--resolve-sub-testcases`.
-
-## Core Synthesis Protocol (Mandatory — 3-Step)
-
-### Synthesis Step A: Collect Everything (Merge First)
-
-1. Read every `sub_testcase_files` input in the order provided (atlassian → github → figma).
-2. Copy ALL items from ALL files into one combined raw list. Do NOT filter, skip, or evaluate any item at this stage.
-3. Annotate each item with its source file (e.g. `[src: atlassian]`, `[src: github]`) so Step C can track origin.
-4. Retain duplicates — they will be merged in Step C only after Step B resolves actionability.
-
-### Synthesis Step B: Research Non-Actionable Items
-
-An item is **non-actionable** if it contains:
-- Abstract category descriptions without concrete user steps
-- Code-internal terminology that cannot be directly observed in the UI
-- Vague conditionals ("when an error occurs", "after recovery") with no specified trigger action
-
-**Full resolution chain** (apply in order):
-
-1. **Search context files first**: `context/qa_plan_atlassian_*.md`, `context/qa_plan_github_*.md`, `context/qa_plan_github_traceability_*.md`, `context/jira_issue_*.md`, `context/research_*.md`
-2. **If unresolved**: Confluence search via `confluence` skill → save result via `save_context.sh` before use
-3. **If still unresolved**: Tavily search via `tavily-search` skill → save result via `save_context.sh` before use
-4. **If all fail**: Keep the item with `<!-- TODO: Cannot determine concrete user action — found in [source] -->` — **NEVER remove**
-
-For each Confluence or Tavily search: call `projects/feature-plan/scripts/save_context.sh <feature-id> "research_bg_<domain>_<slug>_<id>" "$SEARCH_RESULT"` immediately after fetching. List any `research_bg_*.md` in `## 📎 Artifacts Used`.
-
-For each resolved item: rewrite as concrete user action + observable result.
-
-### Synthesis Step C: Deduplicate
-
-- After all items are collected and researched, identify semantic duplicates.
-- **Surface Deduplication Rule**: Items from different surfaces (e.g., Workstation vs Library Web) are NEVER semantic duplicates even if the test action looks identical.
-  - Only merge items if they share BOTH the same action AND the same surface.
-  - When two surface-specific items have identical actions but different surfaces, keep both under a parent node with surface-labeled sub-items:
-    - Workstation: `<action> → <result>`
-    - Library Web: `<action> → <result>`
-- Merge true duplicates into the most specific/concrete version.
-- Keep source attribution (which domain each item came from).
-
----
-
 ## Workflow
 
-### Step 1: Read Resolved Sub Test Case Files
+### Step 1: Collect without filtering
 
-Read each file in `sub_testcase_files` exactly as provided. Do NOT scan the context directory or infer paths. The orchestrator has already resolved v2 vs base per domain.
+- Read every resolved sub-testcase file.
+- Merge every item into a working list.
+- Preserve source attribution for each item.
+- Do not deduplicate yet.
 
-### Step 2: Apply Synthesis Protocol (A → B → C)
+### Step 2: Heading normalization pass
 
-Execute the 3-step protocol above. For Step B, use the full resolution chain (context → Confluence → Tavily → TODO).
+- Normalize every top-level heading to the canonical structure.
+- Only map aliases for `EndToEnd` and `Functional`.
+- Any illegal custom top-level heading must be remapped into the correct canonical bucket or rejected.
+- Recreate missing fixed headings even if a source omitted them.
+- If a fixed heading has no evidence-backed content, keep it with `N/A — <reason>`.
 
-### Step 3: Assign Priorities
+### Step 3: Executability rewrite pass
 
-**Priority Assignment Algorithm** (load `docs/priority-assignment-rules.md`):
+For every manual testcase candidate:
+- make the surface explicit
+- make the exact trigger explicit
+- make the exact user action explicit
+- make the visible expected result explicit
 
-- **P1** = direct relationship to changed code (GitHub traceability)
-- **P2** = affected area, cross-functional, Jira AC, compatibility
-- **P3** = edge case, template-retained, nice to have
+If the item still depends on internal code state:
+- move it to `## AUTO: Automation-Only Tests`
 
-Load `context/qa_plan_github_traceability_<feature-id>.md` for P1 mapping. Organize by user-facing behavior, not by repo or source.
+If a detail is missing:
+- search cached context first
+- then use saved Confluence or background research
+- save newly used background artifacts with `save_context.sh`
+- if still unresolved, keep `<!-- TODO -->`
 
-### Step 4: Translation + Actionability Pass
+### Step 4: Structural merge rules
 
-Translate code vocabulary to user-observable language:
+- Never merge different surfaces into one testcase unless the evidence confirms identical behavior.
+- Separate different recovery branches into separate leaves.
+- Keep `Error handling / Special cases` concrete and branch-specific.
+- Keep `📎 Artifacts Used` at the end and list every context or research artifact actually used.
 
-| Code Pattern | User-Facing Translation |
-|--------------|-------------------------|
-| `cmdMgr.reset()` called | Undo button is disabled |
-| `isReCreateReportInstance = true` | Recovery completes without stuck state |
-| `mstrApp.appState = DEFAULT` | Grid shows pause-mode layout |
+### Step 5: Priority assignment
 
-For any vague or technical item: "What exact user action triggers this, and what visible result should QA verify?"
+- Apply `docs/priority-assignment-rules.md` after normalization and executability rewrite.
+- Preserve the heading order from the canonical contract.
+- Do not use priority tagging to justify dropping any fixed section.
 
-### Step 5: Final Checklist Before Save
+### Step 6: Pre-save validation
 
-- [ ] Every required template category is present
-- [ ] Non-applicable categories remain with a one-sentence explanation leaf
-- [ ] No internal code vocabulary in headings, steps, or expected results
-- [ ] P1/P2/P3 markers at category, sub-category, or step level
-- [ ] `## AUTO: Automation-Only Tests` present for code-internal tests
-- [ ] **`## 📎 Artifacts Used`** section present (see below)
+Run both checks before saving:
 
-### Step 6: Write Output
-
-**Output**: `drafts/test_key_points_xmind_v<N+1>.md` only.
-
-**Mandatory `## 📎 Artifacts Used` header** — include at the end of every output:
-
-```markdown
-## 📎 Artifacts Used
-- context/sub_test_cases_atlassian_<id>_v2.md   ← or base if no v2
-- context/sub_test_cases_github_<id>.md
-- context/sub_test_cases_figma_<id>_v2.md       ← if Figma present
-- context/qa_plan_github_traceability_<id>.md
-- context/jira_issue_<key>.md
-- context/jira_related_issues_<id>.md
-- (any other context/*.md files used)
+```bash
+validate_context.sh <feature-id> --validate-testcase-structure "drafts/test_key_points_xmind_v<N+1>.md"
+validate_context.sh <feature-id> --validate-testcase-executability "drafts/test_key_points_xmind_v<N+1>.md"
 ```
 
-List the **exact resolved filenames** passed in — do not invent paths.
+If either check fails:
+- rewrite once
+- re-run both checks
+- if still failing, return an explicit error to the orchestrator and do not save a weak draft as final Phase 5 output
 
-**XMind format**: Use `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` as scaffold. Strip instructional annotations from final output.
+## Error handling
 
----
-
-## Output File Handling
-
-**Location**: `projects/feature-plan/<feature_id>/drafts/test_key_points_xmind_v<N+1>.md`
-
-**Versioning**:
-- Determine N from `task.json.latest_xmind_version` or scan `drafts/test_key_points_xmind_v*.md`
-- Write to `test_key_points_xmind_v<N+1>.md`
-- Update `task.json.latest_xmind_version = N+1`
-
----
-
-## Error Handling
-
-**If resolved paths are missing or invalid**:
-- Cannot synthesize — return error: "Missing resolved sub_testcase_files from orchestrator. Run validate_context.sh --resolve-sub-testcases first."
-
-**If GitHub traceability file missing**:
-- P1 assignment falls back to conservative P2
-- Emit warning: "P1 assignment degraded — no traceability file"
-
-**If no sub test case files provided**:
-- Cannot synthesize — return error
-
----
+- Missing resolved sub-testcase file: fail immediately
+- Missing traceability file: fail immediately
+- Unresolved manual detail after the resolution chain: keep `<!-- TODO -->` and surface it in the output instead of inventing vague text
 
 ## Integration
 
-**Input from**: `qa-plan-write` (Phase 2 sub test cases) + `qa-plan-review` (Phase 4 refactored _v2 when applicable)
+Input from:
+- `qa-plan-write`
+- `qa-plan-review` / Phase 4 `_v2` outputs
 
-**Output consumed by**: `qa-plan-review` (Phase 6), `qa-plan-refactor` (Phase 7)
-
----
-
-**Last Updated**: 2026-03-08
-**Status**: XMind-only (Phase 5); output_mode removed; Artifacts Used header mandatory; resolved paths from orchestrator
+Output consumed by:
+- `qa-plan-review` in Phase 6
+- `qa-plan-refactor` in Phase 7

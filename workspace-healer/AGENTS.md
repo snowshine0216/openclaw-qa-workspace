@@ -21,6 +21,11 @@ _Operating instructions for agent setup, skill creation, coding, and OpenClaw co
    - use `github` for all github tasks. 
    - use `confluence` for all confluence tasks.
 
+## Self Evolution Rules
+- Skills update is ALWAYS precede by memory update.
+   - if can use scripts to fix the workflow, scripts are must have
+   - if SKILL.md / reference.md can solve the problem, then must update them
+
 
 ## Documentation Navigation
 

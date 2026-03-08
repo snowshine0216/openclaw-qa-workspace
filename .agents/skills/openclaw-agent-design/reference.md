@@ -38,6 +38,18 @@ Use these existing shared skills directly when they fit:
 
 Create a wrapper only when direct reuse cannot express the needed higher-level contract.
 
+## Script-Bearing Skill Rule
+
+A skill is script-bearing if either of these is true:
+- the deliverables include `scripts/` under the skill package, or
+- the Script Inventory contains one or more scripts.
+
+Docs-only skills are exempt from script-specific test-stub requirements.
+
+## OpenClaw Test Layout Exception
+
+For OpenClaw skill-package design work, `scripts/test/` is the canonical test location for script-bearing skills. This is a domain-specific exception that overrides the generic top-level `tests/` preference from `code-quality-orchestrator` for this design domain.
+
 ## `agent-idempotency` Mapping
 
 | `agent-idempotency` State | `check_resume.sh` `REPORT_STATE` |
@@ -46,10 +58,6 @@ Create a wrapper only when direct reuse cannot express the needed higher-level c
 | Draft exists, no final | `DRAFT_EXISTS` |
 | Cache only | `CONTEXT_ONLY` |
 | Fresh | `FRESH` |
-
-Reference workflows:
-- `workspace-reporter/.agents/workflows/qa-summary.md`
-- `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
 
 ## `task.json` Example
 
@@ -77,11 +85,7 @@ Reference workflows:
 }
 ```
 
-If Feishu notification fails: `notification_pending` should contain the pending message payload for retry or manual handling.
-
 ## Design Doc Deliverables Table Format
-
-Use this in Section 1 of every design doc:
 
 ```markdown
 | Action | Path | Notes |
@@ -93,40 +97,86 @@ Use this in Section 1 of every design doc:
 | UPDATE | `AGENTS.md` | sync design and skill references |
 ```
 
-## Design Doc Header Block
-
-Paste at top of every design doc:
+## Skills Content Template
 
 ```markdown
-> **Design ID:** `<id>`
-> **Date:** YYYY-MM-DD
-> **Status:** Draft
-> **Scope:** <one-line>
->
-> **Constraint:** This is a design artifact. Do not implement until approved.
+### 3.x `<skill-path>/SKILL.md`
+
+Purpose:
+- <what the skill does>
+
+When to trigger:
+- <skill-creator style trigger wording>
+
+Input contract:
+- `<field>`: <type>, example `<example>`, source <where it comes from>
+
+Output contract:
+- <artifact, status line, handoff payload>
+
+Workflow/phase responsibilities:
+- <ordered responsibilities>
+
+Error/ambiguity policy:
+- <stop / ask / retry / persist>
+
+Quality rules:
+- <formatting, invariants, review requirements>
+
+Classification:
+- `shared` | `workspace-local`
+
+Why this placement:
+- <placement justification>
+
+Existing skills reused directly:
+- `<skill-name>` — <why direct reuse is sufficient>
 ```
 
-## Per-Phase User Interaction Template
+## `reference.md` Content Template
 
 ```markdown
-### Phase N: <Phase Name>
+### 4.x `<skill-path>/reference.md`
 
-Actions:
-1. <step>
-
-User Interaction:
-1. Done: <completed items>
-2. Blocked: <blockers>
-3. Questions: <user decisions required>
-4. Assumption policy: if any key detail is unclear, stop and ask before continuing.
-
-State Updates:
-1. `task.json.current_phase = "phase_N_<name>"`
-
-Verification:
-```bash
-# spot-check command
+Must include:
+- state machine / invariants
+- schemas or field-level contracts
+- path conventions
+- validation commands
+- failure examples and recovery rules
+- package-specific defaults or exceptions
 ```
+
+## Script Function Spec Template
+
+```markdown
+### 8.x `<script-path>`
+
+Invocation:
+- `<command>`
+
+Inputs / outputs / artifacts:
+- <list>
+
+| function | responsibility | inputs | outputs | side effects | failure mode |
+|----------|----------------|--------|---------|--------------|--------------|
+| `main` | <summary> | argv | stdout / files | <side effects> | <error condition> |
+```
+
+## Script Test Stub Matrix Template
+
+```markdown
+| Script Path | Test Stub Path | Scenarios | Smoke Command |
+|-------------|----------------|-----------|---------------|
+| `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | success; required-arg failure; dependency/error path | `node --test <skill-root>/scripts/test/foo.test.js` |
+```
+
+## Backfill Coverage Table Template
+
+```markdown
+| Script Path | Test Stub Path | Failure-Path Stub |
+|-------------|----------------|-------------------|
+| `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | required-arg failure |
 ```
 
 ## Final Notification Template
@@ -138,5 +188,3 @@ Verification:
   Updated:  <UTC TIME>
 Published by <Agent Name>.
 ```
-
-If formatting or send check failed: append `⚠️ Manual adjustments may be needed.`

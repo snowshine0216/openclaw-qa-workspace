@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: passes a script-bearing design with package content and script test matrix
+ok 1 - passes a script-bearing design with package content and script test matrix
+  ---
+  duration_ms: 1141.204625
+  type: 'test'
+  ...
+# Subtest: fails a script-bearing design that omits script test stubs
+ok 2 - fails a script-bearing design that omits script test stubs
+  ---
+  duration_ms: 1092.140542
+  type: 'test'
+  ...
+# Subtest: allows docs-only designs to omit script sections
+ok 3 - allows docs-only designs to omit script sections
+  ---
+  duration_ms: 949.927667
+  type: 'test'
+  ...
+# Subtest: reports usage errors cleanly
+ok 4 - reports usage errors cleanly
+  ---
+  duration_ms: 33.777125
+  type: 'test'
+  ...
+# Subtest: accepts markdown links, backtick paths, and URLs
+ok 5 - accepts markdown links, backtick paths, and URLs
+  ---
+  duration_ms: 399.217167
+  type: 'test'
+  ...
+# Subtest: fails on unresolved placeholders, hardcoded home paths, and missing files
+ok 6 - fails on unresolved placeholders, hardcoded home paths, and missing files
+  ---
+  duration_ms: 353.769291
+  type: 'test'
+  ...
+# Subtest: reports usage errors cleanly
+ok 7 - reports usage errors cleanly
+  ---
+  duration_ms: 35.922458
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3413.935958
