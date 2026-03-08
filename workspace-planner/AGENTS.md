@@ -14,6 +14,13 @@ _Operating instructions for test planning and strategy._
 
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
+- use `skill-creator` for all skill creation and refactoring tasks.
+- never use web-fetch for below tasks.
+   - use `jira-cli` for all Jira tasks. 
+      - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
+   - use `github` for all github tasks. 
+   - use `confluence` for all confluence tasks.
+
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
@@ -35,30 +42,6 @@ Trigger the `feature-qa-planning-orchestrator` skill (file: `skills/feature-qa-p
    d. Complete `task.json`
 ```
 
-## Core Workflow: Test Case Generation (Spec Generator)
-
-When the user wants to generate Playwright-compatible test spec files for a feature, trigger this workflow.
-
-```
-Trigger: User asks to generate test cases, test specs, or spec files for a feature ID.
-  ↓
-Trigger the `/test-case-generation` workflow (file: `.agents/workflows/test-case-generation.md`)
-  ↓
-Entry routing:
-  • qa_plan_final.md EXISTS → Phase 0 (existence check)
-  • No qa_plan_final.md   → Scenario 2 (context enrichment → `feature-qa-planning-orchestrator` → Phase 0)
-
-Key phases:
-  0. Existence check — classify state, initialize testcase_task.json
-  1. Read QA plan & context/ artifacts — derive test objects, data, risks
-  2. Research ambiguous steps — use clawddocs / tavily-search / confluence only when unclear
-  3. Pre-requisite confirmation (BLOCKING) — present path + objects + env + data; wait for approval
-  4. Generate Markdown specs — one .md per scenario via test-case-generator skill
-  5. Feishu DM + Tester Agent handoff (human approval required before handoff)
-
-State file: testcase_task.json (separate from task.json owned by `feature-qa-planning-orchestrator`)
-Output: projects/feature-plan/<feature-id>/specs/<domain>/<feature>/<scenario>.md
-```
 
 
 ### jira-cli Commands

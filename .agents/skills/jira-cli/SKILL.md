@@ -35,6 +35,15 @@ Use this skill for normal Jira CLI workflows and for Jira REST publish paths tha
 3. Make sure `jq`, `curl`, and `node` are available for publish/playground scripts
 4. For live publish commands, use a sandbox issue and provide `JIRA_USER_EMAIL` if your local Jira config does not include `login`
 
+## Environment Bootstrap (Required)  
+- Before running any `jira` command from OpenClaw/Codex sessions, first load the skill-local environment if present: 
+```bash
+set -a 
+source ~/.agents/skills/jira-cli/.env >/dev/null 2>&1 || true
+set +a
+jira me
+```
+
 ## Script Entry Points
 
 ### Core wrappers

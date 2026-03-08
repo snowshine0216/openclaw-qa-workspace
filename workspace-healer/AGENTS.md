@@ -17,6 +17,7 @@ _Operating instructions for agent setup, skill creation, coding, and OpenClaw co
 - use `skill-creator` for all skill creation and refactoring tasks.
 - never use web-fetch for below tasks.
    - use `jira-cli` for all Jira tasks. 
+      - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
    - use `github` for all github tasks. 
    - use `confluence` for all confluence tasks.
 

@@ -38,6 +38,7 @@ Working directory:
 - Spawn sub-agents for domain sub test case + QA plan draft generation (Phase 2) using `spawn-agent-session` skill.
 - Generate dual outputs: final QA plan + XMind-compatible final test cases.
 - The QA plan MUST follow `templates/qa-plan-template.md` as the final structure.
+- The test cases MUST follow `templates/test-case-template.md` as the final structure.
 - Evaluation is mandatory for both QA plan and test cases: draft → `qa-plan-review` → `qa-plan-refactor` → final.
 - Implement conditional Confluence search based on Jira linked/child issues, and also require Confluence clarification when generated test areas are vague, technical, or non-actionable so they can be rewritten into user-observable actions.
 - Reuse shared skills directly from `~/.openclaw/skills`: `jira-cli`, `github`, `confluence`, `feishu-notify`, `spawn-agent-session`.
