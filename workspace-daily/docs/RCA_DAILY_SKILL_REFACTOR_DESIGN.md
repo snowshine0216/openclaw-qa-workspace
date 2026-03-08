@@ -13,7 +13,7 @@
 
 Runtime and tool requirements:
 - OpenClaw with `sessions_spawn` support in both CLI and TUI contexts
-- Shared skills synced into `~/.openclaw/skills` via `./src/init-skills` or `make init-skills`
+- Shared skills linked into `~/.openclaw/skills` via `./src/init-skills` or `make init-skills`
 - Jira access via shared `jira-cli`
 - Optional Feishu notification reuse via shared `feishu-notify`
 - Node.js available for non-trivial helper scripts under skill `scripts/`

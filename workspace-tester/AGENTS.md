@@ -15,11 +15,13 @@ _Operating instructions for test execution and validation._
 
 ### ⚠️ Mandatory Rules
 
-- **Never proceed to the next phase without user confirmation** when it involves external API calls or publishing.
-- Raise clarifying questions for ambiguous input — never assume.
-- Must use `mcporter` to invoke Playwright MCP.
-- If certain element is not found, must use `site-knowledge-search` to search site knowledge.
-- If you don't have enough site knowledge, must use `tavily/confluence search` skills to search for more information.
+## Mandatory Skills
+- use `code-quality-orchestrator` for all coding tasks.
+- use `skill-creator` for all skill creation and refactoring tasks.
+- never use web-fetch for below tasks.
+   - use `jira-cli` for all Jira tasks. 
+   - use `github` for all github tasks. 
+   - use `confluence` for all confluence tasks.
 
 
 ---

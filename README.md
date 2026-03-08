@@ -18,7 +18,7 @@ brew install jira-cli
 ```
 3. Configure Jira authentication:
 - For personal usage, refer to the [`jira-cli` documentation](https://github.com/ankitpokhrel/jira-cli).
-- For this project, add the following values to `.env`:
+- For this project, add the following values to `.env` and put into into jira-cli skill folder:
 ```bash
 JIRA_API_TOKEN=<jira-api-token>
 JIRA_BASE_URL=<jira-base-url>
@@ -83,7 +83,7 @@ Agent-scoped skills live only in that workspace’s `skills/` folder:
 ./src/init-skills
 make init-skills
 ```
-- `init-skills` resolves the repository path relative to the script location and copies every skill from `.agents/skills` into `~/.openclaw/skills` without hard-coded absolute paths.
+- `init-skills` resolves the repository path relative to the script location and creates symbolic links from `~/.openclaw/skills` to each skill in `.agents/skills`; removes any non-symlink copies of repo skills first.
 - `make init-skills` is a convenience wrapper around the same script.
 - Global third-party skills that come from external repositories should still be installed manually so they stay explicit and easy to update:
 ```bash

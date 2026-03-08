@@ -20,21 +20,7 @@ require_directory() {
   fi
 }
 
-copy_directory_contents() {
-  local source_path="$1"
-  local target_path="$2"
-
-  mkdir -p "$target_path"
-
-  if command -v rsync >/dev/null 2>&1; then
-    rsync -a "$source_path/" "$target_path/"
-    return
-  fi
-
-  cp -R "$source_path/." "$target_path/"
-}
-
-copy_skill() {
+link_skill() {
   local source_path="$1"
   local skill_name
   local target_path
@@ -42,24 +28,29 @@ copy_skill() {
   skill_name="$(basename "$source_path")"
   target_path="${TARGET_DIR}/${skill_name}"
 
-  copy_directory_contents "$source_path" "$target_path"
-  log "copied: ${skill_name}"
+  if [ -e "$target_path" ] && [ ! -L "$target_path" ]; then
+    rm -rf "$target_path"
+    log "removed stale copy: ${skill_name}"
+  fi
+
+  ln -sfn "$source_path" "$target_path"
+  log "linked: ${skill_name}"
 }
 
 main() {
   require_directory "$SOURCE_DIR" "source skills directory"
   mkdir -p "$TARGET_DIR"
 
-  local copied_count=0
+  local linked_count=0
   local source_path
 
   for source_path in "$SOURCE_DIR"/*; do
     [ -d "$source_path" ] || continue
-    copy_skill "$source_path"
-    copied_count=$((copied_count + 1))
+    link_skill "$source_path"
+    linked_count=$((linked_count + 1))
   done
 
-  log "done: copied ${copied_count} skill(s) from ${SOURCE_DIR} to ${TARGET_DIR}"
+  log "done: linked ${linked_count} skill(s) from ${SOURCE_DIR} to ${TARGET_DIR}"
 }
 
 main "$@"
