@@ -1,0 +1,32 @@
+## Answer
+
+MicroStrategy Library Web allows users to create and edit reports with an Advanced Properties panel, SQL view, and enhanced formatting options. It also supports transformations, consolidations, and custom groups. The latest updates include simplified report generation and collaborative document features.
+
+---
+
+## Sources
+
+- **New Features in MicroStrategy from the Second Half of 2023 Onward** (relevance: 100%)
+  https://www.crmt.com/resources/blog/new-features-in-microstrategy-from-the-second-half-of-2023-onward/
+  Report Creation and Management: Users can now create reports directly within the Library interface, simplifying the report generation and
+
+- **Create Reports in Library Web - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/2021/Library/en-us/Content/create_reports.htm
+  ... MicroStrategy 2021 Update 7, administrators can enable authoring of reports in Library Web. This preview feature allows users to create and edit reports.
+
+- **Strategy Web Help - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/MSTRWeb/WebHelp/Lang_1033/index.htm
+  Authoring Capabilities. Web allows you to create dashboards, documents, and reports. Dashboard Authoring · Document Authoring · Create Reports · Learn More
+
+- **Creating and Editing Reports in MicroStrategy Library - YouTube** (relevance: 100%)
+  https://www.youtube.com/watch?v=odRlTceb7-c
+  Eager to see what else is new with MicroStrategy? Visit https://www.microstrategy.com/en/business-intelligence/whats-new #MicroStrategy
+
+- **Report Services Documents and MicroStrategy Library** (relevance: 100%)
+  https://community.strategy.com/article/Report-Services-Documents-via-MicroStrategy-Library
+  So what does this mean for any other existing Strategy Content, especially, **Report Services Documents?**Also, how do Report Services Documents benefit from the workflows and capabilities added via Library for Dossiers? While dossiers are a great proposition when self-service, collaboration, respon...
+
+- **What is a microstrategy library? - Quora** (relevance: 100%)
+  https://www.quora.com/What-is-a-microstrategy-library
+  Microstraetgy is a Business Intelligence tool that provides the ability to create reports, export reports and create dashboards for analytics.
+

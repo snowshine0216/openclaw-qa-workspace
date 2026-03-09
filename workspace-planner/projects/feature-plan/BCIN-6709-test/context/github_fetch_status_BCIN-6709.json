@@ -1,0 +1,45 @@
+{
+  "required_urls": [
+    "https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/biweb/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/biweb/pull/33041",
+    "https://github.com/mstr-kiai/mojojs/pull/8873",
+    "https://github.com/mstr-kiai/productstrings/pull/15008",
+    "https://github.com/mstr-kiai/productstrings/pull/15012",
+    "https://github.com/mstr-kiai/server/pull/10905",
+    "https://github.com/mstr-kiai/web-dossier/pull/22468"
+  ],
+  "malformed_urls": [
+    "https://github.com/mstr-"
+  ],
+  "fetched": [
+    "github_diff_biweb.md",
+    "github_diff_biweb_compare.json",
+    "github_diff_mojojs.md",
+    "github_diff_react-report-editor.md",
+    "github_diff_react-report-editor_compare.json",
+    "github_diff_web-dossier.md",
+    "github_pr_biweb_33041.json",
+    "github_pr_mojojs_8873.json",
+    "github_pr_productstrings_15008.json",
+    "github_pr_productstrings_15012.json",
+    "github_pr_server_10905.json",
+    "github_pr_web-dossier_22468.json"
+  ],
+  "failed": [
+    {
+      "url": "https://github.com/mstr-kiai/biweb/compare/m2021...revertReport",
+      "reason": "gh api returned 404"
+    },
+    {
+      "url": "https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport",
+      "reason": "gh api returned 404"
+    },
+    {
+      "url": "https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport",
+      "reason": "gh api returned 404"
+    }
+  ]
+}

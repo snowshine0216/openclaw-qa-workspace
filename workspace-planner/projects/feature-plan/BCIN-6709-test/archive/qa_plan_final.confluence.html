@@ -1,0 +1,164 @@
+<h1>Comprehensive QA Plan: BCIN-6709 — Improve Report Error Handling for Continued Editing</h1>
+<h2>📊 Summary</h2>
+<table><tbody>
+<tr><th>Field</th><th>Value</th></tr>
+<tr><td><strong>Feature Link</strong></td><td><a href="https://strategyagile.atlassian.net/browse/BCIN-6709">BCIN-6709</a></td></tr>
+<tr><td><strong>Release Version</strong></td><td>26.04 (2026-04-17)</td></tr>
+<tr><td><strong>QA Owner</strong></td><td>Xue Yin</td></tr>
+<tr><td><strong>SE Design Link</strong></td><td><a href="https://microstrategy.atlassian.net/wiki/spaces/~yuanli/pages/5901516841">BCIN-6709 Design Doc</a></td></tr>
+<tr><td><strong>UX Design Link</strong></td><td>N/A</td></tr>
+<tr><td><strong>GitHub PR Links</strong></td><td><a href="https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport">react-report-editor</a>, <a href="https://github.com/mstr-kiai/biweb/compare/m2021...revertReport">biweb</a>, <a href="https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport">mojojs</a>, <a href="https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport">web-dossier</a></td></tr>
+<tr><td><strong>Date Generated</strong></td><td>2026-03-07</td></tr>
+<tr><td><strong>Plan Status</strong></td><td>Draft v2 (template-aligned for review)</td></tr>
+</tbody></table>
+<h2>📝 Background</h2>
+<h3>1. Key Problem Statement</h3>
+<p>When a report encounters errors in MicroStrategy Library authoring mode, users are forced to leave the report and reopen it before they can continue. In many of these cases, previous edits are lost. This creates user frustration and has already led to customer escalations.</p>
+<h3>2. Solution</h3>
+<p>The feature improves error recovery in report authoring mode by recreating the report instance after supported failures, returning the user to a workable state, preserving prior work where appropriate, and allowing prompt-related recovery to return users to the prompt with previous answers preserved.</p>
+<h3>3. Business Context</h3>
+<p>This is a high-priority quality and usability improvement for Library authoring. It addresses customer pain, reduces recovery time after supported failures, and aims to let users continue editing instead of restarting their work.</p>
+<h2>🎯 QA Goals</h2>
+<h3>1. E2E: End to End</h3>
+<ul>
+  <li>Verify end-to-end recovery from supported report errors in authoring mode.</li>
+  <li>Verify users can continue editing after recovery without reopening the report.</li>
+  <li>Verify prompt-related recovery returns users to a usable prompt flow.</li>
+</ul>
+<h3>2. FUN: Functionality</h3>
+<ul>
+  <li>Verify supported error scenarios return the user to pause mode or prompt as designed.</li>
+  <li>Verify prior work is preserved when the design says it should be preserved.</li>
+  <li>Verify undo/redo behavior changes correctly based on the type of failed action.</li>
+</ul>
+<h3>3. UX: User Experience</h3>
+<ul>
+  <li>Verify error dialogs are understandable, actionable, and user-friendly.</li>
+  <li>Verify the report view remains usable after recovery.</li>
+  <li>Verify recovery does not leave users in a blank, stuck, or confusing state.</li>
+</ul>
+<h3>4. PERF: Performance</h3>
+<ul>
+  <li>Verify recovery completes in an acceptable time for real editing workflows.</li>
+  <li>Verify repeated recovery scenarios do not cause visible degradation or endless loading.</li>
+</ul>
+<h3>5. SEC: Security</h3>
+<ul>
+  <li>Verify end users do not see internal technical details in production-like error messages.</li>
+  <li>Verify recovery does not expose sensitive system information in the UI.</li>
+</ul>
+<h3>6. ACC: Accessibility</h3>
+<ul>
+  <li>Verify the error dialog receives focus and is keyboard accessible.</li>
+  <li>Verify users can complete the recovery flow with keyboard navigation.</li>
+</ul>
+<h3>7. CER: Platform Certifications</h3>
+<ul>
+  <li>Verify supported recovery behavior is consistent in major browsers.</li>
+  <li>Verify browser-specific regressions are not introduced by the new recovery flow.</li>
+</ul>
+<h3>8. UPG: Upgrade and Compatibility</h3>
+<ul>
+  <li>Verify existing consumption-mode behavior is unchanged.</li>
+  <li>Verify supported deployment environments can use the new recovery flow without regression.</li>
+</ul>
+<h3>9. INT: Integration</h3>
+<ul>
+  <li>Verify the full recovery flow works across the involved services and clients.</li>
+  <li>Verify follow-up actions work after recovery completes.</li>
+</ul>
+<h3>10. AUTO: Automation</h3>
+<ul>
+  <li>Cover recovery logic, follow-up behavior, and contract stability in automated tests.</li>
+  <li>Add automation for supported prompt-related recovery scenarios where feasible.</li>
+</ul>
+<h2><ac:emoticon ac:name="warning" /> Risk &amp; Mitigation</h2>
+<h3>1. Technical Risks</h3>
+<table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Code Reference</th></tr>
+<tr><td>Recovery state does not complete cleanly after a supported error</td><td>Users cannot continue editing</td><td>Medium</td><td>Validate repeat recovery flows and follow-up actions after each supported error type</td><td><code>recreate-report-error.ts</code>, <code>shared-recover-from-error.ts</code></td></tr>
+<tr><td>Undo/redo behavior does not match the intended recovery rule</td><td>Users lose history incorrectly or keep invalid history</td><td>Medium</td><td>Validate both preserved-history and cleared-history scenarios</td><td><code>undo-redo-util.ts</code>, <code>RootController.js</code>, <code>UICmdMgr.js</code></td></tr>
+<tr><td>The report view does not return to a usable state after recovery</td><td>Users see a blank or stale page</td><td>Medium</td><td>Validate the recovered grid and pause-mode layout after each key scenario</td><td><code>document-view.tsx</code>, <code>doc-view-slice.ts</code></td></tr>
+</tbody></table>
+<h3>2. Data Risks</h3>
+<table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Code Reference</th></tr>
+<tr><td>Prompt answers are lost after a prompt-related error</td><td>Users must re-enter values and may abandon the task</td><td>Medium</td><td>Validate that prompt answers are preserved when returning to the prompt</td><td><code>promptActionCreators.js</code>, <code>ActionLinkContainer</code></td></tr>
+<tr><td>In-progress report changes are lost when the design expects them to survive</td><td>Users lose work unexpectedly</td><td>Medium</td><td>Validate preserved-work scenarios against the design doc and Jira context</td><td><code>report-def-slice.ts</code></td></tr>
+</tbody></table>
+<h3>3. UX Risks</h3>
+<table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Code Reference</th></tr>
+<tr><td>Error messages are too technical or vague</td><td>Users cannot decide how to continue</td><td>Medium</td><td>Review final wording against user-observable behavior and recovery guidance</td><td><code>recreate-error-catcher.tsx</code></td></tr>
+<tr><td>The page remains blocked after an error</td><td>Users must refresh or reopen the report</td><td>Medium</td><td>Validate that the next supported action works after recovery</td><td><code>serverProxy</code>, <code>shared-recover-from-error.ts</code></td></tr>
+</tbody></table>
+<h2>📎 Consolidated Reference Data</h2>
+<h3>1. Source Documents</h3>
+<ul>
+  <li><a href="https://strategyagile.atlassian.net/browse/BCIN-6709">BCIN-6709 Jira Issue</a></li>
+  <li><a href="https://microstrategy.atlassian.net/wiki/spaces/~yuanli/pages/5901516841">BCIN-6709 Design Doc</a></li>
+  <li><a href="https://microstrategy.atlassian.net/browse/F43454">F43454 Dependency</a></li>
+  <li><a href="https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport">react-report-editor PR</a></li>
+  <li><a href="https://github.com/mstr-kiai/biweb/compare/m2021...revertReport">biweb PR</a></li>
+  <li><a href="https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport">mojojs PR</a></li>
+  <li><a href="https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport">web-dossier PR</a></li>
+</ul>
+<h3>2. Stakeholders</h3>
+<ul>
+  <li>Product Owner: Wei (Irene) Jiang</li>
+  <li>QA Owner: Xue Yin</li>
+  <li>Design Reviewer: Yuan Li</li>
+  <li>Affected customers include JFE Steel, MAXIMUS, MOCOCO, and Riso Kagaku</li>
+</ul>
+<h3>3. Test Data</h3>
+<ul>
+  <li>Report exceeding the configured row limit</li>
+  <li>Report that can reproduce an SQL failure scenario</li>
+  <li>Report that can reproduce a Cartesian-join-related failure scenario</li>
+  <li>Prompted report that can reproduce a prompt-related error scenario</li>
+</ul>
+<h3>4. Dependencies</h3>
+<ul>
+  <li>F43454 is a dependency for the prompt-return behavior</li>
+  <li>All involved repository changes must be deployed together for integration validation</li>
+</ul>
+<h2>🎯 Sign-off Checklist</h2>
+<h3>1. Development Team</h3>
+<ul>
+  <li>[ ] Code changes reviewed and merged</li>
+  <li>[ ] Relevant automated coverage added or updated</li>
+  <li>[ ] Documentation updated where needed</li>
+</ul>
+<h3>2. QA Team</h3>
+<ul>
+  <li>[ ] P1 recovery scenarios executed and passed</li>
+  <li>[ ] P2 integration and compatibility scenarios executed</li>
+  <li>[ ] No critical blocker remains open</li>
+  <li>[ ] Cross-browser validation completed</li>
+</ul>
+<h3>3. Product Team</h3>
+<ul>
+  <li>[ ] Acceptance expectations validated</li>
+  <li>[ ] User-facing error wording reviewed</li>
+  <li>[ ] Escalation-sensitive scenarios confirmed</li>
+</ul>
+<h3>4. Security Team</h3>
+<ul>
+  <li>[ ] No sensitive internal details are exposed in end-user messaging</li>
+  <li>[ ] Production-like behavior reviewed for information leakage</li>
+</ul>
+<h3>5. Release Readiness</h3>
+<ul>
+  <li>[ ] Deployment sequence reviewed</li>
+  <li>[ ] Rollback expectations documented</li>
+  <li>[ ] Monitoring/support teams aware of the new recovery behavior</li>
+</ul>
+<h2>📊 QA Summary</h2>
+<h3>1. Code Changes</h3>
+<table><tbody>
+<tr><th>Repo</th><th>PR</th><th>Files Changed</th><th>PR Summary</th></tr>
+<tr><td>react-report-editor</td><td><a href="https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport">m2021...revertReport</a></td><td>14 files</td><td>Main authoring recovery flow, UI recovery handling, and state management</td></tr>
+<tr><td>mojojs</td><td><a href="https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport">m2021...revertReport</a></td><td>2 files</td><td>Follow-up action handling after recovery</td></tr>
+<tr><td>biweb</td><td><a href="https://github.com/mstr-kiai/biweb/compare/m2021...revertReport">m2021...revertReport</a></td><td>1 file</td><td>Replacement-instance support for recovery</td></tr>
+<tr><td>web-dossier</td><td><a href="https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport">m2021...revertReport</a></td><td>7 files</td><td>Prompt-related recovery and error interpretation support</td></tr>
+</tbody></table>

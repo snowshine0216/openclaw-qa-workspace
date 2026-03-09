@@ -1,0 +1,32 @@
+## Answer
+
+MicroStrategy Workstation 25.08 and 25.09 have a new Dashboard Editor with most features from the Library Dashboard Editor, but full feature parity is not yet confirmed. For the latest updates, visit MicroStrategy's official website.
+
+---
+
+## Sources
+
+- **New Dashboard Editor in Workstation - MicroStrategy** (relevance: 88%)
+  https://www2.microstrategy.com/producthelp/2021/Workstation/en-us/Content/new_dashboard_editor.htm
+  The new Workstation Dashboard Editor incorporates most features from the Library Dashboard Editor, bridging the gap between the Library and Workstation editors. Missing: 25.08 25.09
+
+- **Creating and Editing Reports in MicroStrategy Library - YouTube** (relevance: 75%)
+  https://www.youtube.com/watch?v=odRlTceb7-c
+  Oct 10, 2022 · Eager to see what else is new with MicroStrategy? Visit https://www.microstrategy.com/en/business-intelligence/whats-new #MicroStrategy ... Missing: 25.08 25.09 dashboard parity
+
+- **Workstation vs Legacy Tools Feature Parity - MicroStrategy** (relevance: 74%)
+  https://www2.microstrategy.com/producthelp/current/workstation/en-us/content/workstation_legacy_features.htm
+  The Workstation vs Legacy Tools dashboard compares feature availability between Strategy Workstation and legacy tools such as Developer, Command Manager, and ... Missing: 25.08 25.09 editor
+
+- **Workstation vs Legacy Tools Feature Parity - MicroStrategy** (relevance: 74%)
+  https://www2.microstrategy.com/producthelp/Current/Workstation/en-us/content/workstation_legacy_features.htm
+  The Workstation vs Legacy Tools dashboard compares feature availability between Strategy Workstation and legacy tools such as Developer, Command Manager, and ... Missing: 25.08 25.09 editor
+
+- **Strategy Tutorials** (relevance: 67%)
+  https://www.strategy.com/software/video/strategy-tutorials
+  Navigating Strategy Library · Adding Comments to Dashboard in Library · Navigating Dashboards in Library · Adding and Sharing Content to Library · Resetting ... Missing: 25.08 25.09 parity
+
+- **What's New in Strategy One - MicroStrategy** (relevance: 56%)
+  https://www2.microstrategy.com/producthelp/current/readme/en-us/content/whats_new.htm
+  * Administrators can now idle or resume individual projects and purge specific content caches, such as reports, documents, dashboards, objects, and elements, directly from the project level in Workstation, enhancing maintenance and data freshness. * Support for users to specify whether to hold data ...
+

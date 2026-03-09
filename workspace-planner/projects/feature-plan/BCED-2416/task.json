@@ -1,0 +1,21 @@
+{
+  "run_key": "BCED-2416",
+  "overall_status": "COMPLETE",
+  "current_phase": 5,
+  "created_at": "2026-03-09T11:08:00Z",
+  "updated_at": "2026-03-09T11:30:00Z",
+  "feature_id": "BCED-2416",
+  "jira_key": "BCED-2416",
+  "confluence_url": "https://microstrategy.atlassian.net/wiki/spaces/~kawang/pages/edit-v2/5949096102",
+  "phases": {
+    "0": "COMPLETE",
+    "1": "COMPLETE",
+    "2": "COMPLETE",
+    "3": "COMPLETE",
+    "4": "COMPLETE",
+    "5": "COMPLETE"
+  },
+  "latest_draft_version": "v2",
+  "final_draft": "projects/feature-plan/BCED-2416/drafts/qa-plan-draft-v2.md",
+  "summary": "projects/feature-plan/BCED-2416/context/BCED-2416-summary.md"
+}

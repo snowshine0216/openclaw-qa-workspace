@@ -1,0 +1,536 @@
+===== PAGE 997434170 =====
+
+
+
+
+
+
+Target releaseM2020 Update 2? / M2021
+EA?Featurehttps://rally1.rallydev.com/#/27956540519d/detail/portfolioitem/feature/369494335572?fdp=true
+[https://rally1.rallydev.com/#/27956540519d/detail/portfolioitem/feature/369494335572?fdp=true]Design
+Status
+
+YellowREVIEWINGRedREVISINGGreenApproved
+
+SE OwnerQian, Junjuan  Li, JianQA OwnerUX OwnerUser Experience owner (if any) -
+Some features may not have UX implications Reviewed byDesign reviewer(s) - This
+should include both SE and QA reviewers.Related DesignsDesign ContributorsList
+any contributors to the design (may be blank) UX DesignTest
+Planhttps://rally1.rallydev.com/#/27956540519d/search?detail=%2Fuserstory%2F372321703160
+[https://rally1.rallydev.com/#/27956540519d/search?detail=%2Fuserstory%2F372321703160]
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Purpose
+
+We have several update on Library PDF export editor, adding new features like
+smart default options, updating/revising new strings and providing more
+tooltips, improve accessibility.  Not all of these modifications are applied to
+other client's PDF export editor. This feature aims to make WorkStation client'
+PDF editor looks like the same and behave the same.
+
+
+2. Design
+
+We will applied the updates to workstation live/local mode's PDF export editor.
+But since it reuses BIWeb's code and style, most of the changes are on BIWeb
+side. So the inside Dossier's entries on BIWeb will also be changed to be the
+same with WorkStation.
+
+
+2.1 Components
+
+2.1.1 BIWEB DOSSIER PDF EXPORT EDITOR
+
+Common Changes:
+
+ 1. String update;
+ 2. UI layout update (new UX spec
+    [https://microstrategy.atlassian.net/wiki/spaces/EE/pages/986616074/UX+Design+for+F28937+Apply+Export+PDF+Dialog+Box+Enhancements+to+Authoring+Workstation+and+Subscription+Editor#UXDesignforF28937ApplyExportPDFDialogBoxEnhancementstoAuthoring,WorkstationandSubscriptionEditor-Spec]);
+ 3. Orientation Setting component change;
+ 4. Tooltips adding;
+ 5. Default value update for the case without panel units info (outside
+    Dashboard, subscription);
+
+
+
+Smart value changes:
+
+ 1. Change settings visiblity according to panel units info;
+ 2. Change settings visiblity according to other export settings value;
+ 3. Change default value according to panel units info;
+ 4. Automatic change exporting settings value when other export settings value
+    changes;
+
+
+
+
+2.1.1.1 MODEL CONTROL UI LOGIC (FOR ENTRIES INSIDE DOSSIER)
+
+CONTENTS SETTING
+
+ * Showing rule
+
+
+
+
+Conditions
+Show the component
+Note
+
+range option == PAGE &&
+
+(vizCount == 1 && nonVizCount == 0 ||
+
+vizCount == 0)
+
+false
+
+vizCount: visible visualization units count on current panel.
+
+nonVizCount: visible non-visualization type units count on current panel.
+
+All other casestrue
+
+
+
+
+
+ * Default value
+
+
+
+
+Conditions
+Default value
+Note
+
+All other cases
+
+All visualizations together
+
+
+vizCount == 1
+
+Each visualization separately
+-Both
+
+
+
+
+
+GRID SCALE SETTINGS
+
+ * Showing rule
+
+
+
+
+Conditions
+Show the component
+Note
+
+(range option != PAGE || gridCount > 0) &&
+
+content != "All visualizations together"
+
+truegridCount: count of visible grids, including grid, compound grid,
+microchart.All other casesfalse
+
+
+
+
+
+ * Default value
+   Always "Scale to page width".
+
+
+
+
+GRID EXPANSION SETTING
+
+ * Showing rule
+
+
+
+
+Conditions
+Show the component
+
+(range option != PAGE || gridCount > 0) &&
+
+content == "All visualizations together"
+
+trueAll other casesfalse
+
+
+
+
+ * Default value
+   Always false (checkbox unselected).
+
+
+
+
+2.1.1.2 DATA MODEL (FOR ENTRIES INSIDE DOSSIER)
+
+New Method mstrmojo.vi.ui.rw.DocRelativePanel.prototype.getUnitsInfo():
+
+To share the unitsInfo calculation logic between Library and Authoring Web, we
+extract below code and add it into a new
+Method mstrmojo.vi.ui.rw.DocRelativePanel.prototype.getUnitsInfo().Units
+Info Data model structure (return value structure of
+DocRelativePanel.getUnitsInfo())
+
+
+
+
+
+
+
+javascript
+
+
+
+
+
+
+
+unitsInfo is an array, each unit of this array has below structure (refer to
+[F18436 PD Design]Excel and PDF exporting support for hide\show feature#state
+model)
+
+
+
+
+Property Name
+Data Type
+Required
+Description
+nodeKeystringyesThe key of the unit.hiddennumberyes
+
+Indicates show or hide the unit on different view modes.
+
+It's bit combination of:
+
+For more info about hidden value in model, refer to design F18436 - More control
+over mobile experience by hiding containers for responsive view
+[https://microstrategy.atlassian.net/wiki/spaces/TECTOOLSDASHBOARDDESIGN/pages/1199775736/F18436+-+More+control+over+mobile+experience+by+hiding+containers+for+responsive+view]
+
+isVizbooleanyesInditcates whether the unit is an
+visualization.isGridbooleanrequired when isViz is trueInditcates whether the
+unit is a grid.idstringrequired when isGrid is trueThe mojo object id of the
+unit.titlestringrequired when isGrid is trueThe title of the
+unit.isGridEmptybooleanrequired when isGrid is trueInditcates whether the grid
+is empty.
+
+
+
+
+Sample value
+
+json
+
+Pass unitsInfo into init() method of mstrmojo.vi.ui.editors.ExportPDFEditor.
+
+Related change: _DocToolbarActions.js → function exportCmd().
+
+javascript
+
+
+
+
+New property for
+mstrmojo.vi.ui.editors.ExportPDFEditor.prototype.showContentSettings and use
+this property of control visibility of content setting.
+
+Use unitsInfo to update properties in init() method.
+
+
+
+
+javascript
+
+
+
+
+2.1.2 SUBSCRIPTION PDF EDITOR
+
+Subscription PDF editor doesn't have smart value change since it can't get
+Dashboard panel units info.
+
+All changes are common.
+
+2.1.3 New PDF editor Entry for Report Alert
+
+Render PDF export button
+
+com.microstrategy.web.app.transforms.AbstractSubscriptionWidget
+
+java
+
+
+
+
+By default the button should be hidden.
+
+After choosing a Dossier for "Send a different report, document, or dossier",
+show PDF button.
+
+Add PDF button show/hidden toggling in onclick handler of alertSendDiffContent
+radio button and callback of submit doc selection (XHR request).
+
+Submit Export Settings
+
+Related change should be made in mstrAlertsEditor.prototype.saveAndConfirm() -
+mstrAlertsEditor.js file.
+
+2.1.3 WORKSTATION LIVE MODE
+
+Workstation packages BIWeb's code. The modifications made to BIWeb will be
+automatically be applied to workstation. This means that we do not need to care
+about modifications which only affect the PDF Export Editor, like smart
+defaults, tooltips and strings update. We need some customization when sending
+options from editor to iServer because workstation live mode deals with Library
+server while BIWeb deals with web server.
+
+We already handles two new options "Expand all grid data" and "Show table of
+contents" for workstation live mode.  There should be no work left for this
+client.
+
+2.1.4 WORKSTATION OFFLINE MODE
+
+As described in above section, we only need to take care of new options. But
+instead of sending new options to iServer, offline mode handles them on its own.
+
+2.1.4.1 EXPAND ALL GRID DATA
+
+The main logic of this feature is written in JavaScript which workstation local
+mode would use directly. The work here is to pass the option from PDF Export
+Editor to JS code.
+
+ * expose "Expand all grid data" on PDF Export Editor. BIWeb hides this option
+   on purpose for offline mode, we need to remove the special logic to always
+   show this option
+ * Parse this option from editor and pass it to JS code. This is done in
+   workstation-engine component. We need to add a new field in structure
+   PDFExportOptions to save and pass the option. This should be done in both Mac
+   and Windows platform.
+
+2.1.4.2 SHOW TABLE OF  CONTENTS
+
+We do not support this option in offline mode. New Export Engine adds TOC to PDF
+via its Merger component and this is implemented with AdobeSDK using Java
+Language. Workstation implements and maintains its own merger. On mac platform,
+this merger is written in Object-C. In windows platform, this merger is written
+in C# with AdobeSDK (C# edition). To support this option, we need to port the
+logic from Java to C# on Windows platform. But on Mac Platform, we need to
+rewrite the logic in Object-C.  The effort and risk are both high.  We decide
+not to support this option in offline mode for now.
+
+
+2.2 Data Model
+
+UI related only. No data model change.
+
+
+2.3. APIs
+
+REST API change for US347675: add a new property "fromShowData" in post body's
+pdfOptions json for API /api/documents/{id}/instances/{instanceId}/pdf
+and /api/documents/{id}/instances/{instanceId}/visualizations/{nodeKey}/pdf.
+
+
+
+
+
+
+
+fromShowData: boolean
+
+Indicates whether export is triggered from show data entry or not.
+
+
+
+
+With fromShowData true, exported grid visualization will apply the show data
+dialog’s style format, e.g [http://e.gf/]. grid cell font, size, background,
+border, etc.
+
+When fromShowData is true, add attribute sd="1" in tag ept_nee for rbd and gfd
+xml commands to I-Server side. Below is the XML command example.
+
+
+
+
+xml
+
+2.3.1 API USAGE AND EXAMPLES
+
+API /api/documents/{id}/instances/{instanceId}/pdf
+and /api/documents/{id}/instances/{instanceId}/visualizations/{nodeKey}/pdf is
+used for Export PDF from Library or App. When export PDF from the show data
+entry, the fromShowData will be true.
+
+
+3. Non-functional requirements (NFRs)
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+
+3.1 Security
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Secure-Engineering]
+
+This feature is to port behaviors from Library PDF Export Editor to Workstation
+PDF Export Editors. Behaviours are just modifying Editor UI and adding new
+options. There is no security concerns.
+
+
+3.2 Scalability
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+(including universal benchmark)
+
+Most of the clients just change UI. No scalability involved. For workstation
+local mode, this is also no scalability.
+
+
+3.3 Performance
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements] 
+
+This is about revising UI. The performance should not be affected.
+
+
+3.4 Error and exception handling
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+This is about UI, there is no specific error and exceptions.
+
+For workstation local mode, if JS receives a invalid value of "Expand all grid
+data" from workstation-engine, an error would be thrown on renderer side and the
+export would be hanging. But this should not happen since both selected and
+unselected are valid options.
+
+
+3.5 Logging
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Logging]
+
+This is about UI. No new log messages.
+
+
+3.6 Monitoring
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Monitoring] &
+Telemetry
+
+This is about UI, no monitoring and telemetry.
+
+
+3.7 Stability
+
+This is about UI, no stability concerns.
+
+
+3.8 Internationalization
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Internationalization]
+
+The new strings are already defined in Library PDF editor which are all
+internationlized.
+
+
+3.9 Accessibility
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Accessibility]
+
+Accessibility feature from library will be ported.
+
+
+3.10 Compatibility
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+UI change only. No compatibility problem.
+
+
+3.11 Feature Flag
+
+No feature flag.
+
+
+3.12 Administration and Configuration
+
+UI change. No administration and configuration impact.
+
+
+3.13 Deployment and Installation
+
+UI change. No delpoyment and installation impact.
+
+
+4. Testing
+
+QA
+Plan: https://rally1.rallydev.com/#/27956540519d/search?detail=%2Fuserstory%2F372321703160
+[https://rally1.rallydev.com/#/27956540519d/search?detail=%2Fuserstory%2F372321703160]
+
+Integration test will be run according to QA plan before code merge.
+
+
+4.1 Unit Testing
+
+Exitsting UT will be updated.
+
+Newly added methods UT will be added.
+
+
+4.2 Integration Testing
+
+Authoring web side's change will be integrated into WorkStation for integration
+testing.
+
+Authoring web side's change will be integrated into Library to confirm no
+regression introduced into single visualization export dialog which manily
+reuses mojo code.
+
+
+4.3 Testing Error Handling
+
+None. No extra error handling added.
+
+
+5. Discussion
+
+List important design decisions: including choice of technology stack, partition
+of functions among modules and classes, data model design, design patterns,
+etc. 
+
+
+5.1 Design Decisions
+
+Alternatives, Trade-off, Drawbacks, Assumptions, Limitations, Corner cases,
+Design Patterns, UX, selection of algorithms when significant etc. 
+
+
+5.2 Technology Choice
+
+Standard, Framework, Advantages and disadvantages 
+
+
+5.3 3rd Party Libraries, Software
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Tools] and tools
+
+List the 3rd Party libraries and/or software being used to develop this feature.
+If the libraries and tools are not already used in the platform, please follow
+the process describe in the developer guide for introducing new 3rd party
+software to the platform. 
+
+
+5.4 Frequently Asked Questions
+
+This is a place to put down anything else that seems to be relevant but which
+does not fit in the rest of the design. 

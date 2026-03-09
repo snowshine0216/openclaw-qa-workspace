@@ -1,0 +1,218 @@
+===== PAGE 5190221884 =====
+Summary
+
+Workstation dashboard editor is primarily designed for dashboard authoring by
+Analyst users(not consumption). Its migration to the WebView-based editor in
+25.08 Workstation brought good parity with Library Web. While some performance
+degradation was introduced due to the new framework, it’s not so critical, and
+the detailed information is as below.
+
+Compared 24.08 Workstation with 25.07 Workstation and 25.08 Library:
+
+ * For 1st time creating/opening dashboard, increased by ~20s for 1st time
+   creating a blank dashboard, logged with DE332080
+   [https://rally1.rallydev.com/#/?detail=/defect/830583271793&fdp=true].
+
+ * For opening the dashboard, increased by 2s~4s across the dashboards due to
+   more resources required to download from the Library;
+
+ * For manipulations in the dashboard, ALL are the same as 25.07 WS or 25.08
+   Library except scroll manipulation:
+   
+   * Scroll is NOT smooth enough, logged with DE331633 [https://link/].
+
+ * Continue optimization: will be conducted on 25.09 with US629449
+   [https://rally1.rallydev.com/#/?detail=/userstory/830680508619&fdp=true] -
+   [WorkStation] Performance degradation to open dashboard.
+
+
+Detailed Test Data&Analysis
+
+In this feature, we introduced a new Rendering Model framework to open the
+Dashboard. The key difference is:
+
+ * WinForms(25.07 and pre): Renders directly to an HWND via native windowed
+   mode—Chromium can pipe content straight to GPU.
+
+ * WPF(25.08): Uses off-screen rendering (OSR)—Chromium paints into a bitmap,
+   then WPF repeatedly copies that bitmap onto the UI.
+
+So ideally, 25.08 WS should have certain degradation when opening the dashboard
+and doing manipulations, but it should be acceptable.
+
+
+Dashboard open rendering
+
+ * 25.07 WS vs 25.08 WS: 2s~5s(9.72%–38.68%) degradation is detected across
+   dashboards.
+
+ * 25.08 WS vs 25.08 Library: 2s~4s degradation is detected across dashboards.
+
+So we logged DE331389
+[https://rally1.rallydev.com/#/?detail=/defect/830092081225&fdp=true] to track
+this degradation, and the main root cause is:
+
+ 1. Compared with 25.07 WS, now it needs to fetch extra Web resource files from
+    the Library vs 07 WS will load the resource directly locally. So it needs
+    more time even we have some cache locally.
+
+ 2. Compared with 25.08 Library, now it can’t persist some resource files
+    locally and costs extra time to fetch resources.
+
+So in the new framework, it will send MORE requests to fetch MORE required
+resources from the Library server, and it will cost MORE time.
+
+The embedded team will continue this effort in: US629449
+[https://rally1.rallydev.com/#/?detail=/userstory/830680508619&fdp=true]:
+[WorkStation] Performance degradation to open dashboard.
+
+Dashboard
+
+Dashboard Render Time (s)
+
+25.07 WorkStation
+
+25.08 WorkStation
+
+Degradation
+
+(07WS vs 08WS)
+
+25.08 Library Web
+
+Degradation
+
+(Workstation vs Library)
+
+Government Administrative Policing
+[https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary/app/47761EC611EA16DDAA780080EFB5CE10/9A42857C914E1ADFB98FAD831C709D5B/K512--K506]
+
+34.96
+
+39.75
+
+4.8
+
+13.70%
+
+36.15
+
+3.6
+
+SLS.Leads
+[https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary/app/47761EC611EA16DDAA780080EFB5CE10/CA118A9EE741CD4977D699B16304ED70/publish]
+
+21.19
+
+23.36
+
+2.1
+
+9.72%
+
+20.61
+
+2.7
+
+Adoption Redesign
+[https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary/app/47761EC611EA16DDAA780080EFB5CE10/19832122BD482ED7ED3C29B84F50E928/W9FCABE52CDAD4E4687C2FD89479CB0D0--K4D78FF95CF4CD822106470B6ED08877C]
+
+7.73
+
+10.72
+
+3
+
+38.68%
+
+8.41
+
+2.3
+
+TEC.PD
+[https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary/app/47761EC611EA16DDAA780080EFB5CE10/4DF448B911E7212100000080AF91D5A0/KDCDED6C38440843892C6658192C68608--K98C274482849795E7D4EFEA4C37A005C]
+
+7.36
+
+8.61
+
+1.3
+
+16.98%
+
+4.76
+
+3.8
+
+Employee Fitness
+[https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary/app/47761EC611EA16DDAA780080EFB5CE10/779762DC844B64D732551298D39629B7/publish]
+
+7.28
+
+9.32
+
+2.1
+
+28.02%
+
+6.55
+
+2.8
+
+
+Dashboard manipulations
+
+ * For most of the manipulations, similar as 25.07 WS or 25.08 Library;
+
+ * Scroll - DE331633
+   [https://rally1.rallydev.com/#/?detail=/defect/830283837291&fdp=true]:
+   [WorkStation] Hard to scroll in dashboard using 25.08 WorkStation
+
+Based on the analysis, this difference comes from the nature of the new
+framework: WinForms (25.07 and earlier) vs WPF (25.08). Detail, please refer to
+the comment in DE331633
+[https://rally1.rallydev.com/#/?detail=/defect/830283837291&fdp=true].
+
+
+Test Environments
+
+Clients
+
+ * 25.07 and 25.08 WorkStation installed in VM
+   
+   * 25.07：10.23.32.65 (RDP credentials: admin/VFLhb85hPM^Fa)
+   
+   * 25.08: 10.23.40.151 (RDP credentials: admin/jVyAo62a9v^Bx)
+
+ * VM info
+
+coreCount
+
+2
+
+cpuCount
+
+4
+
+memoryGB
+
+16
+
+osType
+
+WINDOWS
+
+softwareName
+
+Microsoft Windows Server 2019 (64-bit)
+
+totalMemoryMB
+
+16384
+
+Server
+
+ * Vega: https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary
+   [https://vega.trial.cloud.microstrategy.com/MicroStrategyLibrary]
+
+ * Version: 11.5.0800.0101

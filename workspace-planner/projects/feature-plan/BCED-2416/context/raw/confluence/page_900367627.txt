@@ -1,0 +1,3317 @@
+===== PAGE 900367627 =====
+4PIPE
+
+DOSSIER AUTHORING: 
+
+Sanity test cases: 70 
+
+Regression: 93 + 46(Customer Defects) 
+
+Feature List (until 11.2)
+
+Sub-Feature
+
+Added in PR
+
+SET POC
+
+SE POC
+
+Cross-team POC
+
+Test Cases
+
+Feature Automation Tag (@dossierauthoring, @web, @acceptance or @regression)
+
+Dossier Creation
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierCreation.feature]
+
+Create/Open/Save/Close Dossier 
+
+
+
+
+Fang
+
+Shambhavi
+
+Web Infrastructure: Raul de Leon
+
+@TC2227  @TC2677
+@DossierCreation
+
+Navigation Bar
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/navigationbar.feature]
+
+
+
+
+
+
+
+Fang
+
+Shambhavi
+
+
+
+
+@TC60259 @TC61678
+
+@NavigationBar @ViewMenu
+Toolbar 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Toolbar.feature]
+
+
+
+Fang
+
+
+
+@TC11344  @TC2167@TC64712@Toolbar 
+
+Table of Content (TOC)
+
+
+
+
+List View
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/TOCListView.feature]
+
+
+
+
+Doris
+
+Shambhavi
+
+
+
+
+@TC12612 @TC13517 @TC12610 
+
+@TC60650 @TC62429 @TC64139
+@TC62188
+
+@TOC @ListView
+
+Tab View
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/TOCTabView.feature]
+
+
+
+
+
+
+
+@TC62187 @TC62188 @TC62185 
+
+@TC55941
+
+@TOC @TabView 
+
+Menubar 
+
+
+
+
+Dossier Manipulation:
+
+Dossier Download/Upload/Import
+
+
+Fang
+
+
+
+
+
+@TC74746
+@TC10411 @TC12227@ImportDossier
+
+@TC20936 @DownloadDossier
+@TC71997 @UploadMstrFile
+@Menubar @DossierManipulation
+
+Dossier Properties: 
+
+Auto Refresh, join Behavior , Load Pages on Demand
+
+
+
+
+
+
+
+@TC10667 @TC10233 (@AutoRefresh @Refresh) 
+
+
+@TC60255 @LoadPagesOnDemand
+@TC67398 @JoinBehavior
+@Menubar @DossierProperties
+Save Dossier 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Menubar_Save.feature]
+
+
+
+@TC74747 
+@Menubar @SaveDossier
+Share and Subscription
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Menubar_ShareAndSubscribe.feature]
+
+
+@TC60851 @TC61680
+@Menubar @Share @Subscription
+Presentation Mode
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PresentationMode.feature]
+
+
+
+Fang
+
+ShambhaviDocument Services(Kernel): Xiaoning Cui
+
+@TC2162 @TC2690 
+
+@PresentationMode
+Pause Mode
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PauseMode.feature]
+
+
+
+Fang
+
+Fang Niu
+
+
+@TC2693@TC615256
+
+@PauseMode 
+
+Export to PDF
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ExportPDF.feature]
+
+Export PDF 
+
+
+
+
+Doris
+
+Shambhavi
+
+Server: Xiaoning Cui
+
+@TC63143 @TC9945 
+@TC23027 @TC63326
+@ExportPDF
+Export PDF in Presentation Mode 11.2.2 / 11.3EA
+
+
+
+Dossier General 
+
+
+
+
+
+
+
+Privileges 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierUserPrivilege.feature]
+
+
+
+
+Fang
+
+Dongping
+
+Server: Xiaoning Cui
+
+@TC60157 @TC60047 
+@TC64317  @TC55645
+@UserPrivilege
+
+Prompt ??
+
+
+
+
+Jimmy Jiang (dossier engineer)
+
+Dongping
+
+
+
+
+
+
+
+
+Security - XSS 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierSecurityXSS.feature]
+
+
+Fang
+
+Dongping
+
+
+
+
+@TC55869 
+@XSS @security
+
+Font
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierFonts.feature]
+
+
+
+
+@TC20750
+@Fonts
+
+Text Field
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Textfield.feature]
+
+
+
+
+
+
+
+Doris
+
+Shambhavi
+
+
+
+
+@TC57265 @TC2598 @TC70100
+
+@Text 
+
+Image Container
+
+Image Container
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ImageContainer.feature]
+
+
+
+
+Doris
+
+Zhili
+
+
+
+
+@TC5108 @TC2597
+
+@Image
+
+Image size  in Freeform Layout 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ImageSizeInFreeformLayout.feature]11.3 
+
+@TC64716 @TC64717  
+@TC64718
+@Image @ImageSize
+
+HTML Container
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/HTMLContainer.feature]
+
+
+
+
+
+
+
+Doris
+
+Dongping
+
+
+
+
+@TC5106 @TC2596
+
+@HTMLContainer
+
+New Derived Elements (Group & Calculation, Group Editor)
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/NewDerivedElements.feature]
+
+
+
+
+
+
+
+Doris  
+
+Shambhavi
+
+Server: AE (Thomas Zink)
+
+@TC3192 @TC3188 @TC2773
+
+@NewDerivedElements
+
+Derived Attributes
+
+
+
+
+
+
+
+
+
+
+Derived Attribute Editor
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedAttributeEditor.feature]
+
+
+
+
+
+
+
+
+
+
+
+
+
+Fang
+
+
+
+
+Shambhavi
+
+
+
+
+Zhifang Hu (CTC Document Engine)
+
+Server: Xiaoning Cui
+
+
+
+
+
+
+
+@TC378 @TC2545
+@DerivedAttribute @DerivedAttributeEditor
+Create Link (Dynamic Link)
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedAttribute_LinkEditor.feature]@TC378 @TC58687
+@TC60061
+@TC75405
+@DerivedAttribute @LinkEditor
+
+Configure Attribute data type
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedAttribute_ConfigureAttributeType.feature]
+
+@TC378 @TC52037
+@DerivedAttribute @ConfigureAttributeDataType
+
+Duplicate Metric as Attribute
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedAttribute_DuplicateMetricAsAttribute.feature]
+
+@TC378 @TC62377
+@DerivedAttribute @DuplicateAsAttribute
+
+Derived Metrics
+
+
+
+
+
+
+
+
+
+
+Sanity 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetric_Sanity.feature]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Fang
+
+Shambhavi
+
+Server: AE (Thomas Zink or Xiaoxue Shen)
+
+
+
+
+@TC934
+@DerivedMetric
+
+Derived Metrics Editor 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetricEditor.feature]
+
+@TC2920 @TC38414
+@TC65687 @TC55948
+@DerivedMetric @DerivedMetricEditor
+
+Duplicate Attribute as Metric
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetric_DuplicateAttributeAsMetric.feature] 
+
+@TC5542
+@DerivedMetric
+Shortcut Metrics
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetric_ShortcutMetric.feature]
+@TC2688
+
+Aggregate By
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetric_AggregateBy.feature]
+
+@TC2687 Calculation
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DerivedMetric_Calculation.feature]
+@TC2683
+
+Query Details
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/QueryDetails.feature]
+
+
+
+
+
+
+
+Doris
+
+Mouhaimin
+
+
+
+
+@TC19981 @TC60886
+
+@QueryDetails
+
+Responsive Design
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ResponsiveView.feature]
+
+
+
+
+
+
+
+Doris
+
+Shambhavi
+
+
+
+
+@TC17754 @TC15295 @TC68953
+
+@ResponsiveView
+
+Visualization Container 
+
+
+
+
+DnD to Move
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ContaineDnDMove.feature]
+
+
+
+
+
+
+
+
+
+
+Fang
+
+
+
+
+
+
+Shambhavi
+
+
+
+
+Server: Xiaoning Cui
+
+
+
+
+@TC65150
+@TC62426 @TC60724
+@TC63876 @TC60521
+
+@Container  @ContainerMove
+
+Maximize/Restore/Minimize Viz
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Container.feature]
+
+Show/Hide Titlebar, Rename, Delete
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Container.feature]
+
+@TC62376 @TC3624 @TC3616
+
+@Container 
+
+Duplicate/Copy/Move to 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ContainerDuplicateCopyMove.feature]@TC65325 @TC5113
+
+@Container 
+
+Resize container
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ContainerResize.feature]
+@TC65324 @TC57415
+@Container @ContainerResize
+
+Datasets Manipulation 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Add Dataset
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_AddDataset.feature]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Fang
+
+
+
+
+
+
+
+
+
+
+
+
+Shambhavi
+
+Yongjiao
+
+
+
+
+@TC4336 @TC4321
+@Datasets @AddDataset
+Dataset Display: Collpase/Expand Datasets, Table View/Flat View
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_DatasetDisplay.feature]@TC60987 @TC4992
+@Datasets @DatasetDisplay
+
+Searchbox and dropdown 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_Search.feature]
+
+@TC63328 @TC2577
+@Datasets @Search
+
+Dataset Type and context menu manipulations: Report
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ContextMenu_report.feature], DI
+Cube
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_DICube.feature],
+Existing Objects
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ContextMenu_ExistingObjects.feature],
+Database
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ContextMenu_Database.feature],
+MDX
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ContextMenu_MDX.feature]
+
+@TC4315 (@DICube)
+@TC63330 (@Database)
+@TC63331(@Database)
+@TC63332(@MDX)
+
+@TC60993(@Report)
+@Datasets @DSContextMenu
+MDX 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_MDX.feature]
+@TC63284
+@Datasets @MDX
+Number Format
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_NumberFormat.feature]@TC4323  @TC61687
+@Datasets @NumberFormat
+Replace Dataset 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ReplaceDataset.feature]@TC1656 @TC4979
+@Datasets @ReplaceDataset
+Replace Reference With
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_ReplaceReference.feature]@TC60995 @TC61688
+@Datasets @ReplaceReference
+Time and GEO attribute
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_TimeGeoAttribute.feature]
+@TC60257 
+@Datasets @DSTimeGeo
+Data Source
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_DataSource.feature]
+@TC4359 
+@Datasets @DataSource
+
+Hide objects from dataset
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_HideObjects.feature]
+
+@TC9151 @TC2574
+
+@Datasets @HideObjects
+
+Link and Map Attributes
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_AttributeLinkAndMapping.feature]
+
+Zhifang 
+
+@TC4990  @TC4280 
+@TC4282 @TC75398 @TC58143
+@Datasets
+
+Rename Objects at dataset objects level // Dropzone
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/RenameObjects.feature]
+
+Yongjiao  
+
+@TC2062 @TC2064
+@RenameObjects
+Show Unused Derived Objects
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_UnusedObjects.feature]11.2
+RC@TC53168 @TC54190
+@Datasets @UnusedObjects
+Filtering and Sorting on Datasets Panel 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DossierDS_FilteringAndSorting.feature]11.3RC@TC67508 @TC66682
+@Datasets @DSFilterSorting
+
+Free-form Layout
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Allow user to create free-form layout
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Freeform_FreeformCreation.feature]
+
+11.2 EA
+
+Fang
+
+
+
+@TC34142 @TC39152 @TC58133 @TC39154 @TC60666
+
+@Freeform @FreeformCreation
+
+move/resize/alignment/snapping viz container
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Freeform_ContainerMoveAndResize.feature]
+
+
+
+
+
+
+
+@TC39155 @TC62076 @TC56054
+@Freeform @ContainerMove @ContainerResize
+
+Align/Distribute Visualization
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Freeform_Align_Distribute.feature]
+
+11.2 RC
+
+Doris
+
+
+
+
+
+
+
+@TC54891@TC53162(@Align) 
+
+
+@TC54967@TC53165 (@Distribute)
+
+
+@Freeform
+
+Position and Size 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Freeform_PositionAndSize.feature]
+
+11.2 RC
+
+Fang
+
+
+
+
+
+
+
+@TC66610 @TC66611
+@Freeform @PositionAndSize
+
+Objects Grouping&Ungrouping
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Freeform_ContainerGrouping.feature]
+
+11.2 RC
+
+Doris
+
+
+
+
+
+
+
+@TC39216 @TC39217 @TC39218 
+@TC64312
+
+@Freeform @ContainerGrouping
+Layers Panel Layers Panel
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/LayersPanel.feature]11.2
+RCDoris 
+
+@TC39230 @TC39231 @LayersPanel Select Targets in Layers Panel 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/SelectTargetInLayersPanel.feature]11.2.1
+
+Fang
+
+
+@TC60401 @TC65318 @TC60904
+
+
+
+
+@SelectTarget @LayersPanel
+
+Duplicate/Copy/Move filedbox (text, image, html container)
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/DuplicateFiledBox.feature]
+
+
+
+
+11.2.1
+
+Doris
+
+
+
+
+
+
+@TC60397 @TC60404
+@DuplicateFieldBox
+Expose VLDB setting to allow Cartesion Joins
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/CartesianJoin.feature]
+
+
+112.2/
+
+11.3EA
+
+Fang
+
+
+TC64929
+
+TC66865
+
+@CartesianJoin
+Color Opacity 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ColorOpacity.feature]
+11.3EADoris
+
+
+TC64181
+
+TC64169
+
+@Opacity
+Keyboard move/delete/select
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/KeyboardControl.feature]
+11.3EADoris
+
+
+@TC63329 @TC63317  @TC63318  
+
+@TC63320  @TC63319
+
+@Keyboard
+
+
+
+
+Performance optimization 
+ 1. Insert/Delete/Move container 
+ 2. Data refresh 
+
+11.3EA 
+
+Fang
+
+
+
+
+
+Shapes
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/Shapes.feature]
+11.3RCDoris 
+
+@TC66291
+@TC66254 @TC66289 @TC66290 @TC66419 @TC66517
+@Shape
+Minimum Height
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/MinimumHeight.feature]
+11.3RCFangChuanhao Ma
+
+
+
+
+@TC66744 @TC66747
+
+@MinimumHeight
+Hide Containers
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/HideContainer.feature]
+11.3RCDoris
+@TC66527 @TC66525 @TC66526
+@HideContainer
+Rich format text box
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/RichTextBox.feature]
+
+
+
+Doris 
+
+Chuanhao Ma
+
+
+@TC66627 @TC66628
+
+@Text
+Server side security setting to Disable HTML Container
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/ServerSettingToDisableHTML.feature]
+
+11.3.1 Doris 
+
+@TC73657  @TC73285
+@DisableHTML
+Panel Stack 
+
+
+Panel Stack 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PanelStack.feature]
+Fang
+
+
+
+
+
+@TC72696 @TC72951
+@TC73482 @PanelSelector
+@TC73482
+@PanelStack
+Tree Structure on Layers Panel 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PanelStack_LayersPanel.feature]
+
+
+
+@TC75033 @TC75031 
+@TC75623 @TC75624
+@PanelStack @LayersPanelMove VIz across Panel Stack 
+[http://LayersPanelhttps//github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PanelStack_MoveVizAcrossPS.feature]
+
+
+@TC77248 @TC77249
+@TC77262 @TC76931
+@PanelStack @LayersPanel
+Copy/Move Panel Stack 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/PanelStackCopytoMoveto.feature]
+
+
+@TC75030  @TC75034
+@PanelStack @PanelStackCopyMove
+High Contrast Mode
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/HighContrastMode.feature]
+
+11.3.4Doris
+
+@TC78686 @TC78685
+@HighContrast
+Info Window 
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/InfoWindow.feature]
+11.3.4 Fang YungSheng Chen
+@TC77618 @TC76916 @TC76931
+@InfoWindow
+Enable HTML Content
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/EnableHTMLContent.feature]
+11.3.5 DorisShambhavi
+@TC76873 @TC76874
+@HTMLcontent
+Lock Filter in Library 
+11.3.5 Fang YungSheng Chen
+@TC80792@LockFilterFedRamp Restrict Image
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/LibraryAuthoring/Library_FedRampRestrictImage.feature]
+22.01DorisChuanhao Ma
+@TC80071 @TC80069@RestrictImageTimezone
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/LibraryAuthoring/Library_Timezone.feature]
+11.3.5DorisShambhavi
+@TC79561 @TC79560@TimezoneAG grid show data accessibility
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/LibraryAuthoring/Library_AGgridShowDataAccessibility.feature]
+11.3.6DorisYungSheng Chen
+@TC83033@accessibilityxPanelSelection
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/xPanelSelection.feature]
+11.3.7DorisYungSheng Chen
+@TC84387 @TC84386@PanelStack @SelectTargetReuse info window
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/InfoWindow_Reuse.feature]
+11.3.8DorisYungSheng Chen
+@TC86253 @TC86252@InfoWindowInfo Window skeleton loading
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/DossierAuthoring/InfoWindow_SkeletonLoading.feature]
+11.3.8DorisYungSheng Chen
+@TC86098 @InfoWindow
+
+GRID: 
+
+Total high-level features: 21
+
+Total Sub Features: 120 
+
+Total Test Cases: ~ 190
+
+Automated Features (at sanity level): 24
+
+Feature sanity automation coverage: 20%
+
+TeamFeature List(until 11.2)Sub FeaturesAdded in PRUPCSET POCSE POCCross-team
+POCTest FolderTC Review
+
+GreenReviewed
+
+YellowInprocess
+
+RedMissing
+
+Automation StatusAutomation TagAnalyticsFilter PanelFilter Creation
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224] →
+Automated
+
+Regression: TC2661
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34353582557] → To be
+Reviewed 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature] now
+only covers one method to create filter. Need to be
+improved.@FilterAnalyticsFilter Panel Menu
+
+YanpingFang Niu
+
+
+Sanity: TC2272
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874716127] -→
+Retired 
+
+Regression: TC2662
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34353585157] → To be
+Reviewed
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/filter.feature]
+some menu options have been covered. Need to be expanded to more menu options
+AnalyticsElement List Selectors
+
+Yanping
+
+
+
+Sanity: TC3627
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/35542301822] -→
+Automated 
+
+Regression: TC2669
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354237445] → To be
+Reviewed
+
+TC8899
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F51766328104] -→
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]@FilterAnalyticsSearch
+Box Selectors
+
+YanpingTomas
+
+
+Sanity: TC26100
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/253281620836] →
+Automated
+
+Regression: TC26101
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/253281629508] → To
+be Reviewed
+
+TC26103
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/253283864664] -→ To
+be Reviewed 
+
+TC26433
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/257973840624] → To
+be Reviewed 
+
+TC26434
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/257973851316] -→
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/filter.feature] 
+
+need more validation
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+
+
+
+@Filter
+
+@SearchBox
+
+AnalyticsAttribute Qualification Selectors (Calendar and Solr)
+
+YanpingFang Niu
+
+AE: Thomas Zink
+
+Sanity: TC3625
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542096499] →
+Automated
+
+Regression: TC2663
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34353588161] →
+Automated
+
+TC75215
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F521482989440] →
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/filter.feature] need
+more validation
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@Calendar
+
+@TC75215
+
+AnalyticsMetric Qualifications
+
+YanpingFang Niu
+
+Document Services(Kernel): Xiaoning Cui
+
+Sanity: TC10656
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/56020121992] →
+Automated
+
+Regression: TC10049
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/54384477489] →
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature] 
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@MQ
+
+AnalyticsSelector Menu (Including "Show Option for All" and "Display Attribute
+Forms")
+
+YanpingTomas
+
+
+
+
+Sanity: TC2272
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874716127] →
+Retired 
+
+Regression: TC15112
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/86603154152] →
+Automated
+
+TC15113
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/86603165580] →
+Automated
+
+TC55951
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F341903957744] →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]@FilterAnalytics
+
+
+Visualization Filter(Grid) in Filter Panel
+
+YanpingCTC team
+
+
+Sanity: TC17834
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/112630368876] →
+Retired 
+
+Regression: TC25920
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/250446575836] → To
+be reviewed 
+
+
+
+
+AnalyticsSelectors targeting selectors in Filter panel
+
+YanpingTomas
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC60820
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365726883192] → To
+be reviewed 
+
+
+
+
+AnalyticsFilter panel in Pause mode
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC26220
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/254549738276] →
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature] 
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature] need
+more validation@FilterAnalyticsSlicing selectors (CG/consolidation/oldDE)
+
+YanpingFang NiuDocument Services(Kernel): Xiaoning Cui
+
+Sanity: TC3628
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542303270] →
+Retired 
+
+Regression: TC2670
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354240785] →
+Automated 
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@SlicingSelector
+
+Analytics Disable Auto-apply Filters
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC58814
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/355281077356] →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]@FilterAnalyticsReplace
+Objects
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC60819
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365724433284]  →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@TC60819
+
+AnalyticsReposition Selectors
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC60818
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365720545188] → To
+be reviewed 
+
+
+
+
+AnalyticsScroll Bar and Tooltips(including Filter Summary)
+
+Yanping
+
+
+
+Sanity: TC2271
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874594224]  →
+Automated
+
+Regression: TC60821
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365726901860] → To
+be reviewed 
+
+ TC71784
+[https://rally1.rallydev.com/#/27953350728d/iterationstatus?detail=%2Ftestcase%2F460396335404]  →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@FilterSummary
+
+@TC71784
+
+AnalyticsDossier-Level Filter11.3RC
+Yanping
+
+
+
+Sanity: TC69071
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F407553652820&fdp=true?fdp=true] -→
+Automated
+
+Regression: TC69074
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F407554451660&fdp=true?fdp=true] →
+To be reviewed 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dossierLevel.feature]
+done
+
+@DossierLevelFilter
+
+@Filter
+
+AnalyticsDynamic Selection
+
+Yanping
+
+
+
+Sanity:
+
+Regression: TC68988
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F407326713516],
+TC68976, TC68989, TC59739 → Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dynamicSelection.feature]
+done
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dynamicSelection.feature]
+done
+
+@DynamicSelection
+
+@Filter
+
+AnalyticsSorting
+
+Yanping
+
+Regression: TC72047
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F467128331172] -→
+Automated
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@FilterSorting
+
+AnalyticsPresentation Mode
+
+Yanping
+
+Regression: TC59739
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F360178473336] -→
+Automated
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]@FilterAnalyticsIn
+Canvas SelectorICS - Formatting and properties
+
+YanpingFang Niu
+
+Document Services(Kernel): Xiaoning Cui
+
+Regression: TC10130
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/54613380807] -→
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/in_canvas_selector.feature]
+
+@InCanvasSelector
+
+@InCanvasSelectorFormat
+
+@FormatPanel
+
+@TC10130
+
+AnalyticsICS Creation
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] -→
+Automated
+
+Regression: TC60009
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F361492528320] -→
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/in_canvas_selector.feature]
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@InCanvasSelector
+
+@TC3626
+
+@TC60009
+
+AnalyticsElement List Selectors
+
+Yanping
+Document Services(Kernel): Xiaoning Cui
+
+Sanity: TC3627
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/35542301822] -→
+Automated
+
+Regression: TC2669
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354237445] → To be
+reviewed 
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/in_canvas_selector.feature]
+AnalyticsDrop Down Selectors
+
+Yanping
+
+TC77084
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F603359720473]  -→
+Automated
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@InCanvasSelector
+
+@DropDown
+
+@TC77084
+
+AnalyticsSearch Box Selectors
+
+YanpingTomas
+
+
+Sanity: TC26100
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/253281620836] →
+Automated
+
+Regression: TC26101
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/253281629508] → To
+be reviewed 
+
+TC26103
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/253283864664] → To
+be reviewed 
+
+TC26433
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/257973840624] →
+Retired 
+
+ TC26434
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/257973851316] →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@InCanvasSelector
+
+@SearchBox
+
+AnalyticsAttribute Qualifications
+
+Yanping
+
+
+
+Sanity: TC3625
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542096499] →
+Automated
+
+Regression: TC2663
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34353588161] →
+Automated
+
+
+Sanity needs more validation
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@Calendar
+
+AnalyticsMetric Qualifications
+
+Yanping
+
+
+
+Sanity: TC10656
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/56020121992] →
+Automated
+
+Regression: TC10049
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/54384477489] →
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/in_canvas_selector.feature]
+AnalyticsSlicing selectors (CG/consolidation/oldDE)
+
+Yanping
+
+
+
+Sanity: TC3628
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542303270] →
+Retired 
+
+Regression: TC2670
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354240785] →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@InCanvasSelector
+
+@SlicingSelector
+
+@TC2670
+
+AnalyticsSelector Menu (Including "Show Option for All" and "Display Attribute
+Forms")
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC15112
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/86603154152] TC15113
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/86603165580] →
+Automated
+
+
+
+
+AnalyticsICS in Pause mode
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC26220
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/254549738276] →
+Automated
+
+
+
+
+AnalyticsPage by (from Flash VI)
+
+Yanping
+Document Services(Kernel): Xiaoning Cui
+
+Sanity: TC2465
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34062559817]  →
+Retired 
+
+Regression: TC2668
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354234684] →
+Retired 
+
+
+
+
+AnalyticsRename ICS
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC37285
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/293571058640] →
+Automated
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/in_canvas_selector.feature]
+
+@InCanvasSelector
+
+@TC37285
+
+AnalyticsReplace Objects
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC19332
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/142236988324] → To
+be reviewed 
+
+
+
+
+AnalyticsSelectors Targeting Selectors
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC60824
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365737902512] → To
+be reviewed 
+
+
+
+
+AnalyticsReposition/Resize Selectors
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC60825
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365737913212] → To
+be reviewed 
+
+
+
+
+AnalyticsScroll Bar and Tooltips
+
+Yanping
+
+
+
+Sanity: TC3626
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/35542100803] →
+Automated
+
+Regression: TC60823
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/365737122932] → To
+be reviewed 
+
+
+
+
+
+
+
+AnalyticsDynamic Selection
+
+Yanping
+
+Automation covered in in_canvas_selector.feature, but no test case number 
+
+
+
+@InCanvasSelector
+
+@DynamicSelection
+
+AnalyticsSorting
+
+Yanping
+
+Automation covered in in_canvas_selector.feature, but no test case number 
+
+
+
+@InCanvasSelector
+
+@FilterSorting
+
+AnalyticsVisualization Level FilterAdvanced Filter
+
+Yanping 
+
+
+
+Sanity: TC17730
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/110619952444] TC41285
+[https://rally1.rallydev.com/#/27953350728d/iterationstatus?detail=%2Ftestcase%2F303664826864] →
+Automated
+
+Regression: TC19001
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/136193683368] TC55955
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F341909734592] →
+Automated
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/grid/Grid/Advanced_Filter.featurehttps://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Advanced_Filter.feature] done
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Advanced_Filter.feature]
+partially done
+
+@AdvancedFilterAnalyticsKeep only/Exclude - Grid & Shell only
+
+YanpingTomasDocument Services(Kernel): Xiaoning Cui
+
+Sanity: TC2270
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/33874590042] →
+Automated 
+
+Regression: TC2666
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/34354098754] → To be
+reviewed 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/keepOnly.feature]
+done@KeepOnly
+
+AnalyticsConditional Metric
+
+
+YanpingFang/Tomas
+
+
+Sanity: TC20254
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/173977844316] →
+Automated 
+
+Regression: TC26188
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/254012209376] TC26189
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/254012220904] TC26187
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/254011558520] 
+
+TC26235
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/255545116332]
+TC26236
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/255556724708]
+TC26237
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/255563083240]  →
+Automated 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/ConditionalMetric.feature]
+done
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/ConditionalMetric.feature]
+partially done
+
+@ConditionalMetricAnalyticsVisualization as a filter (Grid & Shell only)
+
+
+YanpingTomas
+
+Document Services(Kernel): Xiaoning Cui
+
+Sanity: TF1782/TF614/TC26104
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/253293414152] →
+Retired 
+
+Regression: TF1782/TF425/TC26141
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/253548930964]/TC17526
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/108032314268] →
+Automated 
+
+
+
+
+AnalyticsGuided analysis workflows in Dossier (Linking)
+Link from text box/image
+
+
+YanpingTomas
+
+
+Sanity: TC20931→ Automated 
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/183580752924]
+
+Regression: TC25919
+[https://rally1.rallydev.com/#/40047308194d/detail/testcase/250446569724] →
+Retired 
+
+TC71459
+[https://rally1.rallydev.com/#/40047308194d/dashboard?detail=%2Ftestcase%2F453203289620] →
+Automated 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Linking_TextAndImage.feature] done@LinkingAnalyticsDossier
+Linking(x-Chapter/Page)
+
+YanpingTomas
+
+
+Sanity: TC15322
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F89466915796]/TC15323
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F89468198432] TC64354
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F378803683220] →
+Automated 
+
+Regression: TC60743
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F363566839668] TC17526
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F108032314268] TC18273
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F122969429344] TC41286
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F303664829668]
+
+TC26141
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F253548930964]
+TC15325
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F89469399116] →
+Automated 
+
+TC15883
+
+TC15913
+
+TC18268
+
+TC18272
+
+TC18436
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dossierLinking.feature]
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dossierLinking.feature]
+
+@DossierLinkingAnalyticsThresholds in gridThresholds Editor on Attributes
+
+YanpingTomas
+
+Document Services(Kernel): Xiaoning Cui
+
+Regression: TC7560
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/50132283810] →
+Retired 
+
+Sanity: TC10657
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/56020123593] →
+Automated 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Advanced_Thresholds.feature] done@AdvancedThresholdsAnalyticsThresholds
+Editor on Metrics
+
+YanpingTomas
+
+Server: Xiaoning Cui
+
+Sanity: TC385
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F31492049325] →
+Automated 
+
+Regression: TC18239
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/122002437940] TC1668
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F33285200666] TC2306
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F33945742080]
+TC1852
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F33483672396]
+
+TC2223
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F33801794420] TC2163
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F33676035431] TC7413
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F49942944349] →
+Automated 
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Advanced_Thresholds.feature]
+done
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Advanced_Thresholds.feature]
+partially done
+
+@AdvancedThresholdsAnalyticsAll Grid Operations
+
+
+
+
+
+
+Grid Creation (Drag and Drop, double click)
+
+ChristabelFang Niu
+
+Server: Xiaoning Cui
+
+TF1794
+
+Regression: TC2605 → Automated
+
+Sanity: TC22703 → Automated 
+
+GreenReviewed
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/grid.feature]
+test coverage need to be expanded
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/EditorPanelForGrid.feature]
+
+
+AnalyticsCopy-Paste from grid (Simple and Compound)
+
+Christabel
+
+
+
+Regression: TC5164 -→ Autoamted 
+
+Sanity: TC4862 → Retired 
+
+
+
+
+AnalyticsRename Objects (Editor panel, grid column headers) - (Simple and
+Compound Grid)
+
+Christabel
+
+
+
+TF2245
+
+Sanity: TC383 → Automated 
+
+Regression: NA
+
+
+
+
+AnalyticsAttribute Form
+
+ChristabelTomas
+
+Server: Xiaoning Cui
+
+TF2227
+
+Regression: TC2713
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/34365888616] →
+Retired 
+
+Sanity: TC2699
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/34364450351] -→
+Automated 
+
+GreenReviewed
+
+AnalyticsGrid Resizing (Grid Column Resizing // Grid Resizing UI)
+
+ChristabelFang NiuServer: Xiaoning Cui
+
+TF2224
+
+Sanity:TC24300 -→ Retired 
+
+Regression:TC24320 → Retired 
+
+
+
+
+AnalyticsPivoting
+
+Christabel
+
+
+
+TF1838
+
+Sanity: TC2698 → Automated 
+
+Regression: TC2712 → Automated 
+
+Pivoting:
+
+TC2698/T2712
+
+
+
+AnalyticsShow / Hide Null Values (GUI)
+
+ChristabelTomasServer: Xiaoning Cui
+
+Sanity: TF3528/TC4978 -→ Automated
+
+Regression: TF1877/TC3178/TC5487 → Retired 
+
+
+
+
+AnalyticsGrid Outline10.11
+ChristabelMohaimin/Dongping
+
+
+TF4599
+
+Regression:
+
+Sanity: TC6077
+[https://rally1.rallydev.com/#/detail/testcase/365386299192?fdp=true]9 →
+Automated 
+
+
+
+
+AnalyticsGrid Properties and FormattingWord Wrap - Column and Rows
+
+ChristabelFang Niu
+
+Server: Xiaoning Cui
+
+TF1795
+
+Regression: TC24065 →
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/226209646836] Retired 
+
+Sanity: TC24064
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/226209641884] -→
+Manual 
+
+
+
+
+AnalyticsLock Headers (Column and Row) grids
+
+ChristabelTomasServer: Xiaoning Cui
+
+TF1795
+
+Regression:TC24067
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/226210580688] →
+Retired 
+
+Sanity: TC24066
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/226210575684] -→
+Retired 
+
+
+
+
+AnalyticsShow/Hide Headers (Column and Row) grids
+
+Christabel
+
+
+
+TF612
+
+Sanity: TC24298 → Automated 
+
+Regression: TC2602 → can't find the test case 
+
+
+
+
+AnalyticsMerger/Unmerge Headers (Column and Row)
+
+Christabel
+
+
+
+TF612
+
+Sanity: TC24298 → Automated 
+
+Regression: TC2602 → can't find the test case 
+
+
+
+
+Analytics
+
+Grid Properties// RMC Tool Box
+
+Title and Container
+
+General Settings
+
+Column Headers (+subtotals)
+
+Row Headers (+subtotals)
+
+Values (+Subtotals)
+
+
+
+ChristabelFang Niu
+
+Server: Xiaoning Cui
+
+TF2224
+
+Sanity: TC24298, TC24299 → Automated
+
+Regression: TC2702, TC2604, TC3161, TC3170, TC3171, TC3172, TC3173
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/FormatPanel_Grid.feature]
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/FormatPanel_GridToolBox.feature]
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/FormatPanel_Grid_TestCases.feature]
+
+
+AnalyticsIncremental Fetch & Render
+
+Row Incremental Fetch and Rendering
+
+(Simple and Compound grid)
+
+
+
+ChristabelDongping
+
+Server: Xiaoning Cui
+
+ TF1958
+
+Regression: TC5083
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/41018201499] → To be
+reviewed 
+
+Sanity: TC24664
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/238574957224] →
+Automated 
+
+
+
+
+Analytics
+
+Column Incremental Rendering
+
+(Simple and Compound Grid)
+
+
+
+ChristabelDongping
+
+
+TF6506
+
+Regression:TC41266, TC41267  → To be reviewed 
+
+Sanity: TC41265  → To be reviewed 
+
+
+
+
+AnalyticsShow Data from Viz (Copy/Paste, Add/Remove Obj, Add as Grid)
+
+
+ChristabelDongping
+
+Server: Xiaoning Cui
+
+Sanity: TC5110
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/41047003960] →
+Automated 
+
+Regression: TC2599
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/34297098994]，
+TC55995
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/342126014508] → To
+be automated 
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/show_data_dialog.feature]
+test case is in-progress. Page objects have been created
+AnalyticsSubtotals
+
+
+ChristabelTomas
+
+Server: Xiaoning Cui
+
+TF1750/TF1839
+
+
+Sanity: TC2696 → Automated 
+
+Regression: TC2711 → Automated 
+
+
+
+
+AnalyticsSorting
+
+Advanced Sort,
+
+Simple Sort
+
+
+
+Christabel
+
+
+
+
+Jeff
+
+Server: Xiaoning Cui
+
+Sorting:
+
+TC2695/TC2710 → Automated
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/Sort_grid.feature]
+test case is in-progress. Page objects need to be created
+AnalyticsDrilling
+
+Simple Grid
+
+Compound Grid
+
+
+
+YanpingDongpingServer: Xiaoning Cui
+
+Sanity: TC4976
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F40617269915] →
+Automated
+
+Regression: TC2923
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F34715160471] TC2924
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F34715161270]
+TC2925
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F34715162862]
+TC2547
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F34227240641] TC5023
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F40702452230] TC5032
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F40763507033] →
+Automated
+
+TC5034
+
+TC5489
+
+TC5490
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Drilling.feature]
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/Drilling.feature]
+
+@DrillingAnalyticsNumber Formatting // Number Format (Dataset management) //
+Number formatting (UI)
+
+Grid Number Formatting
+
+Dataset Number Formatting
+
+(Simple and Compound Grid)
+
+
+
+ChristabelFang Niu, TomasServer: Xiaoning Cui
+
+Sanity: TF3512/TC2692 -→ Automated 
+
+Regression: TF1834/TC2709 → To be reviewed 
+
+
+
+
+AnalyticsCompound Grid OperationsCompound Grid Creation
+
+Christabel
+
+TC41275, TC41280 → Automated 
+
+
+Compound Grid Transitions
+
+ChristabelTomas
+TC41291 → Automated 
+
+
+Sorting (Simple and Advanced)
+
+ChristabelJeff
+TC41276, TC41281, TC41282 
+
+
+Subtotals
+
+ChristabelTomas
+TC55031
+
+
+Outline Mode
+
+Christabel
+
+TC41289
+
+
+Thresholds (Simple, Advanced)
+
+Yanping
+
+
+
+Simple: TC1455, TC1504, TC1570
+
+Advanced: TC1668, TC1671, TC1852, TC2163, TC2223, TC2225, TC2306
+
+
+
+
+Linking
+
+YanpingTomas
+
+
+Dossier Linking: TC41286
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/303664829668]
+
+TC15883, TC15913, TC18268, TC18272, TC18273, TC18436
+
+
+Regression
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dossierLinking.feature]@DossierLinkingFiltering
+
+Yanping
+
+
+
+TC41279
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/303664810528] TC71364
+[https://rally1.rallydev.com/#/27953350728d/dashboard?detail=%2Ftestcase%2F450057047460]
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/filter.feature]
+
+@Filter
+
+@CompoundGridFilter
+
+Advanced Filter
+
+Yanping
+
+TC41285
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/303664826864]
+
+
+Derived Objects
+
+ChristabelCornell
+TC52450
+
+
+Dossier Level Formatting
+
+Christabel
+
+TC41288
+
+
+
+
+Grid Level Formatting
+
+Title and Container
+
+General Settings
+
+Column Headers (+subtotals)
+
+Row Headers (+subtotals)
+
+Values (+Subtotals)
+
+
+
+ChristabelCornell
+
+
+Regression: TC41287
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/303664831964]
+
+Sanity: TC41277
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/303664804860]
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/DossierAuthoring/FormatPanel_CompoundGrid.feature]
+Converting compound grid dossier to Document
+
+ChristabelTomas
+TC55030
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/338128495024]
+
+
+AnalyticsThemes (Dark theme deprecated in 10.9)
+
+Default
+
+Light
+
+Dark (Deprecated)
+
+
+
+ChristabelAlex Olvera
+
+
+
+
+ TC17819, TC2601→ Retired 
+
+TC19234 → Automated 
+
+
+
+
+
+
+
+AnalyticsDossier Formatting // Dossier-Level FormattingTheme specific formatting
+options
+
+ChristabelTomas
+
+Server: Xiaoning Cui
+
+TC60812 → Retired 
+
+
+AnalyticsColor Palette
+
+Out of Box
+
+Custom
+
+
+
+ChristabelFang NiuServer: Xiaoning Cui TF1842/TC2600/TC5111 → Retired 
+
+
+AnalyticsDossier PropertiesLoad Chapters on Demand10.11
+Christabel
+
+
+
+TC25956, TC25957 – To be reviewed 
+
+TC25958 → Retired 
+
+
+
+
+AnalyticsProject ObjectsAll Objects /  In Memory Existing Objects
+
+ChristabelNickYongjiao 
+
+TF4379 
+
+Regression: TC22691  → Automated 
+
+Sanity: TC19175 → Automated 
+
+
+Sanity
+[https://github.microstrategy.com/kfang/vi-protractor/blob/next/protractor/features/Grid/existing_objects.feature]
+trest case and page objects need to be created
+AnalyticsLive to Schema - Existing Objects11.0
+ChristabelNickYongjiao
+
+TF1746 Regression: TC4326, TC4328, TC4329, TC4330, TC4331
+
+Sanity: TC22690 → Automated
+
+
+
+
+AnalyticsVisualizations
+
+
+
+
+Narrative Science/Native Language Plugin11.0
+ChristabelCornell
+
+
+Regression:
+
+Sanity: TC60813 → Retired 
+
+
+
+
+AnalyticsChange visualization (including dropzone logic for switching Viz) //
+Change Visualization Rule // Visualization Rules, Ghost Image
+
+ChristabelTomas
+
+
+Sanity: TF1772/TF1892/TC24667
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/238807718036]
+
+Regression : TF1772/TF1892/TC9046
+[https://rally1.rallydev.com/#/54260908091d/detail/testcase/51945474996]
+
+
+
+
+AnalyticsVisualization Gallery 
+
+ChristabelTomas
+TC3206, TC9046, TC24667
+
+
+AnalyticsImport custom visualization (Workstation/Desktop)
+
+ChristabelFang Niu
+
+
+Regression: TC10450
+[https://rally1.rallydev.com/#/27953348817d/detail/testcase/55642678646] &
+TC9050 [https://rally1.rallydev.com/#/27953348817d/detail/testcase/51945810782] 
+
+Sanity:
+
+
+
+
+AnalyticsNatural Language Query (NLP)
+
+Yanping
+
+
+
+Sanity: TC18259
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/122679420588] -→
+Automated 
+
+TC26222
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/254580183320]
+
+Regression: TC25904
+[https://rally1.rallydev.com/#/27953350728d/detail/testcase/250420763904]
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/NLP.feature]
+done@NLPAnalyticsRSD Grid Presentation ModeSubtotals
+
+Christabel
+
+
+
+
+
+AnalyticsSorting (ascending, descending)
+
+Christabel
+
+
+
+
+
+AnalyticsOutline Mode
+
+Christabel
+
+
+
+
+
+AnalyticsIncremental Fetch
+
+Christabel
+
+
+
+
+
+AnalyticsGrid Display
+
+Christabel
+
+
+
+
+
+AnalyticsContext MenuCopy Row/Copy Cell/Copy URL11.3EA
+Christabel
+
+
+
+Sanity: TC64355
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F378806304612&fdp=true?fdp=true] →
+Automated 
+
+Regression: TC64366
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F378812677404&fdp=true?fdp=true] →
+Automated 
+
+
+
+
+AnalyticsDossier Properties
+
+View in Library
+
+11.3.1
+
+
+Yanping
+
+
+
+
+
+
+
+Sanity: TC72958
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F483876015888&fdp=true?fdp=true] →
+Automated 
+
+Regression: TC72959
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F483876016652&fdp=true?fdp=true] -→
+Future 
+
+
+
+
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/DefaultViewInLibrarySetting.feature]
+done@DefaultViewInLibrary
+
+
+Project Level (Access setting in Workstation)
+
+Always open dossiers/documents with the last saved view in Library
+
+
+
+
+
+IServer Level (Access setting in Workstation)
+
+Always open dossiers/documents with the last saved view in Library
+
+
+AnalyticsIServer Level (Access setting in Workstation)Server Security
+Setting: Enable HTML and Javascript content in Dossiers11.3.1
+Yanping
+
+
+
+Sanity: TC73283
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F486527406864&fdp=true?fdp=true] →
+Automated 
+
+Regression: TC73284
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F486536187472&fdp=true?fdp=true] →
+Future 
+
+
+
+
+AnalyticsGrid operationsModern (AG) Grid creation11.3
+Christabel
+
+TC71081, TC71125 → Automated
+
+
+
+
+Convert to/from Ag-grid 
+
+
+
+
+TC71122 → Automated 
+
+
+
+
+Sorting (Simple and Advanced)11.3
+Christabel
+
+TC58944, TC71082, TC2710, TC65149 → Automated
+
+
+
+
+Incremental Fetch 
+
+
+
+
+TC71088 –> Automated
+
+
+
+
+Subtotals11.3
+Christabel
+
+
+TC76157 → Automated
+
+
+
+
+
+Outline Mode11.3.4
+Christabel
+
+
+TC75412, TC71090 –> Automated
+
+
+
+
+
+Thresholds (Simple, Advanced)11.3.5
+Christabel
+
+
+
+
+
+
+
+Linking11.3
+Christabel
+
+
+
+
+
+
+
+Show data 
+
+
+
+
+
+TC71085 → Automated
+
+
+
+
+
+Filtering11.3
+Christabel
+
+TC71095 → Automated
+
+
+
+
+Number Format 
+
+
+
+
+
+TC80450 → Automated
+
+
+
+
+
+Copy Data 
+
+
+
+
+TC71089 → Automated 
+
+
+
+
+Derived Attributes 
+
+
+
+
+TC71123 → Automated 
+
+
+
+
+Derived Objects11.3
+Christabel
+
+TC34384 → Automated 
+
+
+
+
+
+
+Grid Level Formatting
+
+Title and Container
+
+General Settings
+
+Column Headers (+subtotals)
+
+Row Headers (+subtotals)
+
+Values (+Subtotals)
+
+11.3
+
+
+Christabel
+
+TC71086 → Automated 
+
+
+
+@@agGridFormatting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AG Grid used as Info Window 
+
+
+
+
+TC81929 → Automated 
+
+
+
+
+Duplicate/Copy/Move11.3.4
+Christabel
+
+TC79710 → Automated 
+
+@duplicateCopyMove
+
+One click linking
+
+Yanping
+
+Sanity TC75419
+[https://rally1.rallydev.com/#/27953350728ud/testcases?detail=%2Ftestcase%2F521941007884]
+Sanity
+[https://github.microstrategy.com/Tech/BIWeb/blob/m2021/ecosystem/tests/acceptance/protractor/features/Grid/dossierLinking.feature]
+done
+
+@DossierLinking
+
+@OneClickLinking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SURVEY: 
+
+Total high-level features: 3
+
+Total Sub Features: 18
+
+Total Test Cases: 18
+
+Automated Features: 14
+
+Feature sanity automation coverage: 78%
+
+Feature List (until 11.2)
+
+Sub-FeatureSET POCSE POCCross-team POCTest FolderAutomation StatusSurvey
+OverallToolbar, Context Menu and LayersYiwen GuPatricia Soriano
+
+
+
+
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42216
+[https://rally1.rallydev.com/#/detail/testcase/306178373080?fdp=true]Yes
+Editor PanelYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42217
+[https://rally1.rallydev.com/#/detail/testcase/306180920908?fdp=true]Yes
+Filter PanelYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42218
+[https://rally1.rallydev.com/#/detail/testcase/306180943112?fdp=true]Yes
+Format PanelYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42219
+[https://rally1.rallydev.com/#/detail/testcase/306189538728?fdp=true]Yes
+Survey with Dossier Cross FunctionsYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42221
+[https://rally1.rallydev.com/#/detail/testcase/306190425112?fdp=true]Yes
+Survey Undo/Redo, Save/Save As, Download Dossier, Import Dossier, Export to
+PDFYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42222
+[https://rally1.rallydev.com/#/detail/testcase/306190431100?fdp=true]Yes
+Survey Error HandlingYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42223
+[https://rally1.rallydev.com/#/detail/testcase/306190432552?fdp=true]No
+Survey Online HelpYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC42224
+[https://rally1.rallydev.com/#/detail/testcase/306190434708?fdp=true]Yes
+Survey Dossier convert to RSDYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC49040
+[https://rally1.rallydev.com/#/detail/testcase/319899275492?fdp=true]No
+In Canvas Selector Targeting on SurveyYiwen GuPatricia Soriano
+TF7293
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]: TC51834
+[https://rally1.rallydev.com/#/detail/testcase/327377436144?fdp=true]YesSurveyMonkeyAdd
+Survey By SurveyMonkey URL with Custom VariableYiwen GuPatricia Soriano
+
+
+
+
+TF7294 [https://rally1.rallydev.com/#/detail/testfolder/319813198564?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]TC42226
+[https://rally1.rallydev.com/#/detail/testcase/306190439160?fdp=true]Yes
+Add Survey From SurveyMonkey Account with Custom VariableYiwen GuYuankai Wang
+
+Jian Zhou (Community Connector/DI SET)
+
+Baoying Zhao (Mobile SET)
+
+Sonia Glenn (LIbrary SET)
+
+TF7294 [https://rally1.rallydev.com/#/detail/testfolder/319813198564?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]TC42227
+[https://rally1.rallydev.com/#/detail/testcase/306190441828?fdp=true]Yes
+SurveyMonkey Question Display and Response CollectionYiwen GuPatricia Soriano
+
+Baoying Zhao (Mobile SET)
+
+Sonia Glenn (LIbrary SET)
+
+TF7294 [https://rally1.rallydev.com/#/detail/testfolder/319813198564?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]TC42229
+[https://rally1.rallydev.com/#/detail/testcase/306190448276?fdp=true]No
+SurveyMonkey Data ImportYiwen GuYuankai Wang
+
+Jian Zhou (Community Connector/DI SET)
+
+TF7294 [https://rally1.rallydev.com/#/detail/testfolder/319813198564?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319811670416?fdp=true]TC42230
+[https://rally1.rallydev.com/#/detail/testcase/306191270388?fdp=true]YesSurveyGizmoAdd
+Survey By SurveyGizmo URL with URL VariableYiwen GuPatricia Soriano
+
+
+
+
+TF7295 [https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]TC49034
+[https://rally1.rallydev.com/#/detail/testcase/319881143980?fdp=true]Yes
+Add Survey From SurveyGizmo Account with URL VariableYiwen GuYuankai Wang
+
+Jian Zhou (Community Connector/DI SET)
+
+Baoying Zhao (Mobile SET)
+
+Sonia Glenn (LIbrary SET)
+
+TF7295 [https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]TC49035
+[https://rally1.rallydev.com/#/detail/testcase/319881155740?fdp=true]Yes
+SurveyGizmo Question Display and Response CollectionYiwen GuPatricia Soriano
+
+Baoying Zhao (Mobile SET)
+
+Sonia Glenn (LIbrary SET)
+
+TF7295 [https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]TC49037
+[https://rally1.rallydev.com/#/detail/testcase/319881166868?fdp=true]No
+SurveyGizmo Data Import.Yiwen GuYuankai Wang
+
+Jian Zhou (Community Connector/DI SET)
+
+TF7295 [https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]: 
+[https://rally1.rallydev.com/#/detail/testfolder/319813208968?fdp=true]TC49038
+[https://rally1.rallydev.com/#/detail/testcase/319881170896?fdp=true]Yes
+
+FEATURES ARE OWNED BY ALL SET.
+
+Every one needs to consider combine their owned features  with these cross
+functionality features. 
+
+TeamVI X-Functionality (until 10.4)SET POCSE POCCross-team POCTest
+FolderAllPerformance ImprovementsKun
+
+
+AllFull screen mode // Presentation ModeHarshad
+
+
+Desktop: Controller (Bing)
+
+Web: Zhili Cheng
+
+Document Services(Kernel): Xiaoning Cui
+
+TF1801AllPause Mode
+
+
+
+AllUndo/RedoKun
+
+
+AllBackward Compatibility for mstr files previous object models and caches
+(Express, 941)Kun
+
+
+AllContext Menu // MSTR UI Context Menus (instead of browser)Kun
+
+
+AllSpinner (Cancel button)Kun
+
+
+AllRun DashboardKun
+
+TF2996AllAuto Dashboard RefreshHarshad
+
+
+Desktop: Controller (Bing)
+
+Web: Raul de Leon
+
+TF2990AllEditor PanelKun
+
+
+AllPrivilegesHarshad
+
+
+Web: Raul de Leon
+
+or Zhili Chen
+
+Server: Xiaoning Cui
+
+
+Alli18nKun
+
+
+AllLight-weight scroll bar // UI OverviewKun
+
+
+AllShareHarshad
+
+
+Web: Raul de Leon
+
+or Zhili Chen
+
+Server: Xiaoning Cui
+
+
+AllBrowserKun
+
+
+AllOSKun
+
+
+AllTooltipKun
+
+
+
+
+DEPRECATED FEATURES
+
+TeamFeature List (until 10.6)SET POCSE POCTest FolderDesignInstruction
+Page_one-tier // Welcome screen & Quick tips
+
+TF1845 - Deprecated in 10.9GMLoading Spinner (Desktop Only)Fang SuoYuankaiTF3426
+
+
+

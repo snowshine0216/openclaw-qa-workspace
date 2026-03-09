@@ -1,0 +1,242 @@
+===== BCIN-7543 =====
+
+  ⭐ Story  🚧 To Do  ⌛ Fri, 06 Mar 26  👷 Yuankun Li  🔑️ BCIN-7543  💭 10 comments  🧵 0 linked                    
+                                                                                                                      
+  # Dev-Improve the report error handling                                                                             
+                                                                                                                      
+  ⏱️  Mon, 02 Mar 26  🔎 Yuankun Li  🚀   📦 None  🏷️  None  👀 0 watchers                                            
+                                                                                                                      
+  ------------------------ 9 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  BCIN-7582 Prompt answer cancel revert back to propmt                 •  • To Do BCIN-7583 BIWeb xml command <os 8   
+  •  • Done BCIN-7584 mojo to canctrol the undo redo reset                       •  • Done BCIN-7585 New string       
+  •  • Done BCIN-7586 report-editor add extra error catcher                      •  • To Do BCIN-7587 report-editor   
+  error                                                                                                               
+  transfrom                              •  • To Do BCIN-7588 report-editor show document-view even when error pop up 
+  •  • To Do BCIN-7589 report-editor handle pause and data retrival status switch •  • To Do BCIN-7590 Research and   
+  handle kinds of errors                        •  • Done                                                             
+                                                                                                                      
+  ------------------------ 10 Comments ------------------------                                                       
+                                                                                                                      
+  svc-corp-jira-reader • Fri, 06 Mar 26 • Latest comment                                                              
+                                                                                                                      
+  Pull request merged into m2021 by enli_mstr: https://github.com/mstr-kiai/web-dossier/pull/22468                    
+  https://github.com/mstr-kiai/web-dossier/pull/22468                                                                 
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCIN-7543[0m                                       
+
+
+===== BCEN-4843 =====
+
+  ⭐ Defect  🚧 To Do  ⌛ Wed, 04 Mar 26  👷 Mingkang Fan  🔑️ BCEN-4843  💭 19 comments  🧵 0 linked                 
+                                                                                                                      
+  # Improve the behavior for end user to allow continued operations on report in Library after error happens.         
+                                                                                                                      
+  ⏱️  Tue, 13 Jan 26  🔎 Jira Integration  🚀 High  📦 None  🏷️  None  👀 2 watchers                                  
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  **Description:** When user met error when operating with report in Library, they can not continue operations and are
+  forced to return to home page. This behavior is not user friendly.                                                  
+                                                                                                                      
+  For example,                                                                                                        
+                                                                                                                      
+  in the video i uploaded, i have set maximum rows of data as 100 to trigger error easily.                            
+                                                                                                                      
+  When a report designer edit a report and does some design changes(add/delete report filter, objects, etc), he runs  
+  the report to check the effect.                                                                                     
+                                                                                                                      
+  Here if he meets an error, closes the error message and tries to review his report design, he has no way to return  
+  to edit page with his previous changes preserved.                                                                   
+                                                                                                                      
+  The page is forever loading with an cancel button. But if he clicks on Cancel, he is forced to be directed to       
+  library home page.                                                                                                  
+                                                                                                                      
+  Customer complained they got many claims for end user. The efficiency to design report is very low as they dont have
+  chance to save the change they made.                                                                                
+                                                                                                                      
+  They request to have a way to be able to continue editing report with all changes preserved for such scenario.      
+                                                                                                                      
+  **Expected Behavior:** null                                                                                         
+                                                                                                                      
+  **Steps to Reproduce:** null                                                                                        
+                                                                                                                      
+  **Business Impact:** Comment from AE                                                                                
+                                                                                                                      
+  We have received numerous requests for improvement from JFE Steel regarding the error messages and system behavior  
+  when errors occur. We would like to request a fundamental enhancement in this area and hereby summarize their       
+  requirements.                                                                                                       
+                                                                                                                      
+
+===== BCIN-6706 =====
+
+  ⭐ Story  🚧 To Do  ⌛ Fri, 06 Mar 26  👷 Wei (Irene) Jiang  🔑️ BCIN-6706  💭 2 comments  🧵 0 linked              
+                                                                                                                      
+  # Ability to view SQL of failed grid report with Workstation. Or continue editing similar to how Developer allows   
+                                                                                                                      
+  ⏱️  Mon, 22 Dec 25  🔎 Jira Integration  🚀   📦 None  🏷️  None  👀 0 watchers                                      
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  **Description:** As part of validating workstation for broader rollout to users, I have run into some issues or     
+  enhancement requests.  Please see attached list. I want to check if we can get on call to review this consolidated  
+  list and open additional case(s) as needed.                                                                         
+                                                                                                                      
+  **Expected Behavior:** Fill the gap for Developer/Workstation parity.                                               
+                                                                                                                      
+  **Steps to Reproduce:** 1. Launch Workstation and login to an environment.                                          
+                                                                                                                      
+  2. Try creating a new report from scratch and execute.                                                              
+  3. Notice the report execution failed, but there is no easy way to find out at which step, the error occurred       
+  similar to how Developer's Report Editor ❭ SQL view suggests                                                        
+                                                                                                                      
+  **Business Impact:** Currently, Workstation does not allow users to view the SQL of failed grid reports or continue 
+  editing them, as is possible with Developer. Without this capability, users are unable to efficiently diagnose and  
+  resolve report failures, leading to increased troubleshooting time and delayed access to critical business data.    
+  This limitation reduces productivity and may require reliance on additional tools or support resources to address   
+  issues that could otherwise be resolved directly within Workstation.                                                
+                                                                                                                      
+  **Troubleshooting Steps:** Dec 19th - Customer noticed that Ability to view SQL of failed grid report with          
+  Workstation is not available unlike how Developer offers                                                            
+                                                                                                                      
+  ------------------------ 2 Comments ------------------------                                                        
+                                                                                                                      
+  Grzegorz Turowski • Mon, 22 Dec 25 • Latest comment                                                                 
+                                                                                                                      
+  @@Wei (Irene) Jiang Please take a look                                                                              
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCIN-6706[0m                                       
+
+
+===== BCIN-6574 =====
+
+  ⭐ Defect  ✅ Done  ⌛ Wed, 04 Feb 26  👷 Xue Yin  🔑️ BCIN-6574  💭 6 comments  🧵 0 linked                        
+                                                                                                                      
+  # The error details do not display when running a report in Library intermittently.                                 
+                                                                                                                      
+  ⏱️  Fri, 05 Dec 25  🔎 Jira Integration  🚀 Low  📦 None  🏷️  Title_Reviewed, xuyin_Q4, xuyin_q1_rca  👀 1 watchers 
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  **Description:** Subject:                                                                                           
+                                                                                                                      
+  The error detail is not displayed when running a report in Library intermittently.                                  
+                                                                                                                      
+  Description:                                                                                                        
+                                                                                                                      
+  The error detail is not displayed when running a report in Library.                                                 
+                                                                                                                      
+  For example, when running a report with some prompts and server error occurs ,like "Maximum number of results rows  
+  per report exceeded the current limit: 32000", the link for error detail is typically shown on error dialog.        
+                                                                                                                      
+  But the detail sometime is not displayed.                                                                           
+                                                                                                                      
+  Hence the customer does not know a reason why error occurs.                                                         
+                                                                                                                      
+  product version: Strategy ONE JUNE 2025                                                                             
+                                                                                                                      
+  **Expected Behavior:** The customer wants to display the error details.                                             
+                                                                                                                      
+  **Steps to Reproduce:** REPRODUCED                                                                                  
+                                                                                                                      
+  VM: 10.27.73.123  HOST: TI104W2K12a (Sep2025)                                                                       
+                                                                                                                      
+  VM Owner: tishikawa@microstrategy.com mailto:tishikawa@microstrategy.com                                            
+                                                                                                                      
+  UID/PW: administrator / m$tr!23                                                                                     
+                                                                                                                      
+  project: pTuto02                                                                                                    
+                                                                                                                      
+  report: CS0991930t01                                                                                                
+                                                                                                                      
+
+===== BCIN-6485 =====
+
+  ⭐ Defect  🚧 To Do  ⌛ Mon, 05 Jan 26  👷 Wei (Irene) Jiang  🔑️ BCIN-6485  💭 3 comments  🧵 0 linked             
+                                                                                                                      
+  # [기술보증기금] 뷰필터 적용 어트리뷰트 삭제시 행 이슈 - The hang icon happens and nothing works in report editor   
+  once remove attribute which used in view filter in Strategy Library ON                                              
+                                                                                                                      
+  ⏱️  Fri, 21 Nov 25  🔎 Jira Integration  🚀 Lowest  📦 None  🏷️  xuyin_Q4  👀 0 watchers                            
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  **Description:** Subject : The hang icon happens and nothing works in report editor once remove attribute which used
+  in view filter in Strategy Library ONE March 2024.                                                                  
+                                                                                                                      
+  Description : The hang icon happens and nothing works in report editor once remove attribute which used in view     
+  filter in Strategy Library ONE March 2024.                                                                          
+                                                                                                                      
+  After applying an attribute view filter (filter data) to a Library report, if we remove the attribute from an object
+  within the report, we receive an error message stating, "Cannot be removed because it is being used in a view       
+  filter." Instead of displaying the report execution results, only a loading image is displayed. Resuming data       
+  retrieval is not possible, forcing us to close the report we are editing.                                           
+                                                                                                                      
+  When removing an attribute applied to a view filter from an object within the report, we receive an error message   
+  indicating that it is being used in a view filter, but the report we are editing is halted and must be closed.      
+                                                                                                                      
+  reported version : March 2024                                                                                       
+                                                                                                                      
+  tested version : Sep. 2025                                                                                          
+                                                                                                                      
+  **Expected Behavior:** End user expects to solve this issue                                                         
+                                                                                                                      
+  **Steps to Reproduce:** 1. In the Library, open the report editor  ❭ add attribute like category ❭ click "Resume    
+  Data Retrieval" ❭ The report results display.                                                                       
+                                                                                                                      
+  2. In the Filter tab ❭ view filter ❭ add a category (Filter Data) and apply conditions like category in books ❭     
+  Check the report execution results.                                                                                 
+  3. Objects ❭ tab "In Report" ❭ Select the category  attribute ❭ RMC ❭  "Remove from Report" ❭ Error  ❭ Ok           
+                                                                                                                      
+  Error : Cannot remove attribute (id='8D…A4') from report because it is used by a view filter.                       
+                                                                                                                      
+  (refer to CS0987755_VF_error.png)                                                                                   
+
+===== BCIN-974 =====
+
+  ⭐ Defect  🚧 To Do  ⌛ Tue, 03 Feb 26  👷 Wei (Irene) Jiang  🔑️ BCIN-974  💭 4 comments  🧵 0 linked              
+                                                                                                                      
+  # Report Editor | Loading Data forever blocks further interaction after clicking pause partial data retrieval for a 
+  report that cannot be executed                                                                                      
+                                                                                                                      
+  ⏱️  Thu, 28 Aug 25  🔎 Tingting Li  🚀 Low  📦 None  🏷️  None  👀 1 watchers                                        
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  DESCRIPTION:                                                                                                        
+                                                                                                                      
+  Report Editor | Loading Data forever blocks further interaction after clicking pause partial data retrieval for a   
+  report that cannot be executed                                                                                      
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/832038972151/Screenshot 2025-08-28 145400.png]  
+                                                                                                                      
+  EXPECTED BEHAVIOR:                                                                                                  
+                                                                                                                      
+  user interaction should not be blocked                                                                              
+                                                                                                                      
+  ENVIRONMENT (Browser, OS, Secure Cloud info, URL, Intelligence Server info, metadata/warehouse info, etc):          
+                                                                                                                      
+  25.09                                                                                                               
+                                                                                                                      
+  STEPS TO REPRODUCE:                                                                                                 
+                                                                                                                      
+  • in Library, PA project, create a report with attributes: Object Category, Object Extended Type, Object Type, save 
+  • edit report                                                                                                       
+  • add one more attribute Change Type, click Resume Data Retrieval, error: QueryEngine encountered error: A cartesian
+  join is detected and execution is aborted per \"Cartesian Join Governing\" setting. Please review the design of the 
+  report/visualization. Excerpt of the query: lu_change_type cross join lu_object_extended_type. [Strategy Error      
+  Instance:719F2C714CF6034393106E95219E4D65]. Error in Process method of Component: QueryEngineServer, Project        
+  Platform Analytics, Job 40, Error Code= -2147212544.)",                                                             
+  • dismiss the error, click Pause Data Retrieval, ISSUE HERE: it's loading data forever until you close or refresh   
+  the whole web page                                                                                                  
+  SUPPORTING DOCUMENTATION (Screenshot, video/gif, .mstr file, logs, etc):                                            
+                                                                                                                      
+  Please                                                                                                              
+  clickhereto](https://microstrategy.atlassian.net/wiki/spaces/TECAGILEWORKS/pages/162727022/Defect+Logging+          
+

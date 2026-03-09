@@ -1,0 +1,154 @@
+Found 10 results:
+1. TH4202 and TH4203 Spike and Grooming (ID: 988451845)
+   1. Problem statement
+There are plenty of graph formatting properties available in Developer but not available in Workstation yet. The gap exists because Developer calls COM APIs to set these graph properties, while Workstation calls XML APIs to set the graph properties. However, there&#39;s a gap between COM APIs and XML APIs. Some COM APIs don&#39;t have their XML
+2. Library Desktop UX Design Plan - Outdated (ID: 944964035)
+   Client M2021 UX Plan here: M2021 UX/UI Plan
+Initial UX spike: Library Desktop App Design Spike
+It
+3. Library Desktop Roadmap to MVP (ID: 925434761)
+   Library Desktop is a desktop app for Mac and Windows that renders the MicroStrategy Library for data consumption with an instant response user experience.
+These are five major areas of development in the roadmap to the Library Desktop MVP:
+Functionality parity with Library Web using a desktop window paradigm as opposed to a web page paradigm.
+Caching is used
+4. FeatureList2.xlsx (ID: att840731711)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+5. Library 2020 (2).pptx (ID: att838582129)
+   MSTR Library 2020
+
+View the data in the world of Free-Form.
+
+Copyright © 2019 MicroStrategy Incorporated. All Rights Reserved.
+
+The overall ideas for 2020
+Focus on service to provide value to users across the board
+
+Mobile Parity
+Focus on de-fragmentation of feature
+offerings in order to ensure parity across
+Client platforms.
+
+Insights On-The-Go
+• Offline vi
+6. FeatureList2.xlsx (ID: att838569356)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+7. Library 2020 (3).pptx (ID: att838322493)
+   MSTR Library 2020
+
+View the data in the world of Free-Form.
+
+Copyright © 2019 MicroStrategy Incorporated. All Rights Reserved.
+
+The overall ideas for 2020
+Focus on service to provide value to users across the board
+
+Mobile Parity
+Focus on de-fragmentation of feature
+offerings in order to ensure parity across
+Client platforms.
+
+Insights On-The-Go
+• Offline vi
+8. Library 2020 (1).pptx (ID: att837681398)
+   MSTR Library 2020
+
+View the data in the world of Free-Form.
+
+Copyright © 2019 MicroStrategy Incorporated. All Rights Reserved.
+
+The overall ideas for 2020
+Focus on service to provide value to users across the board
+
+Mobile Parity
+Focus on de-fragmentation of feature
+offerings in order to ensure parity across
+Client platforms.
+
+Insights On-The-Go
+• Offline vi
+9. Remote diagnostics/Mothership - Analysis (ID: 835754023)
+   + risk, cost, decision, stakeholder sign off, release (if applicable)
+Product Area
+Persona
+Metric
+Breakdown 
+
+PA Parity
+Clients-Server
+Both
+Architecture
+MCE, MCP, On-prem + containers (eventually)
+JSP or ASP version of MSTR
+Specific Application Server Version: Glassfish (9.1_01), JBoss (7.2), Wildfly (17.0.1), Tomcat (8.5.50), Geronimo (3.0.1)
+Value of the h
+10. FeatureList2.xlsx (ID: att833700767)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl

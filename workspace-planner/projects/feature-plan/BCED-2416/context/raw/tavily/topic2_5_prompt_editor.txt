@@ -1,0 +1,28 @@
+## Answer
+
+MicroStrategy Workstation has replaced the legacy prompt editor with its new Dashboard Editor, which includes most features from the Library Dashboard Editor. The Library interface is now the primary interface, phasing out the Web interface. Workstation's features are increasingly aligned with those of the Library.
+
+---
+
+## Sources
+
+- **New Dashboard Editor in Workstation - MicroStrategy** (relevance: 56%)
+  https://www2.microstrategy.com/producthelp/2021/Workstation/en-us/Content/new_dashboard_editor.htm
+  The new Workstation Dashboard Editor incorporates most features from the Library Dashboard Editor, bridging the gap between the Library and Workstation editors.
+
+- **Workstation vs Legacy Tools Feature Parity - MicroStrategy** (relevance: 51%)
+  https://www2.microstrategy.com/producthelp/current/workstation/en-us/content/workstation_legacy_features.htm
+  The Workstation vs Legacy Tools dashboard compares feature availability between Strategy Workstation and legacy tools such as Developer, Command Manager, and
+
+- **MicroStrategy: The Transition from Web to Library Interface - crmt.com** (relevance: 40%)
+  https://www.crmt.com/resources/blog/microstrategy-the-transition-from-web-to-library-interface-10-reasons-why/
+  MicroStrategy added the Library interface to its portfolio and will soon replace the Web interface completely.
+
+- **Workstation & Library (setup) - Online Training Video by MicroRooster** (relevance: 32%)
+  https://www.youtube.com/watch?v=rMBo0S-H4ok
+  ... Library to enable the Workstation application to interact with the MicroStrategy server and metadata.
+
+- **MicroStrategy World 2021 - Features for Technical Users - Len OToole** (relevance: 24%)
+  https://lenotoole.com/microstrategy-world-2021-features-for-technical-users/
+  The legacy Developer tool is finally becoming less and less relevant with each of the quarterly feature releases for WorkStation. This is a good thing.
+

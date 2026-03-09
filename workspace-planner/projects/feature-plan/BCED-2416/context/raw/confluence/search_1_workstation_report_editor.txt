@@ -1,0 +1,157 @@
+Found 10 results:
+1. Workstation plugins (ID: 5505286515)
+   workstation-scripts
+Workstation Scripts
+Plugin
+workstation-library-admin
+Library Admin
+Plugin
+workstation-ds
+Workstation Distribution Service
+Plugin
+workstation-freeformsql-report
+Workstation FreeformSQLReport Editor
+Plugin
+workstation-mosaic-refresh
+Workstation mosaic refresh
+Plugin
+workstation-global-filter-editor
+Workstation Global Filter Editor
+Plugin
+wo
+2. CLD GDC Automation Status by Test Sets (ID: 5325783317)
+   CLD-Admin GDC
+Unstructured Data tab
+Yes
+CLD-Admin GDC
+Unstructured Data tab
+Q4 - initial plan
+CLD-Admin GDC
+Unstructured Data tab
+Q4 - initial plan
+CLD-Admin GDC
+Unstructured Data tab
+Q4 - initial plan
+CLD-Admin GDC
+Unstructured Data tab
+CLD-Admin GDC
+Unstructured Data tab
+CLD-Admin GDC
+Datasets Blade
+CLD-Admin GDC
+Datasets Blade
+CLD-Admin GDC
+Datasets Blade
+3. CLD GDC Automation Status (ID: 5055709781)
+   Nodes Monitor
+CLD-WSInfrastructure GDC
+Aleksandra Najmowicz
+Manual
+Missing Jenkins job
+Requires AWS env
+Services Monitor
+CLD-WSInfrastructure GDC
+Aleksandra Najmowicz
+Manual
+Missing Jenkins job
+Requires AWS env
+User Connections Monitor
+CLD-Python GDC
+Jacek Ponceleusz
+Manual
+Missing Jenkins job
+Database Connections Monitor
+CLD-Python GDC
+Jacek Ponceleusz
+Manu
+4. Capabilities and Ownership Matrix - GDC and Collaborators (ID: 5038706144)
+   Workstation Core
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Top Menu and Toolbar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Interface
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Search bar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastr
+5. MDX Knowledge Transfer (ID: 997539171)
+   Basic Knowledge
+MDX datasource including NA and RA, NA is just like RDBMS, while RA providing expand-collapse features. There are some code we can use to decide a data source is MDX or RA.
+You can find all those cubes in VizServer/Share Reports/ MDXCases.
+Actually, 90% percent of issues is related to RA,  the RA database has the following type:
+Essbase
+MSAS
+6. Tech Debts Planning 2020Q1 (ID: 997539077)
+   The table lists the candidate feature items for tech debts.
+#
+Scrum Team
+Parent Initiative
+Feature Title
+Expected output
+Value
+Notes
+1
+TL-Architect
+TL-SDK
+TL-Workstation-DataImport
+I18366 : CI Pipeline and Builds Process Enhancements and complexity reduction
+Unify and improve the
+7. Prompt Page (ID: 997528663)
+   1. Introduction
+A prompt is a question the system presents to a user when a report is executed. How the user answers the question determines what data is displayed on the report when it is returned from your data source.
+A report designer can include one or more prompts in any report. Prompts are an effective tool to:
+Allow each user who executes the report
+8. [SE Design] Make Workstation Export Dialog Consistent with Library (ID: 997434170)
+   Target release
+M2020 Update 2? / M2021 EA?
+Feature
+https://rally1.rallydev.com/#/27956540519d/detail/portfolioitem/feature/369494335572?fdp=true
+Design Status
+REVIEWING
+REVISING
+Approved
+SE Owner
+Qian, Junjuan  Li, Jian
+QA Owner
+Yi (Yvonne) Hu
+UX
+9. 2020 Licences and Privileges (4).xlsx (ID: att997268368)
+   Version
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+10. List Schedules for Workstation subscription Creation (ID: 996279507)
+   Current UX at:
+Create/Edit a Subscription
+This workflow feeds the following Features:
+REST: F29464 : List available distribution schedules programmatically
+Workstation: F28992!--https://rally1

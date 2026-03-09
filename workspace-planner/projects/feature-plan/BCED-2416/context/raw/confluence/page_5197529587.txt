@@ -1,0 +1,43 @@
+===== PAGE 5197529587 =====
+In Workstation 25.09, we have introduced a new Dashboard Editor that offers
+significantly enhanced capabilities compared to the previous version. By
+incorporating most features from the Library Dashboard Editor, this update
+bridges the gap between the Library and Workstation editors, delivering a more
+consistent user experience.
+
+To enable the new editor, navigate to the Help menu and select “Enable New
+Dashboard Editor.”
+
+Notes: The new Editor only supports Library versions 25.09 and above. If
+connected to an earlier version of the Library, it will fallback to previous
+version of editor.
+
+
+
+The new Dashboard Editor in Workstation inherits most of the layouts and
+functions from the Library Editor.
+
+Compared to the old editor, the new editor not only adds support for some
+previously unavailable features, such as custom fonts, generate embedding url
+and exporting visualization data to Excel, but also naturally supports newly
+introduced functions like enabling page level Auto Narrative, selector panel and
+selector window with apply button, scope filter (preview feature), cancel
+execution, and auto dashboard, etc. In the future, all new features of the
+Library Dashboard Editor will be automatically available in the new Workstation
+editor.
+
+ And please be noted: the new dashboard functionalities in September release and
+later, will ONLY be available in new editor.
+
+At the same time, we have retained certain workstation-specific features, such
+as switching editors from the Window Menu, and record change journal.
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,211 @@
+===== PAGE 5208899625 =====
+Background and Prerequisite Knowledge
+
+This feature addresses the absence of a "Cancel" button in various dashboard and
+report execution workflows. When users encounter performance issues during
+dashboard or report execution, having the ability to cancel the process is a
+critical need. This feature introduces a Cancel button in the GUI, enabling
+users to instantly terminate ongoing dashboard/report executions along with
+their underlying SQL jobs, ensuring better control and an improved user
+experience.
+
+
+Capabilities in 25.08
+
+In summary, Library Web offers complete functionality for cancelling executions.
+In contrast, Workstation has certain limitations: (1) There is no dedicated
+cancel button for dashboard execution, but clicking the close button may cancel
+jobs; (2) There is also no cancel button to stop the "apply prompts" process in
+dashboards on Workstation.
+
+
+1. Report Workflow without prompt 
+
+Library Web
+
+Workstation
+
+Click a report
+
+ 1. Cancel button shows.
+
+ 2. Clicking cancel will go back to Library Home, related jobs are cancelled.
+
+Edit report->Click resume data
+
+RMC report->Edit->resume data/re-execute
+
+ 1. Has cancel button
+
+ 2. Clicking cancel will close the window, related jobs are cancelled.
+
+
+
+
+
+
+2. Report workflow with prompt
+
+
+
+During initial execution or re-prompt on a report or manipulation triggered
+prompt editor, answer the prompt → Apply → Cancel → Return to the answer-prompt
+page displaying the original user input.
+
+ * Nested Prompt: In a nested prompt case, return to the first prompt page.
+
+Library Web
+
+Workstation
+
+
+
+
+
+
+
+
+3. Dashboard workflow without prompt
+
+3.1 INITIAL EXECUTION
+
+Library Web
+
+Workstation
+
+Clicking a dashboard
+
+ 1. Cancel button shows.
+
+ 2. Clicking cancel will go back to library home, related jobs are cancelled.
+
+
+
+RMC a dashboard->Edit
+
+ 1. No cancel button.
+
+ 2. Clicking the close button in the dashboard editor may still cancel the job.
+    
+    
+
+3.2 MANIPULATION TRIGGERED EXECUTION
+
+3.2.1 AUTHORING
+
+ * Manipulations cancelled with improved performance (job canceled in the
+   background)
+   
+   * Sort Ascending/Descending/Within, Aggregate By, Calculation, Shortcut
+     Metric, Create Metric, Create Groups, Remove, Apply Selections To,
+     Include/Exclude, Add Filters, Delete a filter, Unset All Filters, Remove
+     Data, Keep Only, Exclude, Group, Edit View Filter.
+
+ * Manipulations cancelled with the same performance as before (job canceled in
+   the background)
+   
+   * Browse Objects, Add Data, Duplicate Chapter, Replace Dataset, Delete a
+     dataset, Create Attribute, Create Links, Duplicate a Viz.
+
+
+
+Library Web
+
+Workstation
+
+Open dashboard in edit mode, do above manipulation
+
+ 1. Cancel button shows.
+
+ 2. Clicking cancel will go back to Library Home, related jobs are cancelled.
+
+RMC a dashboard->Edit
+
+Same behaviors as Library Web
+
+3.2.2 LIBRARY WEB CONSUMPTION
+
+ * Manipulations cancelled with improved performance (job canceled in the
+   background)
+   
+   * Apply filter selection
+
+Library Web
+
+Open dashboard in edit mode, do above manipulation
+
+ * Cancel button shows.
+
+ * Clicking cancel will go back to Library Home, related jobs are cancelled.
+
+
+
+
+
+
+4. Dashboard workflow with prompt
+
+Library Web
+
+Workstation
+
+During initial execution or re-prompt or add/replaced a prompted dataset on a
+dashboard, answer the prompt → Apply → Cancel → Return to the answer-prompt page
+displaying the original user input.
+
+ * Nested Prompt: In a nested prompt case, return to the first prompt page.
+
+Cancel on above page, go back to first prompt page, previous answer is recorded
+
+
+
+
+
+No corresponding Cancel button
+
+
+
+
+Feature flag
+
+The feature is on by default since 25.08, here are the steps to disable the
+feature:
+
+ 1. Access the machine where MicroStrategy Library is installed or deployed, and
+    navigate to the following path: <Library Folder
+    Path>/WEB-INF/classes/config.
+
+ 2. Locate and edit the configOverride.properties file. Add the following line:
+     
+    features.cancel-execution.enabled=false
+
+features.cancel-reverse-undo-dashboard-authoring.enabled = false
+
+ 3. Save and close the file.
+
+ 4. Restart the application server.
+
+
+Capabilities on the roadmap
+
+
+25.09 release
+
+F43445
+[https://rally1.rallydev.com/#/?detail=/portfolioitem/feature/823049229263&fdp=true]
+Enhance Workstation dashboard authoring experience with Library capability
+parity
+With this feature, customer can experience the same cancel functionalities
+compared with Library Web.
+
+
+Future release
+
+F44164
+[https://rally1.rallydev.com/#/689611319057d/myrally?detail=%2Fportfolioitem%2Ffeature%2F828543367463%2Fdetails&fdp=true]
+Improve the performance of cancelling manipulations in Dashboards
+
+With this feature, customer can cancel other manipulations which are not
+supported in this feature.
+
+

@@ -1,0 +1,856 @@
+===== PAGE 997528663 =====
+1. Introduction
+
+A prompt is a question the system presents to a user when a report is executed.
+How the user answers the question determines what data is displayed on the
+report when it is returned from your data source.
+
+A report designer can include one or more prompts in any report. Prompts are an
+effective tool to:
+
+ * Allow each user who executes the report to request individualized sets of
+   data from your data source when they answer the prompts and runs the report.
+   Effectively, each user creates a filter for the report.
+
+ * Allow the report designer to create a smaller number of reports overall,
+   using more inclusive objects, rather than having to create numerous, more
+   specific reports that are individualized to each analyst.
+
+ * Allow the report designer to ensure that the objects on a report are the
+   latest available objects in the project. This is possible using a search
+   object in a prompt. When a user launches a prompt by running a report, the
+   search object retrieves the latest objects that fit the search criteria the
+   report designer defined. Thus, no matter when the prompt was created, each
+   time a user executes the report, the user chooses prompt answers from a list
+   of the most up-to-date objects available in the project, including objects
+   that may not have existed when the prompt was created.
+
+ * Allow users to keep the objects on their saved reports up-to-date. Users can
+   save a prompted report so that the objects within the prompt remain connected
+   to the original objects within the project that they were originally based on
+   when the prompt was created. If objects are modified or deleted in the
+   project, the report can reflect those changes the next time the prompted
+   report is run.
+
+
+1.1 Components of a Prompt
+
+The pieces that make up a prompt control how a prompt appears and how it
+functions. These components include the following:
+
+ * Answer requirement: This component lets you determine whether users are
+   required to answer the prompt or an answer is optional. If an answer is
+   required, a report cannot be executed until an answer is provided.
+
+ * Default prompt answers: This component lets you include a pre-selected answer
+   for the prompt, which the user can then accept, replace with a different
+   answer, or accept and add more answers.
+
+ * Title and description: This component lets you provide a useful name and
+   description for the prompt, which can significantly impact whether a user
+   finds prompts to be simple or complex.
+
+ * Style: This component determines the appearance of the prompt and the layout
+   of how users select answers for the prompt.
+
+Consider your users' needs and the purpose of the report and the objects on it
+when you decide on these options. If you plan to apply a schedule to a prompted
+report, the decisions you make about answer requirements and default answers
+will affect how the report is filtered when it is automatically executed on
+schedule.
+
+
+1.2 Stand-Alone Prompt vs. Prompt as Part of a Report or Filter
+
+A stand-alone prompt is a prompt that is created as an independent MicroStrategy
+object. A stand-alone prompt can then be used on many different reports, as well
+as on filters, metrics, and other objects, and can be used by other report
+designers. A stand-alone prompt gives report designers flexibility.
+
+Prompts can also be created as intrinsic part of a given report, filter, or
+custom group, at the same time the report, filter, or custom group itself is
+being created. Prompts created as part of another object are saved with the
+definition of that object. Therefore, a prompt created as part of another object
+cannot be used on any other project.
+
+
+1.3 Comparing a Prompt and Filter
+
+A prompt is similar to a filter because a prompt determines the specific data to
+be displayed on a report. The difference is that you create a filter for a
+report to provide a single, specific definition for the report. A filtered
+report then displays the same set of data to every user who executes that
+report. In contrast, a prompt dynamically modifies the contents of a report
+based on the user’s answers when the user executes the report. With prompts,
+users can determine the objects (attributes, attribute elements, metrics, and so
+on) that they want to be part of, or excluded from, the report query that is
+sent to the data source. Therefore, a prompt can be seen as a way for each user
+to create their filter for a given report. For example:
+
+ * Users can choose from several existing filters to determine exactly which
+   filter screens the data on the report that they are about to execute. To
+   achieve this, create an object prompt that contains existing filters and
+   place that object prompt on a report. Then the user can choose which filter
+   to apply to the report.
+
+ * Prompts allow a report to have a dynamic report definition, which users can
+   change each time that they submit the query by choosing different answers
+   when prompted. If you create an attribute prompt containing the Year
+   attribute, users are prompted to select the year for which they want the
+   report results. The report can be run the first time by selecting 2005 and
+   then a second time by selecting 2006.
+
+
+1.4 Types of Prompts
+
+The correct prompt type to create depends on what report objects you want users
+to be able to base a filter on to filter report data.
+
+Prompt Type
+
+Prompt Name
+
+What Data it Allows Users to Define
+
+Filter definition prompts
+
+This type of prompt allows users to determine how the report’s data is filtered,
+based on attributes in a hierarchy, lists of attribute elements, or metrics.
+
+Attribute Element List Prompt
+Prompts users to choose from an attribute element list
+
+Users can select prompt answers from a limited list of specific attribute
+elements. This prompt is the most restrictive of the filter definition prompts,
+because the user has the least number of attribute elements to select answers
+from.
+
+Attribute Qualification Prompt
+Prompts users to qualify on an attribute
+
+Users can select prompt answers from a list of attribute elements from a single
+attribute. This prompt is more restrictive than the hierarchy qualification
+prompt, because the user has fewer attribute elements to select answers from.
+
+Metric Qualification Prompt
+Prompts users to qualify on a metric
+
+Users can define a metric qualification, which determines what data should be
+displayed for one or more specific metrics on the report.
+
+Hierarchy Qualification Prompt
+Prompts users to choose from all attributes in a hierarchy
+
+Users can select prompt answers from one or more attribute elements from one or
+more attributes. The attribute elements that they select are used to filter data
+displayed on the report. This prompt lets you give users the largest number of
+attribute elements to choose from when they answer the prompt to define their
+filtering criteria.
+
+For example, on a report displaying profit forecasts, if the prompt lets users
+select from the Product hierarchy, one user might choose to see forecasts for
+certain electronic products, while another user might select different
+electronics products, or all media products.
+
+Object Prompts
+
+This type of prompt allows users to select objects to include in a report, such
+as attributes, metrics, or filters
+
+Object Prompt
+
+Users can use this prompt to add more data to a report. Users select objects
+(such as attributes or metrics) that they want to add to the report. Users can
+also choose from among a selection of filters, to apply a filter that is most
+useful for their analysis purposes.
+
+Value Prompts
+
+This prompt type lets users select a single value, such as a date or a sepcific
+text string, and filter report data based on their selection.
+
+Date & Time Prompt
+
+Users select a specific data and time for which to see data. This prompt is used
+in a filter.
+
+Numeric Prompt
+
+Users enter a specific number, up to 15 digits, which is then used as part of a
+filter or whithin a metric, to look for specific numeric data.
+
+Note, if a user enters more than 15 digits for a numeric prompt, the data is
+converted to scientific notation. If precision is needed beyond 15 digits, you
+should use a Big Decimal value prompt instead.
+
+Text Prompt
+
+Users enter a word or phrase, which is then used as part of a filter to look for
+specific data with that text.
+
+Big Decimal Prompt
+
+Users can enter up to 38 digits, to search for numeric data with the Big Decimal
+data type assigned to it.
+
+The above prompts and Level prompts are supported in Library Web. Level prompts
+allow users to specify the level of calculation for a metric. Level prompts
+cannot be created from MicroStrategy Web, they must be created in MicroStrategy
+Developer. And in Web-Server, we call Level Prompt as WebDimtyPrompt
+
+BTW, when we create a new Report and choose "Report Builder", it will also open
+the Prompt page to create the report, so when fixing Prompt related issues, we
+may also need to cover this case.
+
+
+2 Prompt’s Framework - JUIL
+
+Prompt is developed using JUIL (Gunther’s JavaScript User Interface Library).
+This framework uses the Block and Task (Web-Server side) infrastructures to
+provide the data and includes an implementation of client-side layout files.
+
+
+2.1 JUIL on Web-Server side
+
+The Web-Server part uses XML files to store information about data model and
+layout information that will be sent to Client for rendering.
+
+Most data models are stored in WEB-INF/xml/blocks folder, contain the definition
+and values about properties in the model like below:
+
+xml
+
+Most layouts are stored in WEB-INF/xml/layouts and WEB-INF/xml/layoutsCS
+folders, contain the HTML layout information like below:
+
+
+2.2 JUIL on Client side
+
+The Client side part is based on MVC architecture with JS. The JS Library is
+under the namespace mstr, and located in javascript/mstr folder. We have below
+major components:
+
+ * Model Layer:
+   
+   * mstr.models: maintains some properties data internally, provides commands
+     for manipulating that data, raise events when its data is modified,
+     provides methods for adding/removing event listeners to the Model.
+
+ * View Layer:
+   
+   * mstr.views: maintains a reference to a Model, provides methods for
+     rendering its HTML GUI, and for updating that GUI in response to events.
+   
+   * mstr.itemrenderers: corresponds to the itemRendererClass property of
+     related block files in Web-Server side. For example, <property
+     name="itemRendererClass">mstr.itemrenderers.CheckList</property>. It is a
+     javascript object responsible of rendering data items in the view's GUI.
+     For example, a ListView uses an item renderer to render list items.
+   
+   * mstr.behaviors: setting the properties in layout files in Web-Server side,
+     like on_set_enabled, on_set_visible. Note there is an exception for
+     mstr.behaviors.ExpandableTreeView, this should be a part of
+     mstr.itemrenderers and is called in TreeView.xml. It should be a mistake by
+     unknown historical reasons.
+
+ * Controller Layer:
+   
+   * mstr.controllers: contains two parts: Factory and EventManager, Factory is
+     a singleton that maintains a collection of model and viewer objects.
+     Factory provides methods for creating, destroying and referencing those
+     objects. EventManager is a singleton with methods and members for managing
+     propagation of events among objects.
+
+ * Others:
+   
+   * mstr.http: helper methods for handling Ajax request, mainly includes
+     FrameProcessor and XHRProcessor.
+   
+   * mstr.utils: helper methods for JavaScript object data structure and DOM
+     manipulations.
+   
+   * mstr.bone.editors: renders the tabs of "Properties and Formatting" editor
+     and "Document Properties" editor of Document on the GUI.
+   
+   * mstr.lang: helper methods for HTML events and MSTR events.
+   
+   * mstr.xml: helper methods for XML manipulations.
+
+Note that each component is not centralized at a single place, instead each of
+the package are distributed across multiple files. (due to code refactoring to
+improve performance, so that only required code will be loaded)
+
+
+3. Prompt’s Workflow
+
+
+3.1 How Prompts are created
+
+Here we will focus on the Prompt Create Page. Note that all kinds of prompts
+that can be created in Web share this same page. Edit prompt also shares this
+page.
+
+When we click on the GUI to create a prompt, Client will send an event to Web
+Server like below:
+
+So Web Server will load the page "editPrompt". There are 4 tabs in this page,
+and we have 4 corresponding tabBeans in the page definition in pageConfig.xml,
+each tabBean has its own style and JS scripts. The parameter scriptClass means
+related JS file that defines related logic/manipulations for each tab.
+
+xml
+
+Then we can find each style’s definition in styleCatalog.xml and find that they
+all use PromptEditorTabLayout.xml like below:
+
+In PromptEditorTabLayout.xml, we can find a two-level-map for the styles, and we
+can find each detailed style based on the prompt type and the tab. For example,
+for the content of Style tab for Object Prompt:
+
+xml
+
+Here all the MSTR elements are realized by related java classes inherited from
+com.microstrategy.web.tags.TagImpl, for example, mstrlayout:if maps to
+IfTagImpl, mstrlayout:bSetProperty maps to WebBlockSetPropertyTagImpl. So we
+will then try to render the layout defined in
+PromptObjectsStylePropertiesTabStyle. After replacing the MSTR elements in that
+file, we will get the final HTML element that presents below GUI:
+
+
+3.2 How Prompts are rendered
+
+
+3.2.1 Static Components
+
+Here we will use the render of Prompt Editor which is the container of whole
+prompt page as an example, since all the prompt components are using similar
+workflow for rendering. You can investigate the render of Prompt question by
+yourself after this section.
+
+When we try to render a Prompt Page, we will first find the page information in
+pageConfig.xml. There are many styles defined in the prompt page, and here we
+will focus on the style PromptsTransformClassic for PromptsContainerBean
+
+Then in styleCatalog.xml we can find that PromptsTransformClassic is mapped to
+PromptsContainerStyle_Widget style. And in this style we can find its layout
+file PromptsContainerLayout_widget.xml
+
+xml
+
+Then in PromptsContainerLayout_widget.xml, we can find it is composed of HTML
+elements (like script, textarea) and MSTR elements (like mstrlayout:block,
+mstrlayout:if), for example:
+
+xml
+
+Here for mstrlayout:block we will map to the data model in a file with the same
+name. So finally we will get a HTML element textarea on the GUI which’s value is
+a JSON object PromptEditor like below:
+
+html
+
+And then when we execute the script mstr.$register('jsonPromptEditor', self);,
+we will create a new instance of its scriptClass value and init it with these
+properties.
+
+On the other hand, <mstrlayout:juilLayouts rootBlockName="PromptEditor"/> will
+also call JUILLayoutsTagImpl::render() to generate below scripts in a Script
+tag:
+
+js
+
+In the layout XML of PromptEditor, we can find it is in the form of multiple
+HTML elements with tokens like {@tooltip}, and on Client side, we will replace
+those tokens with the values in previous JSON data model and finally get a pure
+HTML object and add it into HTML page.
+
+Then the Prompt Editor is rendered, and we will continue to render its
+sub-components(Prompt Questions, TOC, etc…) in the same way. Finally we can see
+the Prompt page on the GUI.
+
+
+3.2.2 Prompt Answers
+
+When we render prompt page, we will also fill prompt questions with available
+items and answers that are gotten from I-Server side. Let’s take an Attribute
+Element Prompt with Year for example, you can investigate other kinds of prompts
+by yourself.
+
+When we execute a Report/Document/Dossier with prompts, since we don’t know
+whether it has prompts before we execute, Web Server will follow normal
+execution workflow, and in the response of "grtex" (stands for
+GetExecutionResults), I-Server will return a status
+EnumDSSXMLStatus.DssXmlStatusPromptXML = 2 with prompt information like below to
+notice Web Server that there are prompts need to be processed.
+
+xml
+
+Here we will focus on PA part. In the example, there are two PA tag, one with
+ia="1" and another with ip="1". In fact, there are four kinds of prompt answers:
+
+ 1. Current prompt answer with ia="1".
+
+ 2. Previous prompt answer with ip="1".
+
+ 3. Default prompt answer with isd="1".
+
+ 4. List prompt answer with il="1". This part stores the available objects that
+    specified in the prompt by choosing "Use a predefined list of XXX” like
+    below:
+    
+    For normal prompts without restriction, we will later send a command like
+    "ge” (GetElements) to get available objects.
+
+After parsing the XML response, we will render the Static Components, and when
+we come to the render of Prompt Question, we will fill the available objects and
+prompt answers based on related XML like
+PromptElementsDefinitionLayout_widget.xml:
+
+xml
+
+And finally we will get a JSON object like below and send to Client as data
+model:
+
+json
+
+
+3.3 How Prompts are answered
+
+When we answer prompts, on Client side, we will call each prompt’s
+getValueString() method to get the prompt answer, and then send to Web Server
+using events. Then in Web Server we will call corresponding event handler to
+handle the events and then send to I-Server.
+
+
+3.3.1 Client Side
+
+3.3.1.1 COMPLEX PROMPT ANSWER
+
+When we open a Prompt page, for most cases, we can only see one area for a
+prompt question like below-left which is called Simple Prompt Answer. But for
+some cases, we may also see another area for the default selection like
+below-right which is called Complex Prompt Answer (it is always displayed as
+static text on the GUI):
+
+The reason is, when we render a Prompt Question, we will always try to render
+the default prompt answer together. For most cases, we can render the default
+prompt answer in the normal area, but for some cases, we are not able to render
+in the normal area:
+
+ * Default answer’s elements are not available any more for the prompt. For
+   example, in the past we choose 2010 as default answer for Year, but later
+   something changes and Year attribute doesn’t have 2020 element any more. Then
+   we will display 2010 in default selection area.
+
+ * In the past the prompt's style supports multiple-selection like checkbox, and
+   we have 2009 and 2010 as default answer. Then we change the prompt's style to
+   single-selection like radio-button. Then we will display 2009 and 2010 in
+   default selection area.
+
+ * The prompt's default answer's datatype is unknown, or not match prompt's
+   requirement for datatype. For example, the answer is a Date but prompt
+   requires a Integer. Then we will also display the default answer in default
+   selection area.
+
+ * The default answer’s expression is too complicate, like Dynamic Date in the
+   above image, we are not able to display it in Shopping Cart, then we will
+   also display it in default selection area.
+
+There are also some other cases, and we can find the detailed logic in
+isAnswerComplex() method in our Java code library. Note that there are multiple
+isAnswerComplex() methods according to multiple prompt types and styles.
+
+Since complex prompt answer is just a static text, if user choose this as the
+final answer, the workflow will be quite simple, we just send back the text back
+to Web Server.
+
+3.3.1.2 SIMPLE PROMPT ANSWER
+
+There are three kinds of prompt answers that inherit from
+mstr.models.PromptAnswer: Constant Prompt Answer, List Prompt Answer and
+Expression Prompt Answer.
+
+3.3.1.2.1 CONSTANT PROMPT ANSWER
+
+Constant Prompt Answer is an answer to a Constant Prompt (mostly a Value
+Prompt), its value is a string, and we can use the "min", "max" and "dataType"
+properties to restrict the string’s content.
+
+Note that when we validate Constant Prompt Answer, we will first convert it to
+an array using specific delimiters and verify each element, then convert it back
+to string as new formatted value. The reason is, Value Prompt may also have
+multiSelect property with true, then the string will be a delimited list and we
+need to validate each sub-element, for example, Free-Form SQL case.
+
+3.3.1.2.2 LIST PROMPT ANSWER
+
+List Prompt Answer is an answer which’s value is specified by a list of objects
+(e.g., attributes, metrics, etc), and we can use the optional "min" and "max"
+properties define further restrictions on the end-user’s selections. It is
+usually used in Attribute Element List Prompt and Object Prompt.
+
+There are three different ways to get List Prompt Answer depends on prompt’s
+style:
+
+ * Tree/Shopping-Cart: We will get answer from the items of its selected
+   property: this.props['selected'].props['items']
+
+ * Pulldown: We will get answer from the items of its available property based
+   on the selectedIndices property.
+
+ * Other styles: We will get answer from its preSelectedItems property. This
+   property was introduced to remember previous selections of Prompts for the
+   Search cases. In the past, our prompt answers were only based on current
+   elements on the GUI, for example, for Category, if we search ‘o' and then
+   select ‘Book’, then search ‘u’, then search ‘o’ again, ‘Book’ will be not
+   selected. The reason is, when we search ‘u’, ‘Book’ is not displayed on the
+   GUI, then our selection will remove this, then when we search ‘o’ again, we
+   will not consider 'Book’ as selected.
+   However, this new property makes our logic much more complex and confused, we
+   need to maintain this property for all the manipulations that will change our
+   prompt answers. So we need to pay much more attention when we meet issues
+   about this part.
+
+3.3.1.2.3 EXPRESSION PROMPT ANSWER
+
+Expression Prompt Answer is an answer which’s value is specified by an
+expression tree. This tree is maintained in the "selected" property.
+Additionally, the "available" property specifies a list of objects which the
+end-user may use in the expression tree. Also, the optional "min" and "max"
+properties define further restrictions on the end-user’s selections. It is
+usually used in Attribute/Metric/Hierarchy Qualification Prompt.
+
+There are two different ways to get Expression Prompt Answer
+
+ * DualExpressionListCart: For most cases, we will not use it, it is only
+   available when we are using SAP attribute in Prompt and there is no default
+   function for its expression (Refer to
+   PromptExpressionWidgetTransform.java::shouldRenderDualCart()). Its answer
+   depends on the selectedIncludes property and selectedExcludes property in
+   DELC.prototype.buildSelectedModel()
+
+ * Other cases: We will get answer from its selected property. Since we are
+   using expression as answer’s format, there are lots of models for the parts
+   of expression, like IncludeListModel, ExprTypeListModel, BranchQualListModel
+   and so on. When we do any operations on the GUI, we will call related models'
+   update methods and update the prompt’s selected property. We can find all
+   these in mstr.models.ExpressionPromptAnswer
+
+
+3.3.2 Web Server Side
+
+After we get the prompt answers, we will use events to pass them to Web Server.
+You can get detailed knowledge about events from Event training lessons, here we
+just use the event 4098001 as a simple example for answering prompts.
+
+After clicking ‘Run Report’ button, Client will send a Form data to Web Server,
+which contains below prompt answer
+information:events:-4098001*.mstrWeb***.report***.frame***.rb***.rb***_ep***.pb***_87F55C8D440D991012C854A379672A4E@0@10***.4098001*.answerOptions*.2*.answerFormat*.1*.answer*.8D679D5111D3E4981000E787EC6DE8A4:2014~1048576~2014*.promptAnswerName*..isDefaultPromptAnswer.0*.promptAnswerID*..answerByID..promptAnswerIsAutoClose.0*.promptAnswerAction*.null.8001*.mstrWeb***.report***.frame***.rb***.rb***_ep***.8001*.useSetAnswers*.true*.alias*.Year***_Cost***Prompt
+
+We can find there are two events: 4098001(Prompt_Event_Answer_Prompt) and
+8001(Prompt_Event_Answer_All_Prompts) with their parameters. Then in
+ElementPromptEventHandlerImpl.handleSetAnswer() we will save the prompt answer
+to related prompt based on 4098001’s arguments, and then in
+PromptsEventHandlerImpl.handleAnswerAllPrompts() we will send the prompt answer
+to I-Server using an "ap” (AnswerPrompt) command like below:
+
+xml
+
+Once I-Server get the prompt answer, we can then send "grtex” again to get the
+execution result or another page of prompts for the Prompt In Prompt case.
+
+
+3.3.3 Auto-Answer Prompts
+
+For some cases we don’t need to manually answer prompts, they are auto-answered,
+for example, URL API, Link Drill. For these cases, prompt answers are stored in
+the URL/Link info, and Web-Server will use these answers to answer the prompts
+of target Report/Document/Dossier in background, so user can directly see the
+execution results.
+
+3.3.3.1 PROMPT ANSWER PARAMETERS
+
+These cases also use events to take effect, below is a sample URL API to execute
+a report with prompt answer Movies and Books:
+
+https://hanw14648-test1:8080/MicroStrategy/servlet/mstrWeb?evt=4001&src=mstrWeb.4001&reportID=EA268ACE422B435286CFB197DED8906E&elementsPromptAnswers=8D679D3711D3E4981000E787EC6DE8A4;8D679D3711D3E4981000E787EC6DE8A4:3%5eMoviesDisplayName;8D679D3711D3E4981000E787EC6DE8A4:1%5eBookDisplayName
+
+When execute Report/Document/Dossier, Web Server will always check whether
+related events contains some prompt parameters (like elementsPromptAnswers in
+the above URL) in WebBeanUtils.AnswerPromptsInAdvance() unless the
+promptAnswerMode is set to 0(DO_NOT_PASS_PROMPT_ANSWERS). If have, then Web
+Server will use the values of those parameters as prompt answers to I-Server, so
+related prompts are auto-answered. We can also find other parameters that are
+used for prompt answers in related events in events.xml:
+
+ * originMessageID: An existing report, document, or dossier instance. This
+   parameter is used by the resulting report, document, or HTML document to
+   extract the prompt answers from the specified instance and use them as prompt
+   answers to any corresponding prompts in the requested report, document, or
+   dossier.
+   54BABC8311D59D57C000B28A4CC5F24F
+
+ * promptsAnswerXML: An XML representation of a collection of prompt answers.
+   Passing this parameter with any number of common events automatically applies
+   the supplied prompt answers to as many of the prompts as are found in the
+   particular report, document, or dossier.
+   <rsl><pa pt="7" pin="0" did="051A61DE4598282876687088BEF55DDA"
+   tp="10"><mi><es><at did="8D679D5111D3E4981000E787EC6DE8A4" tp="12"/><e
+   emt="1" ei="8D679D5111D3E4981000E787EC6DE8A4:2007" art="1"
+   disp_n="2007"/></es></mi></pa></rsl>
+
+ * elementsPromptAnswers: only for AE prompts, a convenience parameter that
+   allows you to answer single or multiple element prompts by supplying
+   individual prompt answers in the form of
+   AttributeID;AttributeElementID^DisplayName.
+   54BABC8311D59D57C000B28A4CC5F24F;54BABC8311D59D57C000B28A4CC5F24F:2^Seattle;54BABC8311D59D57C000B28A4CC5F24F:3^Connecticut
+
+ * objectsPromptAnswers: only for Object prompts, a convenience parameter that
+   allows you to answer single or multiple object prompts by supplying
+   individual answers in the form of objectID~type~name.
+   4C051DB611D3E877C000B3B2D86C964F~4~Profit
+
+ * valuePromptAnswers: only for Value prompts, a convenience parameter that
+   allows you to answer single or multiple value prompts by supplying answers in
+   the form of a string value.
+   1/1/2009
+
+ * linkAnswers: only for Link Drill cases, an XML representation of a hyperlink
+   contains a collection of prompt answers. Passing this parameter with any
+   number of common events automatically applies the supplied prompt answers to
+   as many of the prompts as are found in the particular report, document, or
+   dossier.
+   <hl mid="6B5A7D024603EA9EF80CE7ADFE00211F" srct="3" aopam="2"><prms><prm
+   id="8CA1F15A47DF2333E57A16B30E501DA9" am="1" pt="1"></prm><prm
+   id="5D050A4D44AF5BE2C2F56F90E6ECCA8B" am="4" pt="1"
+   orid="8D679D4B11D3E4981000E787EC6DE8A4" ortp="12"><pa
+   ia="1">South</pa></prm><prm id="2748E189455E5623C464338E636A8146" am="2"
+   pt="2" orid="8D679D4F11D3E4981000E787EC6DE8A4" ortp="12"></prm><prm
+   id="F8976A7446466B8F0138A09AA4961EB1" am="8" pt="1"></prm></prms></hl>
+
+ * srcAnswers: only for Link Drill cases, I cannot find any usage in Web Client,
+   while Mobile side has related usages, so I think this should only be designed
+   for Mobile, its format is the same as promptsAnswerXML. It is used together
+   with linkAnswers, linkAnswers contains answer mode and original object info,
+   while srcAnswers contains answer details.
+   <rsl lcl="1033”><pa tp="10" did="51DC6010464B214F20E092B1B6550B7C” pin="0"
+   pt="7”><mi><es><at did="8D679D4F11D3E4981000E787EC6DE8A4" n="Subcategory”
+   disp_n="Subcategory” sta="1073873279” tp="12" stp="3072” acg="255" dvm="-1”
+   avm="-1" own="”/><e ei="8D679D4F11D3E4981000E787EC6DE8A4:11" fid="”
+   disp_n="Art &amp; Architecture” emt="1” art="1"/><e
+   ei="8D679D4F11D3E4981000E787EC6DE8A4:13” fid="” disp_n="Literature” emt="1"
+   art="1”/></es></mi></pa><pa tp="10" did="D6AA34C5419C89E241B7D29FC530EC9C”
+   pin="0" pt="2”>1234</pa></rsl>
+
+Detail workflow for above parameters can be found in
+PromptsEventHandlerImpl.handleAnswerPromptsInAdvance() as an example.
+
+3.3.3.2 PROMPT ANSWER MODES
+
+This parameter indicates how prompts should be answered, is a
+parameter(promptAnswerMode) of prompt answer events. The following values are
+available from EnumWebPromptAnswerMode:
+
+ * DO_NOT_PASS_PROMPT_ANSWERS = 0
+   Do nothing to the prompts, just display them on the GUI, even we have prompt
+   answers in the event, those answers will be ignored.
+
+ * ALL_PROMPTS_USE_DEFAULT_ANSWER = 1
+
+ * OPTIONAL_PROMPTS_USE_EMPTY_ANSWER = 2
+
+ * USE_SOURCE_ANSWERS_FOR_PROMPT_IN_PROMP = 4
+   This mode is only used for the case we have both linkAnswers and srcAnswers,
+   and we will use their values to answer target’s prompts.
+
+Note there is no default value for this parameter, if it is unset, then we will
+use the value of prompt answer parameters in the event.
+
+3.3.3.3 LINK ANSWER MODES
+
+This parameter is only for Link Drill, and is not a parameter of events, we can
+get it from linkAnswers XML. so it will only take effect when linkAnswers is
+used. The following values are available from EnumLinkAnswerMode:
+
+ * SAME_PROMPT = 1, answer with the same prompt from the source
+
+ * DO_NOT_ANSWER = 2, don’t auto-answer prompts, always display prompt page.
+
+ * CLOSE = 3, answer with an empty answer
+
+ * DYNAMIC = 4, answer dynamically with the selections in source, for example,
+   the selector value, the chosen cell in grid.
+
+ * STATIC = 5, answer with a static list of elements
+
+ * CURRENT_UNIT = 6, answer using current unit
+
+ * ALL_VALID_UNITS = 7, answer using all valid units
+
+ * USE_DEFAULT_ANSWER = 8, use default answer
+
+ * DYNAMIC_OR_SAME_PROMPT = 9, answer dynamically, or with prompt from the
+   source
+
+Detailed workflow can be found in WebHyperLinkAnswerImpl.answerPrompt()
+
+
+4. Prompt in Library
+
+The main difference of Prompt in Web and Library is the UI. Prompt in Web was
+designed many many years ago without any UX Spec, and it cannot meet any
+requirements of Responsive and Accessibility. So, as a modern product, we
+re-design the whole UI of Prompt page in Library. Since the change is quite big,
+we also override many JS methods in prompt-utils.js which is under web-dossier
+repo. Note that those methods should only be related with UI, and there should
+be no logic/workflow changes in them comparing with original methods in Web.
+
+note
+
+In Library Web, for AE prompt and Object prompt, if the display style is List,
+it will be displayed as Checkbox if it supports multiple selection, otherwise it
+will be displayed as Radio button.
+
+For AQ/MQ/HQ prompt, if the display style is Radio button or List, it will be
+displayed as Pulldown.
+
+Related codes: PromptsHelper.updateDisplayStyleProperty(…)
+[https://github.com/mstr-kiai/admin-rest/blob/87c43ab8f16b68e6c737bf4c96d39a08f3afbdd3/production/AdminRest/src/main/java/com/microstrategy/rest/core/PromptsHelper.java#L135-L161]
+
+In Library Web, for AE prompt and Object prompt, if the display style is List,
+it will be displayed as Checkbox if it supports multiple selection, otherwise it
+will be displayed as Radio button.
+
+For AQ/MQ/HQ prompt, if the display style is Radio button or List, it will be
+displayed as Pulldown.
+
+Related codes: PromptsHelper.updateDisplayStyleProperty(…)
+[https://github.com/mstr-kiai/admin-rest/blob/87c43ab8f16b68e6c737bf4c96d39a08f3afbdd3/production/AdminRest/src/main/java/com/microstrategy/rest/core/PromptsHelper.java#L135-L161]
+
+Besides the UI changes, we also have some other changes since in Web we are
+using HTTP/Servlet/Original JS and in Library we are using Rest API/React/Redux.
+In general, we will call related Rest APIs to get the same block data models and
+layout information of Prompts as we get in Web, and then render them in a React
+Component. You can get detail information from the design document: US100417:
+Prompts in Library
+
+
+5. Prompt Client Side Enhance Plan
+
+On Client side, the biggest problem is the big JS files and mixed components in
+each files.
+
+ * In common.js file (10180 lines), we have  models, views, behaviors,
+   itemrenderers, http
+
+ * In core.js file (9047 lines), we have models, controllers, behaviors, utils,
+   http
+
+ * In prompts.js file (7698 lines), we have models, views, itemrenderers,
+   behaviors, utils, http
+
+ * In toolbarsAndAnnotations.js file (11717 lines), we have models, views,
+   controllers, behaviors, itemrenderers, http
+
+ * In trees.js file (5861 lines), we have models, views, behaviors, utils
+
+ * In expressions.js file (10674 lines), we have models, views, utils
+
+This is quite unfriendly, and will make engineers really confused. After so many
+years' code change, now these related file names also doesn't make sense because
+when we adding new methods, it is not easy to identify which file to be added.
+And when we change some methods, sometimes we may consider the changed method
+only be used for some scenarios, but in fact it may be a public method.
+
+So below is the enhance plan:
+
+
+5.1 Move methods of same layer together (Optional): 80 points
+
+In fact, we already have many empty files for these layers under the same "mstr"
+folder, like models.js, views.js, controllers.js. It seems that in the past, we
+already had the plan to move methods, but it was suspended due to some reasons.
+
+So here we can continue this suspended work, instead of moving
+all mstr.models.XXX methods to models.js, for each object, we will create a
+standalone file with the same name like TextBox.js, and put these files under
+related layer’s folder.
+
+Risk: Medium
+
+ 1. We need to check the dependency and requirements for these files, make sure
+    all the files that depend on these files will be changed to new files.
+
+ 2. For Library, WorkStation and any other products that will require these
+    files, we need to notice them to change related scripts to require new
+    files.
+
+ 3. For some plugins that overrides methods of these files, we need to make sure
+    they still work. We can write a new plugin to test this case to make sure
+    this change will not affect customer's plugins.
+
+
+5.2 Remove useless codes for old browsers: 24 points
+
+In the past, we added many codes to handle specific browser cases (especially
+for IE). And now those cases are not valid any more since we don’t support those
+browser versions, so those codes will never be executed any more.
+
+So in this step, we plan to remove these codes by searching the usage of below
+flags in our code library: mstr.utils.ISIE4, ISIE6, ISIE7 and so on.
+
+Risk: Low
+
+Since in our product’s official statement, we don’t support those old browsers
+any more, it should be safe to remove related special handling codes.
+
+
+5.3 Correct the JS errors/warnings found by Lint tools: 40 points
+
+By using SonarLint [https://www.sonarlint.org/], I find 1514 problems in our JS
+codes under mstr folder. Though most of them are not really problems that will
+cause issues, but it will make our code much more clean if we solve these
+problems:
+
+Risk: Low
+
+
+5.4 Add Unit Test, refactor codes and add necessary comments: 240 points
+
+Since we should not have any plans for new features for prompt, it is too
+expensive and risky to re-design the whole framework, so here we will only do
+below things:
+
+ 1. For the backward compatibility, we should not rename existing methods, so we
+    need to add extra comments about those confused methods, for example, we
+    have mstr.behaviors.PromptSaveCheckbox and mstr.behaviors.PromptSaveCheckbox2,
+    before spending times to investigate, nobody knows the differences between
+    these two.
+
+ 2. Normal refactor ways, like abstract duplicate codes.
+
+ 3. To make sure the refactor will not introduce new regression issue, we need
+    to add unit tests for our codes. Since there are too many methods in related
+    files, it is acceptable that we only add unit tests for the methods that are
+    refactored.
+    For those methods that we only move them from one file to another file, or
+    the methods that we don't touch, we can ask our engineers to add unit tests
+    in future when we have issues and need to modify these methods.
+
+Risk: Medium
+
+Currently we are working on the automation test for Prompt on both Web and
+Library, with Automation and Unit Test’s help, we can reduce the risk of code
+refactoring.
+
+
+6 List of Corner Cases
+
+Since Prompt is a complex feature with lots of scenarios, here I list the corner
+cases that might be missed when fixing/reviewing/testing related issues
+
+ * Report Builder when we change Object Prompt or Style with Shopping Cart/Tree.
+
+ * Value Prompt when we change logic of converting string to array and back.
+
+ * preSelectedItems property when we change logic of List Prompt Answer

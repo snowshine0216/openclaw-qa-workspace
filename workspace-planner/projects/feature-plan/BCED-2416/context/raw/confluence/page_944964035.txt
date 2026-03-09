@@ -1,0 +1,1520 @@
+===== PAGE 944964035 =====
+Client M2021 UX Plan here: M2021 UX/UI Plan
+[http://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSMOBILEVIEWER/pages/803546694]
+
+Initial UX spike: Library Desktop App Design Spike
+[http://microstrategy.atlassian.net/wiki/pages/createpage.action?spaceKey=TECCLIENTSWEBVIEW&title=Library+Desktop+App+Design+Spike&linkCreation=true&fromPageId=837681630]
+
+Items need to confirm with Shri:
+
+ * Are we just concentrating on Mac for MVP, or Windows too? - Both, but more
+   emphasis on Mac.
+
+ * Do we need 2 sets of UI for Mac and Windows, or can we have it more
+   universal? - Universal would be better, but in areas where it would be too
+   boring, we should consider OS-specific UI.
+
+Below, "Wishlist MVP" means it would be nice to have for the MVP, but at least
+have it in mind during design so that the product is designed for smooth
+integration when the feature finally comes. So, design for MVP, though it may
+not get into the MVP product release.
+
+
+Library Desktop
+
+Release
+
+Initiative
+
+Description
+
+Design
+
+Details
+
+Status
+
+Designer
+
+On boarding
+
+MVP
+
+
+
+
+Launch experience
+
+Launch and Authentication Experience
+[http://microstrategy.atlassian.net/wiki/pages/createpage.action?spaceKey=TECCLIENTSWEBVIEW&title=Launch+and+Authentication+Experience&linkCreation=true&fromPageId=837681630]
+
+ * Standalone desktop experience
+
+ * Embed with desktop/workstation
+
+ * Launch from web Library
+
+Needs rev...Blue
+
+Qingru
+
+MVP
+
+
+
+
+On boarding experience
+
+Mobile
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSMOBILEVIEWER/pages/807537171/Onboarding+Experience+for+iOS],
+for reference
+
+1st time Desktop launch
+
+
+
+
+Ashley
+
+Future
+
+I12223
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293333825856]
+
+Multiple environment support
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+MVP
+
+
+
+
+Authentication experience
+
+Launch and Authentication Experience
+[http://microstrategy.atlassian.net/wiki/pages/createpage.action?spaceKey=TECCLIENTSWEBVIEW&title=Launch+and+Authentication+Experience&linkCreation=true&fromPageId=837681630]
+
+ * Inherit desktop environment login
+
+ * Or jump to web authentication page
+
+ * Use Key Chain
+   F24948
+   [https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347247068]
+
+Needs rev...Blue
+
+Qingru
+
+Library home
+
+MVP
+
+I17040
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/329236443480]
+
+Library Home
+
+Library Desktop Home
+[http://microstrategy.atlassian.net/wiki/pages/createpage.action?spaceKey=TECCLIENTSWEBVIEW&title=Library+Desktop+Home&linkCreation=true&fromPageId=837681630]
+
+Library home desktop frame UI (Toolbar, icons)
+
+
+
+
+Ashley
+
+MVP
+
+
+
+
+
+
+
+
+
+
+Updated card view
+
+
+
+
+Qingru / Ashley
+
+MVP
+
+
+
+
+
+
+
+
+
+
+List view
+
+
+
+
+Chenyang
+
+MVP
+
+
+
+
+Multi-select
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/839583424/Library+Desktop+Home]
+
+iOS parity
+
+OngoingYellow
+
+Chenyang
+
+MVP
+
+
+
+
+Filter the library
+
+
+
+
+
+
+
+OngoingYellow
+
+Chenyang
+
+MVP
+
+
+
+
+Info window (leverage the new look and feel info window)
+
+
+
+
+
+
+
+OngoingYellow
+
+Chenyang/Ashley
+
+MVP
+
+
+
+
+Export dossiers, documents, and reports to PDF
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/839583424/Library+Desktop+Home]
+
+
+
+
+
+OngoingYellow
+
+Chenyang
+
+MVP
+
+
+
+
+Download MSTR File
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/839583424/Library+Desktop+Home]
+
+
+
+
+OngoingYellow
+
+
+Chenyang
+
+Q3 11.3 RC
+
+I17350
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/344103418740]
+
+Organize & Distribute Content in Library
+
+
+
+
+
+
+
+
+
+
+Ashley
+
+Q2 11.3 EA
+
+I12164
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293332632728]
+
+Display Focused items on Library home screen
+
+
+
+
+
+
+
+
+
+
+Ashley
+
+Future
+
+I12117
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293331442724]
+
+Enhance Usability with Personalized OOTB Theme and Layout
+
+
+
+
+New features to include:
+
+ * Dynamic color suite
+
+ * Different color palette
+
+
+
+
+Qingru/Ashley
+
+Q3 11.3 RC
+
+I17081
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/329563636392]
+
+Full metadata search
+
+Mobile designs for Data search
+[http://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSMOBILEVIEWER/pages/751176515/Data+search]
+
+
+
+
+New features to include:
+
+
+
+
+Qingru
+
+Q3
+
+
+
+
+ * Spotlight search
+   F24944
+   [https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329346437084]
+
+
+
+
+Q3
+
+
+
+
+ * Command + K
+
+
+
+
+Q3
+
+
+
+
+ * Command + F
+
+
+
+
+Q4
+
+I17922
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/354415795776]
+
+Search & View Hyperintelligence Cards in Library Web
+
+
+
+
+New features to include:
+
+
+
+
+Qingru
+
+MVP
+
+
+
+
+Notification
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/839583424/Library+Desktop+Home]
+
+New features to include:
+
+ * Integrate OS notification
+   F24945
+   [https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347014956]
+
+OngoingYellow
+
+
+Chenyang
+
+MVP
+
+
+
+
+Preferences and settings
+
+
+
+
+ * Settings for cache, offline, theme, accessibility, etc.
+
+ * Environment management.
+
+ * Security setting.
+
+Needs rev...Blue
+
+Qingru
+
+Dossier/document Viewer
+
+MVP
+
+I12104
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293331420904]
+
+View Dossier and Documents
+
+
+
+
+ * Dossier viewer frame (icons, visual guideline)
+
+ * Open a dossier in a separate window
+   F24949
+   [https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347608196]
+
+
+
+
+Ashley
+
+MVP
+
+
+
+
+
+
+
+
+
+
+Exporting and printing
+F24950
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347611392]
+
+
+
+
+
+
+
+Future
+
+
+
+
+
+
+
+
+
+
+Open Excel files
+F24951
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347611392]
+
+
+
+
+
+
+
+Q4
+
+
+
+
+
+
+
+
+
+
+Built-in Hyper experience
+F24955
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329349667348]
+
+
+
+
+
+
+
+MVP
+
+I12263
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334518296]
+
+Pin ToC Open in Library
+
+
+
+
+
+
+
+
+
+
+Chenyang
+
+MVP (for design consideration)
+
+I12262
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334516504]
+
+Launch Dossier Editor from Dossier Viewer - edit dossiers, documents, or reports
+(in Web, or new in-canvas authoring (which would basically be Library Editor
+included in the standalone Library Desktop)
+
+
+
+
+New features to include:
+
+ * How to launch editor window from view window
+
+ * If I want to edit a dossier I’m viewing in the Viewer standalone app, how
+   does that happen
+
+ * How is that different from if you start in Workstation and go into Library
+   and then want to edit?
+
+OngoingYellow
+
+Qingru
+
+MVP
+
+
+
+
+Bookmark panel
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+Q2 11.3 EA
+
+I12108
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293331427068]
+
+Share bookmark
+
+
+
+
+New features to include:
+
+ * Easily send bookmarks to mail, Slack, Powerpoint
+   F24952
+   [https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/329347616888]
+
+
+
+
+MVP
+
+I12259 [https://rally1.rallydev.com/#/40120756498d/search?keywords=I12259]
+
+Undo
+
+
+
+
+
+
+
+
+
+
+Chenyang
+
+MVP
+
+
+
+
+Filter panel
+
+
+
+
+
+
+
+
+
+
+Chenyang
+
+MVP
+
+I17614
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/349678384372]
+
+Collaboration
+
+
+
+
+New features to include:
+
+
+
+
+Chenyang/Qingru
+
+Q2 11.3 EA
+
+
+
+
+Private Discussion
+
+ * threaded conversation
+
+
+
+
+
+
+
+Q2 11.3 EA
+
+I13309
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293351843532]
+
+Private chat
+
+
+
+
+New features to include:
+
+
+
+
+Chenyang
+
+MVP
+
+
+
+
+Share - need to consider sharing bookmarks situation.
+
+
+
+
+
+
+
+
+
+
+Chenyang/Qingru
+
+Systematic
+
+MVP
+
+
+
+
+Offline mode
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/900389029/Library+Desktop+Offline+Handling]
+
+
+
+
+Needs rev...Blue
+
+Yiqi
+
+MVP
+
+
+
+
+Rendering experience Desktop
+
+Link
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/844243964/Rendering+experience]
+
+Including cache, precache, manual cache, parity with iOS
+
+OngoingYellow
+
+Yiqi
+
+MVP
+
+
+
+
+Rendering experience Mobile
+
+Confluence page
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSMOBILEVIEWER/pages/834438629/11.2.1+Dossier+Document+Loading+Experience]
+
+
+
+
+
+
+
+MVP
+
+
+
+
+Error handling
+
+
+
+
+
+
+
+
+
+
+Chenyang/Ashley
+
+Wishlist MVP
+
+
+
+
+Accessibility
+
+
+
+
+
+
+
+
+
+
+Leverage OS native capability
+
+MVP
+
+
+
+
+Mac specific native capability exploration: Touch bar, toolbar, widget
+
+
+
+
+
+
+
+Needs rev...Blue
+
+Qingru
+
+Wishlist MVP
+
+
+
+
+Drag & drop behavior
+(of panels?)
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+Wishlist MVP
+
+
+
+
+Windows specific native capability exploration: Touch bar, toolbar, widget
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+Future
+
+
+
+
+Spike for the Mac "Handoff" feature - Mac desktop collaboration with iPad/iPhone
+
+
+
+
+
+
+
+
+
+
+Yiqi
+
+
+Library Web
+
+The below initiatives regard Web Library, and will be shared with Desktop.
+
+Release
+
+Initiative
+
+Description
+
+Feature
+
+Description
+
+Status
+
+Spec
+
+Web Designer
+
+IOS Designer
+
+Android Designer
+
+
+
+
+I12108
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293331427068]
+
+Shared Bookmarks for High-performance Context
+
+Old:
+F11524
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/feature/206743887372]
+F13085
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/feature/2deeb257-f002-47c6-949a-d3dab1473586]
+
+F17443 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/282314929828]
+
+Share Bookmarks - Library Web
+
+OngoingYellow
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+F21230 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/294945288824]
+F21350 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/295323149472]
+
+Share Bookmarks
+
+ * iOS
+
+ * Android
+
+
+
+
+
+
+
+
+
+
+Jiacheng
+
+F20255 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/293332027388]
+
+Bulk deletion
+
+Design required
+
+
+
+
+
+
+
+
+
+
+
+
+
+I12117
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293331442724]
+
+Enhance Usability with Personalized OOTB Theme and Layout
+
+F27822 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/353805040356]
+
+... for Web Library
+
+one small sketchy mockup exists
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I17901
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/352927151048]
+
+Support Bookmarks for Dossier Linking in Library
+
+F27820 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/353799846512]
+
+Support Bookmarks for Dossier Linking in Library Web/iOS/Android
+
+Design required
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I12259 [https://rally1.rallydev.com/#/40120756498d/search?keywords=I12259]
+
+Undo Button in Library
+
+F22232 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/300817893820]
+
+Undo/redo manipulations in Library Clients
+
+Mockup exists
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I12262
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334516504]
+
+Launch Dossier Editor from Dossier Viewer
+
+F20264 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/293332653460]
+
+in Web
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+F22025 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/299893058892]
+F24270 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/320971228620]
+
+ToC info in iOS
+ToC info in Android
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I12263
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334518296]
+
+Pin ToC Open in Library
+
+F21513 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/296203528012]
+
+
+
+
+OngoingYellow
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+
+
+
+I12268
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334526352]
+
+Improve Usability through Readable and Actionable Error Messages
+
+F27821 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/353801881120]
+
+Web
+
+OngoingYellow
+
+
+
+
+Chenyang
+
+
+
+
+
+
+
+F15024 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/257840138420]
+
+iOS & Android
+phase 3
+
+
+
+
+
+
+
+Jiacheng
+
+
+
+
+
+
+
+
+
+
+I12274
+[https://rally1.rallydev.com/#/27953094056d/detail/portfolioitem/initiative/293334534920]
+
+Row Level Highlighting
+
+
+
+
+
+
+
+Design required
+
+
+
+
+Chenyang
+
+
+
+
+
+
+
+
+
+
+I12275
+
+Ability to Copy Text from Cell
+
+Moved to 
+F25201
+(below)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Copying a Single Grid Cell to Clipboard
+
+F25201
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/feature/333519700468]
+US216553
+[https://rally1.rallydev.com/#/40120756498d/detail/userstory/354063542040]
+
+
+
+
+
+
+
+
+
+
+
+Yiqi
+
+
+
+
+
+
+
+
+
+
+U 096
+
+TH2984
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/theme/293332036240]
+
+Accessibility
+
+
+
+
+
+
+
+OngoingYellow
+
+Accessibility Feature Checklist
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/526288005/Accessibility+Feature+Checklist]
+
+Chenyang
+
+
+
+
+
+
+
+
+
+
+I17081
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/329563636392]
+
+Full Metadata Search from Library
+
+F27686 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/349978412820]
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+
+
+
+I12164
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293332632728]
+
+Display Focused items on Library home screen
+
+F18749 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/292432536592]
+
+Web
+
+
+
+
+
+
+
+Ashley
+
+
+
+
+
+
+
+F21167 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/294717500332]
+F21333 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/295280347648]
+
+iOS
+Android
+
+
+
+
+
+
+
+Jiacheng
+
+
+
+
+
+
+
+
+
+
+I17350
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/344103418740]
+
+Organize & Distribute Content in Library
+
+F21336 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/295285801588]
+
+Web
+
+
+
+
+
+
+
+Ashley
+
+Chenyang
+Mobile Designs are here: Organize and distribute content in Library
+[http://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSMOBILECTC/pages/715917956/Organize+and+distribute+content+in+Library]
+
+F17205 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/279627225480]
+F21326 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/295256258688]
+
+iOS
+Android
+
+
+
+
+
+
+
+Jiacheng
+
+F25832 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/344185441740]
+
+Enable end users to create freeform tags in Library
+
+
+
+
+
+
+
+Ashley
+
+
+
+
+I17922
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/354415795776]
+
+Search & View Hyperintelligence Cards in Library Web
+
+
+
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+
+
+
+I13311
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293352302736]
+
+Collaboration Management (Posts and Messages)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I12128
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293332031740]
+
+Bookmarks in Collaboration Service
+
+
+
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+
+
+
+I13309
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/293351843532]
+
+Individual and Group Collaboration Discussions
+
+F21225 [https://rally1.rallydev.com/#/detail/portfolioitem/feature/294944185684]
+
+
+
+
+
+
+
+
+
+
+Qingru
+
+
+
+
+
+
+
+
+
+
+I17614
+[https://rally1.rallydev.com/#/40120756498d/detail/portfolioitem/initiative/349678384372]
+
+Threaded Conversations
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chenyang
+
+
+
+
+
+
+
+

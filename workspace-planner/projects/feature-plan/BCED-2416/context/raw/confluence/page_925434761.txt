@@ -1,0 +1,509 @@
+===== PAGE 925434761 =====
+Library Desktop is a desktop app for Mac and Windows that renders the
+MicroStrategy Library for data consumption with an instant response user
+experience.
+
+
+
+These are five major areas of development in the roadmap to the Library Desktop
+MVP:
+
+ 1. Functionality parity with Library Web using a desktop window paradigm as
+    opposed to a web page paradigm.
+
+ 2. Caching is used to download dossier data for fast consumption.
+
+ 3. Authentication in Library Desktop remembers the user credentials.
+
+ 4. Workstation Integration. Launch the Library Desktop from Workstation.
+
+ 5. Offline capability in Library Desktop.
+
+
+User Experience
+
+--------------------------------------------------------------------------------
+
+All of the UX mockups are documented on this page:
+
+https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/838600177/Library+Desktop+App
+[https://microstrategy.atlassian.net/wiki/spaces/TECCLIENTSWEBVIEW/pages/838600177/Library+Desktop+App]
+
+
+
+
+Product Development
+
+--------------------------------------------------------------------------------
+
+
+TEC PM Initiatives
+
+Product Management Initiatives in 11.2.2 and 11.2.3.
+
+https://aqueduct.microstrategy.com/MicroStrategyLibrary/app/0730F68F4B8B4B52AA23F0AAB46F3CA8/1EBE32AE11E8749DE58A0080EF25319C/share
+[https://aqueduct.microstrategy.com/MicroStrategyLibrary/app/0730F68F4B8B4B52AA23F0AAB46F3CA8/1EBE32AE11E8749DE58A0080EF25319C/share]
+
+
+Library Desktop Validation (AT Special Project)
+
+Advanced Technology validation project for Library Desktop.
+
+Library Desktop Validation
+
+
+Release Planning and Marketing Strategy
+
+Product Management Release Plan.
+
+
+
+
+
+
+TEC PD Features and Sizing
+
+Library Desktop MVP is planned for Q2 as a controlled release available in
+11.2.2.
+
+https://aqueduct.microstrategy.com/MicroStrategyLibrary/app/0730F68F4B8B4B52AA23F0AAB46F3CA8/4DF448B911E7212100000080AF91D5A0/share
+[https://aqueduct.microstrategy.com/MicroStrategyLibrary/app/0730F68F4B8B4B52AA23F0AAB46F3CA8/4DF448B911E7212100000080AF91D5A0/share]
+
+
+
+
+TEC PD Dependencies
+
+Dependencies on other teams for Library Desktop.
+
+Server
+
+JSON Cache API for background downloading and validation
+
+F21175
+[https://rally1.rallydev.com/#/detail/portfolioitem/feature/294757847700?fdp=true]:
+Android Library JSON Cache online validation for fast response time
+
+US162973 [https://rally1.rallydev.com/#/detail/userstory/295297239040?fdp=true]:
+Dossier JSON cache validation | iServer support
+
+Server
+
+Health API
+
+F24646
+[https://rally1.rallydev.com/#/detail/portfolioitem/feature/326685885868?fdp=true]:
+Predictive Library Caching to improve Dossier opening response time in Library
+iOS app
+
+US226876 [https://rally1.rallydev.com/#/detail/userstory/367483439108?fdp=true]:
+Server | Provide server load API so that client applications could adjust
+predictive caching frequency so to avoid overload server
+
+F26676
+[https://rally1.rallydev.com/#/detail/portfolioitem/feature/348993923872?fdp=true]:
+Leverage operating system provided thread prioritization mechanisms to
+prioritize interactive requests over batch jobs (subscriptions) over background
+cache generation
+
+F26677
+[https://rally1.rallydev.com/#/detail/portfolioitem/feature/348994671736?fdp=true]:
+Extend job queuing infrastructure to prioritize interactive requests over batch
+jobs over background cache generation
+
+Visualizations
+
+Optimize visualizations for rendering performance
+
+F28665
+[https://rally1.rallydev.com/#/detail/portfolioitem/feature/366197555972?fdp=true]:
+Visualization Rendering Optimizations for Library Desktop
+
+Workstation
+
+Integration with Workstation
+
+5 incomplete Workstation integration to be determined.
+
+Authentication
+
+Remember Me functionality to store the user’s credentials
+
+F27982 Library Desktop Authentication
+
+Dossier Authoring
+
+Presentation Mode should be backwards compatible with old environments
+
+The assumption is that Presentation Mode is backwards compatible but should be
+tested in QA Plans.
+
+
+
+
+TEC QA Automation
+
+Spectron is the default tool for end-to-end automation of Electron based apps.
+We expect to use the tool to automate Library Desktop.
+
+https://www.electronjs.org/spectron [https://www.electronjs.org/spectron]
+
+
+
+
+Architecture
+
+--------------------------------------------------------------------------------
+
+Library Desktop is built on top of Electron technology which is a popular
+framework used by well known desktop apps.
+
+→ Electron employs a Chromium based browser which allows us to port the user
+interface from the Library Web app to the Library Desktop.
+
+→ Electron supports distributions on Mac and Windows which facilitates the
+portability in multiple operating systems.
+
+https://microstrategy.atlassian.net/wiki/x/2wIpMQ
+[https://microstrategy.atlassian.net/wiki/x/2wIpMQ]
+
+
+
+There are a handful of invariants that are established for the Library Desktop:
+
+ 1. Library Desktop can have 0, 1, or more Environments, where an environment is
+    the URL of a Library Web Server.
+
+ 2. Library Desktop has one Active Environment when more than one environments
+    are set. The user selects the Active Environment. If the user does not have
+    a chance to select an active environment, then the app selects the first one
+    as default.
+
+ 3. Library Desktop employs to first class non-modal windows to display the user
+    interface:
+    
+    1. Library Window displays the user’s library of the Active Environment.
+       There is only one Library Window instance at any time in the applications
+       lifetime. The Library Window may be hidden or closed.
+    
+    2. Dossier Window displays the contents of a dossier that is selected from
+       the Library Window. There can be 0 or many Dossier Window instances
+       opened at any time in the application’s lifetime.
+
+ 4. Switching the Active Environment in the application closes all Dossier
+    Windows and updates the contents of the Library Window to display the user
+    library from the new selected environment.
+
+ 5. Library Desktop employs other second class windows for example for Login and
+    Preferences which function as modal windows.
+
+In Mac, the Library Window can be closed while the app remains opened. The user
+can re-open the window from the menu bar. This is a standard paradigm of the Mac
+OS.
+
+
+
+The following sections describe architectural concerns that are being considered
+in the app.
+
+
+Packaging and Functionality
+
+Library Desktop is packaged as an Electron app and uses React to render the user
+interface. The user interface is ported from the Library Web app but rendered
+locally in the desktop app (without using Web View techniques). End user actions
+produce manipulations that are executed through the Rest API in the Library Web
+Server.
+
+
+How is the application packaged
+
+The application is packaged as a standard Electron app using Electron Builder.
+Electron Builder produces installers for both Windows and Mac.
+
+
+How is the application versioned
+
+The application follows the latest version of the platform so Library Desktop
+ships a GA version on every quarter. Customers see a single line of Library
+Desktop releases and simply update to the latest version of the app.
+
+→ Changes in versions that are shipped as GA (eg. 11.2.4 or 11.3.4) must be
+included in the next production release as well.
+
+→ Library Desktop can connect to older Library Web Server environments. If a
+customer updates Library Desktop from 11.3.3 to 11.4, the customer can connect
+Library Desktop 11.4 to the 11.3.x Library Web environment.
+
+→ Library Desktop packages the JS bundles and static assets of the latest
+release and renders the UI with the packaged bundles. Therefore the application
+must be backwards compatible when connected to older Library Web servers.
+
+925763807010925434761LibraryDesktopVersioning.drawio166https://microstrategy.atlassian.net/wikiLibraryDesktopVersioning.drawioundefined691391
+
+
+
+
+Can Library Desktop connect to older environments of Library Web
+
+Yes, Library Desktop can connect to older environments. In that scenario, user
+interface elements are hidden for functionality that is not applicable to the
+environment.
+
+
+
+
+How is the application downloaded by a customer
+
+The application can be downloaded from the MicroStrategy Download Site or
+through the Mac and Windows stores.
+
+
+
+
+How is the application updated
+
+Electron supports mechanisms for automatic application updates.
+
+https://microstrategy.atlassian.net/wiki/x/pA4tNw
+[https://microstrategy.atlassian.net/wiki/x/pA4tNw]
+
+
+
+
+How is the application patched
+
+We don’t expect to patch the Library Desktop to individual customers. Instead,
+patches are provided as minor updates in the Download Site and Stores and all
+customers can upgrade the latest version.
+
+
+
+
+How is the application uninstalled
+
+On Mac an uninstaller should be provided to uninstall the application. On
+Windows the application uninstalls using the Windows Add and Remove Programs
+tool.
+
+Uninstalling the application should delete the user's data. Specifically, the
+dossier cached data.
+
+
+
+
+How is the user interface rendered in Library Desktop
+
+The React based applications from Library Web are ported to Library Desktop. The
+React applications render the user interface for the Library Window and the
+Dossier Window. However, the React applications are rendered from a local file
+instead of a web server so special considerations are required for cookie
+management.
+
+
+
+
+How does Library Desktop ensure rendering parity with Library Web
+
+The Library Desktop is built on top of the Chromium Browser so rendering should
+be equivalent to Library Web in Chrome browsers. Customers using Library Web in
+IE and Library Desktop (in Chromium) will observer the same differences as
+between Library IE and Chrome browsers.
+
+7 incomplete Double check usage of embedded fonts in Library Desktop.
+
+
+
+
+Caching and Offline
+
+Library Desktop uses a Background Cache Process to store the dossier content in
+a database. The database can then be used to provide the dossier content without
+a network roundtrip.
+
+
+
+
+General workflow of background caching and validation
+
+The caching workflows are described in the page below.
+
+https://microstrategy.atlassian.net/wiki/x/RQUiMg
+[https://microstrategy.atlassian.net/wiki/x/RQUiMg]
+
+
+
+
+What database is used to store the dossier cached data
+
+We use IndexedDB which comes with the Chromium browser included in Electron.
+
+https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+[https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API]
+
+
+
+We use the Dexie JS wrapper library to access IndexedDB.
+
+https://dexie.org/ [https://dexie.org/]
+
+https://github.com/dfahlander/Dexie.js/blob/master/LICENSE
+[https://github.com/dfahlander/Dexie.js/blob/master/LICENSE]
+
+
+
+
+What is the performance of the database
+
+The database benchmark study is described in the link below. In general, 50 MB
+of content can be read from the database in 150 ms.
+
+https://microstrategy.atlassian.net/wiki/x/BABMNw
+[https://microstrategy.atlassian.net/wiki/x/BABMNw]
+
+
+
+
+What data is stored in the database
+
+The database stores JSON originating from the Library Web Server. The database
+stores three classes of JSON data:
+
+ * Library JSON stores the contents of the user’s library.
+
+ * Dossier JSON stores the contents of dossiers.
+
+ * Document JSON stores the contents of RSD documents.
+
+
+
+
+What is the database schema
+
+The goal of the schema design is to optimize for Read operations which must
+return as fast as possible to achieve sub-second response time when opening
+dossiers. Write operations are less critical as the application’s Background
+Cache runs in the background when the application is idle. We expect to design
+an schema that matches the data requests coming from the user interface. In
+general, we anticipate the following stores:
+
+ * Library - stores the library contents.
+
+ * Dossier - stores high level dossier data (e.g. name, last-update,
+   table-of-contents).
+
+ * Page - stores dossier page data.
+
+ * Grid - stores grid data for incremental fetching.
+
+ * Document - stores report-services-document data.
+
+1 incomplete Schema design review to optimize the schema for size and read/write
+performance.
+
+
+
+
+When are dossiers removed from the database after removing from the Library
+
+We remove dossiers from the database after the user removes a dossier from the
+library. We expect to have a grace period before removing the dossier from the
+database to give users a chance to bring back a dossier to the library before
+losing the cache.
+
+A dossier can be removed from Workstation or Library Web and Mobile clients. In
+this case dossiers are removed from the cache when launching Library Desktop.
+
+
+
+
+What is needed to add cryptography in the database
+
+Dexie JS provides a plugin for cryptography.
+
+https://github.com/mark43/dexie-encrypted/blob/master/LICENSE
+[https://github.com/mark43/dexie-encrypted/blob/master/LICENSE]
+
+2 incomplete Validate the plug-in for security, robustness, etc.
+
+
+
+
+How are the OS and MicroStrategy accounts mapped to the data in the database
+
+The data in the database in partitioned based on the combination of environment
++ user
+
+8 incomplete In the case when user come from Workstation with an identity token
+the user should reuse the cache.
+
+
+
+
+What is the application type for the Library Desktop Background Cache Process
+
+Library Desktop will reuse the same user session for the background cache
+process and the regular application usage. Therefore the same application type
+will be used for the Library Desktop Background Cache Process.
+
+3 incomplete Platform Analytics will not be able to break down activity from the
+Library Desktop Background Cache Process.
+
+
+
+
+Authentication
+
+Library Desktop supports the authentication modes of the Library Web. In
+addition, Library Desktop stores the user credentials in the desktop.
+
+
+How is the application storing the user’s credentials
+
+We plan to use the Keytar library to store user credentials in the OS.
+
+https://github.com/atom/node-keytar [https://github.com/atom/node-keytar]
+
+https://github.com/atom/node-keytar/blob/master/LICENSE.md
+[https://github.com/atom/node-keytar/blob/master/LICENSE.md]
+
+4 incomplete What is the expectation of storing credential for each
+authentication mode.
+
+
+
+
+What is the support to store credentials for Mac and Windows
+
+On Mac, credentials are stored in Key Chain. On Windows, credentials are stored
+in the Credential Vault.
+
+
+
+
+How can the credentials be flushed
+
+The Keytar library provides a way to delete credentials so we can potentially
+implement a “Forget” option.
+
+https://github.com/atom/node-keytar#deletepasswordservice-account
+[https://github.com/atom/node-keytar#deletepasswordservice-account]
+
+
+
+
+How will the background cache mechanism authenticate on behalf of the user
+
+The Library Desktop authenticates the user on each environment for which the
+credentials can be obtained from the Keytar library. Library Desktop, then uses
+the session on each environment to execute the Background Cache mechanism.
+
+
+
+
+What is the Application Type of Library Desktop
+
+Library Desktop will likely introduce a new application type for Login. Platform
+Analytics should be able to break down activity for the Library Desktop.
+
+

@@ -1,0 +1,32 @@
+## Answer
+
+MicroStrategy Workstation report editor lacks advanced features like SQL view and custom groups compared to Library, which offers more comprehensive report management and creation tools.
+
+---
+
+## Sources
+
+- **Report FAQs - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/Library/en-us/Content/report_faqs.htm
+  The Report Editor offers the capability to create prompts and filters ... Workstation and Library. Calculations. Report Limit > Report Filter. Metric
+
+- **Create and Edit Reports - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/create_static_reports.htm
+  Starting in Strategy One (January 2026), you can drag objects from the Workstation window into your Report and Filter editors. Click and drag objects such as metrics, attributes, and filters from the Project, Object, Components in object Properties, Dependents in object Properties, Global Search, an...
+
+- **Creating and Editing Reports in MicroStrategy Library - YouTube** (relevance: 100%)
+  https://www.youtube.com/watch?v=odRlTceb7-c
+  Comments · Get Started With MicroStrategy Workstation - Everything You Need to Know · Fact Extensions - Degradation - MicroStrategy · Upgrade Your
+
+- **New Features in MicroStrategy from the Second Half of 2023 Onward** (relevance: 100%)
+  https://www.crmt.com/resources/blog/new-features-in-microstrategy-from-the-second-half-of-2023-onward/
+  Report Creation and Management: Users can now create reports directly within the Library interface, simplifying the report generation and
+
+- **Top Tips: Setup and Support for MicroStrategy Library - YouTube** (relevance: 100%)
+  https://www.youtube.com/watch?v=5lRfYaSQxA8
+  ... Report Services Documents (RSDs). Our product experts: 00 ... How to Connect applications in MicroStrategy Workstation. Bhoopendra
+
+- **Edit All Project-Level Settings - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/application_all_settings.htm
+  The ability to view or edit certain settings is determined by a user's privileges. All necessary privileges are included in the Administrator role by default.
+
