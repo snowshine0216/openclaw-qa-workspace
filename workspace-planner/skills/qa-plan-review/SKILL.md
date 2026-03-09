@@ -15,9 +15,20 @@ Input arrives through `context.json`.
 {
   "mode": "review",
   "feature_id": "BCIN-6709",
-  "draft": "drafts/qa_plan_v1.md"
+  "draft": "drafts/qa_plan_v1.md",
+  "review_output": "context/review_qa_plan_BCIN-6709.md"
 }
 ```
+
+If `review_output` is omitted, default to `context/review_qa_plan_<feature-id>.md`.
+
+Resolve scripts from `projects/feature-plan/scripts/` and persist the completed review with:
+
+```bash
+"$SCRIPTS/save_context.sh" "$FEATURE_ID" "review_qa_plan_$FEATURE_ID" "<review-file-or-inline-content>"
+```
+
+Do not hand off Phase 3 until the review artifact exists at the deterministic path above.
 
 ## Shared review contract
 
@@ -108,3 +119,9 @@ Do not approve a review artifact if:
 - a required section was effectively replaced
 - the draft requires the tester to guess trigger, action, or visible result
 - the draft materially fails the acceptance quality bar
+
+## Output artifact contract
+
+- Save exactly one Phase 3 review artifact to `context/review_qa_plan_<feature-id>.md`.
+- Always save the artifact, even when the disposition is `Fail`.
+- Return the saved artifact path in the completion message so `qa-plan-refactor` can consume it without re-inferring filenames.

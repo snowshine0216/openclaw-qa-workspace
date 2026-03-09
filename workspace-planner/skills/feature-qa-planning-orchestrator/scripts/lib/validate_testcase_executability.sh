@@ -29,7 +29,7 @@ check_pattern() {
   done < <(printf '%s\n' "$MANUAL_TEXT" | grep -iE "$pattern" || true)
 }
 
-check_pattern 'EXEC_VAGUE_TRIGGER' 'recover from a supported report execution or manipulation error|documented branch behavior'
+check_pattern 'EXEC_VAGUE_TRIGGER' 'when an error occurs|:[[:space:]]*(### |- )[[:space:]]*after recovery\b|recover from a supported report execution or manipulation error|documented branch behavior'
 check_pattern 'EXEC_VAGUE_ACTION' 'perform another valid editing action|valid editing action'
 check_pattern 'EXEC_VAGUE_EXPECTED_RESULT' 'observe the recovered state|verify correct recovery|verify recovery|matches documented branch behavior'
 check_pattern 'EXEC_CODE_VOCAB_IN_MANUAL' 'cmdMgr|reCreateInstance|isReCreateReportInstance|window\.mstrApp|service\.login|returns \{|stid=-?[0-9]+|noActionMode|resolveExecution|[A-Za-z_][A-Za-z0-9_]*\(\)'

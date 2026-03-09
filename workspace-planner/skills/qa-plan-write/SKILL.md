@@ -21,6 +21,10 @@ Input arrives through `context.json`.
 }
 ```
 
+Phase outputs are deterministic:
+- `mode=context` saves source artifacts under `context/`
+- `mode=write-plan` writes exactly one reviewed draft to the provided `draft_output` path
+
 Resolve scripts from `projects/feature-plan/scripts/` and use:
 
 ```bash
@@ -50,6 +54,7 @@ Always follow these sources together:
   - `qa_plan_github_<feature-id>.md`
   - `qa_plan_github_traceability_<feature-id>.md`
   - `qa_plan_figma_<feature-id>.md`
+- Do not hand off to `mode=write-plan` until every required Phase 1 artifact already exists on disk under `context/`.
 
 ## `mode=write-plan`
 
@@ -83,6 +88,7 @@ Before finalizing any `mode=write-plan` artifact:
 2. run executability validation
 3. if validation fails, rewrite once and validate again
 4. if validation still fails, stop and report the violations instead of saving a weak draft
+5. if validation passes, save the approved Phase 2 draft only to `draft_output`
 
 ## Integration
 

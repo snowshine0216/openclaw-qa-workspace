@@ -1,0 +1,95 @@
+{
+  "design_id": "rca-daily-skill-refactor-2026-03-06",
+  "design_artifact": "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md",
+  "review_date": "2026-03-08",
+  "reviewer_skill": "openclaw-agent-design-review",
+  "review_focus": [
+    "internal coherence",
+    "self-sufficiency"
+  ],
+  "status": "fail",
+  "reviewed_skill_package_paths": [
+    ".agents/skills/rca/",
+    "workspace-daily/skills/rca-orchestrator/"
+  ],
+  "classification": {
+    ".agents/skills/rca/": "docs-only",
+    "workspace-daily/skills/rca-orchestrator/": "script-bearing"
+  },
+  "path_validation": {
+    "reference_update_remove_paths_resolvable": true,
+    "resolved_examples": [
+      ".agents/skills/jira-cli/scripts/build-adf.sh",
+      ".agents/skills/feishu-notify/scripts/send-feishu-notification.js",
+      ".agents/skills/jira-cli/SKILL.md",
+      "workspace-daily/AGENTS.md",
+      "workspace-daily/projects/rca-daily/"
+    ],
+    "non_repo_fallback_paths": [
+      "~/openclaw/skills/rca/SKILL.md"
+    ]
+  },
+  "script_to_test_coverage_summary": {
+    "declared_scripts": 10,
+    "declared_tests": 10,
+    "one_to_one_mapping_declared": true,
+    "coverage_note": "Design includes stub-level test mapping for each script."
+  },
+  "scripts_test_convention": {
+    "required": "scripts/test/",
+    "result": "pass",
+    "evidence": [
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:93",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1461",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1498"
+    ]
+  },
+  "findings": [
+    {
+      "id": "COH-001",
+      "severity": "P1",
+      "summary": "load_jira_env wrapper self-invokes after sourcing jira-cli env helpers, creating a recursive naming collision.",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:469",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:473",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:814",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1121"
+      ],
+      "recommended_fix": "Remove the function-name collision: rename the local wrapper or call the shared loader directly so Jira env initialization is deterministic and non-recursive."
+    },
+    {
+      "id": "PATH-001",
+      "severity": "P2",
+      "summary": "Spawn template references an external fallback skill path outside repository conventions.",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1067"
+      ],
+      "recommended_fix": "Use only repository-local skill paths in the template, or define deterministic fallback checks and failure handling."
+    },
+    {
+      "id": "SCHEMA-001",
+      "severity": "P2",
+      "summary": "run.json initialization omits jira_published_at even though later phases and schema docs treat it as a first-class field.",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:531",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1302",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1564"
+      ],
+      "recommended_fix": "Initialize jira_published_at to null in init_run_json for full schema/runtime alignment."
+    }
+  ],
+  "required_fixes": [
+    "Fix load_jira_env recursion by removing local/shared function-name collision.",
+    "Use deterministic repository-local skill pathing in spawn task instructions.",
+    "Initialize jira_published_at in init_run_json to match documented schema."
+  ],
+  "docs_coverage": {
+    "agents_md_impact_addressed": true,
+    "readme_impact_addressed": true
+  },
+  "blocking": {
+    "has_p0": false,
+    "has_p1": true,
+    "approval_blocked": true
+  }
+}

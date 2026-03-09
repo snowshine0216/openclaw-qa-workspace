@@ -1,0 +1,102 @@
+{
+  "design_id": "rca-daily-skill-refactor-2026-03-06",
+  "design_artifact": "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md",
+  "review_date": "2026-03-08",
+  "reviewer_skill": "openclaw-agent-design-review",
+  "status": "pass_with_advisories",
+  "reviewed_skill_package_paths": [
+    ".agents/skills/rca/",
+    "workspace-daily/skills/rca-orchestrator/"
+  ],
+  "classification": {
+    ".agents/skills/rca/": "docs-only",
+    "workspace-daily/skills/rca-orchestrator/": "script-bearing"
+  },
+  "conventions_validation": {
+    "clawddocs_consulted": true,
+    "clawddocs_artifacts": [
+      ".agents/skills/clawddocs/scripts/sitemap.sh",
+      ".agents/skills/clawddocs/scripts/search.sh",
+      ".agents/skills/clawddocs/scripts/fetch-doc.sh"
+    ],
+    "openclaw_reference_sources": [
+      ".agents/skills/openclaw-agent-design/SKILL.md",
+      ".agents/skills/openclaw-agent-design/reference.md"
+    ]
+  },
+  "recheck_of_prior_blockers": {
+    "scripts_test_convention": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:93",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1461",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1498"
+      ]
+    },
+    "phase3_terminal_completeness_before_phase4": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:267",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1052",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1056"
+      ]
+    },
+    "run_json_timestamp_semantics": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1060",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1302",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1580"
+      ]
+    }
+  },
+  "path_validation": {
+    "result": "pass_with_advisories",
+    "summary": "Repository-relative design paths are explicit and convention-aligned for shared vs workspace-local placement. Existing reuse dependencies resolve in-repo. Advisory remains for one non-repo fallback path.",
+    "resolved_examples": [
+      ".agents/skills/jira-cli/scripts/build-adf.sh",
+      ".agents/skills/feishu-notify/scripts/send-feishu-notification.js",
+      "workspace-daily/AGENTS.md",
+      "workspace-daily/TOOLS.md",
+      "workspace-daily/projects/rca-daily/"
+    ]
+  },
+  "script_to_test_coverage_summary": {
+    "declared_scripts": 10,
+    "declared_tests": 10,
+    "one_to_one_mapping_declared": true,
+    "coverage_note": "Design includes explicit stub-level test mapping for each script in Section 4.11."
+  },
+  "docs_coverage": {
+    "agents_md_impact_addressed": true,
+    "readme_impact_addressed": true
+  },
+  "findings": [
+    {
+      "id": "PATH-001",
+      "severity": "P2",
+      "summary": "Spawn template includes non-repo fallback skill path outside canonical repository conventions.",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1076"
+      ],
+      "recommended_fix": "Use .agents/skills/rca/SKILL.md as canonical path, or define explicit fallback validation rules."
+    },
+    {
+      "id": "SCHEMA-001",
+      "severity": "P2",
+      "summary": "run.json initialization omits jira_published_at while later phases and schema examples treat it as a first-class field.",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:531",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1302",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1564"
+      ],
+      "recommended_fix": "Initialize jira_published_at to null in init_run_json for complete schema/runtime alignment."
+    }
+  ],
+  "required_fixes": [],
+  "blocking": {
+    "has_p0": false,
+    "has_p1": false,
+    "approval_blocked": false
+  }
+}

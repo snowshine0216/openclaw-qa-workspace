@@ -61,9 +61,10 @@ Runtime prerequisites:
 - `jira` CLI — issue view, comment post (`~/.config/.jira/.config.yml` configured)
 - `gh` CLI — GitHub PR diff fetch (`gh auth login` completed)
 - `openclaw` CLI — `sessions_spawn`, `message send`
-- `JIRA_API_TOKEN` and `JIRA_BASE_URL` — configured in `.env` (in shared jira-cli skill). **Every script that uses Jira must activate this env** via `load_jira_env` (in `common.sh`) before any `jira` or jira-cli script call.
+- `JIRA_API_TOKEN` and `JIRA_BASE_URL` — configured in `.env` (in shared jira-cli skill). **Every script that uses Jira must activate this env** via `load_jira_env_from_skill` (in `common.sh`) before any `jira` or jira-cli script call.
 - Feishu chat-id read from `workspace-daily/TOOLS.md` at runtime
 - Owner API URL: `http://10.23.38.9:8070/api/jira/customer-defects/details/?status=completed&limit=500`
+- in openclaw, use `Make init-skills` to initialize the skills (via symlink)
 
 ---
 
@@ -461,13 +462,14 @@ load_feishu_chat_id() {
   fi
 }
 
-# Load Jira env (JIRA_API_TOKEN, JIRA_BASE_URL) from shared jira-cli skill .env
-# Per jira-cli SKILL: activate .env before every Jira operation
-load_jira_env() {
+# Load Jira env (JIRA_API_TOKEN, JIRA_BASE_URL) from shared jira-cli skill .env.
+# Per jira-cli SKILL: activate .env before every Jira operation.
+# Avoid naming collision with the sourced helper by using a local wrapper name.
+load_jira_env_from_skill() {
   local jira_env_sh="${REPO_ROOT}/.agents/skills/jira-cli/scripts/lib/jira-env.sh"
   if [[ -f "${jira_env_sh}" ]]; then
     source "${jira_env_sh}"
-    load_jira_env  # invokes jira-env.sh's load_jira_env (resolution order: JIRA_ENV_FILE → skill .env → workspace .env → repo .env)
+    load_jira_env  # provided by jira-env.sh (resolution order: JIRA_ENV_FILE → skill .env → workspace .env → repo .env)
   fi
 }
 
@@ -528,6 +530,7 @@ init_run_json() {
     '{
       data_fetched_at: null,
       output_generated_at: null,
+      jira_published_at: null,
       notification_pending: null,
       updated_at: $ts,
       subtask_timestamps: {},
@@ -808,7 +811,7 @@ RUN_DATE="$1"
 RUN_DIR="$(run_dir "${RUN_DATE}")"
 MANIFEST="${RUN_DIR}/manifest.json"
 
-load_jira_env
+load_jira_env_from_skill
 
 fetch_jira_issue() {
   # Reused from: projects/rca-daily/src/core/process-rca.sh :: fetch_jira_details()
@@ -1062,7 +1065,7 @@ sessions_spawn({
   mode: "run",
   runtime: "subagent",
   task: `Generate RCA for BCIN-5286.
-Read skill instructions from: .agents/skills/rca/SKILL.md OR ~/openclaw/skills/rca/SKILL.md
+Read skill instructions from: .agents/skills/rca/SKILL.md
 Input JSON: workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/cache/rca-input/BCIN-5286.json
 Output RCA to: workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca/BCIN-5286-rca.md
 Announce: "RCA complete: BCIN-5286" on success or "RCA failed: BCIN-5286" on failure.`
@@ -1107,7 +1110,7 @@ RUN_DATE="$1"
 RUN_DIR="$(run_dir "${RUN_DATE}")"
 MANIFEST="${RUN_DIR}/manifest.json"
 
-load_jira_env
+load_jira_env_from_skill
 
 convert_and_save_adf() {
   # Per examples.md: build-adf.sh converts RCA markdown to ADF; prepend header
@@ -1417,11 +1420,11 @@ jq -r '.notification_pending' workspace-daily/skills/rca-orchestrator/scripts/ru
 
 **No copies from `projects/rca-daily`** (that folder will be deleted). Use shared skills instead:
 
-**Jira env:** Every script that uses Jira must call `load_jira_env` (from `common.sh`) before any `jira` or jira-cli script. This activates `JIRA_API_TOKEN` and `JIRA_BASE_URL` from the shared jira-cli skill `.env` (resolution: `JIRA_ENV_FILE` → skill folder → workspace root → repo root).
+**Jira env:** Every script that uses Jira must call `load_jira_env_from_skill` (from `common.sh`) before any `jira` or jira-cli script. This activates `JIRA_API_TOKEN` and `JIRA_BASE_URL` from the shared jira-cli skill `.env` (resolution: `JIRA_ENV_FILE` → skill folder → workspace root → repo root).
 
 | Need | Source | Invocation |
 |------|--------|------------|
-| Jira env | `common.sh` | `load_jira_env` (before any Jira call) |
+| Jira env | `common.sh` | `load_jira_env_from_skill` (before any Jira call) |
 | Jira CLI | `.agents/skills/jira-cli/scripts/jira-run.sh` | `bash "${JIRA_CLI_SCRIPTS}/jira-run.sh" issue view <key> --raw --comments 100` |
 | MD→ADF | `.agents/skills/jira-cli/scripts/build-adf.sh` | `bash "${BUILD_ADF_SH}" <input.md> -` |
 | Feishu notification | `.agents/skills/feishu-notify/scripts/send-feishu-notification.js` | `node "${FEISHU_NOTIFY_SCRIPT}" --chat-id <id> --file <path>` |
@@ -1635,14 +1638,18 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 - [x] Owner extraction from `/api/jira/customer-defects/details/?status=completed&limit=500` uses `curl -s | jq` with `category == "requires_rca"` filter
 - [x] Jira ADF update uses curl PUT to `/rest/api/3/issue/<key>` (same as legacy `update-jira-latest-status.sh`)
 - [x] Phase4: append description (MERGE) + add comment with mentions (tqang, owner); `resolve_plan_user` supports "Xue, Yin" plan names
-- [x] Jira scripts (phase2, phase4) call `load_jira_env` before any Jira operation; phase2 uses `jira-run.sh` (not raw `jira`)
+- [x] Phase 3 is blocking and autonomous: batch spawn, wait, write `spawn-results.json`, then mark the phase complete before Phase 4 starts
+- [x] Phase 3 enforces terminal completeness against `manifest.json.total_issues` before Phase 4 is allowed to start
+- [x] Publish status model is coherent: `success` | `partial_success` | `failed`
+- [x] `run.json` timestamp semantics are split cleanly between `output_generated_at` and `jira_published_at`
+- [x] Jira scripts (phase2, phase4) call `load_jira_env_from_skill` before any Jira operation; phase2 uses `jira-run.sh` (not raw `jira`)
 - [x] Feishu failure persists `notification_pending` in `run.json` and does not block run completion
 - [x] Usage documented in README; scheduling in OpenClaw
 - [x] `.agents/skills/rca/SKILL.md` content is specified — 9-section template, input/output contract, fetching rules
 - [x] `workspace-daily/skills/rca-orchestrator/SKILL.md` content is specified — phases, invocation, artifact locations
 - [x] Each script has a corresponding test file (stub sufficient); see §4.11
-- [ ] Reviewer report artifacts generated
-- [ ] Reviewer status (`openclaw-agent-design-review`) recorded as `pass` or `pass_with_advisories`
+- [x] Reviewer report artifacts generated — `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.md`, `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.json`
+- [x] Reviewer status (`openclaw-agent-design-review`) recorded as `pass_with_advisories`
 
 ---
 

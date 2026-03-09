@@ -13,6 +13,8 @@ Required:
 - `drafts/qa_plan_v<N>.md`
 - `context/review_qa_plan_<id>.md`
 
+The review artifact path is deterministic. Do not guess or rename it during Phase 4 handoff.
+
 Optional cached context for clarification:
 - `context/qa_plan_atlassian_<id>.md`
 - `context/qa_plan_github_<id>.md`
@@ -63,3 +65,4 @@ If validation fails:
 - Write `drafts/qa_plan_v<N+1>.md`
 - Preserve valid rationale comments
 - Preserve saved-evidence references when they clarify why a branch exists
+- Treat Phase 4 as incomplete until `drafts/qa_plan_v<N+1>.md` exists and both validators pass against that saved file

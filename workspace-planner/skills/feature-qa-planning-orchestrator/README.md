@@ -9,7 +9,9 @@ Give it a feature ID plus Jira, Confluence, GitHub, and optional UX evidence, an
 
 | Output | What it is |
 |--------|------------|
+| `context/qa_plan_*_<id>.md` | saved Phase 1 evidence summaries |
 | `drafts/qa_plan_v<N>.md` | unified QA-plan draft |
+| `context/review_qa_plan_<id>.md` | saved Phase 3 review artifact |
 | `qa_plan_final.md` | approved final QA plan |
 
 ## Phase overview
@@ -20,6 +22,17 @@ Give it a feature ID plus Jira, Confluence, GitHub, and optional UX evidence, an
 ### Phase 3 — Unified QA-plan review (`qa-plan-review`)
 ### Phase 4 — Deterministic QA-plan refactor (`qa-plan-refactor`)
 ### Phase 5 — Finalize + Feishu notify
+
+## Stage artifacts
+
+Each phase hands off a saved artifact, not just a status message:
+
+- Phase 0: `task.json`, `run.json`, deployed scripts in `projects/feature-plan/scripts/`
+- Phase 1: `context/qa_plan_*_<id>.md`
+- Phase 2: `drafts/qa_plan_v<N>.md`
+- Phase 3: `context/review_qa_plan_<id>.md`
+- Phase 4: `drafts/qa_plan_v<N+1>.md`
+- Phase 5: `qa_plan_final.md`
 
 ## Runtime scripts
 

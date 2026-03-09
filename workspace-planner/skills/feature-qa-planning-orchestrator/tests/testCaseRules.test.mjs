@@ -104,7 +104,7 @@ test('structure validator rejects illegal custom top-level headings', () => {
 test('executability validator flags vague and technical manual wording', () => {
   const markdown = VALID_MARKDOWN.replace(
     '### Pause mode | Retry path | Second action is accepted - P1\n- Trigger the known pause-mode recovery path and click Resume Data Retrieval again\n  - Verify the second request is sent instead of hanging',
-    '### Pause mode | Retry path | Second action is accepted - P1\n- Recover from a supported report execution or manipulation error\n  - Verify correct recovery\n- cmdMgr.reset()'
+    '### Pause mode | Retry path | Second action is accepted - P1\n- When an error occurs, click OK\n  - Verify correct recovery after recovery\n- cmdMgr.reset()'
   );
 
   const issues = findExecutabilityIssues(markdown);

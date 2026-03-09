@@ -96,12 +96,17 @@ export const RENAMEABLE_CATEGORY_ALIASES = {
 };
 
 export const VAGUE_PHRASES = [
+  'when an error occurs',
   'recover from a supported report execution or manipulation error',
   'perform another valid editing action',
   'observe the recovered state',
   'verify correct recovery',
   'verify recovery',
   'matches documented branch behavior',
+];
+
+const LEADING_VAGUE_TRIGGER_PATTERNS = [
+  /^(?:### |- )after recovery\b/i,
 ];
 
 const CODE_PATTERNS = [
@@ -272,7 +277,8 @@ function isManualBucket(bucket) {
 export function headingNeedsRewrite(heading) {
   const text = String(heading || '').trim();
   return CODE_PATTERNS.some((pattern) => pattern.test(text))
-    || VAGUE_PHRASES.some((phrase) => text.toLowerCase().includes(phrase));
+    || VAGUE_PHRASES.some((phrase) => text.toLowerCase().includes(phrase))
+    || LEADING_VAGUE_TRIGGER_PATTERNS.some((pattern) => pattern.test(text));
 }
 
 export function findExecutabilityIssues(markdown) {
@@ -305,6 +311,15 @@ export function findExecutabilityIssues(markdown) {
             });
             return;
           }
+        }
+
+        if (LEADING_VAGUE_TRIGGER_PATTERNS.some((pattern) => pattern.test(text))) {
+          issues.push({
+            code: 'EXEC_VAGUE_TRIGGER',
+            line: lineNumber,
+            text,
+          });
+          return;
         }
 
         if (CODE_PATTERNS.some((pattern) => pattern.test(text))) {

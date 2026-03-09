@@ -41,6 +41,21 @@ Always use:
 5. Phase 4 — deterministic QA-plan refactor
 6. Phase 5 — finalize and notify
 
+## Stage artifact contract
+
+Every phase must leave a deterministic on-disk artifact before the next phase begins:
+
+| Phase | Required artifact(s) |
+| --- | --- |
+| Phase 0 | current `task.json`, current `run.json`, and deployed runtime scripts under `projects/feature-plan/scripts/` |
+| Phase 1 | saved context artifacts under `context/` such as `qa_plan_atlassian_<id>.md`, `qa_plan_github_<id>.md`, `qa_plan_github_traceability_<id>.md`, and `qa_plan_figma_<id>.md` |
+| Phase 2 | `drafts/qa_plan_v<N>.md` |
+| Phase 3 | `context/review_qa_plan_<id>.md` |
+| Phase 4 | `drafts/qa_plan_v<N+1>.md` |
+| Phase 5 | `qa_plan_final.md` plus the archived prior final when overwrite occurs |
+
+Do not advance phases on in-memory output alone. Each handoff must reference the saved stage artifact path.
+
 ## Phase 0 — Preparation
 
 - Load state from `task.json` and `run.json`.
@@ -86,6 +101,7 @@ validate_context.sh <feature-id> --validate-testcase-executability "drafts/qa_pl
 ## Phase 3 — Unified QA-plan review
 
 - Invoke `qa-plan-review` with `mode=review`.
+- Require the reviewer to save the completed review to `context/review_qa_plan_<feature-id>.md` before Phase 4 starts.
 - Review the unified draft against:
   - section preservation
   - coverage
@@ -101,6 +117,7 @@ validate_context.sh <feature-id> --validate-testcase-executability "drafts/qa_pl
 ## Phase 4 — Deterministic QA-plan refactor
 
 - Invoke `qa-plan-refactor` using the reviewed unified draft.
+- Pass the saved review artifact path `context/review_qa_plan_<feature-id>.md` directly; do not infer a review filename from prose.
 - Apply only the requested review fixes.
 - Re-run both validators on the rewritten draft.
 - Allow at most one retry after the initial refactor pass.
@@ -121,3 +138,4 @@ Do not finalize the workflow unless all of the following are true:
 - the draft passed structure validation
 - the draft passed executability validation
 - all reused evidence was saved to `context/`
+- every phase saved its required stage artifact before handoff
