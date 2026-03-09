@@ -615,7 +615,7 @@ Run Phase 1 first: qa-plan-write --domain atlassian --mode context --feature-id 
 **Changes**:
 - Add `save_context.sh` call after every Jira/Confluence fetch
 - Phase 2 output file: `context/sub_test_cases_atlassian_<id>.md`
-- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` scaffold exactly
+- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/qa-plan-template.md` scaffold exactly
 - Every action item must be **user-observable** (not Jira field names or ACs verbatim)
 - Non-actionable ACs → apply resolution chain (see Section 4.3)
 - Remove table-heavy output format; remove "QA Domain Summary" step
@@ -641,7 +641,7 @@ context/sub_test_cases_atlassian_<id>.md  ← Phase 2: XMind branch output
 - Add `save_context.sh` call after every `gh api` fetch
 - Phase 2 output file: `context/sub_test_cases_github_<id>.md`
 - Traceability companion **still saved**: `context/qa_plan_github_traceability_<id>.md`
-- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` scaffold
+- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/qa-plan-template.md` scaffold
 - Organize by **user-facing functional scenario** (not by repo or file)
 - Code-only changes that are not user-observable → move to `## AUTO: Automation-Only Tests` section
 - Remove the old "narrative domain summary" — the XMind branches ARE the output
@@ -665,7 +665,7 @@ context/sub_test_cases_github_<id>.md               ← Phase 2: XMind branch ou
 - Add `save_context.sh` call after Figma metadata fetch
 - Phase 2 output file: `context/sub_test_cases_figma_<id>.md`
 - Figma metadata file **still saved**: `context/figma/figma_metadata_<id>_<date>.md`
-- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` scaffold
+- Output format MUST follow `workspace-planner/skills/feature-qa-planning-orchestrator/templates/qa-plan-template.md` scaffold
 - Hierarchy: `## UI Testing`, `### Component Name`, bullet steps → leaf expected result
 - Remove the old "500-1000 line narrative" requirement — quality is measured by actionability per item, not line count
 - Non-actionable Figma annotations → apply resolution chain (see Section 4.3)
@@ -974,7 +974,7 @@ context/figma/figma_metadata_<id>_<date>.md          ← raw Figma metadata (for
 | Artifact naming convention (`context/`, `drafts/`) | Still needed |
 | Error handling / blocker reporting | Still needed |
 | Feishu notification | Still needed |
-| `workspace-planner/skills/feature-qa-planning-orchestrator/templates/test-case-template.md` | This is now THE canonical output scaffold |
+| `workspace-planner/skills/feature-qa-planning-orchestrator/templates/qa-plan-template.md` | This is now THE canonical output scaffold |
 | Confluence search as fallback for non-actionable items | Required by user rules |
 | Tavily search as final fallback | Required by user rules |
 | `<!-- TODO: -->` comment for unresolved items | Required — NEVER remove |

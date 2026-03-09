@@ -3,8 +3,7 @@
 # Usage: ./validate_context.sh <feature-id> <artifact-name>...
 # Modes:
 #   --resolve-sub-testcases <domain...>  # compatibility mode for legacy synthesize callers
-#   --validate-testcase-structure <file-path>
-#   --validate-testcase-executability <file-path>
+#   --validate-testcase-structure <file-path>  # XMindMark validation via markxmind only
 set -euo pipefail
 
 FEATURE_ID="${1:?Usage: validate_context.sh <feature-id> <artifact-name>...}"
@@ -34,7 +33,7 @@ run_child_validator() {
     exit 1
   fi
 
-  if ! bash "$script_path" "$FEATURE_ID" "$file_path"; then
+  if ! bash "$script_path" "$file_path"; then
     echo "${label}_FAILED: $file_path"
     exit 1
   fi
@@ -54,12 +53,6 @@ case "${1:-}" in
     shift
     run_child_validator "STRUCTURE" "validate_testcase_structure.sh" "${1:?Missing file path for structure validation}"
     echo "CONTEXT_OK — testcase structure valid"
-    exit 0
-    ;;
-  --validate-testcase-executability)
-    shift
-    run_child_validator "EXECUTABILITY" "validate_testcase_executability.sh" "${1:?Missing file path for executability validation}"
-    echo "CONTEXT_OK — testcase executability valid"
     exit 0
     ;;
   '')

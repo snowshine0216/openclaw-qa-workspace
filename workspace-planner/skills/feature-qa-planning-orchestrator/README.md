@@ -16,12 +16,16 @@ Give it a feature ID plus Jira, Confluence, GitHub, and optional UX evidence, an
 
 ## Phase overview
 
-### Phase 0 — Idempotency check and runtime script deployment
-### Phase 1 — Context gathering (`qa-plan-write` in `mode=context`)
-### Phase 2 — Unified QA-plan writing (`qa-plan-write` in `mode=write-plan`)
-### Phase 3 — Unified QA-plan review (`qa-plan-review`)
-### Phase 4 — Deterministic QA-plan refactor (`qa-plan-refactor`)
-### Phase 5 — Finalize + Feishu notify
+| Phase | Action | Who |
+|-------|--------|-----|
+| 0 | Idempotency check and runtime script deployment | Orchestrator |
+| 1 | Context gathering — **spawns subagents** per source (atlassian, github, figma) | Orchestrator spawns |
+| 2 | Write — 2 steps (scenarios+test cases → group+priority). XMindMark via **markxmind** | Orchestrator (internal) |
+| 3 | Review draft against contract | Orchestrator (internal) |
+| 4 | Refactor — apply review findings | Orchestrator (internal) |
+| 5 | Finalize + Feishu notify | Orchestrator + feishu-notify |
+
+**Workflow note**: Phase 1 spawns subagents to collect context. Phases 2–4 are done internally by the orchestrator (no qa-plan-write, qa-plan-review, qa-plan-refactor spawns). The orchestrator decides how many review→refactor rounds (may loop until satisfied or max retries).
 
 ## Stage artifacts
 
@@ -36,12 +40,15 @@ Each phase hands off a saved artifact, not just a status message:
 
 ## Runtime scripts
 
+Phase 0 assumes a working `node` executable (markxmind validator requires it).
+
 | Script | Purpose |
 |--------|---------|
 | `check_resume.sh` | idempotency state check |
-| `deploy_runtime_context_tools.sh` | copy helper scripts from the skill into the runtime project |
+| `deploy_runtime_context_tools.sh` | copy helper scripts into the runtime project |
 | `save_context.sh` | save any fetched artifact to `context/` |
-| `validate_context.sh` | gate runtime artifacts and plan validation |
+
+**Validation**: XMindMark structure only — run `node .agents/skills/markxmind/scripts/validate_xmindmark.mjs <path>` after Phase 2 and after each Phase 4 refactor. No other checks.
 
 ## Quality bar
 
@@ -57,10 +64,11 @@ The final plan should read like `docs/BCIN-6709_qa_plan.md`:
 
 | Skill | Used in |
 |-------|---------|
-| `qa-plan-write` | Phase 1, Phase 2 |
-| `qa-plan-review` | Phase 3 |
-| `qa-plan-refactor` | Phase 4 |
-| `jira-cli` | evidence gathering |
+| `markxmind` | Phase 2 — XMindMark output |
+| `qa-plan-atlassian`, `qa-plan-github`, `qa-plan-figma` | Phase 1 — spawned subagents for context |
+| `jira-cli` | evidence gathering (via Phase 1 subagents) |
 | `confluence` | design evidence gathering |
 | `github` | PR and boundary evidence gathering |
 | `feishu-notify` | Phase 5 notification |
+
+**Deprecated for this workflow**: `qa-plan-write`, `qa-plan-review`, `qa-plan-refactor` — orchestrator performs write, review, refactor internally.

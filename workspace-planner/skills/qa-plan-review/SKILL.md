@@ -1,6 +1,8 @@
 ---
 name: qa-plan-review
 description: Reviews unified QA-plan drafts against the canonical QA-plan contract. Use after the draft is written to validate coverage, simplicity, structure, wording, and executability before refactor.
+deprecated: true
+deprecation_note: Deprecated. The feature-qa-planning-orchestrator performs review internally (Phase 3). Use references/qa-plan-contract-simple.md and templates/qa-plan-template.md when reviewing.
 ---
 
 # QA Plan Review
@@ -33,31 +35,46 @@ Do not hand off Phase 3 until the review artifact exists at the deterministic pa
 ## Shared review contract
 
 Always review against:
-- `references/canonical-testcase-contract.md`
+- `references/qa-plan-contract-simple.md`
 - `templates/qa-plan-template.md`
 - relevant cached `context/` artifacts
 
-Always run:
+Validation: markxmind only (XMindMark structure). Run `node .agents/skills/markxmind/scripts/validate_xmindmark.mjs <path>`.
 
-```bash
-validate_context.sh <feature-id> --validate-testcase-structure "<file>"
-validate_context.sh <feature-id> --validate-testcase-executability "<file>"
-```
+## Section-by-section review
+
+Review every section against:
+- section purpose
+- expected scenario families
+- applicable checkpoints (see `references/qa-plan-contract-simple.md`)
+- omissions caused by over-compression
+
+For each section, answer:
+- Is this the right section for this behavior?
+- Is the section too broad or too fragmented?
+- Which scenario families should exist based on the artifacts?
+- Which checkpoints were considered?
+- Which checkpoints were missed but relevant?
+- Did the draft merge cases that should stay separate?
 
 ## Finding taxonomy
 
 ### Structural findings
 
-- `ST-1` required section missing
+- `ST-1` required coverage domain missing or not addressed
 - `ST-2` section no longer maps cleanly to the required semantic bucket
-- `ST-3` non-applicable section removed instead of marked `N/A`
-- `ST-4` illegal custom top-level section
+- `ST-3` section ownership or omission rationale is unclear enough that a reviewer cannot tell whether an intentionally omitted area was considered
+- `ST-4` section structure does not fit the feature (e.g. weak E2E when feature is error-handling-focused)
 
 ### Coverage findings
 
 - `CV-1` required behavior missing from the draft
 - `CV-2` available saved evidence not reflected where it should strengthen coverage
 - `CV-3` source family used in the wrong role and distorts the draft
+- `CV-4` missing relevant checkpoint in a section (boundary/validation/privilege omission)
+- `CV-5` section structured correctly but under-covered
+- `CV-6` wrong section ownership for a behavior
+- `CV-7` nonfunctional consideration skipped without explicit reasoning
 
 ### Executability findings
 
@@ -74,7 +91,7 @@ validate_context.sh <feature-id> --validate-testcase-executability "<file>"
 
 ## Review duties
 
-- Confirm the draft preserves the required section set.
+- Confirm the draft covers the required coverage domains, whether through headings or explicit `<!-- Coverage domains: ... -->` ownership comments.
 - Confirm the draft is readable, grouped, and concise.
 - Confirm Confluence drives the main behavior.
 - Confirm Jira supplies repro fixtures where available.
@@ -90,11 +107,14 @@ Every review artifact must use this structure:
 ## Status
 Pass | Pass with Findings | Fail
 
+## Per-Section Checkpoint Summary
+- <Section name>: checkpoints considered / missed
+
 ## Structural Findings
 - ST-1 ...
 
 ## Coverage Findings
-- CV-1 ...
+- CV-1 ... (include CV-4 through CV-7 for checkpoint/omission findings)
 
 ## Executability Findings
 - EX-1 ...
@@ -106,7 +126,7 @@ Pass | Pass with Findings | Fail
 - Missing or unresolved evidence
 
 ## Required Refactors
-- Deterministic rewrite actions
+- Deterministic rewrite actions (include checkpoint-based repairs)
 
 ## Pass/Fail Summary
 - Short disposition
@@ -115,8 +135,8 @@ Pass | Pass with Findings | Fail
 ## Approval rule
 
 Do not approve a review artifact if:
-- any required section is missing
-- a required section was effectively replaced
+- any required coverage domain is missing
+- section ownership is ambiguous enough that a reviewer cannot tell which section owns a required behavior family
 - the draft requires the tester to guess trigger, action, or visible result
 - the draft materially fails the acceptance quality bar
 

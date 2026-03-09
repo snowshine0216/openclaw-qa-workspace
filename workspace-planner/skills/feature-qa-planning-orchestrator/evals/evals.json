@@ -3,14 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Write a unified QA plan for an error-recovery feature. Keep every required section, allow small heading adjustments only when they still map semantically, and make the output read like a concise, structured QA plan rather than an XMind tree.",
-      "expected_output": "The generated plan keeps all required semantic sections, uses readable grouped wording, and does not collapse into testcase-tree headings or source silos.",
+      "prompt": "Write a unified QA plan for an error-recovery feature. Cover every required coverage domain, use feature-fit headings, and make the output read like a concise, structured QA plan rather than an XMind tree.",
+      "expected_output": "The generated plan keeps required coverage-domain ownership explicit, uses readable grouped wording, and does not collapse into testcase-tree headings or source silos.",
       "files": []
     },
     {
       "id": 2,
-      "prompt": "Generate a QA plan where Platform and UI - Messaging are not needed for the current feature. Preserve those sections and mark them N/A with short reasons instead of deleting them.",
-      "expected_output": "The output retains the required sections and uses concise N/A rationale rather than dropping them.",
+      "prompt": "Generate a QA plan where Platform and UI - Messaging are not needed for the current feature. Replace them with feature-fit sections or explicit ownership comments instead of forcing rigid placeholders.",
+      "expected_output": "The output keeps required coverage domains covered without forcing irrelevant top-level sections.",
       "files": []
     },
     {

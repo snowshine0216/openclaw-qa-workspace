@@ -28,10 +28,10 @@ ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan ge
 
 ```
 Phase 0 → Idempotency check + runtime preparation
-Phase 1 → Context gathering (spawn `qa-plan-write` `mode=context`)
-Phase 2 → Unified QA plan writing (spawn `qa-plan-write` `mode=write-plan`)
-Phase 3 → Unified QA plan review (spawn `qa-plan-review` `mode=review`)
-Phase 4 → Deterministic QA plan refactor (spawn `qa-plan-refactor`)
+Phase 1 → Context gathering (spawn subagents per source: atlassian, github, figma)
+Phase 2 → Unified QA plan writing (orchestrator internal, no spawn)
+Phase 3 → Unified QA plan review (orchestrator internal, no spawn)
+Phase 4 → Deterministic QA plan refactor (orchestrator internal, no spawn)
 Phase 5 → Finalize + Feishu notify
 ```
 

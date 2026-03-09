@@ -29,18 +29,12 @@ test('deploy script copies helper tools into the runtime project directory', asy
   assert.equal(code, 0);
 
   const files = (await readdir(runtimeDir)).sort();
-  assert.deepEqual(files, [
-    'save_context.sh',
-    'validate_context.sh',
-    'validate_testcase_executability.sh',
-    'validate_testcase_structure.sh',
-  ]);
+  assert.deepEqual(files, ['save_context.sh']);
 
   for (const file of files) {
     await access(join(runtimeDir, file));
   }
 
   assert.match(stdout, /DEPLOYED: save_context\.sh/);
-  assert.match(stdout, /DEPLOYED: validate_context\.sh/);
   await rm(tmp, { recursive: true, force: true });
 });

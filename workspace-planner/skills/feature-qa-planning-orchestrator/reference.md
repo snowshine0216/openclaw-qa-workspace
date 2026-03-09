@@ -39,31 +39,27 @@ Required fields:
 
 ## QA-plan contract summary
 
-Use `references/canonical-testcase-contract.md` as the single source of truth for:
-- required section order
-- allowed heading flexibility
-- `N/A — <reason>` behavior
-- manual testcase executability requirements
+Use `references/qa-plan-contract-simple.md` as the single source of truth for:
+- structure (scenario → Step 1 → optional Step 2 → expected result)
+- top priority (P1/P2/P3) — must be obeyed
+- risk marking
 - source-usage expectations
 
 ## Runtime script deployment
 
-Canonical helpers live in:
+Canonical helper:
 - `scripts/lib/save_context.sh`
-- `scripts/lib/validate_context.sh`
-- `scripts/lib/validate_testcase_structure.sh`
-- `scripts/lib/validate_testcase_executability.sh`
 
-At runtime, deploy them into `projects/feature-plan/scripts/` with:
+Deploy into `projects/feature-plan/scripts/` with:
 - `scripts/lib/deploy_runtime_context_tools.sh`
 
-Do not assume the runtime copies already exist.
+Deploy only `save_context.sh`. Validation uses markxmind directly.
 
 ## Validation gates by phase
 
-- Phase 2: validate the unified draft for structure and executability
+- Phase 2: validate the unified draft for XMindMark structure only (markxmind: `node .agents/skills/markxmind/scripts/validate_xmindmark.mjs <path>`)
 - Phase 3: review the validated draft and fail on removed sections or vague manual wording
-- Phase 4: validate the refactored draft before finalization
+- Phase 4: validate the refactored draft (markxmind only) before finalization
 
 ## Failure handling
 

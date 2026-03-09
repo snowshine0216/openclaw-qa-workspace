@@ -10,65 +10,27 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const SCRIPT_DIR = join(__dirname, '..', 'scripts', 'lib');
 const VALIDATE_CONTEXT_SRC = join(SCRIPT_DIR, 'validate_context.sh');
 const VALIDATE_STRUCTURE_SRC = join(SCRIPT_DIR, 'validate_testcase_structure.sh');
-const VALIDATE_EXEC_SRC = join(SCRIPT_DIR, 'validate_testcase_executability.sh');
+const REPO_ROOT = join(__dirname, '..', '..', '..', '..');
 
-const VALID_MARKDOWN = `# Feature
+const VALID_XMINDMARK = `Feature QA Plan
 
-## EndToEnd
-
-### Main flow
-- Open the report in pause mode and click Resume Data Retrieval
-  - Verify the report stays in the same editing session
-
-## Functional - Pause Mode
-
-### Pause retry
-- Click Resume Data Retrieval again after recovery
-  - Verify the request is accepted instead of hanging
-
-## Functional - Running Mode
-
-### Running-mode recovery
-- Lower Results Set Row Limit and dismiss the error
-  - Verify Undo is disabled after recovery
-
-## Functional - Modeling Service Non-Crash Path
-
-### View-filter validation
-- Remove an attribute used in a view filter
-  - Verify the editor remains interactive
-
-## Functional - MDX / Engine Errors
-
-### Engine error
-- Trigger the known engine error fixture and dismiss the dialog
-  - Verify the report remains open for continued editing
-
-## Functional - Prompt Flow
-
-### Prompt recovery
-- Submit the prepared prompt answers that trigger prompt recovery
-  - Verify the prompt reopens with the previous answers preserved
-
-## xFunctional
-
-### Cross-flow stability
-- N/A — no cross-flow combination is part of this fixture
-
-## UI - Messaging
-
-### Copy validation
-- N/A — no message-copy check is part of this fixture
-
-## Platform
-
-### Browser coverage
-- N/A — no browser sweep is part of this fixture
+- EndToEnd
+    * Main flow
+        - Open the report in pause mode and click Resume Data Retrieval
+        - Verify the report stays in the same editing session
+- Functional - Pause Mode
+    * Pause retry
+        - Click Resume Data Retrieval again after recovery
+        - Verify the request is accepted instead of hanging
+- Functional - Running Mode
+    * Running-mode recovery
+        - Lower Results Set Row Limit and dismiss the error
+        - Verify Undo is disabled after recovery
 `;
 
-async function runScript(scriptPath, args, cwd) {
+async function runScript(scriptPath, args, cwd, env = {}) {
   return new Promise((resolve, reject) => {
-    const proc = spawn('bash', [scriptPath, ...args], { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+    const proc = spawn('bash', [scriptPath, ...args], { cwd, env: { ...process.env, ...env }, stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '';
     let stderr = '';
     proc.stdout.on('data', (chunk) => { stdout += chunk.toString(); });
@@ -84,7 +46,6 @@ async function setupScripts() {
   await mkdir(scriptsDir, { recursive: true });
   await cp(VALIDATE_CONTEXT_SRC, join(scriptsDir, 'validate_context.sh'));
   await cp(VALIDATE_STRUCTURE_SRC, join(scriptsDir, 'validate_testcase_structure.sh'));
-  await cp(VALIDATE_EXEC_SRC, join(scriptsDir, 'validate_testcase_executability.sh'));
   return { tmp, scriptsDir };
 }
 
@@ -123,26 +84,19 @@ test('resolve mode prefers v2 when present for legacy callers', async () => {
   await rm(tmp, { recursive: true, force: true });
 });
 
-test('validate structure mode delegates to structure validator', async () => {
+test('validate structure mode delegates to markxmind validator', async () => {
   const { tmp, scriptsDir } = await setupScripts();
   const artifact = join(tmp, 'draft.md');
-  await writeFile(artifact, VALID_MARKDOWN);
+  await writeFile(artifact, VALID_XMINDMARK);
 
-  const { code, stdout } = await runScript(join(scriptsDir, 'validate_context.sh'), ['BCIN-6709', '--validate-testcase-structure', artifact], join(scriptsDir, '..'));
+  const { code, stdout } = await runScript(
+    join(scriptsDir, 'validate_context.sh'),
+    ['BCIN-6709', '--validate-testcase-structure', artifact],
+    join(scriptsDir, '..'),
+    { REPO_ROOT }
+  );
   assert.equal(code, 0);
   assert.match(stdout, /STRUCTURE_OK/);
-  assert.match(stdout, /CONTEXT_OK/);
-  await rm(tmp, { recursive: true, force: true });
-});
-
-test('validate executability mode delegates to executability validator', async () => {
-  const { tmp, scriptsDir } = await setupScripts();
-  const artifact = join(tmp, 'draft.md');
-  await writeFile(artifact, VALID_MARKDOWN);
-
-  const { code, stdout } = await runScript(join(scriptsDir, 'validate_context.sh'), ['BCIN-6709', '--validate-testcase-executability', artifact], join(scriptsDir, '..'));
-  assert.equal(code, 0);
-  assert.match(stdout, /EXECUTABILITY_OK/);
   assert.match(stdout, /CONTEXT_OK/);
   await rm(tmp, { recursive: true, force: true });
 });

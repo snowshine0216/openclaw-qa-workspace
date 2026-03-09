@@ -1,57 +1,36 @@
-# <Feature_Title>
+<!--
+Soft contract — structure is flexible; LLM may adapt to the feature.
+Hard rule: Top priority (P1/P2/P3) must be obeyed; do not remove or ignore priority markers.
+MUST use skill: markxmind — all output must be valid XMindMark; writer, review, and refactor all follow this.
+Reference: .agents/skills/markxmind/SKILL.md, reference.md, examples.md
+-->
 
----
-**Source reviewed**: <Confluence + Jira + GitHub + Figma artifacts used>
-**Grouping rule**: each scenario name should read like `mode | error type | detailed action`
-**Date**: <YYYY-MM-DD>
+Report Editor in Workstation — QA Plan (BCED-2416 )
 
----
+- EndToEnd
+    * E2E: Create New Report & Save P1
+        - Enable new editor via Help menu → toggle ON 
+- Core Functionalities
+    * Maximize Mode Settings
+        - Verify dropdown options in Dashboard Properties
+        - Default value when creating new dashboard
+            - Default is "Maximize to current panel (Web only)" 
+- X-function tests
+    *  combine with pin filter / toc
+- Performance
+- Error Handling / Edge Case
+- Security
+    * Privilege
+- Platform
+    * browser
+        * Chroma / Edge / Safari
+    * system
+        * mac
+        * windows
+    * Android App
+        * phone
+        * tablet
+- i18n
+- Embedding
+- Upgrade / Compatibility
 
-## EndToEnd - P1
-
-### <Primary end-to-end journey> - P1
-<!-- P1/P2/P3 rationale -->
-
-- In <surface>, trigger <exact entry point>
-	- Perform <exact user action>
-		- Verify <visible user-facing result>
-
-## Functional - Pause Mode
-
-### <Pause-mode behavior> - P1
-- N/A — add a concise reason when this branch is not applicable
-
-## Functional - Running Mode
-
-### <Running-mode behavior> - P1
-- N/A — add a concise reason when this branch is not applicable
-
-## Functional - Modeling Service Non-Crash Path
-
-### <Non-crash behavior> - P1
-- N/A — add a concise reason when this branch is not applicable
-
-## Functional - MDX / Engine Errors
-
-### <Engine error behavior> - P1
-- N/A — add a concise reason when this branch is not applicable
-
-## Functional - Prompt Flow
-
-### <Prompt-flow behavior> - P1
-- N/A — add a concise reason when this branch is not applicable
-
-## xFunctional
-
-### <Cross-flow or cross-surface coverage> - P2
-- N/A — add a concise reason when cross-functional coverage is not needed
-
-## UI - Messaging
-
-### <Visible copy or recovery message check> - P2
-- N/A — add a concise reason when there is no messaging change in scope
-
-## Platform
-
-### <Browser or platform coverage> - P2
-- N/A — add a concise reason when platform coverage is handled elsewhere
