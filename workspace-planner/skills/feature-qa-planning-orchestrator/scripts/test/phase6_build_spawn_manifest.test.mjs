@@ -26,8 +26,12 @@ async function createProject() {
   await mkdir(join(projectDir, 'context'), { recursive: true });
   await writeFile(join(projectDir, 'task.json'), JSON.stringify({ feature_id: 'BCIN-701' }, null, 2));
   await writeFile(join(projectDir, 'run.json'), JSON.stringify({ run_key: 'run-701' }, null, 2));
-  await writeFile(join(projectDir, 'drafts', 'qa_plan_v2.md'), 'draft\n');
+  await writeFile(join(projectDir, 'drafts', 'qa_plan_phase5b_r1.md'), 'draft\n');
   await writeFile(join(projectDir, 'context', 'artifact_lookup_BCIN-701.md'), '# lookup\n');
+  await writeFile(join(projectDir, 'context', 'review_notes_BCIN-701.md'), '# notes\n');
+  await writeFile(join(projectDir, 'context', 'review_delta_BCIN-701.md'), '# delta\n');
+  await writeFile(join(projectDir, 'context', 'checkpoint_audit_BCIN-701.md'), '# checkpoint audit\n');
+  await writeFile(join(projectDir, 'context', 'checkpoint_delta_BCIN-701.md'), '# checkpoint delta\n');
   return { root, projectDir };
 }
 
@@ -39,10 +43,10 @@ test('test_success_manifest', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('executable-step-rubric'), 'task must reference executable-step-rubric');
-  assert.ok(task.includes('review-rubric'), 'task must reference review-rubric');
+  assert.ok(task.includes('review-rubric-phase6'), 'task must reference review-rubric-phase6');
+  assert.ok(task.includes('checkpoint_audit_BCIN-701.md'), 'task must require checkpoint audit input');
+  assert.ok(task.includes('qa_plan_phase6_r1.md'), 'task must target the phase-scoped draft path');
   assert.ok(task.includes('e2e-coverage-rules'), 'task must reference e2e-coverage-rules');
-  assert.ok(task.includes('qa-plan-template'), 'task must reference qa-plan-template');
   await rm(root, { recursive: true, force: true });
 });
 

@@ -10,7 +10,8 @@ export const PHASE_ORDER = [
   'phase_3_coverage_mapping',
   'phase_4a_subcategory_draft',
   'phase_4b_top_category_draft',
-  'phase_5_review_refactor',
+  'phase_5a_review_refactor',
+  'phase_5b_checkpoint_refactor',
   'phase_6_quality_refactor',
   'phase_7_finalization',
 ];
@@ -80,8 +81,16 @@ export function defaultTask(featureId, runKey) {
     spawn_plan: [],
     artifacts: {},
     latest_draft_version: null,
+    latest_draft_path: null,
+    latest_draft_phase: null,
     latest_review_version: null,
     latest_validation_version: null,
+    phase4a_round: 0,
+    phase4b_round: 0,
+    phase5a_round: 0,
+    phase5b_round: 0,
+    phase6_round: 0,
+    return_to_phase: null,
     created_at: timestamp,
     updated_at: timestamp,
   };
@@ -145,7 +154,7 @@ export async function classifyReportState(projectDir) {
   if (finalExists) return 'FINAL_EXISTS';
 
   const draftFiles = await safeReadDir(draftsDir);
-  if (draftFiles.some((name) => /^qa_plan_v\d+\.md$/.test(name) || /^qa_plan_subcategory_/.test(name))) {
+  if (draftFiles.some((name) => /^qa_plan_v\d+\.md$/.test(name) || /^qa_plan_(subcategory|phase\d+[ab]?_r\d+)\.md$/.test(name) || /^qa_plan_phase[456][ab]?_r\d+\.md$/.test(name) || /^qa_plan_subcategory_/.test(name))) {
     return 'DRAFT_EXISTS';
   }
 
@@ -168,11 +177,32 @@ export function isPhasePast(currentPhase, targetPhase) {
   return currentIndex > targetIndex;
 }
 
-export function updateLatestDraftVersion(task, filename) {
-  const match = basename(filename).match(/^qa_plan_v(\d+)\.md$/);
-  if (match) {
-    task.latest_draft_version = Number(match[1]);
+export function getNextPhaseRound(task, phaseId) {
+  const key = `${phaseId}_round`;
+  const current = Number(task?.[key] || 0);
+  return current + 1;
+}
+
+export function updateLatestDraftMetadata(task, filename, phaseId = null) {
+  const basenameValue = basename(filename);
+  const versionMatch = basenameValue.match(/^qa_plan_v(\d+)\.md$/);
+  if (versionMatch) {
+    task.latest_draft_version = Number(versionMatch[1]);
   }
+
+  const phaseMatch = basenameValue.match(/^qa_plan_(phase\d+[ab]?|subcategory)_r(\d+)\.md$/);
+  if (phaseMatch) {
+    const normalizedPhase = phaseId || phaseMatch[1];
+    task.latest_draft_phase = normalizedPhase;
+    task.latest_draft_path = filename;
+    task[`${normalizedPhase}_round`] = Number(phaseMatch[2]);
+    return;
+  }
+
+  if (phaseId) {
+    task.latest_draft_phase = phaseId;
+  }
+  task.latest_draft_path = filename;
 }
 
 export function resolveProjectPaths(projectDir, featureId) {

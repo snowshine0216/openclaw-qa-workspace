@@ -32,8 +32,9 @@ Phase 1 → Evidence gathering (spawn subagents per source: jira, confluence, gi
 Phase 2 → Artifact index generation
 Phase 3 → Coverage mapping
 Phase 4a → Subcategory XMindMark draft
-Phase 4b → Top-category grouping draft
-Phase 5 → Structured review + refactor
+Phase 4b → Canonical top-layer grouping draft
+Phase 5a → Context-backed review + refactor loop. exit gate when no more refactor is needed.
+Phase 5b → Shipment-checkpoint review + refactor loop. exit gate when no more refactor is needed.
 Phase 6 → Format/search/few-shots quality pass
 Phase 7 → Finalization and promotion (user approval checkpoint) + Feishu notify
 ```
@@ -145,6 +146,7 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 - Never use `web_fetch` for Jira, GitHub, or Confluence primary evidence collection.
 - During Phase 0, verify access first (`jira me`, `gh auth status`, and Confluence access when needed) before spawning sub-agents.
 - All phases are script-driven. The orchestrator calls `phaseN.sh`, handles user interaction, reads spawn manifests, and waits for spawned agents to finish.
+- Do not collapse Phase 5a and Phase 5b into one pass.
 
 And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 

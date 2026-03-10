@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const SCRIPT = join(__dirname, '..', 'phase4b_build_spawn_manifest.mjs');
+const SCRIPT = join(__dirname, '..', 'phase5a_build_spawn_manifest.mjs');
 
 function runNode(args) {
   return new Promise((resolve, reject) => {
@@ -20,34 +20,36 @@ function runNode(args) {
 }
 
 async function createProject() {
-  const root = await mkdtemp(join(tmpdir(), 'phase4b-manifest-'));
-  const projectDir = join(root, 'projects', 'feature-plan', 'BCIN-501');
+  const root = await mkdtemp(join(tmpdir(), 'phase5a-manifest-'));
+  const projectDir = join(root, 'projects', 'feature-plan', 'BCIN-601');
   await mkdir(join(projectDir, 'drafts'), { recursive: true });
-  await writeFile(join(projectDir, 'task.json'), JSON.stringify({ feature_id: 'BCIN-501' }, null, 2));
-  await writeFile(join(projectDir, 'run.json'), JSON.stringify({ run_key: 'run-501' }, null, 2));
-  await writeFile(join(projectDir, 'drafts', 'qa_plan_phase4a_r1.md'), 'draft\n');
+  await mkdir(join(projectDir, 'context'), { recursive: true });
+  await writeFile(join(projectDir, 'task.json'), JSON.stringify({ feature_id: 'BCIN-601' }, null, 2));
+  await writeFile(join(projectDir, 'run.json'), JSON.stringify({ run_key: 'run-601' }, null, 2));
+  await writeFile(join(projectDir, 'drafts', 'qa_plan_phase4b_r1.md'), 'draft\n');
+  await writeFile(join(projectDir, 'context', 'artifact_lookup_BCIN-601.md'), '# lookup\n');
   return { root, projectDir };
 }
 
 test('test_success_manifest', async () => {
   const { root, projectDir } = await createProject();
-  const outputPath = join(projectDir, 'phase4b_spawn_manifest.json');
-  const result = await runNode(['BCIN-501', projectDir, outputPath]);
+  const outputPath = join(projectDir, 'phase5a_spawn_manifest.json');
+  const result = await runNode(['BCIN-601', projectDir, outputPath]);
   assert.equal(result.code, 0, result.stderr);
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('phase4b-contract'), 'task must reference phase4b-contract');
-  assert.ok(task.includes('canonical top-layer'), 'task must describe canonical top-layer grouping');
-  assert.ok(task.includes('qa_plan_phase4b_r1.md'), 'task must target the phase-scoped draft path');
+  assert.ok(task.includes('review-rubric-phase5a'), 'task must reference review-rubric-phase5a');
+  assert.ok(task.includes('section-by-section review'), 'task must require section-by-section review');
+  assert.ok(task.includes('qa_plan_phase5a_r1.md'), 'task must target the phase-scoped draft path');
   await rm(root, { recursive: true, force: true });
 });
 
 test('test_missing_context', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'phase4b-manifest-'));
-  const projectDir = join(root, 'projects', 'feature-plan', 'BCIN-502');
+  const root = await mkdtemp(join(tmpdir(), 'phase5a-manifest-'));
+  const projectDir = join(root, 'projects', 'feature-plan', 'BCIN-602');
   await mkdir(projectDir, { recursive: true });
-  const result = await runNode(['BCIN-502', projectDir]);
+  const result = await runNode(['BCIN-602', projectDir]);
   assert.equal(result.code, 1);
   await rm(root, { recursive: true, force: true });
 });

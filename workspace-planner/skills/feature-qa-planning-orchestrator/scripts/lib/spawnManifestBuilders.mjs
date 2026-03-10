@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalizeSpawnInput } from './normalizeSpawnInput.mjs';
-import { fileExists, normalizeRequestedSourceFamilies, readJson } from './workflowState.mjs';
+import { fileExists, getNextPhaseRound, normalizeRequestedSourceFamilies, readJson } from './workflowState.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(__dirname, '..', '..');
@@ -22,22 +22,16 @@ function getPhaseReferenceInstructions(phaseId, skillRoot) {
 - ${ref('references/context-coverage-contract.md')} — mandatory coverage candidate rules, silent-drop prohibition
 - ${ref('references/context-index-schema.md')} — artifact lookup structure and columns`,
     phase4a: `Required references (read before starting):
-- ${ref('references/qa-plan-contract.md')} — output shape, scenario contract, priority markers
-- ${ref('references/executable-step-rubric.md')} — pass/fail criteria for action steps; avoid banned vague phrases
-- ${ref('templates/qa-plan-template.md')} — required scaffold; use as structure`,
+- ${ref('references/phase4a-contract.md')} — subcategory-only draft contract, embedded scaffold, and few-shot rules`,
     phase4b: `Required references (read before starting):
-- ${ref('references/qa-plan-contract.md')} — output shape, scenario contract, priority markers
-- ${ref('references/executable-step-rubric.md')} — pass/fail criteria for action steps; avoid banned vague phrases
-- ${ref('templates/qa-plan-template.md')} — required scaffold; use as structure`,
-    phase5: `Required references (read before starting):
-- ${ref('references/review-rubric.md')} — review inputs/outputs, blocking findings, scoring rules
-- ${ref('references/qa-plan-contract.md')} — output shape, scenario contract, evidence usage
-- ${ref('references/executable-step-rubric.md')} — pass/fail criteria for action steps; avoid banned vague phrases`,
+- ${ref('references/phase4b-contract.md')} — canonical top-layer taxonomy, exception comments, and final scaffold`,
+    phase5a: `Required references (read before starting):
+- ${ref('references/review-rubric-phase5a.md')} — context-artifact audit, section review checklist, rewrite rules`,
+    phase5b: `Required references (read before starting):
+- ${ref('references/review-rubric-phase5b.md')} — shipment-readiness checkpoints derived from docs/checkpoints.md`,
     phase6: `Required references (read before starting):
-- ${ref('references/executable-step-rubric.md')} — pass/fail criteria for action steps; avoid banned vague phrases
-- ${ref('references/review-rubric.md')} — review dimensions and scoring
-- ${ref('references/e2e-coverage-rules.md')} — mandatory E2E journey, minimum journey types
-- ${ref('templates/qa-plan-template.md')} — required scaffold; use as structure`,
+- ${ref('references/review-rubric-phase6.md')} — final layering, few-shot cleanup, and promotion-readiness checks
+- ${ref('references/e2e-coverage-rules.md')} — mandatory E2E journey, minimum journey types`,
   };
   return blocks[phaseId] || '';
 }
@@ -85,7 +79,7 @@ async function buildPhaseRequests(phaseId, featureId, projectDir, task, run) {
   }
 
   await assertPhasePrerequisites(phaseId, featureId, projectDir);
-  const request = buildSingleRequest(phaseId, featureId, projectDir);
+  const request = buildSingleRequest(phaseId, featureId, projectDir, task);
   return [request];
 }
 
@@ -107,15 +101,15 @@ function buildPhase1Request(sourceFamily, featureId, projectDir, run) {
   return request.requests[0];
 }
 
-function buildSingleRequest(phaseId, featureId, projectDir) {
+function buildSingleRequest(phaseId, featureId, projectDir, task) {
   const label = `${phaseId}-${featureId}`;
-  const task = buildPhaseTaskText(phaseId, featureId, projectDir);
+  const taskText = buildPhaseTaskText(phaseId, featureId, projectDir, task);
   const request = normalizeSpawnInput({
     agent_id: DEFAULT_AGENT_ID,
     mode: DEFAULT_MODE,
     runtime: DEFAULT_RUNTIME,
     label,
-    task,
+    task: taskText,
     attachments: [],
     source_kind: 'feature-qa-planning',
     source: {
@@ -175,13 +169,15 @@ Required artifacts (must write all):
 ${artifactReqs}`;
 }
 
-function buildPhaseTaskText(phaseId, featureId, projectDir) {
+function buildPhaseTaskText(phaseId, featureId, projectDir, task) {
+  const paths = resolvePhasePaths(phaseId, featureId, projectDir, task);
   const descriptions = {
     phase3: `Read ${projectDir}/context/artifact_lookup_${featureId}.md and write ${projectDir}/context/coverage_ledger_${featureId}.md.`,
-    phase4a: `Read context artifacts and write ${projectDir}/drafts/qa_plan_subcategory_${featureId}.md in XMindMark subcategory format.`,
-    phase4b: `Read ${projectDir}/drafts/qa_plan_subcategory_${featureId}.md and write ${projectDir}/drafts/qa_plan_v1.md with grouped top-level categories.`,
-    phase5: `Read ${projectDir}/context/artifact_lookup_${featureId}.md, write ${projectDir}/context/review_notes_${featureId}.md, ${projectDir}/context/review_delta_${featureId}.md, and ${projectDir}/drafts/qa_plan_v2.md.`,
-    phase6: `Read ${projectDir}/drafts/qa_plan_v2.md and write ${projectDir}/drafts/qa_plan_v3.md plus ${projectDir}/context/quality_delta_${featureId}.md.`,
+    phase4a: `Read current context artifacts, stay below canonical top-layer grouping, and write ${paths.outputDraftPath}. You may do one bounded supplemental research pass with shared skills when evidence is insufficient, save any new artifact under ${projectDir}/context, and update artifact lookup references before finishing.`,
+    phase4b: `Read ${paths.inputDraftPath}, group Phase 4a output into canonical top-layer labels, preserve subcategory and scenario granularity, and write ${paths.outputDraftPath}. If a scenario does not fit a canonical layer, keep the local grouping and add an explicit HTML exception comment. You may do one bounded supplemental research pass when grouping evidence is insufficient.`,
+    phase5a: `Read every intermediate context artifact already present under ${projectDir}/context, audit ${projectDir}/context/artifact_lookup_${featureId}.md with a section-by-section review, refactor ${paths.inputDraftPath}, and write ${projectDir}/context/review_notes_${featureId}.md, ${projectDir}/context/review_delta_${featureId}.md, and ${paths.outputDraftPath}. The pass must be self-reviewed against the Phase 5a rubric and may do one bounded supplemental research pass when evidence is insufficient.`,
+    phase5b: `Read ${paths.inputDraftPath}, ${projectDir}/context/review_notes_${featureId}.md, and ${projectDir}/context/review_delta_${featureId}.md. Evaluate every checkpoint from ${join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md')}, refactor the plan when checkpoint gaps are fixable, and write ${projectDir}/context/checkpoint_audit_${featureId}.md, ${projectDir}/context/checkpoint_delta_${featureId}.md, and ${paths.outputDraftPath}. Include a Release Recommendation and use one bounded supplemental research pass only when checkpoint evidence is insufficient.`,
+    phase6: `Read ${paths.inputDraftPath}, ${projectDir}/context/review_notes_${featureId}.md, ${projectDir}/context/review_delta_${featureId}.md, ${projectDir}/context/checkpoint_audit_${featureId}.md, and ${projectDir}/context/checkpoint_delta_${featureId}.md. Produce ${paths.outputDraftPath} plus ${projectDir}/context/quality_delta_${featureId}.md. The final draft must preserve canonical top-layer grouping, subcategory layering, atomic nested steps, and final few-shot cleanup. One bounded supplemental research pass is allowed only when final-quality evidence is insufficient.`,
   };
 
   const description = descriptions[phaseId];
@@ -200,6 +196,7 @@ ${refBlock}
 Requirements:
 - Follow the script-driven artifact contract.
 - Update artifact lookup columns for artifacts you read when applicable.
+- Use only the shared skills \`confluence\`, \`jira-cli\`, and \`tavily-search\` for any bounded supplemental research.
 - Return the written artifact paths in the session result.
 
 Task:
@@ -215,17 +212,29 @@ async function readRequiredJson(path, label) {
 }
 
 async function assertPhasePrerequisites(phaseId, featureId, projectDir) {
+  const task = await readRequiredJson(join(projectDir, 'task.json'), 'task.json');
+  const paths = resolvePhasePaths(phaseId, featureId, projectDir, task);
   const requiredFiles = {
     phase3: [join(projectDir, 'context', `artifact_lookup_${featureId}.md`)],
     phase4a: [join(projectDir, 'context', `artifact_lookup_${featureId}.md`)],
-    phase4b: [join(projectDir, 'drafts', `qa_plan_subcategory_${featureId}.md`)],
-    phase5: [
+    phase4b: [paths.inputDraftPath],
+    phase5a: [
       join(projectDir, 'context', `artifact_lookup_${featureId}.md`),
-      join(projectDir, 'drafts', 'qa_plan_v1.md'),
+      paths.inputDraftPath,
+    ],
+    phase5b: [
+      join(projectDir, 'context', `artifact_lookup_${featureId}.md`),
+      join(projectDir, 'context', `review_notes_${featureId}.md`),
+      join(projectDir, 'context', `review_delta_${featureId}.md`),
+      paths.inputDraftPath,
     ],
     phase6: [
       join(projectDir, 'context', `artifact_lookup_${featureId}.md`),
-      join(projectDir, 'drafts', 'qa_plan_v2.md'),
+      join(projectDir, 'context', `review_notes_${featureId}.md`),
+      join(projectDir, 'context', `review_delta_${featureId}.md`),
+      join(projectDir, 'context', `checkpoint_audit_${featureId}.md`),
+      join(projectDir, 'context', `checkpoint_delta_${featureId}.md`),
+      paths.inputDraftPath,
     ],
   };
 
@@ -235,4 +244,42 @@ async function assertPhasePrerequisites(phaseId, featureId, projectDir) {
       throw new Error(`Missing required prerequisite for ${phaseId}: ${filePath}`);
     }
   }
+}
+
+function resolvePhasePaths(phaseId, featureId, projectDir, task = {}) {
+  const currentDraft = resolveLatestDraftPath(task, projectDir);
+  const outputDrafts = {
+    phase4a: join(projectDir, 'drafts', `qa_plan_phase4a_r${getNextPhaseRound(task, 'phase4a')}.md`),
+    phase4b: join(projectDir, 'drafts', `qa_plan_phase4b_r${getNextPhaseRound(task, 'phase4b')}.md`),
+    phase5a: join(projectDir, 'drafts', `qa_plan_phase5a_r${getNextPhaseRound(task, 'phase5a')}.md`),
+    phase5b: join(projectDir, 'drafts', `qa_plan_phase5b_r${getNextPhaseRound(task, 'phase5b')}.md`),
+    phase6: join(projectDir, 'drafts', `qa_plan_phase6_r${getNextPhaseRound(task, 'phase6')}.md`),
+  };
+
+  return {
+    inputDraftPath: currentDraft || fallbackInputDraft(phaseId, featureId, projectDir),
+    outputDraftPath: outputDrafts[phaseId] || null,
+  };
+}
+
+function resolveLatestDraftPath(task, projectDir) {
+  const draftPath = String(task?.latest_draft_path || '').trim();
+  if (!draftPath) return '';
+  return draftPath.startsWith(projectDir) ? draftPath : join(projectDir, draftPath);
+}
+
+function fallbackInputDraft(phaseId, featureId, projectDir) {
+  if (phaseId === 'phase4b') {
+    return join(projectDir, 'drafts', `qa_plan_phase4a_r1.md`);
+  }
+  if (phaseId === 'phase5a') {
+    return join(projectDir, 'drafts', `qa_plan_phase4b_r1.md`);
+  }
+  if (phaseId === 'phase5b') {
+    return join(projectDir, 'drafts', `qa_plan_phase5a_r1.md`);
+  }
+  if (phaseId === 'phase6') {
+    return join(projectDir, 'drafts', `qa_plan_phase5b_r1.md`);
+  }
+  return '';
 }

@@ -14,20 +14,21 @@ Human-facing guide for the skill package. This file is intentionally short.
 
 - source evidence saved under `context/`
 - `artifact_lookup_<feature-id>.md` under `context/`
-- versioned draft QA plans under `drafts/` (`qa_plan_subcategory`, `qa_plan_v1`, `qa_plan_v2`, `qa_plan_v3`)
+- versioned phase-scoped draft QA plans under `drafts/` (`qa_plan_phase4a_r<round>.md`, `qa_plan_phase4b_r<round>.md`, `qa_plan_phase5a_r<round>.md`, `qa_plan_phase5b_r<round>.md`, `qa_plan_phase6_r<round>.md`)
 - phase spawn manifests under the project root
 - a promoted `qa_plan_final.md` only after user approval
 
 ## Active Contract Files
 
 - `reference.md`
-- `references/qa-plan-contract.md`
+- `references/phase4a-contract.md`
+- `references/phase4b-contract.md`
 - `references/context-coverage-contract.md`
-- `references/executable-step-rubric.md`
-- `references/review-rubric.md`
+- `references/review-rubric-phase5a.md`
+- `references/review-rubric-phase5b.md`
+- `references/review-rubric-phase6.md`
 - `references/context-index-schema.md`
 - `references/e2e-coverage-rules.md`
-- `templates/qa-plan-template.md`
 - `docs/DOCS_GOVERNANCE.md`
 
 ## Phase-to-Reference Mapping
@@ -38,7 +39,8 @@ Each spawned subagent receives explicit instructions in its task text to read th
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Phase 1 | `reference.md`, `references/context-coverage-contract.md`                                                                          | Source routing, approved collection paths                |
 | Phase 3 | `references/context-coverage-contract.md`, `references/context-index-schema.md`                                                   | Coverage ledger rules, artifact lookup structure         |
-| Phase 4a | `references/qa-plan-contract.md`, `references/executable-step-rubric.md`, `templates/qa-plan-template.md`                         | XMindMark structure, executable steps, scaffold          |
-| Phase 4b | Same as 4a                                                                                                                        | Top-category grouping                                    |
-| Phase 5 | `references/review-rubric.md`, `references/qa-plan-contract.md`, `references/executable-step-rubric.md`                          | Review inputs/outputs, blocking findings, refactor rules |
-| Phase 6 | `references/executable-step-rubric.md`, `references/review-rubric.md`, `references/e2e-coverage-rules.md`, `templates/qa-plan-template.md` | Quality pass, E2E minimum, format rules                  |
+| Phase 4a | `references/phase4a-contract.md`                                                                                                  | Subcategory-only draft, atomic nested steps, few shots   |
+| Phase 4b | `references/phase4b-contract.md`                                                                                                  | Canonical top-layer grouping and exception rules         |
+| Phase 5a | `references/review-rubric-phase5a.md`                                                                                             | Full-context audit, section checklist, review refactor   |
+| Phase 5b | `references/review-rubric-phase5b.md`                                                                                             | Shipment checkpoints, checkpoint audit, release verdict  |
+| Phase 6 | `references/review-rubric-phase6.md`, `references/e2e-coverage-rules.md`                                                           | Final layering, few-shot cleanup, quality delta          |

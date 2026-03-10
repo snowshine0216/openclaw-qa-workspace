@@ -2,7 +2,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { fileExists } from './workflowState.mjs';
 
-const PHASE_COLUMNS = ['Phase 4a', 'Phase 4b', 'Phase 5', 'Phase 6'];
+const PHASE_COLUMNS = ['Phase 4a', 'Phase 4b', 'Phase 5a', 'Phase 5b', 'Phase 6'];
 
 export async function writeArtifactLookup(featureId, projectDir) {
   const contextDir = join(projectDir, 'context');
@@ -35,7 +35,8 @@ async function buildRows(contextDir, featureId, existing) {
       sourcePhase: inferSourcePhase(filename),
       phase4a: preserved.phase4a || '❌',
       phase4b: preserved.phase4b || '❌',
-      phase5: preserved.phase5 || '❌',
+      phase5a: preserved.phase5a || preserved.phase5 || '❌',
+      phase5b: preserved.phase5b || '❌',
       phase6: preserved.phase6 || '❌',
     };
   });
@@ -43,13 +44,13 @@ async function buildRows(contextDir, featureId, existing) {
 
 function renderLookup(featureId, rows) {
   const tableRows = rows.map((row) => {
-    return `| ${row.index} | \`${row.artifactKey}\` | \`${row.filePath}\` | ${row.sourcePhase} | ${row.phase4a} | ${row.phase4b} | ${row.phase5} | ${row.phase6} |`;
+    return `| ${row.index} | \`${row.artifactKey}\` | \`${row.filePath}\` | ${row.sourcePhase} | ${row.phase4a} | ${row.phase4b} | ${row.phase5a} | ${row.phase5b} | ${row.phase6} |`;
   }).join('\n');
 
   return `# Artifact Lookup — ${featureId}
 
-| # | Artifact Key | File Path | Source Phase | Phase 4a | Phase 4b | Phase 5 | Phase 6 |
-|---|---|---|---|---|---|---|---|
+| # | Artifact Key | File Path | Source Phase | Phase 4a | Phase 4b | Phase 5a | Phase 5b | Phase 6 |
+|---|---|---|---|---|---|---|---|---|
 ${tableRows}
 `;
 }
@@ -64,7 +65,14 @@ function detectArtifactKey(filename) {
     [/^coverage_ledger_/, 'coverage_ledger'],
     [/^review_notes_/, 'review_notes'],
     [/^review_delta_/, 'review_delta'],
+    [/^checkpoint_audit_/, 'checkpoint_audit'],
+    [/^checkpoint_delta_/, 'checkpoint_delta'],
     [/^quality_delta_/, 'quality_delta'],
+    [/^research_phase4a_/, 'research_phase4a'],
+    [/^research_phase4b_/, 'research_phase4b'],
+    [/^research_phase5a_/, 'research_phase5a'],
+    [/^research_phase5b_/, 'research_phase5b'],
+    [/^research_phase6_/, 'research_phase6'],
   ];
 
   for (const [pattern, key] of rules) {
@@ -76,7 +84,14 @@ function detectArtifactKey(filename) {
 
 function inferSourcePhase(filename) {
   if (filename.startsWith('coverage_ledger_')) return 'Phase 3';
-  if (filename.startsWith('review_') || filename.startsWith('quality_')) return 'Phase 5';
+  if (filename.startsWith('review_')) return 'Phase 5a';
+  if (filename.startsWith('checkpoint_')) return 'Phase 5b';
+  if (filename.startsWith('quality_')) return 'Phase 6';
+  if (filename.startsWith('research_phase4a_')) return 'Phase 4a';
+  if (filename.startsWith('research_phase4b_')) return 'Phase 4b';
+  if (filename.startsWith('research_phase5a_')) return 'Phase 5a';
+  if (filename.startsWith('research_phase5b_')) return 'Phase 5b';
+  if (filename.startsWith('research_phase6_')) return 'Phase 6';
   return 'Phase 1';
 }
 
@@ -87,12 +102,15 @@ async function readExistingLookup(lookupPath) {
   const lines = content.split('\n').filter((line) => /^\|\s*\d+\s*\|/.test(line));
   for (const line of lines) {
     const cells = line.split('|').slice(1, -1).map((cell) => cell.trim());
+    const isSplitPhaseLookup = cells.length >= 9;
     map.set(stripCode(cells[2]), {
       artifactKey: stripCode(cells[1]),
       phase4a: cells[4],
       phase4b: cells[5],
+      phase5a: cells[6],
+      phase5b: isSplitPhaseLookup ? (cells[7] || '❌') : '❌',
       phase5: cells[6],
-      phase6: cells[7],
+      phase6: isSplitPhaseLookup ? (cells[8] || '❌') : (cells[7] || '❌'),
     });
   }
   return map;

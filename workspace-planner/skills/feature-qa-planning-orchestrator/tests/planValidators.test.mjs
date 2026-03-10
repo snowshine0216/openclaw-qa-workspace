@@ -6,11 +6,19 @@ import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
+  validateCheckpointAudit,
+  validateCheckpointDelta,
   validateContextIndex,
+  validateContextCoverageAudit,
   validateCoverageLedger,
   validateE2EMinimum,
   validateExecutableSteps,
+  validateFinalLayering,
+  validatePhase4aSubcategoryDraft,
+  validatePhase4bCategoryLayering,
+  validateQualityDelta,
   validateScenarioGranularity,
+  validateSectionReviewChecklist,
   validateReviewDelta,
   validateUnresolvedStepHandling,
 } from '../scripts/lib/qaPlanValidators.mjs';
@@ -231,6 +239,73 @@ test('validateExecutableSteps rejects scenarios missing expected result even whe
   assert.match(result.failures.join('\n'), /observable expected outcomes/i);
 });
 
+test('validatePhase4aSubcategoryDraft rejects canonical top-layer leakage in the subcategory draft', () => {
+  const result = validatePhase4aSubcategoryDraft(`Feature QA Plan (BCIN-4A)
+
+- Security
+    * Authentication <P1>
+        - Open the login page
+            - Enter a valid username
+                - Enter an incorrect password
+                    - Click Sign in
+                        - Inline password error appears
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Phase 4a must stay below canonical top-layer grouping/i);
+});
+
+test('validatePhase4bCategoryLayering requires canonical top layers and a subcategory layer', () => {
+  const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-4B)
+
+- EndToEnd
+    * Authentication
+        - Sign in succeeds <P1>
+            - Open the login page
+                - Enter valid credentials
+                    - Click Sign in
+                        - Dashboard loads
+- Core Functional Flows
+    * Profile management
+        - Update the display name <P2>
+            - Open profile settings
+                - Update the display name
+                    - Saved confirmation appears
+`);
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.failures, []);
+});
+
+test('validatePhase4bCategoryLayering rejects scenarios directly under the top layer', () => {
+  const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-4B)
+
+- EndToEnd
+    * Sign in succeeds <P1>
+        - Open the login page
+            - Enter valid credentials
+                - Dashboard loads
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /subcategory layer/i);
+});
+
+test('validatePhase4bCategoryLayering accepts non-canonical top layer when top_layer_exception comment exists', () => {
+  const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-4B)
+
+<!-- top_layer_exception: kept under original grouping because no canonical layer fit without losing meaning -->
+- Custom Workflow
+    * Subcategory
+        - Custom scenario <P1>
+            - Open the page
+                - Expected outcome
+`);
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.failures, []);
+});
+
 test('validateReviewDelta rejects unresolved blocking findings', () => {
   const result = validateReviewDelta(`# Review Delta
 
@@ -280,6 +355,139 @@ test('validateReviewDelta accepts explicit none marker when no blocking findings
 `);
 
   assert.equal(result.ok, true);
+});
+
+test('validateContextCoverageAudit rejects review notes that do not account for each context artifact section', () => {
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/jira_issue_BCIN-1.md | ## Feature Summary | consumed | EndToEnd > Authentication | primary journey | covered
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | jira_issue_BCIN-1.md | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+`;
+  const requiredArtifacts = [
+    'context/jira_issue_BCIN-1.md::## Feature Summary',
+    'context/confluence_design_BCIN-1.md::## Edge Cases',
+  ];
+
+  const result = validateContextCoverageAudit(reviewNotes, requiredArtifacts);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /confluence_design_BCIN-1\.md/i);
+});
+
+test('validateSectionReviewChecklist requires a rewrite request for blocking findings', () => {
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/jira_issue_BCIN-1.md | ## Feature Summary | consumed | EndToEnd > Authentication | primary journey | covered
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | fail | jira_issue_BCIN-1.md | add recovery outcome
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | pass | current draft | none
+- Regression / Known Risks | risky flows are isolated | pass | github_diff_BCIN-1.md | none
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | confluence_design_BCIN-1.md | await browser matrix
+- Security | permission-sensitive flows stay separate | pass | jira_issue_BCIN-1.md | none
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not in scope
+- Accessibility | keyboard/focus coverage is explicit when applicable | deferred | current draft | not in scope
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not in scope
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- BF1 | EndToEnd | Missing recovery outcome | no visible completion or recovery state | add recovery outcome
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+`;
+
+  const result = validateSectionReviewChecklist(reviewNotes);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /BF1/i);
+  assert.match(result.failures.join('\n'), /rewrite request/i);
+});
+
+test('validateCheckpointAudit requires evidence for every checkpoint and a release recommendation', () => {
+  const checkpointAudit = `# Checkpoint Audit
+
+## Checkpoint Summary
+- Requirements Traceability | Checkpoint 1 | pass | jira_issue_BCIN-1.md | none
+- Black-Box Behavior Validation | Checkpoint 2 | pass | qa_plan_phase5a_r1.md | none
+
+## Blocking Checkpoints
+- none
+
+## Advisory Checkpoints
+- none
+`;
+
+  const result = validateCheckpointAudit(checkpointAudit);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Checkpoint 3/i);
+  assert.match(result.failures.join('\n'), /Release Recommendation/i);
+});
+
+test('validateCheckpointDelta rejects resolved blockers without a recorded change', () => {
+  const checkpointDelta = `# Checkpoint Delta
+
+## Blocking Checkpoint Resolution
+- Checkpoint 3 | real integration coverage was missing | none | resolved
+
+## Advisory Checkpoint Resolution
+- none
+
+## Final Disposition
+- return phase5b
+`;
+
+  const result = validateCheckpointDelta(checkpointDelta);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Checkpoint 3/i);
+  assert.match(result.failures.join('\n'), /recorded change/i);
+});
+
+test('validateFinalLayering rejects drafts that skip the subcategory layer', () => {
+  const result = validateFinalLayering(`Feature QA Plan (BCIN-6)
+
+- EndToEnd
+    * Sign in succeeds <P1>
+        - Open the login page
+            - Enter valid credentials
+                - Click Sign in
+                    - Dashboard loads
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /subcategory layer/i);
+});
+
+test('validateQualityDelta requires final layer audit and verdict sections', () => {
+  const result = validateQualityDelta(`# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Authentication > Sign in succeeds | canonical layering retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | EndToEnd > Authentication | vague wording | concrete wording | applied
+
+## Exceptions Preserved
+- none
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Verdict/i);
 });
 
 const SAVE_SCENARIO_UNITS_FIXTURE = `# Scenario Units
@@ -494,6 +702,26 @@ test('validateScenarioGranularity cli validates scenario units against ledger an
   await rm(tmp, { recursive: true, force: true });
 });
 
+test('validate_plan_artifact cli supports new phase4a validator', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'phase4a_cli_'));
+  const draftPath = join(tmp, 'draft.md');
+  await writeFile(draftPath, `Feature QA Plan (BCIN-CLI)
+
+- Authentication <P1>
+    * Incorrect password blocks sign-in
+        - Open the login page
+            - Enter a valid username
+                - Enter an incorrect password
+                    - Click Sign in
+                        - Inline password error appears
+`);
+
+  const result = await runValidatorCli(['validate_phase4a_subcategory_draft', draftPath]);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
 test('validateUnresolvedStepHandling requires comment and next action when unresolved items remain', () => {
   const result = validateUnresolvedStepHandling(
     `# QA Plan Review
@@ -687,13 +915,16 @@ test('validate_e2e_minimum cli passes for user-facing plan with EndToEnd and exp
   await writeFile(file, `Feature QA Plan
 
 - EndToEnd
-    * Full report creation flow <P1>
-        - Action: open feature and click Create
-            - Expected: the report opens in the workspace
+    * Report creation
+        - Full report creation flow <P1>
+            - Open the feature
+                - Click Create
+                    - The report opens in the workspace
 - Core Functional Flows
-    * Edit title <P2>
-        - Action: double-click the title field
-            - Expected: the title field becomes editable
+    * Editing
+        - Edit title <P2>
+            - Double-click the title field
+                - The title field becomes editable
 `);
 
   const result = await runValidatorCli(['validate_e2e_minimum', file, 'user_facing']);

@@ -1,11 +1,19 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
 import {
+  validateCheckpointAudit,
+  validateCheckpointDelta,
   validateContextIndex,
+  validateContextCoverageAudit,
   validateCoverageLedger,
   validateE2EMinimum,
   validateExecutableSteps,
+  validateFinalLayering,
+  validatePhase4aSubcategoryDraft,
+  validatePhase4bCategoryLayering,
+  validateQualityDelta,
   validateScenarioGranularity,
+  validateSectionReviewChecklist,
   validateReviewDelta,
   validateUnresolvedStepHandling,
   validateXMindMarkHierarchy,
@@ -50,6 +58,30 @@ switch (validatorName) {
   }
   case 'validate_e2e_minimum':
     result = validateE2EMinimum(content, { featureClassification: rest[0] || 'user_facing' });
+    break;
+  case 'validate_phase4a_subcategory_draft':
+    result = validatePhase4aSubcategoryDraft(content);
+    break;
+  case 'validate_phase4b_category_layering':
+    result = validatePhase4bCategoryLayering(content);
+    break;
+  case 'validate_context_coverage_audit':
+    result = validateContextCoverageAudit(content, rest);
+    break;
+  case 'validate_section_review_checklist':
+    result = validateSectionReviewChecklist(content);
+    break;
+  case 'validate_checkpoint_audit':
+    result = validateCheckpointAudit(content);
+    break;
+  case 'validate_checkpoint_delta':
+    result = validateCheckpointDelta(content);
+    break;
+  case 'validate_final_layering':
+    result = validateFinalLayering(content);
+    break;
+  case 'validate_quality_delta':
+    result = validateQualityDelta(content);
     break;
   case 'validate_executable_steps':
     result = validateExecutableSteps(content);

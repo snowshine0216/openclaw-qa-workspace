@@ -9,10 +9,12 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const SKILL_ROOT = join(__dirname, '..');
 
 const REQUIRED_FILES = [
-  'references/qa-plan-contract.md',
+  'references/phase4a-contract.md',
+  'references/phase4b-contract.md',
   'references/context-coverage-contract.md',
-  'references/executable-step-rubric.md',
-  'references/review-rubric.md',
+  'references/review-rubric-phase5a.md',
+  'references/review-rubric-phase5b.md',
+  'references/review-rubric-phase6.md',
   'references/context-index-schema.md',
   'references/e2e-coverage-rules.md',
   'docs/DOCS_GOVERNANCE.md',
@@ -60,14 +62,20 @@ test('skill entry docs point at script-driven contracts', async () => {
 
   assert.match(skill, /phase4a/i);
   assert.match(skill, /phase4b/i);
+  assert.match(skill, /phase5a/i);
+  assert.match(skill, /phase5b/i);
   assert.match(skill, /The orchestrator does not perform phase logic inline/i);
   assert.match(reference, /artifact_lookup_<feature-id>/);
-  assert.match(reference, /phase6_spawn_manifest\.json/);
-  assert.match(reference, /validate_xmindmark_hierarchy/);
+  assert.match(reference, /phase5a_spawn_manifest\.json/);
+  assert.match(reference, /phase5b_spawn_manifest\.json/);
+  assert.match(reference, /validate_final_layering/);
   assert.match(readme, /phase spawn manifests/i);
+  assert.match(readme, /qa_plan_phase5a_r<round>/i);
+  assert.match(readme, /qa_plan_phase5b_r<round>/i);
 
   assert.doesNotMatch(readme, /deploy_runtime_context_tools/i);
   assert.doesNotMatch(reference, /scenario_units_<feature-id>/);
+  assert.doesNotMatch(reference, /phase5_spawn_manifest\.json/);
 });
 
 test('active docs advertise script-driven artifacts and source routing', async () => {
@@ -75,6 +83,10 @@ test('active docs advertise script-driven artifacts and source routing', async (
   const coverageContract = await readFile(join(SKILL_ROOT, 'references', 'context-coverage-contract.md'), 'utf8');
 
   assert.match(reference, /runtime_setup_<feature-id>/);
+  assert.match(reference, /phase4a-contract\.md/);
+  assert.match(reference, /review-rubric-phase5a\.md/);
+  assert.match(reference, /review-rubric-phase5b\.md/);
+  assert.match(reference, /review-rubric-phase6\.md/);
   assert.match(reference, /jira-cli/);
   assert.match(reference, /confluence/);
   assert.match(reference, /github/);
