@@ -446,9 +446,10 @@ export function validateE2EMinimum(content, { featureClassification = 'user_faci
     }
   }
   if (featureClassification === 'user_facing' && hasEndToEnd) {
-    const missingExpectedScenarios = scenarioBlocks(e2eSection).filter(
-      (block) => !/(Expected:|expected:)/.test(block)
-    );
+    const missingExpectedScenarios = scenarioBlocks(e2eSection).filter((block) => {
+      const bullets = bulletLines(block);
+      return !bullets.some((line) => bulletIndent(line) >= 16);
+    });
     if (missingExpectedScenarios.length > 0) {
       failures.push('Each EndToEnd journey must include an observable completion/result condition.');
     }
@@ -478,6 +479,7 @@ export function validateExecutableSteps(content) {
   }
 
   for (const line of bulletLines(content)) {
+    if (bulletIndent(line) < 8) continue;
     const lower = line.toLowerCase();
     const matchedToken = IMPLEMENTATION_TOKENS.find((token) => lower.includes(token));
     if (matchedToken || hasCamelCaseImplementationToken(line)) {
