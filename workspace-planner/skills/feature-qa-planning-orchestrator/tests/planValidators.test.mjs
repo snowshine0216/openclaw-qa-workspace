@@ -170,7 +170,7 @@ test('validateE2EMinimum rejects user-facing plans without EndToEnd section', ()
 `, { featureClassification: 'user_facing' });
 
   assert.equal(result.ok, false);
-  assert.match(result.failures.join('\n'), /EndToEnd/i);
+  assert.match(result.failures.join('\n'), /end-to-end journey/i);
 });
 
 test('validateE2EMinimum rejects EndToEnd scenarios without expected result even when later sections have one', () => {
@@ -228,7 +228,7 @@ test('validateExecutableSteps rejects scenarios missing expected result even whe
 `);
 
   assert.equal(result.ok, false);
-  assert.match(result.failures.join('\n'), /Expected result is missing/i);
+  assert.match(result.failures.join('\n'), /observable expected outcomes/i);
 });
 
 test('validateReviewDelta rejects unresolved blocking findings', () => {
@@ -716,7 +716,7 @@ test('validate_e2e_minimum cli fails for user-facing plan missing EndToEnd secti
   const result = await runValidatorCli(['validate_e2e_minimum', file, 'user_facing']);
   assert.notEqual(result.code, 0);
   assert.match(result.stderr, /VALIDATION_FAILED/);
-  assert.match(result.stderr, /EndToEnd/i);
+  assert.match(result.stderr, /end-to-end journey/i);
   await rm(tmp, { recursive: true, force: true });
 });
 
@@ -727,12 +727,14 @@ test('validate_e2e_minimum cli fails for user-facing plan missing EndToEnd secti
 test('validate_executable_steps cli passes for clean steps', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'exec_cli_'));
   const file = join(tmp, 'draft.md');
-  await writeFile(file, `Feature QA Plan
+  await writeFile(file, `Feature QA Plan (BCIN-1)
 
-- EndToEnd
-    * Report creation flow <P1>
-        - Action: open the report and click Save
-            - Expected: the native save dialog appears
+- High
+    * Reporting <P1>
+        - Open the report page
+            - Click "Save"
+                - Native save dialog appears
+                - Report title remains unchanged
 `);
 
   const result = await runValidatorCli(['validate_executable_steps', file]);

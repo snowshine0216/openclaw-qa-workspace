@@ -150,6 +150,16 @@ function actionLines(content) {
     .filter((line) => /action:/i.test(line));
 }
 
+function bulletLines(content) {
+  return normalizeContent(content)
+    .split('\n')
+    .filter((line) => /^\s*[-*] /.test(line));
+}
+
+function bulletIndent(line) {
+  return (line.match(/^\s*/) || [''])[0].length;
+}
+
 function parseScenarioIdCell(cell) {
   return String(cell || '')
     .split(',')
@@ -428,8 +438,12 @@ export function validateE2EMinimum(content, { featureClassification = 'user_faci
   const failures = [];
   const e2eSection = getTopLevelBulletSection(content, '- EndToEnd');
   const hasEndToEnd = normalizeContent(content).includes('\n- EndToEnd');
+  const xmindHierarchy = validateXMindMarkHierarchy(content);
+  const deepBullets = bulletLines(content).filter((line) => bulletIndent(line) >= 12);
   if (featureClassification === 'user_facing' && !hasEndToEnd) {
-    failures.push('EndToEnd section is required for user-facing features.');
+    if (!xmindHierarchy.ok || deepBullets.length === 0) {
+      failures.push('User-facing plans must include an end-to-end journey or equivalent executable XMindMark hierarchy.');
+    }
   }
   if (featureClassification === 'user_facing' && hasEndToEnd) {
     const missingExpectedScenarios = scenarioBlocks(e2eSection).filter(
@@ -451,12 +465,19 @@ export function validateE2EMinimum(content, { featureClassification = 'user_faci
 
 export function validateExecutableSteps(content) {
   const failures = [];
+  if (/setup:/i.test(content)) {
+    failures.push('Setup sections are not allowed in script-driven XMindMark plans.');
+  }
+  if (/(Action:|Expected:)/i.test(content)) {
+    failures.push('Legacy Action:/Expected: labels are not allowed in script-driven XMindMark plans.');
+  }
+
   const banned = includesAny(content, BANNED_VAGUE_PHRASES);
   for (const phrase of banned) {
     failures.push(`Banned vague phrase found: ${phrase}`);
   }
 
-  for (const line of actionLines(content)) {
+  for (const line of bulletLines(content)) {
     const lower = line.toLowerCase();
     const matchedToken = IMPLEMENTATION_TOKENS.find((token) => lower.includes(token));
     if (matchedToken || hasCamelCaseImplementationToken(line)) {
@@ -464,11 +485,51 @@ export function validateExecutableSteps(content) {
     }
   }
 
-  const missingExpectedScenarios = scenarioBlocks(content)
-    .filter((block) => /(Action:|action:)/.test(block))
-    .filter((block) => !/(Expected:|expected:)/.test(block));
-  if (missingExpectedScenarios.length > 0) {
-    failures.push(`Expected result is missing for ${missingExpectedScenarios.length} scenario(s).`);
+  const bullets = bulletLines(content);
+  if (bullets.length === 0) {
+    failures.push('Plan must contain bullet-based XMindMark steps.');
+  }
+
+  const actionSteps = bullets.filter((line) => bulletIndent(line) >= 12);
+  const expectedOutcomes = bullets.filter((line) => bulletIndent(line) >= 16);
+  if (actionSteps.length === 0) {
+    failures.push('Plan must include nested atomic action steps.');
+  }
+  if (expectedOutcomes.length === 0) {
+    failures.push('Plan must include observable expected outcomes as nested bullet leaves.');
+  }
+
+  const genericExpecteds = expectedOutcomes.filter((line) => {
+    return GENERIC_EXPECTED_RESULT_PHRASES.some((phrase) => line.toLowerCase().includes(phrase));
+  });
+  if (genericExpecteds.length > 0) {
+    failures.push(`Generic expected-result wording found: ${genericExpecteds[0].trim()}`);
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateXMindMarkHierarchy(content) {
+  const failures = [];
+  const lines = normalizeContent(content)
+    .split('\n')
+    .map((line) => line.replace(/\s+$/g, ''))
+    .filter((line) => line.trim() !== '' && !line.trim().startsWith('<!---'));
+
+  const firstLine = lines[0] || '';
+  if (!firstLine || /^\s*[-*]/.test(firstLine)) {
+    failures.push('XMindMark plan must start with a central topic line.');
+  }
+
+  const bullets = bulletLines(content);
+  const topLevelBullets = bullets.filter((line) => bulletIndent(line) === 0);
+  const nestedBullets = bullets.filter((line) => bulletIndent(line) > 0);
+
+  if (topLevelBullets.length < 2) {
+    failures.push('XMindMark hierarchy must contain at least two top-level category nodes.');
+  }
+  if (nestedBullets.length === 0) {
+    failures.push('XMindMark hierarchy must contain nested child nodes.');
   }
 
   return { ok: failures.length === 0, failures };

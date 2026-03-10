@@ -1,0 +1,18 @@
+{
+  "run_key": "66b4f5dc-ad08-45eb-8bdd-9d08cd5f10db",
+  "started_at": "2026-03-10T09:51:18.973Z",
+  "updated_at": "2026-03-10T09:51:20.617Z",
+  "runtime_setup_generated_at": "2026-03-10T09:51:20.617Z",
+  "data_fetched_at": null,
+  "artifact_index_generated_at": null,
+  "coverage_ledger_generated_at": null,
+  "draft_generated_at": null,
+  "review_completed_at": null,
+  "refactor_completed_at": null,
+  "finalized_at": null,
+  "notification_pending": false,
+  "has_supporting_artifacts": false,
+  "spawn_history": [],
+  "validation_history": [],
+  "blocking_issues": []
+}

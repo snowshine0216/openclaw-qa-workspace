@@ -3,18 +3,17 @@
 ## Review Inputs
 
 Reviewer must read:
-- `context_index_<feature-id>.md`
+- `artifact_lookup_<feature-id>.md`
 - `coverage_ledger_<feature-id>.md`
-- `coverage_gaps_<feature-id>.md`
-- current draft
+- current draft (`qa_plan_v1.md` for the combined review/refactor phase)
 - prior review artifact when applicable
 
 ## Blocking Findings
 
 Blocking findings include:
-- missing mandatory coverage candidate
-- merged `must_stand_alone` scenario units
-- missing required EndToEnd coverage
+- missing required coverage flow
+- merged scenarios that should stay split
+- missing required end-to-end journey coverage
 - non-executable wording
 - implementation-heavy manual wording
 - unresolved blocking issue from the prior reviewed draft
@@ -45,19 +44,9 @@ Score scale:
 
 ## Required Review Outputs
 
-- `review_qa_plan_<feature-id>.md`
-- `review_rewrite_requests_<feature-id>.md`
-- verdict: `accept` | `accept_with_advisories` | `reject`
-
-`review_rewrite_requests_<feature-id>.md` must include structured rows with:
-
-- `request_id`
-- `scenario_id` or candidate ids
-- `problem_type`
-- `required action`
-- `status`
-
-Use `split_required` when a merged testcase must become separate scenarios before approval.
+- `review_notes_<feature-id>.md`
+- `review_delta_<feature-id>.md`
+- refactored draft output (`qa_plan_v2.md`)
 
 ## Approval Contract
 

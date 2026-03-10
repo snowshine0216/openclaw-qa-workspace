@@ -43,20 +43,19 @@ Use this exact heading structure:
 # RCA for <ISSUE_KEY>
 ## 1. Incident Summary
 ## 2. References
-## 3. Timeline (UTC)
-## 4. What Happened
-## 5. Five Whys
-## 6. Why It Was Not Discovered Earlier
-## 7. Corrective Actions
-## 8. Preventive Actions
-## 9. Automation Status
+## 3. What Happened
+## 4. Five Whys
+## 5. Why It Was Not Discovered Earlier
+## 6. Corrective Actions
+## 7. Preventive Actions
+## 8. Automation Status
 ```
 
 ## Quality Rules
 
-- Include all 9 sections even when some data is missing.
+- Include all 8 sections even when some data is missing.
 - Keep the RCA concise; target less than 300 words when the source material allows it.
-- Section 5 must include at least 3 explicit "why" levels.
+- Section 5 must include at least 3 explicit "why" levels and both question and answer for each why.
 - Do not copy Jira text verbatim unless a short direct quote is necessary for fidelity.
 - If data is missing after checking the provided files, write `Data unavailable` instead of guessing.
 

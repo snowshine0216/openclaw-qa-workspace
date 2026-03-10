@@ -28,6 +28,15 @@ node evals/run_evals.mjs [--workspace PATH] [--iteration N] [--dry-run]
 - Writes `eval_metadata.json` for each eval
 - Outputs a spawn manifest (JSON + human-readable instructions) to stdout and `spawn_manifest.json`
 
+### 1a. Script-driven smoke checks
+
+Run the phase-entry smoke suite before grading prompts:
+
+```bash
+bash scripts/test/run-all.sh
+node --test scripts/test/*.test.mjs
+```
+
 ### 2. Spawn runs
 
 For each eval in the manifest, run **two** tasks (with-skill and without-skill):

@@ -8,6 +8,7 @@ import {
   validateScenarioGranularity,
   validateReviewDelta,
   validateUnresolvedStepHandling,
+  validateXMindMarkHierarchy,
 } from './qaPlanValidators.mjs';
 
 const [, , validatorName, filePath, ...rest] = process.argv;
@@ -52,6 +53,9 @@ switch (validatorName) {
     break;
   case 'validate_executable_steps':
     result = validateExecutableSteps(content);
+    break;
+  case 'validate_xmindmark_hierarchy':
+    result = validateXMindMarkHierarchy(content);
     break;
   case 'validate_review_delta':
     result = validateReviewDelta(content);

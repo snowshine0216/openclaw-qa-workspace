@@ -8,9 +8,14 @@ FEATURE_ID="${1:?Usage: save_context.sh <feature-id> <artifact-name> <content-or
 ARTIFACT_NAME="${2:?Missing artifact name}"
 CONTENT_OR_FILE="${3:?Missing content or file path}"
 
-# Script runs from projects/feature-plan/scripts/ after runtime deployment from scripts/lib/
-BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONTEXT_DIR="$BASE_DIR/$FEATURE_ID/context"
+# Preferred script-driven mode passes FQPO_PROJECT_DIR directly. Keep the old deployed-runtime
+# layout as a fallback so existing callers do not break during migration.
+if [ -n "${FQPO_PROJECT_DIR:-}" ]; then
+  CONTEXT_DIR="$FQPO_PROJECT_DIR/context"
+else
+  BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+  CONTEXT_DIR="$BASE_DIR/$FEATURE_ID/context"
+fi
 mkdir -p "$CONTEXT_DIR"
 
 # Support sub-paths like "figma/figma_metadata_..."
