@@ -35,6 +35,19 @@
 
 - one normalized capability family per bullet
 
+## Scenario Units
+
+- scenario id
+- parent capability family
+- user-visible trigger
+- required visible outcome
+- recommended section
+- priority
+- source artifacts
+- merge policy (`must_stand_alone` | `may_merge_with_same_outcome` | `out_of_scope_only_with_reason`)
+
+Capability families are grouping aids only. Distinct user-visible flows with different triggers, outcomes, or risks must become separate scenario units.
+
 ## Error / Recovery Behaviors
 
 - trigger
@@ -77,6 +90,11 @@
 - capability or journey
 - recommended coverage type
 - source artifacts
+
+Scenario units and mandatory coverage candidates may overlap, but they are not interchangeable:
+
+- coverage candidates prove nothing was silently dropped
+- scenario units preserve testcase granularity
 
 ## Traceability Map
 

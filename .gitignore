@@ -40,6 +40,9 @@ workspace-planner/projects/qa-test-keypoints-map/test-results/
 *.bak
 *~
 
+# Eval workspaces (skill-creator run outputs)
+**/*-workspace/
+
 #Reports folders
 tmp/
 report/

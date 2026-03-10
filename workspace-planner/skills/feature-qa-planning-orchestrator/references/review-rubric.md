@@ -13,6 +13,7 @@ Reviewer must read:
 
 Blocking findings include:
 - missing mandatory coverage candidate
+- merged `must_stand_alone` scenario units
 - missing required EndToEnd coverage
 - non-executable wording
 - implementation-heavy manual wording
@@ -47,6 +48,16 @@ Score scale:
 - `review_qa_plan_<feature-id>.md`
 - `review_rewrite_requests_<feature-id>.md`
 - verdict: `accept` | `accept_with_advisories` | `reject`
+
+`review_rewrite_requests_<feature-id>.md` must include structured rows with:
+
+- `request_id`
+- `scenario_id` or candidate ids
+- `problem_type`
+- `required action`
+- `status`
+
+Use `split_required` when a merged testcase must become separate scenarios before approval.
 
 ## Approval Contract
 

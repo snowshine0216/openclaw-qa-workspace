@@ -5,6 +5,7 @@ import {
   validateCoverageLedger,
   validateE2EMinimum,
   validateExecutableSteps,
+  validateScenarioGranularity,
   validateReviewDelta,
   validateUnresolvedStepHandling,
 } from './qaPlanValidators.mjs';
@@ -26,6 +27,26 @@ switch (validatorName) {
   case 'validate_coverage_ledger':
     result = validateCoverageLedger(content, rest);
     break;
+  case 'validate_scenario_granularity': {
+    const coverageLedgerPath = rest[0];
+    const draftPath = rest[1];
+    if (!coverageLedgerPath || !draftPath) {
+      console.error('validate_scenario_granularity requires <coverage-ledger-path> <draft-file-path> [review-rewrite-requests-path] [review-delta-path]');
+      process.exit(1);
+    }
+    const coverageLedgerContent = await readFile(coverageLedgerPath, 'utf8');
+    const draftContent = await readFile(draftPath, 'utf8');
+    const reviewRewriteRequestsContent = rest[2] ? await readFile(rest[2], 'utf8') : '';
+    const reviewDeltaContent = rest[3] ? await readFile(rest[3], 'utf8') : '';
+    result = validateScenarioGranularity(
+      content,
+      coverageLedgerContent,
+      draftContent,
+      reviewRewriteRequestsContent,
+      reviewDeltaContent
+    );
+    break;
+  }
   case 'validate_e2e_minimum':
     result = validateE2EMinimum(content, { featureClassification: rest[0] || 'user_facing' });
     break;

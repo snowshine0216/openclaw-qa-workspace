@@ -1,4 +1,4 @@
-# Feature QA Planning Orchestrator Implementation Summary
+# Superseded: Feature QA Planning Orchestrator Implementation Summary
 
 **Date:** 2026-03-10  
 **Source design:** `FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md`

@@ -10,6 +10,16 @@
 | `references/qa-plan-contract.md` | hard planning contract | any write or review rule change |
 | `evals/evals.json` | behavior checks | any contract change |
 
+## Active vs Archive
+
+Active docs in `docs/` should be limited to:
+
+- governance docs
+- current design specs
+- current implementation summaries
+
+Historical plans, prior reviews, and superseded implementation summaries belong in `docs/archive/` or must be explicitly marked `Superseded`.
+
 ## Update Rule
 
 Any future change to plan structure, write instructions, review instructions, runtime state, or validators is incomplete unless the matching docs and eval entries are updated in the same change.
@@ -19,4 +29,6 @@ Any future change to plan structure, write instructions, review instructions, ru
 - `SKILL.md` owns the workflow summary.
 - `reference.md` owns runtime state, artifact naming, and validator inventory.
 - `references/*.md` own detailed writer, reviewer, and schema contracts.
-- `docs/*.md` own design docs, reviews, governance, and implementation summaries.
+- `README.md` owns the short package map only.
+- `docs/*.md` own active design docs, governance, and current implementation summaries.
+- `docs/archive/*` owns historical and superseded design material.

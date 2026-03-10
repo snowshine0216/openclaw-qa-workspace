@@ -41,3 +41,6 @@ Feature QA Plan (<FEATURE_ID>)
     * Explicit omission
         - Reason: <WHY_NOT_APPLICABLE>
         - Evidence: <SOURCE_OR_USER_CONFIRMATION>
+
+<!-- Traceability note for writers:
+Preserve `must_stand_alone` scenario units as separate scenarios. Do not merge distinct user-visible flows just to shorten the plan. -->

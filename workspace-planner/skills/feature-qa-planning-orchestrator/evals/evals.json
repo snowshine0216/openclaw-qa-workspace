@@ -1,6 +1,42 @@
 {
   "skill_name": "feature-qa-planning-orchestrator",
   "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce a context index, coverage ledger, and a unified draft in XMindMark.",
+      "expected_output": "Valid context index with feature classification, coverage ledger mapping mandatory candidates, and draft QA plan in valid XMindMark. Evidence saved under context/.",
+      "files": [],
+      "expectations": [
+        "context_index_<feature-id>.md exists with required headings",
+        "coverage_ledger_<feature-id>.md maps mandatory candidates",
+        "Draft passes markxmind validation",
+        "Evidence saved under context/ before influencing plan"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review a QA plan draft for executable-step quality. Reject vague phrases like 'verify correct behavior' or 'ensure it works' in manual action steps.",
+      "expected_output": "Rewrite requests and executable-step fixes. Banned phrases removed; action steps remain user-visible.",
+      "files": [],
+      "expectations": [
+        "No vague phrases (verify correct behavior, ensure it works) in manual steps",
+        "Action steps are user-visible and concrete",
+        "Review artifact records rewrite requests"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same 8-phase model (Phase 0-7).",
+      "expected_output": "All docs aligned on Phase 0-7. No legacy six-phase or qa-plan-contract-simple references.",
+      "files": [],
+      "expectations": [
+        "Phase model is 0-7 in all referenced docs",
+        "No qa-plan-contract-simple.md references",
+        "AGENTS.md Core Workflow matches SKILL.md phase overview"
+      ]
+    }
+  ],
   "eval_groups": [
     {
       "id": "context_extraction",
@@ -22,7 +58,7 @@
       "policy": "blocking",
       "prompt": "Given a context index and coverage ledger, verify that every mandatory coverage candidate is represented or explicitly excluded in the draft.",
       "fixture_files": [
-        "workspace/projects/embedding-dashboard-editor-workstation/comapare-result.md"
+        "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md"
       ],
       "expected_pass_behavior": "Coverage ledger and draft preserve candidate-to-scenario traceability.",
       "expected_failure_signals": [

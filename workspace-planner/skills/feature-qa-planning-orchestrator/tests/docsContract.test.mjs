@@ -16,6 +16,11 @@ const REQUIRED_FILES = [
   'references/context-index-schema.md',
   'references/e2e-coverage-rules.md',
   'docs/DOCS_GOVERNANCE.md',
+  'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_SPEC.md',
+  'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_IMPLEMENTATION_SUMMARY.md',
+  'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md',
+  'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN_REVIEW.md',
+  'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_IMPLEMENTATION_SUMMARY.md',
 ];
 
 const REMOVED_FILES = [
@@ -57,4 +62,24 @@ test('skill entry docs point at hard-contract references rather than legacy simp
 
   assert.match(skill, /qa-plan-contract\.md/);
   assert.match(reference, /qa-plan-contract\.md/);
+});
+
+test('active docs advertise remediation-era artifacts and source-routing contract', async () => {
+  const reference = await readFile(join(SKILL_ROOT, 'reference.md'), 'utf8');
+  const coverageContract = await readFile(join(SKILL_ROOT, 'references', 'context-coverage-contract.md'), 'utf8');
+  const schema = await readFile(join(SKILL_ROOT, 'references', 'context-index-schema.md'), 'utf8');
+  const readme = await readFile(join(SKILL_ROOT, 'README.md'), 'utf8');
+
+  assert.match(reference, /runtime_setup_<feature-id>/);
+  assert.match(reference, /scenario_units_<feature-id>/);
+  assert.match(reference, /validate_scenario_granularity/);
+  assert.match(reference, /jira-cli/);
+  assert.match(reference, /confluence/);
+  assert.match(reference, /github/);
+
+  assert.match(coverageContract, /approved source collection paths/i);
+  assert.match(schema, /## Scenario Units/);
+
+  assert.doesNotMatch(readme, /Allowed `overall_status` values/);
+  assert.match(readme, /docs\/archive/);
 });

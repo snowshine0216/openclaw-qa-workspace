@@ -31,6 +31,7 @@ test('deploy script copies helper tools into the runtime project directory', asy
 
   const files = (await readdir(runtimeDir)).sort();
   assert.deepEqual(files, [
+    'contextRules.mjs',
     'qaPlanValidators.mjs',
     'save_context.sh',
     'validate_context.sh',
@@ -50,5 +51,6 @@ test('deploy script copies helper tools into the runtime project directory', asy
   assert.match(stdout, /DEPLOYED: validate_testcase_structure\.sh/);
   assert.match(stdout, /DEPLOYED: qaPlanValidators\.mjs/);
   assert.match(stdout, /DEPLOYED: validate_plan_artifact\.mjs/);
+  assert.match(stdout, /DEPLOYED: contextRules\.mjs/);
   await rm(tmp, { recursive: true, force: true });
 });

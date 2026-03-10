@@ -26,6 +26,13 @@ const BANNED_VAGUE_PHRASES = [
   'check the feature',
 ];
 
+const GENERIC_EXPECTED_RESULT_PHRASES = [
+  'remains usable',
+  'works correctly',
+  'correct behavior',
+  'safe understandable way',
+];
+
 const IMPLEMENTATION_TOKENS = [
   'service',
   'bridge api',
@@ -112,7 +119,7 @@ function extractCandidateIds(section) {
 }
 
 function extractScenarioRows(section) {
-  return extractTableRows(section, 8);
+  return extractTableRows(section, 5);
 }
 
 function extractTableRows(section, minCells = 1) {
@@ -141,6 +148,13 @@ function actionLines(content) {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => /action:/i.test(line));
+}
+
+function parseScenarioIdCell(cell) {
+  return String(cell || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
 }
 
 function scenarioBlocks(content) {
@@ -210,7 +224,7 @@ export function validateContextIndex(content) {
 export function validateCoverageLedger(content, requiredCandidateIds = []) {
   const mappingSection = getSection(content, '## Scenario Mapping Table');
   const rows = extractScenarioRows(mappingSection);
-  const foundIds = new Set(rows.map((cells) => cells[0]));
+  const foundIds = new Set(rows.flatMap((cells) => parseScenarioIdCell(cells[0])));
   const missingCandidates = requiredCandidateIds.filter((id) => !foundIds.has(id));
   const failures = [];
   const explicitNone = /\bnone\b/i.test(mappingSection);
@@ -226,6 +240,188 @@ export function validateCoverageLedger(content, requiredCandidateIds = []) {
   }
 
   return { ok: failures.length === 0, failures, missingCandidates };
+}
+
+function parseScenarioUnits(content) {
+  const section = getSection(content, '## Scenario Units');
+  const rows = extractTableRows(section, 9);
+  return rows.map((cells) => ({
+    scenarioId: cells[0],
+    familyId: cells[1],
+    title: cells[2],
+    trigger: cells[3],
+    visibleOutcome: cells[4],
+    recommendedSection: cells[5],
+    priority: cells[6],
+    sourceArtifacts: cells[7],
+    mergePolicy: cells[8],
+  }));
+}
+
+function findScenarioBlockByTitle(draftContent, title) {
+  const normalizedTitle = String(title || '').trim().toLowerCase();
+  return scenarioBlocks(draftContent).find((block) => {
+    const firstLine = block.split('\n')[0]?.toLowerCase() || '';
+    return firstLine.includes(normalizedTitle);
+  }) || '';
+}
+
+function parseRewriteRequests(content) {
+  const section = getSection(content, '## Rewrite Requests');
+  const rows = extractTableRows(section, 5);
+  return rows.map((cells) => ({
+    requestId: cells[0],
+    scenarioIds: parseScenarioIdCell(cells[1]),
+    problemType: cells[2],
+    requiredAction: cells[3],
+    status: cells[4],
+  }));
+}
+
+function parseReviewDeltaRows(content) {
+  const section = getSection(content, '## Blocking Findings Resolution');
+  const rows = extractTableRows(section, 5);
+  return rows.map((cells) => ({
+    requestId: cells[0],
+    oldScenarioTitle: cells[1],
+    newScenarioTitles: cells[2],
+    changeSummary: cells[3],
+    status: cells[4],
+  }));
+}
+
+function isNoOpChangeSummary(text) {
+  return /\b(no change|unchanged|same as before|no-op)\b/i.test(String(text || '').trim());
+}
+
+export function validateScenarioGranularity(
+  scenarioUnitsContent,
+  coverageLedgerContent,
+  draftContent,
+  reviewRewriteRequestsContent = '',
+  reviewDeltaContent = ''
+) {
+  const failures = [];
+  const scenarioUnits = parseScenarioUnits(scenarioUnitsContent);
+  if (scenarioUnits.length === 0) {
+    failures.push('## Scenario Units must contain at least one scenario row.');
+  }
+  const mappingSection = getSection(coverageLedgerContent, '## Scenario Mapping Table');
+  const mappingRows = extractScenarioRows(mappingSection).map((cells) => ({
+    scenarioIds: parseScenarioIdCell(cells[0]),
+    draftSection: cells[1],
+    draftScenarioTitle: cells[2],
+    resolutionType: cells[3],
+    status: cells[4],
+  }));
+
+  const mustStandAloneUnits = scenarioUnits.filter((unit) => unit.mergePolicy === 'must_stand_alone');
+  const mappingByScenarioId = new Map();
+  for (const row of mappingRows) {
+    for (const scenarioId of row.scenarioIds) {
+      if (!mappingByScenarioId.has(scenarioId)) mappingByScenarioId.set(scenarioId, []);
+      mappingByScenarioId.get(scenarioId).push(row);
+    }
+  }
+
+  for (const unit of mustStandAloneUnits) {
+    const rows = mappingByScenarioId.get(unit.scenarioId) || [];
+    if (rows.length === 0) {
+      failures.push(`Missing standalone mapping for must_stand_alone scenario unit: ${unit.scenarioId}`);
+      continue;
+    }
+
+    for (const row of rows) {
+      if (!['standalone', 'explicit_exclusion'].includes(row.resolutionType)) {
+        failures.push(
+          `must_stand_alone scenario unit ${unit.scenarioId} must use standalone or explicit_exclusion resolution, got ${row.resolutionType || 'none'}`
+        );
+      }
+      if (row.scenarioIds.length !== 1) {
+        failures.push(
+          `must_stand_alone scenario unit ${unit.scenarioId} is merged with other scenario ids in mapping row: ${row.scenarioIds.join(', ')}`
+        );
+      }
+      if (row.resolutionType === 'explicit_exclusion') {
+        continue;
+      }
+
+      const block = findScenarioBlockByTitle(draftContent, row.draftScenarioTitle);
+      if (!block) {
+        failures.push(`Draft scenario block not found for mapped title: ${row.draftScenarioTitle}`);
+        continue;
+      }
+      const lowerBlock = block.toLowerCase();
+      const genericPhrase = GENERIC_EXPECTED_RESULT_PHRASES.find((phrase) => lowerBlock.includes(phrase));
+      if (genericPhrase) {
+        failures.push(
+          `Mapped draft scenario for ${unit.scenarioId} uses generic expected-result wording: ${genericPhrase}`
+        );
+      }
+    }
+  }
+
+  const rewriteRequests = parseRewriteRequests(reviewRewriteRequestsContent);
+  const reviewDeltaRows = parseReviewDeltaRows(reviewDeltaContent);
+  const reviewDeltaByRequestId = new Map(reviewDeltaRows.map((row) => [row.requestId, row]));
+
+  for (const request of rewriteRequests.filter((item) => String(item.status || '').trim().match(/^(required|resolved|open)$/i))) {
+    const delta = reviewDeltaByRequestId.get(request.requestId);
+    const mappedRows = mappingRows.filter((row) => row.scenarioIds.some((id) => request.scenarioIds.includes(id)));
+    if (!delta) {
+      failures.push(`Missing review-delta row for required rewrite request: ${request.requestId}`);
+      continue;
+    }
+    if (delta.status !== 'resolved') {
+      failures.push(`Required rewrite request ${request.requestId} is not resolved in review delta.`);
+    }
+    const titleChanged = String(delta.oldScenarioTitle || '').trim() !== String(delta.newScenarioTitles || '').trim();
+    if (!titleChanged && isNoOpChangeSummary(delta.changeSummary)) {
+      failures.push(`Required rewrite request ${request.requestId} is marked resolved but review delta records no material change.`);
+    }
+
+    if (request.problemType === 'split_required') {
+      if (!titleChanged) {
+        failures.push(`split_required request ${request.requestId} did not rename or split the affected scenario titles.`);
+      }
+      const mergedRows = mappedRows.filter((row) => row.scenarioIds.length > 1);
+      if (mergedRows.length > 0) {
+        failures.push(`split_required request ${request.requestId} still maps multiple scenario ids into one testcase.`);
+      }
+      continue;
+    }
+
+    if (request.problemType === 'expected_result_too_vague') {
+      for (const row of mappedRows.filter((row) => row.resolutionType !== 'explicit_exclusion')) {
+        const block = findScenarioBlockByTitle(draftContent, row.draftScenarioTitle);
+        if (!block) {
+          failures.push(`Required rewrite request ${request.requestId} references a draft scenario that was not found: ${row.draftScenarioTitle}`);
+          continue;
+        }
+        const genericPhrase = GENERIC_EXPECTED_RESULT_PHRASES.find((phrase) => block.toLowerCase().includes(phrase));
+        if (genericPhrase) {
+          failures.push(`expected_result_too_vague request ${request.requestId} still contains generic wording: ${genericPhrase}`);
+        }
+      }
+      continue;
+    }
+
+    if (request.problemType === 'missing_visible_outcome') {
+      for (const row of mappedRows.filter((row) => row.resolutionType !== 'explicit_exclusion')) {
+        const block = findScenarioBlockByTitle(draftContent, row.draftScenarioTitle);
+        if (!block || !/(Expected:|expected:)/.test(block)) {
+          failures.push(`missing_visible_outcome request ${request.requestId} still lacks an observable expected result.`);
+        }
+      }
+      continue;
+    }
+
+    if (request.problemType === 'missing_source_traceability' && mappedRows.length === 0) {
+      failures.push(`missing_source_traceability request ${request.requestId} has no scenario mappings in the coverage ledger.`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
 }
 
 export function validateE2EMinimum(content, { featureClassification = 'user_facing' } = {}) {
@@ -288,10 +484,14 @@ export function validateReviewDelta(content) {
   }
 
   const badStatuses = ['partially_resolved', 'not_resolved'];
+  const allowedStatuses = new Set(['resolved', 'blocked']);
   for (const cells of rows) {
     const status = cells[cells.length - 1];
     if (badStatuses.includes(status)) {
       failures.push(`Blocking finding remains unresolved with status: ${status}`);
+    }
+    if (!allowedStatuses.has(status)) {
+      failures.push(`Blocking finding has invalid status: ${status}`);
     }
   }
 

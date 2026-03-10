@@ -1,4 +1,4 @@
-# Feature QA Planning Orchestrator Enhancement Plan
+# Superseded: Feature QA Planning Orchestrator Enhancement Plan
 
 **Date:** 2026-03-10
 **Status:** Proposed

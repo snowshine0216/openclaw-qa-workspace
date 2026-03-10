@@ -10,6 +10,7 @@ import {
   validateCoverageLedger,
   validateE2EMinimum,
   validateExecutableSteps,
+  validateScenarioGranularity,
   validateReviewDelta,
   validateUnresolvedStepHandling,
 } from '../scripts/lib/qaPlanValidators.mjs';
@@ -279,6 +280,218 @@ test('validateReviewDelta accepts explicit none marker when no blocking findings
 `);
 
   assert.equal(result.ok, true);
+});
+
+const SAVE_SCENARIO_UNITS_FIXTURE = `# Scenario Units
+
+## Scenario Units
+- S_SAVE | F_SAVE | Save report | click Save | native save dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+- S_SAVE_AS | F_SAVE | Save As report | click Save As | native save as dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+`;
+
+const SCENARIO_UNITS_FIXTURE = `# Scenario Units
+
+## Scenario Units
+- S_SAVE | F_SAVE | Save report | click Save | native save dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+- S_SAVE_AS | F_SAVE | Save As report | click Save As | native save as dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+- S_COMMENTS | F_SAVE | Save comments dialog | confirm save comments | comments dialog appears | Core Functional Flows | P1 | confluence.md | must_stand_alone
+- S_TEMPLATE | F_SAVE | Set as template | choose Set as Template | template option is applied | Core Functional Flows | P1 | confluence.md | must_stand_alone
+- S_MOJO_ERR | F_ERROR | Mojo-handled error | trigger editor-side error | error dialog dismisses without closing the editor | Error Handling / Recovery | P1 | confluence.md | must_stand_alone
+- S_LIBRARY_ERR | F_ERROR | Library-handled error | trigger library-side error | error dialog closes the editor window | Error Handling / Recovery | P1 | confluence.md | must_stand_alone
+`;
+
+test('validateScenarioGranularity accepts one-to-one must_stand_alone mappings', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Regression / Known Risks | Save report keeps native dialog ownership | standalone | covered
+- S_SAVE_AS | Regression / Known Risks | Save As report keeps native dialog ownership | standalone | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Regression / Known Risks
+    * Save report keeps native dialog ownership <P1>
+        - Action: click Save from embedded authoring
+            - Expected: the native Workstation save dialog opens and the report stays in the same window
+    * Save As report keeps native dialog ownership <P1>
+        - Action: click Save As from embedded authoring
+            - Expected: the native Workstation save as dialog opens with the current report context intact
+`;
+
+  const result = validateScenarioGranularity(
+    SAVE_SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft
+  );
+
+  assert.equal(result.ok, true);
+});
+
+test('validateScenarioGranularity rejects collapsed save/save as/comments/template testcase', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE, S_SAVE_AS, S_COMMENTS, S_TEMPLATE | Core Functional Flows | Save and template flows stay correct | approved_merge | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Core Functional Flows
+    * Save and template flows stay correct <P1>
+        - Action: use one of the save-related actions
+            - Expected: the flow remains usable
+`;
+
+  const result = validateScenarioGranularity(
+    SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /must_stand_alone/i);
+  assert.match(result.failures.join('\n'), /generic expected-result wording/i);
+});
+
+test('validateScenarioGranularity rejects merged mojo and library errors after split_required', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_MOJO_ERR, S_LIBRARY_ERR | Error Handling / Recovery | Error outcomes differ by owner | standalone | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Error Handling / Recovery
+    * Error outcomes differ by owner <P1>
+        - Action: trigger an editor-side error and then a library-side error
+            - Expected: the flow remains usable
+`;
+
+  const rewriteRequests = `# Review Rewrite Requests
+
+## Rewrite Requests
+- RR1 | S_MOJO_ERR, S_LIBRARY_ERR | split_required | split Mojo and Library error outcomes into separate testcases | required
+`;
+
+  const reviewDelta = `# Review Delta
+
+## Blocking Findings Resolution
+- RR1 | Error outcomes differ by owner | Error outcomes differ by owner | claimed split | resolved
+`;
+
+  const result = validateScenarioGranularity(
+    SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft,
+    rewriteRequests,
+    reviewDelta
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /split_required/i);
+});
+
+test('validateScenarioGranularity allows explicit_exclusion for must_stand_alone scenario units', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Out of Scope / Assumptions | Save report excluded by user confirmation | explicit_exclusion | excluded
+`;
+
+  const draft = `Feature QA Plan
+
+- Out of Scope / Assumptions
+    * Save report excluded by user confirmation
+        - Reason: the user confirmed this legacy save path is out of scope for the run
+        - Evidence: user confirmation
+`;
+
+  const result = validateScenarioGranularity(
+    SAVE_SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /S_SAVE_AS/);
+  assert.doesNotMatch(result.failures.join('\n'), /S_SAVE must use standalone or explicit_exclusion/i);
+});
+
+test('validateScenarioGranularity rejects unresolved non-split required rewrites', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Regression / Known Risks | Save report keeps native dialog ownership | standalone | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Regression / Known Risks
+    * Save report keeps native dialog ownership <P1>
+        - Action: click Save from embedded authoring
+            - Expected: the flow remains usable
+`;
+
+  const rewriteRequests = `# Review Rewrite Requests
+
+## Rewrite Requests
+- RR2 | S_SAVE | expected_result_too_vague | replace generic expected result with a visible dialog outcome | required
+`;
+
+  const reviewDelta = `# Review Delta
+
+## Blocking Findings Resolution
+- RR2 | Save report keeps native dialog ownership | Save report keeps native dialog ownership | unchanged | resolved
+`;
+
+  const result = validateScenarioGranularity(
+    SAVE_SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft,
+    rewriteRequests,
+    reviewDelta
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /RR2/);
+  assert.match(result.failures.join('\n'), /expected_result_too_vague/i);
+});
+
+test('validateScenarioGranularity cli validates scenario units against ledger and draft', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'granularity_cli_'));
+  const scenarioUnitsPath = join(tmp, 'scenario_units.md');
+  const coverageLedgerPath = join(tmp, 'coverage_ledger.md');
+  const draftPath = join(tmp, 'draft.md');
+
+  await writeFile(scenarioUnitsPath, SAVE_SCENARIO_UNITS_FIXTURE);
+  await writeFile(coverageLedgerPath, `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Regression / Known Risks | Save report keeps native dialog ownership | standalone | covered
+- S_SAVE_AS | Regression / Known Risks | Save As report keeps native dialog ownership | standalone | covered
+`);
+  await writeFile(draftPath, `Feature QA Plan
+
+- Regression / Known Risks
+    * Save report keeps native dialog ownership <P1>
+        - Action: click Save from embedded authoring
+            - Expected: the native Workstation save dialog opens and the report stays in the same window
+    * Save As report keeps native dialog ownership <P1>
+        - Action: click Save As from embedded authoring
+            - Expected: the native Workstation save as dialog opens with the current report context intact
+`);
+
+  const result = await runValidatorCli([
+    'validate_scenario_granularity',
+    scenarioUnitsPath,
+    coverageLedgerPath,
+    draftPath,
+  ]);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
 });
 
 test('validateUnresolvedStepHandling requires comment and next action when unresolved items remain', () => {

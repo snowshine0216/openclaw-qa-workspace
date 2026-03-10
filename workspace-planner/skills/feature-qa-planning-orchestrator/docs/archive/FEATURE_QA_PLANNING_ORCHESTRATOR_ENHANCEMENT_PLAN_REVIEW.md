@@ -1,4 +1,4 @@
-# Design Review: Feature QA Planning Orchestrator Enhancement Plan
+# Superseded: Design Review: Feature QA Planning Orchestrator Enhancement Plan
 
 **Reviewer:** Design self-consistency and workflow audit  
 **Date:** 2026-03-10  

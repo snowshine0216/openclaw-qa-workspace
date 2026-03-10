@@ -2,6 +2,41 @@ export function normalizeIssueKey(key) {
   return String(key || '').trim().toUpperCase();
 }
 
+export const APPROVED_SOURCE_RULES = {
+  jira: {
+    approvedSkill: 'jira-cli',
+    allowsBrowserFetch: false,
+    allowsGenericWebFetch: false,
+  },
+  confluence: {
+    approvedSkill: 'confluence',
+    allowsBrowserFetch: false,
+    allowsGenericWebFetch: false,
+  },
+  github: {
+    approvedSkill: 'github',
+    allowsBrowserFetch: false,
+    allowsGenericWebFetch: false,
+  },
+  figma: {
+    approvedSkill: 'browser-or-approved-local-snapshot',
+    allowsBrowserFetch: true,
+    allowsGenericWebFetch: false,
+  },
+};
+
+export function normalizeSourceFamily(sourceFamily) {
+  return String(sourceFamily || '').trim().toLowerCase();
+}
+
+export function getApprovedSourceRule(sourceFamily) {
+  return APPROVED_SOURCE_RULES[normalizeSourceFamily(sourceFamily)] || null;
+}
+
+function getField(record, camelKey, snakeKey) {
+  return record?.[camelKey] ?? record?.[snakeKey];
+}
+
 export function extractIssueKeysFromText(text, projectPrefixes = []) {
   const content = String(text || '');
   const matches = content.match(/[A-Z][A-Z0-9]+-\d+/g) || [];
@@ -83,4 +118,72 @@ export function evaluateGithubFetch({ requiredUrls = [], fetchedDiffs = [] }) {
   const fetchedSet = new Set(fetchedDiffs.map((item) => item.url));
   const missing = requiredUrls.filter((url) => !fetchedSet.has(url));
   return { ok: missing.length === 0, missing };
+}
+
+export function evaluateRuntimeSetup({ requestedSourceFamilies = [], setupEntries = [] }) {
+  const failures = [];
+  const normalizedEntries = new Map(
+    setupEntries.map((entry) => [normalizeSourceFamily(getField(entry, 'sourceFamily', 'source_family')), entry])
+  );
+
+  for (const sourceFamily of requestedSourceFamilies.map(normalizeSourceFamily)) {
+    const expectedRule = getApprovedSourceRule(sourceFamily);
+    const entry = normalizedEntries.get(sourceFamily);
+    if (!entry) {
+      failures.push(`Missing runtime setup entry for source family: ${sourceFamily}`);
+      continue;
+    }
+    if (!expectedRule) {
+      failures.push(`No approved source rule defined for source family: ${sourceFamily}`);
+      continue;
+    }
+    const approvedSkill = getField(entry, 'approvedSkill', 'approved_skill');
+    if (approvedSkill !== expectedRule.approvedSkill) {
+      failures.push(
+        `Source family ${sourceFamily} must use ${expectedRule.approvedSkill}, got ${approvedSkill || 'none'}`
+      );
+    }
+    if (!String(entry.status || '').trim().match(/^pass$/i)) {
+      failures.push(`Runtime setup for ${sourceFamily} must have pass status.`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function evaluateSpawnPolicy({ spawnHistory = [] }) {
+  const failures = [];
+
+  for (const entry of spawnHistory) {
+    const sourceFamily = normalizeSourceFamily(getField(entry, 'sourceFamily', 'source_family'));
+    const expectedRule = getApprovedSourceRule(sourceFamily);
+    if (!expectedRule) {
+      failures.push(`Spawn entry has unknown source family: ${getField(entry, 'sourceFamily', 'source_family')}`);
+      continue;
+    }
+
+    const approvedSkill = getField(entry, 'approvedSkill', 'approved_skill');
+    if (approvedSkill !== expectedRule.approvedSkill) {
+      failures.push(
+        `Spawn for ${sourceFamily} must declare approved skill ${expectedRule.approvedSkill}, got ${approvedSkill || 'none'}`
+      );
+    }
+
+    const artifactPaths = getField(entry, 'artifactPaths', 'artifact_paths');
+    if (!Array.isArray(artifactPaths) || artifactPaths.length === 0) {
+      failures.push(`Spawn for ${sourceFamily} must declare at least one artifact path.`);
+    }
+
+    const disallowedTools = new Set(
+      (getField(entry, 'disallowedTools', 'disallowed_tools') || []).map((tool) => String(tool).trim().toLowerCase())
+    );
+    if (!expectedRule.allowsBrowserFetch && !disallowedTools.has('browser')) {
+      failures.push(`Spawn for ${sourceFamily} must explicitly disallow browser use.`);
+    }
+    if (!expectedRule.allowsGenericWebFetch && !disallowedTools.has('generic web fetch')) {
+      failures.push(`Spawn for ${sourceFamily} must explicitly disallow generic web fetch.`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
 }

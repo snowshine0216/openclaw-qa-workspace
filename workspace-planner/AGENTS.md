@@ -24,15 +24,17 @@ _Operating instructions for test planning and strategy._
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
-ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
+ALWAYS use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
-Phase 0 → Idempotency check + runtime preparation
-Phase 1 → Context gathering (spawn subagents per source: atlassian, github, figma)
-Phase 2 → Unified QA plan writing (orchestrator internal, no spawn)
-Phase 3 → Unified QA plan review (orchestrator internal, no spawn)
-Phase 4 → Deterministic QA plan refactor (orchestrator internal, no spawn)
-Phase 5 → Finalize + Feishu notify
+Phase 0 → Runtime preparation and existing-state check (idempotency)
+Phase 1 → Evidence gathering (spawn subagents per source: jira, confluence, github, figma)
+Phase 2 → Context normalization
+Phase 3 → Coverage mapping
+Phase 4 → Unified draft writing (orchestrator-owned)
+Phase 5 → Structured review (orchestrator-owned)
+Phase 6 → Deterministic refactor (orchestrator-owned)
+Phase 7 → Finalization and promotion (user approval checkpoint) + Feishu notify
 ```
 
 ### Research Best Practices

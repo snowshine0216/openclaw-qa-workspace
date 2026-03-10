@@ -34,6 +34,11 @@ Each scenario must include:
 
 A scenario is invalid if it lacks an observable user action or observable expected result.
 
+Scenarios must also preserve required distinctness:
+
+- if two source-backed flows have different user-visible triggers, outcomes, or risk ownership, they must not be collapsed into one umbrella scenario
+- `must_stand_alone` scenario units from normalization require standalone draft scenarios unless explicitly excluded with reason
+
 ## E2E Minimum
 
 - `EndToEnd` is mandatory unless the feature is explicitly non-user-facing, and the reason must be written under `Out of Scope / Assumptions`.
@@ -53,6 +58,7 @@ Do not remove or ignore priority markers.
 - Every mandatory coverage candidate from `context_index` must be represented in the draft or explicitly excluded.
 - Source evidence must be normalized into the context index before it influences the plan.
 - Internal APIs, services, bridge functions, and implementation hooks do not belong in main manual step wording.
+- Scenario granularity from `scenario_units_<feature-id>.md` must be preserved in the draft and coverage ledger.
 
 ## Out-of-Scope Contract
 
