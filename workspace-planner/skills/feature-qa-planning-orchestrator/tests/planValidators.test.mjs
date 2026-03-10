@@ -561,3 +561,423 @@ test('validate_coverage_ledger cli allows zero candidate ids when the ledger exp
   assert.match(result.stdout, /VALIDATION_OK/);
   await rm(tmp, { recursive: true, force: true });
 });
+
+// ---------------------------------------------------------------------------
+// CLI tests — validate_context_index
+// ---------------------------------------------------------------------------
+
+test('validate_context_index cli passes for a valid user-facing index', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'ctx_idx_cli_'));
+  const file = join(tmp, 'context_index.md');
+  await writeFile(file, `# Context Index
+
+## Feature Summary
+- summary
+
+## Feature Classification
+- user_facing
+- source artifact: jira_issue_BCIN-1.md
+- note: end-to-end coverage required
+
+## Source Inventory
+- artifact | source family | why it matters | confidence
+
+## Primary User Journeys
+- Create report | Help menu | create content | report opens
+
+## Entry Points
+- Help menu | jira_issue_BCIN-1.md
+
+## Core Capability Families
+- Report creation
+
+## Error / Recovery Behaviors
+- trigger: save error
+
+## Known Risks / Regressions
+- risk: save regression
+
+## Permissions / Auth / Data Constraints
+- role required
+
+## Environment / Platform Constraints
+- web
+
+## Setup / Fixtures Needed
+- sample dataset
+
+## Unsupported / Deferred / Ambiguous
+- none
+
+## Mandatory Coverage Candidates
+- C1 | Report creation | E2E | jira_issue_BCIN-1.md
+
+## Traceability Map
+- F1 | jira_issue_BCIN-1.md | fact | normalized | planning consequence
+`);
+
+  const result = await runValidatorCli(['validate_context_index', file]);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('validate_context_index cli fails when user-facing index has no mandatory coverage candidates', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'ctx_idx_cli_'));
+  const file = join(tmp, 'context_index.md');
+  await writeFile(file, `# Context Index
+
+## Feature Summary
+- summary
+
+## Feature Classification
+- user_facing
+- source artifact: jira_issue_BCIN-1.md
+
+## Source Inventory
+- artifact | source family | why | confidence
+
+## Primary User Journeys
+- flow
+
+## Entry Points
+- entry
+
+## Core Capability Families
+- family
+
+## Error / Recovery Behaviors
+- error
+
+## Known Risks / Regressions
+- risk
+
+## Permissions / Auth / Data Constraints
+- none
+
+## Environment / Platform Constraints
+- web
+
+## Setup / Fixtures Needed
+- none
+
+## Unsupported / Deferred / Ambiguous
+- none
+
+## Mandatory Coverage Candidates
+
+## Traceability Map
+- F1 | jira_issue_BCIN-1.md | fact | normalized | consequence
+`);
+
+  const result = await runValidatorCli(['validate_context_index', file]);
+  assert.notEqual(result.code, 0);
+  assert.match(result.stderr, /VALIDATION_FAILED/);
+  assert.match(result.stderr, /mandatory coverage candidates/i);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+// ---------------------------------------------------------------------------
+// CLI tests — validate_e2e_minimum
+// ---------------------------------------------------------------------------
+
+test('validate_e2e_minimum cli passes for user-facing plan with EndToEnd and expected result', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'e2e_cli_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, `Feature QA Plan
+
+- EndToEnd
+    * Full report creation flow <P1>
+        - Action: open feature and click Create
+            - Expected: the report opens in the workspace
+- Core Functional Flows
+    * Edit title <P2>
+        - Action: double-click the title field
+            - Expected: the title field becomes editable
+`);
+
+  const result = await runValidatorCli(['validate_e2e_minimum', file, 'user_facing']);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('validate_e2e_minimum cli fails for user-facing plan missing EndToEnd section', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'e2e_cli_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, `Feature QA Plan
+
+- Core Functional Flows
+    * Edit title <P2>
+        - Action: double-click the title field
+            - Expected: the title field becomes editable
+`);
+
+  const result = await runValidatorCli(['validate_e2e_minimum', file, 'user_facing']);
+  assert.notEqual(result.code, 0);
+  assert.match(result.stderr, /VALIDATION_FAILED/);
+  assert.match(result.stderr, /EndToEnd/i);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+// ---------------------------------------------------------------------------
+// CLI tests — validate_executable_steps
+// ---------------------------------------------------------------------------
+
+test('validate_executable_steps cli passes for clean steps', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'exec_cli_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, `Feature QA Plan
+
+- EndToEnd
+    * Report creation flow <P1>
+        - Action: open the report and click Save
+            - Expected: the native save dialog appears
+`);
+
+  const result = await runValidatorCli(['validate_executable_steps', file]);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('validate_executable_steps cli fails for banned vague phrases', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'exec_cli_'));
+  const file = join(tmp, 'draft.md');
+  await writeFile(file, `Feature QA Plan
+
+- EndToEnd
+    * Report creation flow <P1>
+        - Action: open the report and verify correct behavior
+            - Expected: ensure it works
+`);
+
+  const result = await runValidatorCli(['validate_executable_steps', file]);
+  assert.notEqual(result.code, 0);
+  assert.match(result.stderr, /VALIDATION_FAILED/);
+  assert.match(result.stderr, /verify correct behavior/i);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+// ---------------------------------------------------------------------------
+// CLI tests — validate_review_delta
+// ---------------------------------------------------------------------------
+
+test('validate_review_delta cli passes when blocking findings section contains none marker', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'delta_cli_'));
+  const file = join(tmp, 'review_delta.md');
+  await writeFile(file, `# Review Delta
+
+## Source Review
+- review_qa_plan_BCIN-1.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- NB1 | cleaned up wording | advisory
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- accept
+`);
+
+  const result = await runValidatorCli(['validate_review_delta', file]);
+  assert.equal(result.code, 0);
+  assert.match(result.stdout, /VALIDATION_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('validate_review_delta cli fails when a blocking finding has partially_resolved status', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'delta_cli_'));
+  const file = join(tmp, 'review_delta.md');
+  await writeFile(file, `# Review Delta
+
+## Source Review
+- review_qa_plan_BCIN-1.md
+
+## Blocking Findings Resolution
+- F1 | old title | new title | split attempted | partially_resolved
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- F1
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- reject
+`);
+
+  const result = await runValidatorCli(['validate_review_delta', file]);
+  assert.notEqual(result.code, 0);
+  assert.match(result.stderr, /VALIDATION_FAILED/);
+  assert.match(result.stderr, /partially_resolved/i);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+// ---------------------------------------------------------------------------
+// Unit tests — validateScenarioGranularity edge cases
+// ---------------------------------------------------------------------------
+
+const MAY_MERGE_SCENARIO_UNITS_FIXTURE = `# Scenario Units
+
+## Scenario Units
+- S_SUBSET_WH | F_CREATE | Create subset from warehouse | select warehouse source | subset dataset appears | Core Functional Flows | P1 | confluence.md | may_merge_with_same_outcome
+- S_SUBSET_DB | F_CREATE | Create subset from database | select database source | subset dataset appears | Core Functional Flows | P1 | confluence.md | may_merge_with_same_outcome
+`;
+
+test('validateScenarioGranularity accepts approved_merge for may_merge_with_same_outcome units', () => {
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SUBSET_WH, S_SUBSET_DB | Core Functional Flows | Create subset from various sources | approved_merge | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Core Functional Flows
+    * Create subset from various sources <P1>
+        - Action: select warehouse source then repeat with database source
+            - Expected: subset dataset appears in both cases
+`;
+
+  const result = validateScenarioGranularity(
+    MAY_MERGE_SCENARIO_UNITS_FIXTURE,
+    coverageLedger,
+    draft
+  );
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.failures, []);
+});
+
+test('validateScenarioGranularity rejects approved_merge for must_stand_alone units', () => {
+  const scenarioUnits = `# Scenario Units
+
+## Scenario Units
+- S_SAVE | F_SAVE | Save report | click Save | native save dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+- S_SAVE_AS | F_SAVE | Save As report | click Save As | native save as dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+`;
+
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE, S_SAVE_AS | Regression / Known Risks | Save flows | approved_merge | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Regression / Known Risks
+    * Save flows <P1>
+        - Action: click Save or Save As
+            - Expected: the appropriate dialog appears
+`;
+
+  const result = validateScenarioGranularity(
+    scenarioUnits,
+    coverageLedger,
+    draft
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /must_stand_alone/i);
+});
+
+test('validateScenarioGranularity rejects missing_visible_outcome rewrite when generic wording remains', () => {
+  const scenarioUnits = `# Scenario Units
+
+## Scenario Units
+- S_SAVE | F_SAVE | Save report | click Save | native save dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+`;
+
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Regression / Known Risks | Save report dialog flow | standalone | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Regression / Known Risks
+    * Save report dialog flow <P1>
+        - Action: click Save from the toolbar
+            - Expected: the flow remains usable
+`;
+
+  const rewriteRequests = `# Review Rewrite Requests
+
+## Rewrite Requests
+- RR3 | S_SAVE | missing_visible_outcome | replace generic expected result with the specific dialog that appears | required
+`;
+
+  const reviewDelta = `# Review Delta
+
+## Blocking Findings Resolution
+- RR3 | Save report dialog flow | Save report dialog flow | no change | resolved
+`;
+
+  const result = validateScenarioGranularity(
+    scenarioUnits,
+    coverageLedger,
+    draft,
+    rewriteRequests,
+    reviewDelta
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /RR3/);
+});
+
+test('validateScenarioGranularity passes when missing_visible_outcome rewrite is properly resolved', () => {
+  const scenarioUnits = `# Scenario Units
+
+## Scenario Units
+- S_SAVE | F_SAVE | Save report | click Save | native save dialog appears | Regression / Known Risks | P1 | confluence.md | must_stand_alone
+`;
+
+  const coverageLedger = `# Coverage Ledger
+
+## Scenario Mapping Table
+- S_SAVE | Regression / Known Risks | Save report opens native dialog | standalone | covered
+`;
+
+  const draft = `Feature QA Plan
+
+- Regression / Known Risks
+    * Save report opens native dialog <P1>
+        - Action: click Save from the toolbar
+            - Expected: the native Workstation save dialog opens and the report window remains open
+`;
+
+  const rewriteRequests = `# Review Rewrite Requests
+
+## Rewrite Requests
+- RR3 | S_SAVE | missing_visible_outcome | replace generic expected result with the specific dialog that appears | required
+`;
+
+  const reviewDelta = `# Review Delta
+
+## Blocking Findings Resolution
+- RR3 | Save report dialog flow | Save report opens native dialog | renamed and added visible outcome | resolved
+`;
+
+  const result = validateScenarioGranularity(
+    scenarioUnits,
+    coverageLedger,
+    draft,
+    rewriteRequests,
+    reviewDelta
+  );
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.failures, []);
+});
