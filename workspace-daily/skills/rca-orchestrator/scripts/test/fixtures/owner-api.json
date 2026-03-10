@@ -1,0 +1,17 @@
+{
+  "defects": [
+    {
+      "key": "BCIN-1001",
+      "summary": "Generated RCA should be published",
+      "category": "requires_rca",
+      "proposed_owner": "Xue, Yin",
+      "proposed_owner_account_id": "acc-1001",
+      "owner_confidence": "high"
+    },
+    {
+      "key": "BCIN-1002",
+      "summary": "Non RCA issue should be filtered out",
+      "category": "other"
+    }
+  ]
+}

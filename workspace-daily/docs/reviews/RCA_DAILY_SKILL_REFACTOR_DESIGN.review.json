@@ -3,7 +3,7 @@
   "design_artifact": "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md",
   "review_date": "2026-03-10",
   "reviewer_skill": "openclaw-agent-design-review",
-  "review_mode": "manual_second_pass_refresh",
+  "review_mode": "rerun_current_ondisk_after_errtrace_fix_focus_err001",
   "status": "pass_with_advisories",
   "reviewed_skill_package_paths": [
     ".agents/skills/rca/",
@@ -13,68 +13,108 @@
     ".agents/skills/rca/": "docs-only",
     "workspace-daily/skills/rca-orchestrator/": "script-bearing"
   },
-  "recheck_of_prior_blockers": {
-    "phase0_autonomous_mapping_documented": {
-      "result": "pass",
-      "evidence": [
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:240",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:260",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:690"
-      ]
-    },
-    "phase3_terminal_completeness_before_phase4": {
-      "result": "pass",
-      "evidence": [
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:282",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1096",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1144"
-      ]
-    },
-    "run_json_timestamp_semantics": {
-      "result": "pass",
-      "evidence": [
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:553",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1394",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1661"
-      ]
-    },
-    "scripts_test_convention": {
-      "result": "pass",
-      "evidence": [
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:107",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1558",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1773"
-      ]
-    }
+  "clawddocs_conventions_consulted": {
+    "result": "pass",
+    "evidence": [
+      "bash .agents/skills/clawddocs/scripts/sitemap.sh",
+      "bash .agents/skills/clawddocs/scripts/search.sh skills",
+      "bash .agents/skills/clawddocs/scripts/fetch-doc.sh tools/skills"
+    ]
   },
   "path_validation": {
     "result": "pass",
-    "summary": "Repository-relative design paths are explicit and convention-aligned for shared vs workspace-local placement. The prior non-repo fallback-path advisory is resolved in the current draft."
+    "summary": "Explicit existing path references validated; shared-vs-local placement remains convention-aligned.",
+    "validate_paths_run": {
+      "script": ".agents/skills/openclaw-agent-design-review/scripts/validate_paths.sh",
+      "path_list_file": "/tmp/rca_daily_design_pathlist.txt",
+      "checked_path_references": 24,
+      "failures": 0
+    }
   },
-  "state_workflow_validation": {
-    "result": "pass",
-    "summary": "The revised design now reconciles all manifest items through Phase 3, records coherent publish outcomes in Phase 4, and documents fatal-phase persistence and zero-item behavior."
+  "targeted_validation": {
+    "phase_scripts_with_err_trap_use_errtrace": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:707",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:746",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:810",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:867",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:898",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1022",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1066",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1108",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1222",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1368",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1449",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1538"
+      ],
+      "note": "All phase script blocks that install trap ERR now declare set -Eeuo pipefail."
+    },
+    "err001_persistence_guarantee_phase5": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:266",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1449",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1523",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1538",
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1542"
+      ],
+      "note": "Phase5 now enables errtrace via set -E, so function-level failures route through the ERR trap persistence path."
+    },
+    "top_level_load_feishu_removed": {
+      "result": "pass",
+      "evidence": [
+        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1523"
+      ],
+      "note": "load_feishu_chat_id invocation remains inside send_feishu()."
+    }
   },
   "script_to_test_coverage_summary": {
+    "result": "pass",
     "declared_scripts": 10,
     "declared_tests": 10,
     "one_to_one_mapping_declared": true,
-    "coverage_note": "Design includes explicit stub-level test mapping for each script under scripts/test/."
+    "scripts_test_convention_pass": true,
+    "evidence": [
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:110",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1588",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1597",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1802"
+    ]
   },
   "docs_coverage": {
     "agents_md_impact_addressed": true,
-    "readme_impact_addressed": true
+    "readme_impact_addressed": true,
+    "evidence": [
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:115",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:95",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1755",
+      "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1757"
+    ]
   },
+  "design_evidence_check": {
+    "result": "advisory",
+    "script": ".agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh",
+    "failures": 15,
+    "note": "Checker pattern expectations do not currently align with this design's section naming; treated as non-blocking for this targeted ERR-001 rerun."
+  },
+  "resolved_findings": [
+    {
+      "id": "ERR-001",
+      "resolution": "resolved",
+      "summary": "Phase scripts that rely on trap ERR now use set -Eeuo pipefail, including phase5_finalize.sh."
+    }
+  ],
   "findings": [
     {
-      "id": "PROCESS-001",
+      "id": "EVID-002",
       "severity": "P2",
-      "summary": "This refreshed report is a manual second-pass artifact; the dedicated openclaw-agent-design-reviewer rerun for the March 10 revision still needs to complete and refresh the gate artifacts.",
+      "summary": "Automated design evidence checker reports heading-pattern mismatches against this design format.",
       "evidence": [
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1774",
-        "workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md:1775"
+        "bash .agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh workspace-daily/docs/RCA_DAILY_SKILL_REFACTOR_DESIGN.md",
+        "Failures: 15"
       ],
-      "recommended_fix": "Re-run openclaw-agent-design-reviewer against the March 10 design revision and refresh both review artifacts with the returned gate result."
+      "recommended_fix": "Align this design's headings to checker expectations or expand checker regex patterns to support this design stream."
     }
   ],
   "required_fixes": [],

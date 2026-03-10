@@ -235,13 +235,14 @@ refresh_mode options:
   smart_refresh     (default) Skip phases already completed for the run date.
   full_regenerate   Archive existing outputs and re-run all phases.
   fresh             Same as full_regenerate but no archive step.
+  any other value   Invalid; Phase 0 must fail fast and exit non-zero
 
 ## Phase Responsibilities
 Phase 0 — Resume check: classify canonical `REPORT_STATE` and apply the documented autonomous action mapping.
 Phase 1 — Owner API fetch + manifest: builds the issue list for the day.
 Phase 2 — Data fetch: Jira details + GitHub PR diffs per issue.
 Phase 3 — RCA generation + reconciliation: spawn sub-agents in batches, wait for completion, and reconcile all manifest issues (including Phase 2 fetch failures) into terminal generation states.
-Phase 4 — Jira publish: post description and comment as independent steps and persist coherent publish status/timestamps (`success` | `partial_success` | `skipped_no_rca` | `failed`).
+Phase 4 — Jira publish: publish only issues with `task.json.items.<issue>.status == "generated"`, ignore stale RCA files for all other states, and persist coherent publish status/timestamps (`success` | `partial_success` | `skipped_no_rca` | `failed`).
 Phase 5 — Finalize: daily summary markdown + Feishu notification.
 
 ## Artifact Locations
@@ -260,8 +261,9 @@ run.json  — timestamps, spawn sessions, Jira publish step results, last-error 
 ## Error Policy
 - Phase 0 classification of `FINAL_EXISTS` in `smart_refresh` mode → exit 0, no re-run.
 - `DRAFT_EXISTS` and `CONTEXT_ONLY` in `smart_refresh` mode → resume in place; this is an explicit autonomous-policy override for scheduled runs, not silent drift from the canonical classifier.
+- Invalid `refresh_mode` → call an explicit persist-then-exit helper (`fail_phase_and_exit`) so failed state is written before exiting non-zero.
 - Partial issue failures in Phases 2–4 → persist per-issue terminal status and continue remaining issues.
-- Any unrecoverable phase error => mark `task.json.phases.<phase>.status = "failed"`, set `task.json.overall_status = "failed"`, persist `run.json.last_error`, and exit non-zero.
+- Any unrecoverable phase error => either fall through the `ERR` trap or call `fail_phase_and_exit`; raw `exit 1` is not used for phase failures that must persist state. Phase scripts that rely on `trap ... ERR` must use `set -Eeuo pipefail` so function-level failures also flow through persistence.
 - Feishu failure => persist notification payload in `run.json.notification_pending`, do not block completion.
 ```
 
@@ -278,14 +280,16 @@ Key sections in the `reference.md`:
 - `smart_refresh`: if `REPORT_STATE=FINAL_EXISTS`, stop successfully; if `REPORT_STATE=DRAFT_EXISTS` or `CONTEXT_ONLY`, resume in place from the first incomplete phase
 - `full_regenerate`: archive prior outputs, wipe run state, and rebuild from Phase 0
 - `fresh`: wipe run state without archive, then rebuild from Phase 0
+- any other mode: fail Phase 0 immediately and persist `run.json.last_error`
 
 ## Phase Transition Rules
 - Phase 3 must write a terminal generation status for **every issue in `manifest.json`**, including issues that never receive `rca-input` because fetch failed upstream
 - Phase 4 starts only after Phase 3 has reconciled all manifest issues to (`generated` | `generation_failed` | `generation_skipped_fetch_failed`)
+- Phase 4 publish eligibility is `task.json.items.<issue>.status == "generated"`; stale `output/rca/*.md` files are ignored for all other item states
 - Phase 4 must write a terminal Jira publish status for every issue in `manifest.json`
 - Phase 5 starts only after Phase 4 has produced a terminal Jira publish result for every issue
 - Missing RCA output file after a Phase 2 or Phase 3 terminal failure is treated as publish terminal status `skipped_no_rca`, not a retry trigger
-- Any unrecoverable phase error must be persisted as `phases.<phase>.status = failed` plus `run.json.last_error`
+- Any unrecoverable phase error must be persisted as `phases.<phase>.status = failed` plus `run.json.last_error`, including explicit validation failures
 
 ## Run Folder Semantics
 - `manifest.json`: issue list for the day
@@ -479,7 +483,7 @@ load_feishu_chat_id() {
   FEISHU_CHAT_ID=$(grep -oE 'oc_[a-f0-9]+' "${tools_file}" | head -1 || echo "")
   if [[ -z "${FEISHU_CHAT_ID}" ]]; then
     log_error "FEISHU_CHAT_ID not found in TOOLS.md"
-    exit 1
+    return 1
   fi
 }
 
@@ -681,6 +685,14 @@ mark_phase_failed() {
      .updated_at = $ts' \
     "${run_file}" > "${tmp}" && mv "${tmp}" "${run_file}"
 }
+
+fail_phase_and_exit() {
+  # fail_phase_and_exit <run_date> <phase_name> <exit_code> <message>
+  local run_date="$1" phase="$2" exit_code="$3" message="$4"
+  log_error "${message}"
+  mark_phase_failed "${run_date}" "${phase}" "${exit_code}" "${message}"
+  exit "${exit_code}"
+}
 ```
 
 ---
@@ -692,7 +704,7 @@ mark_phase_failed() {
 ```bash
 #!/bin/bash
 # Usage: ./phase0_check_resume.sh <YYYY-MM-DD> <refresh_mode>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -761,6 +773,10 @@ main() {
       reset_run_json "${RUN_DATE}"
       log_info "Wiped payloads and reset state for fresh start (no archive)."
       ;;
+    *)
+      fail_phase_and_exit "${RUN_DATE}" "${PHASE_NAME}" 1 \
+        "Invalid refresh_mode: ${REFRESH_MODE}. Expected one of: smart_refresh, full_regenerate, fresh."
+      ;;
   esac
 
   set_task_phase "${RUN_DATE}" "${PHASE_NAME}" "completed"
@@ -775,6 +791,8 @@ main
 **Verification:**
 ```bash
 bash workspace-daily/skills/rca-orchestrator/scripts/phase0_check_resume.sh 2026-03-06 smart_refresh
+jq -r '.last_error' workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/run.json
+bash workspace-daily/skills/rca-orchestrator/scripts/phase0_check_resume.sh 2026-03-06 typo-mode || echo "INVALID_MODE_BLOCKED"
 jq -r '.overall_status,.current_phase' workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/task.json
 ```
 
@@ -784,12 +802,12 @@ jq -r '.overall_status,.current_phase' workspace-daily/skills/rca-orchestrator/s
 
 **Purpose:** Fetch `http://10.23.38.9:8070/api/jira/customer-defects/details/?status=completed&limit=500`, filter for `category == "requires_rca"`, cache the raw response, extract proposed owners, and build `manifest.json`.
 
-**Reuses:** Logic from `projects/rca-daily/src/fetchers/fetch-rca.sh` (curl + jq filter pattern).
+**Reuses:** Logic from `workspace-daily/projects/rca-daily/src/fetchers/fetch-rca.sh` (curl + jq filter pattern).
 
 ```bash
 #!/bin/bash
 # Usage: ./phase1_fetch_owners.sh <YYYY-MM-DD>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -803,7 +821,7 @@ PHASE_NAME="phase_1_manifest"
 
 fetch_owner_api() {
   log_info "Fetching owner API..."
-  # Reused pattern from: projects/rca-daily/src/fetchers/fetch-rca.sh
+  # Reused pattern from: workspace-daily/projects/rca-daily/src/fetchers/fetch-rca.sh
   curl -s --fail "${OWNER_API_URL}" | jq '{
     fetched_at: now | todate,
     defects: [
@@ -872,12 +890,12 @@ jq -r '.issues[] | [.issue_key, .proposed_owner.display_name] | @tsv' \
 
 **Purpose:** For each issue in `manifest.json`: fetch full Jira payload, extract GitHub PR URLs from comments, fetch PR diffs, and write a normalized `cache/rca-input/<ISSUE_KEY>.json`.
 
-**Reuses:** Core logic from `projects/rca-daily/src/core/process-rca.sh` (`fetch_jira_details`, `process_pull_requests`, `create_rca_input` functions). `jira issue view` and `gh pr diff` commands are identical.
+**Reuses:** Core logic from `workspace-daily/projects/rca-daily/src/core/process-rca.sh` (`fetch_jira_details`, `process_pull_requests`, `create_rca_input` functions). `jira issue view` and `gh pr diff` commands are identical.
 
 ```bash
 #!/bin/bash
 # Usage: ./phase2_fetch_issues.sh <YYYY-MM-DD>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -891,7 +909,7 @@ PHASE_NAME="phase_2_fetch_and_normalize"
 load_jira_env_from_skill
 
 fetch_jira_issue() {
-  # Reused from: projects/rca-daily/src/core/process-rca.sh :: fetch_jira_details()
+  # Reused from: workspace-daily/projects/rca-daily/src/core/process-rca.sh :: fetch_jira_details()
   local issue_key="$1"
   local out="${RUN_DIR}/cache/issues/${issue_key}.json"
   if [[ -f "${out}" ]]; then
@@ -904,7 +922,7 @@ fetch_jira_issue() {
 }
 
 fetch_pr_diffs() {
-  # Reused from: projects/rca-daily/src/core/process-rca.sh :: process_pull_requests()
+  # Reused from: workspace-daily/projects/rca-daily/src/core/process-rca.sh :: process_pull_requests()
   local issue_key="$1"
   local jira_json="${RUN_DIR}/cache/issues/${issue_key}.json"
   local pr_out="${RUN_DIR}/cache/pr/${issue_key}.txt"
@@ -959,7 +977,7 @@ fetch_pr_diffs() {
 }
 
 build_rca_input() {
-  # Reused from: projects/rca-daily/src/core/process-rca.sh :: create_rca_input()
+  # Reused from: workspace-daily/projects/rca-daily/src/core/process-rca.sh :: create_rca_input()
   local issue_key="$1"
   local jira_json="${RUN_DIR}/cache/issues/${issue_key}.json"
   local pr_out="${RUN_DIR}/cache/pr/${issue_key}.txt"
@@ -1045,7 +1063,7 @@ jq -r '.issue_key,.automation_status' workspace-daily/skills/rca-orchestrator/sc
 ```bash
 #!/bin/bash
 # Usage: ./phase3_generate_rcas.sh <YYYY-MM-DD>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -1058,7 +1076,7 @@ PHASE_NAME="phase_3_generate_rca"
 
 build_generation_manifest() {
   # Build a manifest listing all rca-input files ready for spawning
-  # Mirrors logic from: projects/rca-daily/src/bin/run-complete-rca-workflow.sh :: create_manifest()
+  # Mirrors logic from: workspace-daily/projects/rca-daily/src/bin/run-complete-rca-workflow.sh :: create_manifest()
   local gen_manifest="${RUN_DIR}/manifest-gen.json"
   local rca_inputs
   rca_inputs=($(ls "${RUN_DIR}/cache/rca-input/"*.json 2>/dev/null || true))
@@ -1145,8 +1163,8 @@ main() {
   terminal_count=$(jq '[.items[] | select(.status=="generated" or .status=="generation_failed" or .status=="generation_skipped_fetch_failed")] | length' "$(run_dir "${RUN_DATE}")/task.json")
   manifest_total=$(jq '.total_issues' "${MANIFEST}")
   if [[ "${terminal_count}" -ne "${manifest_total}" ]]; then
-    log_error "Phase 3 terminal completeness check failed: terminal_count=${terminal_count} manifest_total=${manifest_total}"
-    exit 1
+    fail_phase_and_exit "${RUN_DATE}" "${PHASE_NAME}" 1 \
+      "Phase 3 terminal completeness check failed: terminal_count=${terminal_count} manifest_total=${manifest_total}"
   fi
 
   set_run_field "${RUN_DATE}" ".output_generated_at = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\""
@@ -1185,7 +1203,8 @@ find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca 
 
 ### 4.8 `scripts/phase4_publish_to_jira.sh` — Append Description + Add Comment (per jira-cli examples.md)
 
-**Purpose:** For each RCA result in `output/rca/`:
+**Purpose:** For each issue in `manifest.json`, publish to Jira only when Phase 3 recorded `task.json.items.<issue>.status == "generated"`. Existing RCA files are treated as supporting artifacts, not eligibility signals.
+For each publish-eligible RCA result:
 1. Convert to ADF using `build-adf.sh` (shared jira-cli).
 2. **Append** to issue description (MERGE mode) via `jira-publish-playground.sh --update-description --post`.
 3. Build executive-summary comment with **multiple user mentions** (tag tqang, owner, etc.) via `build-comment-payload.sh --mentions-file`.
@@ -1200,7 +1219,7 @@ find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/rca 
 ```bash
 #!/bin/bash
 # Usage: ./phase4_publish_to_jira.sh <YYYY-MM-DD>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -1358,9 +1377,18 @@ main() {
   while IFS= read -r issue_key; do
     i=$((i + 1))
     local rca_file="${RUN_DIR}/output/rca/${issue_key}-rca.md"
+    local generation_status
+    generation_status=$(jq -r --arg k "${issue_key}" '.items[$k].status // "missing"' "${RUN_DIR}/task.json")
+
+    if [[ "${generation_status}" != "generated" ]]; then
+      log_info "  ${issue_key} (${i}/${total}): generation_status=${generation_status}; skip Jira publish and ignore any stale RCA file"
+      set_jira_publish_result "${RUN_DATE}" "${issue_key}" false false "skipped_no_rca"
+      set_task_item "${RUN_DATE}" "${issue_key}" "publish_skipped_no_rca"
+      continue
+    fi
 
     if [[ ! -f "${rca_file}" ]]; then
-      log_error "  ${issue_key} (${i}/${total}): RCA output missing, skipping Jira publish"
+      log_error "  ${issue_key} (${i}/${total}): generation_status=generated but RCA output missing; skipping Jira publish"
       set_jira_publish_result "${RUN_DATE}" "${issue_key}" false false "skipped_no_rca"
       set_task_item "${RUN_DATE}" "${issue_key}" "publish_skipped_no_rca"
       continue
@@ -1404,6 +1432,7 @@ main
 find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/adf -type f | sort
 find workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/output/comments -type f | sort
 jq -r '.jira_publish' workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/run.json
+jq -r '.items' workspace-daily/skills/rca-orchestrator/scripts/runs/2026-03-06/task.json
 ```
 
 ---
@@ -1412,12 +1441,12 @@ jq -r '.jira_publish' workspace-daily/skills/rca-orchestrator/scripts/runs/2026-
 
 **Purpose:** Aggregate per-issue results from `task.json` and `run.json` into a dated daily summary markdown. Send Feishu notification using shared feishu-notify skill.
 
-**Reuses:** `.agents/skills/feishu-notify/scripts/send-feishu-notification.js` (invoke with `--chat-id` and `--file`); summary generation logic from `projects/rca-daily/src/core/post-rca-workflow.sh :: generate_feishu_summary()` (reference only; legacy will be deleted).
+**Reuses:** `.agents/skills/feishu-notify/scripts/send-feishu-notification.js` (invoke with `--chat-id` and `--file`); summary generation logic from `workspace-daily/projects/rca-daily/src/core/post-rca-workflow.sh :: generate_feishu_summary()` (reference only; legacy will be deleted).
 
 ```bash
 #!/bin/bash
 # Usage: ./phase5_finalize.sh <YYYY-MM-DD>
-set -euo pipefail
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -1429,10 +1458,8 @@ MANIFEST="${RUN_DIR}/manifest.json"
 SUMMARY_FILE="${RUN_DIR}/output/summary/daily-summary.md"
 PHASE_NAME="phase_5_finalize"
 
-load_feishu_chat_id
-
 generate_summary() {
-  # Reused/adapted from: projects/rca-daily/src/core/post-rca-workflow.sh :: generate_feishu_summary()
+  # Reused/adapted from: workspace-daily/projects/rca-daily/src/core/post-rca-workflow.sh :: generate_feishu_summary()
   local total
   total=$(jq '.total_issues' "${MANIFEST}")
   local published partial skipped failed
@@ -1701,17 +1728,17 @@ Write rule: use `set_run_field` and `set_jira_publish_result` from `lib/state.sh
 
 | Legacy path | New owner | New path | Change type |
 |---|---|---|---|
-| `src/fetchers/fetch-rca.sh` | Phase 1 | `phase1_fetch_owners.sh` | Merged — curl+jq pattern reused |
-| `src/fetchers/fetch-xuyin-rca.sh` | Phase 1 | `phase1_fetch_owners.sh` | Folded in — owner filter moved to manifest |
-| `src/core/process-rca.sh` | Phase 2 | `phase2_fetch_issues.sh` | `fetch_jira_details`, `process_pull_requests`, `create_rca_input` directly reused |
-| `src/bin/run-complete-rca-workflow.sh` | Phase 3 | `phase3_generate_rcas.sh` + `run.sh` | Manifest creation reused; Feishu trigger removed |
-| `src/core/post-rca-workflow.sh` | Phase 4 + 5 | `phase4_publish_to_jira.sh` + `phase5_finalize.sh` | Jira update + summary generation split |
-| `src/integrations/update-jira-latest-status.sh` | Phase 4 | `phase4_publish_to_jira.sh` | Replaced by jira-cli build-adf + jira-publish-playground (examples.md); append description + comment with mentions |
-| `src/utils/markdown-to-adf.js` | Phase 4 | `.agents/skills/jira-cli/scripts/build-adf.sh` | **Use shared jira-cli** (legacy deleted) |
-| `src/utils/send-feishu-notification.js` | Phase 5 | `.agents/skills/feishu-notify/scripts/send-feishu-notification.js` | **Use shared feishu-notify** (legacy deleted) |
-| `src/utils/generate-rcas-via-agent.js` | Phase 3 | `scripts/lib/generate-rcas-via-agent.js` | **CREATE** — implement per design spec (legacy deleted) |
-| `src/bin/daily-rca-check.sh` | `run.sh` | `scripts/run.sh` | Replaced by phase-aware entry point |
-| `src/bin/cron-daily-rca-check.sh` | OpenClaw scheduling | `scripts/run.sh` | Scheduling configured in OpenClaw |
+| `workspace-daily/projects/rca-daily/src/fetchers/fetch-rca.sh` | Phase 1 | `phase1_fetch_owners.sh` | Merged — curl+jq pattern reused |
+| `workspace-daily/projects/rca-daily/src/fetchers/fetch-xuyin-rca.sh` | Phase 1 | `phase1_fetch_owners.sh` | Folded in — owner filter moved to manifest |
+| `workspace-daily/projects/rca-daily/src/core/process-rca.sh` | Phase 2 | `phase2_fetch_issues.sh` | `fetch_jira_details`, `process_pull_requests`, `create_rca_input` directly reused |
+| `workspace-daily/projects/rca-daily/src/bin/run-complete-rca-workflow.sh` | Phase 3 | `phase3_generate_rcas.sh` + `run.sh` | Manifest creation reused; Feishu trigger removed |
+| `workspace-daily/projects/rca-daily/src/core/post-rca-workflow.sh` | Phase 4 + 5 | `phase4_publish_to_jira.sh` + `phase5_finalize.sh` | Jira update + summary generation split |
+| `workspace-daily/projects/rca-daily/src/integrations/update-jira-latest-status.sh` | Phase 4 | `phase4_publish_to_jira.sh` | Replaced by jira-cli build-adf + jira-publish-playground (examples.md); append description + comment with mentions |
+| `workspace-daily/projects/rca-daily/src/utils/markdown-to-adf.js` | Phase 4 | `.agents/skills/jira-cli/scripts/build-adf.sh` | **Use shared jira-cli** (legacy deleted) |
+| `workspace-daily/projects/rca-daily/src/utils/send-feishu-notification.js` | Phase 5 | `.agents/skills/feishu-notify/scripts/send-feishu-notification.js` | **Use shared feishu-notify** (legacy deleted) |
+| `workspace-daily/projects/rca-daily/src/utils/generate-rcas-via-agent.js` | Phase 3 | `scripts/lib/generate-rcas-via-agent.js` | **CREATE** — implement per design spec (legacy deleted) |
+| `workspace-daily/projects/rca-daily/src/bin/daily-rca-check.sh` | `run.sh` | `scripts/run.sh` | Replaced by phase-aware entry point |
+| `workspace-daily/projects/rca-daily/src/bin/cron-daily-rca-check.sh` | OpenClaw scheduling | `scripts/run.sh` | Scheduling configured in OpenClaw |
 | `output/*` | Date-scoped run folder | `scripts/runs/<date>/...` | Structured layout replaces flat output/ |
 
 ### Deprecation Rule
@@ -1757,16 +1784,19 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 - [x] Canonical Phase 0 `REPORT_STATE` classification is preserved, and the autonomous scheduled-run action policy is explicitly documented as an additive change
 - [x] `task.json` / `run.json` are initialized atomically; all writes go through `lib/state.sh` helpers
 - [x] `phase_not_done` guard in `run.sh` makes all phases idempotent across re-runs
+- [x] Invalid `refresh_mode` values fail closed in Phase 0 and persist a terminal error state
 - [x] Owner extraction from `/api/jira/customer-defects/details/?status=completed&limit=500` uses `curl -s | jq` with `category == "requires_rca"` filter
 - [x] Phase 4 posts Jira description and comment in separate steps so `success` vs `partial_success` is representable
 - [x] Phase4: append description (MERGE) + add comment with mentions (tqang, owner); `resolve_plan_user` supports "Xue, Yin" plan names
 - [x] Phase 3 is blocking and autonomous: batch spawn, wait, write `spawn-results.json`, then mark the phase complete before Phase 4 starts
 - [x] Phase 3 reconciles terminal generation status for every issue in `manifest.json` before Phase 4 is allowed to start
+- [x] Phase 4 publish eligibility is state-driven (`generated`) rather than file-driven; stale RCA files are ignored for non-generated items
 - [x] Publish status model is coherent: `success` | `partial_success` | `skipped_no_rca` | `failed`
 - [x] `run.json` timestamp semantics are split cleanly between `output_generated_at` and `jira_published_at`
 - [x] Jira scripts (phase2, phase4) call `load_jira_env_from_skill` before any Jira operation; phase2 uses `jira-run.sh` (not raw `jira`)
 - [x] Feishu failure persists `notification_pending` in `run.json` and does not block run completion
 - [x] Any unrecoverable phase error is persisted via `phases.<phase>.status = failed`, `overall_status = failed`, and `run.json.last_error`
+- [x] Phase scripts that rely on `trap ... ERR` use `set -Eeuo pipefail` so function-level failures are also persisted
 - [x] Usage documented in README; scheduling in OpenClaw
 - [x] `.agents/skills/rca/SKILL.md` content is specified — 9-section template, input/output contract, fetching rules
 - [x] `workspace-daily/skills/rca-orchestrator/SKILL.md` content is specified — phases, invocation, artifact locations
