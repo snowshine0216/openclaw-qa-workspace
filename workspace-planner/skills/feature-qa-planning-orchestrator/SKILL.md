@@ -55,6 +55,7 @@ For each phase:
    - read `<path>`
    - spawn every `requests[].openclaw.args` (pass args as-is; do **not** add `streamTo` — it is only supported for `runtime: "acp"`, not for `runtime: "subagent"`)
    - wait for all spawned agents to finish
+   - for Phase 1 only: run `scripts/record_spawn_completion.sh phase1 <feature-id> <project-dir>` to record completed spawns into `run.json.spawn_history`
    - run `scripts/phaseN.sh <feature-id> <project-dir> --post`
 3. If the script exits non-zero, stop immediately
 

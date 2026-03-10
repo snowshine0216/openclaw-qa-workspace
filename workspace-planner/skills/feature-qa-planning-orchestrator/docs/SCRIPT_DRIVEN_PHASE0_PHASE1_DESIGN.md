@@ -534,7 +534,7 @@ bash scripts/check_runtime_env.sh <feature-id> <requested-sources> [output-dir]
   }
   ```
 
-**Jira validation:** Invoke `jira-run.sh` from jira-cli. Path resolution: `JIRA_CLI_SCRIPT` env, or `$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh` (REPO_ROOT = dir containing `.agents` or `AGENTS.md`). Run `jira me`; success = pass.
+**Jira validation:** Invoke `jira-run.sh` from jira-cli. Path resolution (first found wins): 1) `JIRA_CLI_SCRIPT` env var; 2) repo-local `$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh`; 3) global `~/.agents/skills/jira-cli/scripts/jira-run.sh`; 4) OpenClaw `~/.openclaw/skills/jira-cli/scripts/jira-run.sh`. Run `jira me`; success = pass.
 
 **Confluence validation:** Explicitly locate how the workspace manages Confluence tools rather than blindly calling `confluence-cli`. If no canonical CLI wrapper binary resolves, output `status: blocked` and exit 1.
 
@@ -544,7 +544,7 @@ bash scripts/check_runtime_env.sh <feature-id> <requested-sources> [output-dir]
 |----------|----------------|--------|---------|--------------|--------------|
 | `main` | Parse args, validate each requested source, write JSON | argv | stdout (status), file | writes JSON | exit 1 |
 
-**Recommendation (Q6):** Use `jira-run.sh` from jira-cli. It already loads `.env` via `lib/jira-env.sh` and runs `jira`. No manual `source` needed. The check script locates jira-cli via `$JIRA_CLI_SCRIPT` or `$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh` and runs `jira-run.sh me`.
+**Recommendation (Q6):** Use `jira-run.sh` from jira-cli. It already loads `.env` via `lib/jira-env.sh` and runs `jira`. No manual `source` needed. The check script locates jira-cli via `$JIRA_CLI_SCRIPT`, repo-local `.agents/`, `~/.agents/`, or `~/.openclaw/skills/` (first found wins).
 
 **Implementation:**
 1. Parse `feature-id`, `requested-sources`, optional `output-dir`.

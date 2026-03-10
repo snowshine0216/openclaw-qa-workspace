@@ -47,6 +47,28 @@ test_invalid_args() {
   assert_exit_code 1 "$code"
 }
 
+test_global_jira_path_resolution() {
+  # When JIRA_CLI_SCRIPT is unset, resolution tries repo .agents, then ~/.agents, then ~/.openclaw.
+  # Create a fake HOME with jira-run.sh to test global path fallback.
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local fake_home="$temp_dir/home"
+  mkdir -p "$fake_home/.agents/skills/jira-cli/scripts"
+  setup_fake_tooling "$temp_dir/bin"
+  cp "$temp_dir/bin/jira-run.sh" "$fake_home/.agents/skills/jira-cli/scripts/jira-run.sh"
+  local output_dir="$temp_dir/context"
+  mkdir -p "$output_dir"
+
+  # Run from temp_dir (no .agents/AGENTS.md) so findRepoRoot returns null; HOME has jira script
+  local output
+  output="$(cd "$temp_dir" && HOME="$fake_home" bash "$SKILL_ROOT/scripts/check_runtime_env.sh" BCIN-GLOBAL jira "$output_dir")"
+
+  assert_contains "$output" "RUNTIME_SETUP_OK"
+  assert_file_exists "$output_dir/runtime_setup_BCIN-GLOBAL.json"
+  assert_contains "$(cat "$output_dir/runtime_setup_BCIN-GLOBAL.json")" "jira"
+}
+
 test_success_all_sources
 test_missing_jira_env
 test_invalid_args
+test_global_jira_path_resolution

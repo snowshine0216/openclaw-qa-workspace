@@ -144,7 +144,7 @@ Every manifest uses this shape:
 }
 ```
 
-The orchestrator reads `requests[].openclaw.args`, spawns each request, waits for completion, and then runs the phase script with `--post`.
+The orchestrator reads `requests[].openclaw.args`, spawns each request, waits for completion. For Phase 1 only, before `--post`, run `scripts/record_spawn_completion.sh phase1 <feature-id> <project-dir>` to record completed spawns into `run.json.spawn_history`. Then run the phase script with `--post`.
 
 **sessions_spawn contract:** Pass `openclaw.args` to `sessions_spawn` exactly as-is. Do **not** add `streamTo` or other extra fields. `streamTo` is supported only for `runtime: "acp"` (ACP harness sessions), not for `runtime: "subagent"`. Manifests use `runtime: "subagent"`; adding `streamTo` will cause spawn failures.
 

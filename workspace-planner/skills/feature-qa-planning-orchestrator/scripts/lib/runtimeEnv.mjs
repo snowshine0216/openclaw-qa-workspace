@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process';
-import { constants } from 'node:fs';
+import { accessSync, constants } from 'node:fs';
 import { access, mkdir, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import {
   normalizeRequestedSourceFamilies,
@@ -13,8 +14,24 @@ const SOURCE_COMMANDS = {
     resolveCommand: ({ repoRoot }) => {
       const envPath = process.env.JIRA_CLI_SCRIPT;
       if (envPath) return { command: envPath, args: ['me'] };
-      if (!repoRoot) return null;
-      return { command: join(repoRoot, '.agents/skills/jira-cli/scripts/jira-run.sh'), args: ['me'] };
+      const candidates = [];
+      if (repoRoot) {
+        candidates.push(join(repoRoot, '.agents/skills/jira-cli/scripts/jira-run.sh'));
+      }
+      const home = homedir();
+      if (home) {
+        candidates.push(join(home, '.agents/skills/jira-cli/scripts/jira-run.sh'));
+        candidates.push(join(home, '.openclaw/skills/jira-cli/scripts/jira-run.sh'));
+      }
+      for (const candidate of candidates) {
+        try {
+          accessSync(candidate, constants.F_OK);
+          return { command: candidate, args: ['me'] };
+        } catch {
+          // continue to next candidate
+        }
+      }
+      return null;
     },
   },
   confluence: {

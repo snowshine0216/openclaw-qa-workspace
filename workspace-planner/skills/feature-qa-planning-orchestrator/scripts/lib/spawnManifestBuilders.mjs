@@ -127,8 +127,36 @@ function buildSingleRequest(phaseId, featureId, projectDir) {
   return request.requests[0];
 }
 
+function buildPhase1ArtifactRequirements(sourceFamily, featureId, projectDir, hasSupportingArtifacts) {
+  const ctx = (name) => `${projectDir}/context/${name}`;
+  const normalized = String(sourceFamily || '').trim().toLowerCase();
+  if (normalized === 'jira') {
+    const required = [
+      `1. Main issue: ${ctx(`jira_issue_${featureId}.md`)} — fetch the primary feature issue.`,
+      `2. Related issues: ${ctx(`jira_related_issues_${featureId}.md`)} — linked, parent, child, and blocks/blocked-by issues relevant to ${featureId}. Include concise summaries for future reuse.`,
+    ];
+    if (hasSupportingArtifacts) {
+      required.push(
+        `3. Supporting summary: ${ctx(`supporting_artifact_summary_${featureId}.md`)} — when supporting Jira docs (e.g. BCED-2416) are requested, write a concise summary of supporting issues and how they inform scope/risk.`
+      );
+    }
+    return required.join('\n');
+  }
+  if (normalized === 'confluence') {
+    return `Required: ${ctx(`confluence_design_${featureId}.md`)}`;
+  }
+  if (normalized === 'github') {
+    return `Required: ${ctx(`github_diff_${featureId}.md`)} and ${ctx(`github_traceability_${featureId}.md`)}`;
+  }
+  if (normalized === 'figma') {
+    return `Required: ${ctx(`figma_metadata_${featureId}.md`)}`;
+  }
+  return 'Save required artifacts under context/ per the context-coverage-contract.';
+}
+
 function buildPhase1Task(sourceFamily, featureId, projectDir, hasSupportingArtifacts) {
   const refBlock = getPhaseReferenceInstructions('phase1', SKILL_ROOT);
+  const artifactReqs = buildPhase1ArtifactRequirements(sourceFamily, featureId, projectDir, hasSupportingArtifacts);
   return `Role: ${sourceFamily} evidence sub-agent for feature QA planning.
 
 Feature ID: ${featureId}
@@ -141,7 +169,10 @@ ${refBlock}
 Requirements:
 - Read and use only the approved source route for ${sourceFamily}.
 - Save required artifacts under ${projectDir}/context before returning.
-- Return the saved artifact paths in the session result.`;
+- Return the saved artifact paths in the session result.
+
+Required artifacts (must write all):
+${artifactReqs}`;
 }
 
 function buildPhaseTaskText(phaseId, featureId, projectDir) {

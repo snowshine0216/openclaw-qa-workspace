@@ -21,7 +21,7 @@ function runNode(args) {
   });
 }
 
-async function createProject(featureId, requestedSources) {
+async function createProject(featureId, requestedSources, hasSupportingArtifacts = false) {
   const root = await mkdtemp(join(tmpdir(), 'phase1-manifest-'));
   const projectDir = join(root, 'projects', 'feature-plan', featureId);
   await mkdir(join(projectDir, 'context'), { recursive: true });
@@ -31,7 +31,7 @@ async function createProject(featureId, requestedSources) {
   }, null, 2));
   await writeFile(join(projectDir, 'run.json'), JSON.stringify({
     run_key: `run-${featureId}`,
-    has_supporting_artifacts: false,
+    has_supporting_artifacts: hasSupportingArtifacts,
   }, null, 2));
   return { root, projectDir };
 }
@@ -47,6 +47,8 @@ test('test_success_single_source', async () => {
   const args = manifest.requests[0].openclaw.args;
   assert.ok(args.task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
   assert.ok(args.task.includes('reference.md'), 'task must reference reference.md');
+  assert.ok(args.task.includes('jira_issue_BCIN-201.md'), 'Jira task must require main issue artifact');
+  assert.ok(args.task.includes('jira_related_issues_BCIN-201.md'), 'Jira task must require related issues artifact');
   assert.equal(args.runtime, 'subagent');
   assert.ok(!('streamTo' in args), 'openclaw.args must not contain streamTo when runtime is subagent');
   await rm(root, { recursive: true, force: true });
@@ -80,5 +82,16 @@ test('test_empty_requested_sources', async () => {
   const { root, projectDir } = await createProject('BCIN-204', []);
   const result = await runNode(['BCIN-204', projectDir]);
   assert.equal(result.code, 1);
+  await rm(root, { recursive: true, force: true });
+});
+
+test('test_jira_with_supporting_artifacts_includes_supporting_summary', async () => {
+  const { root, projectDir } = await createProject('BCIN-205', ['jira'], true);
+  const outputPath = join(projectDir, 'phase1_spawn_manifest.json');
+  const result = await runNode(['BCIN-205', projectDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  const task = manifest.requests[0].openclaw.args.task;
+  assert.ok(task.includes('supporting_artifact_summary_BCIN-205.md'), 'Jira task with supporting artifacts must require supporting summary');
   await rm(root, { recursive: true, force: true });
 });
