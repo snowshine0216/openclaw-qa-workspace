@@ -1,6 +1,6 @@
 /**
  * save_context.sh — behavior tests
- * Ref: xmind-refactor-plan-merged.md §4.1
+ * Ref: FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md §4.2
  *
  * Behavior/Test Matrix:
  * | Behavior | Type | Test |

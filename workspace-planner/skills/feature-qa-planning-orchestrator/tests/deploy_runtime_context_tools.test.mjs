@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { access, mkdtemp, readdir, rm } from 'node:fs/promises';
+import { access, mkdtemp, readdir, rm, stat } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
@@ -29,12 +30,25 @@ test('deploy script copies helper tools into the runtime project directory', asy
   assert.equal(code, 0);
 
   const files = (await readdir(runtimeDir)).sort();
-  assert.deepEqual(files, ['save_context.sh']);
+  assert.deepEqual(files, [
+    'qaPlanValidators.mjs',
+    'save_context.sh',
+    'validate_context.sh',
+    'validate_plan_artifact.mjs',
+    'validate_testcase_structure.sh',
+  ]);
 
   for (const file of files) {
     await access(join(runtimeDir, file));
   }
+  await access(join(runtimeDir, 'validate_plan_artifact.mjs'), constants.X_OK);
+  const mode = (await stat(join(runtimeDir, 'validate_plan_artifact.mjs'))).mode;
+  assert.notEqual(mode & 0o111, 0);
 
   assert.match(stdout, /DEPLOYED: save_context\.sh/);
+  assert.match(stdout, /DEPLOYED: validate_context\.sh/);
+  assert.match(stdout, /DEPLOYED: validate_testcase_structure\.sh/);
+  assert.match(stdout, /DEPLOYED: qaPlanValidators\.mjs/);
+  assert.match(stdout, /DEPLOYED: validate_plan_artifact\.mjs/);
   await rm(tmp, { recursive: true, force: true });
 });

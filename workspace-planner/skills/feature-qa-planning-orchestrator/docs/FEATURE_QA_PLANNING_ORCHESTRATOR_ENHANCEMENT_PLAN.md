@@ -224,7 +224,9 @@ No draft writing starts until the context index exists and passes validation.
 Add a second required intermediate artifact:
 
 - `context/coverage_ledger_<feature-id>.md`
-- `context/coverage_gaps_<feature-id>.md` when the mapper finds unresolved or deferred items
+- `context/coverage_gaps_<feature-id>.md`
+  - required for every run
+  - when no gaps exist, include an explicit `No unresolved coverage gaps` statement
 
 This ledger forces the writer to explicitly decide what to do with each major fact from the context index.
 
@@ -238,10 +240,12 @@ This ledger forces the writer to explicitly decide what to do with each major fa
    - `Error`
    - `Regression`
    - `Compatibility`
+   - `Security`
+   - `Performance`
    - `OutOfScope`
-3. Planned scenario name
-4. Priority
-5. Reason if excluded or deferred
+4. Planned scenario name
+5. Priority
+6. Reason if excluded or deferred
 
 ### Why this matters
 
@@ -334,9 +338,10 @@ The reviewer should no longer be a general quality pass. It should be a contract
   - keep current path
   - strengthen required contents
 - `context/review_rewrite_requests_<feature-id>.md`
-  - optional separate file when blocking rewrites are extensive
+  - required for every review cycle
+  - may contain a `No rewrite requests` section when no rewrites are needed
 - `context/review_delta_<feature-id>.md`
-  - required after refactor to record which blocking findings were resolved, deferred, or still open
+  - required after refactor to record which blocking findings were resolved, partially resolved, or still open
 
 ### Reviewer checks
 
@@ -352,13 +357,13 @@ The reviewer must score and comment on:
 
 ### Reviewer fail conditions
 
-Phase 3 must fail if any of the following are true:
+Phase 5 must fail if any of the following are true:
 
 1. A core capability in `context_index` has no matching scenario or explicit exclusion.
 2. `EndToEnd` section is missing required main-path coverage.
 3. Any scenario uses non-executable wording such as "verify correct behavior", "test parity", "ensure it works", or "perform another valid action".
 4. Manual steps rely mainly on implementation terms such as service names, bridge APIs, or internal function calls.
-5. v2 does not materially address blocking review findings from v1.
+5. the current draft does not materially address blocking review findings from the prior reviewed draft in the same run.
 6. A non-executable step was silently removed instead of being rewritten, researched, or preserved with an explicit unresolved comment.
 7. An unclear error-handling scenario was left vague without either research-backed clarification or an explicit unresolved next action.
 
@@ -371,11 +376,11 @@ The review artifact should include:
 3. Missing coverage matrix
 4. Vague step rewrite requests
 5. E2E gap list
-6. `accept` or `reject`
+6. `accept` | `accept_with_advisories` | `reject`
 7. concrete next action for every failed blocking item
 8. linked research artifact or research recommendation for every unresolved executability item
 
-All reviewer-generated outputs must be saved to `context/` before Phase 4 starts. No in-memory-only review is allowed.
+All reviewer-generated outputs must be saved to `context/` before Phase 6 starts. No in-memory-only review is allowed.
 
 ## 4.6 Introduce targeted sub-agents for large-context planning
 
@@ -433,14 +438,14 @@ Do not spawn sub-agents for:
 | 1 | fetch per requested source family | yes | source sub-agents | source artifacts + `source_summary_<domain>_<feature-id>.md` |
 | 2 | normalize one source family into planning facts | yes | context-normalizer sub-agents | normalization notes or source-normalization artifacts under `context/` |
 | 2 | merge normalized context into canonical index | no | orchestrator | `context/context_index_<feature-id>.md` |
-| 3 | propose coverage mapping from context index | yes, when context is large or multi-family | coverage-mapper sub-agent | proposal artifacts under `context/` |
+| 3 | propose coverage mapping from context index | yes, when 2 or more requested source families are present or when mandatory coverage candidates exceed 10 | coverage-mapper sub-agent | proposal artifacts under `context/` |
 | 3 | finalize coverage ledger and E2E map | no | orchestrator | `context/coverage_ledger_<feature-id>.md`, `context/e2e_journey_map_<feature-id>.md` |
 | 4 | final unified draft writing | no | orchestrator | `drafts/qa_plan_v<N>.md` |
 | 4 | optional section-scoped rewrite suggestions for oversized drafts | yes, bounded and section-scoped only | rewrite helper sub-agent | rewrite notes under `context/` |
 | 5 | final review verdict | no | orchestrator | `context/review_qa_plan_<feature-id>.md` |
 | 5 | optional section-scoped audit helpers for very large drafts | yes, bounded and section-scoped only | review helper sub-agents | audit notes under `context/` |
 | 6 | apply approved refactor actions | no | orchestrator | `drafts/qa_plan_v<N+1>.md`, `context/review_delta_<feature-id>.md` |
-| 7 | finalization and promotion | no | orchestrator | `qa_plan_final.md`, `context/finalization_record_<feature-id>.md` |
+| 7 | finalization and promotion | no | orchestrator | always: `context/finalization_record_<feature-id>.md`; on approval only: `qa_plan_final.md` plus archived prior final when overwrite applies |
 
 ### Spawn-output rule
 
@@ -475,9 +480,22 @@ The current validators only check file presence and XMind syntax. Add lightweigh
 4. `validate_executable_steps`
    - flags banned vague phrases and implementation-heavy wording
 5. `validate_review_delta`
-   - confirms Phase 4 addressed blocking findings from Phase 3
+   - confirms Phase 6 addressed blocking findings from Phase 5
 6. `validate_unresolved_step_handling`
    - confirms unresolved steps are preserved with comments, linked research, and next actions rather than silently removed
+
+### Validator-to-phase mapping
+
+| Validator | Run after | Blocking rule |
+| --- | --- | --- |
+| `validate_context_index` | Phase 2 | any failure blocks entry to Phase 3 |
+| `validate_coverage_ledger` | Phase 3 | any failure blocks entry to Phase 4 |
+| `validate_e2e_minimum` | Phase 4 and Phase 6 | any failure blocks the next phase |
+| `validate_executable_steps` | Phase 4 and Phase 6 | any failure blocks the next phase |
+| `validate_review_delta` | Phase 6 | any failure blocks entry to Phase 7 |
+| `validate_unresolved_step_handling` | Phase 4, Phase 5, and Phase 6 | any failure blocks the next phase |
+
+Validators may run sequentially or in parallel within a phase, but the phase is blocked if any required validator for that phase returns `fail`.
 
 These can begin as simple heuristic scripts plus evals; they do not need perfect semantic understanding to provide value.
 
@@ -529,7 +547,7 @@ Required fields:
 - `selected_mode`
   - user-safe execution choice for this run
 - `requested_source_families`
-  - array of source families actually required for this run
+  - non-empty array of source families actually required for this run unless the run is stopped during Phase 0 before evidence gathering begins
 - `completed_source_families`
   - array of source families with saved outputs
 - `spawn_plan`
@@ -575,6 +593,23 @@ Required fields:
 
 `task.json` is the resumable planning state. `run.json` is the execution log for the current run. If the workflow changes phase, spawn decisions, or saved artifacts, both files must be updated before the phase is considered complete.
 
+### Concurrent-run policy
+
+Concurrent runs for the same `feature_id` are not supported by this design while artifact paths remain feature-id scoped.
+
+For this policy, an "active run" means any run for the same `feature_id` whose `overall_status` is one of:
+
+- `in_progress`
+- `awaiting_approval`
+- `blocked`
+
+If Phase 0 detects another active run for the same `feature_id` with a different `run_key`, the orchestrator must:
+
+1. set `task.json.overall_status = "blocked"`
+2. append the concurrency conflict to `run.json.blocking_issues`
+3. stop before Phase 1
+4. require the user to either resume the existing run, explicitly replace it, or stop
+
 ### Exact content: `context/phase0_state_<feature-id>.md`
 
 Required headings:
@@ -618,7 +653,15 @@ Required fields:
 
 ### Phase 0 gate
 
-Do not enter Phase 1 unless both Phase 0 context artifacts exist.
+Do not enter Phase 1 unless:
+
+1. both Phase 0 context artifacts exist
+2. `requested_source_families` is non-empty
+3. `context/runtime_capabilities_<feature-id>.md` reports no active Blocking Issues
+
+If `requested_source_families` is empty, the orchestrator must stop in Phase 0 and require the user to choose at least one source family or stop the run.
+
+If `context/runtime_capabilities_<feature-id>.md` reports any Blocking Issues, the orchestrator must set `task.json.overall_status = "blocked"`, append the blocker to `run.json.blocking_issues`, and stop before Phase 1.
 
 ## Phase 1 - Evidence gathering
 
@@ -707,13 +750,16 @@ Required bullet shape:
 Do not enter Phase 2 unless:
 
 1. the evidence manifest exists
-2. each requested source family has either a saved summary or a saved explicit missing-source note
-3. any requested code-traceability or defect-traceability artifacts exist when those evidence families were part of the run
+2. each requested source family has an explicit terminal status in the evidence manifest plus saved audit artifact(s)
+3. each required source family has final status `retrieved`
+4. any requested code-traceability or defect-traceability artifacts exist when those evidence families were part of the run
+
+Saved missing/failure notes are required for auditability, but they are not sufficient to pass Phase 1 for required source families.
 
 Stop the workflow and require user intervention when either of these is true:
 
 1. all requested source families failed or are missing
-2. any required source family has status `auth_failed`, `access_denied`, or `fetch_failed`
+2. any required source family has final status other than `retrieved` (`missing`, `partial`, `auth_failed`, `access_denied`, or `fetch_failed`)
 
 When this happens, the orchestrator must:
 
@@ -723,11 +769,13 @@ When this happens, the orchestrator must:
 4. append the failure to `run.json.blocking_issues`
 5. stop before Phase 2
 6. ask the user which path to take next:
-   - fix the source issue and continue Phase 1
+   - retry/fix the source issue and continue Phase 1
    - explicitly reduce scope by removing or downgrading the failed source family
    - stop the run
 
-The orchestrator must not silently continue to later phases when a required source family failed to fetch because of auth, access, or other blocking issues.
+If the user chooses scope reduction, the orchestrator must update `task.json.requested_source_families`, update the evidence manifest, and then re-evaluate the Phase 1 gate before entering Phase 2.
+
+The orchestrator must not silently continue to later phases when a required source family is not `retrieved`.
 
 ## Phase 2 - Context normalization
 
@@ -736,6 +784,7 @@ The orchestrator must not silently continue to later phases when a required sour
 1. `context_index_<feature-id>.md`
 2. `context_normalization_notes_<feature-id>.md`
 3. `context_open_questions_<feature-id>.md`
+4. `coverage_gaps_<feature-id>.md` when Phase 2 blocks before Phase 3 because mandatory coverage candidates are empty or classification requirements are not met
 
 ### Exact content: `context/context_index_<feature-id>.md`
 
@@ -743,18 +792,19 @@ Required headings:
 
 1. `# Context Index`
 2. `## Feature Summary`
-3. `## Source Inventory`
-4. `## Primary User Journeys`
-5. `## Entry Points`
-6. `## Core Capability Families`
-7. `## Error / Recovery Behaviors`
-8. `## Known Risks / Regressions`
-9. `## Permissions / Auth / Data Constraints`
-10. `## Environment / Platform Constraints`
-11. `## Setup / Fixtures Needed`
-12. `## Unsupported / Deferred / Ambiguous`
-13. `## Mandatory Coverage Candidates`
-14. `## Traceability Map`
+3. `## Feature Classification`
+4. `## Source Inventory`
+5. `## Primary User Journeys`
+6. `## Entry Points`
+7. `## Core Capability Families`
+8. `## Error / Recovery Behaviors`
+9. `## Known Risks / Regressions`
+10. `## Permissions / Auth / Data Constraints`
+11. `## Environment / Platform Constraints`
+12. `## Setup / Fixtures Needed`
+13. `## Unsupported / Deferred / Ambiguous`
+14. `## Mandatory Coverage Candidates`
+15. `## Traceability Map`
 
 ### Exact content requirements per heading
 
@@ -762,6 +812,11 @@ Required headings:
 - one-paragraph plain-language summary
 - affected user type
 - business intent
+
+`## Feature Classification`
+- one of: `user_facing` | `non_user_facing`
+- source artifact or explicit user confirmation supporting the classification
+- note explaining why `EndToEnd` coverage is mandatory or not mandatory for this run
 
 `## Source Inventory`
 - one table row per saved source artifact
@@ -858,6 +913,35 @@ Required headings:
 ### Phase 2 gate
 
 Do not enter Phase 3 unless `context_index_<feature-id>.md` exists and contains all required headings.
+
+The context index must also include an explicit feature classification for E2E expectations:
+
+- `user_facing`
+- `non_user_facing`
+
+This classification must be justified with a source artifact or explicit user confirmation.
+
+If the feature is `user_facing` and `## Mandatory Coverage Candidates` is empty, do not enter Phase 3. Record the gap in `context/coverage_gaps_<feature-id>.md` and require user confirmation before continuing with any minimal-plan fallback.
+
+When this happens, the orchestrator must:
+
+1. save or update `context/coverage_gaps_<feature-id>.md` with the empty-candidate reason, impact, and recommended next action
+2. set `task.json.overall_status = "blocked"`
+3. keep `task.json.current_phase = "phase_2_context_normalization"`
+4. append the gap to `run.json.blocking_issues`
+5. require the user to choose one of:
+   - return to Phase 1 to expand evidence gathering
+   - approve a minimal-plan fallback with explicit limitations
+   - stop the run
+
+If the user approves a minimal-plan fallback, Phase 2 must:
+
+1. update `context/context_index_<feature-id>.md` with the approved fallback classification and explicit limitation note
+2. update `context/coverage_gaps_<feature-id>.md` with the user-approved fallback scope and rationale
+3. set `task.json.overall_status = "in_progress"`
+4. keep `task.json.current_phase = "phase_2_context_normalization"`
+5. re-run `validate_context_index`
+6. enter Phase 3 only after the updated Phase 2 gate passes
 
 ## Phase 3 - Coverage mapping
 
@@ -1105,6 +1189,20 @@ Do not enter Phase 6 unless the review verdict is explicitly saved as one of:
 - `accept_with_advisories`
 - `reject`
 
+### Review verdict semantics and transition rule
+
+- `reject`
+  - one or more blocking findings remain in the review artifact
+  - transition: enter Phase 6 with required blocking refactor actions
+- `accept_with_advisories`
+  - no blocking findings remain; non-blocking advisories are documented
+  - transition: enter Phase 6 for deterministic advisory cleanup or explicit no-change disposition
+- `accept`
+  - no blocking findings remain and no advisory-driven rewrite is required
+  - transition: enter Phase 6 for deterministic no-op/pass-through delta recording
+
+The workflow must preserve a single deterministic phase chain. Phase 6 is always executed after Phase 5, even when no content rewrite is required.
+
 ## Phase 6 - Deterministic refactor
 
 ### Required outputs
@@ -1132,7 +1230,7 @@ Each blocking finding row must include:
 - original problem
 - action taken
 - artifact or scenario changed
-- status: `resolved` | `partially_resolved` | `deferred_with_approval` | `not_resolved`
+- status: `resolved` | `partially_resolved` | `not_resolved`
 
 ### Exact content: `context/refactor_actions_<feature-id>.md`
 
@@ -1146,19 +1244,35 @@ Required headings:
 
 ### Phase 6 gate
 
-Do not finalize unless:
+Do not enter Phase 7 unless:
 
-1. blocking findings are all `resolved` or explicitly `deferred_with_approval`
+1. blocking findings are all `resolved`
 2. validation passes
 3. no mandatory coverage candidate was dropped
 
+If any blocking finding is `partially_resolved` or `not_resolved`, the orchestrator must:
+
+1. keep `task.json.overall_status = "in_progress"`
+2. set `task.json.current_phase = "phase_5_structured_review"`
+3. append an unresolved-blocking summary to `run.json.blocking_issues`
+4. return to Phase 5 for the next review/refactor cycle
+
+If unresolved blocking findings remain after 3 review/refactor cycles in the same run, set `task.json.overall_status = "blocked"` and require user intervention before continuing.
+
 ## Phase 7 - Finalization
+
+Phase 7 is the only user-approval checkpoint before promotion to `qa_plan_final.md`.
 
 ### Required outputs
 
+Always required:
+
+1. `context/finalization_record_<feature-id>.md`
+
+Required only when the user approves promotion:
+
 1. `qa_plan_final.md`
-2. `context/finalization_record_<feature-id>.md`
-3. archived prior final artifact when overwrite occurs
+2. archived prior final artifact when overwrite occurs
 
 ### Exact content: `context/finalization_record_<feature-id>.md`
 
@@ -1170,6 +1284,40 @@ Required headings:
 4. `## Approval State`
 5. `## Archived Outputs`
 6. `## Notification State`
+
+### Phase 7 approval and promotion state transitions
+
+Before requesting approval:
+
+1. set `task.json.overall_status = "awaiting_approval"`
+2. set `task.json.current_phase = "phase_7_finalization"`
+3. save/update `context/finalization_record_<feature-id>.md` with the candidate draft and approval request context
+
+If user decision is `approve`:
+
+1. archive prior final artifact when overwrite applies
+2. promote the approved draft to `qa_plan_final.md`
+3. set `task.json.overall_status = "completed"`
+4. set `run.json.finalized_at`
+5. attempt Feishu notification
+6. if notification fails, set `run.json.notification_pending` with the full pending payload and failure reason
+
+If user decision is `reject`:
+
+1. do not promote any draft
+2. save rejection reason and expected follow-up in `context/finalization_record_<feature-id>.md`
+3. copy the rejection reason into `context/review_qa_plan_<feature-id>.md` as a new blocking review input for the next cycle
+4. require a fresh Phase 5 structured review before any subsequent Phase 6 refactor can be considered finalization-ready
+5. set `task.json.overall_status = "in_progress"`
+6. set `task.json.current_phase = "phase_5_structured_review"`
+7. return to Phase 5 for the next structured review/refactor cycle or allow user to stop the run
+
+If the user chooses to stop instead of requesting another review/refactor cycle:
+
+1. do not promote any draft
+2. keep `context/finalization_record_<feature-id>.md` as the terminal approval artifact for the run
+3. set `task.json.overall_status = "blocked"`
+4. append the user-stop decision to `run.json.blocking_issues`
 
 ## 4.9 Exact content changes for each enhancement
 
@@ -1299,7 +1447,8 @@ Sections:
 
 - "Review cannot approve a draft that is structurally valid but not executable."
 - "Review cannot approve a draft that loses E2E coverage present in the context index."
-- "Review cannot approve a draft with blocking findings left unresolved in `review_delta`."
+- "Review cannot emit `accept` or `accept_with_advisories` when any blocking finding remains unresolved in `review_qa_plan`."
+- "Phase 6 cannot advance to finalization while any blocking finding remains non-`resolved` in `review_delta`."
 - "`accept_with_advisories` is allowed only when no blocking finding remains and advisories are explicitly documented."
 - "Review cannot silently drop an unclear step; it must be rewritten, researched, or preserved with a comment and next action."
 
@@ -1455,6 +1604,12 @@ Each eval should specify:
 - expected blocking phrases or required headings
 - expected remediation output when the eval fails
 
+Eval policy:
+
+- eval failures must always be recorded in the implementation change summary
+- failures in contract, state-transition, or validator-behavior evals are blocking
+- purely advisory evals must be explicitly marked advisory in `evals/evals.json`; default is blocking
+
 ## 4.10 Example validator behaviors
 
 These validators may start heuristic-first. The design still needs explicit expected behavior.
@@ -1482,15 +1637,16 @@ Should fail when:
 Should fail when:
 
 1. required headings are missing
-2. no traceability map exists
-3. no mandatory coverage candidates are listed
+2. `## Feature Classification` is missing, invalid, or unsupported by source evidence or explicit user confirmation
+3. no traceability map exists
+4. no mandatory coverage candidates are listed for a `user_facing` feature
 
 ### `validate_review_delta`
 
 Should fail when:
 
 1. any blocking finding has no disposition
-2. a blocking finding remains unresolved without explicit approval to defer
+2. any blocking finding remains `partially_resolved` or `not_resolved`
 3. a scenario removed during refactor is not explained
 
 ### `validate_unresolved_step_handling`
@@ -1530,7 +1686,7 @@ The implementation phase should create:
 6. `workspace-planner/skills/feature-qa-planning-orchestrator/references/e2e-coverage-rules.md`
 7. `workspace-planner/skills/feature-qa-planning-orchestrator/docs/DOCS_GOVERNANCE.md`
 
-## 5.3 Files to remove
+## 5.3 Files to remove, replace, or refactor
 
 These look like dead or stale docs and should be explicitly handled during implementation:
 
@@ -1612,6 +1768,27 @@ Do not migrate:
 ### Sync rule
 
 `README.md` and `reference.md` must be reviewed together. An implementation is incomplete if one is updated without the other and they describe different workflows, artifacts, or state fields.
+
+## 5.3.3 Required sync checklist for `AGENTS.md`
+
+`AGENTS.md` must be updated in the same implementation change so its workflow summary matches the design.
+
+Required workflow text to reflect:
+
+1. Phase 0 - runtime preparation and existing-state check
+2. Phase 1 - evidence gathering
+3. Phase 2 - context normalization
+4. Phase 3 - coverage mapping
+5. Phase 4 - unified draft writing
+6. Phase 5 - structured review
+7. Phase 6 - deterministic refactor
+8. Phase 7 - finalization
+
+The AGENTS summary must also state:
+
+1. Phase 1 may spawn source-bounded helpers
+2. Phase 2 and Phase 3 may spawn bounded normalization/mapping helpers
+3. Phases 4 through 7 remain orchestrator-owned for authoritative draft, review, refactor, and finalization decisions
 
 ## 5.4 Documentation ownership model
 

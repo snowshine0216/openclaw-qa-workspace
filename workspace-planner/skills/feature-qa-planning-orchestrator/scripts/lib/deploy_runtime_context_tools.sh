@@ -7,10 +7,10 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 mkdir -p "$RUNTIME_DIR"
 
-for tool in save_context.sh; do
+for tool in save_context.sh validate_context.sh validate_testcase_structure.sh qaPlanValidators.mjs validate_plan_artifact.mjs; do
   cp "$SCRIPT_DIR/$tool" "$RUNTIME_DIR/$tool"
   case "$tool" in
-    *.sh) chmod +x "$RUNTIME_DIR/$tool" ;;
+    *.sh|*.mjs) chmod +x "$RUNTIME_DIR/$tool" ;;
   esac
   echo "DEPLOYED: $tool -> $RUNTIME_DIR/$tool"
 done

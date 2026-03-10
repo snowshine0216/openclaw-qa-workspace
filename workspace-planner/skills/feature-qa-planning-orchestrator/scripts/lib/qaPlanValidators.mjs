@@ -1,0 +1,334 @@
+const REQUIRED_CONTEXT_HEADINGS = [
+  '## Feature Summary',
+  '## Feature Classification',
+  '## Source Inventory',
+  '## Primary User Journeys',
+  '## Entry Points',
+  '## Core Capability Families',
+  '## Error / Recovery Behaviors',
+  '## Known Risks / Regressions',
+  '## Permissions / Auth / Data Constraints',
+  '## Environment / Platform Constraints',
+  '## Setup / Fixtures Needed',
+  '## Unsupported / Deferred / Ambiguous',
+  '## Mandatory Coverage Candidates',
+  '## Traceability Map',
+];
+
+const BANNED_VAGUE_PHRASES = [
+  'verify correct behavior',
+  'verify expected behavior',
+  'ensure it works',
+  'test parity',
+  'perform another valid action',
+  'confirm functionality',
+  'validate integration',
+  'check the feature',
+];
+
+const IMPLEMENTATION_TOKENS = [
+  'service',
+  'bridge api',
+  'bridge function',
+  'internal api',
+  'hook',
+  'sdk',
+  'renderproxy',
+  'updatefuncreactcomponent',
+];
+
+const STOPWORDS = new Set([
+  'the',
+  'and',
+  'for',
+  'with',
+  'after',
+  'before',
+  'still',
+  'next',
+  'action',
+  'comment',
+  'trigger',
+  'unclear',
+]);
+
+function normalizeContent(content) {
+  return String(content || '').replace(/\r\n/g, '\n');
+}
+
+function getSection(content, heading) {
+  const text = normalizeContent(content);
+  const start = text.indexOf(`${heading}\n`);
+  if (start === -1) return '';
+  const bodyStart = start + heading.length + 1;
+  const rest = text.slice(bodyStart);
+  const nextHeadingOffset = rest.search(/\n##\s+/);
+  if (nextHeadingOffset === -1) return rest.trim();
+  return rest.slice(0, nextHeadingOffset).trim();
+}
+
+function getTopLevelBulletSection(content, heading) {
+  const text = normalizeContent(content);
+  const lines = text.split('\n');
+  const startIndex = lines.findIndex((line) => line.trim() === heading);
+  if (startIndex === -1) return '';
+
+  const sectionLines = [];
+  for (let index = startIndex + 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (/^- [^\s]/.test(line)) break;
+    sectionLines.push(line);
+  }
+  return sectionLines.join('\n').trim();
+}
+
+function hasNonEmptyBullet(section) {
+  return section
+    .split('\n')
+    .map((line) => line.trim())
+    .some((line) => line.startsWith('- ') || line.startsWith('* '));
+}
+
+function listMissingHeadings(content, headings) {
+  return headings.filter((heading) => !normalizeContent(content).includes(`${heading}\n`));
+}
+
+function findClassification(section) {
+  const match = section.match(/\b(user_facing|non_user_facing)\b/);
+  return match ? match[1] : null;
+}
+
+function hasClassificationEvidence(section) {
+  return /(source artifact|user confirmation)/i.test(section);
+}
+
+function extractCandidateIds(section) {
+  return section
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2).split('|')[0]?.trim())
+    .filter(Boolean);
+}
+
+function extractScenarioRows(section) {
+  return extractTableRows(section, 8);
+}
+
+function extractTableRows(section, minCells = 1) {
+  return section
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2).split('|').map((cell) => cell.trim()))
+    .filter((cells) => cells.length >= minCells);
+}
+
+function includesAny(text, phrases) {
+  const lower = normalizeContent(text).toLowerCase();
+  return phrases.filter((phrase) => lower.includes(phrase));
+}
+
+function tokenizeReference(text) {
+  return normalizeContent(text)
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length >= 4 && !STOPWORDS.has(token));
+}
+
+function actionLines(content) {
+  return normalizeContent(content)
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => /action:/i.test(line));
+}
+
+function scenarioBlocks(content) {
+  const lines = normalizeContent(content).split('\n');
+  const blocks = [];
+  let current = null;
+
+  for (const line of lines) {
+    if (/^\s*\* /.test(line)) {
+      if (current) blocks.push(current);
+      current = [line];
+      continue;
+    }
+    if (current) {
+      if (/^- [^\s]/.test(line)) {
+        blocks.push(current);
+        current = null;
+      } else {
+        current.push(line);
+      }
+    }
+  }
+
+  if (current) blocks.push(current);
+  return blocks.map((block) => block.join('\n'));
+}
+
+function hasCamelCaseImplementationToken(line) {
+  return /[a-z]+[A-Z][A-Za-z0-9]+/.test(line);
+}
+
+export function validateContextIndex(content) {
+  const failures = [];
+  const missingHeadings = listMissingHeadings(content, REQUIRED_CONTEXT_HEADINGS);
+  if (missingHeadings.length > 0) {
+    failures.push(`Missing required headings: ${missingHeadings.join(', ')}`);
+  }
+
+  const classificationSection = getSection(content, '## Feature Classification');
+  const classification = findClassification(classificationSection);
+  if (!classification) {
+    failures.push('## Feature Classification is missing a valid classification value.');
+  }
+  if (classification && !hasClassificationEvidence(classificationSection)) {
+    failures.push('## Feature Classification must cite source evidence or explicit user confirmation.');
+  }
+
+  const traceabilitySection = getSection(content, '## Traceability Map');
+  if (!hasNonEmptyBullet(traceabilitySection)) {
+    failures.push('## Traceability Map must contain at least one extracted fact row.');
+  }
+
+  const candidatesSection = getSection(content, '## Mandatory Coverage Candidates');
+  const candidateIds = extractCandidateIds(candidatesSection);
+  if (classification === 'user_facing' && candidateIds.length === 0) {
+    failures.push('Mandatory coverage candidates are required for user_facing features.');
+  }
+
+  return {
+    ok: failures.length === 0,
+    failures,
+    classification,
+    candidateIds,
+  };
+}
+
+export function validateCoverageLedger(content, requiredCandidateIds = []) {
+  const mappingSection = getSection(content, '## Scenario Mapping Table');
+  const rows = extractScenarioRows(mappingSection);
+  const foundIds = new Set(rows.map((cells) => cells[0]));
+  const missingCandidates = requiredCandidateIds.filter((id) => !foundIds.has(id));
+  const failures = [];
+  const explicitNone = /\bnone\b/i.test(mappingSection);
+
+  if (rows.length === 0 && requiredCandidateIds.length > 0) {
+    failures.push('## Scenario Mapping Table must contain at least one scenario row.');
+  }
+  if (rows.length === 0 && requiredCandidateIds.length === 0 && !explicitNone) {
+    failures.push('## Scenario Mapping Table must contain scenario rows or an explicit none marker when no candidate ids are required.');
+  }
+  if (missingCandidates.length > 0) {
+    failures.push(`Missing scenario mappings for candidate ids: ${missingCandidates.join(', ')}`);
+  }
+
+  return { ok: failures.length === 0, failures, missingCandidates };
+}
+
+export function validateE2EMinimum(content, { featureClassification = 'user_facing' } = {}) {
+  const failures = [];
+  const e2eSection = getTopLevelBulletSection(content, '- EndToEnd');
+  const hasEndToEnd = normalizeContent(content).includes('\n- EndToEnd');
+  if (featureClassification === 'user_facing' && !hasEndToEnd) {
+    failures.push('EndToEnd section is required for user-facing features.');
+  }
+  if (featureClassification === 'user_facing' && hasEndToEnd) {
+    const missingExpectedScenarios = scenarioBlocks(e2eSection).filter(
+      (block) => !/(Expected:|expected:)/.test(block)
+    );
+    if (missingExpectedScenarios.length > 0) {
+      failures.push('Each EndToEnd journey must include an observable completion/result condition.');
+    }
+  }
+  if (featureClassification === 'non_user_facing' && !hasEndToEnd) {
+    const outOfScopeSection = getTopLevelBulletSection(content, '- Out of Scope / Assumptions');
+    const hasReason = /non[- ]user[- ]facing|not user[- ]facing|background|system|admin/i.test(outOfScopeSection);
+    if (!hasReason) {
+      failures.push('Non-user-facing plans without EndToEnd must explicitly justify the omission in Out of Scope / Assumptions.');
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateExecutableSteps(content) {
+  const failures = [];
+  const banned = includesAny(content, BANNED_VAGUE_PHRASES);
+  for (const phrase of banned) {
+    failures.push(`Banned vague phrase found: ${phrase}`);
+  }
+
+  for (const line of actionLines(content)) {
+    const lower = line.toLowerCase();
+    const matchedToken = IMPLEMENTATION_TOKENS.find((token) => lower.includes(token));
+    if (matchedToken || hasCamelCaseImplementationToken(line)) {
+      failures.push(`Implementation-heavy wording found in action step: ${line}`);
+    }
+  }
+
+  const missingExpectedScenarios = scenarioBlocks(content)
+    .filter((block) => /(Action:|action:)/.test(block))
+    .filter((block) => !/(Expected:|expected:)/.test(block));
+  if (missingExpectedScenarios.length > 0) {
+    failures.push(`Expected result is missing for ${missingExpectedScenarios.length} scenario(s).`);
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateReviewDelta(content) {
+  const failures = [];
+  const blockingSection = getSection(content, '## Blocking Findings Resolution');
+  const rows = extractTableRows(blockingSection, 5);
+  const explicitNone = /\bnone\b/i.test(blockingSection);
+  if (rows.length === 0 && !explicitNone) {
+    failures.push('## Blocking Findings Resolution must contain at least one finding row or explicit none marker.');
+  }
+
+  const badStatuses = ['partially_resolved', 'not_resolved'];
+  for (const cells of rows) {
+    const status = cells[cells.length - 1];
+    if (badStatuses.includes(status)) {
+      failures.push(`Blocking finding remains unresolved with status: ${status}`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateUnresolvedStepHandling(reviewContent, draftContent, researchArtifacts = []) {
+  const failures = [];
+  const reviewSection = getSection(reviewContent, '## Unresolved Executability Items');
+  if (!hasNonEmptyBullet(reviewSection)) {
+    return { ok: true, failures };
+  }
+
+  const lowerDraft = normalizeContent(draftContent).toLowerCase();
+  if (!lowerDraft.includes('comment:')) {
+    failures.push('Unresolved executability items require an explicit comment in the draft.');
+  }
+  if (!/next action/i.test(draftContent)) {
+    failures.push('Unresolved executability items require a recorded next action.');
+  }
+  if (!/research_executability_/i.test(draftContent) && researchArtifacts.length === 0) {
+    failures.push('Unresolved executability items require linked research artifacts when research was needed.');
+  }
+
+  const unresolvedItems = reviewSection
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2));
+
+  for (const item of unresolvedItems) {
+    const tokens = tokenizeReference(item).slice(0, 3);
+    const matchedTokens = tokens.filter((token) => lowerDraft.includes(token));
+    if (tokens.length > 0 && matchedTokens.length < Math.min(2, tokens.length)) {
+      failures.push(`Draft does not preserve unresolved item context: ${item}`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
