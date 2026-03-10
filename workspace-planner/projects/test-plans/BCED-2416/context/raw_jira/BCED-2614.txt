@@ -1,0 +1,33 @@
+
+  ⭐ Story  ✅ Done  ⌛ Thu, 30 Oct 25  👷 Unassigned  🔑️ BCED-2614  💭 21 comments  🧵 0 linked                     
+                                                                                                                      
+  # Delivery Work Item 4 ｜ Dashboard | WS                                                                            
+                                                                                                                      
+  ⏱️  Thu, 31 Jul 25  🔎 Yan Zhang  🚀   📦 None  🏷️  Moved_DoneInEmbeddingCTC  👀 1 watchers                         
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  PPlease replace this placeholder with the actual stories required to deliver and validate the Feature end-to-end.   
+                                                                                                                      
+  ------------------------ 2 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  BCED-2847 Implementation - 1 •  • Done BCED-2848 Implementation - 2 •  • Done                                       
+                                                                                                                      
+  ------------------------ 21 Comments ------------------------                                                       
+                                                                                                                      
+  Yan Zhang • Fri, 01 Aug 25 • Latest comment                                                                         
+                                                                                                                      
+  Successfully migrated from Rally US628380 https://rally1.rallydev.com/#/search/?keywords=US628380 : Delivery Work   
+  Item 4 ｜ Dashboard | WS                                                                                            
+                                                                                                                      
+  Migration Exceptions:                                                                                               
+                                                                                                                      
+  2025-08-01 12:45:31: Owner email ryu@microstrategy.com mailto:ryu@microstrategy.com not found in Jira. Skipping     
+  setting owner.                                                                                                      
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-2614[0m                                       
+

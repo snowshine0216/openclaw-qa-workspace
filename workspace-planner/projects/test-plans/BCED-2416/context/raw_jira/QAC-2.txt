@@ -1,0 +1,34 @@
+
+  ⭐ Story  ✅ Done  ⌛ Fri, 08 Aug 25  👷 Steven Weber  🔑️ QAC-2  💭 1 comments  🧵 0 linked                        
+                                                                                                                      
+  # End to end test                                                                                                   
+                                                                                                                      
+  ⏱️  Fri, 08 Aug 25  🔎 Yan Zhang  🚀   📦 None  🏷️  None  👀 1 watchers                                             
+                                                                                                                      
+  ------------------------ 1 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  QAC-3 End to end test on WorkStation •  • Done                                                                      
+                                                                                                                      
+  ------------------------ 1 Comments ------------------------                                                        
+                                                                                                                      
+  Yan Zhang • Fri, 08 Aug 25 • Latest comment                                                                         
+                                                                                                                      
+  Successfully migrated from Rally US627370 https://rally1.rallydev.com/#/search/?keywords=US627370 : End to end test 
+                                                                                                                      
+  Migration Exceptions:                                                                                               
+                                                                                                                      
+  2025-08-08 12:23:37: Owner email sxiong@microstrategy.com mailto:sxiong@microstrategy.com not found in Jira.        
+  Skipping                                                                                                            
+  setting owner.                                                                                                      
+                                                                                                                      
+  2025-08-08 12:23:39: Owner email sxiong@microstrategy.com mailto:sxiong@microstrategy.com not found in Jira.        
+  Skipping                                                                                                            
+  setting owner.                                                                                                      
+                                                                                                                      
+  2025-08-08 12:23:40: Sprint not found or Sprint has been closed for S-28-2025. Please check with your DM or update  
+  manually.                                                                                                           
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/QAC-2[0m                                           
+

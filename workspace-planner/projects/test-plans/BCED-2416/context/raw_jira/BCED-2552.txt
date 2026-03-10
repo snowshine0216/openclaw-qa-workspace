@@ -1,0 +1,27 @@
+
+  ⭐ Story  ✅ Done  ⌛ Thu, 30 Oct 25  👷 Xiaoning Cui  🔑️ BCED-2552  💭 3 comments  🧵 0 linked                    
+                                                                                                                      
+  # [WorkStation] Improve Performance via dashboard cache                                                             
+                                                                                                                      
+  ⏱️  Tue, 19 Aug 25  🔎 Yan Zhang  🚀   📦 None  🏷️  Moved_DoneInEmbeddingCTC  👀 1 watchers                         
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  Improve Performance via dashboard cache.                                                                            
+                                                                                                                      
+  ------------------------ 1 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  BCED-2770 test •  • Done                                                                                            
+                                                                                                                      
+  ------------------------ 3 Comments ------------------------                                                        
+                                                                                                                      
+  Yan Zhang • Tue, 16 Sep 25 • Latest comment                                                                         
+                                                                                                                      
+  Rally item ( US630791 https://rally1.rallydev.com/#/search/?keywords=US630791 ) was successfully migrated to Jira.  
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-2552[0m                                       
+

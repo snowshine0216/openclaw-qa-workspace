@@ -1,0 +1,29 @@
+{
+  "feature_id": "BCIN-7289",
+  "requested_source_families": ["jira", "confluence", "background-research"],
+  "jira_key": "BCIN-7289",
+  "confluence_url": "https://microstrategy.atlassian.net/wiki/spaces/~kawang/pages/edit-v2/5949096102",
+  "research_focus": [
+    "Workstation report-editor functionality",
+    "Gap between Library and Workstation for report-editor",
+    "Areas needing special QA attention"
+  ],
+  "phase": 6,
+  "status": "reviewed_and_refactored",
+  "artifacts": [
+    "context/pivot_note.md",
+    "context/jira_raw_evidence_BCIN-7289_report-editor.md",
+    "context/jira_normalized_summary_BCIN-7289_report-editor.md",
+    "context/confluence_source_notes_BCIN-7289_report-editor.md",
+    "context/confluence_normalized_summary_BCIN-7289_report-editor.md",
+    "context/background_research_raw_notes.md",
+    "context/qa_gap_risk_summary.md",
+    "context/context_index_BCIN-7289.md",
+    "context/coverage_ledger_BCIN-7289.md",
+    "context/coverage_gaps_BCIN-7289.md",
+    "context/normalization_summary_BCIN-7289.md",
+    "context/review_qa_plan_BCIN-7289.md",
+    "context/run.json",
+    "drafts/qa_plan_draft_BCIN-7289.md"
+  ]
+}

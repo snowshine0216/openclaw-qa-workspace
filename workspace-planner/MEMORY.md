@@ -35,6 +35,8 @@ _Test planning patterns and best practices._
 
 ## Tool & Task Execution Rules
 
+- **QA plan generation discipline:** NEVER use browser tool or `web_search` for QA plan generation evidence gathering. Use `jira-cli` for Jira, `confluence` for Confluence, and `tavily-search` for deeper domain/background research.
+
 - **Atlassian Data (Jira & Confluence):** MUST use the `jira-cli` skill and `confluence` skill to fetch data. NEVER use `web-fetch`.
 - **GitHub Data:** MUST use the `github` skill to fetch data. NEVER use `web-fetch`.
 - **Figma Data:** Use the browser to view Figma data. If it requires login, pause and ask the user to finish the login process, and then continue.

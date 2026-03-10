@@ -1,0 +1,23 @@
+{
+  "feature_id": "BCED-2416",
+  "phase": 4,
+  "status": "draft_ready",
+  "requested_source_families": ["jira", "confluence", "background-research"],
+  "runtime_checks": {
+    "jira_cli_installed": true,
+    "jira_env_loaded": true,
+    "jira_access_validated": true
+  },
+  "spawn_history": [
+    "bced-2416-jira-evidence",
+    "bced-2416-confluence-evidence",
+    "bced-2416-background-research"
+  ],
+  "notes": [
+    "User corrected tool policy: never use browser/web_search for QA plan generation.",
+    "Use jira-cli for Jira, confluence for Confluence, tavily-search for domain/background research.",
+    "Skill-local .env absent; workspace/root .env provided working Jira auth.",
+    "Context normalization and coverage mapping completed.",
+    "First unified QA plan draft saved under drafts/."
+  ]
+}

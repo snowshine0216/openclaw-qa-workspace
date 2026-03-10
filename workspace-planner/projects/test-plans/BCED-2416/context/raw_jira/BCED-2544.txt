@@ -1,0 +1,65 @@
+
+  ⭐ Story  ✅ Done  ⌛ Thu, 30 Oct 25  👷 Ran Yu  🔑️ BCED-2544  💭 28 comments  🧵 0 linked                         
+                                                                                                                      
+  # [WorkStation] Performance degradation to open dashboard.                                                          
+                                                                                                                      
+  ⏱️  Mon, 18 Aug 25  🔎 Yan Zhang  🚀   📦 None  🏷️  Moved_DoneInEmbeddingCTC  👀 1 watchers                         
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  ENVIRONMENT (Browser, OS, Secure Cloud info, URL, Intelligence Server info, metadata/warehouse info, etc):          
+                                                                                                                      
+  WorkStation Version: 11.5.0800.00823                                                                                
+                                                                                                                      
+  Server: https://mci-1u056-dev.hypernow.microstrategy.com/MicroStrategyLibrary https://mci-1u056-                    
+  dev.hypernow.microstrategy.com/MicroStrategyLibrary ( https://mci-1u056-                                            
+  dev.hypernow.microstrategy.com/MicroStrategyLibrary https://mci-1u056-                                              
+  dev.hypernow.microstrategy.com/MicroStrategyLibrary )                                                               
+                                                                                                                      
+  Credentials: tqmsuser/ddset                                                                                         
+                                                                                                                      
+  Server version: 11.5.0800.0073                                                                                      
+                                                                                                                      
+  STEPS TO REPRODUCE:                                                                                                 
+                                                                                                                      
+  • Connect to the environment https://mci-1u056-dev.hypernow.microstrategy.com/MicroStrategyLibrary https://mci-1u056-
+  dev.hypernow.microstrategy.com/MicroStrategyLibrary ( https://mci-1u056-dev.hypernow.microstrategy.                 
+  com/MicroStrategyLibrary https://mci-1u056-dev.hypernow.microstrategy.com/MicroStrategyLibrary )                    
+  • Search dashboard "Employee Fitness_new" (dashboard link: https://mci-1u056-dev.hypernow.microstrategy.            
+  com/MicroStrategyLibrary/app/B628A31F11E7BD953EAE0080EF0583BD/6E0917F28F436970AFC56DB97BF62F0B) https://mci-1u056-  
+  dev.hypernow.microstrategy.                                                                                         
+  com/MicroStrategyLibrary/app/B628A31F11E7BD953EAE0080EF0583BD/6E0917F28F436970AFC56DB97BF62F0B) ( https://mci-1u056-
+  dev.hypernow.microstrategy.                                                                                         
+  com/MicroStrategyLibrary/app/B628A31F11E7BD953EAE0080EF0583BD/6E0917F28F436970AFC56DB97BF62F0B https://mci-1u056-dev.
+  hypernow.microstrategy.                                                                                             
+  com/MicroStrategyLibrary/app/B628A31F11E7BD953EAE0080EF0583BD/6E0917F28F436970AFC56DB97BF62F0B ))                   
+  • Open the dashboard                                                                                                
+  **Issue Here** : It takes about 13.21s to open this dashboard in 25.08 WorkStation.                                 
+                                                                                                                      
+  Using 25.07 WorkStation, it takes about 8.03s to open the same dashboard                                            
+                                                                                                                      
+  25.08                                                                                                               
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/830098909397/2508.gif]                          
+                                                                                                                      
+  25.07                                                                                                               
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/830098910591/2507.gif]                          
+                                                                                                                      
+  ------------------------ 1 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  BCED-2707 test on 11.5.0800.01008 •  • Done                                                                         
+                                                                                                                      
+  ------------------------ 28 Comments ------------------------                                                       
+                                                                                                                      
+  Yan Zhang • Fri, 22 Aug 25 • Latest comment                                                                         
+                                                                                                                      
+  Rally item ( US629449 https://rally1.rallydev.com/#/search/?keywords=US629449 : [WorkStation] Performance           
+  degradation to open dashboard.) was successfully migrated to Jira. Please check the logs for more details.          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-2544[0m                                       
+

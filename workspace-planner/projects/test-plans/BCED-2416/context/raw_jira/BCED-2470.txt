@@ -1,0 +1,22 @@
+
+  ⭐ Story  ✅ Done  ⌛ Thu, 30 Oct 25  👷 Yang Du  🔑️ BCED-2470  💭 3 comments  🧵 0 linked                         
+                                                                                                                      
+  # [Parent Story] Cross team evaluation                                                                              
+                                                                                                                      
+  ⏱️  Thu, 21 Aug 25  🔎 Yan Zhang  🚀   📦 None  🏷️  Moved_DoneInEmbeddingCTC  👀 1 watchers                         
+                                                                                                                      
+  ------------------------ 3 Comments ------------------------                                                        
+                                                                                                                      
+  Yan Zhang • Wed, 27 Aug 25 • Latest comment                                                                         
+                                                                                                                      
+  Rally item ( US630990 https://rally1.rallydev.com/#/search/?keywords=US630990 : Cross team evaluation) was          
+  successfully migrated to Jira.                                                                                      
+                                                                                                                      
+  Migration Exceptions:                                                                                               
+                                                                                                                      
+  2025-08-27 10:00:46: Iteration not found for Rally item US630990. Skipping setting iteration.                       
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-2470[0m                                       
+

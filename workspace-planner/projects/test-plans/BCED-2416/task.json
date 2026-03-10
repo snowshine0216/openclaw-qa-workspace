@@ -1,0 +1,28 @@
+{
+  "feature_id": "BCED-2416",
+  "requested_source_families": ["jira", "confluence", "background-research"],
+  "jira_key": "BCED-2416",
+  "confluence_url": "https://microstrategy.atlassian.net/wiki/spaces/~kawang/pages/edit-v2/5949096102",
+  "research_focus": [
+    "Workstation report-editor functionality",
+    "Gap between Library and Workstation for report-editor",
+    "Areas needing special QA attention"
+  ],
+  "phase": 4,
+  "status": "draft_ready",
+  "artifacts": [
+    "context/phase0_runtime_check.md",
+    "context/run.json",
+    "context/jira_raw_evidence.json",
+    "context/jira_normalized_summary.md",
+    "context/confluence_source_notes_BCED-2416.md",
+    "context/confluence_normalized_summary_BCED-2416.md",
+    "context/background_research_raw_notes.md",
+    "context/qa_gap_risk_summary.md",
+    "context/context_index_BCED-2416.md",
+    "context/coverage_ledger_BCED-2416.md",
+    "context/coverage_gaps_BCED-2416.md",
+    "context/normalization_summary_BCED-2416.md",
+    "drafts/qa_plan_draft_BCED-2416.md"
+  ]
+}

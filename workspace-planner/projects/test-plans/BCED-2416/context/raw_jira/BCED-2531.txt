@@ -1,0 +1,78 @@
+
+  ⭐ Story  ✅ Done  ⌛ Thu, 30 Oct 25  👷 Ran Yu  🔑️ BCED-2531  💭 30 comments  🧵 0 linked                         
+                                                                                                                      
+  # OAuth/SDK/CC sources failed on Workstation Server based dashboard mode                                            
+                                                                                                                      
+  ⏱️  Mon, 18 Aug 25  🔎 Yan Zhang  🚀   📦 None  🏷️  Blocker, Moved_DoneInEmbeddingCTC  👀 1 watchers                
+                                                                                                                      
+  ------------------------ Description ------------------------                                                       
+                                                                                                                      
+  DESCRIPTION:                                                                                                        
+                                                                                                                      
+  OAuth/SDK/CC sources failed on Workstation Server based dashboard mode                                              
+                                                                                                                      
+  EXPECTED BEHAVIOR:                                                                                                  
+                                                                                                                      
+  ENVIRONMENT (Browser, OS, Secure Cloud info, URL, Intelligence Server info, metadata/warehouse info, etc):          
+                                                                                                                      
+  11.5.0800.0127                                                                                                      
+                                                                                                                      
+  PASS build:                                                                                                         
+  https://nexus.internal.microstrategy.com/content/repositories/releases/com/microstrategy/m2021/workstation-         
+  windows/11.5.0800.00804/                                                                                            
+  https://nexus.internal.microstrategy.com/content/repositories/releases/com/microstrategy/m2021/workstation-         
+  windows/11.5.0800.00804/ (                                                                                          
+  https://nexus.internal.microstrategy.com/content/repositories/releases/com/microstrategy/m2021/workstation-         
+  windows/11.5.0800.00804/                                                                                            
+  https://nexus.internal.microstrategy.com/content/repositories/releases/com/microstrategy/m2021/workstation-         
+  windows/11.5.0800.00804/ )                                                                                          
+                                                                                                                      
+  STEPS TO REPRODUCE:                                                                                                 
+                                                                                                                      
+  • Workstation + library                                                                                             
+  • Dashboards                                                                                                        
+  • OAuth/SDK/CC sources                                                                                              
+  • Issues:                                                                                                           
+      • ## #1： An error pops out when click OAuth sources to login                                                   
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/831004910347/image.png]                         
+                                                                                                                      
+  #- #2：SDK sources go to browser and can't return back to workstation                                               
+                                                                                                                      
+  ##-                                                                                                                 
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/831004910735/image.png]                         
+                                                                                                                      
+  #- #3: Create and Save DBRole on Dashboards reported an error:                                                      
+                                                                                                                      
+  ##-                                                                                                                 
+                                                                                                                      
+  [attachment][Rally url - https://rally1.rallydev.com/slm/attachment/831022504953/image.png]                         
+                                                                                                                      
+  SUPPORTING DOCUMENTATION (Screenshot, video/gif, .mstr file, logs, etc):                                            
+                                                                                                                      
+  Please                                                                                                              
+  clickhereto](https://microstrategy.atlassian.net/wiki/spaces/TECAGILEWORKS/pages/162727022/Defect+Logging+          
+  Guidelines)t                                                                                                        
+  https://microstrategy.atlassian.net/wiki/spaces/TECAGILEWORKS/pages/162727022/Defect+Logging+Guidelines)to) read the
+  full guidelines of logging defects.                                                                                 
+                                                                                                                      
+  ------------------------ 2 Subtasks ------------------------                                                        
+                                                                                                                      
+  SUBTASKS                                                                                                            
+                                                                                                                      
+  BCED-2692 Investigation   •  • Done BCED-2693 Investigation 2 •  • Done                                             
+                                                                                                                      
+  ------------------------ 30 Comments ------------------------                                                       
+                                                                                                                      
+  Yan Zhang • Wed, 27 Aug 25 • Latest comment                                                                         
+                                                                                                                      
+  Rally item ( US630023 https://rally1.rallydev.com/#/search/?keywords=US630023 :  OAuth/SDK/CC sources failed on     
+  Workstation Server based dashboard mode) was successfully migrated to Jira.                                         
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mUse --comments  with jira issue view to load more comments[0m                                                          
+                                                                                                                      
+[0;90m[0m[0;90m[0m  [0;90mView this issue on Jira: https://strategyagile.atlassian.net/browse/BCED-2531[0m                                       
+
