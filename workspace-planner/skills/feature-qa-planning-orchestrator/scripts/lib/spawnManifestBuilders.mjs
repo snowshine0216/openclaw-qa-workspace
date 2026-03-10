@@ -17,7 +17,7 @@ function getPhaseReferenceInstructions(phaseId, skillRoot) {
   const blocks = {
     phase1: `Required references (read before starting):
 - ${ref('reference.md')} — runtime setup and artifact contract
-- ${ref('references/context-coverage-contract.md')} — use "Approved Source Collection Paths"; jira→jira-cli, confluence→confluence, github→github, figma→browser/snapshots. Do not use web fetch for Jira/Confluence/GitHub.`,
+- ${ref('references/context-coverage-contract.md')} — use approved skills: jira→jira-cli, confluence→confluence, github→github, figma→browser/snapshots. Do not use web fetch for Jira/Confluence/GitHub.`,
     phase3: `Required references (read before starting):
 - ${ref('references/context-coverage-contract.md')} — mandatory coverage candidate rules, silent-drop prohibition
 - ${ref('references/context-index-schema.md')} — artifact lookup structure and columns`,

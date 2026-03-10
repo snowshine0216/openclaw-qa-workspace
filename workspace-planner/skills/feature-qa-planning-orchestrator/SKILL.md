@@ -53,7 +53,7 @@ For each phase:
 1. Run `scripts/phaseN.sh <feature-id> <project-dir>`
 2. If stdout includes `SPAWN_MANIFEST: <path>`:
    - read `<path>`
-   - spawn every `requests[].openclaw.args`
+   - spawn every `requests[].openclaw.args` (pass args as-is; do **not** add `streamTo` — it is only supported for `runtime: "acp"`, not for `runtime: "subagent"`)
    - wait for all spawned agents to finish
    - run `scripts/phaseN.sh <feature-id> <project-dir> --post`
 3. If the script exits non-zero, stop immediately
@@ -73,7 +73,7 @@ See `README.md` for the phase-to-reference mapping table.
 - Output:
   - `context/runtime_setup_<feature-id>.md`
   - `context/runtime_setup_<feature-id>.json`
-- User interaction: when `REPORT_STATE` is `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`, present the available options and wait for a user choice
+- User interaction: when `REPORT_STATE` is `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`, present options (full_regenerate, smart_refresh, reuse). After user chooses, run `scripts/apply_user_choice.sh <mode> <feature-id> <project-dir>`. Then: full_regenerate → run phase0; smart_refresh → run phase2; reuse → continue from current phase.
 
 ### Phase 1
 

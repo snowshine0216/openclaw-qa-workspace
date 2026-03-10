@@ -57,6 +57,7 @@ The design must work in both:
 - **Lookup:** Use `clawddocs` skill to fetch current `sessions_spawn` contract (e.g. `tools/subagents`).
 - **Params:** `task` (required), `agentId`, `label`, `mode`, `runtime`, `attachments`, `thread`, `runTimeoutSeconds`.
 - **TUI:** Orchestrator calls `sessions_spawn` with payloads from spawn manifests; waits for subagent completion before proceeding.
+- **streamTo:** Do **not** add `streamTo` when spawning with `runtime: "subagent"`. `streamTo` is supported only for `runtime: "acp"` (ACP harness sessions). Manifests use `runtime: "subagent"`; adding `streamTo` causes spawn failures.
 
 ---
 

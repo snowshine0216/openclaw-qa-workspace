@@ -159,7 +159,7 @@ test('evaluateRuntimeSetup accepts snake_case contract fields', () => {
   assert.equal(result.hasSupportingArtifacts, true);
 });
 
-test('evaluateSpawnPolicy enforces explicit tool bans for jira/confluence/github', () => {
+test('evaluateSpawnPolicy enforces disallowed methods for jira/confluence/github (approved skills)', () => {
   const result = evaluateSpawnPolicy({
     requestedSourceFamilies: ['jira', 'figma'],
     spawnHistory: [

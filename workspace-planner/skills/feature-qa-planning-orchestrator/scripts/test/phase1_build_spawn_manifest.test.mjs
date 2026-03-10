@@ -44,9 +44,11 @@ test('test_success_single_source', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   assert.equal(manifest.requests[0].source.source_family, 'jira');
-  const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
-  assert.ok(task.includes('reference.md'), 'task must reference reference.md');
+  const args = manifest.requests[0].openclaw.args;
+  assert.ok(args.task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
+  assert.ok(args.task.includes('reference.md'), 'task must reference reference.md');
+  assert.equal(args.runtime, 'subagent');
+  assert.ok(!('streamTo' in args), 'openclaw.args must not contain streamTo when runtime is subagent');
   await rm(root, { recursive: true, force: true });
 });
 
@@ -58,8 +60,10 @@ test('test_success_multi_source', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 2);
   assert.deepEqual(manifest.requests.map((item) => item.source.source_family), ['jira', 'confluence']);
-  const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
+  const args = manifest.requests[0].openclaw.args;
+  assert.ok(args.task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
+  assert.equal(args.runtime, 'subagent');
+  assert.ok(!('streamTo' in args), 'openclaw.args must not contain streamTo when runtime is subagent');
   await rm(root, { recursive: true, force: true });
 });
 

@@ -30,19 +30,22 @@ function normalizeAttachments(attachments = []) {
 
 function buildNormalizedRequest(request, index, source, expectedOutputs = []) {
   const label = request.label?.trim() || `spawn-request-${index + 1}`;
+  // sessions_spawn only supports streamTo with runtime:"acp", not with runtime:"subagent".
+  // Do not include streamTo in args; manifests use runtime:"subagent".
+  const args = {
+    task: request.task,
+    agentId: request.agent_id,
+    label,
+    mode: request.mode,
+    runtime: request.runtime,
+    attachments: normalizeAttachments(request.attachments),
+    thread: Boolean(request.thread),
+  };
   return {
     request: { ...request, label, attachments: normalizeAttachments(request.attachments) },
     openclaw: {
       tool: 'sessions_spawn',
-      args: {
-        task: request.task,
-        agentId: request.agent_id,
-        label,
-        mode: request.mode,
-        runtime: request.runtime,
-        attachments: normalizeAttachments(request.attachments),
-        thread: Boolean(request.thread),
-      },
+      args,
     },
     handoff: {
       label,

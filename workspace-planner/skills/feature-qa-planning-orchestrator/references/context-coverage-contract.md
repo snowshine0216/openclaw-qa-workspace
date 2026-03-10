@@ -34,12 +34,13 @@ Every capability family, user journey, and risk discovered during normalization 
 - `Performance`
 - `OutOfScope`
 
-## Approved Source Collection Paths
+## Approved Source Collection Paths (skills, not tools)
 
-- Jira evidence: shared `jira-cli`
-- Confluence evidence: shared `confluence`
-- GitHub evidence: shared `github`
+- Jira evidence: shared `jira-cli` skill
+- Confluence evidence: shared `confluence` skill
+- GitHub evidence: shared `github` skill
 - Figma evidence: browser flow or approved local snapshots
+- Supplementary research: `tavily-search` skill when internal docs are absent
 
 Forbidden for primary system-of-record collection:
 

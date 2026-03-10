@@ -12,10 +12,20 @@
 
 | Value | Meaning | User interaction |
 |---|---|---|
-| `FINAL_EXISTS` | `qa_plan_final.md` already exists | user chooses reuse / refresh / regenerate |
-| `DRAFT_EXISTS` | one or more draft artifacts exist | user chooses resume / refresh / regenerate |
-| `CONTEXT_ONLY` | only context artifacts exist | user chooses generate from cache / re-fetch |
+| `FINAL_EXISTS` | `qa_plan_final.md` already exists | user chooses reuse / smart_refresh / full_regenerate |
+| `DRAFT_EXISTS` | one or more draft artifacts exist | user chooses resume / smart_refresh / full_regenerate |
+| `CONTEXT_ONLY` | only context artifacts exist | user chooses generate from cache / smart_refresh / full_regenerate |
 | `FRESH` | no prior artifacts exist | continue without prompt |
+
+### `selected_mode` (after user choice)
+
+| Value | Effect |
+|---|---|
+| `full_regenerate` | Reset to very beginning. Clear context, drafts, final. Next: Phase 0. |
+| `smart_refresh` | Keep context evidence. Clear drafts and phase 2+ artifacts. Next: Phase 2. |
+| `reuse` / `resume` | Continue from current state. No reset. |
+
+After user chooses, run `scripts/apply_user_choice.sh <mode> <feature-id> <project-dir>` before proceeding.
 
 ### `task.json`
 
@@ -136,13 +146,15 @@ Every manifest uses this shape:
 
 The orchestrator reads `requests[].openclaw.args`, spawns each request, waits for completion, and then runs the phase script with `--post`.
 
+**sessions_spawn contract:** Pass `openclaw.args` to `sessions_spawn` exactly as-is. Do **not** add `streamTo` or other extra fields. `streamTo` is supported only for `runtime: "acp"` (ACP harness sessions), not for `runtime: "subagent"`. Manifests use `runtime: "subagent"`; adding `streamTo` will cause spawn failures.
+
 ## Source Routing
 
-Use only these primary evidence routes:
+Use only these primary evidence skills (not generic tools):
 
-- `jira` -> `jira-cli`
-- `confluence` -> `confluence`
-- `github` -> `github`
+- `jira` -> `jira-cli` skill
+- `confluence` -> `confluence` skill
+- `github` -> `github` skill
 - `figma` -> browser exploration or approved snapshots
 
 Do not substitute browser fetch or generic web fetch for Jira, Confluence, or GitHub primary evidence.
