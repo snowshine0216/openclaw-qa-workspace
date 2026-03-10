@@ -2,9 +2,8 @@
 # validate_context.sh — Verify required context artifacts exist before phase transition
 # Usage: ./validate_context.sh <feature-id> <artifact-name>...
 # Modes:
-#   --resolve-sub-testcases <domain...>
-#   --validate-testcase-structure <file-path>
-#   --validate-testcase-executability <file-path>
+#   --resolve-sub-testcases <domain...>  # compatibility mode for legacy synthesize callers
+#   --validate-testcase-structure <file-path>  # XMindMark validation via markxmind only
 set -euo pipefail
 
 FEATURE_ID="${1:?Usage: validate_context.sh <feature-id> <artifact-name>...}"
@@ -12,7 +11,6 @@ shift
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CONTEXT_DIR="$BASE_DIR/$FEATURE_ID/context"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$BASE_DIR/../skills/feature-qa-planning-orchestrator/scripts/lib"
 
 resolve_latest_sub_testcase() {
   local domain="$1"
@@ -28,14 +26,14 @@ run_child_validator() {
   local label="$1"
   local script_name="$2"
   local file_path="$3"
-  local script_path="$LIB_DIR/$script_name"
+  local script_path="$SCRIPT_DIR/$script_name"
 
   if [ ! -f "$script_path" ]; then
     echo "VALIDATOR_MISSING: $script_name"
     exit 1
   fi
 
-  if ! bash "$script_path" "$FEATURE_ID" "$file_path"; then
+  if ! bash "$script_path" "$file_path"; then
     echo "${label}_FAILED: $file_path"
     exit 1
   fi
@@ -55,12 +53,6 @@ case "${1:-}" in
     shift
     run_child_validator "STRUCTURE" "validate_testcase_structure.sh" "${1:?Missing file path for structure validation}"
     echo "CONTEXT_OK — testcase structure valid"
-    exit 0
-    ;;
-  --validate-testcase-executability)
-    shift
-    run_child_validator "EXECUTABILITY" "validate_testcase_executability.sh" "${1:?Missing file path for executability validation}"
-    echo "CONTEXT_OK — testcase executability valid"
     exit 0
     ;;
   '')

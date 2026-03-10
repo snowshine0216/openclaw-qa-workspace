@@ -8,7 +8,7 @@ FEATURE_ID="${1:?Usage: save_context.sh <feature-id> <artifact-name> <content-or
 ARTIFACT_NAME="${2:?Missing artifact name}"
 CONTENT_OR_FILE="${3:?Missing content or file path}"
 
-# Script runs from projects/feature-plan/scripts/ (orchestrator copies from lib/ at Phase 1)
+# Script runs from projects/feature-plan/scripts/ after runtime deployment from scripts/lib/
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CONTEXT_DIR="$BASE_DIR/$FEATURE_ID/context"
 mkdir -p "$CONTEXT_DIR"

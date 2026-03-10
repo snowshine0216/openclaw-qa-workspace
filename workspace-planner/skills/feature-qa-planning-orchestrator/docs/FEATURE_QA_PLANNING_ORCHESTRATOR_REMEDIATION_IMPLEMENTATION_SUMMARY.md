@@ -91,16 +91,82 @@ Updated:
   - active-vs-archive docs assertions
   - remediation-era artifact and source-routing assertions
 
+## Changelog — 2026-03-10 follow-up hardening
+
+### Workflow contract hardening
+- Made source-family context gathering explicit in `SKILL.md` core invariants and Phase 1.
+- Required one dedicated context-gathering sub-agent per requested source family when multiple source families are present.
+- Added fail-closed routing rules so Jira/Confluence/GitHub primary evidence cannot be replaced by browser scraping or generic web fetch.
+- Added source-specific Phase 1 sub-agent contracts for Jira, Confluence, GitHub, and Figma.
+- Added source-specific completion standards so a source gather is not considered done just because it returned some files.
+
+### Phase 0 / Phase 1 runtime enforcement
+- Strengthened Phase 0 runtime setup rules to require:
+  - canonical required skill/path per source family
+  - availability validation
+  - auth/access validation
+  - explicit route approval
+- Updated Phase 1 to validate both:
+  - `evaluateSpawnPolicy({ requestedSourceFamilies, spawnHistory })`
+  - `evaluateEvidenceCompleteness({ requestedSourceFamilies, spawnHistory, hasSupportingArtifacts })`
+- Added Phase 1 remediation rules so recovery is source-local by default and preserves already-valid artifacts.
+
+### Validator and test hardening (`scripts/lib/contextRules.mjs`)
+- Expanded `APPROVED_SOURCE_RULES` from a single approved skill to `approvedSkills` plus additional enforcement metadata.
+- Tightened `evaluateRuntimeSetup(...)` to validate:
+  - duplicate/missing setup entries
+  - canonical skill routing
+  - pass status
+  - availability validation
+  - auth validation
+  - explicit route approval
+  - primary/supporting reference classification
+  - presence of at least one primary reference
+- Tightened `evaluateSpawnPolicy(...)` to validate:
+  - exactly one dedicated spawn per requested source family
+  - canonical approved skill per source family
+  - explicit browser/web-fetch bans where required
+  - completed status
+  - artifact-path presence
+- Added `evaluateSourceArtifactCompleteness(...)` for per-source artifact checks.
+- Added `evaluateEvidenceCompleteness(...)` for requested-source completeness checks.
+- Added supporting-artifact enforcement so declared supporting artifacts require `supporting_artifact_summary_<FEATURE_ID>.md`.
+
+### Supporting-artifact model
+- Added explicit supporting-artifact rules to `SKILL.md`.
+- Clarified that the primary feature spec remains authoritative for workflow and scope.
+- Required supporting artifacts to be used for risk-learning, regression hardening, parity gaps, and negative coverage.
+- Added guardrail that supporting artifacts must not silently redefine feature scope without user confirmation.
+- Added canonical artifact `context/supporting_artifact_summary_<feature-id>.md` when supporting artifacts are part of the requested evidence set.
+
+### State contract and naming consistency
+- Added `has_supporting_artifacts` to both `task.json` and `run.json` required fields.
+- Updated the state update rule so supporting-artifact state changes require both state files to be updated.
+- Added naming convention note:
+  - `camelCase` for JavaScript/runtime fields
+  - `snake_case` for persisted state fields
+- Wired `hasSupportingArtifacts` through the documented Phase 0 and Phase 1 examples in `SKILL.md`.
+
+### Test coverage follow-up
+- Updated `tests/contextRules.test.mjs` to cover:
+  - stricter runtime setup requirements
+  - dedicated spawn enforcement
+  - artifact completeness per source family
+  - supporting-artifact summary enforcement
+  - primary/supporting classification requirements
+  - snake_case compatibility where applicable
+
 ## Validation run
 
 Ran:
 
 - `npm test`
+- `node --test skills/feature-qa-planning-orchestrator/tests/contextRules.test.mjs`
 
 Result:
 
-- `42` tests passed
-- `0` tests failed
+- Initial broad validation run: `42` tests passed, `0` tests failed
+- Follow-up targeted validator/runtime test run: `17` tests passed, `0` tests failed
 
 ## Active docs after cleanup
 

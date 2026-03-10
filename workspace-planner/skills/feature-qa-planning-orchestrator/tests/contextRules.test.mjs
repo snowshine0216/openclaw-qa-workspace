@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   evaluateRuntimeSetup,
   evaluateSpawnPolicy,
+  evaluateSourceArtifactCompleteness,
+  evaluateEvidenceCompleteness,
   collectRequiredGithubUrls,
   collectRequiredIssueKeys,
   evaluateGithubFetch,
@@ -73,19 +75,28 @@ test('extractIssueKeysFromText honors project prefix filter', () => {
 
 test('getApprovedSourceRule returns shared-skill routing for system-of-record sources', () => {
   assert.deepEqual(getApprovedSourceRule('jira'), {
-    approvedSkill: 'jira-cli',
+    approvedSkills: ['jira-cli'],
     allowsBrowserFetch: false,
     allowsGenericWebFetch: false,
+    requiresDedicatedSpawn: true,
+    requiresAvailabilityValidation: true,
+    requiresAuthValidation: true,
   });
   assert.deepEqual(getApprovedSourceRule('confluence'), {
-    approvedSkill: 'confluence',
+    approvedSkills: ['confluence'],
     allowsBrowserFetch: false,
     allowsGenericWebFetch: false,
+    requiresDedicatedSpawn: true,
+    requiresAvailabilityValidation: true,
+    requiresAuthValidation: true,
   });
   assert.deepEqual(getApprovedSourceRule('github'), {
-    approvedSkill: 'github',
+    approvedSkills: ['github'],
     allowsBrowserFetch: false,
     allowsGenericWebFetch: false,
+    requiresDedicatedSpawn: true,
+    requiresAvailabilityValidation: true,
+    requiresAuthValidation: true,
   });
 });
 
@@ -93,13 +104,29 @@ test('evaluateRuntimeSetup rejects missing or wrong source-family setup entries'
   const result = evaluateRuntimeSetup({
     requestedSourceFamilies: ['jira', 'confluence', 'github'],
     setupEntries: [
-      { sourceFamily: 'jira', approvedSkill: 'jira-cli', status: 'pass' },
-      { sourceFamily: 'confluence', approvedSkill: 'browser', status: 'pass' },
+      {
+        sourceFamily: 'jira',
+        approvedSkill: 'jira-cli',
+        status: 'pass',
+        availabilityValidation: 'jira me',
+        authValidation: 'jira me',
+        routeApproved: true,
+        referenceClassifications: ['primary'],
+      },
+      {
+        sourceFamily: 'confluence',
+        approvedSkill: 'browser',
+        status: 'pass',
+        availabilityValidation: 'manual',
+        authValidation: 'manual',
+        routeApproved: true,
+        referenceClassifications: ['supporting'],
+      },
     ],
   });
 
   assert.equal(result.ok, false);
-  assert.match(result.failures.join('\n'), /confluence must use confluence/i);
+  assert.match(result.failures.join('\n'), /confluence must use one of \[confluence\]/i);
   assert.match(result.failures.join('\n'), /missing runtime setup entry for source family: github/i);
 });
 
@@ -107,53 +134,216 @@ test('evaluateRuntimeSetup accepts snake_case contract fields', () => {
   const result = evaluateRuntimeSetup({
     requestedSourceFamilies: ['jira', 'confluence'],
     setupEntries: [
-      { source_family: 'jira', approved_skill: 'jira-cli', status: 'pass' },
-      { source_family: 'confluence', approved_skill: 'confluence', status: 'pass' },
+      {
+        source_family: 'jira',
+        approved_skill: 'jira-cli',
+        status: 'pass',
+        availability_validation: 'jira me',
+        auth_validation: 'jira me',
+        route_approved: true,
+        reference_classifications: ['primary'],
+      },
+      {
+        source_family: 'confluence',
+        approved_skill: 'confluence',
+        status: 'pass',
+        availability_validation: 'confluence access',
+        auth_validation: 'confluence access',
+        route_approved: true,
+        reference_classifications: ['supporting'],
+      },
     ],
   });
 
   assert.equal(result.ok, true);
+  assert.equal(result.hasSupportingArtifacts, true);
 });
 
 test('evaluateSpawnPolicy enforces explicit tool bans for jira/confluence/github', () => {
   const result = evaluateSpawnPolicy({
+    requestedSourceFamilies: ['jira', 'figma'],
     spawnHistory: [
       {
         sourceFamily: 'jira',
         approvedSkill: 'jira-cli',
         artifactPaths: ['context/jira.md'],
+        status: 'completed',
         disallowedTools: ['generic web fetch'],
       },
       {
         sourceFamily: 'figma',
         approvedSkill: 'browser-or-approved-local-snapshot',
         artifactPaths: ['context/figma.md'],
+        status: 'completed',
         disallowedTools: [],
       },
     ],
   });
 
   assert.equal(result.ok, false);
-  assert.match(result.failures.join('\n'), /jira must explicitly disallow browser use/i);
+  assert.match(result.failures.join('\n'), /jira must explicitly disallow browser fetch\/scraping/i);
+});
+
+test('evaluateSpawnPolicy enforces one dedicated spawn per requested source family', () => {
+  const result = evaluateSpawnPolicy({
+    requestedSourceFamilies: ['jira', 'confluence'],
+    spawnHistory: [
+      {
+        sourceFamily: 'jira',
+        approvedSkill: 'jira-cli',
+        artifactPaths: ['context/jira.md'],
+        status: 'completed',
+        disallowedTools: ['browser fetch', 'generic web fetch'],
+      },
+      {
+        sourceFamily: 'jira',
+        approvedSkill: 'jira-cli',
+        artifactPaths: ['context/jira-2.md'],
+        status: 'completed',
+        disallowedTools: ['browser fetch', 'generic web fetch'],
+      },
+    ],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /jira must have exactly one dedicated spawn, got 2/i);
+  assert.match(result.failures.join('\n'), /confluence must have exactly one dedicated spawn, got 0/i);
 });
 
 test('evaluateSpawnPolicy accepts snake_case contract fields', () => {
   const result = evaluateSpawnPolicy({
+    requestedSourceFamilies: ['jira', 'figma'],
     spawnHistory: [
       {
         source_family: 'jira',
         approved_skill: 'jira-cli',
         artifact_paths: ['context/jira.md'],
-        disallowed_tools: ['browser', 'generic web fetch'],
+        status: 'completed',
+        disallowed_tools: ['browser fetch', 'generic web fetch'],
       },
       {
         source_family: 'figma',
         approved_skill: 'browser-or-approved-local-snapshot',
         artifact_paths: ['context/figma.md'],
+        status: 'completed',
         disallowed_tools: ['generic web fetch'],
       },
     ],
   });
 
   assert.equal(result.ok, true);
+});
+
+test('evaluateSourceArtifactCompleteness rejects missing required jira artifacts', () => {
+  const result = evaluateSourceArtifactCompleteness({
+    sourceFamily: 'jira',
+    artifactPaths: ['context/jira_issue_BCED-2416.md'],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /jira_related_issues_<FEATURE_ID>\.md/i);
+});
+
+test('evaluateSourceArtifactCompleteness accepts complete github artifacts', () => {
+  const result = evaluateSourceArtifactCompleteness({
+    sourceFamily: 'github',
+    artifactPaths: [
+      'context/github_diff_BCED-2416.md',
+      'context/github_traceability_BCED-2416.md',
+    ],
+  });
+
+  assert.equal(result.ok, true);
+});
+
+test('evaluateEvidenceCompleteness enforces required artifacts per requested source family', () => {
+  const result = evaluateEvidenceCompleteness({
+    requestedSourceFamilies: ['jira', 'confluence', 'github', 'figma'],
+    spawnHistory: [
+      {
+        sourceFamily: 'jira',
+        artifactPaths: [
+          'context/jira_issue_BCED-2416.md',
+          'context/jira_related_issues_BCED-2416.md',
+        ],
+      },
+      {
+        sourceFamily: 'confluence',
+        artifactPaths: ['context/confluence_design_BCED-2416.md'],
+      },
+      {
+        sourceFamily: 'github',
+        artifactPaths: ['context/github_diff_BCED-2416.md'],
+      },
+      {
+        sourceFamily: 'figma',
+        artifactPaths: ['context/figma/figma_metadata_BCED-2416.md'],
+      },
+    ],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /github_traceability_<FEATURE_ID>\.md/i);
+});
+
+test('evaluateEvidenceCompleteness requires supporting artifact summary when supporting artifacts are declared', () => {
+  const result = evaluateEvidenceCompleteness({
+    requestedSourceFamilies: ['jira'],
+    hasSupportingArtifacts: true,
+    spawnHistory: [
+      {
+        sourceFamily: 'jira',
+        artifactPaths: [
+          'context/jira_issue_BCED-2416.md',
+          'context/jira_related_issues_BCED-2416.md',
+        ],
+      },
+    ],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /supporting_artifact_summary_<FEATURE_ID>\.md/i);
+});
+
+test('evaluateEvidenceCompleteness accepts snake_case artifact path fields', () => {
+  const result = evaluateEvidenceCompleteness({
+    requestedSourceFamilies: ['jira', 'figma'],
+    hasSupportingArtifacts: true,
+    spawnHistory: [
+      {
+        source_family: 'jira',
+        artifact_paths: [
+          'context/jira_issue_BCED-2416.md',
+          'context/jira_related_issues_BCED-2416.md',
+          'context/supporting_artifact_summary_BCED-2416.md',
+        ],
+      },
+      {
+        source_family: 'figma',
+        artifact_paths: ['context/figma/figma_metadata_BCED-2416.md'],
+      },
+    ],
+  });
+
+  assert.equal(result.ok, true);
+});
+
+test('evaluateRuntimeSetup requires at least one primary reference classification', () => {
+  const result = evaluateRuntimeSetup({
+    requestedSourceFamilies: ['jira'],
+    setupEntries: [
+      {
+        sourceFamily: 'jira',
+        approvedSkill: 'jira-cli',
+        status: 'pass',
+        availabilityValidation: 'jira me',
+        authValidation: 'jira me',
+        routeApproved: true,
+        referenceClassifications: ['supporting'],
+      },
+    ],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /at least one primary reference/i);
 });

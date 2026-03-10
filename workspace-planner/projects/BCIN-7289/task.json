@@ -1,0 +1,38 @@
+{
+  "feature_id": "BCIN-7289",
+  "run_key": "2026-03-10T12-48-00-asia-shanghai",
+  "overall_status": "in_progress",
+  "current_phase": "Phase 5 - structured review complete",
+  "report_state": "FRESH",
+  "selected_mode": "fresh_run",
+  "requested_source_families": [
+    "jira_primary",
+    "jira_supportive_precedent",
+    "product_docs_research",
+    "confluence_target"
+  ],
+  "completed_source_families": [
+    "jira_primary",
+    "jira_supportive_precedent",
+    "product_docs_research"
+  ],
+  "spawn_plan": [],
+  "artifacts": [
+    "context/jira_issue_BCIN-7289.md",
+    "context/jira_issue_BCED-2416_summary.md",
+    "context/research_workstation_library_report_editor_gap.md",
+    "context/context_index_BCIN-7289.md",
+    "context/coverage_ledger_BCIN-7289.md",
+    "context/coverage_gaps_BCIN-7289.md",
+    "context/e2e_journey_map_BCIN-7289.md",
+    "drafts/qa_plan_v1.md",
+    "context/review_qa_plan_BCIN-7289.md",
+    "context/review_rewrite_requests_BCIN-7289.md",
+    "context/review_delta_BCIN-7289.md"
+  ],
+  "latest_draft_version": 1,
+  "latest_review_version": 1,
+  "latest_validation_version": 0,
+  "created_at": "2026-03-10T12:48:00+08:00",
+  "updated_at": "2026-03-10T12:48:00+08:00"
+}

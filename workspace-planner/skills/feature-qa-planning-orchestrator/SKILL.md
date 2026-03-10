@@ -28,6 +28,8 @@ Always use:
 - Phase 7 is the only user approval checkpoint before promotion to `qa_plan_final.md`.
 - Runtime state, artifact naming, phase gates, and source-routing rules are owned by `reference.md`.
 - All artifacts live under `projects/feature-plan/<feature-id>/`.
+- Context gathering is source-family based. When multiple source families are requested, spawn one dedicated context-gathering sub-agent per source family; do not merge Jira, Confluence, GitHub, and Figma gathering into one mixed agent.
+- Primary system-of-record evidence must use the canonical skill path for that source family. Do not substitute browser scraping or generic web fetch for Jira, Confluence, or GitHub evidence collection.
 
 ## Required inputs
 
@@ -37,6 +39,19 @@ Always use:
 - optional Confluence URL
 - optional GitHub PR or compare URLs
 - optional Figma URL or approved snapshots
+- optional supporting-artifact references (for example: related Jira issues, legacy incidents, prior regressions, design spikes, postmortems)
+
+## Supporting-artifact rules
+
+Supporting artifacts are not the main feature specification. They are auxiliary evidence used to harden regression scope, surface historical failure modes, and prevent known gaps from recurring.
+
+Use these rules:
+- Treat the primary feature spec as the authority for in-scope behavior, user workflow, and intended deliverables.
+- Treat supporting artifacts as mandatory risk-learning inputs when the user provides them or when they are explicitly required by the task.
+- Do not let a supporting artifact redefine the main feature scope unless the user explicitly confirms that scope change.
+- Extract lessons, historical defects, related-issue patterns, parity gaps, and regression risks from supporting artifacts.
+- Save supporting-artifact summaries under `context/` before using them in plan writing.
+- In the final QA plan, use supporting artifacts to expand regression coverage, edge cases, parity checks, and negative-path validation — not to silently replace the main feature workflow.
 
 ## Canonical output path
 
@@ -79,12 +94,22 @@ Runtime scripts are deployed to `projects/feature-plan/scripts/` once in Phase 0
 
    ```js
    import { evaluateRuntimeSetup } from 'projects/feature-plan/scripts/contextRules.mjs';
-   const result = evaluateRuntimeSetup({ requestedSourceFamilies, setupEntries });
+   const runtimeSetup = evaluateRuntimeSetup({ requestedSourceFamilies, setupEntries });
+   const { ok, hasSupportingArtifacts, failures } = runtimeSetup;
    ```
 
-   If `result.ok` is false, mark `task.json.overall_status = "blocked"` and stop. Do not enter Phase 1.
+   `setupEntries` must record, for each requested source family:
+   - the canonical required skill/path (`jira-cli`, `confluence`, `github`, or browser/approved snapshot for `figma`)
+   - how availability was validated
+   - how auth/access was validated
+   - whether the route is approved
+   - any blockers or missing prerequisites
 
-6. Write `context/runtime_setup_<feature-id>.md` recording: requested source families, approved skill or access path per family, validation method used, pass/fail result, and any blockers.
+   If `ok` is false, or if any requested Jira/Confluence/GitHub source family lacks its canonical skill route, mark `task.json.overall_status = "blocked"` and stop. Do not enter Phase 1. Fail closed; do not substitute browser or generic fetch paths for primary evidence.
+
+   Persist `hasSupportingArtifacts` into run state so Phase 1 evidence-completeness checks know whether a supporting-artifact summary is required.
+
+6. Write `context/runtime_setup_<feature-id>.md` recording: requested source families, canonical required skill or access path per family, validation method used, auth/access check result, pass/fail result, whether supporting artifacts are present, and any blockers.
 7. Update `task.json.current_phase = "phase_0_runtime_setup"` and `task.json.report_state`. Update `updated_at` on every write.
 
 ### Phase gate
@@ -98,26 +123,129 @@ Do not enter Phase 1 unless:
 
 ## Phase 1 — Evidence gathering
 
-For each requested source family, spawn one bounded context-gathering sub-agent:
+### Mandatory source-family split
+
+If more than one source family is requested, spawn one dedicated context-gathering sub-agent per source family. Do not combine Jira, Confluence, GitHub, and Figma gathering into a single mixed agent. For complex feature QA planning, prefer the per-source sub-agent pattern even when only one source family is requested.
+
+### Canonical source routing
+
+Use these routes only:
+- `jira` -> `jira-cli` skill
+- `confluence` -> `confluence` skill
+- `github` -> `github` skill
+- `figma` -> browser-based exploration or approved local snapshots
+
+Forbidden for primary Jira/Confluence/GitHub evidence:
+- browser fetch/scraping
+- generic web fetch
+- substituting a different source-family skill because it happens to be available
+
+### Spawn contracts
+
+Spawn a bounded context-gathering sub-agent for each requested source family. Use the source-specific contract below instead of a generic mixed-source prompt.
+
+#### Jira context-gathering sub-agent
 
 ```
 skill: feature-qa-planning-orchestrator
 instructions: |
-  Role: context-gathering agent for source family <SOURCE_FAMILY>.
+  Role: context-gathering agent for source family jira.
 
-  Approved skill path: <jira-cli | confluence | github | browser-use>.
-  Disallowed tools for jira/confluence/github: browser fetch, generic web fetch.
+  Required skill path: jira-cli.
+  Forbidden: browser fetch, generic web fetch, or any non-Jira primary evidence path.
 
   Task:
-  - Use only the approved skill path to fetch evidence for feature_id: <FEATURE_ID>.
+  - Use only jira-cli to fetch evidence for feature_id: <FEATURE_ID>.
+  - Distinguish between the primary Jira feature spec and any Jira supporting artifacts.
+  - Gather the main issue plus testing-relevant related Jira evidence: description, acceptance criteria, linked issues, parent/epic when applicable, and testing-relevant issue references surfaced in comments.
   - Save every raw artifact immediately after fetch using:
       bash projects/feature-plan/scripts/save_context.sh <FEATURE_ID> <artifact-name> <content>
-  - Save per-source summaries to context/:
-      jira   → jira_issue_<FEATURE_ID>.md (main + linked issues)
-      confluence → confluence_design_<FEATURE_ID>.md
-      github → github_diff_<FEATURE_ID>.md, github_traceability_<FEATURE_ID>.md
-      figma  → figma/figma_metadata_<FEATURE_ID>.md
-  - Do not hand off until all required artifacts for this source family exist on disk under context/.
+  - Save required Jira summaries to context/:
+      jira_issue_<FEATURE_ID>.md
+      jira_related_issues_<FEATURE_ID>.md
+  - When a Jira issue is a supporting artifact rather than the primary feature spec, extract and save risk/lesson findings focused on historical defects, related-issue patterns, parity gaps, and regression scope hardening.
+  - Do not let supporting-artifact Jira content silently redefine the main feature scope without explicit user confirmation.
+  - Do not hand off until required Jira artifacts exist on disk under context/.
+  - Forbidden: do not produce or return analysis before artifacts are saved.
+
+  Completion standard:
+  - Incomplete unless the main issue summary, related-issues summary, and any required parent/epic roll-up are saved.
+  - Supporting-artifact Jira runs are also incomplete unless the saved summary clearly labels the artifact as supporting and includes extracted lessons or regression risks.
+
+  Output contract: return the list of saved artifact paths when done.
+```
+
+#### Confluence context-gathering sub-agent
+
+```
+skill: feature-qa-planning-orchestrator
+instructions: |
+  Role: context-gathering agent for source family confluence.
+
+  Required skill path: confluence.
+  Forbidden: browser fetch, generic web fetch, or Jira/GitHub substitution for primary Confluence evidence.
+
+  Task:
+  - Use only the confluence skill to fetch evidence for feature_id: <FEATURE_ID>.
+  - Gather the requested design/spec page and any directly-linked design pages that are necessary to understand workflow, scope, or UI expectations.
+  - Save every raw artifact immediately after fetch using:
+      bash projects/feature-plan/scripts/save_context.sh <FEATURE_ID> <artifact-name> <content>
+  - Save required Confluence summaries to context/:
+      confluence_design_<FEATURE_ID>.md
+  - Capture scope, non-scope, workflow expectations, UI/state expectations, and ambiguities needing clarification.
+  - Do not hand off until required Confluence artifacts exist on disk under context/.
+  - Forbidden: do not produce or return analysis before artifacts are saved.
+
+  Completion standard:
+  - Incomplete unless the page summary, workflow summary, scope/non-scope notes, and open ambiguities are saved.
+
+  Output contract: return the list of saved artifact paths when done.
+```
+
+#### GitHub context-gathering sub-agent
+
+```
+skill: feature-qa-planning-orchestrator
+instructions: |
+  Role: context-gathering agent for source family github.
+
+  Required skill path: github.
+  Forbidden: browser fetch, generic web fetch, or Jira/Confluence substitution for primary GitHub evidence.
+
+  Task:
+  - Use only the github skill to fetch evidence for feature_id: <FEATURE_ID>.
+  - Gather PR overview, changed files, diffs, and testing-relevant GitHub references discovered from Jira or Confluence artifacts.
+  - Save every raw artifact immediately after fetch using:
+      bash projects/feature-plan/scripts/save_context.sh <FEATURE_ID> <artifact-name> <content>
+  - Save required GitHub summaries to context/:
+      github_diff_<FEATURE_ID>.md
+      github_traceability_<FEATURE_ID>.md
+  - Capture risk hotspots, boundary changes, and requirement-to-code traceability.
+  - Do not hand off until required GitHub artifacts exist on disk under context/.
+  - Forbidden: do not produce or return analysis before artifacts are saved.
+
+  Completion standard:
+  - Incomplete unless the PR summary, changed-areas summary, risk summary, and traceability notes are saved.
+
+  Output contract: return the list of saved artifact paths when done.
+```
+
+#### Figma context-gathering sub-agent
+
+```
+skill: feature-qa-planning-orchestrator
+instructions: |
+  Role: context-gathering agent for source family figma.
+
+  Required path: browser-based exploration or approved local snapshots.
+
+  Task:
+  - Gather only the visual/UI evidence needed for workflow, state, copy, and interaction expectations.
+  - Save every raw artifact immediately after fetch using:
+      bash projects/feature-plan/scripts/save_context.sh <FEATURE_ID> <artifact-name> <content>
+  - Save required Figma summaries to context/:
+      figma/figma_metadata_<FEATURE_ID>.md
+  - Do not hand off until required Figma artifacts exist on disk under context/.
   - Forbidden: do not produce or return analysis before artifacts are saved.
 
   Output contract: return the list of saved artifact paths when done.
@@ -129,14 +257,42 @@ After all spawns complete:
 
   ```js
   import { evaluateSpawnPolicy } from 'projects/feature-plan/scripts/contextRules.mjs';
-  const result = evaluateSpawnPolicy({ spawnHistory });
+  const result = evaluateSpawnPolicy({ requestedSourceFamilies, spawnHistory });
   ```
 
   If `result.ok` is false, stop and report failures.
 
+- Validate evidence completeness using `contextRules.mjs` `evaluateEvidenceCompleteness`:
+
+  ```js
+  import { evaluateEvidenceCompleteness } from 'projects/feature-plan/scripts/contextRules.mjs';
+  const completeness = evaluateEvidenceCompleteness({
+    requestedSourceFamilies,
+    spawnHistory,
+    hasSupportingArtifacts,
+  });
+  ```
+
+  If `completeness.ok` is false, stop and report failures. Evidence is not complete just because some files exist; each requested source family must produce its required artifact set, and supporting-artifact runs must also produce the saved supporting summary when applicable.
+
+### Phase 1 remediation rules
+
+If Phase 1 fails, remediate surgically instead of restarting the whole evidence-gathering step.
+
+- Re-fetch only the failing source family when the failure is isolated to one domain.
+- Keep already-valid artifacts for source families that passed routing, spawn-policy, and evidence-completeness validation.
+- Do not delete or overwrite good source artifacts just because another source family failed.
+- If the failure is routing-related, re-run that source family using its canonical skill path and mark the prior evidence invalid.
+- If the failure is artifact-completeness-related, re-run only the missing or incomplete source family and save the missing required artifacts.
+- After remediation, update `run.json.spawn_history` and re-run both:
+  - `evaluateSpawnPolicy({ requestedSourceFamilies, spawnHistory })`
+  - `evaluateEvidenceCompleteness({ requestedSourceFamilies, spawnHistory, hasSupportingArtifacts })`
+- Do not enter Phase 2 until both validators pass after remediation.
+- Escalate to the user only when remediation is blocked by missing access, missing required inputs, or repeated validator failure after one targeted retry.
+
 ### Phase gate
 
-Do not enter Phase 2 unless every required source family is retrieved through its approved access path and persisted under `context/`.
+Do not enter Phase 2 unless every required source family is retrieved through its approved access path, persisted under `context/`, and passes source-specific artifact completeness validation.
 
 ---
 
@@ -213,11 +369,14 @@ instructions: |
 
   Source priority for drafting each section:
     Confluence → main behavior and workflow
-    Jira       → repro fixtures and missing coverage
+    Jira       → repro fixtures, supporting-artifact lessons, and missing coverage
     GitHub     → edge cases, boundaries, performance-sensitive risk
     Figma      → copy, visible state, user-flow detail
 
   Rules:
+  - Use the primary feature spec to define core in-scope workflow.
+  - Use supporting artifacts to harden regression scope, parity checks, and risk-based negative coverage.
+  - Do not let supporting artifacts silently replace the main workflow or broaden scope beyond what the user requested.
   - Do not merge must_stand_alone scenario units from scenario_units_<FEATURE_ID>.md.
   - Produce: projects/feature-plan/<FEATURE_ID>/drafts/qa_plan_v1.md in valid XMindMark.
   - Do not save the draft until markxmind structure validation passes.
