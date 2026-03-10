@@ -1,0 +1,345 @@
+<h1>Comprehensive QA Plan: BCIN-6709 — Improve Report Error Handling for Continued Editing</h1><p /><h2>📊 Summary</h2><p /><table><tbody>
+<tr><th>Field</th><th>Value</th></tr>
+<tr><td><strong>Feature Link</strong></td><td><a href="https://strategyagile.atlassian.net/browse/BCIN-6709">BCIN-6709</a></td></tr>
+<tr><td><strong>Release Version</strong></td><td>26.04 (2026-04-17)</td></tr>
+<tr><td><strong>Priority</strong></td><td>Highest (P0)</td></tr>
+<tr><td><strong>QA Owner</strong></td><td>Xue Yin</td></tr>
+<tr><td><strong>SE Owner</strong></td><td>Wei (Irene) Jiang</td></tr>
+<tr><td><strong>SE Design Link</strong></td><td><a href="https://microstrategy.atlassian.net/wiki/spaces/~yuanli/pages/5901516841/BCIN-6709+Improve+the+behavior+for+end+user+to+allow+continued+operations+on+report+in+Library+after+error+happens">Design Doc</a></td></tr>
+<tr><td><strong>UX Design Link</strong></td><td>N/A</td></tr>
+<tr><td><strong>GitHub Changes</strong></td><td>4 repos, 24 files, ~1300+ lines</td></tr>
+<tr><td><strong>Date Generated</strong></td><td>2026-02-28</td></tr>
+<tr><td><strong>Plan Status</strong></td><td>Draft v2 (Reviewed & Approved)</td></tr>
+<tr><td><strong>Story Points</strong></td><td>4.0</td></tr>
+<tr><td><strong>Labels</strong></td><td>Library_Report, Library_and_Dashboards</td></tr>
+</tbody></table><p /><h2>📝 Background</h2><p /><h3>1. Key Problem Statement</h3><p /><strong>Current Pain Point:</strong>  
+When MicroStrategy report instances encounter errors during manipulation (e.g., "Maximum rows exceeded", manipulation failures), the report instance <strong>crashes</strong> and becomes completely unusable. Users are <strong>forced to exit</strong> back to Library home, <strong>losing all unsaved edits</strong>. This requires them to re-open the report and start over from scratch.<p /><strong>Business Impact:</strong>  
+This behavior has generated <strong>4 customer escalations</strong>:
+<ul>
+<li>JFE Steel Corporation (CS1002664)</li>
+<li>MAXIMUS, Inc. (CS0997473)</li>
+<li>MOCOCO, Inc. (CS0987755)</li>
+<li>Riso Kagaku Corporation (CS0991930)</li>
+</ul><p /><h3>2. Solution</h3><p /><strong>Intelligent Error Recovery System:</strong><p />Instead of forcing navigation away, the system will:<p /><li><strong>Recreate the server document instance</strong> behind the scenes when a manipulation crashes it</li>
+<li><strong>Return the user to a safe working state</strong> (Pause Mode or Prompt) with a clear, actionable error message</li>
+<li><strong>Preserve user context intelligently</strong>:</li>
+   - Keep undo/redo history for <strong>normal manipulation errors</strong> (user can undo the failed operation)
+   - Clear undo/redo history for <strong>modeling service errors</strong> (data structure changed, old commands invalid)
+   - Preserve <strong>prompt answers</strong> on prompt-related errors
+<li><strong>Clean up request queues</strong> to prevent subsequent operations from hanging</li>
+<li><strong>Display helpful error messages</strong> explaining what happened and how to proceed</li><p /><strong>Technical Implementation (4 Repositories):</strong><p /><table><tbody>
+<tr><th>Repository</th><th>Key Changes</th><th>Purpose</th></tr>
+<tr><td><strong>react-report-editor</strong></td><td>14 files (~1200 lines)</td><td>Error recovery orchestration, undo/redo management, UI state handling</td></tr>
+<tr><td><strong>mojojs</strong></td><td>2 files (+5 lines)</td><td>Request queue cleanup, conditional undo/redo reset</td></tr>
+<tr><td><strong>biweb</strong></td><td>3 files (+22 lines)</td><td>Server-side <code>NoActionMode</code> configuration to support recovery</td></tr>
+<tr><td><strong>web-dossier</strong></td><td>5 files (+84 lines)</td><td>Prompt error handling, preserve prompt context</td></tr>
+</tbody></table><p /><h3>3. Business Context</h3><p /><ul>
+<li><strong>User Impact</strong>: Report authors can continue editing after errors without losing work → <strong>improved productivity</strong>, reduced frustration</li>
+<li><strong>Technical Scope</strong>: MicroStrategy Library <strong>report authoring mode only</strong> (consumption mode out of scope)</li>
+<li><strong>Dependencies</strong>: F43454 (cancel prompt answer and back to prompt feature)</li>
+<li><strong>Success Metrics</strong>: Reduction in customer escalations related to report error handling</li>
+</ul><p /><hr /><p /><h2>🎯 QA Goals</h2><p /><h3>1. E2E: End to End</h3><p /><ul>
+<li>Verify complete error recovery workflows from error trigger to successful continuation</li>
+<li>Validate seamless transitions between Pause Mode, Running Mode, and Prompt states</li>
+<li>Test integration across all 4 repositories (react-report-editor, mojojs, biweb, web-dossier)</li>
+<li>Confirm error recovery preserves overall report editing session integrity</li>
+<li>Validate multi-step user workflows: open report → manipulate → error → recover → continue editing</li>
+</ul><p /><h3>2. FUN: Functionality</h3><p /><ul>
+<li>Validate all 4 primary error scenarios:</li>
+</ul>
+  1. Pause Mode → Resume Data Retrieval failure
+  2. Running Mode → Normal manipulation failure
+  3. Running Mode → Modeling service manipulation failure
+  4. Prompt answer → Get instance failure
+<ul>
+<li>Verify report instance recreation succeeds and restores correct state</li>
+<li>Test undo/redo conditional logic (preserve vs clear based on error type)</li>
+<li>Validate request queue cleanup (<code>cancelRequests()</code> prevents hanging)</li>
+<li>Confirm error message display with actionable guidance</li>
+<li>Test NoActionMode configuration from biweb server</li>
+<li>Verify prompt answer preservation on error</li>
+</ul><p /><h3>3. UX: User Experience</h3><p /><ul>
+<li>Verify users remain on report editing page (not navigated to Library home)</li>
+<li>Test error dialog/overlay displays clearly during recovery</li>
+<li>Validate document view does not show empty grid after recovery</li>
+<li>Confirm undo/redo buttons behave correctly post-recovery</li>
+<li>Test error messages are user-friendly and actionable</li>
+<li>Verify smooth transition back to Pause Mode or Prompt (no jarring UX)</li>
+<li>Validate visual feedback during recovery process</li>
+</ul><p /><h3>4. PERF: Performance</h3><p /><ul>
+<li>Measure error recovery time (target: < 3 seconds for instance recreation)</li>
+<li>Test repeated error/recovery cycles for memory leaks</li>
+<li>Validate no performance degradation after multiple recoveries</li>
+<li>Monitor server-side instance recreation overhead</li>
+<li>Test rapid sequential errors (race condition prevention)</li>
+</ul><p /><h3>5. SEC: Security</h3><p /><ul>
+<li>Verify error recovery doesn't expose sensitive instance data</li>
+<li>Test that NoActionMode configuration is correctly scoped (no unauthorized access)</li>
+<li>Validate error messages don't leak internal system details</li>
+<li>Confirm instance recreation maintains same authorization context</li>
+</ul><p /><h3>6. ACC: Accessibility</h3><p /><ul>
+<li>Verify error dialog is accessible via screen readers</li>
+<li>Test keyboard navigation during and after error recovery</li>
+<li>Validate focus management when returning to Pause Mode/Prompt</li>
+<li>Ensure error messages meet WCAG 2.1 AA standards</li>
+</ul><p /><h3>7. CER: Platform Certifications</h3><p /><ul>
+<li>Test across all deployment types:</li>
+</ul>
+  - MCE (AWS, Azure) — VM
+  - MEP (OnPrem) — OnPrem
+  - MCG (FedRAMP) — Container
+  - MCE (GCP) — Container
+  - VMWare Tanzu — Container
+  - CMC — Container
+  - MCP — VM
+<ul>
+<li>Verify browser compatibility: Chrome, Firefox, Safari, Edge</li>
+</ul><p /><h3>8. UPG: Upgrade and Compatibility</h3><p /><ul>
+<li>Verify feature works with existing reports (no migration needed)</li>
+<li>Test backward compatibility: reports created before this feature still work</li>
+<li>Validate no impact on embedded SDK reports</li>
+<li>Confirm consumption mode is unaffected (feature scoped to authoring only)</li>
+</ul><p /><h3>9. INT: Internationalization</h3><p /><ul>
+<li>Test error messages display correctly in all supported languages</li>
+<li>Verify error dialog localization</li>
+</ul><p /><h3>10. AUTO: Automation</h3><p /><ul>
+<li>Automate critical error recovery paths (P0 scenarios)</li>
+<li>Create integration tests spanning all 4 repositories</li>
+<li>Build regression suite for undo/redo state management</li>
+<li>Automate prompt error recovery tests</li>
+</ul><p /><hr /><p /><h2>🧪 Test Key Points</h2><p /><h3>1. Pause Mode → Resume Data Retrieval Failure (Crashed Instance)</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>shared-recover-from-error.ts</code>: <code>reCreateReportInstanceThunkHelper</code></td><td><strong>TC-01</strong>: User in Pause Mode → clicks "Resume Data Retrieval" → <code>rebuildDocument</code> manipulation fails with "Maximum rows exceeded"</td><td>Error dialog displayed → user clicks OK → returns to <strong>Pause Mode</strong> (not Library home) → all previous manipulations preserved → can adjust settings and retry</td></tr>
+<tr><td>P0</td><td><code>undo-redo-util.ts</code>: Conditional reset logic</td><td><strong>TC-02</strong>: After TC-01 recovery, verify undo/redo state</td><td>If error caused by <strong>normal manipulation</strong>: undo/redo history <strong>preserved</strong> → user can undo previous operations<br>If error caused by <strong>modeling service manipulation</strong>: undo/redo history <strong>cleared</strong></td></tr>
+<tr><td>P0</td><td><code>mojojs/ServerProxy.js</code>: <code>cancelRequests()</code></td><td><strong>TC-03</strong>: After TC-01 error, verify no hanging requests</td><td>Click "Resume Data Retrieval" again → new request sends successfully (not blocked by previous error)</td></tr>
+<tr><td>P0</td><td><code>recreate-error-catcher.tsx</code>: Error boundary component</td><td><strong>TC-04</strong>: Verify error UI during recovery</td><td>Error overlay/message displays during instance recreation → "Recovering..." indicator shown → overlay dismisses on completion</td></tr>
+<tr><td>P0</td><td><code>document-view.tsx</code>: Prevent re-render</td><td><strong>TC-05</strong>: Verify grid view is not empty after recovery</td><td>After returning to Pause Mode, document view shows correct content (not empty <code><div id="mojo-report"></div></code>)</td></tr>
+<tr><td>P1</td><td><code>UICmdMgr.js</code>: <code>isReCreateReportInstance</code> flag</td><td><strong>TC-06</strong>: Rapid clicks on "Resume Data Retrieval" during recovery</td><td>Only one recovery executes → no race condition → subsequent clicks ignored until recovery completes</td></tr>
+<tr><td>P1</td><td>Full flow</td><td><strong>TC-07</strong>: User modifies Advanced Properties (Results Set Row Limit) in Pause Mode → clicks Resume → fails</td><td>Instance recreated → returns to Pause Mode → undo/redo <strong>cleared</strong> (modeling service error) → user adjusts row limit → Resume succeeds</td></tr>
+</tbody></table><p /><h3>2. Running Mode → Normal Manipulation Failure</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>reCreateReportInstanceThunkHelper</code></td><td><strong>TC-08</strong>: User in Running Mode → applies filter → manipulation fails</td><td>Error displayed → instance recreated → returns to <strong>Pause Mode</strong> → undo/redo <strong>preserved</strong> → user can undo the failed filter</td></tr>
+<tr><td>P0</td><td><code>doc-view-slice.ts</code>: <code>reRenderDocView</code> flag</td><td><strong>TC-09</strong>: After TC-08 recovery, verify document view re-renders</td><td>Document view updates to show correct state (not stuck on old view)</td></tr>
+<tr><td>P0</td><td><code>RootController.js</code>: <code>isReCreateReportInstance=true</code></td><td><strong>TC-10</strong>: After TC-08 recovery, verify undo/redo buttons enabled</td><td>Undo/redo buttons functional → user can undo previous successful manipulations</td></tr>
+<tr><td>P1</td><td>Full flow</td><td><strong>TC-11</strong>: User performs multiple manipulations → last one fails</td><td>Recovery triggered → undo/redo preserved → undo stack contains all successful operations before the failed one</td></tr>
+</tbody></table><p /><h3>3. Running Mode → Modeling Service Manipulation Failure</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>report-def-slice.ts</code>: Modeling service flag</td><td><strong>TC-12</strong>: User modifies Advanced Properties → <code>PUT /api/model/reports/{id}</code> succeeds → <code>rebuildDocument</code> fails</td><td>Error displayed → instance recreated → undo/redo <strong>cleared</strong> (data structure changed) → returns to Pause Mode</td></tr>
+<tr><td>P0</td><td><code>RWManipulationImpl.java</code>: NoActionMode config</td><td><strong>TC-13</strong>: Verify server sets <code>NoActionMode=true</code> for specific errors</td><td>Server response includes <code>NoActionMode: true</code> → client does not force navigation → recovery proceeds</td></tr>
+<tr><td>P0</td><td><code>undo-redo-util.ts</code>: Reset on modeling error</td><td><strong>TC-14</strong>: After TC-12 recovery, verify undo history is empty</td><td>No undo/redo actions available → user starts fresh</td></tr>
+<tr><td>P1</td><td>Related: BCIN-974</td><td><strong>TC-15</strong>: User adds attribute causing Cartesian join error</td><td>Error displayed → recovery → undo/redo cleared → user can adjust report structure</td></tr>
+<tr><td>P1</td><td>Related: BCIN-6485</td><td><strong>TC-16</strong>: User removes attribute used in filter (modeling service error)</td><td>Instance does <strong>NOT crash</strong> → user can continue editing → grid view displays normally</td></tr>
+<tr><td>P0</td><td>Design doc §2.2</td><td><strong>TC-16a</strong>: User modifies report structure → <code>updateTemplate</code> manipulation fails (distinct from <code>rebuildDocument</code>)</td><td>Error displayed → user clicks "Resume Data Retrieval" → UI correctly reverts → undo/redo cleared (modeling service error)</td></tr>
+<tr><td>P1</td><td><code>service.ts</code>: Modeling service functions</td><td><strong>TC-16b</strong>: User saves report via <code>saveInstance</code> → modeling service error occurs</td><td>Error displayed → recovery triggered → undo/redo cleared → user can adjust and retry</td></tr>
+<tr><td>P1</td><td><code>service.ts</code>: Modeling service functions</td><td><strong>TC-16c</strong>: Create new instance via <code>createInstance</code> → error occurs</td><td>Error displayed → graceful recovery or clear error message</td></tr>
+<tr><td>P1</td><td><code>doc-view-slice.ts</code>: Flag cleanup</td><td><strong>TC-16d</strong>: Trigger modeling service error (undo/redo cleared) → recover → trigger normal manipulation error</td><td>Second error preserves undo/redo (verifies <code>isModelingServiceManipulation</code> flag was properly reset to <code>false</code>)</td></tr>
+<tr><td>P1</td><td>Design doc §2.2.2 Issue 4</td><td><strong>TC-16e</strong>: User adds attribute → error occurs → recovery with undo → undo the add</td><td>Attribute removed from both grid <strong>and</strong> report definition panel (verify report data updated after <code>stid="-1"</code> undo success)</td></tr>
+<tr><td>P1</td><td>Related: BCIN-6706</td><td><strong>TC-16f</strong>: SQL failure error (8004da03 or similar)</td><td>Error displayed → recovery to Pause Mode → undo/redo handling correct</td></tr>
+<tr><td>P1</td><td>Related: BCEN-4129</td><td><strong>TC-16g</strong>: MDX/ODBC error</td><td>Error displayed → recovery to Pause Mode → undo/redo handling correct</td></tr>
+</tbody></table><p /><h3>4. Prompt Error Handling (Back to Prompt with Preserved Answers)</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>web-dossier/promptActionCreators.js</code>: <code>applyReportPromptAnswersFailure</code></td><td><strong>TC-17</strong>: User answers prompt → prompt submission succeeds → <code>GET /api/dossiers/{id}/instances/{id}</code> fails</td><td>Error displayed → user returns to <strong>prompt dialog</strong> → <strong>previous answers preserved</strong> → user can re-submit or adjust</td></tr>
+<tr><td>P0</td><td><code>ErrorObjectTransform.js</code>: Error code mapping</td><td><strong>TC-18</strong>: Verify prompt-related error codes mapped correctly</td><td>Error code from server correctly identified as prompt error → triggers prompt recovery flow (not generic error)</td></tr>
+<tr><td>P0</td><td><code>ActionLinkContainer/index.js</code>: Action link handling</td><td><strong>TC-19</strong>: User in nested prompt (prompt-in-prompt) → error occurs</td><td>Returns to correct prompt level → previous answers preserved</td></tr>
+<tr><td>P1</td><td>Full flow</td><td><strong>TC-20</strong>: User answers multiple prompts sequentially → last one fails</td><td>Returns to last prompt → all previous prompt answers preserved → report does not reload</td></tr>
+<tr><td>P1</td><td>Related: F43454</td><td><strong>TC-21</strong>: User cancels prompt answer after error recovery</td><td>Prompt cancellation works correctly → no instance corruption</td></tr>
+<tr><td>P0</td><td>Design doc §2.3.3</td><td><strong>TC-21a</strong>: Verify prompt recovery sends correct server flags</td><td>Network inspector shows: <code>killJob=true</code>, <code>isCancelPromptAnswer=true</code>, <code><os>5</os></code>, <code><ri></code> with <code>fg=32768</code> (DssXmlInboxDeleteOnlyGetJobList)</td></tr>
+</tbody></table><p /><h3>5. Request Queue Management & Concurrent Errors</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>mojojs/ServerProxy.js</code>: <code>cancelRequests()</code></td><td><strong>TC-22</strong>: Manipulation error triggers recovery → verify <code>existingRequests</code> cleaned</td><td><code>holdRequests</code> flag set to false → subsequent requests proceed normally</td></tr>
+<tr><td>P0</td><td><code>VisualInsightAppBase.js</code>: App state management</td><td><strong>TC-23</strong>: User clicks "Resume" → error → immediately clicks "Resume" again</td><td>First request cleaned up → second request sends without being blocked</td></tr>
+<tr><td>P1</td><td>Race condition</td><td><strong>TC-24</strong>: Trigger multiple errors in rapid succession</td><td>Only one recovery executes at a time → no state corruption → final state is consistent</td></tr>
+<tr><td>P1</td><td>Concurrent operations</td><td><strong>TC-25</strong>: Trigger error during in-progress manipulation</td><td>Pending operations handled cleanly → no orphaned requests</td></tr>
+</tbody></table><p /><h3>6. Error Recovery Engine Robustness</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td><code>recreate-report-error.ts</code>: Core recovery logic</td><td><strong>TC-26</strong>: Instance recreation itself fails</td><td>Graceful fallback → error message shown → user advised to reload or contact support (not infinite loop)</td></tr>
+<tr><td>P0</td><td>Full flow</td><td><strong>TC-27</strong>: User triggers same error repeatedly (3+ times)</td><td>Recovery succeeds each time → no memory leaks → no state accumulation</td></tr>
+<tr><td>P1</td><td>Edge case</td><td><strong>TC-28</strong>: Error occurs immediately after page load (no undo history)</td><td>Recovery succeeds → empty undo/redo state handled gracefully</td></tr>
+<tr><td>P1</td><td>Edge case</td><td><strong>TC-29</strong>: Error during document view re-render</td><td>Recovery aborts gracefully → no React rendering error</td></tr>
+<tr><td>P1</td><td>Network timeout</td><td><strong>TC-30</strong>: Simulate slow/timeout network during recovery API call</td><td>Timeout handled → user shown timeout error → can retry</td></tr>
+<tr><td>P0</td><td>Design doc §2.3.2</td><td><strong>TC-30a</strong>: Verify server-side instance recreation protocol</td><td>Network inspector or server logs show undo manipulation sent with: <code>stid="-1"</code>, <code>noActionMode: true</code>, <code>resolveExecution: true</code>, <code><os>8</os></code> without <code><ri></code></td></tr>
+<tr><td>P0</td><td>Design doc §2.4.1</td><td><strong>TC-30b</strong>: Verify <code>reCreateInstance</code> API payload field</td><td>Request body to <code>POST /{id}/instances/{instanceId}/manipulations</code> includes <code>reCreateInstance</code> field when recovery triggered</td></tr>
+<tr><td>P1</td><td><code>doc-view-slice.ts</code></td><td><strong>TC-30c</strong>: Verify <code>reRenderDocView</code> flag behavior</td><td>Running Mode error sets <code>reRenderDocView=true</code> → document view re-renders. Pause Mode error does not set flag → no re-render</td></tr>
+<tr><td>P1</td><td><code>VisualInsightAppBase.js</code></td><td><strong>TC-30d</strong>: Verify <code>appState</code> transitions</td><td>Running Mode error recovery sets <code>mstrApp.appState = DEFAULT</code> → triggers correct document view update</td></tr>
+</tbody></table><p /><h3>7. Scope Boundary & Regression Testing</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td>Feature scope</td><td><strong>TC-31</strong>: Trigger error in <strong>consumption mode</strong> (out of scope)</td><td>Traditional error handling (no recovery) → feature does <strong>not</strong> activate</td></tr>
+<tr><td>P0</td><td>Regression</td><td><strong>TC-32</strong>: Normal report editing workflow (no errors)</td><td>All normal operations work as before → no performance degradation</td></tr>
+<tr><td>P0</td><td>Regression</td><td><strong>TC-33</strong>: Undo/redo in normal operation (no error)</td><td>Undo/redo functions correctly for all manipulation types</td></tr>
+<tr><td>P1</td><td>Regression</td><td><strong>TC-34</strong>: Prompt/reprompt in normal operation (no error)</td><td>Prompt flows work as before → no side effects</td></tr>
+<tr><td>P1</td><td>Regression</td><td><strong>TC-35</strong>: Save report after error recovery</td><td>Report saves successfully → recovered state persists</td></tr>
+<tr><td>P1</td><td>Regression</td><td><strong>TC-36</strong>: Embedded SDK reports</td><td>No impact on embedded reports → error recovery does not interfere with SDK</td></tr>
+</tbody></table><p /><h3>8. Error Message & UI Validation</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Related Code Change</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td>Error dialog</td><td><strong>TC-37</strong>: Verify error message text for each error type</td><td>Messages are user-friendly, actionable, and explain next steps</td></tr>
+<tr><td>P0</td><td>Error dialog / Design doc §3.4</td><td><strong>TC-38</strong>: Verify error code mapping matrix — <strong>ERR001 (APPLICATION)</strong></td><td>"Maximum number of rows exceeded" → return to Pause Mode</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38a</strong>: <strong>ENGINE_ERROR (8004da65)</strong> — Revert report error</td><td>Analytical engine failed → recovery to Pause Mode</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38b</strong>: <strong>ENGINE_ERROR (8004da22)</strong> — ACTION_FAILED</td><td>Analytical engine failed → recovery to Pause Mode</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38c</strong>: <strong>ENGINE_ERROR (8004da08, 8004da0b)</strong> — Unsupported Report Type</td><td>"This report type is not supported" → cannot open report (no recovery)</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38d</strong>: <strong>ENGINE_ERROR (8004da03)</strong> — Duplicate</td><td>Analytical engine failed → recovery to Pause Mode</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38e</strong>: <strong>ERR008 (MSG_RESULT_NOT_READY)</strong></td><td>"An error has occurred while sending a server action" → prompt user to reopen report (no recovery)</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38f</strong>: <strong>TYPE_ERROR / REFERENCE (CRITICAL)</strong></td><td>"Application code error" / "React render failed" → verify these do NOT trigger recovery (critical errors should fail)</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38g</strong>: <strong>ERR004 (RESOURCE_NOT_FOUND)</strong></td><td>"Server failed to return object" → verify error handling (no recovery)</td></tr>
+<tr><td>P0</td><td>Error code matrix</td><td><strong>TC-38h</strong>: <strong>API_ERROR_CODE_MAP (prompt)</strong></td><td>"One or more datasets not loaded" → back to prompt</td></tr>
+<tr><td>P1</td><td>UI state</td><td><strong>TC-39</strong>: Verify no empty grid after recovery (Issue 3 fix)</td><td>Document view shows correct content, not <code><div class=""><div id="mojo-report"></div></div></code></td></tr>
+<tr><td>P1</td><td>Accessibility</td><td><strong>TC-40</strong>: Test error dialog with screen reader</td><td>Error message announced correctly, focus moves to OK button</td></tr>
+</tbody></table><p /><h3>9. Integration Testing (Cross-Repo)</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Integration</th><th>Test Key Points</th><th>Expected Results</th></tr>
+<tr><td>P0</td><td>react-report-editor ↔ mojojs</td><td><strong>TC-41</strong>: Verify <code>isReCreateReportInstance</code> flag propagates correctly</td><td>Flag passed from React → mojo → RootController → UICmdMgr → conditional undo/redo reset works</td></tr>
+<tr><td>P0</td><td>react-report-editor ↔ biweb</td><td><strong>TC-42</strong>: Verify <code>NoActionMode</code> flag received and respected</td><td>Server sends <code>NoActionMode=true</code> → client reads it → recovery proceeds (does not force navigation)</td></tr>
+<tr><td>P0</td><td>react-report-editor ↔ web-dossier</td><td><strong>TC-43</strong>: Verify prompt error triggers React recovery flow</td><td>web-dossier error code → React error handler → prompt recovery → preserved answers</td></tr>
+<tr><td>P1</td><td>All 4 repos</td><td><strong>TC-44</strong>: End-to-end test with all repos deployed</td><td>Deploy full stack → trigger each error type → verify recovery across full integration</td></tr>
+</tbody></table><p /><h3>10. Performance & Memory</h3><p /><table><tbody>
+<tr><th>Priority</th><th>Test Key Points</th><th>Expected Results</th><th>Measurement Method</th></tr>
+<tr><td>P0</td><td>Error recovery time</td><td>Instance recreation completes in < 3 seconds (p95)</td><td>Measure from error trigger to "returned to Pause Mode"</td></tr>
+<tr><td>P1</td><td>Repeated recovery cycles</td><td>No memory leaks after 10+ error/recovery cycles</td><td>Chrome DevTools memory profiler</td></tr>
+<tr><td>P1</td><td>Request queue overhead</td><td>No significant performance impact from <code>cancelRequests()</code></td><td>Measure response time before/after</td></tr>
+</tbody></table><p /><hr /><p /><h2><ac:emoticon ac:name="warning" /> Risk & Mitigation</h2><p /><h3>1. Technical Risks</h3><p /><table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Code/Design Reference</th></tr>
+<tr><td><strong>Race condition in concurrent errors</strong></td><td>Critical</td><td>Medium</td><td>Test rapid sequential errors → verify single recovery executes → queue subsequent errors</td><td><code>recreate-report-error.ts</code>, TC-24</td></tr>
+<tr><td><strong>Undo/redo state corruption</strong> — wrong decision on preserve vs clear</td><td>High</td><td>Medium</td><td>Validate error type classification → test both normal and modeling service scenarios → verify <code>isReCreateReportInstance</code> flag</td><td><code>undo-redo-util.ts</code>, <code>RootController.js</code>, TC-02, TC-10, TC-14</td></tr>
+<tr><td><strong>Request queue deadlock</strong> — <code>holdRequests</code> not cleared</td><td>High</td><td>Medium</td><td>Test error → recovery → new manipulation cycle → verify no hanging requests</td><td><code>ServerProxy.js</code>, TC-22, TC-23</td></tr>
+<tr><td><strong>Document view empty grid after recovery</strong> (Issue 3)</td><td>High</td><td>Medium</td><td>Verify <code><ReCreateErrorCatcher></code> component prevents re-render → test TC-05, TC-39</td><td><code>document-view.tsx</code>, <code>recreate-error-catcher.tsx</code></td></tr>
+<tr><td><strong>Cross-repo flag propagation mismatch</strong></td><td>High</td><td>Medium</td><td>Integration testing across all 4 repos → verify flag semantics consistent</td><td>TC-41, TC-42, TC-43, TC-44</td></tr>
+<tr><td><strong>Memory leaks in error catcher</strong></td><td>Medium</td><td>Low</td><td>Repeated error/recovery cycles → monitor memory usage</td><td>TC-27, Performance TC</td></tr>
+<tr><td><strong>Instance recreation API fails</strong></td><td>Critical</td><td>Low</td><td>Test error recovery failure fallback → verify graceful degradation</td><td>TC-26</td></tr>
+<tr><td><strong>Prompt answers lost on error</strong></td><td>High</td><td>Medium</td><td>Test TC-17, TC-19, TC-20 → verify preservation across error types</td><td><code>promptActionCreators.js</code></td></tr>
+</tbody></table><p /><h3>2. Data Risks</h3><p /><table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Code/Design Reference</th></tr>
+<tr><td><strong>User edits lost during recovery</strong></td><td>Critical</td><td>Low</td><td>Preserve edits in React state → test TC-01, TC-08 → verify no data loss</td><td><code>doc-view-slice.ts</code>, <code>report-def-slice.ts</code></td></tr>
+<tr><td><strong>Report state inconsistency after recovery</strong></td><td>High</td><td>Medium</td><td>Test save after recovery (TC-35) → verify state integrity</td><td>Full integration</td></tr>
+</tbody></table><p /><h3>3. UX Risks</h3><p /><table><tbody>
+<tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th><th>Design Reference</th></tr>
+<tr><td><strong>Confusing error messages</strong></td><td>Medium</td><td>High</td><td>UX review of all error text → user testing → TC-37, TC-38</td><td>Error dialog design</td></tr>
+<tr><td><strong>User doesn't understand recovery state</strong></td><td>Medium</td><td>Medium</td><td>Clear "Recovering..." indicator → test TC-04</td><td><code>recreate-error-catcher.tsx</code></td></tr>
+<tr><td><strong>Jarring transition back to Pause Mode</strong></td><td>Low</td><td>Medium</td><td>Smooth animation/transition → visual feedback</td><td>UX polish</td></tr>
+</tbody></table><p /><hr /><p /><h2>📎 Consolidated Reference Data</h2><p /><h3>1. Source Documents</h3><p /><strong>Design & Requirements:</strong>
+<ul>
+<li><a href="https://strategyagile.atlassian.net/browse/BCIN-6709">BCIN-6709 Jira Issue</a></li>
+<li><a href="https://microstrategy.atlassian.net/wiki/spaces/~yuanli/pages/5901516841/BCIN-6709+Improve+the+behavior+for+end+user+to+allow+continued+operations+on+report+in+Library+after+error+happens">Confluence Design Doc</a></li>
+<li>Related Issues: BCIN-974, BCIN-6485, BCIN-6706, BCEN-4129, BCEN-4843, BCIN-6922</li>
+<li>Dependency: F43454 (cancel prompt answer feature)</li>
+</ul><p /><strong>Implementation:</strong>
+<ul>
+<li>react-report-editor: <code>m2021...revertReport</code> branch (14 files, ~1200 lines)</li>
+<li>mojojs: <code>m2021...revertReport</code> branch (2 files, +5 lines)</li>
+<li>biweb: <code>m2021...revertReport</code> branch (3 files, +22 lines)</li>
+<li>web-dossier: <code>m2021...revertReport</code> branch (5 files, +84 lines)</li>
+</ul><p /><h3>2. Stakeholders</h3><p /><ul>
+<li><strong>SE Owner</strong>: Wei (Irene) Jiang — Technical design</li>
+<li><strong>QA Owner</strong>: Xue Yin — Test strategy and execution</li>
+<li><strong>Product Manager</strong>: Lumin Huang — Requirements and business approval</li>
+<li><strong>Assignee</strong>: Wei (Irene) Jiang — Implementation</li>
+</ul><p /><h3>3. Test Data</h3><p /><strong>Test Reports Needed:</strong><p /><table><tbody>
+<tr><th>Report Type</th><th>Condition</th><th>Purpose</th></tr>
+<tr><td>Normal report with many rows</td><td>Exceeds "Results Set Row Limit"</td><td>Test ERR001 exceed rows scenario (TC-01)</td></tr>
+<tr><td>Report with Cartesian join</td><td>BCIN-974 type error</td><td>Test ENGINE_ERROR recovery (TC-15)</td></tr>
+<tr><td>Report with SQL failure</td><td>BCIN-6706 type error</td><td>Test SQL failure recovery</td></tr>
+<tr><td>Report with MDX</td><td>BCEN-4129 type error</td><td>Test MDX/ODBC error recovery</td></tr>
+<tr><td>Report with prompts</td><td>Prompt answer causes error</td><td>Test prompt error recovery (TC-17)</td></tr>
+<tr><td>Report with reprompt</td><td>Reprompt answer causes error</td><td>Test reprompt flow</td></tr>
+<tr><td>Report with filter using attribute</td><td>Remove attribute used in filter</td><td>Test modeling service non-crash error (TC-16)</td></tr>
+<tr><td>Report with advanced properties</td><td>Modify Results Set Row Limit to cause error</td><td>Test running mode manipulation error (TC-12)</td></tr>
+</tbody></table><p /><strong>Test Environment:</strong>
+<ul>
+<li>MicroStrategy Library (authoring mode)</li>
+<li>Intelligence Server with report execution capability</li>
+<li>All deployment types: VM (MCE, MEP, MCP), Container (MCG, Tanzu, CMC)</li>
+<li>Browsers: Chrome, Firefox, Safari, Edge</li>
+</ul><p /><strong>Test Accounts:</strong>
+<ul>
+<li>Standard user account with report authoring permissions</li>
+</ul><p /><strong>Test Report Objects</strong> (from design doc):<p /><table><tbody>
+<tr><th>Test Object ID</th><th>Purpose</th><th>Related TC</th></tr>
+<tr><td>BCIN-6922 normal report</td><td>Row limit exceeded testing</td><td>TC-01, TC-07</td></tr>
+<tr><td>BCIN-974 report</td><td>Cartesian join error (addingattribute causing join conflicts)</td><td>TC-15</td></tr>
+<tr><td>BCIN-6706 report</td><td>SQL failure error testing</td><td>TC-16f</td></tr>
+<tr><td>BCEN-4129 report</td><td>MDX/ODBC error testing</td><td>TC-16g</td></tr>
+<tr><td>BCIN-6485 report</td><td>Modeling service non-crash error (remove attribute used in filter)</td><td>TC-16</td></tr>
+<tr><td>Custom test report</td><td>Prompt scenarios (for TC-17–TC-21)</td><td>Prompt testing</td></tr>
+</tbody></table><p /><strong>Environment URLs</strong> (replace with actual test environment):
+<ul>
+<li>Test Environment: <code>https://tec-l-[environment-id].labs.microstrategy.com/MicroStrategyLibrary</code></li>
+<li>Example from design doc: <code>http://localhost:8001/MicroStrategyLibrary/app/config/A1C7555FE67448E7B5464FC574D4482C/B7CA92F04B9FAE8D941C3E9B7E0CD754/B30381168A4907792593F5BCAD03AE4A/edit</code></li>
+</ul><p /><h3>4. Dependencies</h3><p /><ul>
+<li><strong>Node.js</strong> 22.x <ac:emoticon ac:name="tick" /> — Frontend runtime</li>
+<li><strong>MicroStrategy Intelligence Server</strong> <ac:emoticon ac:name="tick" /> — Report execution</li>
+<li><strong>Modeling Service</strong> <ac:emoticon ac:name="tick" /> — Report definition modifications</li>
+<li><strong>F43454</strong> <ac:emoticon ac:name="warning" /> — Cancel prompt answer and back to prompt feature (status unknown)</li>
+</ul><p /><hr /><p /><h2>🎯 Sign-off Checklist</h2><p /><h3>1. Development Team</h3><p /><ul>
+<li>[ ] All 4 repos code reviewed and merged</li>
+<li>[ ] Unit tests passing for new files (<code>recreate-error-catcher.tsx</code>, <code>recreate-report-error.ts</code>, <code>shared-recover-from-error.ts</code>)</li>
+<li>[ ] Integration tests between repos passing</li>
+<li>[ ] Documentation updated (error recovery flow, API changes)</li>
+<li>[ ] No high-severity linter errors</li>
+</ul><p /><h3>2. QA Team</h3><p /><ul>
+<li>[ ] All P0 tests executed and passed (TC-01 to TC-38h mandatory, including new v2 additions)</li>
+<li>[ ] All P1 tests executed (90%+ passed, including TC-16a–TC-16g, TC-21a, TC-30a–TC-30d)</li>
+<li>[ ] All error code matrix tests passed (TC-38 through TC-38h)</li>
+<li>[ ] Server-side protocol verification completed (TC-30a, TC-30b)</li>
+<li>[ ] No critical bugs open (P0 severity)</li>
+<li>[ ] No high bugs open in error recovery flow (P1 severity)</li>
+<li>[ ] Regression testing completed (TC-32 to TC-36)</li>
+<li>[ ] Performance benchmarks met (recovery < 3s)</li>
+<li>[ ] Memory leak testing passed (TC-27, Performance TC)</li>
+<li>[ ] Cross-repo integration testing completed (TC-41 to TC-44)</li>
+</ul><p /><h3>3. Product Team</h3><p /><ul>
+<li>[ ] All implicit acceptance criteria validated (AC-1 to AC-8)</li>
+<li>[ ] UX reviewed and approved (error messages, transitions)</li>
+<li>[ ] Customer escalation scenarios tested (4 customer cases)</li>
+<li>[ ] Release notes drafted</li>
+<li>[ ] Known limitations documented (authoring mode only)</li>
+</ul><p /><h3>4. Security Team</h3><p /><ul>
+<li>[ ] Security scan completed (no sensitive data in error messages)</li>
+<li>[ ] NoActionMode configuration reviewed (no unauthorized access)</li>
+<li>[ ] Instance recreation maintains authorization context</li>
+</ul><p /><h3>5. Release Readiness</h3><p /><ul>
+<li>[ ] Deployment plan reviewed (4 repos coordinated deployment)</li>
+<li>[ ] Rollback plan documented (revert all 4 repos if needed)</li>
+<li>[ ] Monitoring alerts configured (error recovery failures)</li>
+<li>[ ] Support team notified (new error handling behavior)</li>
+<li>[ ] Dependency F43454 confirmed available (or contingency plan)</li>
+</ul><p /><hr /><p /><h2>📝 Notes</h2><p /><strong>Feature Scope:</strong>
+<ul>
+<li><ac:emoticon ac:name="tick" /> <strong>In Scope</strong>: Report authoring mode only</li>
+<li><ac:emoticon ac:name="cross" /> <strong>Out of Scope</strong>: Consumption mode, embedded SDK reports</li>
+</ul><p /><strong>Known Issues Fixed:</strong>
+<ul>
+<li>Issue 1: <code>holdRequests</code> flag stuck after error → fixed with <code>cancelRequests()</code></li>
+<li>Issue 2: Undo/redo reset incorrectly triggered → fixed with <code>isReCreateReportInstance</code> flag</li>
+<li>Issue 3: Empty report-editor-grid after revert → fixed with <code><ReCreateErrorCatcher></code> component</li>
+</ul><p /><strong>Next Steps:</strong>
+<ul>
+<li>Complete P0 test execution (expanded from 31 to 44 base TCs + 20 sub-cases in v2)</li>
+<li>Focus on new v2 additions:</li>
+</ul>
+  - <strong>P0</strong>: TC-16a (updateTemplate), TC-21a (prompt flags), TC-30a–30b (server protocol), TC-38a–38h (error code matrix)
+  - <strong>P1</strong>: TC-16b–16g (modeling service paths, SQL/MDX errors, flag cleanup), TC-30c–30d (reRenderDocView/appState)
+<ul>
+<li>Address any P0/P1 bugs found during testing</li>
+<li>Validate F43454 dependency is available</li>
+<li>Coordinate deployment across 4 repos</li>
+<li>Monitor error recovery success rate post-release</li>
+<li>Collect customer feedback on new error handling</li>
+</ul><p /><strong>v2 Changes (2026-02-28):</strong>
+Based on QA review feedback (score 8.2/10), addressed <strong>4 P0 gaps</strong> and <strong>6 P1 improvements</strong>:<p /><ac:emoticon ac:name="tick" /> <strong>P0 Fixes:</strong>
+<li>Added TC-16a: <code>updateTemplate</code> manipulation failure scenario (distinct from <code>rebuildDocument</code>)</li>
+<li>Added TC-30a–30b: Server-side instance recreation protocol verification (<code>stid="-1"</code>, <code>noActionMode</code>, <code>resolveExecution</code>, <code>reCreateInstance</code> payload)</li>
+<li>Expanded TC-38 → TC-38a–TC-38h: Comprehensive error code matrix covering all 12+ documented error types</li>
+<li>Added TC-21a: Prompt recovery server flag verification (<code>killJob</code>, <code>isCancelPromptAnswer</code>, <code>fg=32768</code>)</li><p /><ac:emoticon ac:name="tick" /> <strong>P1 Improvements:</strong>
+<li>Added TC-16b–16c: Additional modeling service function coverage (<code>saveInstance</code>, <code>createInstance</code>)</li>
+<li>Added TC-16d: <code>isModelingServiceManipulation</code> flag cleanup verification (modeling→normal sequence)</li>
+<li>Added TC-16e: Report data update after undo <code>stid="-1"</code> success (Issue 4)</li>
+<li>Added TC-16f–16g: Dedicated SQL failure (BCIN-6706) and MDX/ODBC error (BCEN-4129) test cases</li>
+<li>Added TC-30c–30d: <code>reRenderDocView</code> flag and <code>appState</code> transition verification</li>
+<li>Enhanced Test Data section: Added specific test object IDs/URLs from design doc (BCIN-6922, BCIN-974, etc.)</li><p /><strong>Total Test Cases:</strong> 44 base TCs + 20 detailed sub-cases = <strong>64 total test scenarios</strong><p /><hr /><p /><h2>📊 QA Summary</h2><p /><h3>1. Code Changes</h3><p /><table><tbody>
+<tr><th>Repository</th><th>Files Changed</th><th>Key Changes</th><th>Risk Level</th></tr>
+<tr><td><a href="https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport">react-report-editor</a></td><td>14</td><td>Error recovery engine (3 new files, ~1030 lines), undo/redo management, document view handling</td><td>High</td></tr>
+<tr><td><a href="https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport">mojojs</a></td><td>2</td><td>Request queue cleanup, conditional undo/redo reset</td><td>High</td></tr>
+<tr><td><a href="https://github.com/mstr-kiai/biweb/compare/m2021...revertReport">biweb</a></td><td>3</td><td>Server-side NoActionMode configuration</td><td>High</td></tr>
+<tr><td><a href="https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport">web-dossier</a></td><td>5</td><td>Prompt error handling, back-to-prompt flow</td><td>High</td></tr>
+</tbody></table><p /><strong>Total</strong>: 24 files changed, ~1300+ lines added across 4 repositories<p /><hr /><p /><strong>Generated by</strong>: QA Plan Synthesize Agent (Atlas Planner)  
+<strong>Sources</strong>: Atlassian (Jira + Confluence) + GitHub + Background Research  
+<strong>Last Updated</strong>: 2026-02-28 13:15 CST  
+<strong>Version</strong>: Draft v2 (reviewed and refactored)  
+<strong>Review Score</strong>: v1: 8.2/10 → v2: Pending re-review

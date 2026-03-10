@@ -1,0 +1,195 @@
+Found 10 results:
+1. Capabilities and Ownership Matrix - GDC and Collaborators (ID: 5038706144)
+   Workstation Core
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Top Menu and Toolbar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Interface
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Search bar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastr
+2. Dossier Authoring Feature List Ownership (2020) (ID: 900367627)
+   Dossier Authoring: Fang Suo
+Sanity test cases: 70 
+Regression: 93 + 46(Customer Defects) 
+Feature List (until 11.2)
+Sub-Feature
+Added in PR
+SET POC
+SE POC
+Cross-team POC
+Test Cases
+Feature Automation Tag (@dossierauthoring, @web, @acceptance or @regression)
+Dossier Creation!--https://github.microstrategy.com/Tech/BIWeb
+3. [F26731]Locked n-Headers (ID: 883065006)
+   Target release
+11.3 RC [2020-Sep-18]
+Feature
+F26731
+Requirements
+Compound Grid User Flow#4.Format
+Design Status
+Not Start
+DESIGNING
+REVIEWING
+REVISING
+Approved
+SE Owner
+Tomas Joyner
+QA
+4. [Design Doc] Migrate Developer settings(server and project level) to Workstation (ID: 871755330)
+   Target release
+11.2.3
+Feature
+F27704  Migrate Developer settings(server/project level) to Workstation
+Requirements
+As a Platform Administrator, I would like to be able to view and edit all the property settings so that I can fine tune my application for optimal
+5. 2019 Patches.csv (ID: att871746949)
+   ﻿&quot;Formatted ID&quot;,&quot;State&quot;,&quot;Project&quot;,&quot;Name&quot;
+&quot;DE125494&quot;,&quot;Closed&quot;,&quot;SR-Intelligence-Kernel&quot;,&quot;[10.11.1 Patch 42 TB1(10.11.0142.0011) for ZS Associates, Inc.][Dup DE112242]The ISever private memory size is showing incorrect values that result in premature MCM rejections.&quot;
+&quot;DE125548&quot;,&quot;Closed&quot;,&quot;PL-Analytics&quot;,&quot;[11.0 Patch 7 TB1 (11.0.0055.0141) Sonic Automotive Inc.][D
+6. December 2017 CTC Hackathon Project Ideas Dec 17.xlsx (ID: att858215176)
+   Hack or Feature
+
+Bounty ID
+
+Rankin
+g
+
+Ability to backup an entire MicroStrategy
+Environment and all supporting
+components into a single bundle that can
+subsequently be utilized to restore to an
+environment both On-Premises and in
+Cloud
+
+1
+
+Integrity Manager 2.0
+
+1
+
+Transaction Services - Survey Widget for
+Dossier
+
+1
+
+1
+
+2
+3
+
+MD Cleanup Tool
+
+4
+
+1
+
+Subscripti
+7. December 2017 CTC Hackathon Project Ideas.xlsx (ID: att858215173)
+   Hack or Feature
+
+Rankin
+g
+
+Ability to backup an entire MicroStrategy
+Environment and all supporting
+components into a single bundle that can
+subsequently be utilized to restore to an
+environment both On-Premises and in
+Cloud
+
+1
+
+Integrity Manager 2.0
+
+1
+
+Transaction Services - Survey Widget for
+Dossier
+
+1
+
+MD Cleanup Tool
+
+1
+
+Subscription Expiration and Rene
+8. F22193/F22171 Consolidate Graph Text and Label Formatting Properties in web-based RSD editor (Developer Parity)  - Graph Properties Dialog (ID: 858138340)
+   IMPORTANT: Do NOT delete any sections below from the template. You may add new sections if necessary, but no sections should be deleted from the design document. If an existing section is not applicable, simply indicate it is NA with a brief description explaining why it&#39;s not application. Also, please make sure you move the design page after it&#39;s created to
+9. Design Review A_9.1.2016.pdf (ID: att84574807)
+   Design
+
+Review
+Workstation Mac - 10.6
+
+User Journey
+
+New Users (Power Analyst)
+Existing Users
+
+Jobs To Be Done
+
+1
+
+Connect to Existing Environment (Cloud, Multiple)
+
+2
+
+Provision, Buy &amp; Manage Cloud Environment
+
+3
+
+User Management (User, Group, Roles)
+
+4
+
+Publish to Users
+
+5
+
+Manage Published Dossiers
+
+USER JOURNEY
+Workstation 10.6
+New Users
+
+EXPLORE
+
+ENGAGE
+10. FeatureList2.xlsx (ID: att840731711)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl

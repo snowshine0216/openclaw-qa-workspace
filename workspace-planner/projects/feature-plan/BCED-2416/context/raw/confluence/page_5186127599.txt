@@ -1,0 +1,244 @@
+===== PAGE 5186127599 =====
+none
+
+
+QA Goal
+
+ * E2E: End to End
+   
+   * Ensure Workstation users can seamlessly create or edit dashboards using the
+     new WebView-based dashboard editor, achieving functional parity with
+     Library Web.
+
+ * FUN: Functionality
+   
+   * Dashboard authoring workflows are covered by comprehensive component tests,
+     as well as an end-to-end test to ensure related workflows (create, edit,
+     save, save as) work as expected. No regression is introduced by this new
+     feature.
+
+ * PER: Performance
+   
+   * Compared to 25.07 WorkStation, no obvious performance degradation for
+     dashboard execution and manipulations.
+
+ * UPG: Upgrade and Compatibility
+   
+   * Connect to server pre 25.08 release, user can create or edit dashboards
+     using old dashboard editor.
+
+ * SEC: Security
+   
+   * User should not be able to edit dashboard without related priviledges or
+     ACL.
+
+ * AUTO: Automation
+   
+   * Automation will be implemented using WorkStation automation framework -
+     WDIO.
+
+
+Test Cases
+
+Test cases marked with P1 are component-level tests, which are covered by the
+development team; test cases marked with P2 and P3 are end-to-end test covered
+by QA team.
+
+
+
+
+QA Summary - 25.08
+
+E2E Testing & Functionality
+
+Result: Pass
+
+ * 66 defects detected (1 P1, 29 P2, 35 P3, 1 P4) - Defects are tracked in
+   DS2856
+   [https://rally1.rallydev.com/#/?detail=/defectsuite/830003521161&fdp=true]
+
+ * All defects have been reviewed. P1 and P2 defects are fixed in 25.08; P3 and
+   P4 defects are scheduled in 25.09~26-H1.
+
+ * Till today(8/7), still 2 P2 defects open in 25.08 and will fix on 8/8.
+   
+   * DE331555
+     [https://rally1.rallydev.com/#/?detail=/defect/830209204821&fdp=true]:
+     [Workstation]The "Certify" and "Set as template" checkbox is missing when
+     save a new created dashboard
+   
+   * DE332260
+     [https://rally1.rallydev.com/#/?detail=/defect/830743376425&fdp=true]:
+     [Workstation]Create a new dashboard or save as a dashboard in folder, the
+     new created dashboard is not displayed under folder, need refresh to see
+     the new created/saved folder
+
+Coverage:
+
+ * WorkStation Dashboard authoring workflows are covered in E2E and
+   Functionalities test, detailed test cases can be found here
+   [https://microstrategy.atlassian.net/wiki/spaces/CQT/pages/5186127599/F43445+Enhance+Workstation+dashboard+authoring+experience+with+Library+capability+parity#Test-Cases].
+
+ * End to end blitz test performed by QA team and related development teams.
+   Test result is Pass.
+
+
+
+Performance
+
+Result: Low pass
+
+Workstation dashboard editor is primarily designed for dashboard authoring by
+Analyst users(not consumption). Its migration to the WebView-based editor in
+25.08 Workstation brought good parity with Library Web. While some performance
+degradation was introduced due to the new framework, it’s not so critical, and
+the detailed information is as below.
+
+Compared 24.08 Workstation with 25.07 Workstation and 25.08 Library:
+
+ * For 1st time creating/opening dashboard, increased by ~20s for 1st time
+   creating a blank dashboard.
+   
+   * DE332080
+     [https://rally1.rallydev.com/#/?detail=/defect/830583271793&fdp=true]:
+     [WorkStation] Obvious Performance degradation for the 1st rendering of
+     dashboard.
+
+ * For opening the dashboard, increased by 2s~4s across the dashboards due to
+   more resources required to download from the Library;
+
+ * For manipulations in the dashboard, all are the same as 25.07 WS or 25.09
+   Library except scroll manipulation:
+   
+   * Scroll is NOT smooth, logged with DE331633
+     [https://rally1.rallydev.com/#/search/?keywords=DE331633].
+
+Detailed performance test result can be found in F43445 WorkStation New
+Dashboard Editor Performance Test .
+
+
+
+Upgrade and Compatibility
+
+Result: Pass
+
+ * 25.08 Server: Uses new WebView editor.
+
+ * Pre-25.08 Server: Falls back to legacy editor.
+
+ * No workflow breaks across versions.
+
+
+
+Security
+
+Result: Pass
+
+Privileges/ACL matches Library Web’s behavior.
+
+
+
+Automation
+
+Automation for WorkStation dashboard authoring will be implemented in US614013
+[https://rally1.rallydev.com/#/?detail=/userstory/823049229291&fdp=true].
+
+
+
+
+QA Summary - 25.09
+
+In 25.09, this feature is disabled by default. User can turn on “Enable New
+Dashboard Editor” setting in WorkStation Help menu.
+
+E2E Testing & Functionality
+
+Result: Pass
+
+ * 90 defects detected (4P1, 46 P2, 38 P3, 2 P4) - Defects are tracked in DS2856
+   [https://rally1.rallydev.com/#/?detail=/defectsuite/830003521161&fdp=true]
+
+ * Blocker defects for MTDI are fixed in 25.09.
+
+ * Till today(8/28), still 2 P2 defects open.
+   
+   * Ready for test - DE334755
+     [https://rally1.rallydev.com/#/?detail=/defect/831975135539&fdp=true]:
+     [Workstation] “To continue, save your work in the Database Connections
+     window.” would not disappear even when the connection editor windows is
+     closed
+   
+   * Moved to 25.10 - DE331633
+     [https://rally1.rallydev.com/#/?detail=/defect/830283837291&fdp=true]:
+     [F43445][Workstation] Hard to scroll in dashboard using the Workstation
+
+Coverage:
+
+ * WorkStation Dashboard authoring workflows are covered in E2E and
+   Functionalities test, detailed test cases can be found here
+   [https://microstrategy.atlassian.net/wiki/spaces/CQT/pages/5186127599/F43445+Enhance+Workstation+dashboard+authoring+experience+with+Library+capability+parity#Test-Cases].
+
+ * End to end blitz test performed by QA team and related development teams,
+   focus on various data source connection in WorkStation Dashboard Editor. Test
+   result is Pass.
+
+
+
+Performance
+
+Result: Low pass
+
+The new WebView-based dashboard editor in 25.09 Workstation brought good parity
+with Library Web. While some performance degradation was introduced due to the
+new framework.
+
+Performance defects are moved to future release since this feature is disabled
+by default in 25.09.
+
+ * For 1st time creating/opening dashboard, increased by ~20s (depends on the
+   network) for 1st time creating a blank dashboard or opening an existing
+   dashboard.
+   
+   * DE332080
+     [https://rally1.rallydev.com/#/?detail=/defect/830583271793&fdp=true]:
+     [WorkStation] Obvious Performance degradation for the 1st creating or
+     rendering of dashboard.
+
+ * For opening the dashboard, increased by 2s~4s across the dashboards due to
+   more resources required to download from the Library;
+
+ * For manipulations in the dashboard, all are the same as the default dashboard
+   editor except scroll manipulation:
+   
+   * Scroll is NOT smooth, logged with DE331633
+     [https://rally1.rallydev.com/#/search/?keywords=DE331633].
+
+Detailed performance test result can be found in F43445 WorkStation New
+Dashboard Editor Performance Test .
+
+
+
+Upgrade and Compatibility
+
+Result: Pass
+
+ * 25.09 Server: Uses new WebView editor.
+
+ * Pre-25.09 Server: Falls back to legacy editor.
+
+ * No workflow breaks across versions.
+
+
+
+Security
+
+Result: Pass
+
+Privileges/ACL matches Library Web’s behavior.
+
+
+
+Automation
+
+Automation for WorkStation dashboard authoring will be implemented in US614013
+[https://rally1.rallydev.com/#/?detail=/userstory/823049229291&fdp=true].

@@ -1,73 +1,197 @@
 # Feature QA Planning Orchestrator — Reference
 
-## Canonical Entrypoint
+## Ownership
 
-- `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
+- `SKILL.md` defines how the orchestrator behaves
+- `reference.md` defines runtime state, artifact naming, manifests, and phase gates
+- `references/*.md` define writer/reviewer contracts
 
-## Phase 0 State Contract
+## Runtime State
 
-| `REPORT_STATE` | Meaning | User Options |
+### `REPORT_STATE`
+
+| Value | Meaning | User interaction |
 |---|---|---|
-| `FINAL_EXISTS` | final plan already exists | `Use Existing`, `Smart Refresh`, `Full Regenerate` |
-| `DRAFT_EXISTS` | draft exists, no final | `Resume`, `Smart Refresh`, `Full Regenerate` |
-| `CONTEXT_ONLY` | cached context exists, no draft/final | `Generate from Cache`, `Re-fetch + Regenerate` |
-| `FRESH` | no existing artifacts | proceed with fresh run |
+| `FINAL_EXISTS` | `qa_plan_final.md` already exists | user chooses reuse / smart_refresh / full_regenerate |
+| `DRAFT_EXISTS` | one or more draft artifacts exist | user chooses resume / smart_refresh / full_regenerate |
+| `CONTEXT_ONLY` | only context artifacts exist | user chooses generate from cache / smart_refresh / full_regenerate |
+| `FRESH` | no prior artifacts exist | continue without prompt |
 
-Never auto-select a destructive option.
+### `selected_mode` (after user choice)
 
-## Planner state files
+| Value | Effect |
+|---|---|
+| `full_regenerate` | Reset to very beginning. Clear context, drafts, final. Next: Phase 0. |
+| `smart_refresh` | Keep context evidence. Clear drafts and phase 2+ artifacts. Next: Phase 2. |
+| `reuse` / `resume` | Continue from current state. No reset. |
+
+After user chooses, run `scripts/apply_user_choice.sh <mode> <feature-id> <project-dir>` before proceeding.
 
 ### `task.json`
 
-Required additive fields:
+Required fields:
+
+- `feature_id`
 - `run_key`
 - `overall_status`
 - `current_phase`
+- `report_state`
+- `requested_source_families`
+- `completed_source_families`
+- `has_supporting_artifacts`
+- `latest_draft_version`
 - `created_at`
 - `updated_at`
-- `phases`
-- `latest_draft_version`
-- `confluence_page_id` when known
+
+Allowed `overall_status` values:
+
+- `not_started`
+- `in_progress`
+- `blocked`
+- `awaiting_approval`
+- `completed`
 
 ### `run.json`
 
 Required fields:
-- `data_fetched_at`
-- `output_generated_at`
-- `notification_pending`
+
+- `run_key`
+- `started_at`
 - `updated_at`
+- `runtime_setup_generated_at`
+- `data_fetched_at`
+- `artifact_index_generated_at`
+- `coverage_ledger_generated_at`
+- `draft_generated_at`
+- `review_completed_at`
+- `refactor_completed_at`
+- `finalized_at`
+- `notification_pending`
+- `has_supporting_artifacts`
+- `spawn_history`
+- `validation_history`
+- `blocking_issues`
 
-## QA-plan contract summary
+## Artifact Families
 
-Use `references/canonical-testcase-contract.md` as the single source of truth for:
-- required section order
-- allowed heading flexibility
-- `N/A — <reason>` behavior
-- manual testcase executability requirements
-- source-usage expectations
+### Phase 0
 
-## Runtime script deployment
+- `context/runtime_setup_<feature-id>.md`
+- `context/runtime_setup_<feature-id>.json`
 
-Canonical helpers live in:
-- `scripts/lib/save_context.sh`
-- `scripts/lib/validate_context.sh`
-- `scripts/lib/validate_testcase_structure.sh`
-- `scripts/lib/validate_testcase_executability.sh`
+### Phase 1
 
-At runtime, deploy them into `projects/feature-plan/scripts/` with:
-- `scripts/lib/deploy_runtime_context_tools.sh`
+- source-family evidence saved under `context/`
+- `phase1_spawn_manifest.json`
 
-Do not assume the runtime copies already exist.
+### Phase 2
 
-## Validation gates by phase
+- `context/artifact_lookup_<feature-id>.md`
 
-- Phase 2: validate the unified draft for structure and executability
-- Phase 3: review the validated draft and fail on removed sections or vague manual wording
-- Phase 4: validate the refactored draft before finalization
+### Phase 3
 
-## Failure handling
+- `context/coverage_ledger_<feature-id>.md`
+- `phase3_spawn_manifest.json`
 
-If a validation gate fails:
-- do not silently continue
-- rewrite once inside the current phase when the phase contract allows it
-- if the artifact still fails, stop the workflow and surface the exact violations
+### Phase 4a
+
+- `drafts/qa_plan_subcategory_<feature-id>.md`
+- `phase4a_spawn_manifest.json`
+
+### Phase 4b
+
+- `drafts/qa_plan_v1.md`
+- `phase4b_spawn_manifest.json`
+
+### Phase 5
+
+- `context/review_notes_<feature-id>.md`
+- `context/review_delta_<feature-id>.md`
+- `drafts/qa_plan_v2.md`
+- `phase5_spawn_manifest.json`
+
+### Phase 6
+
+- `context/quality_delta_<feature-id>.md`
+- `drafts/qa_plan_v3.md`
+- `phase6_spawn_manifest.json`
+
+### Phase 7
+
+- `context/finalization_record_<feature-id>.md`
+- `qa_plan_final.md`
+
+## Spawn Manifest Contract
+
+Every manifest uses this shape:
+
+```json
+{
+  "version": 1,
+  "source_kind": "feature-qa-planning",
+  "count": 1,
+  "requests": [
+    {
+      "request": {},
+      "openclaw": {
+        "tool": "sessions_spawn",
+        "args": {}
+      },
+      "handoff": {},
+      "source": {}
+    }
+  ]
+}
+```
+
+The orchestrator reads `requests[].openclaw.args`, spawns each request, waits for completion. For Phase 1 only, before `--post`, run `scripts/record_spawn_completion.sh phase1 <feature-id> <project-dir>` to record completed spawns into `run.json.spawn_history`. Then run the phase script with `--post`.
+
+**sessions_spawn contract:** Pass `openclaw.args` to `sessions_spawn` exactly as-is. Do **not** add `streamTo` or other extra fields. `streamTo` is supported only for `runtime: "acp"` (ACP harness sessions), not for `runtime: "subagent"`. Manifests use `runtime: "subagent"`; adding `streamTo` will cause spawn failures.
+
+## Source Routing
+
+Use only these primary evidence skills (not generic tools):
+
+- `jira` -> `jira-cli` skill
+- `confluence` -> `confluence` skill
+- `github` -> `github` skill
+- `figma` -> browser exploration or approved snapshots
+
+Do not substitute browser fetch or generic web fetch for Jira, Confluence, or GitHub primary evidence.
+
+## Validators
+
+The script-facing validator CLI is `scripts/lib/validate_plan_artifact.mjs`.
+
+Supported validators:
+
+- `validate_context_index`
+- `validate_coverage_ledger`
+- `validate_e2e_minimum`
+- `validate_executable_steps`
+- `validate_review_delta`
+- `validate_scenario_granularity`
+- `validate_unresolved_step_handling`
+- `validate_xmindmark_hierarchy`
+
+## Phase Gates
+
+- Phase 0: runtime setup files exist and `runtime_setup_<feature-id>.json` reports `ok: true`
+- Phase 1: every requested source family passed spawn-policy and evidence-completeness checks
+- Phase 2: `artifact_lookup_<feature-id>.md` exists and contains at least one artifact row
+- Phase 3: `coverage_ledger_<feature-id>.md` passes validation
+- Phase 4a: `qa_plan_subcategory_<feature-id>.md` passes executable-step validation
+- Phase 4b: `qa_plan_v1.md` passes hierarchy validation and user-facing minimum checks
+- Phase 5: `review_notes`, `review_delta`, and `qa_plan_v2.md` exist, and `v2` differs from `v1`
+- Phase 6: `qa_plan_v3.md` passes hierarchy + executable-step checks, and `quality_delta` exists
+- Phase 7: explicit user approval before promotion
+
+## Concurrent Runs
+
+Concurrent runs for the same `feature_id` are blocked while `task.json.overall_status` is one of:
+
+- `in_progress`
+- `awaiting_approval`
+- `blocked`
+
+If a new run key conflicts with an active run, Phase 0 fails with `CONCURRENT_RUN_BLOCKED`.

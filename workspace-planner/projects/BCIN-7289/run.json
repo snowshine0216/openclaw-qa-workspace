@@ -1,0 +1,16 @@
+{
+  "run_key": "2026-03-10T12-48-00-asia-shanghai",
+  "started_at": "2026-03-10T12:48:00+08:00",
+  "updated_at": "2026-03-10T12:50:30+08:00",
+  "data_fetched_at": "2026-03-10T12:43:00+08:00",
+  "context_index_generated_at": "2026-03-10T12:49:00+08:00",
+  "coverage_ledger_generated_at": "2026-03-10T12:49:00+08:00",
+  "draft_generated_at": "2026-03-10T12:50:00+08:00",
+  "review_completed_at": "2026-03-10T12:50:30+08:00",
+  "refactor_completed_at": null,
+  "finalized_at": null,
+  "notification_pending": false,
+  "spawn_history": [],
+  "validation_history": [],
+  "blocking_issues": []
+}

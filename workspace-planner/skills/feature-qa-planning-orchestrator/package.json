@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
-    "validate:fixtures": "node scripts/validate-fixtures.mjs"
+    "test": "node --test tests/*.test.mjs scripts/test/*.test.mjs && bash scripts/test/run-all.sh"
   }
 }

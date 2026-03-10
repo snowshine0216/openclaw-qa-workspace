@@ -1,0 +1,12 @@
+{
+  "feature_id": "BCIN-6709",
+  "jira_key": "BCIN-6709",
+  "confluence_url": "https://microstrategy.atlassian.net/wiki/spaces/~yuanli/pages/5901516841/BCIN-6709+Improve+the+behavior+for+end+user+to+allow+continued+operations+on+report+in+Library+after+error+happens",
+  "github_pr_urls": [
+    "https://github.com/mstr-modules/react-report-editor/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/biweb/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/mojojs/compare/m2021...revertReport",
+    "https://github.com/mstr-kiai/web-dossier/compare/m2021...revertReport"
+  ],
+  "figma_url": null
+}

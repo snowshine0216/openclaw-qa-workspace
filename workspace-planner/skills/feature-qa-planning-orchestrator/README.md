@@ -1,53 +1,44 @@
 # Feature QA Planning Orchestrator
 
-> **Skill path:** `workspace-planner/skills/feature-qa-planning-orchestrator/SKILL.md`
-> **Last Updated:** 2026-03-09
+Human-facing guide for the skill package. This file is intentionally short.
 
-## What it does
+## Start Here
 
-Give it a feature ID plus Jira, Confluence, GitHub, and optional UX evidence, and it produces:
+- Skill entrypoint: `SKILL.md`
+- Runtime and artifact contract: `reference.md`
+- Writer and reviewer rules: `references/*.md`
+- Active design/governance docs: `docs/`
+- Historical design docs: `docs/archive/`
 
-| Output | What it is |
-|--------|------------|
-| `drafts/qa_plan_v<N>.md` | unified QA-plan draft |
-| `qa_plan_final.md` | approved final QA plan |
+## What This Skill Produces
 
-## Phase overview
+- source evidence saved under `context/`
+- `artifact_lookup_<feature-id>.md` under `context/`
+- versioned draft QA plans under `drafts/` (`qa_plan_subcategory`, `qa_plan_v1`, `qa_plan_v2`, `qa_plan_v3`)
+- phase spawn manifests under the project root
+- a promoted `qa_plan_final.md` only after user approval
 
-### Phase 0 — Idempotency check and runtime script deployment
-### Phase 1 — Context gathering (`qa-plan-write` in `mode=context`)
-### Phase 2 — Unified QA-plan writing (`qa-plan-write` in `mode=write-plan`)
-### Phase 3 — Unified QA-plan review (`qa-plan-review`)
-### Phase 4 — Deterministic QA-plan refactor (`qa-plan-refactor`)
-### Phase 5 — Finalize + Feishu notify
+## Active Contract Files
 
-## Runtime scripts
+- `reference.md`
+- `references/qa-plan-contract.md`
+- `references/context-coverage-contract.md`
+- `references/executable-step-rubric.md`
+- `references/review-rubric.md`
+- `references/context-index-schema.md`
+- `references/e2e-coverage-rules.md`
+- `templates/qa-plan-template.md`
+- `docs/DOCS_GOVERNANCE.md`
 
-| Script | Purpose |
-|--------|---------|
-| `check_resume.sh` | idempotency state check |
-| `deploy_runtime_context_tools.sh` | copy helper scripts from the skill into the runtime project |
-| `save_context.sh` | save any fetched artifact to `context/` |
-| `validate_context.sh` | gate runtime artifacts and plan validation |
+## Phase-to-Reference Mapping
 
-## Quality bar
+Each spawned subagent receives explicit instructions in its task text to read these files before starting.
 
-The final plan should read like `docs/BCIN-6709_qa_plan.md`:
-
-- structured
-- concise
-- easy to understand
-- grouped by user-facing behavior
-- source-backed without reading like source silos
-
-## Related skills
-
-| Skill | Used in |
-|-------|---------|
-| `qa-plan-write` | Phase 1, Phase 2 |
-| `qa-plan-review` | Phase 3 |
-| `qa-plan-refactor` | Phase 4 |
-| `jira-cli` | evidence gathering |
-| `confluence` | design evidence gathering |
-| `github` | PR and boundary evidence gathering |
-| `feishu-notify` | Phase 5 notification |
+| Phase   | References                                                                                                                       | Purpose                                                  |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Phase 1 | `reference.md`, `references/context-coverage-contract.md`                                                                          | Source routing, approved collection paths                |
+| Phase 3 | `references/context-coverage-contract.md`, `references/context-index-schema.md`                                                   | Coverage ledger rules, artifact lookup structure         |
+| Phase 4a | `references/qa-plan-contract.md`, `references/executable-step-rubric.md`, `templates/qa-plan-template.md`                         | XMindMark structure, executable steps, scaffold          |
+| Phase 4b | Same as 4a                                                                                                                        | Top-category grouping                                    |
+| Phase 5 | `references/review-rubric.md`, `references/qa-plan-contract.md`, `references/executable-step-rubric.md`                          | Review inputs/outputs, blocking findings, refactor rules |
+| Phase 6 | `references/executable-step-rubric.md`, `references/review-rubric.md`, `references/e2e-coverage-rules.md`, `templates/qa-plan-template.md` | Quality pass, E2E minimum, format rules                  |

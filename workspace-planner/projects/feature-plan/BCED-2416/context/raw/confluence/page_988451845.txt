@@ -1,0 +1,1987 @@
+===== PAGE 988451845 =====
+1. Problem statement
+
+There are plenty of graph formatting properties available in Developer but not
+available in Workstation yet. The gap exists because Developer calls COM APIs to
+set these graph properties, while Workstation calls XML APIs to set the graph
+properties. However, there's a gap between COM APIs and XML APIs. Some COM APIs
+don't have their XML API counterparts. Moreover, configuring graph properties
+from Developer and from Workstation (Authoring Web) may also follow different
+workflows.
+This feature aims at doing research on the gap of supporting rendering and
+configuring graph formatting properties by XML API, and figure out how the gap
+can be filled in and how much effort is needed.
+Moreover, if we have enough capacity to implement the unsupported XML APIs, we
+should also include the implementation as part of this feature scope.
+
+
+2. Feature Summary
+
+The following graph properties (inherited from the property list in TH4202,
+except for I16507 which was already supported in 11.2 RC) are in the scope of
+this feature.
+
+
+I15761 - Consolidate Axis Formatting Properties in web-based RSD editor
+(Developer Parity) 
+
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/299624019452
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/299624019452]
+
+
+
+
+How to access in developerFeatureApplies toAPISupported for setting the value
+using XMLSE Estimate
+SET EstimateGraph -> Preferences -> AxisAlignmentAll Charts
+Yes1.51.5
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Preferences -> AxisRotationAll Charts
+YesGraph -> Axis -> Category / YShow / hide gridlinesVertical Area, Bar Graphs,
+Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraphShow2DAxisMajor (10020)
+DssGraphO1Body (271)
+DssGraphY1Body (295)
+BOOL = -1 (enable) / 0
+
+Histogram:
+
+DssGraphShow2DAxisMajor (10020)
+DssGraphX1Body (289)
+DssGraphY1Body (295)
+BOOL = -1 (enable) / 0
+No33
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Axis -> Y -> Grids and ScalesDisable Fractional GridlinesVertical Area,
+Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraphAxisAllowFractionalGrids (10141)
+DssGraphO1Body (271)
+DssGraphY1Body (295)
+BOOL = 0 (enable) / -1
+
+Histogram:
+
+DssGraphAxisAllowFractionalGrids (10141)
+DssGraphX1Body (289)
+DssGraphY1Body (295)
+BOOL = 0 (enable) / -1
+Yes17
+
+
+
+
+
+
+
+Total: 6 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+Graph -> Axis -> Y -> Grids and ScalesGrid Style (for gridlines)Vertical Area,
+Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraphStyleMajor (10023)
+DssGraphO1Body (271)
+DssGraphY1Body (295)
+I4= {
+Regular Grid = 1
+Grid and Ticks = 2
+Inner Ticks = 3
+Outer Ticks = 4
+Spanning Ticks = 5
+}
+
+Histogram:
+
+DssGraphStyleMajor (10023)
+DssGraphX1Body (289)
+DssGraphY1Body (295)
+No3Graph -> Axis -> Y -> Grids and ScalesMinor GridlinesVertical Area, Bar
+Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+how Minor
+DssGraphShow2DAxisMinor (10021)
+DssGraphO1Body (271)
+DssGraphY1Body (295)
+BOOL = -1 (enable) / 0
+
+
+Grid Style
+DssGraphStyleMinor (10024)
+DssGraphO1Body (271)
+DssGraphY1Body (295)
+I4= {
+Regular Grid = 1
+Grid and Ticks = 2
+Inner Ticks = 3
+Outer Ticks = 4
+Spanning Ticks = 5
+}
+
+
+
+
+Histogram
+
+DssGraphX1Body (289)
+DssGraphY1Body (295)
+No3Graph -> Axis -> Y -> Grids and ScalesUse manual gridlines (for major and
+minor gridlines)Vertical Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant
+Chart, Combo Chart
+Major
+DssGraphCountMajor (10025)
+DssGraphY1Body (295)
+-3
+R8 = 250.00000000000000
+
+
+Minor
+DssGraphCountMinor (10026)
+DssGraphY1Body (295)
+-3
+R8 = 1.0000000000000000
+No3Graph -> Axis -> Y -> Axis LabelsLocation of Labels (left side, right side,
+or both)Vertical Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart,
+Combo Chart
+Yes11
+
+Total:4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Axis -> Category -> Axis LabelsLocation of Labels (top, bottom, or
+both)Vertical Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart,
+Combo Chart
+Yes11.5
+
+Total: 4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Axis -> Category -> Axis LabelsShow Labels for this AxisVertical Area,
+Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+Yes1Graph -> {Graph Type} Options -> Dual Y OptionsSplit PositionDual Axis Bar
+Graphs, Dual Axis Line Graphs
+DssGraph2DSDSplitY (140)
+DssGraphRiser (286)
+SeriesId = 0
+BOOL = -1 (Secondary Axis) /0 (Primary Axis)
+
+
+
+
+DssGraph2DSplitYAutomatic (10054)
+DssGraphNull (-3)
+-3
+BOOL = 0
+
+Partially supported
+
+
+
+
+DssGraph2DSplitYAutomatic  is not supported yet
+
+23
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Axis -> Y -> Grids and ScalesDraw Custom LineVertical Area, Bar Graphs,
+Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraphAxisShowUserLine (632)
+DssGraphY1Body (295)
+-3
+BOOL = -1
+
+
+DssGraphAxisUserLineValue (633)
+DssGraphY1Body (295)
+-3
+R8 = 2.0000000000000000
+
+Partially supported
+
+
+
+
+DssGraphAxisUserLineValue is not supported yet
+
+25Already estimated in the above.
+
+Graph -> Axis -> Y -> Grids and ScalesUse Logarithmic ScaleVertical Area, Bar
+Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraph2LogScale (10007)
+DssGraphY1Body (295)
+-3
+BOOL = -1 (enable) / 0
+No3Graph -> Axis -> Y -> Grids and ScalesOff Scale Value DisplayVertical Area,
+Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraphOffScaleType (10139)
+DssGraphY1Body (295)
+-3
+I4 = {
+Hide values = 0
+Clip values = 1
+Show values = 2
+}
+No3Graph -> Axis -> Y -> Axis LabelsMake this a descending graphVertical Area,
+Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraph2ScaleDirection (10010)
+DssGraphY1Body (295)
+-3
+BOOL = -1 (enable) / 0
+No34
+Already estimated in the above.Graph -> Axis -> Y -> Axis LabelsDon’t show min
+or maximum data labelVertical Area, Bar Graphs, Line Graphs, Histogram, Pareto,
+Gant Chart, Combo Chart
+DssGraph2ScaleEndMax (10018)
+DssGraph2ScaleEndMax (10018)
+DssGraphY1Body (295)
+-3
+BOOL = 0 (enabled)/-1
+No3Graph -> Axis -> Category -> Axis LabelsValue Axis Crosses Between
+CategoriesVertical Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart,
+Combo Chart
+DssGraph2DOrdSpaceMode (642)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+No35
+Already estimated in the above.
+
+Graph -> Axis -> Category -> Axis LabelsDraw Categories in Reverse OrderVertical
+Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraph2ScaleDirection (10010)
+DssGraphO1Body (271)
+-3
+BOOL = -1 (enable) / 0
+No3Graph -> Axis -> Category -> Axis LabelsAutomatic / Staggered / Manual Axis
+placement with space between categoriesVertical Area, Bar Graphs, Line Graphs,
+Histogram, Pareto, Gant Chart, Combo Chart
+Automatic:
+DssGraphAxisAutoFit (10043)
+DssGraphO1Body (271)
+BOOL = -1
+
+
+DssGraphAxisStagger (10044)
+DssGraphO1Body (271)
+BOOL = 0
+
+
+Staggered:
+DssGraphAxisAutoFit (10043)
+DssGraphO1Body (271)
+BOOL = 0
+
+
+DssGraphAxisStagger (10044)
+DssGraphO1Body (271)
+BOOL = -1
+
+
+Manual:
+DssGraphAxisAutoFit (10043)
+DssGraphO1Body (271)
+BOOL = 0
+
+
+DssGraphAxisStagger (10044)
+DssGraphO1Body (271)
+BOOL = 0
+
+
+DssGraphAxisScaleFreq (10045)
+DssGraphO1Body (271)
+I4 = 1
+
+
+If only change the value, DssGraphAxisScaleFreq is enough
+No4Graph -> {Graph Type} Options -> DisplayDisplay Y Axis Values on the
+LeftPolar Chart, Radar Chart
+DssGraphRemoteAxis (784)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+No32
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+
+I15815 - Consolidate Graph-type specific properties in web-based RSD editor
+(Developer Parity)
+
+ https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300331176868
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300331176868]
+
+
+
+
+How to access in developerFeatureApplies toAPISupported for setting the value
+using XMLSE EstimateSESET EstimateGraph -> {Graph Type} Options -> GeneralGap
+WidthBar Graphs, hi Low, histogram, pareto, gant chart, Combo Chart
+DssGraphRiserWidth (11)
+DssGraphNull (-3)
+-3
+I4 = 16
+No34
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+Graph -> {Graph Type} Options -> GeneralError BarBar Graphs, Combo Chart
+DssGraphAxisHasErrorBar (10079)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+No3Graph -> {Graph Type} Options -> GeneralOverlapBar Graphs, Combo Chart
+DssGraphGroupSpacing (10)
+DssGraphNull (-3)
+-3
+I4 = 2
+No3Graph -> {Graph Type} Options -> GeneralFunnel WidthFunnel Chart
+DssGraphPieDepthValue (192)
+DssGraphNull (-3)
+-3
+I4 = 1
+No33
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> {Graph Type} Options -> GeneralFunnel HeightFunnel Chart
+DssGraphPieRotationValue (202)
+DssGraphNull (-3)
+-3
+I4 = 1
+No3Graph -> {Graph Type} Options -> DisplayMetric Style OptionsHi Low
+DssGraphMetric1Style (10037)
+DssGraphMetric2Style (10038)
+DssGraphMetric3Style (10039)
+DssGraphNull (-3)
+-3
+I4 = {
+Vertical Line = 0
+line = 1
+Area = 2
+Bar = 3
+Dot = 4
+Area2 = 5
+}
+
+
+DssGraphMetric1Value (10046)
+DssGraphMetric2Value (10047)
+DssGraphMetric3Value (10048)
+DssGraphNull (-3)
+-3
+BSTR = 0x2560430c L"1"
+No33
+
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> {Graph Type} Options -> DisplayShow Open and Show CloseHi Low
+
+This setting actually changes the graph's subtype
+
+Show open and show close:
+
+GraphSubType = DSKGHSubTypeHiLoOpenCloseStockChart
+
+Show open:
+
+GraphSubType = DSKGHSubTypeHiLoOpenStockChart
+
+Show close:
+
+GraphSubType = DSKGHSubTypeHiLoStockChart
+
+
+
+
+xml
+
+
+
+
+Yes1Graph -> {Graph Type} Options -> DisplayShow Open and Show CloseHi Low
+
+Template - PropertySet (GraphInfo) - Property15 (GraphFormat)
+
+DssXmlGraphImgJPEG = 3
+
+DssXmlGraphImgPNG = 4
+
+DssXmlGraphImgBMP = 10
+
+Yes1Graph -> {Graph Type} Options -> GeneralConnect Data Points with LineLine
+Chart, Scatter Charts, Polar Chart, Radar Chart, Bubble Chart
+Scatter Charts, Bubble Chart:
+DssGraphShowSDLine (98)
+DssGraphRiser (286)
+-3
+BOOL = -1 (enable) / 0
+
+Polar Chart:
+
+DssGraphShowLine (10040)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+
+Partially supported
+
+
+
+
+DssGraphShowLine for Polar chart is not supported yet
+
+22
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Graph -> Apply Graph StyleApply a style from a desktop fileAll Graphs
+ 1. Use 3d charty library to load temporary:
+    1. ThreeDChart(0).ApplyTemplate
+    2. template = ThreeDChart(0).BinaryValue
+ 2. Load template to graph style:IDSSGraphStyle.ImportAsProperties
+    [https://tech-websrvr.labs.microstrategy.com/build/Builds/10.10.0003.0016/AutomatedAcceptance/COMAPIDoc/interface_i_d_s_s_graph_style.html#a34]
+
+--------------------------------------------------------------------------------
+
+Note:
+
+The graph type is saved as 3tf file by the developer, which contains binary
+contents of:
+
+(1) graph type
+
+(2) a series of graph properties and values
+
+When saving graph styles, basically developer serialize the data into 3tf file,
+when loading it, developer read from it and put the properties into the graph
+style
+
+No109
+
+Total:10 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 2
+
+Automation: 5
+
+No performance concerns
+
+Graph -> Polar Options -> GeneralConnect first and last datapointsPolar Chart
+DssGraphConnectFirstLast (790)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+No32
+
+Already estimated in above
+
+Graph -> {Graph Type} Options -> General
+
+Connect Data Points with Line
+
+Graph -> Graph TypeCustom (essentially presets of other chart types)Many
+different Charts
+
+IDSSGraphStyle.GraphType
+
+--------------------------------------------------------------------------------
+
+Note
+
+The Custom graph type is basically a predefined 3tf file with graph type and
+graph properties.
+
+The client should be able to write and read it, then use XML API to set the
+graph type and properties
+
+No109
+
+Total:10 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 2
+
+Automation: 5
+
+No performance concerns
+
+Graph -> Preferences -> BackgroundImage as BackgroundAll Graphs
+
+IDSSGraphStyle.BackgroundFill
+    .Effect
+    .Transparency
+    .get_BavelEffect
+    .Color
+
+IDSSGraphStyle.BackgroundLine
+    .Style
+    .Color
+    .Width
+    .Transparency
+
+--------------------------------------------------------------------------------
+
+Note:
+
+Current workflow on developer:
+
+The developer calls the following function to put the picture as the background
+for option "Texture"
+
+In this function, we can
+
+ 1. directly use the picture data if the ippPicture variant has type (VT_ARRAY |
+    VT_UI1)
+ 2. load the file from the file system using the iName (which is the address of
+    the file)
+
+(The CDSSGraphFill is a member object of CDSSGraphStyle as mBGFill)
+
+Solutions:
+
+(1) A candidate solution is that we still use
+the DssRWManipulationSetGraphProperties manipulation but with the original value
+"v" for iName (or ippPicture) and a new parameter for ippPicture (or iName)
+
+(2) Another solution is that we can use a new RSD manipulation for this
+specifical graph-related property
+
+Solution 1
+
+Pros:
+
+ 1. we can use the current graph manipulation workflow, so no need to implement
+    from scratch
+
+Cons:
+
+ 1. since for this graph manipulation, we need more information about the
+    flip-type, the scale type, and the format, we need the client to embed more
+    attributes and values in the <gp> node. And on the server-side, we need a
+    new workflow to parse these parameters
+ 2. since every time change a graph's property, all the previous graph
+    manipulations will be auto-applied again. This property is a little bit
+    different compared with others, because we may need to load the image from
+    local disk, which might be time-consuming compared with other manipulations
+
+Solution 2
+
+Pros
+
+ 1. no need to apply this manipulation every time the graph property is modified
+
+Cons:
+
+ 1. need more code change to implement from scratch
+ 2. we still need to put this manipulation into graph delta, so it will not be
+    missed when re-applying all graph manipulation.
+
+Generally, I think the first solution is better.
+
+No109
+
+Total:10 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 2
+
+Automation: 5
+
+No performance concerns
+
+Graph -> Preferences -> BackgroundTexture as BackgroundAll Graphs
+DssGraphPicture (10083)
+DssGraphBackground (1)
+-3
+0x307acaf8 safearray of UI1, [rank]=1
+
+
+DssGraphPicture (10083)
+DssGraphBackground (1)
+-3
+0x307b8b60 safearray of UI1, [rank]=1
+No34
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> Preferences -> BackgroundPattern as BackgroundAll Graphs
+DssGraphAreaColor (564)
+DssGraphBackground (1)
+-3
+I4 = 16777215
+
+
+DssGraphAreaBackColor (561)
+DssGraphBackground (1)
+-3
+I4 = 0
+
+
+DssGraphAreaPattern (566)
+DssGraphBackground (1)
+-3
+I4 = 55
+
+Partially supported
+
+
+
+
+DssGraphAreaBackColor and DssGraphAreaPattern are not supported yet
+
+2Graph -> Preferences -> LayoutAutomatic vs ManualAll Graphs
+
+Template - PropertySet (GraphInfo) - Property40 (LayoutMode)
+
+Manual - 1
+
+Auto - 2
+
+Yes12
+
+Total:4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+
+Graph -> Preferences -> OptionsAllow Different Boarders per SeriesAll Graphs
+DssGraphUniformBorders (148)
+DssGraphNull (-3)
+-3
+BOOL = 0 (enabled) / -1
+Yes1Graph -> Preferences -> OptionsShow Graph in Format (Ex. Jpg or PNG)All
+Graphs
+
+Template - PropertySet (GraphInfo) - Property15 (GraphFormat)
+
+DssXmlGraphImgJPEG = 3
+
+DssXmlGraphImgPNG = 4
+
+DssXmlGraphImgBMP = 10
+
+
+1Graph -> Preferences -> OptionsMinimum Number of CategoriesAll Graphs
+
+Template - PropertySet (GraphInfo) - Property48 (UseMaxCategoriesAsMin)
+
+bool
+
+Yes1Graph -> {Graph Type} Options -> GeneralTiltPie Charts, Funnel Chart
+DssGraphPieTiltValue (211)
+DssGraphNull (-3)
+-3
+I4 = 9
+No37
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+
+
+
+Graph -> {Graph Type} Options -> GeneralPie DepthPie Charts
+DssGraphPieDepthValue (192)
+DssGraphNull (-3)
+-3
+I4 = 1
+No3
+
+Graph -> {Graph Type} Options -> GeneralPie RotationPie Charts
+DssGraphPieRotationValue (202)
+DssGraphNull (-3)
+-3
+I4 = 1
+NoGraph -> {Graph Type} Options -> GeneralExplodePie Charts, Funnel Chart
+DssGraphDetachSlice (209)
+DssGraphRiser (286)
+-3
+I4 = 1
+No2Graph -> {Graph Type} Options -> GeneralPer RowPie Charts, Funnel Chart
+DssGraphPiesPerRowValue (201)
+DssGraphNull (-3)
+-3
+I4 = 3
+No2Graph -> {Graph Type} Options -> GeneralHole SizeDonut Pie Chart
+DssGraphPieHoleSizeValue (198)
+DssGraphNull (-3)
+-3
+I4 = 51
+No2Graph -> Series -> Labels and ValuesShow Values as PercentagePie Charts
+DssGraphShowLBLFeeler (-205)
+DssGraphRiser (286)
+-3
+I4 = 33 (enable) / 1 (disable)
+Yes12
+
+Total:4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+Graph -> Series -> Labels and ValuesShow Pie TotalsPie Charts
+DssGraphShowLBLRing (207)
+DssGraphNull (-3)
+-3
+BOOL = 0
+No2Graph -> Series -> Labels and ValuesShow Leader LinesPie Charts
+DssGraphShowFeeler (204)
+DssGraphRiser (286)
+-3
+BOOL = -1 (enable)
+Yes1Graph -> {Graph Type} Options -> GeneralDisplay as 2DPie Charts, Funnel
+Chart
+DssGraph2DPie (10028)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable)
+No22Already estimated in the aboveGraph -> Series -> {Specific Series}Detach
+SlicePie Charts
+DssGraphDetachSlice (209)
+DssGraphRiser (286)
+0
+I4 = 2
+No22
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> {Graph Type} Options -> DisplayCircular DisplayPolar Chart, Radar Chart
+DssGraphSpiderLines (739)
+DssGraphNull (-3)
+-3
+BOOL = 0 (Circular) / -1 (Spider)
+No22Already estimated in the aboveGraph -> {Graph Type} Options ->
+DisplayCircular DatalinesRadar Chart
+DssGraphRadarCircularDataLines (782)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / -1
+No22Already estimated in the aboveGraph -> {Graph Type} Options -> Dual Y
+OptionsShow Axis SplitDual Axis Bar Graphs, Dual Axis Line Graphs, Dual Axis
+Combo Chart
+DssGraphShowDivBiPolar (114)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+Yes11
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> {Graph Type} Options -> Gauge Needle BaseChange Color / FormatGauge
+DssGraphAreaColor (564)
+DssGraphGaugeNeedleBase (1320)
+-3
+I4 = 10092543
+
+
+DssGraphAreaAlpha (608)
+DssGraphGaugeNeedleBase (1320)
+-3
+I4 = 224
+Yes11Graph -> {Graph Type} Options -> GeneralTail ShapeBox Plot
+DssGraphTailShape (793)
+DssGraphNull (-3)
+-3
+I4 = {
+Rect = 1
+T = 2
+I = 3
+}
+No22Already estimated in the above
+
+I15816 - Consolidate 3D Graph Properties in web-based RSD editor (Developer
+Parity) 
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300332406104
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300332406104]
+
+
+
+
+How to access in developerFeatureApplies toAPISupported for setting the value
+using XMLSE EstimateSET EstimateGraph -> {Graph Type} Options ->
+GeneralDepthVertical Area, Bar Graphs, Line Graphs, Histogram, Pareto, Gant
+Chart, Combo Chart
+DssGraphDepthMode (21)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+
+
+DssGraph2DDepth (20)
+DssGraphNull (-3)
+-3
+I4 = 250
+No3
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> {Graph Type} Options -> GeneralDirectionVertical Area, Bar Graphs, Line
+Graphs, Histogram, Pareto, Gant Chart, Combo Chart
+DssGraph2DAngle (18)
+DssGraphNull (-3)
+-3
+I4 = 1
+No3Graph -> {Graph Type} Options -> 3D OptionsRotate3D Charts
+
+Increase:
+
+ * IDSSGraphStyle.LongProperty(DssGraphTurnXClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnYClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnZClockwise3D) = 15
+   
+
+Decrease:
+
+ * IDSSGraphStyle.LongProperty(DssGraphTurnXCounterClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnYCounterClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnZCounterClockwise3D) = 15
+
+--------------------------------------------------------------------------------
+
+DssGraph3DTurnXClockwise (10087)
+DssGraph3DTurnXCounterClockwise (10084)
+-3
+I4 = 15
+
+
+DssGraph3DTurnYClockwise (10088)
+DssGraph3DTurnYCounterClockwise (10085)
+-3
+I4 = 15
+
+
+DssGraph3DTurnZClockwise (10089)
+DssGraph3DTurnZCounterClockwise (10086)
+DssGraphNull (-3)
+-3
+I4 = 15
+No8
+
+Total:6 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+
+
+
+
+Graph -> {Graph Type} Options -> 3D OptionsPan3D Charts
+
+Increase:
+
+ * IDSSGraphStyle.LongProperty(DssGraphTurnXClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnYClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnZClockwise3D) = 15
+   
+
+Decrease:
+
+ * IDSSGraphStyle.LongProperty(DssGraphTurnXCounterClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnYCounterClockwise3D) = 15
+ * IDSSGraphStyle.LongProperty(DssGraphTurnZCounterClockwise3D) = 15
+
+--------------------------------------------------------------------------------
+
+DssGraph3DPanXLeft (10108)
+DssGraph3DPanXRight (10111)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+DssGraph3DPanYDown (10112)
+DssGraph3DPanYUp (10109)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+DssGraph3DZoomIn (10114)
+DssGraph3DZoomOut (10117)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+No8Graph -> {Graph Type} Options -> 3D OptionsWalls3D Charts
+
+Length:
+
+ * Increase
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseCubeX3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseCubeY3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseCubeZ3D) = 30
+ * Decrease
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseCubeX3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseCubeY3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseCubeZ3D) = 30
+
+Thickness:
+
+ * Increase
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseWallX3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseWallY3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphIncreaseWallZ3D) = 30
+ * Decrease
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseWallX3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseWallY3D) = 30
+   * IDSSGraphStyle.LongProperty(DssGraphDecreaseWallZ3D) = 30
+
+--------------------------------------------------------------------------------
+
+Length:
+DssGraph3DDecreaseCubeX (10096)
+DssGraph3DIncreaseCubeX (10099)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DDecreaseCubeY (10097)
+DssGraph3DIncreaseCubeY (10100)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DDecreaseCubeZ (10098)
+DssGraph3DIncreaseCubeZ (10101)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DViewStructName (10125)
+DssGraphNull (-3)
+-3
+BSTR = 0x3299a044 L"Current.3da"
+Thickness
+DssGraph3DDecreaseWallX (10102)
+DssGraph3DIncreaseWallX (10105)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DDecreaseWallY (10103)
+DssGraph3DIncreaseWallY (10106)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DDecreaseWallZ (10104)
+DssGraph3DIncreaseWallZ (10107)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DViewStructName (10125)
+DssGraphNull (-3)
+-3
+BSTR = 0x3299a044 L"Current.3da"
+No8Graph -> {Graph Type} Options -> 3D OptionsMove3D Charts
+
+Away:
+
+ * IDSSGraphStyle.LongProperty(DssGraphMoveXAwayFromOrigin3D) = 30
+ * IDSSGraphStyle.LongProperty(DssGraphMoveYAwayFromOrigin3D) = 30
+ * IDSSGraphStyle.LongProperty(DssGraphMoveZAwayFromOrigin3D) = 30
+   
+
+Toward:
+
+ * IDSSGraphStyle.LongProperty(DssGraphMoveXTowardsOrigin3D) = 30
+ * IDSSGraphStyle.LongProperty(DssGraphMoveXTowardsOrigin3D) = 30
+ * IDSSGraphStyle.LongProperty(DssGraphMoveXTowardsOrigin3D) = 30
+
+--------------------------------------------------------------------------------
+
+DssGraph3DMoveXAwayFromOrigin (10093)
+DssGraph3DMoveXTowardsOrigin (10090)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DMoveYAwayFromOrigin (10094)
+DssGraph3DMoveYTowardsOrigin (10091)
+DssGraphNull (-3)
+-3
+I4 = 30
+
+
+DssGraph3DMoveZAwayFromOrigin (10095)
+DssGraph3DMoveZTowardsOrigin (10092)
+DssGraphNull (-3)
+-3
+I4 = 30
+No8Graph -> {Graph Type} Options -> 3D OptionsSave / Load Presets3D Charts
+ 1. Get presets content from current preset's file:
+    IDSSGraphStyle.get_3DView
+ 2. Write the new preset to a new file
+ 3. Set the preset of the name of the preview:
+    IDSSGraphStyle.put_3DView
+
+--------------------------------------------------------------------------------
+
+Note:
+
+The preset is a 3da files which each contains 23 lines, each line has a
+numerical value
+
+No10Graph -> Background -> 3D Floor, Left Wall, Right WallColor and Formatting3D
+Charts
+Color mode:
+DssGraphACMColorModel (549)
+DssGraphNull (-3)
+-3
+I4 = {
+1 = Series
+2 = Category
+4 = Exact color by height
+}
+Link wall colors to floor color
+DssGraphLinkColors (260)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+Show Left wall
+DssGraphShow3DLWall (329)
+DssGraphNull (-3)
+-3
+BOOL = -1 (enable) / 0
+Show right wall
+DssGraphShow3DRWall (330)
+DssGraphNull (-3)
+-3
+BOOL = 0
+Show floor
+DssGraphShow3DFloor (327)
+DssGraphNull (-3)
+-3
+BOOL = 0
+
+Partially Supported
+
+
+
+
+DssGraphACMColorModel  and DssGraphLinkColors have not been supported yet
+
+5
+
+Total:3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+
+I15817 - Consolidate Text and Label Formatting Properties in web-based RSD
+editor (Developer Parity)
+
+ https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300332407272
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300332407272]
+
+
+
+
+How to access in developerFeatureApplies toAPISupported for setting the value
+using XMLSE EstimateSET EstimateGraph -> {Graph Type} Options -> DisplayMarker
+position in legendAll Graphs
+DssGraphMarkerLayout (637)
+DssGraphNull (-3)
+-3
+I4 = {
+Left = 0
+Right = 1
+Centered on = 2
+Above = 3
+Makers Below Text = 4
+}
+No3
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Preferences -> OptionsSurpress Last Level Labels
+
+Object: template of graph node
+PropertySet:"GraphInfo"
+Property: "SuppressLastLevel"
+Yes1
+
+Total: 5.5 points
+
+Test plan and review: 0.5
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+Graph -> Preferences -> SeriesLabel Position
+
+Label Location
+DssGraphAxisDataTextPlace (10076)
+DssGraphNull (-3)
+-3
+I4 = {
+Center = 0
+Outside Minimum = 1
+Base of Chart = 2
+Inside Maximum = 3
+Outsize Maximum = 4
+}
+No3
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Preferences -> TitleAlignment
+
+Yes1
+
+Total: 5.5 points
+
+Test plan and review: 0.5
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+
+
+
+
+
+
+
+Graph -> Any sort of textChange to Exact Font SizeAll GraphsDssGraphFontSize100
+(10138)
+...
+-3
+I4 = 1050Yes1
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> Series -> Labels and ValuesLabels on SidesPie Charts
+DssGraphPieDataLabelLoc (639)
+DssGraphNull (-3)
+-3
+I4 = 8 (enable) / 7 (disable)
+
+
+DssGraphPieDataValueLoc (638)
+DssGraphNull (-3)
+-3
+I4 = 8 (enable) / 7 (disable)
+No3
+
+Total: 4.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+Graph -> {Graph Type} Options -> All Text FormatAlignmentAll Graphs
+Yes1.5
+
+Total: 3.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+Graph -> {Graph Type} Options -> All Text FormatRotationAll Graphs
+YesGraph -> Preferences -> AxisBox StyleAll Graphs
+DssGraphFontBox (601)
+
+
+2D:
+DssGraphY1Label (296)
+DssGraph2DO1Label (272) - {
+other graphs (no X1)
+}
+DssGraphLegendText (9)
+DssGraphY2Label (302) - Dual
+DssGraphX1Label (290) - {
+Polar, bubble, Histogram
+}
+3D:
+DssGraph3DColHeader (512)
+DssGraph3DRYHeader (558)
+
+
+I4 = {
+None = 0
+Single = 1
+Double = 2
+Beveled = 4
+Reverse Beveled = 5
+}
+No3
+
+Total: 5.5 points
+
+Test plan and review: 0.5
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 2
+
+No performance concerns
+
+Graph -> Preferences -> OptionsUse Nested LabelsAll Graphs
+
+Template - PropertySet (GraphInfo) - Property38 (NestedLabel)
+
+bool
+
+Yes1Estimated in Graph -> Preferences -> Options Surpress Last Level LabelsGraph
+-> Preferences -> TitleBox StyleAll Graphs
+DssGraphFontBox (601)
+
+
+DssGraphTitle (5)
+DssGraphSubtitle (4)
+DssGraphFootnote (3)
+DssGraphXTitle (293)
+DssGraphY1Title (299)
+DssGraphY2Title (305)
+-3
+I4 = {
+None = 0
+Single = 1
+Double = 2
+Beveled = 4
+Reverse Beveled = 5
+}
+No3Estimate in Graph -> Preferences -> Title AlignmentGraph -> Series -> Labels
+and ValuesSmart Label PlacementPie Charts
+DssGraphPieDataLabelLoc (639)
+DssGraphNull (-3)
+-3
+I4 = 4 (disable) / 7
+
+
+DssGraphPieDataValueLoc (638)
+DssGraphNull (-3)
+-3
+I4 = 4 (disable) / 7
+No3Estimate in Graph -> Series -> Labels and Values Labels on Sides
+
+
+
+
+
+I15925 - Color Scheme Formatting Properties in web-based RSD editor (Developer
+Parity) 
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300582868712
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300582868712]
+
+
+
+
+How to access in developerFeatureApplies toAPISupported for setting the value
+using XMLSE EstimateSET EstimateGraph -> Options -> ColorsSelect an overall
+color schemeVertical Area, Bar Graphs
+DssGraphAreaColor (564)
+DssGraphRiser (286)
+series: 0, 1, 2 ...
+I4 = 6732238
+
+
+DssGraphLineColor (588)
+DssGraphDataLine (258)
+series: 0, 1, 2 ...
+I4 = 6732238
+Yes
+
+
+Total: 4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+Graph -> {Graph Type} Options -> DisplayColor Mode (apply colors by series or
+category)Bar Graphs, 3D Surface, Pareto, Gant Chart, Combo Chart
+DssGraphACMColorModel (549)
+DssGraphNull (-3)
+-3
+I4 = {
+By Series = 1
+By Categories = 2
+}
+No
+
+
+Total: 4 points
+
+Test plan and review: 1
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 1
+
+No performance concerns
+
+
+
+
+The following data properties (inherited from the property list in TH4203,
+except for I15891 which was already investigated) are in the scope of this
+feature.
+
+
+I15814 - Prompt Ordering options in web-based RSD Editor (Developer Parity) 
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300308726744
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300308726744]
+
+
+
+
+SettingFeatureAPIStatusSE EstimateSET estimate
+
+
+
+Prompt orderingDocument IDSSObjectInfo → IDSSPrompts → IDSSPrompt → IndexNo5
+
+Total: 9 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 5(Not sure. Pending on the web design)
+
+No performance concerns
+
+
+
+
+
+I15873 - Grid Data Options in web-based RSD Editor (Developer Parity)
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300351797812
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300351797812]
+
+
+
+
+Setting
+Feature
+API
+Status
+SE EstimateSET Estimate
+
+
+Calculation evaluation order
+
+
+
+
+xml
+
+<unit_id>: ID of the metric used to define subtotal when setting evaluation
+order on subtotal
+
+<unit_type>: for subtotal, the unit type should be metric
+
+<subtotal_id> and <subtotal_index>: template subtotal is uniquely identified by
+its ID and the template subtotal's index
+
+Yes1
+
+Total: 6.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 4 (Not sure. Pending on the web design)
+
+No performance concerns
+
+
+
+Custom group subtotals and display settings
+
+
+
+
+xml
+
+<report_manipulation_method>: 
+
+<unit_id> and <unit_type>: the id and type of the template unit, used for
+searching for the object on the template, for Custom Group, its type is 1
+- DssTypeFilter
+
+<value>： the value the user wants to set. It could have the following three
+values:
+
+ 1. DssAggregationDefault = 0
+ 2. DssAggregationDisable = 1
+ 3. DssAggregationEnable = 2
+
+Yes1
+
+Total: 6.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 4 (Not sure. Pending on the web design)
+
+No performance concerns
+
+
+
+Null values settings
+
+
+
+
+xml
+
+PropertySet - VLDB Function (A2185AB6DD7C11D29FE500C04F8E7129)
+
+Null Display 3
+
+Missing Display 9
+
+
+
+
+PropertySet - AnalyticalEngineProperties  (E3796B516F8611D3858D00C04F685B39)
+
+DisplayNullReplaceValue 5
+
+NotCalculatedDisplay 6
+
+Yes
+
+
+Total: 5.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 3 (Not sure. Pending on the web design)
+
+No performance concerns
+
+
+Drilling settings
+
+
+
+
+xml
+
+<did> and <n> in <prs> node: the ID and name of the property set, used for
+getting the property set.
+
+<pri> and <n> in <pr> node: the index and the name of the property within the
+given property set, used for locating the property
+
+<pdv>: the default value for this property
+
+<pru>: whether to use the default value for this property
+
+<v>: the property user want to set
+
+
+
+
+PropertySet - GeneralTemplateProperties ( C7A5EDE21AB511D4B9B200C04F2233EA)
+
+DrillingOptions 1
+
+DrillingEnableReportDrilling 2
+
+DrillingKeepParent 3
+
+DrillingKeepParentEx 4
+
+DrillingThresholds 7
+
+DrillingInheritSubtotalsFromParent 11
+
+Yes
+
+
+Total: 5.5 points
+
+Test plan and review: 0.5
+
+Function testing: 1
+
+Stability testing: 1
+
+Automation: 3 (Not sure. Pending on the web design)
+
+No performance concerns
+
+
+SQL generation settingsNot supported for RSDNo have confirmed with Jiahui that
+this setting actually is not available in RSD, i.e, though this setting is
+exposed in document's Grid Data Options menu, its value cannot be changed and
+applied there successfully. In fact, this setting can only be changed from the
+report.
+
+Meanwhile, this setting in RSD doesn't display the correct value set from the
+report.TBD
+
+
+
+
+
+I15889 - Grid Subtotal Options in web-based RSD Editor (Developer Parity) 
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300361401300
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300361401300]
+
+
+
+
+Setting
+Feature
+API
+Status
+SE EstimateSET Estimate
+
+Subtotal definitions
+
+
+
+
+xml
+
+
+
+
+<subtotal_type>: 
+
+cpp
+
+<subtotal_style>:
+
+cpp
+
+
+
+
+Already supported on Web1
+
+Total: 7 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 3
+
+No performance concerns
+
+
+Subtotal Advanced options
+No
+
+5 
+
+including spike and design
+
+Total: 7 points
+
+Test plan and review: 1
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 3
+
+No performance concerns
+
+
+
+
+Subtotal Display optionsThis setting has already exposed for RSD on the webYes1
+
+
+
+
+
+
+
+
+I15890 - Advanced Sorting Options in web-based RSD Editor (Developer Parity) 
+
+https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300361421812
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/initiative/300361421812]
+
+SettingFeatureAPIStatusSESET
+
+
+Define rows sorting
+
+
+
+
+
+xml
+
+Currently, on the web we only exposed rows sorting, however, the server has been
+able to support column and page by sorting since the code is shared with
+Developer, as long as client sent correct object and axis name
+
+Yes
+
+
+Total:  9 points
+
+Test plan and review: 2
+
+Function testing: 2
+
+Stability testing: 1
+
+Automation: 4
+
+No performance concerns
+
+
+
+
+
+Define columns sortingYes
+
+
+Define pages sortingYes
+
+
+
+
+
+
+
+
+
+
+
+
+3. Acceptance Criteria
+
+The research result should answer the following questions for each property in
+list:
+1. Whether there are existing XML APIs to support rendering and configuring this
+property.
+2. If yes, what are the relevant XML APIs and how they are used to render and
+configure the property.
+3. Otherwise, what is the effort to support XML APIs for rendering and
+configuring this property.
+4. Is there any exception/difficulty to support the XML APIs?

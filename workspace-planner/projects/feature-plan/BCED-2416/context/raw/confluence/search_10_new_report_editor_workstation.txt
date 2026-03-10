@@ -1,0 +1,130 @@
+Found 10 results:
+1. Capabilities and Ownership Matrix - GDC and Collaborators (ID: 5038706144)
+   Workstation Core
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Top Menu and Toolbar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Interface
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Search bar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastr
+2. Tech Debts Planning 2020Q1 (ID: 997539077)
+   The table lists the candidate feature items for tech debts.
+#
+Scrum Team
+Parent Initiative
+Feature Title
+Expected output
+Value
+Notes
+1
+TL-Architect
+TL-SDK
+TL-Workstation-DataImport
+I18366 : CI Pipeline and Builds Process Enhancements and complexity reduction
+Unify and improve the
+3. Prompt Page (ID: 997528663)
+   1. Introduction
+A prompt is a question the system presents to a user when a report is executed. How the user answers the question determines what data is displayed on the report when it is returned from your data source.
+A report designer can include one or more prompts in any report. Prompts are an effective tool to:
+Allow each user who executes the report
+4. [SE Design] Make Workstation Export Dialog Consistent with Library (ID: 997434170)
+   Target release
+M2020 Update 2? / M2021 EA?
+Feature
+https://rally1.rallydev.com/#/27956540519d/detail/portfolioitem/feature/369494335572?fdp=true
+Design Status
+REVIEWING
+REVISING
+Approved
+SE Owner
+Qian, Junjuan  Li, Jian
+QA Owner
+Yi (Yvonne) Hu
+UX
+5. 2020 Licences and Privileges (4).xlsx (ID: att997268368)
+   Version
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+6. QBR Summaries - Next Generation of Integrity Manager and Command Manager (ID: 993923039)
+   Integrity Manager
+Video Demo  (updated 02/24)
+Link to Clickable prototype: https://microstrategy.invisionapp.com/d/main#/console/19440099/406181584/preview
+Advantages
+The next generation Integrity Manager has the following advantages compare with the current Integrity Manage
+7. [Research Spike] The Next Generation Command Manager - Command Manager as Python SDK (ID: 993922886)
+   Introduction
+Inspired by F16936 : POC | Integrate a python code editor into Workstation and accomplish one user journey for pulling data from Platform Analytics, applying business logic and integrating with a 3rd party application (Rally), we have some explorations on how we
+8. DesktopKnowledgeSharing.pptx (ID: att99386054)
+   Desktop Knowledge Sharing
+Kuan Du
+
+Agenda
+Workstation and Desktop Feature Equivalence
+In Memory Metadata
+MSTR File
+Datasets
+Settings and User Properties
+
+Desktop/Workstation Feature Equivalence
+Workstation
+
+Desktop
+
+Open local mstr file
+
+Open local mstr file
+
+Open dashboard on server
+
+Download dashboard from server
+
+Save dashboard to server
+
+Upload dash
+9. Knowledge Transfer from Henan.pptx (ID: att99385964)
+   Knowledge Transfer
+Henan Li
+
+Windows Workstation
+
+Code refactor for OneTierClientApp
+1. Split MainAppForm.h: This header file used to contain a mix of
+MainAppForm, DashboardWindow, FormWrapper and etc. Now, we split
+different classes into different files.
+2. Put all implementations in corresponding .cpp files. In the past, some of
+the implementations were wr
+10. TH4202 and TH4203 Spike and Grooming (ID: 988451845)
+   1. Problem statement
+There are plenty of graph formatting properties available in Developer but not available in Workstation yet. The gap exists because Developer calls COM APIs to set these graph properties, while Workstation calls XML APIs to set the graph properties. However, there&#39;s a gap between COM APIs and XML APIs. Some COM APIs don&#39;t have their XML

@@ -1,0 +1,153 @@
+## Answer
+
+MicroStrategy Workstation report editor features include drag-and-drop objects, advanced properties panel, SQL view, and support for transformations. Starting in Strategy One (November 2025), templates can be used for report creation. The new Dashboard Editor in Workstation, available from Strategy One (September 2025), offers enhanced authoring experience.
+
+---
+
+## Sources
+
+- **Create Reports in Library Web - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/2021/Library/en-us/Content/create_reports.htm
+  Starting in MicroStrategy 2021 Update 7, administrators can enable authoring of reports in Library Web. This preview feature allows users to create and edit reports. The Report Editor also includes an Advanced Properties panel, SQL view when report execution is paused, more formatting options, custo...
+
+- **Create and Edit Reports - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/create_static_reports.htm
+  , you can drag objects from the Workstation window into your Report and Filter editors. Use this option to quickly build and modify reports without searching objects directly in the editor. Click and drag objects such as metrics, attributes, and filters from the Project, Object, Components in object...
+
+- **MicroStrategy Desktop 10.10 Features Overview | PDF - Scribd** (relevance: 100%)
+  https://www.scribd.com/document/469892019/MSTR-desktop-and-workstation-v10-10-study-032018
+  MicroStrategy Desktop 10.10 Features Overview
+
+The document discusses MicroStrategy's redesigned data discovery and dossier authoring capabilities in its Visual Insight and Workstation 10.10 products. Key points include: - MicroStrategy…
+
+## Uploaded by
+
+Alberto Kontador
+
+You are on page 1
+
+75
+
+## S...
+
+- **New Dashboard Editor in Workstation - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/2021/Workstation/en-us/Content/new_dashboard_editor.htm
+  Strategy One
+
+# New Dashboard Editor in Workstation
+
+Starting in Strategy One (September 2025), you can enable a new Dashboard Editor in Workstation. This enhanced authoring experience has even more parity with Library capabilities.
+
+Enable the New Dashboard Editor
+
+Ensure that Workstation is connec...
+
+- **Report Editor: All Objects - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/current/MSTRWeb/webhelp/lang_1033/content/Using_the_All_Objects_window.htm
+  Strategy One
+
+# Report Editor: All Objects
+
+If you arrived here from Workstation, see the Workstation Document Authoring Help.
+
+The All Objects panel provides a place to search for, locate, and select
+objects that are part of the project. This panel is a primary tool when
+creating or modifying repor...
+
+- **Report Editor - MicroStrategy** (relevance: 99%)
+  https://www2.microstrategy.com/producthelp/current/reportdesigner/webhelp/lang_1033/content/report_editor.htm
+  [](
+ COMMUNITY
+ Home
+ Gallery
+ Learning Center
+ Discussions
+ Downloads
+ Cases
+ Activation Site
+ Groups
+ Announcements
+ Ideas
+ Members
+ 简体中文
+ 日本語
+ 한국어
+ More
+
+ Home
+ Gallery
+ Learning Center
+ Discussions
+ Downloads
+ Cases
+ Activation Site
+ Groups
+ Announcements
+ Ideas
+ Members
+ 简体中文
+ 日本語
+ 한국어
+
+Strateg...
+
+- **Creating and Editing Filters in Workstation - Strategy Tutorials** (relevance: 81%)
+  https://www.strategy.com/zh/software/video/strategy-tutorials?wtime=%7Bseek_to_second_number%7D&wchannelid=7kspn5pwwi&wmediaid=foz73d02kz
+  Strategy
+Home
+
+Products
+
+Solutions
+
+Ecosystems
+
+Resources
+
+Partners
+
+Products
+
+Solutions
+
+Ecosystems
+
+More
+
+X
+Linkedin
+EcoVadis Sustainability Rating Bronze Award
+
+MicroStrategy is now Strategy! I can tell you more!
+
+Open the Support Bot
+Strategy
+
+© 2026 Strategy. All Rights Reserved.
+
+- **Strategy One's Workstation: Your Central Hub for Streamlined App ...** (relevance: 68%)
+  https://www.strategy.com/software/strategyone/workstation
+  Strategy
+Home
+
+Products
+
+Solutions
+
+Ecosystems
+
+Resources
+
+Partners
+
+# Workstation
+
+The ultimate analytics powerhouse.
+  
+Harnessing advanced analytics solutions for maximum impact.
+
+workstation-hero-banner-gif.gif
+centralized-hub-for-app-workstation.png
+
+##### Centralized hub for app design and dep...
+

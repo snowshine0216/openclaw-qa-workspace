@@ -1,123 +1,154 @@
 ---
 name: feature-qa-planning-orchestrator
-description: Master orchestrator for feature QA planning. Use for artifact-first QA plan generation across runtime preparation, evidence gathering, unified plan writing, review, deterministic refactor, and final publication.
+description: Master orchestrator for script-driven feature QA planning. The orchestrator only calls phase scripts, interacts with the user, and spawns from phase manifests.
 ---
 
 # Feature QA Planning Orchestrator
 
-This skill owns the full QA-plan workflow.
+This skill now follows a fully script-driven workflow.
 
-## Required references
+The orchestrator has exactly three responsibilities:
 
-Always use:
+1. Call `phaseN.sh`
+2. Interact with the user when the workflow requires approval or a `REPORT_STATE` choice
+3. Spawn subagents from `phaseN_spawn_manifest.json`, wait for completion, then call `phaseN.sh --post`
+
+The orchestrator does not perform phase logic inline. It does not write artifacts, run validators directly, or make per-phase decisions outside the script contract.
+
+## Required References
+
+Always read:
+
 - `reference.md`
-- `references/canonical-testcase-contract.md`
+- `references/qa-plan-contract.md`
+- `references/context-coverage-contract.md`
+- `references/executable-step-rubric.md`
+- `references/review-rubric.md`
+- `references/e2e-coverage-rules.md`
 - `templates/qa-plan-template.md`
 
-## Core invariants
+## Runtime Layout
 
-- Final output is a unified QA plan, not an XMind synthesis tree.
-- Required plan sections must remain present in semantic order.
-- Small heading adjustments are allowed only when they still map to the same section intent.
-- The final plan should read like `docs/BCIN-6709_qa_plan.md`: structured, concise, and easy to understand.
-- Manual steps must be concrete enough to execute without guessing.
-- No phase may silently publish a draft that fails structure or executability validation.
-- No fetched or background-research artifact may influence the draft before it is saved to `context/`.
+All artifacts for a run live under:
 
-## Required inputs
-
-- `feature_id`
-- Jira key and/or equivalent source-of-truth issue reference
-- optional Confluence URL
-- optional GitHub PR or compare URLs
-- optional Figma URL or approved snapshots
-
-## Phase overview
-
-1. Phase 0 — existing-state check and runtime preparation
-2. Phase 1 — context gathering
-3. Phase 2 — unified QA-plan writing
-4. Phase 3 — unified QA-plan review
-5. Phase 4 — deterministic QA-plan refactor
-6. Phase 5 — finalize and notify
-
-## Phase 0 — Preparation
-
-- Load state from `task.json` and `run.json`.
-- Preserve the existing `REPORT_STATE` behavior from `reference.md`.
-- Ensure `projects/feature-plan/scripts/` exists.
-- Deploy these scripts from `scripts/lib/` into the runtime scripts directory before any other phase uses them:
-  - `save_context.sh`
-  - `validate_context.sh`
-  - `validate_testcase_structure.sh`
-  - `validate_testcase_executability.sh`
-- Use `scripts/lib/deploy_runtime_context_tools.sh` for the runtime copy step.
-- Stop immediately if the runtime directory is missing the deployed scripts after the copy step.
-- Do not auto-select destructive resume options.
-
-## Phase 1 — Context gathering
-
-- Spawn `qa-plan-write` per applicable source family with `mode=context`.
-- Require raw evidence to be saved immediately after fetch.
-- Require background searches to be saved immediately before their results are reused.
-- Save per-source summaries and update the evidence manifest.
-- Stop on missing primary system-of-record access.
-
-## Phase 2 — Unified QA-plan writing
-
-- Invoke `qa-plan-write` with `mode=write-plan`.
-- Pass only saved artifacts and runtime script paths.
-- Require the writer to use sources one by one:
-  - Confluence for main behavior and flow
-  - Jira for repro fixtures and missing coverage
-  - GitHub for edge cases, boundaries, automation-only reasoning, and performance-sensitive risks
-  - Figma/UX evidence for wording, workflow, and visible-state expectations
-- Require the draft to preserve the generalized QA-plan section contract.
-- Require the draft to match the quality bar of `docs/BCIN-6709_qa_plan.md`.
-- Before accepting the draft, run:
-
-```bash
-validate_context.sh <feature-id> --validate-testcase-structure "drafts/qa_plan_v<N>.md"
-validate_context.sh <feature-id> --validate-testcase-executability "drafts/qa_plan_v<N>.md"
+```text
+projects/feature-plan/<feature-id>/
+  context/
+  drafts/
+  task.json
+  run.json
+  phase1_spawn_manifest.json
+  phase3_spawn_manifest.json
+  phase4a_spawn_manifest.json
+  phase4b_spawn_manifest.json
+  phase5_spawn_manifest.json
+  phase6_spawn_manifest.json
+  qa_plan_final.md
 ```
 
-- If validation fails, rewrite once before the orchestrator accepts the draft.
+## Orchestrator Loop
 
-## Phase 3 — Unified QA-plan review
+For each phase:
 
-- Invoke `qa-plan-review` with `mode=review`.
-- Review the unified draft against:
-  - section preservation
-  - coverage
-  - simplicity
-  - structure
-  - wording
-  - executability
-- Fail the phase if:
-  - a required plan section is removed
-  - a section becomes too vague to execute
-  - saved evidence is missing for a claim used in the draft
+1. Run `scripts/phaseN.sh <feature-id> <project-dir>`
+2. If stdout includes `SPAWN_MANIFEST: <path>`:
+   - read `<path>`
+   - spawn every `requests[].openclaw.args` (pass args as-is; do **not** add `streamTo` — it is only supported for `runtime: "acp"`, not for `runtime: "subagent"`)
+   - wait for all spawned agents to finish
+   - for Phase 1 only: run `scripts/record_spawn_completion.sh phase1 <feature-id> <project-dir>` to record completed spawns into `run.json.spawn_history`
+   - run `scripts/phaseN.sh <feature-id> <project-dir> --post`
+3. If the script exits non-zero, stop immediately
 
-## Phase 4 — Deterministic QA-plan refactor
+## Spawn Task Reference Instructions
 
-- Invoke `qa-plan-refactor` using the reviewed unified draft.
-- Apply only the requested review fixes.
-- Re-run both validators on the rewritten draft.
-- Allow at most one retry after the initial refactor pass.
-- If the draft still fails validation, stop and report the remaining blockers.
+Each spawn manifest embeds phase-specific "Required references" in the task text. Subagents are explicitly told which files to read and how to use them. The orchestrator does not pass references as attachments; the task text includes absolute paths and usage hints.
 
-## Phase 5 — Finalize + notify
+See `README.md` for the phase-to-reference mapping table.
 
-- Ask the user for final approval before promoting the draft to `qa_plan_final.md`.
-- Archive the prior final artifact before overwrite.
-- Notify via `feishu-notify` after finalization.
+## Phase Contract
 
-## Completion gate
+### Phase 0
 
-Do not finalize the workflow unless all of the following are true:
-- required semantic sections are present
-- no section was silently removed
-- manual cases are concrete enough to execute
-- the draft passed structure validation
-- the draft passed executability validation
-- all reused evidence was saved to `context/`
+- Entry: `scripts/phase0.sh`
+- Work: initialize runtime state, check requested source access, classify `REPORT_STATE`
+- Output:
+  - `context/runtime_setup_<feature-id>.md`
+  - `context/runtime_setup_<feature-id>.json`
+- User interaction: when `REPORT_STATE` is `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`, present options (full_regenerate, smart_refresh, reuse). After user chooses, run `scripts/apply_user_choice.sh <mode> <feature-id> <project-dir>`. Then: full_regenerate → run phase0; smart_refresh → run phase2; reuse → continue from current phase.
+
+### Phase 1
+
+- Entry: `scripts/phase1.sh`
+- Work: generate one spawn request per requested source family
+- Output: `phase1_spawn_manifest.json`
+- `--post`: validate spawn policy and evidence completeness. If validation fails, the script exits `2` and prints `REMEDIATION_REQUIRED: <source_family>`
+
+### Phase 2
+
+- Entry: `scripts/phase2.sh`
+- Work: scan `context/` and build `context/artifact_lookup_<feature-id>.md`
+- No spawn
+
+### Phase 3
+
+- Entry: `scripts/phase3.sh`
+- Work: spawn the coverage subagent
+- Output: `phase3_spawn_manifest.json`
+- `--post`: validate `context/coverage_ledger_<feature-id>.md` and sync the artifact lookup
+
+### Phase 4a
+
+- Entry: `scripts/phase4a.sh`
+- Work: spawn the subcategory-draft writer
+- Output: `phase4a_spawn_manifest.json`
+- `--post`: validate `drafts/qa_plan_subcategory_<feature-id>.md`
+
+### Phase 4b
+
+- Entry: `scripts/phase4b.sh`
+- Work: spawn the top-category grouper
+- Output: `phase4b_spawn_manifest.json`
+- `--post`: validate `drafts/qa_plan_v1.md`
+
+### Phase 5
+
+- Entry: `scripts/phase5.sh`
+- Work: spawn a combined review + refactor pass
+- Output: `phase5_spawn_manifest.json`
+- `--post`: require:
+  - `context/review_notes_<feature-id>.md`
+  - `context/review_delta_<feature-id>.md`
+  - `drafts/qa_plan_v2.md`
+  - `qa_plan_v2.md` differs from `qa_plan_v1.md`
+
+### Phase 6
+
+- Entry: `scripts/phase6.sh`
+- Work: spawn the format/search/few-shots quality pass
+- Output: `phase6_spawn_manifest.json`
+- `--post`: require:
+  - `drafts/qa_plan_v3.md`
+  - `context/quality_delta_<feature-id>.md`
+  - valid XMindMark hierarchy
+  - executable nested steps
+
+### Phase 7
+
+- Entry: `scripts/phase7.sh`
+- Work: archive any existing final plan, promote the best available draft, write the finalization record, attempt Feishu notification
+- User interaction: explicit approval before running the script
+
+## QA Plan Format
+
+All drafts are valid XMindMark.
+
+Rules:
+
+- No `Setup:` sections
+- No legacy `Action:` / `Expected:` labels
+- Action steps are nested atomic bullet points
+- Expected outcomes are deeper nested observable bullet leaves
+- Optional notes use HTML comments
+- The plan begins with a central topic line
+
+Use `templates/qa-plan-template.md` as the required scaffold.

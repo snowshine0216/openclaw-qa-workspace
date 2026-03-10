@@ -1,29 +1,149 @@
 {
   "skill_name": "feature-qa-planning-orchestrator",
+  "default_failure_policy": "blocking",
   "evals": [
     {
       "id": 1,
-      "prompt": "Write a unified QA plan for an error-recovery feature. Keep every required section, allow small heading adjustments only when they still map semantically, and make the output read like a concise, structured QA plan rather than an XMind tree.",
-      "expected_output": "The generated plan keeps all required semantic sections, uses readable grouped wording, and does not collapse into testcase-tree headings or source silos.",
-      "files": []
+      "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce a context index, coverage ledger, and a unified draft in XMindMark.",
+      "expected_output": "Valid context index with feature classification, coverage ledger mapping mandatory candidates, and draft QA plan in valid XMindMark. Evidence saved under context/.",
+      "files": [],
+      "expectations": [
+        "context_index_<feature-id>.md exists with required headings",
+        "coverage_ledger_<feature-id>.md maps mandatory candidates",
+        "Draft passes markxmind validation",
+        "Evidence saved under context/ before influencing plan"
+      ]
     },
     {
       "id": 2,
-      "prompt": "Generate a QA plan where Platform and UI - Messaging are not needed for the current feature. Preserve those sections and mark them N/A with short reasons instead of deleting them.",
-      "expected_output": "The output retains the required sections and uses concise N/A rationale rather than dropping them.",
-      "files": []
+      "prompt": "Review a QA plan draft for executable-step quality. Reject vague phrases like 'verify correct behavior' or 'ensure it works' in manual action steps.",
+      "expected_output": "Rewrite requests and executable-step fixes. Banned phrases removed; action steps remain user-visible.",
+      "files": [],
+      "expectations": [
+        "No vague phrases (verify correct behavior, ensure it works) in manual steps",
+        "Action steps are user-visible and concrete",
+        "Review artifact records rewrite requests"
+      ]
     },
     {
       "id": 3,
-      "prompt": "Write a unified QA plan using Confluence for the main flow, Jira for fixtures, GitHub for edge cases, and Figma for visible-state wording. Keep the manual wording user-facing and move away from source-specific phrasing.",
-      "expected_output": "The output reflects source-specific roles without reading like stitched-together domain drafts.",
-      "files": []
+      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same 8-phase model (Phase 0-7).",
+      "expected_output": "All docs aligned on Phase 0-7. No legacy six-phase or qa-plan-contract-simple references.",
+      "files": [],
+      "expectations": [
+        "Phase model is 0-7 in all referenced docs",
+        "No qa-plan-contract-simple.md references",
+        "AGENTS.md Core Workflow matches SKILL.md phase overview"
+      ]
+    }
+  ],
+  "eval_groups": [
+    {
+      "id": "context_extraction",
+      "policy": "blocking",
+      "prompt": "Given multi-source feature evidence, produce a context index that captures journeys, capability families, risks, fixtures, classification, and traceability.",
+      "fixture_files": [
+        "workspace-planner/projects/feature-plan/BCED-2416/drafts/qa-plan-draft-v1.md"
+      ],
+      "expected_pass_behavior": "Required context-index headings exist, feature classification is explicit, and mandatory coverage candidates are populated for user-facing features.",
+      "expected_failure_signals": [
+        "missing heading",
+        "missing classification",
+        "missing mandatory coverage candidates"
+      ],
+      "expected_remediation_output": "context/coverage_gaps_<feature-id>.md or a corrected context index"
     },
     {
-      "id": 4,
-      "prompt": "Review and refactor a draft that uses vague wording like recover from a supported error, verify correct recovery, and perform another valid action. Make the final draft executable and aligned to docs/BCIN-6709_qa_plan.md quality.",
-      "expected_output": "The rewritten draft replaces vague text with concrete trigger/action/result wording and improves grouping and readability.",
-      "files": []
+      "id": "context_usage",
+      "policy": "blocking",
+      "prompt": "Given a context index and coverage ledger, verify that every mandatory coverage candidate is represented or explicitly excluded in the draft.",
+      "fixture_files": [
+        "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md"
+      ],
+      "expected_pass_behavior": "Coverage ledger and draft preserve candidate-to-scenario traceability.",
+      "expected_failure_signals": [
+        "missing candidate mapping",
+        "silent drop"
+      ],
+      "expected_remediation_output": "updated coverage ledger and draft traceability artifact"
+    },
+    {
+      "id": "executable_step_rejection",
+      "policy": "blocking",
+      "prompt": "Reject drafts that use vague phrases or implementation-heavy wording in manual action steps.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Banned vague phrases are removed and action steps remain user-visible.",
+      "expected_failure_signals": [
+        "verify correct behavior",
+        "ensure it works",
+        "implementation-heavy wording"
+      ],
+      "expected_remediation_output": "rewrite requests and executable-step fixes"
+    },
+    {
+      "id": "e2e_minimum",
+      "policy": "blocking",
+      "prompt": "Verify that user-facing features contain required EndToEnd journeys and non-user-facing features explicitly justify absence of EndToEnd coverage.",
+      "fixture_files": [],
+      "expected_pass_behavior": "EndToEnd coverage matches feature classification and lifecycle.",
+      "expected_failure_signals": [
+        "missing EndToEnd",
+        "missing completion signal",
+        "missing non-user-facing justification"
+      ],
+      "expected_remediation_output": "corrected E2E section or classification update"
+    },
+    {
+      "id": "review_delta",
+      "policy": "blocking",
+      "prompt": "Given a reviewed draft and its refactor delta, verify that blocking findings are resolved before finalization.",
+      "fixture_files": [
+        "workspace-planner/projects/feature-plan/BCED-2416/drafts/qa-plan-draft-v2.md"
+      ],
+      "expected_pass_behavior": "Review delta records only resolved blocking findings before Phase 7.",
+      "expected_failure_signals": [
+        "partially_resolved",
+        "not_resolved"
+      ],
+      "expected_remediation_output": "updated review_delta or another review/refactor cycle"
+    },
+    {
+      "id": "stale_doc_sync",
+      "policy": "blocking",
+      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS-facing workflow descriptions all describe the same phase model and contract files.",
+      "fixture_files": [],
+      "expected_pass_behavior": "No legacy six-phase or qa-plan-contract-simple references remain.",
+      "expected_failure_signals": [
+        "qa-plan-contract-simple.md",
+        "old phase list",
+        "stale README"
+      ],
+      "expected_remediation_output": "synchronized documentation updates"
+    },
+    {
+      "id": "unresolved_step_handling",
+      "policy": "blocking",
+      "prompt": "Verify that unresolved executability gaps are preserved with comments, linked research, and next actions rather than silently removed.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Draft and review outputs preserve unresolved steps with explicit comments and follow-up actions.",
+      "expected_failure_signals": [
+        "missing Comment:",
+        "missing next action",
+        "missing research artifact"
+      ],
+      "expected_remediation_output": "updated draft, review artifact, and research reference"
+    },
+    {
+      "id": "advisory_readability",
+      "policy": "advisory",
+      "prompt": "Check whether the final QA plan remains concise and readable without collapsing into source silos.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Plan stays grouped by user-facing behavior and remains scan-friendly.",
+      "expected_failure_signals": [
+        "source-silo wording",
+        "overly verbose grouping"
+      ],
+      "expected_remediation_output": "readability-oriented refactor suggestions"
     }
   ]
 }

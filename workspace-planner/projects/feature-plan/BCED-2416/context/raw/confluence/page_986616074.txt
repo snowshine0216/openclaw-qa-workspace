@@ -1,0 +1,473 @@
+===== PAGE 986616074 =====
+
+
+
+https://rally1.rallydev.com/#/27954169967d/detail/portfolioitem/feature/369494335572
+[https://rally1.rallydev.com/#/27954169967d/detail/portfolioitem/feature/369494335572]
+
+
+
+
+Details string update, please check the link 
+
+Design for web library 
+
+
+
+
+Design goal:
+ 1. Updating the design for export to PDF in authoring web, make the interface
+    and internal logic consistent with client
+ 2. Adjust the design to meet the need for authoring persona （main goal is try
+    to export a better looking pdf, able to accept more settings showing to him
+    ）
+ 3. Try to achieve the goal of simplicity, easier act and less confusion 
+
+
+
+
+Overviewdescriptiondifferent with clientmock up for authoring (all settings show
+here)
+
+panel reorganize
+
+Combine PDF settings and Content settings into More settings
+
+We show more settings in authoring web
+
+
+
+
+      (show filter by default choose All filters at the end, apply for all mock
+up in this page)
+
+string updatingUpdating all strings to keep consistent with client
+
+
+Setting hide/disable logic
+
+Hide the settings which don’t work or need to choose. And disable the settings
+that don’t work on specific conditions.
+
+Hide settings
+
+Grid setting, contents, range
+
+Disable settings
+
+Disable settings
+
+           
+
+Orientation Setting UI style
+
+Change the icons of Landscape and Portrait. And remove the Automatic setting.
+
+Authoring can not support remembering user choice for now
+
+Dropdown Option Tooltip
+
+Support the tooltip for the dropdown when hovering on the options which provide
+users expectation for export results.
+
+
+
+Grid Settings Tooltip 
+
+Support tooltip with image and words
+
+
+
+
+
+
+Entry Point
+
+There are four different entry points for Export to PDF
+
+1.File-Export to PDF (inside dossier)
+
+
+
+2.Visualization Setting- Export - PDF(inside dossier)
+
+
+
+3.Authoring home - PDF (outside dossier)
+
+
+
+4.Authoring home - subscription - add-PDF(outside dossier)
+
+
+
+5.File-schedule delivery to Email  (inside dossier)
+
+
+
+
+
+
+6. report- alert - new entrypoint
+
+
+
+
+
+Entry point 1: File-Export to PDF (inside dossier)
+
+(show filter by default choose All filters at the end, apply for all mock up in
+this page)
+
+DescriptionMockupsRANGE: This page      (viz type can be detected)If there's one
+grid on this page
+
+The strings have been updated.
+
+Hide content
+
+The default settings are displayed on the right.
+
+default  paper size: letter
+
+
+
+
+
+
+
+
+
+If there's one graph on this page
+
+The default settings are displayed on the right.
+
+Hide content
+
+Hide the grid settings when there's no grid on the page.
+
+   
+
+If there are multiple visualizations on this page
+
+no grid
+
+
+
+
+The default option for Contents is 'All visualizations together.'
+
+Hide grid settings
+
+
+
+has grid
+
+show grid setting
+
+
+
+when choose ‘
+
+Each visualization separately’ or ‘Both’
+
+if this page contains grid, show grid setting
+
+if this page does not contain grid, hide grid setting
+
+
+
+
+  
+
+RANGE: This chapter or entire dossier           (viz type can not be
+detected)Users choose this chapter or entire dossier
+
+The default option for Contents is 'All visualizations together.'
+
+
+
+
+
+
+
+enable grid setting
+
+
+
+when choose ‘
+
+Each visualization separately’ or ‘Both’
+
+enable grid setting
+
+(This is not our expectation from UX perspective. However, because we can’t
+support detect whether there is a grid in the chapter/dossier right now, we can
+only detect current page. So we will always show the Grid Settings, when range
+is This chapter/Entire dossier and contents is not All visualizations together.)
+
+
+
+Help information
+
+There are two tooltips on the window. Users can hover on info icon to see more
+information.
+
+
+
+
+Tooltip 1: 
+
+The grid will be scaled to fit the page width. Multiple pages may be needed to
+display all the rows of data.
+
+
+
+
+Tooltip 2:
+
+Grids with several columns that cannot fit one page will be split into multiple
+pages. Set the attribute columns to repeat on each page to provide additional
+context.
+
+
+
+
+
+
+
+
+When users hover on the info icon, we will show the tooltip to explain the
+options. 
+
+
+
+
+All visualizations together
+
+Export the content currently displayed on a single page. For visualizations that
+require scrolling, like grids, this option will only export some of your data.
+
+
+
+
+Each visualization separately
+
+Export each visualization on a separate page. Grids may require more than one
+page depending on the number of rows and columns.
+
+
+
+
+
+
+
+Entry point 2: Visualization Setting- Export - PDF(inside dossier)
+
+
+
+
+
+grid
+
+
+
+graph
+
+
+
+
+Entry point 3&4&5: Authoring home - PDF & Subscription
+
+viz type can not be detected, grid setting always show
+
+when subscribe/ export a dossier in authoring home page
+
+
+
+
+set default range to entire dossier
+
+contents all visualization together
+
+
+
+
+other rules the same with interface inside dossier
+
+
+
+tooltip
+
+
+
+
+Entry point 6: report- alert - new entrypoint
+
+viz type can not be detected, grid setting always show
+
+add PDF settings   button
+
+when user choose  the dossier deliver format as PDF
+
+
+
+
+
+
+
+pdf setting same with Entry point 3&4
+
+
+
+
+set default range to entire dossier
+
+contents all visualization together
+
+
+
+
+other rules the same with interface inside dossier
+
+
+
+
+
+
+
+Spec
+
+
+Interface 
+
+
+
+
+
+
+
+
+
+
+
+Icons
+
+250
+
+iconpositionsize
+
+
+
+(0, 150)18*18 px(1508, 206)26*26 px
+
+
+
+(1544, 206)26*26 px
+
+
+
+
+
+
+
+
+Contents default value case collections，including handle for none viz (same with
+client)
+
+Casebehavior Contents default value
+
+
+Range:This page
+
+single viz
+
+Hide Contents
+
+(Show Grid Settings depends on whether it is a grid)
+
+Each visualization separately
+
+
+
+single viz + non-viz
+
+Show Contents
+
+(Show Grid Settings depends on whether it is a grid)
+
+Each visualization separately
+
+  
+
+multiple viz
+
+Show Contents (Show Grid Settings depends on whether it is a grid)
+
+All visualizations together
+
+non viz
+
+
+
+
+Hide Contents, Hide Grid Settings
+
+All visualizations together
+
+
+
+Range: This chapter/Entire dossier
+
+Multiple viz
+
+Show Contents, show Grid Settings
+
+All visualizations together
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

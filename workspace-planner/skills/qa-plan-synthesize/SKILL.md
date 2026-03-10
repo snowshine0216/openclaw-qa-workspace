@@ -1,6 +1,6 @@
 ---
 name: qa-plan-synthesize
-description: Synthesizes domain sub-testcase artifacts into one canonical XMind-compatible draft. Use when feature-qa-planning-orchestrator reaches Phase 5 and needs a merged draft that passes structure and executability validation.
+description: Synthesizes domain sub-testcase artifacts into one canonical XMind-compatible draft. Use when feature-qa-planning-orchestrator reaches Phase 5 and needs a merged draft that passes XMindMark structure validation (markxmind).
 ---
 
 # QA Plan Synthesize
@@ -21,8 +21,8 @@ The synthesizer uses only the paths it receives. It does not re-infer paths.
 ## Required references
 
 Always use:
-- `references/canonical-testcase-contract.md`
-- `templates/test-case-template.md`
+- `references/qa-plan-contract-simple.md`
+- `templates/qa-plan-template.md`
 - `docs/priority-assignment-rules.md`
 
 ## Input contract
@@ -52,13 +52,14 @@ Always use:
 - Preserve source attribution for each item.
 - Do not deduplicate yet.
 
-### Step 2: Heading normalization pass
+### Step 2: Coverage-ownership normalization pass
 
-- Normalize every top-level heading to the canonical structure.
-- Only map aliases for `EndToEnd` and `Functional`.
-- Any illegal custom top-level heading must be remapped into the correct canonical bucket or rejected.
-- Recreate missing fixed headings even if a source omitted them.
-- If a fixed heading has no evidence-backed content, keep it with `N/A — <reason>`.
+- Normalize only obviously equivalent aliases such as `End to End`/`E2E`, `Cross-Functional`/`xFunctional`, or close section-name variants.
+- Preserve feature-fit top-level headings when they are semantically clear and already own the right coverage domain.
+- Use `<!-- Coverage domains: ... -->` comments when section ownership would otherwise be ambiguous.
+- Reject or rewrite vague custom headings such as `Misc`, `Other`, or headings that hide coverage ownership.
+- Do not recreate omitted fixed headings just to mirror a scaffold.
+- Do not add empty `N/A` sections solely to satisfy legacy structure.
 
 ### Step 3: Executability rewrite pass
 
@@ -88,19 +89,18 @@ If a detail is missing:
 ### Step 5: Priority assignment
 
 - Apply `docs/priority-assignment-rules.md` after normalization and executability rewrite.
-- Preserve the heading order from the canonical contract.
-- Do not use priority tagging to justify dropping any fixed section.
+- Preserve a clear, feature-fit reading order instead of forcing canonical heading order.
+- Do not use priority tagging to justify dropping required coverage ownership.
 
 ### Step 6: Pre-save validation
 
-Run both checks before saving:
+Run markxmind validation before saving:
 
 ```bash
-validate_context.sh <feature-id> --validate-testcase-structure "drafts/test_key_points_xmind_v<N+1>.md"
-validate_context.sh <feature-id> --validate-testcase-executability "drafts/test_key_points_xmind_v<N+1>.md"
+node .agents/skills/markxmind/scripts/validate_xmindmark.mjs "drafts/test_key_points_xmind_v<N+1>.md"
 ```
 
-If either check fails:
+If validation fails:
 - rewrite once
 - re-run both checks
 - if still failing, return an explicit error to the orchestrator and do not save a weak draft as final Phase 5 output

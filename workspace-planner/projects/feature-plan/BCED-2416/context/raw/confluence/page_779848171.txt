@@ -1,0 +1,1078 @@
+===== PAGE 779848171 =====
+
+
+
+
+
+
+Target release11.2 RCFeature
+
+F23459
+[https://rally1.rallydev.com/#/27956718855d/detail/portfolioitem/feature/312243589116] Support
+XML APIs for RSD enhancement (Developer Parity)
+
+RequirementsLink to the requirements - This may be covered by the Rally feature
+above. If not, please provide a link to a page that describes the requirements.
+Design Status
+
+  YellowREVIEWING
+
+SE OwnerFei LiangQA OwnerLanlan WeiUX OwnerUser Experience owner (if any) - Some
+features may not have UX implications Initial Design Date06/25/2019Design
+Approval DateApproved Date Reviewed byZhuo HaoApproved byDesign approver(s) -
+Same as above, meaning it should include both SE and QA approvers.Related
+DesignsLink(s) to related design documentation (if any). This might be designs
+in a similar area or which depend upon this design etc. Design ContributorsZhuo
+HaoUX DesignLink to the UX design (if applicable) Test PlanQA Plan: Feature
+F23459
+[https://microstrategy.sharepoint.com/:w:/r/sites/Technology/QA/_layouts/15/Doc.aspx?sourcedoc=%7b62d364f7-5283-4731-8a25-29577d680b38%7d&action=edit&wdPid=6ebd333&cid=ffdcd7b1-2288-49e3-85c8-ceb95d040a75]
+  
+
+
+
+
+(ZH: Please fill in the fields in the above table.)(P3)
+
+
+
+
+
+
+
+1. Purpose
+
+Currently, when users are creating RSDs, they generally do so in MicroStrategy
+Web, and this often becomes a fragmented experience, as users can do a lot of
+formatting in Web, but then have to switch to Developer to complete a lot of
+common tasks. Configuring advanced grid options is one of the tasks that force
+users to switch to the Developer to achieve the task.
+
+
+2. Design
+
+Overall, we are taking many of the commonly used and high-value formatting
+options over from Developer into Workstation.
+
+(ZH: I think it is not only web editor, but also workstation, right?)(P3)
+
+(FL: I have updated to only include the Workstation)
+
+
+2.1 Components
+
+This feature is mainly about to migrate the settings of Documents like Grid Data
+Options from Developer to Web, which needs changes on both Server side and
+Client side.
+
+To be specific, the Server side will investigate the COM API and figure out the
+corresponding property/object. Then find out whether is a matching XML API
+available to do the same work. 
+
+2.1.1 INVESTIGATION OF COM APIS
+
+The detailed investigation result of the mapping between COM API and XML API can
+be found at the confluence page here Developer property parity
+[https://microstrategy.atlassian.net/wiki/spaces/TECTools/pages/745277867/Developer+property+parity]
+
+2.1.2 XML API SUPPORT
+
+US173148 CALCULATION ORDER
+
+BlueSupported
+
+The evaluation order is saved on different template object's member
+EvaluationOrder:
+
+ 1. Consolidation: IDSSTemplateConsolidation::EvaluationOrder
+ 2. Metric and Derived Metric: IDSSTemplateMetric::EvaluationOrder
+ 3. Derived Element: IDSSTemplateAttribute3::EvaluationOrder
+ 4. Subtotal: IDSSTemplateSubtotal::EvaluationOrder
+ 5. Report Limit and Metric Limit: IDSSTemplateMetrics::EvaluationOrder
+
+We have already a report manipulation available for this, which is
+DssReportManipulationSetEvaluationOrder. 
+
+CONSOLIDATION
+
+METRIC AND DERIVED METRIC
+
+DERIVED ELEMENT
+
+REPORT LIMIT AND METRIC LIMIT
+
+The XML for these settings should look like
+
+xml
+
+SUBTOTAL
+
+For subtotal, the XML should contain more information than others 
+
+xml
+
+Here
+
+ 1. <unit_id>: ID of the metric used to define subtotal when setting evaluation
+    order on subtotal
+ 2. <ev>: evaluation order
+ 3. <tartemp>: target template node. 1 for view template and 0 for data
+    template.
+ 4. <subtotal_index>: the template subtotal's index, we use index and ID to
+    match the desired subtotal
+
+(ZH: I think for target template, in document, we only use view template, right?
+Then we can let client side use 1 for tartemp.)(P3)
+
+(FL: I have put this in "2.3 APIs -2.3.1 API Usage and Examples -US173148
+Calculation Order")
+
+(ZH: Can you help explain what subtotal_index means?)(P3)
+
+(FL: I put the explanation of subtotal_index in "2.3 APIs -2.3.1 API Usage and
+Examples -US173148 Calculation Order", and I have also copied it here)
+
+US173360 CUSTOM GROUP SUBTOTALS
+
+RedNO XML API
+
+This setting operates on the COM object IDSSTemplateCustomGroup2's member
+Aggregation. 
+
+So far we have no existing XML API available to alter this object's value,
+therefore we need to add a document manipulation like following
+
+xml
+
+Here the tag <v> can have the following values:
+
+ 1. DssAggregationDefault = 0
+ 2. DssAggregationDisable = 1
+ 3. DssAggregationEnable = 2
+
+And the workflow on the server side may not be very complicated:
+
+ 1. we will get the template custom group object based on the unit ID and unit
+    type passed from client
+ 2. parse the XML and get the desired value
+ 3. set the value to TemplateCustomGroup's Aggregation
+ 4. set the correct document state
+
+US173467 DRILL SETTINGS
+
+BlueSupported
+
+In the Grid Data Option's menu, there are 5 settings:
+
+ 1. Enable report drilling
+ 2. Drill anywhere/Drill within
+ 3. Keep Parent while drilling
+ 4. Keep Thresholds while drilling
+ 5. Inherit across-level subtotal from parent
+ 6. Drill Attribute Join type
+
+ENABLE REPORT DRILLING
+
+DRILL ANYWHERE/DRILL WITHIN
+
+So far, setting 1 - Enable report drilling and setting 2 - Drill anywhere/within
+have been exposed on the web via following <rbd> command:
+
+xml
+
+KEEP PARENT WHILE DRILLING
+
+KEEP THRESHOLDS WHILE DRILLING
+
+INHERIT ACROSS-LEVEL SUBTOTAL FROM PARENT
+
+And based on the fact that the first 5 settings all operate on
+IDSSTemplate's GeneralTemplateProperties property set, we can use the same <rbd>
+command for modifying other 4 drilling-related settings if the client provided
+the necessary information. And here are the meanings of XML tags:
+
+ 1. <pru>: Att_PropertyUseDefault (if use default is true, we will ignore the
+    value passed from the client)
+ 2. <pri>: Att_PropertyID
+ 3. <v>: Att_Value 
+
+DRILL ATTRIBUTE JOIN TYPE
+
+And the last setting - Drill Attribute Join Type is special because it works on
+the collection of attributes within the template's target folder. Fortunately,
+we have provided a document manipulation to do this job. Here is the same of
+changing the metric's join type in some template's target's folder
+
+xml
+
+Here we need :
+
+ 1. <unit_id>, <unit_type>: used for finding the object in the target folder
+ 2. <did>: used for getting the property set
+ 3. <n>: the name of the property we want to change
+
+US173480 SUBTOTAL DEFINITION -> ADVANCED SUBTOTAL OPTIONS
+
+RedNO XML API
+
+This user story contains 2 settings that have not been supported by the server:
+
+ 1. "Group by" level subtotal
+ 2. Custom subtotal
+
+"GROUP BY" LEVEL SUBTOTAL
+
+So far the server has provided 2 report manipulation for "By position" level
+subtotal and "Across level" level subtotal, and we need to introduce a new
+manipulation for setting the "Group by" level subtotal.
+
+According to the investigation result
+here: https://rally1.rallydev.com/#/27956718855d/detail/userstory/305792297928
+[https://rally1.rallydev.com/#/27956718855d/detail/userstory/305792297928], we
+should let the user choose some template units for each custom subtotal, and put
+these units in the custom subtotal's units collection, and then add this custom
+subtotal into the template's custom subtotals collection.
+
+(ZH: So we don't need the subtotal GUID to locate the subtotal?)(P3)
+
+(FL: For "By position" and "Across level" subtotal, we can find the template
+subtotal definition by subtotal type)
+
+(ZH: Can you help describe the detailed steps for this manipulation?)(P2)
+
+(FL: I have added the steps of creating "Group by" level subtotal)
+
+(ZH: How can a user remove/clear/modify group by level subtotal?)(P2)
+
+(FL: Currently for "By position" and "Across level", we always remove the
+current subtotal and create the new one if the value is modified; also in
+Developer, no matter we are trying to remove/edit/add "group by" subtotal, we
+always clear the CustomSubtotals collection first and add subtotals from a clean
+state. we can do also it here for "Group by" subtotal for other clients)
+
+(ZH: I see. Please do remind client side about it. They need to know how to
+remove/clear/modify it.)
+
+xml
+
+When processing this manipulation, we will
+
+ 1. clear the current CustomSubtotals collection in the template.
+ 2. find the Subtotal definition from subtotal type
+ 3. check whether the Subtotal has already in the TemplateSubtotals collection,
+    if not, create a new one.
+ 4. create a new CustomSubtotal from the Subtotal definition and add it to the
+    CustomSubtotals collection
+ 5. add the units in the unit collection to the CustomSubtotal
+
+If no units in the unit collection, then it's Grand total, we will create the
+CustomSubtotal object without adding the units to it.
+
+CUSTOM SUBTOTAL
+
+If a new custom subtotal is defined, it will be added to the IDSSTemplate's
+Subtotals collection. We need a new manipulation to do this, where we let the
+user define different subtotal on each metric.
+
+(ZH: Can you help describe the detailed steps for this manipulation? Is the
+custom subtotal a first class object?)(P2)
+
+(FL: I have added the steps for handle manipulation; custom subtotal is actually
+a TemplateSubtotal, so it isn't a first class object)
+
+(ZH: How can a user remove/clear/modify custom subtotal?)(P2)
+
+(FL: I have added the description of how users can remove/clear/modify the
+custom subtotal)
+
+xml
+
+For this manipulation, we will create a new TemplateSubtotal object and add it
+to the Template's TemplateSubtotals collection. And for each unit (metric), we
+will create a MetricSubtotal object and put them in the newly created
+TemplateSubtotal.
+
+If the user wants to modify the custom subtotal, we could always delete the
+original ones and create new subtotals. so:
+
+ 1. To remove all the custom totals, the client could send this XML without name
+    and units collection, thus all the custom totals will be cleared.
+ 2. To remove some of the custom totals, we can clear the TemplateSubtotals
+    collection first and re-create Subtotals to be kept
+ 3. To modify some custom total, we can re-create it from scratch
+
+(ZH: Please describe what "is_add" means.)(P3)
+
+US174356 NULL VALUES
+
+BlueSupported
+
+This user story contains 6 settings:
+
+ 1. Null display settings: Use default
+ 2. Set the value to be displayed in the reports &when there is an empty value
+    in the data retrieved from the warehouse
+ 3. Set the &value to be displayed in the reports when there is an empty value
+    in the data as a result of the cross-tabulation process
+ 4. Set the value to be used in place of empty values when the report data is
+    sorted
+ 5. Set the value to be displayed in the reports when the metric value cannot be
+    calculated at the desired level
+ 6. Missing Object Display
+
+All these 6 settings change the IDSSObjectInfo's property set for some template,
+and the manipulation mentioned above for US173467 Drill Settings is already
+available to do this.
+
+(ZH: Can you help list the property set ID and property ID/names?)(P3)
+
+(FL: I have listed all the property set ID and property ID/names in "2.3 APIs -
+2.3.1 API Usage and Examples ")
+
+US174357 CUSTOM GROUPS IN ADVANCED SORTING DIALOG
+
+YellowEnhance
+
+This user story contains 4 settings:
+
+ 1. Criteria
+ 2. Order
+ 3. Total Position
+ 4. Parent Position
+
+And each setting is mapped to some member of IDSSSort3. We have already had a
+document manipulation to change these members' value except the Criteria. Here
+is an example:
+
+xml
+
+So server code for processing this manipulation should be enhanced so that all
+the custom groups related properties could be correctly handled.
+
+To be specific, when the sort type is DssSortCustomGroupForm, we need to load
+the custom group object from the XML and generate an array(lvAuxilaryParam) of
+size 2 to hold information of (1) whether the parent is first and (2) the custom
+group sort type.
+
+(ZH: The XML does not seem to contain xml for custom group. So why need to load
+custom group from xml?)(P3)
+
+(FL: This is the current XML API used for edit sorting on Web, the enhanced XML
+API is in "2.3 APIs - 2.3.1 API Usage and Examples - US174357 Custom Groups in
+Advanced Sorting dialog", I have revised above part for making it more clear )
+
+US174270 SQL GENERATIONS
+
+BlueSupported
+
+This setting is not supposed to be displayed in the Document's Grid Data
+Option's menu, so in the current scope, we will not support it for Workstation.
+
+US182792 BAR CHARTS - GAP WIDTH, OVERLAP, AND ERROR BAR
+
+BlueSupported
+
+This user story contains 8 settings
+
+ 1. Gap Width
+ 2. Show Error Bar
+ 3. Has middle Value
+ 4. Error Bar Width
+ 5. Use Depth
+ 6. Depth
+ 7. Direction
+
+All these settings above are actually GraphStyle's property. And the server has
+already provided a document manipulation to let the client change the
+properties' value on Graph style.
+
+For example:
+
+xml
+
+The client has to provide the information for <gaid>, <goid> and <v> in order to
+manipulation some graph property's value.
+
+US182807 PIE CHART FORMATTING OPTIONS
+
+BlueSupported
+
+This user story contains 5 settings:
+
+ 1. Pie Tilt
+ 2. Pie Depth
+ 3. Pie Rotation
+ 4. Pie Explode
+ 5. Pies Per Row
+
+Like US182792 Bar Charts - Gap Width, Overlap, and Error Bar, these settings all
+work by altering GraphStyle's properties. So it should have been supported by
+the server.
+
+US184829 MARKER POSITION IN LEGEND - VERTICAL BAR OPTIONS
+
+BlueSupported
+
+This user story contains 5 settings:
+
+ 1. Color mode
+ 2. Show Legend
+ 3. Marks and Text
+ 4. Layout
+ 5. Box Style
+
+SHOW LEGEND
+
+LAYOUT
+
+These two settings have already been migrated to the Web and client uses
+document manipulation to changes the corresponding GraphStyle property.
+
+COLOR MODE
+
+MARKS AND TEXT
+
+BOX STYLE
+
+These 3 settings have no difference compared with "Show legend" and "Layout", so
+the client could use the same document manipulation to change their values.
+
+F22093 LABEL ALIGNMENT, ROTATION, AND POSITION
+
+This user story contains 3 settings:
+
+ 1. Axes Label Alignment
+ 2. Axes Label Rotation
+ 3. Axes Label locations
+ 4. Show Label
+
+AXES LABEL ALIGNMENT
+
+SHOW LABEL
+
+BlueSupported
+
+Though this setting has not been exposed on the client, it can be manipulated by
+the <rbd> command like above.
+
+AXES LABEL ROTATION
+
+AXES LABEL ROTATION
+
+YellowEnhance
+
+This setting can be changed via <rbd> command, but the server side needs to
+enhance the graph related workflow. 
+
+Currently, clients can change graph style by sending <rbd> command with
+manipulation 37 (DssRWManipulationSetGraphProperties), and when the server
+receives these manipulations, we add all this kind of manipulations to the graph
+object, and they will be applied when saving the document to XML.
+
+However, in the current workflow, when applying these manipulations in
+GraphUtil.cpp:ApplyManipulationXML3, we will only process limited graph
+properties and skip others. For instance, the Label Alignment can be applied
+there, but Label Rotation is skipped.
+
+So in order to support this setting, we need to add this property
+in GraphUtil.cpp:ApplyManipulationXML3, so this manipulation can be applied to
+the graph successfully.
+
+(ZH: What does this mean?)(P3)
+
+(FL: This user story is just added to the current scope yesterday, and I haven't
+finished updating the result at that time.)
+
+
+2.2 Data Model
+
+Describe the intended data model and/or any changes required to existing data
+(such as the object model).  Describe how the data would change as the feature's
+operations are evaluated. 
+
+For this feature, there is no need to add new data models or change the existing
+ones.
+
+
+2.3. APIs
+
+Here are samples of XML API and the explanation of tags for existing XML API or
+new XML API we intend to use.
+
+ 2.3.1 API USAGE AND EXAMPLES
+
+Describe how we intend to use the API(s) for this feature.  If applicable give
+an example of the steps that should be taken (e.g. a sequence diagram) to use
+the feature.
+
+US173148 CALCULATION ORDER
+
+BlueExisting API
+
+CONSOLIDATION
+
+METRIC AND DERIVED METRIC
+
+DERIVED ELEMENT
+
+REPORT LIMIT AND METRIC LIMIT
+
+xml
+
+The 87th report manipulation is DssReportManipulationSetEvaluationOrder.
+
+<tartemp>: the target template on which we will be setting the evaluation
+order, 1 for view template and 0 for data template  (Tag_TargetTemplate). Since
+for the document, we always use view template, so we use 1 as the value
+
+<ev>: the evaluation order user want to set (Tag_EvaluationOrder)
+
+SUBTOTAL
+
+For subtotal, the XML should contain more information than others 
+
+xml
+
+<unit_id>: ID of the metric used to define subtotal when setting evaluation
+order on subtotal
+
+<unit_type>: for subtotal, the unit type should be metric
+
+<subtotal_id> and <subtotal_index>: template subtotal is uniquely identified by
+its ID and the template subtotal's index
+
+US173360 CUSTOM GROUP SUBTOTALS
+
+RedNew API
+
+This setting operates on the COM object IDSSTemplateCustomGroup2's member
+Aggregation. 
+
+So far we have no existing XML API available to alter this object's value,
+therefore we need to add a document manipulation like following
+
+xml
+
+Since this report manipulation has not been implemented, I will fill the report
+manipulation index once it is finished
+
+<unit_id> and <unit_type>: the id and type of the template unit, used for
+searching for the object on the template
+
+<v>： the value user want to set. It could have the following three values:
+
+ 1. DssAggregationDefault = 0
+ 2. DssAggregationDisable = 1
+ 3. DssAggregationEnable = 2
+
+US173467 DRILL SETTINGS
+
+ENABLE REPORT DRILLING
+
+DRILL ANYWHERE/DRILL WITHIN
+
+KEEP PARENT WHILE DRILLING
+
+KEEP THRESHOLDS WHILE DRILLING
+
+INHERIT ACROSS-LEVEL SUBTOTAL FROM PARENT
+
+BlueExisting API
+
+xml
+
+<did> and <n> in <prs> node: the ID and name of the property set, used for
+getting the property set.
+
+<pri> and <n> in <pr> node: the index and the name of the property within the
+given property set, used for locating the property
+
+<pdv>: the default value for this property
+
+<pru>: whether to use the default value for this property
+
+<v>: the property user want to set
+
+And here is the mapping relationship:
+
+Property SetProperty Set IDPropertyIndexData typeDefault
+valueGeneralTemplatePropertiesC7A5EDE21AB511D4B9B200C04F2233EADrillingOptions1long1DrillingEnableReportDrilling2booltrueDrillingKeepParent3boolfalseDrillingKeepParentEx4long1DrillingThresholds7long1DrillingInheritSubtotalsFromParent17long1
+
+DRILL ATTRIBUTE JOIN TYPE
+
+BlueExisting API
+
+xml
+
+<unit_id>, <unit_type>: used for finding the object in the target folder
+
+<did> and <n> in <prs> node: the property set ID and the name, used for getting
+the property set
+
+<n> in <pr> node: the property name we want to change, here client can also
+provide <pri> to locate the correct property
+
+And here is the mapping relationship
+
+Property SetProperty Set IDPropertyIndexData typeDefault valueVLDB
+SelectA2185AB0DD7C11D29FE500C04F8E7129No Participation in Preserve Row45long0
+
+US173480 SUBTOTAL DEFINITION -> ADVANCED SUBTOTAL OPTIONS
+
+"GROUP BY" LEVEL SUBTOTAL
+
+RedNew API
+
+xml
+
+<unit_object>: the template unit (for example, attribute and custom groups)
+which chosen by the user as available levels
+
+<subtotal_style>: the style of the subtotal, it is defined as the following on
+the server side:
+
+ * DssSubtotalReserved = 0
+ * DssSubtotalNone = 1
+ * DssSubtotalGrandTotal = 2
+ * DssSubtotalOutline = 3
+ * DssSubtotalCube = 4
+ * DssSubtotalCross = 5
+
+<subtotal_type>: the type of the subtotal, it is defined as the metric type on
+the server side:
+
+ * DssMetricTraining = -6
+ * DssMetricDMX = -7
+ * DssMetricNormal = -8
+ * DssMetricSubtotal = -9
+ * DssMetricSubtotalSum = -10
+ * DssMetricSubtotalCount = -11
+ * DssMetricSubtotalAverage = -12
+ * DssMetricSubtotalMin = -13
+ * DssMetricSubtotalMax = -14
+ * DssMetricSubtotalProduct = -15
+ * DssMetricSubtotalMedian = -16
+ * DssMetricSubtotalMode = -17
+ * DssMetricSubtotalStdDev = -18
+ * DssMetricSubtotalVariance = -19
+ * DssMetricSubtotalGeometricMean = -20
+ * DssMetricSubtotalAggregation = -21
+ * DssMetricSubtotalReservedLastOne
+ * DssMetricSubtotalExtreme = -257
+ * DssMetricSubtotalModel = -258
+ * DssMetricRelationship = -259
+
+NEW CUSTOM SUBTOTAL
+
+RedNew API
+
+xml
+
+
+
+
+US174356 NULL VALUES
+
+BlueExisting API
+
+xml
+
+And here is the mapping of properties:
+
+Property SetProperty Set IDPropertyIndexData typeDefault valueVLDB
+FunctionA2185AB6DD7C11D29FE500C04F8E7129Null Display3string""Missing
+Display9string""AnalyticalEnginePropertiesE3796B516F8611D3858D00C04F685B39DisplayNullReplaceValue5double0NotCalculatedDisplay6string"--"
+
+It should be noted that Null Display's value is a combination of two values, for
+example: "333,aaa". On the server side, it will be split by ","
+
+ * the first value "333" is the value for the setting "Set the value to be
+   displayed in the reports when there is an empty value in the data retrieved
+   from the warehouse"
+ * the second part "aaa" is the value for the setting "Set the value to be
+   displayed in the reports when there is an empty value in the data as a result
+   of the cross-tabulation process"
+
+(ZH: Is this the template unit level setting? I think it should be template
+level setting.)(P2)
+
+(FL: It's template level setting, thus we don't need unit ID and type here; I
+have removed them from the sample XML)
+
+US174357 CUSTOM GROUPS IN ADVANCED SORTING DIALOG
+
+YellowEnhance
+
+xml
+
+The 26th report manipulation is DssReportManipulationSort.
+
+<sort_type>: the type of sort. For this case, it should be
+DssSortCustomGroupForm. Here is the definition of
+it: https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L289
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L289].
+
+<subtotal_position>: the position of subtotals. Its values are defined as
+here https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L422
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L422]
+
+<unit_id> and <unit_type>: the ID and type of the custom group, the type should
+be 1 (filter)
+
+<is_parent_first>: whether the parent is first. Its values are defined
+here: https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L4889-L4895
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L4889-L4895]
+
+<cc_sort_type>: a new XML tag introduced for representing the custom groups sort
+type. Its values are defined
+here: https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L5054-L5066
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSEnum.idl#L5054-L5066]
+
+
+
+
+US182792 BAR CHARTS - GAP WIDTH, OVERLAP, AND ERROR BAR
+
+BlueExisting API
+
+xml
+
+The 37th document manipulation is DssRWManipulationSetGraphProperties
+
+<gaid>: graph attribute ID. Its values are defined
+here: https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L255
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L255]
+
+<goid>: graph object ID. Its values are defined here:
+
+ * https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/Kernel/SourceCode/MsiGraph/PrivateSource/StdAfx.h#L49-L52
+   [https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/Kernel/SourceCode/MsiGraph/PrivateSource/StdAfx.h#L49-L52]
+ * https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L51
+   [https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L51]
+
+<v>: the value user want to set 
+
+And here is the mapping relationship between property and these XML attributes
+
+PropertyGAIDProperty TypeGOIDDssGraphOverlapDssGraphGroupSpacing =
+10long9999DssGraphGapWidthDssGraphRiserWidth =
+11long9999DssGraphShowErrBarDssGraphAxisHasErrorBar =
+10079bool9999DssGraphHasMiddleValueDssGraphAxisHasMiddleValue =
+10080bool9999DssGraphMiddleValueSizeDssGraphMiddleValue =
+630long9999DssGraphUseDepthDssGraphDepthMode =
+21bool9999DssGraphDepthDssGraph2DDepth =
+20long9999DssGraphDepthDirectionDssGraph2DAngle = 18long9999
+
+
+
+
+US182807 PIE CHART FORMATTING OPTIONS
+
+PIE TILT
+
+PIE DEPTH
+
+PIE ROTATION
+
+PIES PER ROW
+
+BlueSupported
+
+xml
+
+And here is the mapping relationship between property and these XML attributes
+
+COM PropertyGAIDProperty TypeGOIDDssGraphPieTiltDssGraphPieTiltValue =
+211long9999DssGraphPieDepthDssGraphPieDepthValue =
+192long9999DssGraphPieRotationDssGraphPieRotationValue =
+202long9999DssGraphSeriesPieSliceDetachDssGraphDetachSlice =
+209longDssGraphRiser = 286DssGraphPiesPerRowDssGraphPiesPerRowValue =
+201long9999
+
+PIE EXPLODE
+
+BlueSupported
+
+xml
+
+<gsid>: graph series ID
+
+COM PropertyGAIDProperty TypeGOIDDssGraphSeriesPieSliceDetachDssGraphDetachSlice
+= 209longDssGraphRiser = 286
+
+US184829 MARKER POSITION IN LEGEND - VERTICAL BAR OPTIONS
+
+BlueSupported
+
+COLOR MODE
+
+MARKS AND TEXT
+
+BOX STYLE
+
+xml
+
+And here is the mapping relationship between property and these XML attributes
+
+COM PropertyGAIDProperty TypeGOIDAvailable
+ValuesDssGraphColorModeDssGraphACMColorModel =
+549long9999https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1488-L1507
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1488-L1507]IDSSTemplate.GraphStyle.Legend.MarkerLayoutDssGraphMarkerLayout
+=
+637long9999https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1007-L1015
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1007-L1015]IDSSTemplate.GraphStyle.Legend.BoxStyleDssGraphLegendBox
+= 255long9999
+
+
+F22093 LABEL ALIGNMENT, ROTATION, AND POSITION
+
+BlueSupported
+
+YellowEnhance
+
+xml
+
+And here is the mapping relationship between property and these XML attributes
+
+COM PropertyGAIDProperty TypeGOIDAvailable
+ValusIDSSTemplate.GraphStyle.Axes.Item(...).LabelFont.AlignmentDssGraphFontAlign
+(570) = A_FONTALIGNlong
+
+DssGraph2D01Label = 272
+
+DssGraphY1Label = 296
+
+https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1021-L1031
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1021-L1031]
+
+
+
+
+
+
+
+IDSSTemplate.GraphStyle.Axes.Item(...).LabelFont.RotationDssGraphFontRotation(578)
+= A_FONTORIENTlong
+
+DssGraph2D01Label = 272
+
+DssGraphY1Label = 296
+
+https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1059-L1078
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1059-L1078]
+
+cpp
+
+
+
+
+Currently, we don't support following values since they are supported in
+Developer :
+
+DssGraphFontRotateHotel = 1,
+
+DssGraphFontRotateCustom = 7
+
+DssGraphAxisLabelsLocation
+
+DssGraphAxisLabelsLocation (10022) = DssGraph2DSidelong
+
+DssGraph01Body = 271
+
+DssGraphY1Body = 295
+
+https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1830-L1840
+[https://github.microstrategy.com/Tech/Server/blob/9457401e72d40b6335b41fe4e0e5fe69546037a2/COM/IDL/DSSGraphStyle.idl#L1830-L1840]DssGraphAxisShowAxisLabelsDssGraphAxisShowAxisLabels(10027)
+= DssGraphShow2DAxisLabels (10017)bool
+
+DssGraph01Body = 271
+
+DssGraphY1Body = 295
+
+"true" or "false"
+
+Note:
+
+For DssGraphAxisShowAxisLabels, on the server side, we have
+both DssGraphAxisShowAxisLabels(10027) and DssGraphShow2DAxisLabels(10017).
+However, when applying graph manipulations, we use
+only DssGraphShow2DAxisLabels(10017)
+
+
+3. Non-functional requirements (NFRs)
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+
+3.1 Security
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+For this feature, we just expose existing settings to Workstation other than
+Developer via XML command. 
+
+ 1. since these settings have already been used in Developer, so let users set
+    them from other clients will not bring any risk.
+ 2. we want to achieve the goal by introducing new manipulation or enhancing
+    existing ones, so no extra security issues will be added.
+
+
+3.2 Scalability
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+(including universal benchmark)
+
+No performance and scalability degradation on existing functionality. 
+
+
+3.3 Performance
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements] 
+
+No performance and scalability degradation on existing functionality. 
+
+
+3.4 Error and exception handling
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+Since this feature is implemented based on the current document manipulation
+workflow, errors and exceptions may occur during:
+
+ 1. parsing XML command if some tag or attribute is missing or have an invalid
+    value
+ 2. applying manipulation, for example, cannot find some object or change its
+    property value
+
+Once error and exception happen, we will comply with the current workflow,
+return the error to the caller function and let it process the error.
+
+
+3.5 Logging
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Logging]
+
+Since this feature is implemented based on the current document manipulation
+workflow, we will use the existing logging measures when an error or exception
+happens.
+
+
+3.6 Monitoring
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Monitoring] &
+Telemetry
+
+Since this feature is implemented based on the current document manipulation
+workflow, the monitoring and telemetry will keep their original behavior.
+
+
+3.7 Stability
+
+This feature ideally will not bring any stability issues to the server. 
+
+
+3.8 Internationalization
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Internationalization]
+
+The error message's locale return to the client will be automatically adjusted
+on the user's language preferences.
+
+
+3.9 Accessibility
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Accessibility]
+
+NA (This feature only focus on server-side changes)
+
+
+3.10 Compatibility
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Non-functional-Requirements]
+
+For this feature, we will add some new report manipulations, and they will not
+affect existing behavior.
+
+At the same time, we will enhance some manipulations to let them be able to
+handle more complicated scenarios without causing regression issues.
+
+
+3.11 Feature Flag
+
+NA
+
+
+3.12 Administration and Configuration
+
+This feature only exposes some settings via XML command, which will not change
+anything about administration or configuration.
+
+
+4. Testing
+
+Work with the SET transversal on the end-to-end test plan and provide a link to
+the test plan they create. You should also summarize the expectations for
+overall automated test coverage of this feature. here.
+
+
+4.1 Unit Testing
+
+Please describe how unit tests will be performed for this feature. If the code
+was designed to be unit testable then you MUST build automated tests and
+integrate them with CI. If data is required to test the feature, please describe
+the strategy for mocking the data.
+
+
+4.2 Integration Testing
+
+If applicable, please describe how integration testing will be performed for
+this feature. For example, if this feature provides a REST API, how will you
+ensure breaking changes are not introduced into the API. Integration tests
+should be automated and integrated into CI.
+
+
+4.3 Testing Error Handling
+
+Since this feature is implemented based on the current document manipulation
+workflow, errors and exceptions may occur during:
+
+ 1. parsing XML command if some tag or attribute is missing or have an invalid
+    value
+ 2. applying manipulation, for example, cannot find some object or change its
+    property value
+
+Based on the above conclusion, I will test:
+
+ 1. what will happen if there is invalid XML tags or values when parsing the XML
+ 2. what will happen if an error occurred and the manipulation cannot be
+    correctly applied.
+
+I will use the tools introduced here:  to send simulated XML command, debugging
+the code and collect the result return the client. When doing this, I will try
+different combinations of possible values to see whether they will cause any
+problems.
+
+Here is the detailed test plan: QA Plan: Feature F23459
+[https://microstrategy.sharepoint.com/:w:/r/sites/Technology/QA/_layouts/15/Doc.aspx?sourcedoc=%7b62d364f7-5283-4731-8a25-29577d680b38%7d&action=edit&wdPid=6ebd333&cid=ffdcd7b1-2288-49e3-85c8-ceb95d040a75]
+  
+
+(ZH: Please add some detailed test plans.)(P2)
+
+(FL: I have added a general test plan, and the detailed test plan provided by
+lanlan)
+
+
+5. Discussion
+
+
+
+
+5.1 Design Decisions
+
+
+
+
+5.2 Technology Choice
+
+
+
+
+5.3 3rd Party Libraries, Software
+[https://github.microstrategy.com/pages/kiai/developers-guide/#Tools] and tools
+
+NA
+
+
+5.4 Frequently Asked Questions
+
+This is a place to put down anything else that seems to be relevant but which
+does not fit in the rest of the design. 

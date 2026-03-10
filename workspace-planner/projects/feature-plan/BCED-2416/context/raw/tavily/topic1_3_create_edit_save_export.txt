@@ -1,0 +1,32 @@
+## Answer
+
+To create, edit, save, export, or cancel a report in MicroStrategy Workstation, use the Report Editor, save without execution, and cancel running reports via server options.
+
+---
+
+## Sources
+
+- **Online help.MicroStrategy Web.** (relevance: 65%)
+  https://im.cegedimrx.co.uk/help.asp
+  To save a new report without executing it first, answer all the required prompts with your selections and then click Save Report at the bottom of the page. By
+
+- **Create and Edit Reports - MicroStrategy** (relevance: 64%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/create_static_reports.htm
+  Starting in Strategy One (January 2026), you can drag objects from the Workstation window into your Report and Filter editors. Click and drag objects such as metrics, attributes, and filters from the Project, Object, Components in object Properties, Dependents in object Properties, Global Search, an...
+
+- **Report Editor** (relevance: 60%)
+  https://www2.microstrategy.com/producthelp/current/reportdesigner/webhelp/lang_1033/content/report_editor.htm
+  # Report Editor. The Report Editor is where you create and modify reports. It incorporates features from the Template Editor, the Filter Editor, and the Object Browser, to enable creation of filters and templates from a single editor. You must have Report Designer privileges to use the Report Editor...
+
+- **KB17934: Different methods of canceling an executing report job on ...** (relevance: 54%)
+  https://community.strategy.com/article/KB17934-Different-methods-of-canceling-an-executing-report-job
+  The following scenarios detail how an executing report job may be cancelled (deleted) in MicroStrategy Intelligence Server.
+
+- **Creating and Editing Reports in MicroStrategy Library - YouTube** (relevance: 47%)
+  https://www.youtube.com/watch?v=odRlTceb7-c
+  Save. Report. Comments. 4. Add a comment... 40:01. Go to channel Strategy · Get Started With MicroStrategy Workstation - Everything You Need to
+
+- **Edit All Project-Level Settings - MicroStrategy** (relevance: 30%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/application_all_settings.htm
+  Edit All Project-Level Settings. You can search, view, and edit all project-level settings. Administrators can export the project settings in this tab to a
+

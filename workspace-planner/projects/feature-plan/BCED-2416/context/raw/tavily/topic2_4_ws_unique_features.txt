@@ -1,0 +1,32 @@
+## Answer
+
+MicroStrategy Workstation allows conversion of reports to Intelligent Cubes and exports data to PDF and Excel formats. It supports importing data from Excel files to create Super Cubes. Direct export to Excel is available for dashboard sections.
+
+---
+
+## Sources
+
+- **Convert a Report to an Intelligent Cube - MicroStrategy** (relevance: 58%)
+  https://www2.microstrategy.com/producthelp/Current/Workstation/en-us/Content/report_to_cube.htm
+  # Convert a Report to an Intelligent Cube. Starting in Strategy One (October 2025), you can convert a report into an Intelligent Cube in Workstation. Creating an Intelligent Cube allows you to share the report's dataset among your content. Intelligent Cubes do not display report results in the same ...
+
+- **New Features in MicroStrategy from the Second Half of 2023 Onward** (relevance: 45%)
+  https://www.crmt.com/resources/blog/new-features-in-microstrategy-from-the-second-half-of-2023-onward/
+  Export and Formatting Options: Users now have the flexibility to export the entire Dashboard or selected sections to Excel, allowing for the
+
+- **MicroStrategy MDX Cube Reporting | PDF - Scribd** (relevance: 41%)
+  https://www.scribd.com/document/358813303/MicroStrategy-MDX-Cube-Reporting
+  Chapter 4, Reporting on MDX Cubes, provides information and. guidelines on how to create MDX cube reports and use MicroStrategy features to analyze data from
+
+- **How to Import Data from Excel to MicroStrategy Workstation - YouTube** (relevance: 37%)
+  https://www.youtube.com/watch?v=WrNC2OoC-h4
+  ... data from Excel to MicroStrategy Workstation. This powerful feature allows you to easily integrate external data sources into your
+
+- **KB485674: Create Super Cube from Excel file and update it with a ...** (relevance: 37%)
+  https://community.strategy.com/article/Create-Super-Cube-from-Excel-file-and-update-it-with-a-script-in-MicroStrategy-Workstation
+  This article describes how to leverage Scripts functionality in Workstation to create a Super Cube from an Excel file, publish it and
+
+- **Exporting data - MicroStrategy** (relevance: 28%)
+  https://www2.microstrategy.com/producthelp/current/basicreporting/webhelp/lang_1033/content/basicreporting/Exporting_data.htm
+  To configure export settings in MicroStrategy Web. Open a report. From the Home menu, select Export, and then select the required output format.
+

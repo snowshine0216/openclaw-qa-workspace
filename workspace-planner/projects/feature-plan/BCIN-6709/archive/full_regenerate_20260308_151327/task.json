@@ -1,0 +1,73 @@
+{
+  "run_key": "BCIN-6709",
+  "overall_status": "in_progress",
+  "current_phase": "phase_2_sub_testcase_generation",
+  "defect_analysis": "not_applicable",
+  "latest_draft_version": 2,
+  "search_required": false,
+  "spawned_agents": {},
+  "subtask_timestamps": {},
+  "phases": {
+    "context_gathering": {
+      "status": "completed",
+      "artifacts": [
+        "context/qa_plan_atlassian_BCIN-6709.md",
+        "context/qa_plan_github_BCIN-6709.md",
+        "context/qa_plan_github_traceability_BCIN-6709.md",
+        "context/qa_plan_figma_BCIN-6709.md",
+        "context/evidence_manifest_BCIN-6709.md"
+      ],
+      "completed_at": "2026-03-08T10:33:00+08:00"
+    },
+    "sub_testcase_generation": {
+      "status": "completed",
+      "spawned_agents": {},
+      "artifacts": [
+        "context/sub_test_cases_jira_BCIN-6709.md",
+        "context/sub_test_cases_github_BCIN-6709.md",
+        "context/sub_test_cases_figma_BCIN-6709.md"
+      ],
+      "completed_at": "2026-03-08T10:36:00+08:00"
+    },
+    "qa_plan_draft_generation": {
+      "status": "pending",
+      "spawned_agents": {},
+      "artifacts": [],
+      "completed_at": null
+    },
+    "synthesis": {
+      "status": "completed",
+      "artifacts": [
+        "drafts/test_key_points_xmind_v1.md"
+      ],
+      "completed_at": "2026-03-08T10:38:00+08:00"
+    },
+    "domain_review": {
+      "status": "completed",
+      "spawned_agents": {},
+      "artifacts": [
+        "context/review_jira_BCIN-6709.md",
+        "context/review_github_BCIN-6709.md",
+        "context/review_figma_BCIN-6709.md",
+        "context/review_consolidated_BCIN-6709.md"
+      ],
+      "completed_at": "2026-03-08T10:41:00+08:00"
+    },
+    "review_refactor": {
+      "status": "completed",
+      "iterations": 1,
+      "artifacts": [
+        "drafts/test_key_points_xmind_v2.md"
+      ],
+      "completed_at": "2026-03-08T10:43:00+08:00"
+    },
+    "publication": {
+      "status": "pending",
+      "approved": false,
+      "target_page_confirmed": false,
+      "completed_at": null
+    }
+  },
+  "errors": [],
+  "updated_at": "2026-03-08T10:43:00+08:00"
+}

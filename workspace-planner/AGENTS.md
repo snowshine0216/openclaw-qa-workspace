@@ -24,15 +24,18 @@ _Operating instructions for test planning and strategy._
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
-ALWAY use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
+ALWAYS use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
-Phase 0 → Idempotency check + runtime preparation
-Phase 1 → Context gathering (spawn `qa-plan-write` `mode=context`)
-Phase 2 → Unified QA plan writing (spawn `qa-plan-write` `mode=write-plan`)
-Phase 3 → Unified QA plan review (spawn `qa-plan-review` `mode=review`)
-Phase 4 → Deterministic QA plan refactor (spawn `qa-plan-refactor`)
-Phase 5 → Finalize + Feishu notify
+Phase 0 → Runtime preparation and existing-state check (idempotency)
+Phase 1 → Evidence gathering (spawn subagents per source: jira, confluence, github, figma)
+Phase 2 → Artifact index generation
+Phase 3 → Coverage mapping
+Phase 4a → Subcategory XMindMark draft
+Phase 4b → Top-category grouping draft
+Phase 5 → Structured review + refactor
+Phase 6 → Format/search/few-shots quality pass
+Phase 7 → Finalization and promotion (user approval checkpoint) + Feishu notify
 ```
 
 ### Research Best Practices
@@ -141,6 +144,7 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 - Figma → browser flow or approved local snapshots
 - Never use `web_fetch` for Jira, GitHub, or Confluence primary evidence collection.
 - During Phase 0, verify access first (`jira me`, `gh auth status`, and Confluence access when needed) before spawning sub-agents.
+- All phases are script-driven. The orchestrator calls `phaseN.sh`, handles user interaction, reads spawn manifests, and waits for spawned agents to finish.
 
 And ALWAYS run the script you created to make sure it can be used in real case. DO NOT ONLY guarantee the ut / integration tests work.
 

@@ -15,6 +15,7 @@ _Operating instructions for daily monitoring._
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
 - use `skill-creator` for all skill creation and refactoring tasks.
+- use `rca-orchestrator` for all daily RCA generation and rerun tasks in this workspace.
 - never use web-fetch for below tasks.
    - use `jira-cli` for all Jira tasks. 
       - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
@@ -82,6 +83,12 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (SSH details, test environment details) in `TOOLS.md`.
 
 **Feishu Chat-id**: always look up in `TOOLS.md`.
+
+## RCA Workflow Routing
+
+- Daily RCA work routes through `workspace-daily/skills/rca-orchestrator/SKILL.md`.
+- Invoke the workflow with `bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [date] [refresh_mode]`.
+- Treat `workspace-daily/projects/rca-daily/` as legacy reference code until cutover cleanup is complete.
 
 
 

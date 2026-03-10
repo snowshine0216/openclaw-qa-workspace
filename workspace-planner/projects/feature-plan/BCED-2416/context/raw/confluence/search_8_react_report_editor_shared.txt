@@ -1,0 +1,213 @@
+Found 10 results:
+1. Capabilities and Ownership Matrix - GDC and Collaborators (ID: 5038706144)
+   Workstation Core
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Top Menu and Toolbar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Interface
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Search bar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastr
+2. Workstation Plugin App Repository Template (ID: 900433746)
+   Target release
+11.2.1
+Feature
+F25148: Workstation Plugin App Repository Template Update and Maintenance
+Design Status
+REVIEWING
+SE Owner
+Sheng Zhao , Ravi Rane , Katin Tran
+QA Own
+3. [Design Doc] Migrate Developer settings(server and project level) to Workstation (ID: 871755330)
+   Target release
+11.2.3
+Feature
+F27704  Migrate Developer settings(server/project level) to Workstation
+Requirements
+As a Platform Administrator, I would like to be able to view and edit all the property settings so that I can fine tune my application for optimal
+4. FeatureList2.xlsx (ID: att840731711)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+5. FeatureList2.xlsx (ID: att838569356)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+6. FeatureList2.xlsx (ID: att833700767)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+7. FeatureList2.xlsx (ID: att833096342)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+8. FeatureList2.xlsx (ID: att828705754)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+9. FeatureList2.xlsx (ID: att826542617)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+10. FeatureList2.xlsx (ID: att823134571)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl

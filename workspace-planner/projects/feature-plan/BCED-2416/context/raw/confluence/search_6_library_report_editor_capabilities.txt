@@ -1,0 +1,151 @@
+Found 10 results:
+1. Teradata Support in MicroStrategy.docx (ID: att97487406)
+   Teradata Support in MicroStrategy
+This document discusses Teradata support in MicroStrategy. It provides an overview of the integration,
+summarizes supported workflows, and provides configuration and implementation details. We have
+focused on the features that have been developed specifically to support and enhance the Teradata
+integration.
+
+Executive Summar
+2. Teradata Support in MicroStrategy.docx (ID: att97487388)
+   Teradata Support in MicroStrategy
+This document discusses Teradata support in MicroStrategy. It provides an overview of the integration,
+summarizes supported workflows, and provides configuration and implementation details. We have
+focused on the features that have been developed specifically to support and enhance the Teradata
+integration.
+
+Executive Summar
+3. MDX Engine Online Certification.doc (ID: att9601176)
+   MicroStrategy Online Certification
+MDX Engine
+
+1
+
+Confidential
+
+MicroStrategy Online Certification
+MDX Engine
+Document History
+Date
+06-18-07
+06-26-07
+
+Name
+Leon Bun
+Leon Bun
+
+Link to Section or Comments
+First draft
+Editing
+
+Abstract
+This document presents an overview of the MDX Engine.
+
+This Course is Designed for:
+This course is intended for new software an
+4. MDX Engine Online Certification mark.doc (ID: att9601174)
+   MicroStrategy Online Certification
+MDX Engine
+
+1
+
+Confidential
+
+MicroStrategy Online Certification
+MDX Engine
+Document History
+Date
+06-18-07
+06-26-07
+
+Name
+Leon Bun
+Leon Bun
+
+Link to Section or Comments
+First draft
+Editing
+
+Abstract
+This document presents an overview of the MDX Engine.
+
+This Course is Designed for:
+This course is intended for new software an
+5. Security.doc (ID: att9601169)
+   MicroStrategy Online Certification
+Security
+
+1
+
+Confidential
+
+MicroStrategy Online Certification
+Security
+Document History
+Date
+06-05-07
+06-20-07
+
+Name
+Liqun Jin
+Liqun Jin
+
+Link to Section or Comments
+Initial formal version (from original training document)
+Add license and client connection
+
+Abstract
+This document covers various security features in MicroStr
+6. Gradle_Beyond_the_Basics.pdf (ID: att95028042)
+   Gradle Beyond the Basics
+
+Tim Berglund
+
+Gradle Beyond the Basics
+by Tim Berglund
+Copyright © 2013 Gradle, Inc. All rights reserved.
+Printed in the United States of America.
+Published by O’Reilly Media, Inc., 1005 Gravenstein Highway North, Sebastopol, CA 95472.
+O’Reilly books may be purchased for educational, business, or sales promotional use. Online editio
+7. Building_and_Testing_with_Gradle.pdf (ID: att95028041)
+   Building and Testing with Gradle
+
+Building and Testing with Gradle
+
+Tim Berglund and Matthew McCullough
+foreword by Hans Dockter, Founder of Gradle and CEO of Gradleware
+
+Beijing • Cambridge • Farnham • Köln • Sebastopol • Tokyo
+
+Building and Testing with Gradle
+by Tim Berglund and Matthew McCullough
+Copyright © 2011 Gradle, Inc.. All rights reserved.
+Printe
+8. 10.7 Design Review Tracking (ID: 95027275)
+   This is the design review tracking table for 10.7:
+Please put the found problems in design in this page: Issues found in Design Reviews for 10.7 Features  (Now all the found issues are embedded in the design document directly)
+We will only record the number of issues found during design review, and there is no need to
+9. Library m2021.pptx (ID: att927499254)
+   Library m2021
+
+Transforming the way you get data.
+
+Copyright © 2020 MicroStrategy Incorporated. All Rights Reserved.
+
+Copyright &amp; Safe Harbor Notice
+Note from Technology
+
+This presentation may include statements that constitute “forward-looking statements” for purposes of the safe
+harbor provisions under the Private Securities Litigation Reform Act of 1995,
+10. Library m2021.pptx (ID: att927465647)
+   Library m2021
+
+Transforming the way you get data.
+
+Copyright © 2020 MicroStrategy Incorporated. All Rights Reserved.
+
+Copyright &amp; Safe Harbor Notice
+Note from Technology
+
+This presentation may include statements that constitute “forward-looking statements” for purposes of the safe
+harbor provisions under the Private Securities Litigation Reform Act of 1995,

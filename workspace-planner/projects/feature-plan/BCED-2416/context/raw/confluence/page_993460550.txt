@@ -1,0 +1,613 @@
+===== PAGE 993460550 =====
+We will integrate the VLDB Settings and the other properties of an object
+(Attribute, Metric, Prompt…) into one window. The user can edit all the
+properties of an object within this window, instead of distributing the entry
+points everywhere.
+
+
+Persona & Use Case
+
+The System Admin and Analytics Architect will define the properties at different
+levels to optimize the system performance. There is a huge amount of properties
+for each object, which is complicated and easy to lead errors setting one by one
+from scratch.
+
+ * The vast majority of the existing users will use an XML file to maintain the
+   properties, which is safe, efficient and flexible to edit the properties by
+   coding.
+
+ * A small group of users will define the properties one by one. We will provide
+   the recommended default value for each property.
+
+
+
+
+EntryPoint
+
+Entrypoint 1
+
+Click on the “Advanced Properties“ on the toolbar of each object editor, popup
+the window. Below is the example of the Attribute Editor.
+
+
+
+Entrypoint 2
+
+Right mouse clicks one object to trigger the context menu, click “Get Info“.
+
+Show the tab called “Advanced Properties“ at the left panel.
+
+
+
+
+Main Use Case: Import an existing XML file
+
+Initial Status
+
+By default, display the basic properties for each tab.
+
+There is “Import“ and “Export“ buttons at the top left corner.
+
+Import XML file
+
+Click “Import“ to trigger the small window. User can either select a file in
+system folder or drag a file to import.
+
+Import file successfully
+
+Once the file imported, read and use the value of the settings in the
+DssPropertySet file.
+
+There will be more or fewer properties be displayed under each group, it depends
+on the properties saved in the imported file.
+
+If there are additional properties appear, they will be mixed with the existing
+properties.
+
+The imported file may lead to the change of the top categories, groups, and
+properties under each group.
+
+
+Use Case 2: Define the properties manually
+
+Initial Status
+
+By default, display the basic properties for the object.
+
+Show All Settings
+
+Toggle on “Show All Settings“, all the settings under each group will be
+displayed.
+
+Change Value
+
+User can change the value for each setting.
+
+We will read the inherited value as the top priority, then the default value for
+the field.
+
+ * If there is an inherited value from the upper level, show the inherited value
+   by default, and tell the user the value is inherited from which level.
+
+ * If the field has no inherited value, show the default value by default.
+
+ * Inherited value may equal to the default value.
+
+
+Use Case 3: Search a target property to change the value
+
+Search Behavior
+
+ * Filter the settings that matched the keyword and highlight the keywords.
+
+ * The search will cross tabs, switching tab should maintain the searching and
+   show the searching results.
+
+The searching works on
+
+ * Setting Name (Count The Number of Rows)
+
+ * Group Name (for example, the “Table Row Counts”)
+
+If switch to a tab that does not contain the search result, show a default image
+to indicate users.
+
+Search In Get Info Dialog
+
+Regarding the current design, search only works for the “Advanced Properties“
+tab, and the Import/Export works in the same way. They will not impact the
+contents in the other tabs.
+
+Question: Does the importing XML file works for the other properties in
+“Properties“ and “Security Access“?
+
+Hani: Security Access is NOT PropertySet even though both are in Object Info.
+So, the XML approach can only be applicable to PropertySet.
+
+
+
+
+Inherited & Default Value
+
+
+UI Control Type
+
+Sample
+
+Radio Button → Dropdown
+
+ * Inherited Option
+
+ * Default Option
+
+ * Other Option
+
+
+
+Checkbox → Dropdown
+
+Value = True/False
+
+ * Inherited Value
+
+ * Default Value
+
+ * Other Value
+
+
+
+Dropdown with Another Input
+
+ * Inherited Option
+
+ * Default Option
+
+ * Other Option
+
+ * A new input box will appear when selecting the option needs user input
+
+Text Filed/Area → Combo Box
+
+ * Show the Inherited/default value by default
+
+ * Focus to type other value directly, a dropdown with suggestions
+   (inherited/default value) appears as well.
+
+Stepper → Text Field
+
+Preview SQL → Expandable Text Box
+
+
+
+Is there any other cases I missed?
+
+The items above list all the control types I met for VLDB Properties.
+
+@Engine team
+
+
+
+
+
+200318 Design
+
+
+Entry Point
+
+Entry 1: Click on the “Advanced Properties“ on the toolbar of each editor, popup
+the window. Below is the example of the Attribute Editor.
+
+Entry 2: Right mouse click one object to trigger the context menu, click “Get
+Info“.
+
+Scope of this design:
+
+13 complete Attribute > Display 14 complete Attribute > VLDB Settings 15
+complete Prompt > Web Options 16 complete Custom Group > Options 17 complete
+Warehouse Catalog > Options 18 incomplete Dossier > VLDB Settings 19 incomplete
+Database Instance > VLDB Settings 20 incomplete Metric > VLDB Settings 21
+incomplete Project > VLDB Settings 22 incomplete Report/Intelligent Cube > VLDB
+Settings 23 incomplete Template > VLDB Settings 24 incomplete Transformation >
+VLDB Settings
+
+Reference: VLDB Settings in Developer
+
+
+Layout & Interaction
+
+Description
+
+Mockup
+
+Layout
+
+Left Panel + Settings Panel + Search box
+
+ * List the high-level categories on the left panel.
+
+ * Switch the tab, the settings changed as well.
+
+ * Search the label of the settings, to quickly locate the target settings.
+
+ * The search box is in the floating bar, which is always at the top of the
+   dialog.
+
+Inherit Value
+
+For VLDB settings, most of the settings need to use the inherit value by
+default.
+
+The green checkmark is clickable.
+
+Case1: Click (uncheck) to use the same value but not inherited.
+
+Case2: Switch an option (different with the inherit one), the green checkmark
+turns to white (blank).
+
+Case3: Switch to the inherited option back, the white checkmark still be white.
+
+Case4: User needs to check the checkmark manually to use the inherited value.
+
+Label Exceeds Max Length
+
+ * Settings Name: Truncate if the label exceeds 3 rows- length, hover to show a
+   tooltip to display the whole label.
+
+ * Options in Dropdown list: Truncate if the label exceeds 1 row, hover to show
+   a tooltip to display the whole option.
+
+Alignment Need to be reviewed
+
+Dropdown With Another Input Box
+
+Another input box will be displayed if the option needs user input is selected.
+
+Preview SQL
+
+ * Click the text button “Preview SQL“, expand the text box.
+
+ * As the option changed, the SQL changed as well. If the text box is expanded,
+   while the option changed, the user can preview the SQL changes.
+
+
+
+Search Behavior
+
+ * Filter the settings that matched the keyword and highlight the keywords.
+
+ * The search will cross tabs, switching tab should maintain the searching and
+   show the searching results.
+
+ * The searching works on Group Name (for example, the “Table Row Counts”),
+   Setting Name (Count The Number of Rows) and the Explanation (if applicable).
+
+ * If switch to a tab that does not contain the search result, show a default
+   image to indicate users.
+
+Demo:
+
+
+
+
+Attribute Settings
+
+Notes
+
+Screenshots
+
+Questions
+
+By Default
+
+Show the two categories on the left panel:
+
+ * Display
+
+ * VLDB Settings
+
+“Display” is the default selected tab. There is no inherited settings in this
+tab.
+
+
+
+Is there need to add the explaination for the settings of “Element Display“ and
+“Element Caching“?
+
+VLDB Settings contains the categories below:
+
+ * Dynamic Sourcing
+
+ * Joins
+
+ * Tables
+
+They use the inherited values by default, which marked with the green checkmark.
+
+
+
+The Options of Each Setting
+
+Element Display
+
+ * Locked
+
+ * Unlocked
+
+ * Limit - 1000 (default)(MAX=1000000)
+
+String Comparison Behavior
+
+ * Use case insensitive string comparison with dynamic sourcing (default)
+
+ * Do not allow any string comparison with dynamic sourcing
+
+Preserve Final Pass Result Elements
+
+ * Preserve common elements of final pass result table and lookup/relationship
+   table (default)
+
+ * Preserve all final result pass elements
+
+ * Preserve all elements of final pass result table with respect to lookup table
+   but not relationship table
+
+Another option for String Comparison:
+
+Which is better for String Comparison Behavior, dropdown or toggle button?
+
+
+Prompt Settings
+
+Notes
+
+Screenshots
+
+Question
+
+We will provide two sections for prompt: Display Style and Style Properties
+
+Select display style first, then the properties may change as the display style
+changed.
+
+There are two options of layout for Display Style.
+
+Option 1: Combine the Display Style and Custom Style into one dropdown.
+
+Option 2: Follow the design of Developer.
+
+Is the “Custom Style“ be able to integrate with the “Display Style“? The user
+can select the custom style in the Display style dropdown list.
+
+
+
+Shopping cart & List
+
+They share the same settings as the screenshot.
+
+
+
+Radio button & Check box
+
+They share the same settings as the screenshot.
+
+For example:
+
+ 1. Shall we change the setting of “Number of Items Per Column/row“ to “auto” by
+    default? User can modify the value by seleting Fixed and type a number in
+    the stepper.
+
+ 1. What’s the limit of the number of items per column/row? It’s 999 currently,
+    but not make sense.
+
+
+
+Pull down
+
+
+
+LIst Height/Width Mode
+
+The stepper will be displayed if the option “Fixed“ is selected. The default
+value is 3 inches.
+
+The Stepper disappears when the selection is “Auto“.
+
+
+
+Error Handling
+
+Case 1: There is the existing value in the input box. The value user enters is
+in invalid format. The value will be auto correct to the default value or the
+latest saved value. A tooltip pops up to indicate user the value has to be
+between 1 to 999.
+
+
+
+Case 2: There is no default value in the input box, the value user enters is in
+invalid format. A tooltip pops up. The border of the input field turns red.
+After losing focus of this input field, the invalid value stays in the input
+field and the border will remain in red to indicate user. The "OK" button will
+also be disabled.
+
+
+
+Case 3: User inputs a value less than smallest number or greater than biggest
+number, auto correct to the closest edge. A tooltip pops up.
+
+Unified UI: Case 3 behavior is different from project level & server level "All
+settings" WorkStation "All setting" page UI Spec
+
+
+Custom Group Settings
+
+Notes
+
+Screenshots
+
+Questions
+
+There is only one tab for custom group: Options.
+
+Only the “Custom Group interaction with report filter“ has the inherited value?
+
+The Options of Each Setting
+
+Element Header Display
+
+ * Above child elements
+
+ * Below child elements
+
+Interaction With Report Filter
+
+ * No intercation - static custom group
+
+ * Apply report filter to custom group
+
+ * Apply report filter to custom group, but ignore related elements from the
+   report filter
+
+
+
+
+Warehouse Catalog Settings
+
+Notes
+
+Screenshots
+
+Questions
+
+Catalog
+
+Remove the per DB role settings (Warehouse Connection) in this panel, since the
+entry point is in the context menu when RMC a DB role.
+
+Keep the two categories:
+
+ * Read Settings
+
+ * Read Mode
+
+
+
+
+
+View
+
+There are 3 groups in this tab:
+
+ * Table Prefixes
+
+ * Table Row Counts
+
+ * Table Name Spaces
+
+Default status - Disable the function of “Automatically Define Prefixes“.
+
+
+
+View - Enable “Automatically Define Prefixes“
+
+If toggle on the function “Automatically Define Prefixes“, a dropdown will
+appear. The default option of the dropdown is “Set a prefix based on the
+warehouse table name space or owner (import Prefix)“.
+
+
+
+View - Set a default prefix
+
+If user select “Set a default prefix“, another input field “Default Prefix“ will
+appear.
+
+The user needs to select a default prefix from the dropdown list.
+
+
+
+View - Select Default Prefix
+
+This is a searchable dropdown.
+
+User can search or select one from the list. Hover on an option, show the delete
+icon, click to delete from the prefix list.
+
+There is an entry point at the bottom of the list, click to create new prefix.
+
+The behavior is different from the current design on developer.
+
+View - Search Default Prefix
+
+If no existing prefix match the searching keyword, only keep the entry of create
+new prefix on the list.
+
+Click to trigger the dialog box. The keyword the user just searched will be
+pre-populated in the input box.
+
+
+
+View - Create Table Prefix - Error Handling
+
+Show the inline error message when typing the table prefix.
+
+
+
+Schema
+
+
+
+
+
+
+UI Patterns for Compatible With Existing Settings
+
+Existing Control Type
+
+New Control Type
+
+Sample
+
+Radio Button
+
+Dropdown Button
+
+Setting options include multiple choices, which are long-phrase or sentences,
+but only allow single selection.
+
+CheckBox
+
+Toggle Button
+
+Setting options include on/off, true/false and the two options with opposite
+meaning only.
+
+Text Field
+
+Text Field
+
+Setting requires type-in short text
+
+Preview SQL
+
+Expandable Text Area
+
+Setting options with SQL Preview
+
+Stepper
+
+Stepper
+
+Setting requires type-in value and allows incremental changes.
+
+Text Area
+
+Text Area
+
+Setting options requires a long paragraph.
+
+Multiple Selection
+
+Multiple Selection Drop-down
+
+Setting options include multiple choices, which allow multi-selection.
+
+

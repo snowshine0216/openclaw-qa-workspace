@@ -1,0 +1,145 @@
+===== PAGE 841884307 =====
+Background
+
+Workstation, as a one-stop admin and operations console that works in both
+Windows and macOS, is a product developed by multiple teams. The 'native' part
+is implemented in C# by the Workstation Windows team, and in Swift by the
+Workstation Mac team; The 'WebView' part, is actually web-based apps developed
+with web technique and embedded in a native WebView container, for example, the
+Dossier Editor. The apps are developed by multiple teams. Different teams are
+using different techniques to test their own features.  Workstation Windows and
+Workstation Mac are used to using different 'WebView' containers. Workstation
+Windows uses the Chromium Embedded Framework(CEF) while Workstation Mac uses
+macOS native WebView.  For the native WebView implementation, it is really hard
+for test automation due to the difficulty locating elements in the embedded
+WebView.
+
+With the successful implementation for Workstation Mac, we are able to automate
+the E2E workflow of the WebView-based features as well. We initiated the idea to
+unify the test framework for both Workstation Windows and Mac, implemented it,
+and verified it by putting the test stage into the feature development cycle (CI
+Pipeline). 
+
+The main benefits of this test infrastructure:
+
+ * Workstation Parity: the test framework should apply to both Workstation
+   Windows and Mac, as functionality-wise there should be no gap
+ * Reduce Redundant test scripts:
+   * for WebView part, the web-based feature app for both Workstation Windows
+     and Mac is the same, so the automation script can be reused. 
+   * for the native part, user interactions against native elements mostly are
+     the same, so the actions and assertions implementation can be reused
+
+
+Infrastructure
+
+We are using the Protractor-Cucumber test framework, utilizing the Appium OS
+driver works for both Windows and Mac. Here is an overview of our test
+infrastructure.
+
+
+
+
+Why Cucumber?
+
+This is how Aslak Hellesøy [https://twitter.com/aslak_hellesoy], the one who
+created Cucumber in 2008, shortly described how Cucumber is connected to
+BDD (Behavior-driven Development). Link
+[https://www.infoq.com/news/2018/04/cucumber-bdd-ten-years]
+
+> Cucumber is a tool that supports BDD, which is a variant of TDD (Test-Driven
+> Development). With BDD, *all* the tests are customer acceptance tests, written
+> in plain (human) language so that non-technical stakeholders can understand
+> them. Cucumber combines requirements specifications, automated tests and
+> living documentation into a single format called Gherkin, which is just plain
+> English with a little more structure.
+
+The benefit of BDD is that it encourages collaboration between QA, developers,
+UX designers and non-technical or business participants in Agile software
+development. It helps to set the expectation of how the application should
+behave for end users among the team in plain language to help communicate
+effectively. 
+
+Compared to other tools that support BDD (such as Mocha, Jasmine), Cucumber for
+BDD can combine requirements specifications, test automation and test result in
+documentation/dossiers into a single format called Gherkin. It forces testers to
+think about the end-to-end workflows from the end-users' point of view, and what
+has been tested/expected is highly exposed to everyone in the team as it is in
+plain language. It is also good we can check if we support/cover the same
+functionality in both Workstation Windows and Mac regardless of the
+implementation may differ.
+
+Extend Read: B [https://cucumber.io/docs/bdd/]ehavior-driven Development
+[https://cucumber.io/docs/bdd/],  Cucumber Guide
+[https://cucumber.io/docs/guides/]
+
+
+Why Appium?
+
+Appium is an open source test automation framework for use with native, hybrid
+and mobile web apps. Appium is at its heart a webserver that exposes a REST API.
+It receives connections from a client, listens for commands, executes those
+commands on desktop applications, and responds with an HTTP response
+representing the result of the command execution. 
+
+Actually, Appium is the only test framework that we found to support automation
+desktop application for both Windows and Mac. In this case, we can write tests
+against Workstation Windows and Mac using the same API, which helps to reuse the
+test code. To support Mac, a native OS X binary (AppiumForMac) needs to be
+downloaded; while in Windows, Appium installation comes with the WinAppDriver so
+no need to do extra setups.
+
+Appium supports major languages so we can write it in Node.JS, and then
+integrate with the Protractor to test for both Workstation native and CEF
+WebViews.
+
+Extend Read: A [https://www.protractortest.org/#/]ppium Introductions
+[http://appium.io/docs/en/about-appium/intro/?lang=en]
+
+
+Capabilities
+
+
+Reusable Automation Scripts For Workstation Native
+
+Page Objects are created for most of the Workstation native elements. See this
+reusable - list
+[https://github.microstrategy.com/ecosystem/react.mud/blob/app-test/tests/acceptance/docs/reusable-pattern-list.md]
+here. Different teams can get the implementation directly from the template.
+
+
+Retry Logic
+
+We try to reduce false alarm from the flaky UI test, by making sure each
+scenario will be started at a clean state if the one before it fails, and retry
+a failed scenario for two more times. More details can be checked here: 
+
+
+Performance Test
+
+Easy collection of the performance data for any automated workflow by just
+passing in a flag when you trigger the test. Please check more details here: .
+
+
+Stability Test
+
+We support to run the Stability Test by running the test for a customized
+period, generating a random number and order of tags for each round of test,
+while doing some other changes against the MD at the same time. More details can
+be found here  : 
+
+
+Rally Update
+
+We support automatically update all the test results for Scenarios to Rally Test
+Cases after the test is done.  We also support log defects for the failed test
+case automatically.
+
+
+
+
+
+
+
+
+

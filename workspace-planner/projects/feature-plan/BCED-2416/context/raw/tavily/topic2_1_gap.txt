@@ -1,0 +1,93 @@
+## Answer
+
+MicroStrategy Library Web allows report creation with advanced properties and formatting options, while MicroStrategy Workstation focuses on drag-and-drop report building and template selection. Library Web offers more customization and formatting features.
+
+---
+
+## Sources
+
+- **Create and Edit Reports - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/create_static_reports.htm
+  , you can drag objects from the Workstation window into your Report and Filter editors. Use this option to quickly build and modify reports without searching objects directly in the editor. Click and drag objects such as metrics, attributes, and filters from the Project, Object, Components in object...
+
+- **Create Reports in Library Web - MicroStrategy** (relevance: 100%)
+  https://www2.microstrategy.com/producthelp/2021/Library/en-us/Content/create_reports.htm
+  Starting in MicroStrategy 2021 Update 7, administrators can enable authoring of reports in Library Web. This preview feature allows users to create and edit reports. The Report Editor also includes an Advanced Properties panel, SQL view when report execution is paused, more formatting options, custo...
+
+- **Benefits of MicroStrategy Web** (relevance: 99%)
+  https://www2.microstrategy.com/producthelp/Current/websdk/content/topics/other/Benefits_of_MicroStrategy_Web.htm
+  ## Web Customization Editor
+
+The Web Customization Editor is an Eclipse READY™ product that easily integrates into the Eclipse IDE. It helps perform customization tasks in MicroStrategy Web, eliminating the need to manually modify default configuration files such as the Page Configuration file, the ...
+
+- **Report FAQs - MicroStrategy** (relevance: 99%)
+  https://www2.microstrategy.com/producthelp/Current/workstation/en-us/Content/report_faqs.htm
+  , you can create report templates.
+
+## Report Details
+
+### Where are the report data properties?
+
+Strategy added an Advanced Properties dialog that includes elements formerly know as VLDB properties, as well as other items including report data properties such as Evaluation Order.
+
+The following lis...
+
+- **Report Services Documents and MicroStrategy Library** (relevance: 99%)
+  https://community.strategy.com/article/Report-Services-Documents-via-MicroStrategy-Library
+  # So what hasn’t changed? [...] There may also be a few more minor differences. All of the these are in the process of being addressed and one will see the difference in coming releases.  
+3. Mobile specific workflows including transaction services  
+  
+Documents designed specifically for the Mobile...
+
+- **MicroStrategy BI & Analytics - Business Intelligence - Passionned** (relevance: 96%)
+  https://www.passionned.com/business-intelligence/tools/microstrategy/
+  Do you want to know the intricacies of all features (100+) of MicroStrategy Web Report Editor? In that case, order the BI & Analytics Guide™ 2026 here.
+
+Screen shot of MicroStrategy Web Report Editor software.
+
+Picture of MicroStrategy Web Report Editor tools.
+
+MicroStrategy Web Report Editor in act...
+
+- **Why teams choose Sigma vs MicroStrategy (now Strategy)** (relevance: 82%)
+  https://www.sigmacomputing.com/comparison/sigma-vs-microstrategy
+  check yes
+
+Assistance and resources are accessible using live chat for all users within the platform.
+
+check no
+
+No in-product support, but does offers documentation and community forums; direct support via phone and email based on support tier.
+
+check yes
+
+Built to be functional across all leading ...
+
+- **Strategy One's Workstation: Your Central Hub for Streamlined App ...** (relevance: 33%)
+  https://www.strategy.com/software/strategyone/workstation
+  X
+Linkedin
+EcoVadis Sustainability Rating Bronze Award
+
+MicroStrategy is now Strategy! I can tell you more!
+
+Open the Support Bot
+Strategy
+
+© 2026 Strategy. All Rights Reserved. [...] Strategy
+Home
+
+Products
+
+Solutions
+
+Ecosystems
+
+Resources
+
+Partners
+
+# Workstation
+
+The ultimate analytics powerhous...
+

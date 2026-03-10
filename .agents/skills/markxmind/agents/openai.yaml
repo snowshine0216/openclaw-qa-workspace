@@ -1,0 +1,4 @@
+interface:
+  display_name: "MarkXMind"
+  short_description: "Generate mind maps in XMindMark syntax"
+  default_prompt: "Create a mind map in XMindMark format for the given topic. Output .md compatible with markxmind.js.org for preview and export."

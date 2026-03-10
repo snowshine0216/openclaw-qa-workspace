@@ -1,0 +1,12 @@
+{
+  "fields": {
+    "summary": "Broken workflow after upgrade",
+    "comment": {
+      "comments": [
+        {
+          "body": "See https://github.com/openai/example/pull/12 and https://github.com/openai/example/pull/13"
+        }
+      ]
+    }
+  }
+}

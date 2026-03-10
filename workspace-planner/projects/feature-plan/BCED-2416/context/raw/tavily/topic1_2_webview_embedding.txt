@@ -1,0 +1,40 @@
+## Answer
+
+MicroStrategy Workstation's new Dashboard Editor uses the Embedding SDK to embed dashboards in web applications. The SDK supports responsive integration, navigation control, and filter management. Use `microstrategy.dossier.create(props)` to embed dashboards.
+
+---
+
+## Sources
+
+- **New Dashboard Editor in Workstation - MicroStrategy** (relevance: 80%)
+  https://www2.microstrategy.com/producthelp/2021/Workstation/en-us/Content/new_dashboard_editor.htm
+  The new Workstation Dashboard Editor incorporates most features from the Library Dashboard Editor, bridging the gap between the Library and Workstation editors.
+
+- **Introduction to the Embedding SDK - MicroStrategy Developer Hub** (relevance: 64%)
+  https://microstrategy.github.io/embedding-sdk-docs/
+  The Embedding SDK allows you to quickly integrate a Strategy dashboard into a web application in a responsive manner. It also provides resources to add functionality such as controlling navigation, retrieving and applying filters, setting properties, and managing events, and supports several differe...
+
+- **Embedding Strategy - Library** (relevance: 62%)
+  https://demo.microstrategy.com/Embedding/
+  The Embedding SDK allows you to quickly integrate a Strategy dashboard into a web application in a responsive manner.
+
+- **Methods and properties for an embedded dashboard** (relevance: 50%)
+  https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties/
+  When you embed a Strategy dashboard into a web page, you use the `create(props)` method under the `microstrategy.dossier` namespace.
+
+- **MicroStrategy/playground: Embedding SDK Playground - GitHub** (relevance: 43%)
+  https://github.com/MicroStrategy/playground
+  To start, you can use the demo dossier to explore the capabilities of our Embedding SDK. You can also choose your dossier instead by opening the dossier in
+
+- **Define Dossier Templates in Library Web and MicroStrategy ...** (relevance: 43%)
+  https://www.youtube.com/watch?v=c3B-0o8RMFg
+  Eager to see what else is new with MicroStrategy? Visit https://www.microstrategy.com/en/business-intelligence/whats-new #MicroStrategy
+
+- **Embedding Dossiers to Web Applications - YouTube** (relevance: 35%)
+  https://www.youtube.com/watch?v=4XUBrJswF3w
+  Learn more at https://www.microstrategy.com/en?utm_source=youtube&utm_medium=video&utm_campaign=Homepage_YouTube_Description_2023 Find us on
+
+- **Leveraging Embedding and Rest API Capabilities for Seamless ...** (relevance: 29%)
+  https://www.strategy.com/software/blog/leveraging-embedding-and-rest-api-capabilities-for-seamless-website-integration
+  Starting when MicroStrategy Library was released in 2019, the MicroStrategy team has been tirelessly working on building the best tools possible to allow customers to not only white label the product, but integrate visualizations, folder browsing, and even admin services into pre-existing webpages a...
+

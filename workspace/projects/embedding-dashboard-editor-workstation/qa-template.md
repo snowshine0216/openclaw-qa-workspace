@@ -1,0 +1,82 @@
+BCDA-7522 Allow user to maximize visualization in a panel to the entire dashboard
+- EndToEnd
+    - maximize viz
+        - Create dashboard with panel stack, set "Maximize to entire dashboard", 
+            - Viz expands to full page, not just panel
+    - Change maximize mode
+        - save and reopen
+            - Setting persists across sessions
+    - Change maximize mode while viz is maximized
+        - Current maximized viz auto-restores before mode change
+    - Create dashboard in Web, open in Library
+        - Maximize mode setting applies consistently
+- Core Functionalities
+    - Maximize Mode Settings
+        - Verify dropdown options in Dashboard Properties
+        - Default value when creating new dashboard
+            - Default is "Maximize to current panel (Web only)" 
+    - Maximize Behavior
+        - Maximize viz in panel stack
+            - Viz fills entire dashboard page, curtain covers all content
+            - background color
+            - restore
+        - different panel stack style / numbers
+            - Nested panel stacks (panel within panel)
+            - 1 ps + 1 viz
+                - Maximize button IS NOT shown (same behavior as before)
+            - 1 ps + multiple viz
+            - multiple ps
+        - different layout mode
+            - Manual layout dashboard with maximize to page
+                - maximize
+                - restore
+            - Auto layout dashboard with maximize to page
+                - maximize
+                - restore
+        - Viz inside info window
+            - viz maximizes within info window container only
+        - state transitions
+            - undo / redo / reset
+            - resize 
+            - Switch layout mode while viz maximized
+                - Maximized viz auto-restores
+            - Change maximize mode while viz maximized
+                - Viz auto-restores after mode change
+        - different dashboard mode
+            - consumption
+            - presentation
+            - authoring
+- X-function tests
+    - combine with pin filter / toc
+    - change toc location
+    - export pdf / excel
+    - switch toc
+    - reopen dashboard
+    - responsive
+    - resize
+    - authoring
+        - layers panel
+        - node manipulations
+    - info
+    - previous dashboard maximized
+    - 2 panels 1 maximized
+        - switch mode
+- Performance
+- Error Handling / Edge Case
+- Security
+    - Privilege
+- Platform
+    - browser
+        - Chroma / Edge / Safari
+    - system
+        - mac
+        - windows
+    - Android App
+        - phone
+        - tablet
+    - BI Web
+    - Workstation
+- upgrade  / compitability
+    - Workstation
+- i18n
+

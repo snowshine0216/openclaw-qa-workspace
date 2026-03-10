@@ -1,0 +1,169 @@
+Found 10 results:
+1. 10.7 Design Review Tracking (ID: 95027275)
+   This is the design review tracking table for 10.7:
+Please put the found problems in design in this page: Issues found in Design Reviews for 10.7 Features  (Now all the found issues are embedded in the design document directly)
+We will only record the number of issues found during design review, and there is no need to
+2. Spike for Transform DataImport Editor to a Plugin in Workstation (ID: 944946855)
+   Summary: Action We need to Do
+Overall, the risk is high to change to the plugin mode.  The rough estimate of this work including testing is 100pts - 150pts.
+Todo Items
+Difficulty
+Effort
+GUI layer adaption
+Low
+Medium 10pts
+Controller layer design in the plugin infrastructure. (In workstation, DI support local mode data importing which does not require IServer
+3. Fully Support All Data Connectors in RSD Editor on Workstation (ID: 882969812)
+   Target release
+11.2.x
+Feature
+https://rally1.rallydev.com/#/66694716936d/detail/portfolioitem/feature/339436904680
+Requirements
+Design Status
+DESIGNING
+SE Owner
+Ruiqing Xu
+QA Owner
+Huijuan Xu
+UX
+4. F28144 - Mapbox Studio Integration [Viz Level] - Tech Design (ID: 871544176)
+   Target release
+11.2.1
+Feature
+F28144
+Requirements
+F28144
+Design Status
+DESIGNING
+SE Owner
+Haifeng Wang
+QA Owner
+!-@557058:80f0d83a-c46d-4f89-9577-
+5. 0 - Introduction of Plugin App Test Framework (ID: 841884307)
+   Background
+Workstation, as a one-stop admin and operations console that works in both Windows and macOS, is a product developed by multiple teams. The &#39;native&#39; part is implemented in C# by the Workstation Windows team, and in Swift by the Workstation Mac team; The &#39;WebView&#39; part, is actually web-based apps developed with web technique and embedded in a nativ
+6. FeatureList2.xlsx (ID: att840731711)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+7. FeatureList2.xlsx (ID: att838569356)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+8. FeatureList2.xlsx (ID: att833700767)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+9. FeatureList2.xlsx (ID: att833096342)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl
+10. FeatureList2.xlsx (ID: att828705754)
+   Feature Details
+Theme
+
+Initiative
+
+Feature
+
+T0-Unknown
+
+I0-Unknown
+
+F10814-Save prompt options in direct save
+
+F11024-Enhance Visualization Gallery panel in Dossier Authoring to organize visualizations in a
+T427-Ensure success at
+I1846-Citibank
+lighthouse customers
+End F9089-Parallelize
+User Performancemulti-pass
+and 10.8/10.9
+queries
+Upgrade
+and optimize
+pl

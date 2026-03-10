@@ -1,0 +1,19 @@
+{
+  "run_date": "2026-03-10",
+  "built_at": "2026-03-10T08:00:00Z",
+  "total_issues": 2,
+  "rca_inputs": [
+    {
+      "issue_key": "BCIN-1001",
+      "input_file": "/tmp/jira-BCIN-1001.json",
+      "rca_input_file": "/tmp/rca-input-BCIN-1001.json",
+      "output_file": "/tmp/BCIN-1001-rca.md"
+    },
+    {
+      "issue_key": "BCIN-1002",
+      "input_file": "/tmp/jira-BCIN-1002.json",
+      "rca_input_file": "/tmp/rca-input-BCIN-1002.json",
+      "output_file": "/tmp/BCIN-1002-rca.md"
+    }
+  ]
+}

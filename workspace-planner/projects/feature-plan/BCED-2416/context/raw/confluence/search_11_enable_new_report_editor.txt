@@ -1,0 +1,126 @@
+Found 10 results:
+1. Capabilities and Ownership Matrix - GDC and Collaborators (ID: 5038706144)
+   Workstation Core
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Top Menu and Toolbar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Interface
+Main WS functionalities
+Workstation General
+CLD-WSInfrastructure GDC
+Luke Lasich
+Search bar
+Main WS functionalities
+Workstation General
+CLD-WSInfrastr
+2. Test Objects (ID: 4499865844)
+   Case using existing logic
+no access attribute in dataset panel
+Dataset_01_AttNoAccess
+Yes
+Yes
+Yes
+Final
+validated
+Done
+N/A
+Done
+N/A
+Done
+Done
+Case using existing logic
+no access metric in dataset panel
+Dataset_04_MetricNoAccess
+Yes
+Yes
+Yes
+Final
+validated
+Done
+N/A
+Done
+N/A
+Done
+Done
+Case using existing logic
+DA2 based on Attribute1, DA3 based on DA2, attribu
+3. Prompt Page (ID: 997528663)
+   1. Introduction
+A prompt is a question the system presents to a user when a report is executed. How the user answers the question determines what data is displayed on the report when it is returned from your data source.
+A report designer can include one or more prompts in any report. Prompts are an effective tool to:
+Allow each user who executes the report
+4. 2020 Licences and Privileges (4).xlsx (ID: att997268368)
+   Version
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+2020 - Platform
+5. [Research Spike] The Next Generation Command Manager - Command Manager as Python SDK (ID: 993922886)
+   Introduction
+Inspired by F16936 : POC | Integrate a python code editor into Workstation and accomplish one user journey for pulling data from Platform Analytics, applying business logic and integrating with a 3rd party application (Rally), we have some explorations on how we
+6. MSTR Tools Developer.pptx (ID: att99385479)
+   MicroStrategy Developer
+Yan Yan
+
+Developer
+
+Architecture
+
+Debug Environment Setup
+
+How to Debug RWD
+
+Issue Summary
+
+Developer Architecture
+
+Developer
+
+Architect: Schema/Catalog editors
+• Editors to create schema objects: Attribute / hierarchy / Fact
+• Warehouse catalog
+
+Application Design
+• Editors to create applications such as document, report
+
+Environment
+7. Advanced Properties (VLDB settings and others) (ID: 993460550)
+   We will integrate the VLDB Settings and the other properties of an object (Attribute, Metric, Prompt…) into one window. The user can edit all the properties of an object within this window, instead of distributing the entry points everywhere.
+Persona &amp; Use Case
+The System Admin and Analytics Architect will define the properties at different levels to optimiz
+8. VLDB Settings in Developer (ID: 990973201)
+   VLDB Properties Entry Point
+You can change the VLDB settings for different levels using the VLDB Properties Editor. You can access the VLDB Properties Editor in several ways, depending on what level of MicroStrategy objects you want to impact with your VLDB property changes.
+For example, you can apply a setting to an entire database instance, or only to a si
+9. TH4202 and TH4203 Spike and Grooming (ID: 988451845)
+   1. Problem statement
+There are plenty of graph formatting properties available in Developer but not available in Workstation yet. The gap exists because Developer calls COM APIs to set these graph properties, while Workstation calls XML APIs to set the graph properties. However, there&#39;s a gap between COM APIs and XML APIs. Some COM APIs don&#39;t have their XML
+10. UX Design for F28937 Apply Export PDF Dialog Box Enhancements to Authoring, Workstation and Subscription Editor (ID: 986616074)
+   https://rally1.rallydev.com/#/27954169967d/detail/portfolioitem/feature/369494335572
+
+Details string update, please check the link Export to PDF
+Design for web library Export to PDF 11.2.1!--https:

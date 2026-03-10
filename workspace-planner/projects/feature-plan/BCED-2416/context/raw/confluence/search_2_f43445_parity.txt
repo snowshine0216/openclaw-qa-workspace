@@ -1,0 +1,27 @@
+Found 6 results:
+1. 25.09_Blitz (ID: 5223940098)
+   Feature
+Consumption:
+New Workstation Dashboard Editor: F43445 : Enhance Workstation dashboard authoring experience with Library capability parity
+Mobile Alert: F41295 : Receive Threshold
+2. Draft Document of F43454 - Optimize the cancelling experience in dashboard and report execution in Library/Workstation (ID: 5208899625)
+   Background and Prerequisite Knowledge
+This feature addresses the absence of a &quot;Cancel&quot; button in various dashboard and report execution workflows. When users encounter performance issues during dashboard or report execution, having the ability to cancel the process is a critical need. This feature introduces a Cancel button in the GUI, enabling users to inst
+3. F43445: Enhance Workstation dashboard authoring experience with Library capability parity (ID: 5197529587)
+   In Workstation 25.09, we have introduced a new Dashboard Editor that offers significantly enhanced capabilities compared to the previous version. By incorporating most features from the Library Dashboard Editor, this update bridges the gap between the Library and Workstation editors, delivering a more consistent user experience.
+To enable the new editor, nav
+4. F43445 WorkStation New Dashboard Editor Performance Test (ID: 5190221884)
+   Summary
+Workstation dashboard editor is primarily designed for dashboard authoring by Analyst users(not consumption). Its migration to the WebView-based editor in 25.08 Workstation brought good parity with Library Web. While some performance degradation was introduced due to the new framework, it’s not so critical, and the detailed information is as below.
+5. F43445: Enhance Workstation dashboard authoring experience with Library capability parity (ID: 5186127599)
+   QA Goal
+E2E: End to End
+Ensure Workstation users can seamlessly create or edit dashboards using the new WebView-based dashboard editor, achieving functional parity with Library Web.
+FUN: Functionality
+Dashboard authoring workflows are covered by comprehensive component tests, as well as an end-to-end test to ensure related workflows (create, edit, save, save
+6. GDC PO & DM essentials (ID: 5126488149)
+   Planning essentials for current release
+
+Escalations Dashboard
+OCRs and Automation Features Initiative: 
+Contributions: 26.01 Contributions!--https://aqueduct.microstrategy.com/MicroStrategyLibrary/app/0730F68F4B8B4B52AA23F0
