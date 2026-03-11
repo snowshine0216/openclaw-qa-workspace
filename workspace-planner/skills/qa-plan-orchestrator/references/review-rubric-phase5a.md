@@ -122,3 +122,15 @@ Each affected node must record:
 ## Request Fulfillment Gate
 
 - `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.
+
+### Preservation and Deduplication Rules
+
+- record rows not only for removed or changed scenarios, but also for prior reviewed scenarios that were:
+  - preserved
+  - clarified
+  - merged safely
+  - replaced by richer executable coverage
+  - converted from a stub into executable scenarios
+- if a prior stub is replaced by executable coverage, the audit must explicitly say that the stub was replaced and why the new scenarios preserve the concern more faithfully
+- do not leave a row as `rewrite_required` after the rewritten draft already resolved the concern; resolved rows must be updated to `pass` before `accept`
+- do not deduplicate by theme alone; only deduplicate when the resulting scenario still covers the same trigger, risk, and observable outcome

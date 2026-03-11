@@ -74,6 +74,8 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 
 #### Checkpoint Summary format
 
+The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
+
 Use explicit checkpoint rows keyed by the canonical labels:
 - `Checkpoint 1`
 - `Checkpoint 2`
@@ -84,8 +86,6 @@ Do not use bare numeric ids like `1`, `2`, `3` in place of the canonical checkpo
 
 Preferred row shape:
 - `Shipment Readiness | Checkpoint 1 | pass | <evidence summary> | <required action or none>`
-
-The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
 
 ### `checkpoint_delta_<feature-id>.md`
 
