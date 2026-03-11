@@ -20,12 +20,13 @@ The orchestrator does not perform phase logic inline. It does not write artifact
 Always read:
 
 - `reference.md`
-- `references/qa-plan-contract.md`
+- `references/phase4a-contract.md`
+- `references/phase4b-contract.md`
 - `references/context-coverage-contract.md`
-- `references/executable-step-rubric.md`
-- `references/review-rubric.md`
+- `references/review-rubric-phase5a.md`
+- `references/review-rubric-phase5b.md`
+- `references/review-rubric-phase6.md`
 - `references/e2e-coverage-rules.md`
-- `templates/qa-plan-template.md`
 
 ## Runtime Layout
 
@@ -41,7 +42,8 @@ projects/feature-plan/<feature-id>/
   phase3_spawn_manifest.json
   phase4a_spawn_manifest.json
   phase4b_spawn_manifest.json
-  phase5_spawn_manifest.json
+  phase5a_spawn_manifest.json
+  phase5b_spawn_manifest.json
   phase6_spawn_manifest.json
   qa_plan_final.md
 ```
@@ -101,36 +103,42 @@ See `README.md` for the phase-to-reference mapping table.
 - Entry: `scripts/phase4a.sh`
 - Work: spawn the subcategory-draft writer
 - Output: `phase4a_spawn_manifest.json`
-- `--post`: validate `drafts/qa_plan_subcategory_<feature-id>.md`
+- `--post`: validate `drafts/qa_plan_phase4a_r<round>.md`
 
 ### Phase 4b
 
 - Entry: `scripts/phase4b.sh`
-- Work: spawn the top-category grouper
+- Work: spawn the canonical top-layer grouper
 - Output: `phase4b_spawn_manifest.json`
-- `--post`: validate `drafts/qa_plan_v1.md`
+- Notes: preserve scenario granularity, allow one bounded supplemental research pass only when grouping evidence is insufficient, and leave few-shot cleanup to Phase 6
+- `--post`: validate `drafts/qa_plan_phase4b_r<round>.md`
 
-### Phase 5
+### Phase 5a
 
-- Entry: `scripts/phase5.sh`
-- Work: spawn a combined review + refactor pass
-- Output: `phase5_spawn_manifest.json`
+- Entry: `scripts/phase5a.sh`
+- Work: spawn a full-context review + refactor pass
+- Output: `phase5a_spawn_manifest.json`
+- Notes: allow one bounded supplemental research pass only after prerequisites exist; successful rounds rewrite `artifact_lookup_<feature-id>.md`; `review_delta` must end with `accept` or `return phase5a`
 - `--post`: require:
   - `context/review_notes_<feature-id>.md`
   - `context/review_delta_<feature-id>.md`
-  - `drafts/qa_plan_v2.md`
-  - `qa_plan_v2.md` differs from `qa_plan_v1.md`
+  - `drafts/qa_plan_phase5a_r<round>.md`
+  - context coverage audit and section review checklist validators pass
+
+### Phase 5b
+
+- Entry: `scripts/phase5b.sh`
+- Work: spawn the shipment-checkpoint review + refactor pass
+- Output: `phase5b_spawn_manifest.json`
+- Notes: allow one bounded supplemental research pass only after prerequisites exist; successful rounds rewrite `artifact_lookup_<feature-id>.md`; `checkpoint_delta` must end with `accept`, `return phase5a`, or `return phase5b`
+- `--post`: require checkpoint audit, checkpoint delta, and `drafts/qa_plan_phase5b_r<round>.md`
 
 ### Phase 6
 
 - Entry: `scripts/phase6.sh`
-- Work: spawn the format/search/few-shots quality pass
+- Work: spawn the final layering/search/few-shots quality pass
 - Output: `phase6_spawn_manifest.json`
-- `--post`: require:
-  - `drafts/qa_plan_v3.md`
-  - `context/quality_delta_<feature-id>.md`
-  - valid XMindMark hierarchy
-  - executable nested steps
+- `--post`: require `drafts/qa_plan_phase6_r<round>.md`, `context/quality_delta_<feature-id>.md`, and final layering validators
 
 ### Phase 7
 

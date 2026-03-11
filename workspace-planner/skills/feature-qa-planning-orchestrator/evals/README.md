@@ -4,6 +4,7 @@
 
 - **`evals`** — Skill-creator compatible format for `generate_review.py`, `aggregate_benchmark`, and trigger optimization. Use for running test prompts through the skill and grading outputs.
 - **`eval_groups`** — Contract/compliance checks for context extraction, coverage usage, executable steps, E2E, review delta, doc sync, and readability.
+- Smoke and grading expectations assume phase-specific runtime contracts, split `phase5a`/`phase5b` review loops, and phase-scoped draft files.
 
 ## Fixture paths
 
@@ -43,6 +44,8 @@ For each eval in the manifest, run **two** tasks (with-skill and without-skill):
 
 - **With skill:** Load `feature-qa-planning-orchestrator`, execute the prompt, save outputs to `.../with_skill/run-1/outputs/`
 - **Without skill:** Same prompt, no skill, save outputs to `.../without_skill/run-1/outputs/`
+
+Save phase-scoped drafts, review/checkpoint deltas, and any supplemental research artifacts alongside context outputs.
 
 Use the agent or spawn mechanism available (Codex, subagents, etc.) and the instructions from the manifest.
 

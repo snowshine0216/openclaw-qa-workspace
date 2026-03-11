@@ -106,7 +106,7 @@ function createWorkspace(workspace, iteration, evals, dryRun) {
 - Skill path: ${SKILL_ROOT}
 - Task: ${ev.prompt}
 - Save all outputs to: ${join(withSkillDir, 'outputs')}
-- Outputs to save: context artifacts, drafts, validation results, or doc sync report`,
+- Outputs to save: context artifacts, phase-scoped drafts, validation results, review/checkpoint delta artifacts, latest draft path metadata, or doc sync report`,
       },
       without_skill: {
         output_dir: join(withoutSkillDir, 'outputs'),
@@ -114,7 +114,7 @@ function createWorkspace(workspace, iteration, evals, dryRun) {
         instruction: `Execute this task WITHOUT the feature-qa-planning-orchestrator skill (baseline):
 - Task: ${ev.prompt}
 - Save all outputs to: ${join(withoutSkillDir, 'outputs')}
-- Outputs to save: same as with-skill run`,
+- Outputs to save: same as with-skill run, including phase-scoped drafts and delta artifacts when applicable`,
       },
     });
   }

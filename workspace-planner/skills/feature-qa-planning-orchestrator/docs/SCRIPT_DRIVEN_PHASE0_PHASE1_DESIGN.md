@@ -6,6 +6,8 @@
 > **Scope:** All phases (0–7) script-driven. Orchestrator only calls scripts, interacts with user, and spawns subagents (waiting for completion).
 >
 > **Constraint:** This is a design artifact. Do not implement until approved.
+>
+> **Phase 4-6 note:** Phase 4-6 runtime loop and rubric details are superseded by `docs/PHASE4_LAYERING_AND_COVERAGE_HARNESS_REMEDIATION_DESIGN.md` and the active `references/phase4b-contract.md`, `references/review-rubric-phase5a.md`, and `references/review-rubric-phase5b.md` files.
 
 ---
 

@@ -37,9 +37,9 @@ test('test_success_manifest', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('qa-plan-contract'), 'task must reference qa-plan-contract');
-  assert.ok(task.includes('executable-step-rubric'), 'task must reference executable-step-rubric');
-  assert.ok(task.includes('qa-plan-template'), 'task must reference qa-plan-template');
+  assert.ok(task.includes('phase4a-contract'), 'task must reference phase4a-contract');
+  assert.ok(task.includes('bounded supplemental research'), 'task must mention bounded supplemental research');
+  assert.ok(task.includes('qa_plan_phase4a_r1.md'), 'task must target the phase-scoped draft path');
   await rm(root, { recursive: true, force: true });
 });
 

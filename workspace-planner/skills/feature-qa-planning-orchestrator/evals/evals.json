@@ -4,35 +4,37 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce a context index, coverage ledger, and a unified draft in XMindMark.",
-      "expected_output": "Valid context index with feature classification, coverage ledger mapping mandatory candidates, and draft QA plan in valid XMindMark. Evidence saved under context/.",
+      "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce artifact lookup, coverage ledger, phase4a/phase4b drafts, phase5a review outputs, phase5b checkpoint outputs, and a phase6 final draft.",
+      "expected_output": "Valid artifact lookup and coverage ledger, phase-scoped drafts from phase4a through phase6, review/checkpoint deltas, and evidence saved under context/.",
       "files": [],
       "expectations": [
-        "context_index_<feature-id>.md exists with required headings",
+        "artifact_lookup_<feature-id>.md exists",
         "coverage_ledger_<feature-id>.md maps mandatory candidates",
-        "Draft passes markxmind validation",
+        "Latest phase6 draft passes markxmind validation",
+        "phase5a and phase5b outputs both exist",
         "Evidence saved under context/ before influencing plan"
       ]
     },
     {
       "id": 2,
-      "prompt": "Review a QA plan draft for executable-step quality. Reject vague phrases like 'verify correct behavior' or 'ensure it works' in manual action steps.",
-      "expected_output": "Rewrite requests and executable-step fixes. Banned phrases removed; action steps remain user-visible.",
+      "prompt": "Review a QA plan draft for executable-step quality and final layering. Reject vague phrases like 'verify correct behavior' or 'ensure it works' and preserve canonical top-layer, subcategory, and scenario structure.",
+      "expected_output": "Rewrite requests, checkpoint/review deltas, and executable-step fixes. Banned phrases removed; action steps remain user-visible.",
       "files": [],
       "expectations": [
         "No vague phrases (verify correct behavior, ensure it works) in manual steps",
         "Action steps are user-visible and concrete",
-        "Review artifact records rewrite requests"
+        "Review artifact records rewrite requests",
+        "Final layered draft preserves top category -> subcategory -> scenario structure"
       ]
     },
     {
       "id": 3,
-      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same 8-phase model (Phase 0-7).",
-      "expected_output": "All docs aligned on Phase 0-7. No legacy six-phase or qa-plan-contract-simple references.",
+      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same split review model with Phase 4a, 4b, 5a, 5b, 6, and 7.",
+      "expected_output": "All docs aligned on the split 5a/5b workflow and phase-specific runtime references.",
       "files": [],
       "expectations": [
-        "Phase model is 0-7 in all referenced docs",
-        "No qa-plan-contract-simple.md references",
+        "Docs mention phase5a and phase5b",
+        "Docs point to phase-specific runtime reference files",
         "AGENTS.md Core Workflow matches SKILL.md phase overview"
       ]
     }

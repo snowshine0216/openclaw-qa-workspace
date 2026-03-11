@@ -59,6 +59,37 @@ const STOPWORDS = new Set([
   'unclear',
 ]);
 
+const CANONICAL_TOP_LAYERS = [
+  'EndToEnd',
+  'Core Functional Flows',
+  'Error Handling / Recovery',
+  'Regression / Known Risks',
+  'Compatibility',
+  'Security',
+  'i18n',
+  'Accessibility',
+  'Performance / Resilience',
+  'Out of Scope / Assumptions',
+];
+
+const REQUIRED_CHECKPOINTS = [
+  'Checkpoint 1',
+  'Checkpoint 2',
+  'Checkpoint 3',
+  'Checkpoint 4',
+  'Checkpoint 5',
+  'Checkpoint 6',
+  'Checkpoint 7',
+  'Checkpoint 8',
+  'Checkpoint 9',
+  'Checkpoint 10',
+  'Checkpoint 11',
+  'Checkpoint 12',
+  'Checkpoint 13',
+  'Checkpoint 14',
+  'Checkpoint 15',
+];
+
 function normalizeContent(content) {
   return String(content || '').replace(/\r\n/g, '\n');
 }
@@ -136,6 +167,19 @@ function includesAny(text, phrases) {
   return phrases.filter((phrase) => lower.includes(phrase));
 }
 
+function parseDisposition(section, allowedValues) {
+  const bulletValues = section
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2).trim().toLowerCase());
+  const allowed = new Set(allowedValues.map((value) => value.toLowerCase()));
+  return {
+    values: bulletValues,
+    invalid: bulletValues.filter((value) => !allowed.has(value)),
+  };
+}
+
 function tokenizeReference(text) {
   return normalizeContent(text)
     .toLowerCase()
@@ -194,6 +238,35 @@ function scenarioBlocks(content) {
 
 function hasCamelCaseImplementationToken(line) {
   return /[a-z]+[A-Z][A-Za-z0-9]+/.test(line);
+}
+
+function topLevelBullets(content) {
+  return bulletLines(content)
+    .filter((line) => bulletIndent(line) === 0)
+    .map((line) => line.replace(/^\s*[-*]\s+/, '').trim());
+}
+
+function nestedBlocks(content) {
+  const lines = normalizeContent(content).split('\n');
+  const blocks = [];
+  let currentTop = null;
+
+  for (const line of lines) {
+    if (!/^\s*[-*] /.test(line)) continue;
+    const indent = bulletIndent(line);
+    if (indent === 0) {
+      currentTop = { title: line.replace(/^\s*[-*]\s+/, '').trim(), lines: [] };
+      blocks.push(currentTop);
+      continue;
+    }
+    if (currentTop) currentTop.lines.push(line);
+  }
+
+  return blocks;
+}
+
+function extractRowsForSection(content, heading, minCells) {
+  return extractTableRows(getSection(content, heading), minCells);
 }
 
 export function validateContextIndex(content) {
@@ -558,6 +631,22 @@ export function validateReviewDelta(content) {
     }
   }
 
+  const verdictSection = getSection(content, '## Verdict After Refactor');
+  if (!hasNonEmptyBullet(verdictSection)) {
+    failures.push('## Verdict After Refactor must contain an explicit terminal disposition.');
+  } else {
+    const { values, invalid } = parseDisposition(verdictSection, ['accept', 'return phase5a']);
+    if (values.length === 0) {
+      failures.push('## Verdict After Refactor must contain one disposition bullet.');
+    }
+    if (values.length > 1) {
+      failures.push('## Verdict After Refactor must contain exactly one disposition bullet.');
+    }
+    if (invalid.length > 0) {
+      failures.push(`## Verdict After Refactor has invalid disposition: ${invalid.join(', ')}`);
+    }
+  }
+
   return { ok: failures.length === 0, failures };
 }
 
@@ -593,5 +682,229 @@ export function validateUnresolvedStepHandling(reviewContent, draftContent, rese
     }
   }
 
+  return { ok: failures.length === 0, failures };
+}
+
+export function validatePhase4aSubcategoryDraft(content) {
+  const failures = [];
+  const topLayers = topLevelBullets(content);
+  const leaked = topLayers.filter((label) => CANONICAL_TOP_LAYERS.includes(label));
+  if (leaked.length > 0) {
+    failures.push(`Phase 4a must stay below canonical top-layer grouping. Found: ${leaked.join(', ')}`);
+  }
+  if (normalizeContent(content).includes('->')) {
+    failures.push('Phase 4a draft still contains compressed arrow-chain steps.');
+  }
+
+  const blocks = nestedBlocks(content);
+  if (blocks.length === 0) {
+    failures.push('Phase 4a draft must contain at least one subcategory block.');
+  }
+  for (const block of blocks) {
+    const hasScenarioLayer = block.lines.some((line) => bulletIndent(line) === 4);
+    if (!hasScenarioLayer) {
+      failures.push(`Phase 4a block "${block.title}" is missing a scenario layer.`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validatePhase4bCategoryLayering(content) {
+  const failures = [];
+  const text = normalizeContent(content);
+  const hasExceptionComment = text.includes('top_layer_exception');
+  const topLayers = topLevelBullets(content);
+  const nonCanonical = topLayers.filter((label) => !CANONICAL_TOP_LAYERS.includes(label));
+  if (nonCanonical.length > 0 && !hasExceptionComment) {
+    failures.push(`Phase 4b uses non-canonical top-layer labels without exception comment: ${nonCanonical.join(', ')}`);
+  }
+
+  const blocks = nestedBlocks(content);
+  for (const block of blocks) {
+    const subcategoryLines = block.lines.filter((line) => bulletIndent(line) === 4);
+    const scenarioLines = block.lines.filter((line) => bulletIndent(line) === 8);
+    const hasSubcategoryLayer = subcategoryLines.some((line) => !/<P\d+>/i.test(line));
+    const hasScenarioLayer = scenarioLines.some((line) => /<P\d+>/i.test(line));
+    if (!hasSubcategoryLayer || !hasScenarioLayer) {
+      failures.push(`Top layer "${block.title}" must contain both a subcategory layer and a scenario layer.`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateContextCoverageAudit(content, requiredEntries = []) {
+  const failures = [];
+  const rows = extractRowsForSection(content, '## Context Artifact Coverage Audit', 6).map((cells) => ({
+    artifactPath: cells[0],
+    artifactSection: cells[1],
+    disposition: cells[2],
+    mappedPlanSection: cells[3],
+    checkpoint: cells[4],
+    notes: cells[5],
+  }));
+  const covered = new Set(rows.map((row) => `${row.artifactPath}::${row.artifactSection}`));
+  for (const entry of requiredEntries) {
+    if (!covered.has(entry)) {
+      failures.push(`Missing context audit row for ${entry}`);
+    }
+  }
+  for (const row of rows) {
+    if (!row.disposition) {
+      failures.push(`Context audit row is missing a disposition for ${row.artifactPath}`);
+    }
+    if (row.disposition === 'consumed' && !row.mappedPlanSection) {
+      failures.push(`Consumed context audit row must include a mapped plan section for ${row.artifactPath}`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateSectionReviewChecklist(content) {
+  const failures = [];
+  const rows = extractRowsForSection(content, '## Section Review Checklist', 5).map((cells) => ({
+    section: cells[0],
+    checkpoint: cells[1],
+    status: String(cells[2] || '').toLowerCase(),
+    evidence: cells[3],
+    requiredAction: cells[4],
+  }));
+  const sections = new Set(rows.map((row) => row.section));
+  for (const section of CANONICAL_TOP_LAYERS) {
+    if (!sections.has(section)) {
+      failures.push(`Section Review Checklist is missing checkpoint coverage for ${section}`);
+    }
+  }
+  for (const row of rows) {
+    if (row.status === 'fail' && (!row.requiredAction || row.requiredAction === 'none')) {
+      failures.push(`Failed section checkpoint for ${row.section} must include a required action.`);
+    }
+  }
+
+  const blockingRows = extractRowsForSection(content, '## Blocking Findings', 5).map((cells) => ({
+    findingId: cells[0],
+    section: cells[1],
+    issue: cells[2],
+    whyBlocking: cells[3],
+    requiredAction: cells[4],
+  }));
+  const rewriteRows = extractRowsForSection(content, '## Rewrite Requests', 5);
+  for (const finding of blockingRows.filter((row) => row.findingId && row.findingId.toLowerCase() !== 'none')) {
+    if (!rewriteRows.some((cells) => normalizeContent(cells.join(' ')).toLowerCase().includes(finding.requiredAction.toLowerCase()))) {
+      failures.push(`Blocking finding ${finding.findingId} must have a matching rewrite request.`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateCheckpointAudit(content) {
+  const failures = [];
+  const rows = extractRowsForSection(content, '## Checkpoint Summary', 5).map((cells) => ({
+    checkpointGroup: cells[0],
+    checkpoint: cells[1],
+    status: String(cells[2] || '').toLowerCase(),
+    evidence: cells[3],
+    requiredAction: cells[4],
+  }));
+  const found = new Set(rows.map((row) => row.checkpoint));
+  for (const checkpoint of REQUIRED_CHECKPOINTS) {
+    if (!found.has(checkpoint)) {
+      failures.push(`Checkpoint audit is missing ${checkpoint}`);
+    }
+  }
+  for (const row of rows) {
+    if (!row.evidence || row.evidence === 'none') {
+      failures.push(`${row.checkpoint} must cite evidence.`);
+    }
+    if (row.status === 'fail' && (!row.requiredAction || row.requiredAction === 'none')) {
+      failures.push(`${row.checkpoint} must include a required action when it fails.`);
+    }
+  }
+  const releaseRecommendation = getSection(content, '## Release Recommendation');
+  if (!hasNonEmptyBullet(releaseRecommendation)) {
+    failures.push('Release Recommendation is required.');
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateCheckpointDelta(content) {
+  const failures = [];
+  const blockingSection = getSection(content, '## Blocking Checkpoint Resolution');
+  const explicitNone = /\bnone\b/i.test(blockingSection);
+  const rawRows = extractTableRows(blockingSection, 4);
+  const blockingRows = rawRows.map((cells) => {
+    const status = String(cells[cells.length - 1] || '').toLowerCase();
+    const changeSummary = cells.length >= 5 ? cells[3] : cells[2];
+    return {
+      checkpointId: cells[0],
+      changeSummary: String(changeSummary || '').trim(),
+      status,
+    };
+  });
+  if (blockingRows.length === 0 && !explicitNone) {
+    failures.push('Blocking Checkpoint Resolution must contain at least one row or explicit none marker.');
+  }
+  for (const row of blockingRows) {
+    if (row.status === 'resolved' && (!row.changeSummary || /^(none|no change|unchanged)$/i.test(row.changeSummary))) {
+      failures.push(`${row.checkpointId} is marked resolved without a recorded change.`);
+    }
+  }
+  const finalDisposition = getSection(content, '## Final Disposition');
+  if (!hasNonEmptyBullet(finalDisposition)) {
+    failures.push('Final Disposition is required.');
+  } else {
+    const { values, invalid } = parseDisposition(finalDisposition, ['accept', 'return phase5a', 'return phase5b']);
+    if (values.length === 0) {
+      failures.push('Final Disposition must contain one disposition bullet.');
+    }
+    if (values.length > 1) {
+      failures.push('Final Disposition must contain exactly one disposition bullet.');
+    }
+    if (invalid.length > 0) {
+      failures.push(`Final Disposition has invalid disposition: ${invalid.join(', ')}`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateFinalLayering(content) {
+  const failures = [];
+  if (normalizeContent(content).includes('->')) {
+    failures.push('Final draft must not contain compressed arrow-chain steps.');
+  }
+
+  const blocks = nestedBlocks(content);
+  for (const block of blocks) {
+    const isCanonical = CANONICAL_TOP_LAYERS.includes(block.title);
+    const subcategoryLines = block.lines.filter((line) => bulletIndent(line) === 4);
+    const scenarioLines = block.lines.filter((line) => bulletIndent(line) === 8);
+    const hasSubcategoryLayer = subcategoryLines.some((line) => !/<P\d+>/i.test(line));
+    const hasScenarioLayer = scenarioLines.some((line) => /<P\d+>/i.test(line));
+    if (isCanonical && (!hasSubcategoryLayer || !hasScenarioLayer)) {
+      failures.push(`Final draft top layer "${block.title}" must preserve the subcategory layer and scenario layer.`);
+    }
+    if (!isCanonical && !normalizeContent(content).includes('top_layer_exception')) {
+      failures.push(`Final draft uses non-canonical top-layer label without exception comment: ${block.title}`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateQualityDelta(content) {
+  const failures = [];
+  const finalLayerAudit = getSection(content, '## Final Layer Audit');
+  const fewShots = getSection(content, '## Few-Shot Rewrite Applications');
+  const verdict = getSection(content, '## Verdict');
+  if (!hasNonEmptyBullet(finalLayerAudit)) {
+    failures.push('Final Layer Audit is required.');
+  }
+  if (!hasNonEmptyBullet(fewShots)) {
+    failures.push('Few-Shot Rewrite Applications are required.');
+  }
+  if (!hasNonEmptyBullet(verdict)) {
+    failures.push('Verdict is required.');
+  }
   return { ok: failures.length === 0, failures };
 }

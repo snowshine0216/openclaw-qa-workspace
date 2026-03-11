@@ -43,6 +43,8 @@ async function clearPhase2PlusContextArtifacts(projectDir, featureId) {
     `coverage_ledger_${featureId}.md`,
     `review_notes_${featureId}.md`,
     `review_delta_${featureId}.md`,
+    `checkpoint_audit_${featureId}.md`,
+    `checkpoint_delta_${featureId}.md`,
     `quality_delta_${featureId}.md`,
     `finalization_record_${featureId}.md`,
   ];
@@ -89,8 +91,16 @@ export async function applyUserChoice(featureId, projectDir, mode) {
     task.overall_status = 'in_progress';
     task.selected_mode = 'smart_refresh';
     task.latest_draft_version = null;
+    task.latest_draft_path = null;
+    task.latest_draft_phase = null;
     task.latest_review_version = null;
     task.latest_validation_version = null;
+    task.phase4a_round = 0;
+    task.phase4b_round = 0;
+    task.phase5a_round = 0;
+    task.phase5b_round = 0;
+    task.phase6_round = 0;
+    task.return_to_phase = null;
     run.artifact_index_generated_at = null;
     run.coverage_ledger_generated_at = null;
     run.draft_generated_at = null;

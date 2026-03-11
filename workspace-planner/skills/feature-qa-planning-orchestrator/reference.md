@@ -6,6 +6,14 @@
 - `reference.md` defines runtime state, artifact naming, manifests, and phase gates
 - `references/*.md` define writer/reviewer contracts
 
+## Active Runtime References
+
+- `references/phase4a-contract.md`
+- `references/phase4b-contract.md`
+- `references/review-rubric-phase5a.md`
+- `references/review-rubric-phase5b.md`
+- `references/review-rubric-phase6.md`
+
 ## Runtime State
 
 ### `REPORT_STATE`
@@ -40,6 +48,14 @@ Required fields:
 - `completed_source_families`
 - `has_supporting_artifacts`
 - `latest_draft_version`
+- `latest_draft_path`
+- `latest_draft_phase`
+- `phase4a_round`
+- `phase4b_round`
+- `phase5a_round`
+- `phase5b_round`
+- `phase6_round`
+- `return_to_phase`
 - `created_at`
 - `updated_at`
 
@@ -95,25 +111,36 @@ Required fields:
 
 ### Phase 4a
 
-- `drafts/qa_plan_subcategory_<feature-id>.md`
+- `drafts/qa_plan_phase4a_r<round>.md`
 - `phase4a_spawn_manifest.json`
 
 ### Phase 4b
 
-- `drafts/qa_plan_v1.md`
+- `drafts/qa_plan_phase4b_r<round>.md`
 - `phase4b_spawn_manifest.json`
 
-### Phase 5
+### Phase 5a
 
 - `context/review_notes_<feature-id>.md`
 - `context/review_delta_<feature-id>.md`
-- `drafts/qa_plan_v2.md`
-- `phase5_spawn_manifest.json`
+- `drafts/qa_plan_phase5a_r<round>.md`
+- `phase5a_spawn_manifest.json`
+- successful rounds rewrite `context/artifact_lookup_<feature-id>.md`
+- `review_delta` may route the next round with `accept` or `return phase5a`
+
+### Phase 5b
+
+- `context/checkpoint_audit_<feature-id>.md`
+- `context/checkpoint_delta_<feature-id>.md`
+- `drafts/qa_plan_phase5b_r<round>.md`
+- `phase5b_spawn_manifest.json`
+- successful rounds rewrite `context/artifact_lookup_<feature-id>.md`
+- `checkpoint_delta` may route the next round with `accept`, `return phase5a`, or `return phase5b`
 
 ### Phase 6
 
 - `context/quality_delta_<feature-id>.md`
-- `drafts/qa_plan_v3.md`
+- `drafts/qa_plan_phase6_r<round>.md`
 - `phase6_spawn_manifest.json`
 
 ### Phase 7
@@ -159,6 +186,13 @@ Use only these primary evidence skills (not generic tools):
 
 Do not substitute browser fetch or generic web fetch for Jira, Confluence, or GitHub primary evidence.
 
+## Bounded Supplemental Research
+
+- Phases 4a, 4b, 5a, 5b, and 6 may do at most one bounded supplemental research pass per round when local evidence is insufficient.
+- Supplemental research is allowed only after required phase prerequisites already exist.
+- Allowed shared skills for this pass are `jira-cli`, `confluence`, and `tavily-search`.
+- New research artifacts must be saved under `context/` so later `artifact_lookup_<feature-id>.md` rewrites can include them.
+
 ## Validators
 
 The script-facing validator CLI is `scripts/lib/validate_plan_artifact.mjs`.
@@ -167,8 +201,16 @@ Supported validators:
 
 - `validate_context_index`
 - `validate_coverage_ledger`
+- `validate_phase4a_subcategory_draft`
+- `validate_phase4b_category_layering`
+- `validate_context_coverage_audit`
+- `validate_section_review_checklist`
+- `validate_checkpoint_audit`
+- `validate_checkpoint_delta`
 - `validate_e2e_minimum`
 - `validate_executable_steps`
+- `validate_final_layering`
+- `validate_quality_delta`
 - `validate_review_delta`
 - `validate_scenario_granularity`
 - `validate_unresolved_step_handling`
@@ -180,10 +222,11 @@ Supported validators:
 - Phase 1: every requested source family passed spawn-policy and evidence-completeness checks
 - Phase 2: `artifact_lookup_<feature-id>.md` exists and contains at least one artifact row
 - Phase 3: `coverage_ledger_<feature-id>.md` passes validation
-- Phase 4a: `qa_plan_subcategory_<feature-id>.md` passes executable-step validation
-- Phase 4b: `qa_plan_v1.md` passes hierarchy validation and user-facing minimum checks
-- Phase 5: `review_notes`, `review_delta`, and `qa_plan_v2.md` exist, and `v2` differs from `v1`
-- Phase 6: `qa_plan_v3.md` passes hierarchy + executable-step checks, and `quality_delta` exists
+- Phase 4a: `qa_plan_phase4a_r<round>.md` passes `validate_phase4a_subcategory_draft` and executable-step validation
+- Phase 4b: `qa_plan_phase4b_r<round>.md` passes canonical layering, hierarchy, E2E minimum, and executable-step validation
+- Phase 5a: `review_notes`, `review_delta`, and `qa_plan_phase5a_r<round>.md` exist, pass the context-coverage + section-review gates, and route with `accept` or `return phase5a`
+- Phase 5b: `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b_r<round>.md` exist, pass checkpoint audit + delta validation, and route with `accept`, `return phase5a`, or `return phase5b`
+- Phase 6: `qa_plan_phase6_r<round>.md` passes final layering, hierarchy, E2E minimum, and executable-step checks, and `quality_delta` exists
 - Phase 7: explicit user approval before promotion
 
 ## Concurrent Runs
