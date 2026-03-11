@@ -23,7 +23,8 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 - Refactor the draft only when findings are evidence-backed.
 - Do not remove, defer, or move a concern to Out of Scope.
 - Only do so when source evidence or explicit user direction requires it.
-- Otherwise enrich the plan by preserving, splitting, clarifying, or extending coverage.
+- Otherwise enrich the plan by preserving, splitting, clarifying, extending, or safely deduplicating coverage.
+- Deduplication is allowed only when the resulting plan still preserves the same practical trigger, risk rationale, and observable outcome coverage.
 - Self-review the rewritten draft before finishing the round.
 - Rewrite `artifact_lookup_<feature-id>.md` for the successful round so new context artifacts and preserved read-state remain visible.
 
@@ -53,6 +54,21 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 - `## Blocking Findings`
 - `## Advisory Findings`
 - `## Rewrite Requests`
+
+#### Context Artifact Coverage Audit format
+
+Do not summarize an artifact as `all sections`.
+List explicit rows for each heading that materially influenced the round.
+
+Preferred row shape:
+- `context/<artifact>.md | ## Exact Heading | consumed | <mapped plan section> | <checkpoint> | <notes>`
+
+If a validator or script expects exact headings, use the exact heading text from the source artifact.
+
+#### Blocking Findings ↔ Rewrite Requests linkage rule
+
+The `required action` text in `## Blocking Findings` must closely match the action text in the corresponding `## Rewrite Requests` row.
+Avoid shorthand in one section and long-form wording in the other.
 
 ### `review_delta_<feature-id>.md`
 
@@ -88,3 +104,15 @@ Each affected node must record:
 - evidence source
 - disposition (`pass` | `rewrite_required`)
 - reason
+
+### Preservation and Deduplication Rules
+
+- record rows not only for removed or changed scenarios, but also for prior reviewed scenarios that were:
+  - preserved
+  - clarified
+  - merged safely
+  - replaced by richer executable coverage
+  - converted from a stub into executable scenarios
+- if a prior stub is replaced by executable coverage, the audit must explicitly say that the stub was replaced and why the new scenarios preserve the concern more faithfully
+- do not leave a row as `rewrite_required` after the rewritten draft already resolved the concern; resolved rows must be updated to `pass` before `accept`
+- do not deduplicate by theme alone; only deduplicate when the resulting scenario still covers the same trigger, risk, and observable outcome
