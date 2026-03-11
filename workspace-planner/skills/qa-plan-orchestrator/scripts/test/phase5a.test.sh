@@ -52,6 +52,12 @@ test_post_validation_pass() {
 - context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
 - context/jira_issue_BCIN-80.md | ## Feature Summary | consumed | EndToEnd > Authentication | primary journey | covered
 
+## Supporting Artifact Coverage Audit
+- context/supporting_issue_summary_BCIN-80.md | ## Aggregate Summary | consumed | Regression / Known Risks > Support context | support context covered | none
+
+## Deep Research Coverage Audit
+- context/deep_research_synthesis_report_editor_BCIN-80.md | ## Research Synthesis | consumed | Core Functional Flows > Report editor | research coverage preserved | none
+
 ## Section Review Checklist
 - EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | jira_issue_BCIN-80.md | none
 - Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
@@ -110,6 +116,12 @@ test_post_validation_sets_return_to_phase_from_review_delta() {
 
 ## Context Artifact Coverage Audit
 - context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Supporting Artifact Coverage Audit
+- context/supporting_issue_summary_BCIN-80.md | ## Aggregate Summary | consumed | Regression / Known Risks > Support context | support context covered | none
+
+## Deep Research Coverage Audit
+- context/deep_research_synthesis_report_editor_BCIN-80.md | ## Research Synthesis | consumed | Core Functional Flows > Report editor | research coverage preserved | none
 
 ## Section Review Checklist
 - EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | current draft | none
@@ -172,6 +184,71 @@ test_post_validation_requires_artifact_lookup_audit() {
 
 ## Section Review Checklist
 - EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | jira_issue_BCIN-80.md | none
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | pass | current draft | none
+- Regression / Known Risks | risky flows are isolated | pass | current draft | none
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | await browser matrix
+- Security | permission-sensitive flows stay separate | pass | current draft | none
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not in scope
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not in scope
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not in scope
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+EOF
+  cat > "$run_dir/context/review_delta_BCIN-80.md" <<'EOF'
+# Review Delta
+
+## Source Review
+- review_notes_BCIN-80.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase5a.sh" BCIN-80 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
+test_post_validation_requires_support_and_research_audit_sections() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase5a_project "$temp_dir")"
+  write_task_json "$run_dir/task.json" '{"feature_id":"BCIN-80","current_phase":"phase_4b_top_category_draft","supporting_issue_keys":["BCED-2416"],"deep_research_topics":["report_editor_workstation_functionality","report_editor_library_vs_workstation_gap"],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf '# Support summary\n' > "$run_dir/context/supporting_issue_summary_BCIN-80.md"
+  printf '# Research synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-80.md"
+  printf 'after\n' > "$run_dir/drafts/qa_plan_phase5a_r1.md"
+  cat > "$run_dir/context/review_notes_BCIN-80.md" <<'EOF'
+# Review Notes
+
+## Context Artifact Coverage Audit
+- context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | current draft | none
 - Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
 - Error Handling / Recovery | failure states are explicit | pass | current draft | none
 - Regression / Known Risks | risky flows are isolated | pass | current draft | none
@@ -547,6 +624,7 @@ test_rerun_manifest_output_when_return_to_phase5a_requested
 test_post_validation_pass
 test_post_validation_sets_return_to_phase_from_review_delta
 test_post_validation_requires_artifact_lookup_audit
+test_post_validation_requires_support_and_research_audit_sections
 test_post_validation_compares_against_rerun_input_draft
 test_post_validation_rejects_silent_scope_shrinkage_without_coverage_audit
 test_post_validation_rejects_accept_with_rewrite_required_coverage_item

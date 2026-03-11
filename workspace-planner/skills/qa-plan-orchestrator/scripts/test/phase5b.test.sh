@@ -66,6 +66,7 @@ test_post_validation_pass() {
 - Chaos and Resilience | Checkpoint 13 | deferred | current draft | decide if resilience drill is required
 - Shift-Right Monitoring | Checkpoint 14 | deferred | current draft | define rollout checks
 - Final Release Gate | Checkpoint 15 | fail | checkpoint summary | close deferred blockers
+- Support Gap Readiness | supporting_context_and_gap_readiness | fail | supporting_issue_summary_BCIN-85.md | verify support-derived and gap-specific coverage before shipment
 
 ## Blocking Checkpoints
 - Checkpoint 15 | Release gate is not yet ready | missing checkpoint closures | close deferred blockers
@@ -121,6 +122,7 @@ test_post_validation_compares_against_rerun_input_draft() {
 - Chaos and Resilience | Checkpoint 13 | deferred | current draft | decide if resilience drill is required
 - Shift-Right Monitoring | Checkpoint 14 | deferred | current draft | define rollout checks
 - Final Release Gate | Checkpoint 15 | fail | checkpoint summary | close deferred blockers
+- Support Gap Readiness | supporting_context_and_gap_readiness | fail | supporting_issue_summary_BCIN-85.md | verify support-derived and gap-specific coverage before shipment
 
 ## Blocking Checkpoints
 - Checkpoint 15 | Release gate is not yet ready | missing checkpoint closures | close deferred blockers
@@ -201,6 +203,7 @@ EOF
 - Chaos and Resilience | Checkpoint 13 | deferred | current draft | decide if resilience drill is required
 - Shift-Right Monitoring | Checkpoint 14 | deferred | current draft | define rollout checks
 - Final Release Gate | Checkpoint 15 | fail | checkpoint summary | close deferred blockers
+- Support Gap Readiness | supporting_context_and_gap_readiness | fail | supporting_issue_summary_BCIN-85.md | verify support-derived and gap-specific coverage before shipment
 
 ## Blocking Checkpoints
 - Checkpoint 15 | Release gate is not yet ready | missing checkpoint closures | close deferred blockers
@@ -231,8 +234,69 @@ EOF
   assert_exit_code 1 "$code"
 }
 
+test_post_validation_rejects_unsatisfied_request_requirements() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase5b_project "$temp_dir")"
+  write_run_json "$run_dir/run.json" '{"run_key":"run-85","spawn_history":[],"unsatisfied_request_requirements":["req-gap"],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf 'after\n' > "$run_dir/drafts/qa_plan_phase5b_r1.md"
+  cat > "$run_dir/context/request_fulfillment_BCIN-85.json" <<'EOF'
+{"feature_id":"BCIN-85","requirements":[{"requirement_id":"req-gap","blocking_on_missing":true,"status":"pending","required_artifacts":["context/deep_research_synthesis_report_editor_BCIN-85.md"]}]}
+EOF
+  cat > "$run_dir/context/checkpoint_audit_BCIN-85.md" <<'EOF'
+# Checkpoint Audit
+
+## Checkpoint Summary
+- Requirements Traceability | Checkpoint 1 | pass | jira_issue_BCIN-85.md | none
+- Black-Box Behavior Validation | Checkpoint 2 | pass | qa_plan_phase5a_r1.md | none
+- Integration Validation | Checkpoint 3 | deferred | github_diff_BCIN-85.md | confirm lower-env integration
+- Environment Fidelity | Checkpoint 4 | deferred | confluence_design_BCIN-85.md | confirm staging parity
+- Regression Impact | Checkpoint 5 | pass | review_notes_BCIN-85.md | none
+- Non-Functional Quality | Checkpoint 6 | deferred | current draft | define thresholds
+- Test Data Quality | Checkpoint 7 | pass | jira_issue_BCIN-85.md | none
+- Exploratory Testing | Checkpoint 8 | deferred | current draft | schedule focused session
+- Auditability | Checkpoint 9 | pass | checkpoint_delta_BCIN-85.md | none
+- AI Hallucination Check | Checkpoint 10 | pass | review_notes_BCIN-85.md | none
+- Mutation Testing | Checkpoint 11 | out_of_scope | github_diff_BCIN-85.md | none
+- Contract Testing | Checkpoint 12 | out_of_scope | current draft | none
+- Chaos and Resilience | Checkpoint 13 | deferred | current draft | decide if resilience drill is required
+- Shift-Right Monitoring | Checkpoint 14 | deferred | current draft | define rollout checks
+- Final Release Gate | Checkpoint 15 | pass | checkpoint summary | none
+- Support Gap Readiness | supporting_context_and_gap_readiness | pass | supporting_issue_summary_BCIN-85.md | none
+
+## Blocking Checkpoints
+- none
+
+## Advisory Checkpoints
+- none
+
+## Release Recommendation
+- accept | Ready for shipment
+EOF
+  cat > "$run_dir/context/checkpoint_delta_BCIN-85.md" <<'EOF'
+# Checkpoint Delta
+
+## Blocking Checkpoint Resolution
+- none
+
+## Advisory Checkpoint Resolution
+- none
+
+## Final Disposition
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase5b.sh" BCIN-85 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
 test_success_manifest_output
 test_rerun_manifest_output_when_return_to_phase5b_requested
 test_post_validation_pass
 test_post_validation_compares_against_rerun_input_draft
 test_post_validation_rejects_silent_reviewed_coverage_drop
+test_post_validation_rejects_unsatisfied_request_requirements

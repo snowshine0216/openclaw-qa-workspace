@@ -15,6 +15,12 @@ The orchestrator has exactly three responsibilities:
 
 The orchestrator does not perform phase logic inline. It does not write artifacts, run validators directly, or make per-phase decisions outside the script contract.
 
+Support context and deep research are now first-class runtime inputs:
+
+- feature requests may include `supporting_issue_keys` that must stay in `context_only_no_defect_analysis` mode
+- support issue summaries, relation maps, and request-fulfillment artifacts must be persisted under `context/`
+- report-editor deep research must run `tavily-search` first and use `confluence` only as a recorded fallback
+
 ## Required References
 
 Always read:
@@ -72,31 +78,34 @@ See `README.md` for the phase-to-reference mapping table.
 ### Phase 0
 
 - Entry: `scripts/phase0.sh`
-- Work: initialize runtime state, check requested source access, classify `REPORT_STATE`
+- Work: initialize runtime state, check requested source access, classify `REPORT_STATE`, normalize request materials/requirements/commands, and lock support/research policy
 - Output:
   - `context/runtime_setup_<feature-id>.md`
   - `context/runtime_setup_<feature-id>.json`
+  - `context/supporting_issue_request_<feature-id>.md`
+  - `context/request_fulfillment_<feature-id>.md`
+  - `context/request_fulfillment_<feature-id>.json`
 - User interaction: when `REPORT_STATE` is `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`, present options (full_regenerate, smart_refresh, reuse). After user chooses, run `scripts/apply_user_choice.sh <mode> <feature-id> <run-dir>`. Then: full_regenerate → run phase0; smart_refresh → run phase2; reuse → continue from current phase.
 
 ### Phase 1
 
 - Entry: `scripts/phase1.sh`
-- Work: generate one spawn request per requested source family
+- Work: generate one spawn request per requested source family plus support-only Jira digestion requests when provided
 - Output: `phase1_spawn_manifest.json`
-- `--post`: validate spawn policy and evidence completeness. If validation fails, the script exits `2` and prints `REMEDIATION_REQUIRED: <source_family>`
+- `--post`: validate spawn policy, evidence completeness, support relation map, support summaries, and non-defect routing. If validation fails, the script exits `2` and prints `REMEDIATION_REQUIRED: <source_family>`
 
 ### Phase 2
 
 - Entry: `scripts/phase2.sh`
-- Work: scan `context/` and build `context/artifact_lookup_<feature-id>.md`
+- Work: scan `context/` and build `context/artifact_lookup_<feature-id>.md` with support/deep-research/request-trace metadata
 - No spawn
 
 ### Phase 3
 
 - Entry: `scripts/phase3.sh`
-- Work: spawn the coverage subagent
+- Work: spawn Tavily-first deep-research requests for required topics and use the resulting artifacts to drive coverage mapping
 - Output: `phase3_spawn_manifest.json`
-- `--post`: validate `context/coverage_ledger_<feature-id>.md` and sync the artifact lookup
+- `--post`: validate `context/coverage_ledger_<feature-id>.md`, Tavily-first research artifacts, optional Confluence fallback ordering, synthesis output, and sync the artifact lookup
 
 ### Phase 4a
 

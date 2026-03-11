@@ -49,6 +49,8 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 ### `review_notes_<feature-id>.md`
 
 - `## Context Artifact Coverage Audit`
+- `## Supporting Artifact Coverage Audit`
+- `## Deep Research Coverage Audit`
 - `## Coverage Preservation Audit`
 - `## Section Review Checklist`
 - `## Blocking Findings`
@@ -116,3 +118,7 @@ Each affected node must record:
 - if a prior stub is replaced by executable coverage, the audit must explicitly say that the stub was replaced and why the new scenarios preserve the concern more faithfully
 - do not leave a row as `rewrite_required` after the rewritten draft already resolved the concern; resolved rows must be updated to `pass` before `accept`
 - do not deduplicate by theme alone; only deduplicate when the resulting scenario still covers the same trigger, risk, and observable outcome
+
+## Request Fulfillment Gate
+
+- `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.

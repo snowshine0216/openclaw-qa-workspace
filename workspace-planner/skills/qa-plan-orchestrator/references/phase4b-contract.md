@@ -79,6 +79,11 @@ Use deduplication only when it preserves coverage.
 - Save any new research artifact under `context/` using the `research_phase4b_<feature-id>_*.md` pattern.
 - Update `artifact_lookup_<feature-id>.md` for the artifacts read in the round.
 
+## Anti-Compression Rule
+
+- Do not merge distinct Workstation-only and Library-gap scenarios when their outcomes or risks differ.
+- Relation-map-derived support risks must remain visible after canonical grouping.
+
 When a scenario does not fit a canonical layer, preserve the original grouping and add:
 
 ```md

@@ -25,6 +25,9 @@ These two docs are the fastest way to understand:
 ## What This Skill Produces
 
 - source evidence saved under `context/`
+- support-only Jira relation maps and summaries saved under `context/`
+- Tavily-first report-editor deep research artifacts, optional Confluence fallback artifacts, and a synthesis artifact saved under `context/`
+- `request_fulfillment_<feature-id>.md` and `.json` under `context/`
 - `artifact_lookup_<feature-id>.md` under `context/`
 - versioned phase-scoped draft QA plans under `drafts/` (`qa_plan_phase4a_r<round>.md`, `qa_plan_phase4b_r<round>.md`, `qa_plan_phase5a_r<round>.md`, `qa_plan_phase5b_r<round>.md`, `qa_plan_phase6_r<round>.md`)
 - phase spawn manifests under the project root
@@ -50,9 +53,15 @@ Each spawned subagent receives explicit instructions in its task text to read th
 | Phase   | References                                                                                                                       | Purpose                                                  |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Phase 1 | `reference.md`, `references/context-coverage-contract.md`                                                                          | Source routing, approved collection paths                |
-| Phase 3 | `references/context-coverage-contract.md`, `references/context-index-schema.md`                                                   | Coverage ledger rules, artifact lookup structure         |
+| Phase 3 | `references/context-coverage-contract.md`, `references/context-index-schema.md`                                                   | Tavily-first deep research, coverage ledger rules, artifact lookup structure         |
 | Phase 4a | `references/phase4a-contract.md`                                                                                                  | Subcategory-only draft, atomic nested steps, few shots   |
 | Phase 4b | `references/phase4b-contract.md`                                                                                                  | Canonical top-layer grouping, bounded research, no few-shot cleanup |
 | Phase 5a | `references/review-rubric-phase5a.md`                                                                                             | Full-context audit, section checklist, rerun disposition |
 | Phase 5b | `references/review-rubric-phase5b.md`                                                                                             | Shipment checkpoints, checkpoint audit, release verdict, rerun disposition |
 | Phase 6 | `references/review-rubric-phase6.md`, `references/e2e-coverage-rules.md`                                                           | Final layering, few-shot cleanup, quality delta          |
+
+## Support And Research Guardrails
+
+- Supporting issues remain `context_only_no_defect_analysis` evidence inputs. They are never defect-analysis triggers in this workflow.
+- Report-editor deep research must record the `tavily-search` pass before any `confluence` fallback for the same topic.
+- Every support or deep-research artifact that influences drafting must live under `context/` and appear in `artifact_lookup_<feature-id>.md`.

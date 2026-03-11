@@ -36,6 +36,22 @@ async function createProject(featureId, requestedSources, hasSupportingArtifacts
   return { root, runDir };
 }
 
+async function createProjectWithSeedConfluence(featureId) {
+  const root = await mkdtemp(join(tmpdir(), 'phase1-manifest-'));
+  const runDir = join(root, 'workspace-planner', 'skills', 'qa-plan-orchestrator', 'runs', featureId);
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(join(runDir, 'task.json'), JSON.stringify({
+    feature_id: featureId,
+    requested_source_families: ['jira'],
+    seed_confluence_url: 'https://example.atlassian.net/wiki/spaces/BCIN/pages/123',
+  }, null, 2));
+  await writeFile(join(runDir, 'run.json'), JSON.stringify({
+    run_key: `run-${featureId}`,
+    has_supporting_artifacts: false,
+  }, null, 2));
+  return { root, runDir };
+}
+
 test('test_success_single_source', async () => {
   const { root, runDir } = await createProject('BCIN-201', ['jira']);
   const outputPath = join(runDir, 'phase1_spawn_manifest.json');
@@ -80,8 +96,11 @@ test('test_missing_task_json', async () => {
 
 test('test_empty_requested_sources', async () => {
   const { root, runDir } = await createProject('BCIN-204', []);
-  const result = await runNode(['BCIN-204', runDir]);
-  assert.equal(result.code, 1);
+  const outputPath = join(runDir, 'phase1_spawn_manifest.json');
+  const result = await runNode(['BCIN-204', runDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  assert.deepEqual(manifest.requests.map((item) => item.source.source_family), ['jira']);
   await rm(root, { recursive: true, force: true });
 });
 
@@ -92,6 +111,20 @@ test('test_jira_with_supporting_artifacts_includes_supporting_summary', async ()
   assert.equal(result.code, 0, result.stderr);
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('supporting_artifact_summary_BCIN-205.md'), 'Jira task with supporting artifacts must require supporting summary');
+  assert.ok(task.includes('supporting_issue_summary_BCIN-205.md'), 'Jira task with supporting artifacts must require supporting summary');
+  assert.ok(task.includes('supporting_issue_relation_map_BCIN-205.md'), 'Jira task with supporting artifacts must require supporting relation map');
+  await rm(root, { recursive: true, force: true });
+});
+
+test('test_seed_confluence_url_infers_confluence_source_family', async () => {
+  const { root, runDir } = await createProjectWithSeedConfluence('BCIN-206');
+  const outputPath = join(runDir, 'phase1_spawn_manifest.json');
+  const result = await runNode(['BCIN-206', runDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  assert.deepEqual(
+    manifest.requests.map((item) => item.source.source_family),
+    ['jira', 'confluence'],
+  );
   await rm(root, { recursive: true, force: true });
 });

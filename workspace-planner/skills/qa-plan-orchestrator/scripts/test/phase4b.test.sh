@@ -10,7 +10,21 @@ prepare_phase4b_project() {
   run_dir="$(feature_run_dir "$temp_dir" BCIN-70)"
   write_task_json "$run_dir/task.json" '{"feature_id":"BCIN-70","current_phase":"phase_4a_subcategory_draft","updated_at":"2026-03-10T00:00:00.000Z"}'
   write_run_json "$run_dir/run.json" '{"run_key":"run-70","spawn_history":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
-  printf 'subcategory draft\n' > "$run_dir/drafts/qa_plan_phase4a_r1.md"
+  cat > "$run_dir/drafts/qa_plan_phase4a_r1.md" <<'EOF'
+Feature QA Plan (BCIN-70)
+
+<!-- trace: supporting_issue_summary_BCIN-70.md -->
+<!-- trace: deep_research_synthesis_report_editor_BCIN-70.md -->
+- Report editor
+    * Workstation editing stays available <P1>
+        - Open the Workstation report editor
+            - Save the report
+                - Workstation keeps the editor open
+    * Library-vs-Workstation gap stays visible <P1>
+        - Open the embedded Library report editor
+            - Compare the actions with Workstation
+                - Library-vs-Workstation gap remains visible
+EOF
   printf '%s\n' "$run_dir"
 }
 
@@ -33,19 +47,20 @@ test_post_validation_pass() {
   cat > "$run_dir/drafts/qa_plan_phase4b_r1.md" <<'EOF'
 Feature QA Plan (BCIN-70)
 
+<!-- trace: supporting_issue_summary_BCIN-70.md -->
+<!-- trace: deep_research_synthesis_report_editor_BCIN-70.md -->
 - EndToEnd
-    * Authentication
-        - Sign in succeeds <P1>
-            - Open the login page
-                - Enter valid credentials
-                    - Click "Sign In"
-                        - Dashboard loads successfully
+    * Workstation report editor
+        - Workstation editing stays available <P1>
+            - Open the Workstation report editor
+                - Save the report
+                    - Workstation keeps the editor open
 - Core Functional Flows
-    * Notifications
-        - Open unread notification details <P2>
-            - Open notifications panel
-                - Click the unread item
-                    - Notification details drawer opens
+    * Embedded report editor
+        - Library-vs-Workstation gap stays visible <P2>
+            - Open the embedded Library report editor
+                - Compare the actions with Workstation
+                    - Library-vs-Workstation gap remains visible
 EOF
 
   bash "$SKILL_ROOT/scripts/phase4b.sh" BCIN-70 "$run_dir" --post >/dev/null

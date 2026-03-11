@@ -4,6 +4,7 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
+  applyRequestModel,
   getNextPhaseRound,
   loadState,
   resolveDefaultRunDir,
@@ -130,4 +131,36 @@ test('loadState promotes latest same-phase draft when task metadata still points
   } finally {
     await rm(runDir, { recursive: true, force: true });
   }
+});
+
+test('applyRequestModel parses raw user request text into support issues, confluence url, and research policy defaults', () => {
+  const task = {
+    feature_id: 'BCIN-7289',
+    raw_user_request_text: 'Read https://example.atlassian.net/wiki/spaces/BCIN/pages/7289 and BCED-2416 carefully. Save a supporting summary for BCED-2416. Research report editor functionality in Workstation and the Library vs Workstation gap. Use tavily-search first and confluence second. Do not enter defect-analysis mode.',
+  };
+
+  applyRequestModel(task, 'BCIN-7289');
+
+  assert.equal(task.seed_confluence_url, 'https://example.atlassian.net/wiki/spaces/BCIN/pages/7289');
+  assert.deepEqual(task.supporting_issue_keys, ['BCED-2416']);
+  assert.deepEqual(task.deep_research_topics, [
+    'report_editor_workstation_functionality',
+    'report_editor_library_vs_workstation_gap',
+  ]);
+  assert.equal(task.supporting_issue_policy, 'context_only_no_defect_analysis');
+  assert.ok(task.request_requirements.some((requirement) => requirement.user_text.includes('BCED-2416')));
+  assert.ok(task.request_commands.some((command) => command.command_text.includes('tavily-search before confluence')));
+});
+
+test('applyRequestModel preserves same-project supporting issues and does not add deep research when not requested', () => {
+  const task = {
+    feature_id: 'BCIN-200',
+    raw_user_request_text: 'Read BCIN-199 as supporting context for BCIN-200 and save a supporting summary. Do not enter defect-analysis mode.',
+  };
+
+  applyRequestModel(task, 'BCIN-200');
+
+  assert.deepEqual(task.supporting_issue_keys, ['BCIN-199']);
+  assert.deepEqual(task.deep_research_topics, []);
+  assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-tool-order'));
 });

@@ -101,7 +101,8 @@ export async function buildRuntimeSetup(featureId, requestedSources, outputDir, 
       requestedSources,
       setupEntries,
       output.has_supporting_artifacts,
-      output.failures
+      output.failures,
+      options
     ),
     'utf8'
   );
@@ -197,7 +198,7 @@ function runCommand(command, args) {
   });
 }
 
-function buildRuntimeSetupMarkdown(featureId, requestedSources, setupEntries, hasSupportingArtifacts, failures) {
+function buildRuntimeSetupMarkdown(featureId, requestedSources, setupEntries, hasSupportingArtifacts, failures, options = {}) {
   const rows = setupEntries.map((entry) => {
     const blockers = entry.blockers || '—';
     return `| ${entry.source_family} | ${entry.approved_skill} | ${entry.availability_validation} | ${entry.auth_validation} | ${entry.status} | ${entry.route_approved} | ${blockers} |`;
@@ -220,6 +221,15 @@ ${rows}
 
 ## has_supporting_artifacts
 ${hasSupportingArtifacts}
+
+## support issue policy
+${options.supportingIssuePolicy || 'none'}
+
+## deep research policy
+${options.deepResearchPolicy || 'none'}
+
+## supporting issue keys
+${(options.supportingIssueKeys || []).join(', ') || 'none'}
 ${failureSection}`;
 }
 

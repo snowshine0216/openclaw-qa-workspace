@@ -9,6 +9,10 @@ Requested source families are mandatory for the run. Unrequested source families
 Before drafting:
 - raw evidence saved under `context/`
 - `runtime_setup_<feature-id>.md`
+- `supporting_issue_request_<feature-id>.md` when support-only Jira keys are provided
+- `supporting_issue_relation_map_<feature-id>.md` and `supporting_issue_summary_<feature-id>.md` when support-only Jira keys are provided
+- `deep_research_tavily_*_<feature-id>.md` for required report-editor research topics
+- `deep_research_synthesis_report_editor_<feature-id>.md`
 - `artifact_lookup_<feature-id>.md`
 - `coverage_ledger_<feature-id>.md`
 - `review_notes_<feature-id>.md` after the review/refactor phase
@@ -23,6 +27,8 @@ Before drafting:
 - Required splits identified during review must stay split in the resulting draft.
 - If the user explicitly promotes a coverage area (for example Security or Performance), later phases must not leave that concern in deferred-only or stub-only form unless the user explicitly re-approves that downgrade.
 - Deduplication is valid only when it preserves the same effective trigger, risk, and observable outcome; thematic similarity alone is not enough to merge scenarios.
+- Support issue artifacts are context-only evidence and must not trigger defect-analysis behavior or `qa_plan_defect_analysis_*` artifacts.
+- Required deep-research topics must show Tavily-first provenance before any Confluence fallback is accepted.
 
 ## Silent-Drop Prohibition
 
@@ -42,7 +48,7 @@ Every capability family, user journey, and risk discovered during normalization 
 - Confluence evidence: shared `confluence` skill
 - GitHub evidence: shared `github` skill
 - Figma evidence: browser flow or approved local snapshots
-- Supplementary research: `tavily-search` skill when internal docs are absent
+- Supplementary research: `tavily-search` first, then `confluence` only when Tavily coverage is insufficient
 
 Forbidden for primary system-of-record collection:
 
