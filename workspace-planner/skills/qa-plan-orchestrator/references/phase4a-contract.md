@@ -9,6 +9,8 @@ Do not introduce canonical top-layer grouping in this phase.
 
 - `context/artifact_lookup_<feature-id>.md`
 - `context/coverage_ledger_<feature-id>.md`
+- `context/supporting_issue_summary_<feature-id>.md` when support-only Jira keys were requested
+- `context/deep_research_synthesis_report_editor_<feature-id>.md` for report-editor planning
 
 ## Output
 
@@ -62,3 +64,8 @@ Good (subcategory-first, atomic nested steps):
 ## Supplemental Research Rule
 
 If current evidence is insufficient, do one bounded research pass with `confluence`, `jira-cli`, or `tavily-search`, save the artifact under `context/`, and update `artifact_lookup_<feature-id>.md` before finalizing the draft.
+
+## Support And Gap Coverage
+
+- Support-derived risks must remain visible in the Phase 4a scenario set.
+- Report-editor Workstation behavior and Library-vs-Workstation gap implications must be represented as evidence-backed scenarios or explicit exclusions.

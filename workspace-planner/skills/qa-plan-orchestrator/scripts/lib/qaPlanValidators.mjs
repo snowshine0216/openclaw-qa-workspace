@@ -107,6 +107,10 @@ function normalizeContent(content) {
   return String(content || '').replace(/\r\n/g, '\n');
 }
 
+function stripHtmlComments(content) {
+  return normalizeContent(content).replace(/<!--[\s\S]*?-->/g, '');
+}
+
 function getSection(content, heading) {
   const text = normalizeContent(content);
   const start = text.indexOf(`${heading}\n`);
@@ -848,13 +852,14 @@ export function validateUnresolvedStepHandling(reviewContent, draftContent, rese
 }
 
 export function validatePhase4aSubcategoryDraft(content) {
+  const options = arguments[1] || {};
   const failures = [];
   const topLayers = topLevelBullets(content);
   const leaked = topLayers.filter((label) => CANONICAL_TOP_LAYERS.includes(label));
   if (leaked.length > 0) {
     failures.push(`Phase 4a must stay below canonical top-layer grouping. Found: ${leaked.join(', ')}`);
   }
-  if (normalizeContent(content).includes('->')) {
+  if (stripHtmlComments(content).includes('->')) {
     failures.push('Phase 4a draft still contains compressed arrow-chain steps.');
   }
 
@@ -869,10 +874,26 @@ export function validatePhase4aSubcategoryDraft(content) {
     }
   }
 
+  if (options.requireSupportTrace && !/supporting_issue_summary_/i.test(normalizeContent(content))) {
+    failures.push('Phase 4a draft is missing support trace evidence for supporting_issue_summary_<feature-id>.md.');
+  }
+  if (options.requireResearchTrace && !/deep_research_(synthesis|tavily|confluence)_/i.test(normalizeContent(content))) {
+    failures.push('Phase 4a draft is missing research trace evidence for deep research artifacts.');
+  }
+  for (const topic of options.requiredTopics || []) {
+    if (topic === 'report_editor_workstation_functionality' && !/workstation/i.test(normalizeContent(content))) {
+      failures.push('Phase 4a draft is missing explicit coverage or exclusion for report_editor_workstation_functionality.');
+    }
+    if (topic === 'report_editor_library_vs_workstation_gap' && !/library\s+vs\s+workstation|library-vs-workstation/i.test(normalizeContent(content))) {
+      failures.push('Phase 4a draft is missing explicit coverage or exclusion for report_editor_library_vs_workstation_gap.');
+    }
+  }
+
   return { ok: failures.length === 0, failures };
 }
 
 export function validatePhase4bCategoryLayering(content) {
+  const options = arguments[1] || {};
   const failures = [];
   const text = normalizeContent(content);
   const hasExceptionComment = text.includes('top_layer_exception');
@@ -893,10 +914,25 @@ export function validatePhase4bCategoryLayering(content) {
     }
   }
 
+  if (options.requireTraceability && !/supporting_issue_summary_|deep_research_/i.test(text)) {
+    failures.push('Phase 4b draft is missing support/deep-research traceability evidence.');
+  }
+  const requiredTopics = options.requiredTopics || [];
+  if (requiredTopics.includes('report_editor_workstation_functionality')
+    && requiredTopics.includes('report_editor_library_vs_workstation_gap')) {
+    const scenarioText = scenarioBlocks(content).map((block) => block.toLowerCase());
+    const workstationBlocks = scenarioText.filter((block) => block.includes('workstation'));
+    const gapBlocks = scenarioText.filter((block) => block.includes('library vs workstation') || block.includes('library-vs-workstation'));
+    const sharedBlocks = scenarioText.filter((block) => block.includes('workstation') && (block.includes('library vs workstation') || block.includes('library-vs-workstation')));
+    if (workstationBlocks.length === 0 || gapBlocks.length === 0 || sharedBlocks.length === scenarioText.length) {
+      failures.push('Phase 4b must preserve separate scenario coverage for Workstation functionality and the Library-vs-Workstation gap.');
+    }
+  }
+
   return { ok: failures.length === 0, failures };
 }
 
-export function validateContextCoverageAudit(content, requiredEntries = []) {
+export function validateContextCoverageAudit(content, requiredEntries = [], options = {}) {
   const failures = [];
   const rows = extractRowsForSection(content, '## Context Artifact Coverage Audit', 6).map((cells) => ({
     artifactPath: cells[0],
@@ -918,6 +954,19 @@ export function validateContextCoverageAudit(content, requiredEntries = []) {
     }
     if (row.disposition === 'consumed' && !row.mappedPlanSection) {
       failures.push(`Consumed context audit row must include a mapped plan section for ${row.artifactPath}`);
+    }
+  }
+
+  if (options.requireSupportingAuditSection) {
+    const supportRows = extractRowsForSection(content, '## Supporting Artifact Coverage Audit', 6);
+    if (supportRows.length === 0) {
+      failures.push('Missing ## Supporting Artifact Coverage Audit section.');
+    }
+  }
+  if (options.requireDeepResearchAuditSection) {
+    const researchRows = extractRowsForSection(content, '## Deep Research Coverage Audit', 6);
+    if (researchRows.length === 0) {
+      failures.push('Missing ## Deep Research Coverage Audit section.');
     }
   }
   return { ok: failures.length === 0, failures };
@@ -1054,7 +1103,7 @@ export function validateRoundProgression({ task = {}, phaseId, producedDraftPath
   return { ok: failures.length === 0, failures };
 }
 
-export function validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundIntegrityFailures = []) {
+export function validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundIntegrityFailures = [], options = {}) {
   const failures = [];
   const verdictSection = getSection(reviewDeltaContent, '## Verdict After Refactor');
   const { values } = parseDisposition(verdictSection, ['accept', 'return phase5a']);
@@ -1070,6 +1119,11 @@ export function validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaCon
   if (verdict === 'accept' && roundIntegrityFailures.length > 0) {
     failures.push(
       `Phase 5a cannot return accept while round-integrity findings remain unresolved: ${roundIntegrityFailures.join('; ')}`
+    );
+  }
+  if (verdict === 'accept' && Array.isArray(options.unsatisfiedBlockingRequirements) && options.unsatisfiedBlockingRequirements.length > 0) {
+    failures.push(
+      `Phase 5a cannot return accept while blocking request requirements remain unsatisfied: ${options.unsatisfiedBlockingRequirements.join(', ')}`
     );
   }
 
@@ -1128,6 +1182,9 @@ export function validateCheckpointAudit(content) {
       failures.push(`Checkpoint audit is missing ${checkpoint}`);
     }
   }
+  if (!found.has('supporting_context_and_gap_readiness')) {
+    failures.push('Checkpoint audit is missing supporting_context_and_gap_readiness');
+  }
   for (const row of rows) {
     if (!row.evidence || row.evidence === 'none') {
       failures.push(`${row.checkpoint} must cite evidence.`);
@@ -1185,7 +1242,7 @@ export function validateCheckpointDelta(content) {
 
 export function validateFinalLayering(content) {
   const failures = [];
-  if (normalizeContent(content).includes('->')) {
+  if (stripHtmlComments(content).includes('->')) {
     failures.push('Final draft must not contain compressed arrow-chain steps.');
   }
 
@@ -1208,6 +1265,7 @@ export function validateFinalLayering(content) {
 }
 
 export function validateQualityDelta(content) {
+  const options = arguments[1] || {};
   const failures = [];
   const finalLayerAudit = getSection(content, '## Final Layer Audit');
   const fewShots = getSection(content, '## Few-Shot Rewrite Applications');
@@ -1220,6 +1278,23 @@ export function validateQualityDelta(content) {
   }
   if (!hasNonEmptyBullet(verdict)) {
     failures.push('Verdict is required.');
+  }
+  const topics = Array.isArray(options.deep_research_topics) ? options.deep_research_topics : [];
+  const hasSupportingContext = Boolean(options.hasSupportingContext);
+  const requireSupportDerived = hasSupportingContext;
+  const requireWorkstation = topics.includes('report_editor_workstation_functionality');
+  const requireLibraryVsWorkstation = topics.includes('report_editor_library_vs_workstation_gap');
+  if (requireSupportDerived || requireWorkstation || requireLibraryVsWorkstation) {
+    const text = normalizeContent(content).toLowerCase();
+    if (requireSupportDerived && !text.includes('support-derived')) {
+      failures.push('Quality delta must explicitly record preservation of support-derived scenarios.');
+    }
+    if (requireWorkstation && !text.includes('workstation')) {
+      failures.push('Quality delta must explicitly record preservation of Workstation functionality scenarios.');
+    }
+    if (requireLibraryVsWorkstation && !text.includes('library-vs-workstation') && !text.includes('library vs workstation')) {
+      failures.push('Quality delta must explicitly record preservation of Library-vs-Workstation gap scenarios.');
+    }
   }
   return { ok: failures.length === 0, failures };
 }

@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
 import {
+  validateRequestFulfillmentManifest,
+  validateRequestFulfillmentStatus,
+  validateResearchOrder,
+  validateSupportingContextIntegrity,
+} from './contextRules.mjs';
+import {
   validateCoveragePreservationAudit,
   validateCheckpointAudit,
   validateCheckpointDelta,
@@ -32,6 +38,7 @@ if (!validatorName || !filePath) {
 
 const content = await readFile(filePath, 'utf8');
 let result;
+const parsed = filePath.endsWith('.json') ? JSON.parse(content) : null;
 
 switch (validatorName) {
   case 'validate_context_index':
@@ -139,6 +146,18 @@ switch (validatorName) {
     break;
   case 'validate_review_delta':
     result = validateReviewDelta(content);
+    break;
+  case 'validate_supporting_context_integrity':
+    result = validateSupportingContextIntegrity(parsed || {});
+    break;
+  case 'validate_request_fulfillment_manifest':
+    result = validateRequestFulfillmentManifest(parsed || {});
+    break;
+  case 'validate_request_fulfillment_status':
+    result = validateRequestFulfillmentStatus(parsed || {});
+    break;
+  case 'validate_research_order':
+    result = validateResearchOrder(parsed || {});
     break;
   case 'validate_unresolved_step_handling': {
     const reviewPath = rest[0];

@@ -23,6 +23,13 @@ const ROUND_TRACKED_PHASES = ['phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = resolve(MODULE_DIR, '..', '..');
 const REPO_ROOT = resolve(SKILL_ROOT, '..', '..', '..');
+export const DEFAULT_SUPPORTING_ISSUE_POLICY = 'context_only_no_defect_analysis';
+export const DEFAULT_DEEP_RESEARCH_POLICY = 'tavily_first_confluence_second';
+export const DEFAULT_DEEP_RESEARCH_TOPICS = [
+  'report_editor_workstation_functionality',
+  'report_editor_library_vs_workstation_gap',
+];
+const REQUEST_PHASES = new Set(['phase0', 'phase1', 'phase2', 'phase3', 'phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase6', 'phase7']);
 
 export function getSkillRoot() {
   return SKILL_ROOT;
@@ -75,10 +82,30 @@ export function normalizeRequestedSourceFamilies(value) {
     .filter(Boolean);
 }
 
+function ensureRequestedSourceFamilies(task) {
+  const requested = normalizeRequestedSourceFamilies(task.requested_source_families);
+  const normalized = requested.length > 0 ? requested : ['jira'];
+  if (String(task.seed_confluence_url || '').trim() && !normalized.includes('confluence')) {
+    normalized.push('confluence');
+  }
+  task.requested_source_families = normalized;
+}
+
 export function defaultTask(featureId, runKey) {
   const timestamp = nowIso();
   return {
     feature_id: featureId,
+    primary_feature_id: featureId,
+    seed_confluence_url: null,
+    supporting_issue_keys: [],
+    supporting_issue_policy: DEFAULT_SUPPORTING_ISSUE_POLICY,
+    deep_research_policy: DEFAULT_DEEP_RESEARCH_POLICY,
+    deep_research_topics: [],
+    supporting_summary_required: false,
+    request_fulfillment_required: true,
+    request_requirements: [],
+    request_materials: [],
+    request_commands: [],
     run_key: runKey,
     overall_status: 'not_started',
     current_phase: null,
@@ -120,8 +147,14 @@ export function defaultRun(runKey) {
     refactor_completed_at: null,
     finalized_at: null,
     notification_pending: false,
+    supporting_context_generated_at: null,
+    deep_research_generated_at: null,
+    deep_research_fallback_used: false,
+    request_fulfillment_generated_at: null,
     has_supporting_artifacts: false,
     spawn_history: [],
+    request_execution_log: [],
+    unsatisfied_request_requirements: [],
     validation_history: [],
     blocking_issues: [],
   };
@@ -146,6 +179,7 @@ export async function loadState(featureId, runDir, options = {}) {
   run.run_key = run.run_key || task.run_key;
   task.updated_at = task.updated_at || nowIso();
   run.updated_at = run.updated_at || nowIso();
+  applyRequestModel(task, featureId);
   if (migration.migrated) {
     task.legacy_project_dir = migration.legacyRunDir;
     task.migrated_from_legacy_at = task.migrated_from_legacy_at || migration.migratedAt;
@@ -271,6 +305,330 @@ export function resolveRunPaths(runDir, featureId) {
 export function resolveDefaultRunDir(featureId, cwd = process.cwd()) {
   void cwd;
   return resolve(SKILL_ROOT, 'runs', featureId);
+}
+
+export function normalizeIssueKeys(value) {
+  const raw = Array.isArray(value)
+    ? value
+    : String(value || '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  return [...new Set(raw.map((item) => String(item || '').trim().toUpperCase()).filter(Boolean))];
+}
+
+function normalizeTopics(value) {
+  const topics = Array.isArray(value) ? value : [];
+  return [...new Set(topics.map((item) => String(item || '').trim()).filter(Boolean))];
+}
+
+function parseRawRequestText(task = {}) {
+  const text = String(task.raw_user_request_text || task.user_request_text || '').trim();
+  if (!text) return;
+
+  if (!task.seed_confluence_url) {
+    const confluenceUrl = text.match(/https?:\/\/[^\s)]+atlassian\.net\/wiki\/[^\s)]+/i)?.[0] || '';
+    if (confluenceUrl) {
+      task.seed_confluence_url = confluenceUrl;
+    }
+  }
+
+  if (!Array.isArray(task.supporting_issue_keys) || task.supporting_issue_keys.length === 0) {
+    const supportKeys = (text.match(/[A-Z][A-Z0-9]+-\d+/g) || [])
+      .filter((issueKey) => String(issueKey).toUpperCase() !== String(task.feature_id || '').toUpperCase());
+    task.supporting_issue_keys = normalizeIssueKeys(supportKeys);
+  }
+
+  if (!Array.isArray(task.deep_research_topics) || task.deep_research_topics.length === 0) {
+    const topics = [];
+    if (/report editor.*workstation|workstation.*report editor/i.test(text)) {
+      topics.push('report_editor_workstation_functionality');
+    }
+    if (/library\s+vs\s+workstation|library-vs-workstation/i.test(text)) {
+      topics.push('report_editor_library_vs_workstation_gap');
+    }
+    task.deep_research_topics = topics;
+  }
+
+  if (/do not enter defect-analysis mode|support-only|context only/i.test(text)) {
+    task.supporting_issue_policy = DEFAULT_SUPPORTING_ISSUE_POLICY;
+  }
+  if (/tavily-search\s+first.*confluence\s+second|confluence\s+second.*tavily-search\s+first/i.test(text)) {
+    task.deep_research_policy = DEFAULT_DEEP_RESEARCH_POLICY;
+  }
+}
+
+function phaseToken(phaseId) {
+  const normalized = String(phaseId || '').trim().toLowerCase();
+  return REQUEST_PHASES.has(normalized) ? normalized : 'phase7';
+}
+
+function createRequirement({
+  requirementId,
+  kind,
+  userText,
+  requiredPhase,
+  requiredArtifacts = [],
+  successPredicate,
+  blockingOnMissing = true,
+}) {
+  return {
+    requirement_id: requirementId,
+    kind,
+    user_text: userText,
+    required_phase: phaseToken(requiredPhase),
+    required_artifacts: requiredArtifacts,
+    success_predicate: successPredicate,
+    blocking_on_missing: Boolean(blockingOnMissing),
+  };
+}
+
+function buildRequestMaterials(task, featureId) {
+  const materials = [
+    {
+      material_id: `material-feature-${featureId}`,
+      material_type: 'feature_id',
+      source_value: featureId,
+      role: 'primary_feature',
+      must_read: true,
+      must_summarize: false,
+    },
+  ];
+  const confluenceUrl = String(task.seed_confluence_url || '').trim();
+  if (confluenceUrl) {
+    materials.push({
+      material_id: `material-confluence-${featureId}`,
+      material_type: 'confluence_url',
+      source_value: confluenceUrl,
+      role: 'primary_design_doc',
+      must_read: true,
+      must_summarize: false,
+    });
+  }
+  for (const issueKey of normalizeIssueKeys(task.supporting_issue_keys)) {
+    materials.push({
+      material_id: `material-support-${issueKey}`,
+      material_type: 'jira_issue',
+      source_value: issueKey,
+      role: 'supporting_issue',
+      must_read: true,
+      must_summarize: true,
+    });
+  }
+  for (const topic of normalizeTopics(task.deep_research_topics)) {
+    materials.push({
+      material_id: `material-research-${topic}`,
+      material_type: 'research_topic',
+      source_value: topic,
+      role: 'deep_research_topic',
+      must_read: true,
+      must_summarize: true,
+    });
+  }
+  return materials;
+}
+
+function buildRequestCommands() {
+  return [
+    {
+      command_id: 'cmd-research-tool-order',
+      policy_type: 'tool_order',
+      command_text: 'use tavily-search before confluence for deep research',
+      enforced_by_phase: 'phase3',
+      failure_message: 'Deep research must execute tavily-search before any confluence fallback.',
+    },
+    {
+      command_id: 'cmd-support-mode-guardrail',
+      policy_type: 'mode_guardrail',
+      command_text: 'keep supporting issues in context_only_no_defect_analysis mode',
+      enforced_by_phase: 'phase0',
+      failure_message: 'Supporting issues are context evidence only and must not enter defect-analysis mode.',
+    },
+    {
+      command_id: 'cmd-support-relation-expansion',
+      policy_type: 'relation_expansion',
+      command_text: 'expand parent plus linked inward and linked outward support-issue relations',
+      enforced_by_phase: 'phase1',
+      failure_message: 'Supporting issue digestion must include parent chain and linked relations.',
+    },
+  ];
+}
+
+function buildRequestRequirements(task, featureId) {
+  const requirements = [];
+  const confluenceUrl = String(task.seed_confluence_url || '').trim();
+  if (confluenceUrl) {
+    requirements.push(createRequirement({
+      requirementId: 'req-read-primary-confluence',
+      kind: 'read_material',
+      userText: `read the primary Confluence page ${confluenceUrl}`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [`context/confluence_design_${featureId}.md`],
+      successPredicate: 'primary confluence evidence exists',
+    }));
+  }
+
+  const supportKeys = normalizeIssueKeys(task.supporting_issue_keys);
+  for (const issueKey of supportKeys) {
+    requirements.push(createRequirement({
+      requirementId: `req-read-support-issue-${issueKey}`,
+      kind: 'read_material',
+      userText: `read Jira issue ${issueKey}`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [`context/supporting_issue_summary_${issueKey}_${featureId}.md`],
+      successPredicate: 'supporting issue summary exists',
+    }));
+    requirements.push(createRequirement({
+      requirementId: `req-read-support-description-${issueKey}`,
+      kind: 'read_material',
+      userText: `read the ${issueKey} description`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [`context/supporting_issue_summary_${issueKey}_${featureId}.md`],
+      successPredicate: 'supporting issue summary captures description evidence',
+    }));
+    requirements.push(createRequirement({
+      requirementId: `req-read-support-links-${issueKey}`,
+      kind: 'read_material',
+      userText: `read linked issues for ${issueKey}`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [`context/supporting_issue_relation_map_${featureId}.md`],
+      successPredicate: 'supporting issue relation map includes linked issues',
+    }));
+    requirements.push(createRequirement({
+      requirementId: `req-read-support-parent-${issueKey}`,
+      kind: 'read_material',
+      userText: `read parent issues for ${issueKey}`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [`context/supporting_issue_relation_map_${featureId}.md`],
+      successPredicate: 'supporting issue relation map includes parent chain',
+    }));
+    requirements.push(createRequirement({
+      requirementId: `req-summarize-support-${issueKey}`,
+      kind: 'summarize_material',
+      userText: `summarize ${issueKey} and its relations`,
+      requiredPhase: 'phase1',
+      requiredArtifacts: [
+        `context/supporting_issue_summary_${issueKey}_${featureId}.md`,
+        `context/supporting_issue_summary_${featureId}.md`,
+      ],
+      successPredicate: 'per-issue and aggregate support summaries exist',
+    }));
+  }
+
+  if (supportKeys.length > 0) {
+    requirements.push(createRequirement({
+      requirementId: 'req-save-support-summary',
+      kind: 'summarize_material',
+      userText: 'save the support summary for future reference',
+      requiredPhase: 'phase1',
+      requiredArtifacts: [
+        `context/supporting_issue_relation_map_${featureId}.md`,
+        `context/supporting_issue_summary_${featureId}.md`,
+      ],
+      successPredicate: 'support relation map and aggregate support summary exist',
+    }));
+    requirements.push(createRequirement({
+      requirementId: 'req-support-only-mode',
+      kind: 'preserve_mode',
+      userText: 'keep supporting issues in support-only mode',
+      requiredPhase: 'phase0',
+      requiredArtifacts: [`context/supporting_issue_request_${featureId}.md`],
+      successPredicate: 'supporting issue policy is context_only_no_defect_analysis',
+    }));
+    requirements.push(createRequirement({
+      requirementId: 'req-no-defect-analysis',
+      kind: 'preserve_mode',
+      userText: 'do not enter defect-analysis mode',
+      requiredPhase: 'phase1',
+      requiredArtifacts: [
+        `context/supporting_issue_request_${featureId}.md`,
+        `context/supporting_issue_summary_${featureId}.md`,
+      ],
+      successPredicate: 'no defect-analysis artifacts or routing appear in the workflow',
+    }));
+  }
+
+  const topicRequirements = {
+    report_editor_workstation_functionality: {
+      id: 'req-research-report-editor-workstation',
+      text: 'research report-editor functionality in Workstation',
+      artifact: `context/deep_research_tavily_report_editor_workstation_${featureId}.md`,
+    },
+    report_editor_library_vs_workstation_gap: {
+      id: 'req-research-library-vs-workstation-gap',
+      text: 'research the Library vs Workstation report-editor gap',
+      artifact: `context/deep_research_tavily_library_vs_workstation_gap_${featureId}.md`,
+    },
+  };
+  for (const topic of normalizeTopics(task.deep_research_topics)) {
+    const config = topicRequirements[topic] || {
+      id: `req-research-${topic}`,
+      text: `research ${topic}`,
+      artifact: `context/deep_research_tavily_${topic}_${featureId}.md`,
+    };
+    requirements.push(createRequirement({
+      requirementId: config.id,
+      kind: 'perform_research',
+      userText: config.text,
+      requiredPhase: 'phase3',
+      requiredArtifacts: [config.artifact],
+      successPredicate: 'tavily-first research artifact exists',
+    }));
+  }
+  if (normalizeTopics(task.deep_research_topics).length > 0) {
+    requirements.push(createRequirement({
+      requirementId: 'req-research-tool-order',
+      kind: 'run_command_policy',
+      userText: 'use tavily-search before confluence',
+      requiredPhase: 'phase3',
+      requiredArtifacts: [`context/deep_research_synthesis_report_editor_${featureId}.md`],
+      successPredicate: 'tavily evidence recorded before any confluence fallback',
+    }));
+  }
+  return requirements;
+}
+
+export function applyRequestModel(task, featureId = task?.feature_id || '') {
+  const normalizedFeatureId = String(featureId || task?.feature_id || '').trim();
+  task.primary_feature_id = String(task.primary_feature_id || normalizedFeatureId || '').trim();
+  parseRawRequestText(task);
+  task.seed_confluence_url = String(task.seed_confluence_url || '').trim() || null;
+  ensureRequestedSourceFamilies(task);
+  task.supporting_issue_keys = normalizeIssueKeys(task.supporting_issue_keys);
+  task.supporting_issue_policy = String(task.supporting_issue_policy || DEFAULT_SUPPORTING_ISSUE_POLICY).trim();
+  task.deep_research_policy = String(task.deep_research_policy || DEFAULT_DEEP_RESEARCH_POLICY).trim();
+  task.deep_research_topics = normalizeTopics(task.deep_research_topics);
+  task.supporting_summary_required = task.supporting_issue_keys.length > 0;
+  task.request_fulfillment_required = task.request_fulfillment_required !== false;
+  task.request_materials = Array.isArray(task.request_materials) && task.request_materials.length > 0
+    ? task.request_materials
+    : buildRequestMaterials(task, normalizedFeatureId);
+  task.request_commands = Array.isArray(task.request_commands) && task.request_commands.length > 0
+    ? task.request_commands
+    : buildRequestCommands();
+  task.request_requirements = Array.isArray(task.request_requirements) && task.request_requirements.length > 0
+    ? task.request_requirements
+    : buildRequestRequirements(task, normalizedFeatureId);
+  return task;
+}
+
+export function buildRequestFulfillmentModel(task, featureId = task?.feature_id || '') {
+  const normalizedFeatureId = String(featureId || task?.feature_id || '').trim();
+  const requirements = Array.isArray(task.request_requirements) ? task.request_requirements : [];
+  return {
+    feature_id: normalizedFeatureId,
+    generated_at: nowIso(),
+    requirements: requirements.map((requirement) => ({
+      requirement_id: requirement.requirement_id,
+      user_text: requirement.user_text,
+      required_phase: phaseToken(requirement.required_phase),
+      required_artifacts: requirement.required_artifacts || [],
+      blocking_on_missing: Boolean(requirement.blocking_on_missing),
+      status: 'pending',
+      evidence_artifacts: [],
+      blocker_or_waiver_reason: '',
+    })),
+  };
 }
 
 export function resolveLegacyRunDir(featureId) {

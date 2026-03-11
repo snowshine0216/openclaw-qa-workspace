@@ -11,10 +11,42 @@ prepare_phase1_project() {
   write_task_json "$run_dir/task.json" '{
     "feature_id":"BCIN-30",
     "requested_source_families":["jira","github"],
+    "supporting_issue_keys":["BCED-2416"],
+    "supporting_issue_policy":"context_only_no_defect_analysis",
+    "request_requirements":[
+      {
+        "requirement_id":"req-support-aggregate",
+        "kind":"summarize_material",
+        "required_phase":"phase1",
+        "required_artifacts":["context/supporting_issue_summary_BCIN-30.md"],
+        "blocking_on_missing":true
+      }
+    ],
     "current_phase":"phase_0_runtime_setup",
     "updated_at":"2026-03-10T00:00:00.000Z"
   }'
-  write_run_json "$run_dir/run.json" '{"run_key":"run-30","has_supporting_artifacts":false,"spawn_history":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  write_run_json "$run_dir/run.json" '{
+    "run_key":"run-30",
+    "has_supporting_artifacts":true,
+    "spawn_history":[],
+    "request_execution_log":[],
+    "updated_at":"2026-03-10T00:00:00.000Z"
+  }'
+  cat > "$run_dir/context/request_fulfillment_BCIN-30.json" <<'EOF'
+{
+  "feature_id":"BCIN-30",
+  "requirements":[
+    {
+      "requirement_id":"req-support-aggregate",
+      "required_phase":"phase1",
+      "blocking_on_missing":true,
+      "required_artifacts":["context/supporting_issue_summary_BCIN-30.md"],
+      "status":"pending",
+      "evidence_artifacts":[]
+    }
+  ]
+}
+EOF
   printf '%s\n' "$run_dir"
 }
 
@@ -38,16 +70,21 @@ test_post_validation_pass() {
   run_dir="$(prepare_phase1_project "$temp_dir")"
   write_run_json "$run_dir/run.json" '{
     "run_key":"run-30",
-    "has_supporting_artifacts":false,
+    "has_supporting_artifacts":true,
     "spawn_history":[
       {"source_family":"jira","approved_skill":"jira-cli","artifact_paths":["context/jira_issue_BCIN-30.md","context/jira_related_issues_BCIN-30.md"],"status":"completed","disallowed_tools":["browser fetch","generic web fetch"]},
       {"source_family":"github","approved_skill":"github","artifact_paths":["context/github_diff_BCIN-30.md","context/github_traceability_BCIN-30.md"],"status":"completed","disallowed_tools":["browser fetch","generic web fetch"]}
     ],
+    "request_execution_log":[],
     "updated_at":"2026-03-10T00:00:00.000Z"
   }'
+  printf '# Support relation map\n' > "$run_dir/context/supporting_issue_relation_map_BCIN-30.md"
+  printf '# Support issue\n' > "$run_dir/context/supporting_issue_summary_BCED-2416_BCIN-30.md"
+  printf '# Aggregate support\n' > "$run_dir/context/supporting_issue_summary_BCIN-30.md"
 
   bash "$SKILL_ROOT/scripts/phase1.sh" BCIN-30 "$run_dir" --post >/dev/null
   assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_1_evidence_gathering"'
+  assert_contains "$(cat "$run_dir/context/request_fulfillment_BCIN-30.json")" '"status": "satisfied"'
 }
 
 test_post_validation_fail() {
@@ -57,10 +94,11 @@ test_post_validation_fail() {
   run_dir="$(prepare_phase1_project "$temp_dir")"
   write_run_json "$run_dir/run.json" '{
     "run_key":"run-30",
-    "has_supporting_artifacts":false,
+    "has_supporting_artifacts":true,
     "spawn_history":[
       {"source_family":"jira","approved_skill":"jira-cli","artifact_paths":["context/jira_issue_BCIN-30.md"],"status":"completed","disallowed_tools":["browser fetch"]}
     ],
+    "request_execution_log":[],
     "updated_at":"2026-03-10T00:00:00.000Z"
   }'
 

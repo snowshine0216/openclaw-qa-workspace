@@ -149,6 +149,45 @@
       "expected_remediation_output": "another Phase 5a review/refactor cycle"
     },
     {
+      "id": "support_context_integrity",
+      "policy": "blocking",
+      "prompt": "Verify support-only issues are summarized under context/, relation maps exist, and no support-only request is routed into defect-analysis.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Supporting issue relation maps and summaries exist under context/ and no defect-analysis routing appears.",
+      "expected_failure_signals": [
+        "qa_plan_defect_analysis",
+        "missing supporting_issue_summary",
+        "missing supporting_issue_relation_map"
+      ],
+      "expected_remediation_output": "corrected support-context artifacts and non-defect policy state"
+    },
+    {
+      "id": "deep_research_ordering",
+      "policy": "blocking",
+      "prompt": "Verify report-editor deep research records Tavily-first artifacts before any Confluence fallback for the same topic.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Tavily artifacts exist for each required topic and Confluence fallback only appears after Tavily insufficiency is recorded.",
+      "expected_failure_signals": [
+        "confluence before tavily",
+        "missing deep_research_tavily",
+        "missing insufficiency marker"
+      ],
+      "expected_remediation_output": "corrected deep-research ordering artifacts and synthesis"
+    },
+    {
+      "id": "request_fulfillment",
+      "policy": "blocking",
+      "prompt": "Verify every user-provided material and command is normalized into request_requirements and blocking items are satisfied before Phase 7.",
+      "fixture_files": [],
+      "expected_pass_behavior": "request_fulfillment artifacts exist, requirement ids are stable, and no blocking requirement remains unsatisfied at finalization.",
+      "expected_failure_signals": [
+        "missing requirement_id",
+        "unsatisfied blocking requirement",
+        "missing request_fulfillment"
+      ],
+      "expected_remediation_output": "updated request_fulfillment artifacts or a blocked promotion"
+    },
+    {
       "id": "stale_doc_sync",
       "policy": "blocking",
       "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS-facing workflow descriptions all describe the same phase model and contract files.",

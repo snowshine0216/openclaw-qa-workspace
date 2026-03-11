@@ -360,7 +360,7 @@ export function evaluateSourceArtifactCompleteness({ sourceFamily, artifactPaths
   return { ok: failures.length === 0, failures };
 }
 
-export function evaluateEvidenceCompleteness({ requestedSourceFamilies = [], spawnHistory = [], hasSupportingArtifacts = false }) {
+export function evaluateEvidenceCompleteness({ requestedSourceFamilies = [], spawnHistory = [], hasSupportingArtifacts = false, contextArtifactPaths = [] }) {
   const failures = [];
   const requested = requestedSourceFamilies.map(normalizeSourceFamily).filter(Boolean);
   const entriesBySource = new Map();
@@ -386,11 +386,98 @@ export function evaluateEvidenceCompleteness({ requestedSourceFamilies = [], spa
   }
 
   if (hasSupportingArtifacts) {
-    const hasSupportingSummary = allArtifactPaths.some((path) => path.toLowerCase().includes('supporting_artifact_summary_'));
+    const supportingArtifacts = [...allArtifactPaths, ...contextArtifactPaths.map((path) => String(path || '').trim())];
+    const hasSupportingSummary = supportingArtifacts.some((path) => {
+      const lower = path.toLowerCase();
+      return lower.includes('supporting_issue_summary_') || lower.includes('supporting_artifact_summary_');
+    });
     if (!hasSupportingSummary) {
-      failures.push('Supporting artifacts were declared, so evidence must include supporting_artifact_summary_<FEATURE_ID>.md.');
+      failures.push('Supporting artifacts were declared, so evidence must include supporting_issue_summary_<FEATURE_ID>.md.');
     }
   }
 
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateRequestFulfillmentManifest(task = {}) {
+  const requirements = Array.isArray(task.request_requirements) ? task.request_requirements : [];
+  const failures = [];
+  const seenIds = new Set();
+  for (const requirement of requirements) {
+    const requirementId = String(requirement.requirement_id || '').trim();
+    if (!requirementId) {
+      failures.push('Every request requirement must include requirement_id.');
+      continue;
+    }
+    if (seenIds.has(requirementId)) {
+      failures.push(`Duplicate request requirement id: ${requirementId}`);
+    }
+    seenIds.add(requirementId);
+    if (!String(requirement.kind || '').trim()) {
+      failures.push(`Request requirement ${requirementId} must include kind.`);
+    }
+    if (!String(requirement.required_phase || '').trim()) {
+      failures.push(`Request requirement ${requirementId} must include required_phase.`);
+    }
+    if (!Array.isArray(requirement.required_artifacts) || requirement.required_artifacts.length === 0) {
+      failures.push(`Request requirement ${requirementId} must include required_artifacts.`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateRequestFulfillmentStatus(document = {}) {
+  const requirements = Array.isArray(document.requirements) ? document.requirements : [];
+  const failures = [];
+  for (const requirement of requirements) {
+    if (!requirement.blocking_on_missing) continue;
+    const status = String(requirement.status || '').trim().toLowerCase();
+    if (!['satisfied', 'blocked_with_reason', 'explicitly_waived_by_user'].includes(status)) {
+      failures.push(`Blocking request requirement remains unresolved: ${requirement.requirement_id || 'unknown'}`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateResearchOrder(doc = {}) {
+  const steps = Array.isArray(doc.steps) ? doc.steps : Array.isArray(doc.request_execution_log) ? doc.request_execution_log : [];
+  const failures = [];
+  const byTopic = new Map();
+  for (const entry of steps) {
+    const topic = String(entry.topic_slug || '').trim();
+    if (!topic) continue;
+    if (!byTopic.has(topic)) byTopic.set(topic, []);
+    byTopic.get(topic).push(String(entry.tool || '').trim().toLowerCase());
+  }
+  for (const [topic, tools] of byTopic.entries()) {
+    const confluenceIndex = tools.indexOf('confluence');
+    if (confluenceIndex === -1) continue;
+    const tavilyIndex = tools.findIndex((tool) => tool === 'tavily-search' || tool === 'tavily');
+    if (tavilyIndex === -1 || tavilyIndex > confluenceIndex) {
+      failures.push(`Tavily must run before Confluence fallback for ${topic}.`);
+    }
+  }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateSupportingContextIntegrity(document = {}) {
+  const requirements = Array.isArray(document.requirements) ? document.requirements : [];
+  const failures = [];
+  const supportSummaryArtifacts = requirements.flatMap((requirement) => {
+    return asArray(requirement.evidence_artifacts || requirement.required_artifacts)
+      .map((artifact) => String(artifact || '').trim());
+  }).filter((artifact) => artifact.includes('supporting_issue_summary_'));
+
+  if (supportSummaryArtifacts.length === 0) {
+    failures.push('Supporting context integrity requires at least one supporting_issue_summary artifact.');
+  }
+
+  for (const requirement of requirements) {
+    const artifacts = asArray(requirement.evidence_artifacts || requirement.required_artifacts)
+      .map((artifact) => String(artifact || '').toLowerCase());
+    if (artifacts.some((artifact) => artifact.includes('defect_analysis'))) {
+      failures.push(`Supporting context artifact path violates non-defect policy: ${artifacts.find((artifact) => artifact.includes('defect_analysis'))}`);
+    }
+  }
   return { ok: failures.length === 0, failures };
 }

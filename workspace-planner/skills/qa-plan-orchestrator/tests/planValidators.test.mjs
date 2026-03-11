@@ -259,6 +259,26 @@ test('validatePhase4aSubcategoryDraft rejects canonical top-layer leakage in the
   assert.match(result.failures.join('\n'), /Phase 4a must stay below canonical top-layer grouping/i);
 });
 
+test('validatePhase4aSubcategoryDraft rejects missing support and deep-research trace coverage when required', () => {
+  const result = validatePhase4aSubcategoryDraft(`Feature QA Plan (BCIN-4A)
+
+- Report editor
+    * Edit report content <P1>
+        - Open the editor
+            - Make a report change
+                - The editor remains open
+`, {
+    requireSupportTrace: true,
+    requireResearchTrace: true,
+    requiredTopics: ['report_editor_workstation_functionality', 'report_editor_library_vs_workstation_gap'],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /support trace/i);
+  assert.match(result.failures.join('\n'), /research trace/i);
+  assert.match(result.failures.join('\n'), /report_editor_library_vs_workstation_gap/i);
+});
+
 test('validatePhase4bCategoryLayering requires canonical top layers and a subcategory layer', () => {
   const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-4B)
 
@@ -308,6 +328,25 @@ test('validatePhase4bCategoryLayering accepts non-canonical top layer when top_l
 
   assert.equal(result.ok, true);
   assert.deepEqual(result.failures, []);
+});
+
+test('validatePhase4bCategoryLayering rejects compressed workstation and library-gap scenarios when strict topic coverage is required', () => {
+  const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-4B)
+
+- Core Functional Flows
+    * Report editor
+        - Workstation and Library gap stay correct <P1>
+            - Open the editor
+                - Save the report
+                    - Expected outcome appears
+`, {
+    requireTraceability: true,
+    requiredTopics: ['report_editor_workstation_functionality', 'report_editor_library_vs_workstation_gap'],
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /traceability/i);
+  assert.match(result.failures.join('\n'), /separate scenario coverage/i);
 });
 
 test('validateReviewDelta rejects unresolved blocking findings', () => {
@@ -634,6 +673,41 @@ test('validateCheckpointAudit requires evidence for every checkpoint and a relea
   assert.match(result.failures.join('\n'), /Release Recommendation/i);
 });
 
+test('validateCheckpointAudit requires supporting context and gap readiness checkpoint', () => {
+  const checkpointAudit = `# Checkpoint Audit
+
+## Checkpoint Summary
+- Requirements Traceability | Checkpoint 1 | pass | jira_issue_BCIN-1.md | none
+- Black-Box Behavior Validation | Checkpoint 2 | pass | qa_plan_phase5a_r1.md | none
+- Integration Validation | Checkpoint 3 | pass | qa_plan_phase5a_r1.md | none
+- Environment Fidelity | Checkpoint 4 | pass | qa_plan_phase5a_r1.md | none
+- Regression Impact | Checkpoint 5 | pass | qa_plan_phase5a_r1.md | none
+- Non-Functional Quality | Checkpoint 6 | pass | qa_plan_phase5a_r1.md | none
+- Test Data Quality | Checkpoint 7 | pass | qa_plan_phase5a_r1.md | none
+- Exploratory Testing | Checkpoint 8 | pass | qa_plan_phase5a_r1.md | none
+- Auditability | Checkpoint 9 | pass | qa_plan_phase5a_r1.md | none
+- AI Hallucination Check | Checkpoint 10 | pass | qa_plan_phase5a_r1.md | none
+- Mutation Testing | Checkpoint 11 | pass | qa_plan_phase5a_r1.md | none
+- Contract Testing | Checkpoint 12 | pass | qa_plan_phase5a_r1.md | none
+- Chaos and Resilience | Checkpoint 13 | pass | qa_plan_phase5a_r1.md | none
+- Shift-Right Monitoring | Checkpoint 14 | pass | qa_plan_phase5a_r1.md | none
+- Final Release Gate | Checkpoint 15 | pass | qa_plan_phase5a_r1.md | none
+
+## Blocking Checkpoints
+- none
+
+## Advisory Checkpoints
+- none
+
+## Release Recommendation
+- accept
+`;
+
+  const result = validateCheckpointAudit(checkpointAudit);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /supporting_context_and_gap_readiness/i);
+});
+
 test('validateCheckpointDelta rejects resolved blockers without a recorded change', () => {
   const checkpointDelta = `# Checkpoint Delta
 
@@ -701,6 +775,69 @@ test('validateQualityDelta requires final layer audit and verdict sections', () 
 
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /Verdict/i);
+});
+
+test('validateQualityDelta requires support and research preservation entries when strict design compliance is enabled', () => {
+  const result = validateQualityDelta(`# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Authentication > Sign in succeeds | canonical layering retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | EndToEnd > Authentication | vague wording | concrete wording | applied
+
+## Exceptions Preserved
+- none
+
+## Verdict
+- accept
+`, {
+    deep_research_topics: ['report_editor_workstation_functionality', 'report_editor_library_vs_workstation_gap'],
+    hasSupportingContext: true,
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /support-derived/i);
+  assert.match(result.failures.join('\n'), /workstation/i);
+});
+
+test('validateQualityDelta scopes preservation checks to requested inputs only', () => {
+  const content = `# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Report Editor > Workstation | canonical layering retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | EndToEnd > Report Editor | vague wording | concrete wording | applied
+
+## Exceptions Preserved
+- none
+
+## Verdict
+- accept
+`;
+  const resultWorkstationOnly = validateQualityDelta(content, {
+    deep_research_topics: ['report_editor_workstation_functionality'],
+    hasSupportingContext: false,
+  });
+  assert.equal(resultWorkstationOnly.ok, true, 'Single topic workstation-only run should pass when workstation is preserved');
+
+  const resultMissingWorkstation = validateQualityDelta(`# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Auth | retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | applied
+
+## Verdict
+- accept
+`, {
+    deep_research_topics: ['report_editor_workstation_functionality'],
+    hasSupportingContext: false,
+  });
+  assert.equal(resultMissingWorkstation.ok, false);
+  assert.match(resultMissingWorkstation.failures.join('\n'), /workstation/i);
 });
 
 test('validateDraftCoveragePreservation rejects phase6 drafts that silently shrink reviewed coverage', () => {
@@ -884,6 +1021,26 @@ test('validatePhase5aAcceptanceGate rejects accept when round-integrity failures
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /round-integrity/i);
   assert.match(result.failures.join('\n'), /reused r1/i);
+});
+
+test('validatePhase5aAcceptanceGate rejects accept when blocking request requirements remain unsatisfied', () => {
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | preserved | jira_issue_BCIN-80.md | pass | retained
+`;
+  const reviewDelta = `# Review Delta
+
+## Verdict After Refactor
+- accept
+`;
+
+  const result = validatePhase5aAcceptanceGate(reviewNotes, reviewDelta, [], {
+    unsatisfiedBlockingRequirements: ['req-tool-order-research'],
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /request requirements/i);
+  assert.match(result.failures.join('\n'), /req-tool-order-research/i);
 });
 
 test('validateRoundProgression rejects reruns that reuse the current round instead of advancing', () => {

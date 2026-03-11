@@ -86,6 +86,19 @@ Required fields:
 - `created_at`
 - `updated_at`
 
+Additive request and support fields:
+
+- `primary_feature_id`
+- `supporting_issue_keys`
+- `supporting_issue_policy` (`context_only_no_defect_analysis`)
+- `deep_research_policy` (`tavily_first_confluence_second`)
+- `deep_research_topics`
+- `supporting_summary_required`
+- `request_fulfillment_required`
+- `request_requirements`
+- `request_materials`
+- `request_commands`
+
 Allowed `overall_status` values:
 
 - `not_started`
@@ -115,6 +128,15 @@ Required fields:
 - `validation_history`
 - `blocking_issues`
 
+Additive request and research fields:
+
+- `supporting_context_generated_at`
+- `deep_research_generated_at`
+- `deep_research_fallback_used`
+- `request_fulfillment_generated_at`
+- `request_execution_log`
+- `unsatisfied_request_requirements`
+
 ## Artifact Families
 
 ### Phase 0
@@ -125,6 +147,10 @@ Required fields:
 ### Phase 1
 
 - source-family evidence saved under `context/`
+- `context/supporting_issue_request_<feature-id>.md`
+- `context/supporting_issue_relation_map_<feature-id>.md`
+- `context/supporting_issue_summary_<issue-key>_<feature-id>.md`
+- `context/supporting_issue_summary_<feature-id>.md`
 - `phase1_spawn_manifest.json`
 
 ### Phase 2
@@ -134,6 +160,12 @@ Required fields:
 ### Phase 3
 
 - `context/coverage_ledger_<feature-id>.md`
+- `context/deep_research_plan_<feature-id>.md`
+- `context/deep_research_tavily_report_editor_workstation_<feature-id>.md`
+- `context/deep_research_tavily_library_vs_workstation_gap_<feature-id>.md`
+- `context/deep_research_confluence_report_editor_workstation_<feature-id>.md` (conditional)
+- `context/deep_research_confluence_library_vs_workstation_gap_<feature-id>.md` (conditional)
+- `context/deep_research_synthesis_report_editor_<feature-id>.md`
 - `phase3_spawn_manifest.json`
 
 ### Phase 4a
@@ -219,6 +251,13 @@ Do not substitute browser fetch or generic web fetch for Jira, Confluence, or Gi
 - Supplemental research is allowed only after required phase prerequisites already exist.
 - Allowed shared skills for this pass are `jira-cli`, `confluence`, and `tavily-search`.
 - New research artifacts must be saved under `context/` so later `artifact_lookup_<feature-id>.md` rewrites can include them.
+- For report-editor topics introduced during Phase 3, `tavily-search` must run before any `confluence` fallback and the fallback reason must be recorded.
+
+## Support-Only Jira Policy
+
+- Supporting Jira issues are context evidence only.
+- Support-only issues must remain in `context_only_no_defect_analysis` mode.
+- Promotion and finalization are blocked if blocking `request_requirements` remain unsatisfied.
 
 ## Round Progression
 

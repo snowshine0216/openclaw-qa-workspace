@@ -12,6 +12,8 @@ prepare_phase4a_project() {
   write_run_json "$run_dir/run.json" '{"run_key":"run-60","spawn_history":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
   printf '# Artifact Lookup\n' > "$run_dir/context/artifact_lookup_BCIN-60.md"
   printf '# Jira Issue\n\n## Feature Summary\n- sign in\n' > "$run_dir/context/jira_issue_BCIN-60.md"
+  printf '# Support summary\n' > "$run_dir/context/supporting_issue_summary_BCIN-60.md"
+  printf '# Research synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-60.md"
   printf '%s\n' "$run_dir"
 }
 
@@ -34,13 +36,19 @@ test_post_validation_pass() {
   cat > "$run_dir/drafts/qa_plan_phase4a_r1.md" <<'EOF'
 Feature QA Plan (BCIN-60)
 
-- Authentication <P1>
-    * Sign in with valid credentials
-        - Open the login page
-            - Enter a valid username
-                - Enter a valid password
-                    - Click "Sign In"
-                        - Dashboard loads successfully
+<!-- trace: supporting_issue_summary_BCIN-60.md -->
+<!-- trace: deep_research_synthesis_report_editor_BCIN-60.md -->
+- Report editor
+    * Workstation editing stays available <P1>
+        - Open the Workstation report editor
+            - Update the report content
+                - Save the report
+                    - Workstation keeps the editor open
+    * Library-vs-Workstation gap stays visible <P1>
+        - Open the embedded Library report editor
+            - Compare the available editor actions with Workstation
+                - Record the Library-vs-Workstation gap
+                    - Gap-specific expectations remain visible
 EOF
 
   bash "$SKILL_ROOT/scripts/phase4a.sh" BCIN-60 "$run_dir" --post >/dev/null
@@ -86,13 +94,19 @@ EOF
   cat > "$run_dir/drafts/qa_plan_phase4a_r2.md" <<'EOF'
 Feature QA Plan (BCIN-60)
 
-- Authentication <P1>
-    * Incorrect password blocks sign-in
-        - Open the login page
-            - Enter a valid username
-                - Enter an incorrect password
-                    - Click Sign in
-                        - Inline password error appears
+<!-- trace: supporting_issue_summary_BCIN-60.md -->
+<!-- trace: deep_research_synthesis_report_editor_BCIN-60.md -->
+- Report editor
+    * Workstation editing stays available <P1>
+        - Open the Workstation report editor
+            - Update the report content
+                - Save the report
+                    - Workstation keeps the editor open
+    * Library-vs-Workstation gap stays visible <P1>
+        - Open the embedded Library report editor
+            - Compare the available editor actions with Workstation
+                - Record the Library-vs-Workstation gap
+                    - Gap-specific expectations remain visible
 EOF
 
   bash "$SKILL_ROOT/scripts/phase4a.sh" BCIN-60 "$run_dir" --post >/dev/null

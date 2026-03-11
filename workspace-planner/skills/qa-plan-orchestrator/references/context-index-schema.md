@@ -18,6 +18,7 @@
 - source family
 - why it matters
 - confidence
+- policy tag (`primary`, `support_context`, `deep_research`, `deep_research_fallback`, `request_audit`)
 
 ## Primary User Journeys
 
@@ -96,6 +97,7 @@ Scenario units and mandatory coverage candidates may overlap, but they are not i
 - coverage candidates prove nothing was silently dropped
 - scenario units preserve testcase granularity
 - priority behavior is unchanged in this pass
+- support issue summaries and deep research artifacts become mandatory coverage candidates when the request requires them
 
 ## Traceability Map
 

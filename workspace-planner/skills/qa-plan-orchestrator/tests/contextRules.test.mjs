@@ -302,7 +302,7 @@ test('evaluateEvidenceCompleteness requires supporting artifact summary when sup
   });
 
   assert.equal(result.ok, false);
-  assert.match(result.failures.join('\n'), /supporting_artifact_summary_<FEATURE_ID>\.md/i);
+  assert.match(result.failures.join('\n'), /supporting_issue_summary_<FEATURE_ID>\.md/i);
 });
 
 test('evaluateEvidenceCompleteness accepts snake_case artifact path fields', () => {
