@@ -71,12 +71,18 @@ resolve_plan_user() {
 build_mentions_file() {
   local issue_key="$1"
   local mentions_out="$2"
-  local mentions='[]' owner_name='' result=''
+  local mentions='[]' owner_name='' result='' manager_entry=''
 
-  for stakeholder in "tqang@microstrategy.com" "lizhu@microstrategy.com"; do
-    result=$(resolve_first_match "${stakeholder}")
-    [[ -n "${result}" ]] && mentions=$(printf '%s\n' "${mentions}" | jq --argjson r "${result}" '. += [$r]')
-  done
+  # Load managers from mapping file; every comment must tag the manager(s)
+  if [[ -f "${OWNER_MANAGER_MAPPING}" ]]; then
+    while IFS= read -r manager_entry; do
+      [[ -z "${manager_entry}" ]] && continue
+      result=$(resolve_plan_user "${manager_entry}")
+      [[ -n "${result}" ]] && mentions=$(printf '%s\n' "${mentions}" | jq --argjson r "${result}" '. += [$r]')
+    done < <(jq -r '.managers[]? // empty' "${OWNER_MANAGER_MAPPING}" 2>/dev/null || true)
+  else
+    log_info "Manager mapping not found at ${OWNER_MANAGER_MAPPING}; skipping manager mentions"
+  fi
 
   owner_name=$(jq -r --arg k "${issue_key}" '.issues[] | select(.issue_key==$k) | .proposed_owner.display_name // ""' "${MANIFEST}")
   if [[ -n "${owner_name}" ]]; then
