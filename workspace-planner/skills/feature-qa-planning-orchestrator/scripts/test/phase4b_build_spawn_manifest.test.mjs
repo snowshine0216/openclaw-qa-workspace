@@ -39,6 +39,7 @@ test('test_success_manifest', async () => {
   const task = manifest.requests[0].openclaw.args.task;
   assert.ok(task.includes('phase4b-contract'), 'task must reference phase4b-contract');
   assert.ok(task.includes('canonical top-layer'), 'task must describe canonical top-layer grouping');
+  assert.ok(task.includes('Few-shot cleanup belongs to Phase 6'), 'task must keep few-shot cleanup in Phase 6');
   assert.ok(task.includes('qa_plan_phase4b_r1.md'), 'task must target the phase-scoped draft path');
   await rm(root, { recursive: true, force: true });
 });

@@ -357,6 +357,32 @@ test('validateReviewDelta accepts explicit none marker when no blocking findings
   assert.equal(result.ok, true);
 });
 
+test('validateReviewDelta rejects invalid final disposition', () => {
+  const result = validateReviewDelta(`# Review Delta
+
+## Source Review
+- review_qa_plan_BCIN-1.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- retry later
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /invalid disposition/i);
+});
+
 test('validateContextCoverageAudit rejects review notes that do not account for each context artifact section', () => {
   const reviewNotes = `# Review Notes
 
@@ -456,6 +482,24 @@ test('validateCheckpointDelta rejects resolved blockers without a recorded chang
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /Checkpoint 3/i);
   assert.match(result.failures.join('\n'), /recorded change/i);
+});
+
+test('validateCheckpointDelta rejects invalid final disposition', () => {
+  const checkpointDelta = `# Checkpoint Delta
+
+## Blocking Checkpoint Resolution
+- none
+
+## Advisory Checkpoint Resolution
+- none
+
+## Final Disposition
+- escalate later
+`;
+
+  const result = validateCheckpointDelta(checkpointDelta);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /invalid disposition/i);
 });
 
 test('validateFinalLayering rejects drafts that skip the subcategory layer', () => {

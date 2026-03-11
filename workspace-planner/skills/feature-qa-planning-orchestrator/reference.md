@@ -55,6 +55,7 @@ Required fields:
 - `phase5a_round`
 - `phase5b_round`
 - `phase6_round`
+- `return_to_phase`
 - `created_at`
 - `updated_at`
 
@@ -124,6 +125,8 @@ Required fields:
 - `context/review_delta_<feature-id>.md`
 - `drafts/qa_plan_phase5a_r<round>.md`
 - `phase5a_spawn_manifest.json`
+- successful rounds rewrite `context/artifact_lookup_<feature-id>.md`
+- `review_delta` may route the next round with `accept` or `return phase5a`
 
 ### Phase 5b
 
@@ -131,6 +134,8 @@ Required fields:
 - `context/checkpoint_delta_<feature-id>.md`
 - `drafts/qa_plan_phase5b_r<round>.md`
 - `phase5b_spawn_manifest.json`
+- successful rounds rewrite `context/artifact_lookup_<feature-id>.md`
+- `checkpoint_delta` may route the next round with `accept`, `return phase5a`, or `return phase5b`
 
 ### Phase 6
 
@@ -181,6 +186,13 @@ Use only these primary evidence skills (not generic tools):
 
 Do not substitute browser fetch or generic web fetch for Jira, Confluence, or GitHub primary evidence.
 
+## Bounded Supplemental Research
+
+- Phases 4a, 4b, 5a, 5b, and 6 may do at most one bounded supplemental research pass per round when local evidence is insufficient.
+- Supplemental research is allowed only after required phase prerequisites already exist.
+- Allowed shared skills for this pass are `jira-cli`, `confluence`, and `tavily-search`.
+- New research artifacts must be saved under `context/` so later `artifact_lookup_<feature-id>.md` rewrites can include them.
+
 ## Validators
 
 The script-facing validator CLI is `scripts/lib/validate_plan_artifact.mjs`.
@@ -212,8 +224,8 @@ Supported validators:
 - Phase 3: `coverage_ledger_<feature-id>.md` passes validation
 - Phase 4a: `qa_plan_phase4a_r<round>.md` passes `validate_phase4a_subcategory_draft` and executable-step validation
 - Phase 4b: `qa_plan_phase4b_r<round>.md` passes canonical layering, hierarchy, E2E minimum, and executable-step validation
-- Phase 5a: `review_notes`, `review_delta`, and `qa_plan_phase5a_r<round>.md` exist and pass the context-coverage + section-review gates
-- Phase 5b: `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b_r<round>.md` exist and pass checkpoint audit + delta validation
+- Phase 5a: `review_notes`, `review_delta`, and `qa_plan_phase5a_r<round>.md` exist, pass the context-coverage + section-review gates, and route with `accept` or `return phase5a`
+- Phase 5b: `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b_r<round>.md` exist, pass checkpoint audit + delta validation, and route with `accept`, `return phase5a`, or `return phase5b`
 - Phase 6: `qa_plan_phase6_r<round>.md` passes final layering, hierarchy, E2E minimum, and executable-step checks, and `quality_delta` exists
 - Phase 7: explicit user approval before promotion
 

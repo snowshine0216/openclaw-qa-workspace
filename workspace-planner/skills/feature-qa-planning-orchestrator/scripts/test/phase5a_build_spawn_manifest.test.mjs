@@ -41,6 +41,8 @@ test('test_success_manifest', async () => {
   const task = manifest.requests[0].openclaw.args.task;
   assert.ok(task.includes('review-rubric-phase5a'), 'task must reference review-rubric-phase5a');
   assert.ok(task.includes('section-by-section review'), 'task must require section-by-section review');
+  assert.ok(task.includes('bounded supplemental research pass'), 'task must describe bounded supplemental research');
+  assert.ok(task.includes('return phase5a'), 'task must describe the rerun disposition');
   assert.ok(task.includes('qa_plan_phase5a_r1.md'), 'task must target the phase-scoped draft path');
   await rm(root, { recursive: true, force: true });
 });

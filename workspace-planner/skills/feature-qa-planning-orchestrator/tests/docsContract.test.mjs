@@ -68,6 +68,9 @@ test('skill entry docs point at script-driven contracts', async () => {
   assert.match(reference, /artifact_lookup_<feature-id>/);
   assert.match(reference, /phase5a_spawn_manifest\.json/);
   assert.match(reference, /phase5b_spawn_manifest\.json/);
+  assert.match(reference, /successful rounds rewrite `context\/artifact_lookup_<feature-id>\.md`/);
+  assert.match(reference, /return phase5a/);
+  assert.match(reference, /return phase5b/);
   assert.match(reference, /validate_final_layering/);
   assert.match(readme, /phase spawn manifests/i);
   assert.match(readme, /qa_plan_phase5a_r<round>/i);
@@ -81,6 +84,9 @@ test('skill entry docs point at script-driven contracts', async () => {
 test('active docs advertise script-driven artifacts and source routing', async () => {
   const reference = await readFile(join(SKILL_ROOT, 'reference.md'), 'utf8');
   const coverageContract = await readFile(join(SKILL_ROOT, 'references', 'context-coverage-contract.md'), 'utf8');
+  const phase4bContract = await readFile(join(SKILL_ROOT, 'references', 'phase4b-contract.md'), 'utf8');
+  const phase5aRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5a.md'), 'utf8');
+  const phase5bRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md'), 'utf8');
 
   assert.match(reference, /runtime_setup_<feature-id>/);
   assert.match(reference, /phase4a-contract\.md/);
@@ -91,4 +97,11 @@ test('active docs advertise script-driven artifacts and source routing', async (
   assert.match(reference, /confluence/);
   assert.match(reference, /github/);
   assert.match(coverageContract, /artifact_lookup_<feature-id>/i);
+  assert.match(phase4bContract, /Phase 6 owns the final few-shot rewrite pass/i);
+  assert.match(phase4bContract, /Bounded Research Rule/i);
+  assert.match(phase5aRubric, /Pass \/ Return Criteria/i);
+  assert.match(phase5aRubric, /return phase5a/i);
+  assert.match(phase5bRubric, /Bounded Research Rule/i);
+  assert.match(phase5bRubric, /return phase5a/i);
+  assert.match(phase5bRubric, /return phase5b/i);
 });

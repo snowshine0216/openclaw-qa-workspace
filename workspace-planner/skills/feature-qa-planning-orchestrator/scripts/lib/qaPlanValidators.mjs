@@ -167,6 +167,19 @@ function includesAny(text, phrases) {
   return phrases.filter((phrase) => lower.includes(phrase));
 }
 
+function parseDisposition(section, allowedValues) {
+  const bulletValues = section
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2).trim().toLowerCase());
+  const allowed = new Set(allowedValues.map((value) => value.toLowerCase()));
+  return {
+    values: bulletValues,
+    invalid: bulletValues.filter((value) => !allowed.has(value)),
+  };
+}
+
 function tokenizeReference(text) {
   return normalizeContent(text)
     .toLowerCase()
@@ -618,6 +631,22 @@ export function validateReviewDelta(content) {
     }
   }
 
+  const verdictSection = getSection(content, '## Verdict After Refactor');
+  if (!hasNonEmptyBullet(verdictSection)) {
+    failures.push('## Verdict After Refactor must contain an explicit terminal disposition.');
+  } else {
+    const { values, invalid } = parseDisposition(verdictSection, ['accept', 'return phase5a']);
+    if (values.length === 0) {
+      failures.push('## Verdict After Refactor must contain one disposition bullet.');
+    }
+    if (values.length > 1) {
+      failures.push('## Verdict After Refactor must contain exactly one disposition bullet.');
+    }
+    if (invalid.length > 0) {
+      failures.push(`## Verdict After Refactor has invalid disposition: ${invalid.join(', ')}`);
+    }
+  }
+
   return { ok: failures.length === 0, failures };
 }
 
@@ -824,6 +853,17 @@ export function validateCheckpointDelta(content) {
   const finalDisposition = getSection(content, '## Final Disposition');
   if (!hasNonEmptyBullet(finalDisposition)) {
     failures.push('Final Disposition is required.');
+  } else {
+    const { values, invalid } = parseDisposition(finalDisposition, ['accept', 'return phase5a', 'return phase5b']);
+    if (values.length === 0) {
+      failures.push('Final Disposition must contain one disposition bullet.');
+    }
+    if (values.length > 1) {
+      failures.push('Final Disposition must contain exactly one disposition bullet.');
+    }
+    if (invalid.length > 0) {
+      failures.push(`Final Disposition has invalid disposition: ${invalid.join(', ')}`);
+    }
   }
   return { ok: failures.length === 0, failures };
 }

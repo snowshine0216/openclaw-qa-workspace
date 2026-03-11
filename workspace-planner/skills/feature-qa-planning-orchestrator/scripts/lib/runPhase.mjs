@@ -285,6 +285,7 @@ async function postValidatePhase5a(featureId, projectDir, state) {
     readRequiredText(afterPath),
   ]);
   const reviewNotesContent = await readRequiredText(reviewNotesPath);
+  const reviewDeltaContent = await readRequiredText(reviewDeltaPath);
   const beforeContent = await readRequiredText(beforePath);
   const afterContent = await readRequiredText(afterPath);
   if (beforeContent === afterContent) {
@@ -297,10 +298,10 @@ async function postValidatePhase5a(featureId, projectDir, state) {
     'phase5a context coverage audit'
   );
   assertValidation(validateSectionReviewChecklist(reviewNotesContent), 'phase5a section review checklist');
-  assertValidation(validateReviewDelta(await readRequiredText(reviewDeltaPath)), 'phase5a review delta');
+  assertValidation(validateReviewDelta(reviewDeltaContent), 'phase5a review delta');
 
   state.task.current_phase = 'phase_5a_review_refactor';
-  state.task.return_to_phase = null;
+  state.task.return_to_phase = extractReturnToPhase(reviewDeltaContent, ['## Verdict After Refactor', '## Final Disposition']);
   updateLatestDraftMetadata(state.task, afterPath, 'phase5a');
   state.run.review_completed_at = new Date().toISOString();
   await writeArtifactLookup(featureId, projectDir);
@@ -327,7 +328,7 @@ async function postValidatePhase5b(featureId, projectDir, state) {
   assertValidation(validateCheckpointDelta(checkpointDeltaContent), 'phase5b checkpoint delta');
 
   state.task.current_phase = 'phase_5b_checkpoint_refactor';
-  state.task.return_to_phase = extractReturnToPhase(checkpointDeltaContent);
+  state.task.return_to_phase = extractReturnToPhase(checkpointDeltaContent, ['## Final Disposition']);
   updateLatestDraftMetadata(state.task, draftPath, 'phase5b');
   state.run.review_completed_at = new Date().toISOString();
   await writeArtifactLookup(featureId, projectDir);
@@ -348,7 +349,7 @@ async function postValidatePhase6(projectDir, state) {
   assertValidation(validateQualityDelta(qualityDeltaContent), 'phase6 quality delta');
 
   state.task.current_phase = 'phase_6_quality_refactor';
-  state.task.return_to_phase = extractReturnToPhase(qualityDeltaContent);
+  state.task.return_to_phase = extractReturnToPhase(qualityDeltaContent, ['## Verdict']);
   updateLatestDraftMetadata(state.task, draftPath, 'phase6');
   state.run.refactor_completed_at = new Date().toISOString();
   await saveState(state);
@@ -487,9 +488,32 @@ async function listContextAuditRequirements(projectDir, featureId) {
   return required;
 }
 
-function extractReturnToPhase(content) {
-  const match = String(content || '').match(/\breturn\s+(phase5a|phase5b)\b/i);
+function extractReturnToPhase(content, headings = []) {
+  const disposition = extractDisposition(content, headings);
+  const match = disposition.match(/^return\s+(phase5a|phase5b)$/i);
   return match ? match[1].toLowerCase() : null;
+}
+
+function extractDisposition(content, headings = []) {
+  for (const heading of headings) {
+    const section = extractSection(content, heading);
+    if (!section) continue;
+    const match = section.match(/^- (accept|return phase5a|return phase5b)\s*$/im);
+    if (match) {
+      return match[1].toLowerCase();
+    }
+  }
+  return '';
+}
+
+function extractSection(content, heading) {
+  const text = String(content || '').replace(/\r\n/g, '\n');
+  const start = text.indexOf(`${heading}\n`);
+  if (start === -1) return '';
+  const rest = text.slice(start + heading.length + 1);
+  const nextHeadingOffset = rest.search(/\n##\s+/);
+  if (nextHeadingOffset === -1) return rest.trim();
+  return rest.slice(0, nextHeadingOffset).trim();
 }
 
 async function maybeNotifyFeishu(featureId, projectDir) {

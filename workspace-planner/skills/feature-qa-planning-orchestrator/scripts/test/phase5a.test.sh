@@ -99,6 +99,65 @@ EOF
   assert_contains "$(cat "$project_dir/task.json")" '"current_phase": "phase_5a_review_refactor"'
 }
 
+test_post_validation_sets_return_to_phase_from_review_delta() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local project_dir
+  project_dir="$(prepare_phase5a_project "$temp_dir")"
+  printf 'after\n' > "$project_dir/drafts/qa_plan_phase5a_r1.md"
+  cat > "$project_dir/context/review_notes_BCIN-80.md" <<'EOF'
+# Review Notes
+
+## Context Artifact Coverage Audit
+- context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | current draft | none
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | pass | current draft | none
+- Regression / Known Risks | risky flows are isolated | pass | current draft | none
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | await browser matrix
+- Security | permission-sensitive flows stay separate | pass | current draft | none
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not in scope
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not in scope
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not in scope
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+EOF
+  cat > "$project_dir/context/review_delta_BCIN-80.md" <<'EOF'
+# Review Delta
+
+## Source Review
+- review_notes_BCIN-80.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- one more audit pass needed after the refactor
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- return phase5a
+EOF
+
+  bash "$SKILL_ROOT/scripts/phase5a.sh" BCIN-80 "$project_dir" --post >/dev/null
+  assert_contains "$(cat "$project_dir/task.json")" '"return_to_phase": "phase5a"'
+}
+
 test_post_validation_requires_artifact_lookup_audit() {
   local temp_dir
   temp_dir="$(new_temp_dir)"
@@ -229,5 +288,6 @@ EOF
 test_success_manifest_output
 test_rerun_manifest_output_when_return_to_phase5a_requested
 test_post_validation_pass
+test_post_validation_sets_return_to_phase_from_review_delta
 test_post_validation_requires_artifact_lookup_audit
 test_post_validation_compares_against_rerun_input_draft

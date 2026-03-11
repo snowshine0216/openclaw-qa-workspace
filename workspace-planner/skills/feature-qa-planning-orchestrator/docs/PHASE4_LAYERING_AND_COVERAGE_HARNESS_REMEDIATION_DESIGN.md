@@ -5,6 +5,7 @@
 - Status: Proposed
 - Scope: design only
 - Implementation: intentionally excluded from this document
+- Runtime note: bounded reruns are orchestrator-driven through draft deltas (`accept`, `return phase5a`, `return phase5b`), not by an internal shell while-loop.
 
 ## Refactored Phase Reference Table
 
