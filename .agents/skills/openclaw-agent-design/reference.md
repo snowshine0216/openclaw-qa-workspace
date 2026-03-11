@@ -46,6 +46,15 @@ A skill is script-bearing if either of these is true:
 
 Docs-only skills are exempt from script-specific test-stub requirements.
 
+## Evals Folder Rule
+
+When a skill has behavioral contracts, state changes, or validation rules, include `evals/` with `evals.json` per skill-creator compatible format.
+
+- **When to add:** Skill has behavioral contracts, state transitions, or validation rules that should be regression-tested.
+- **Format:** `evals/evals.json` with `skill_name`, `evals` array (id, prompt, expected_output, files).
+- **Governance:** Any contract change must update evals (per DOCS_GOVERNANCE pattern).
+- **Exempt:** Docs-only skills with no behavioral contracts; optional for docs-only skills; required for script-bearing or contract-heavy skills.
+
 ## OpenClaw Test Layout Exception
 
 For OpenClaw skill-package design work, `scripts/test/` is the canonical test location for script-bearing skills. This is a domain-specific exception that overrides the generic top-level `tests/` preference from `code-quality-orchestrator` for this design domain.
@@ -85,106 +94,37 @@ For OpenClaw skill-package design work, `scripts/test/` is the canonical test lo
 }
 ```
 
-## Design Doc Deliverables Table Format
+## Plan / Design Document Outline Template
+
+Plans and design docs must be detailed, implementation-ready, and decision-complete. Structure by Goal → Required Change for Each Phase; group all related changes by phase instead of listing them at the end.
 
 ```markdown
-| Action | Path | Notes |
-|--------|------|-------|
-| UPDATE | `.agents/skills/<entrypoint-skill>/SKILL.md` | entrypoint skill contract |
-| UPDATE | `.agents/skills/<entrypoint-skill>/reference.md` | canonical behavior notes |
-| CREATE/UPDATE | `.agents/skills/<shared-skill>/SKILL.md` | shared capability via skill-creator |
-| CREATE/UPDATE | `<workspace>/skills/<local-skill>/SKILL.md` | workspace-local capability via skill-creator |
-| UPDATE | `AGENTS.md` | sync design and skill references |
-```
+# Title
+## Overview
+## Architecture
+### Workflow chart
+### Folder structure
+## Skills Content Specification
+### skill-SKILL.md (detailed)
+<!-- Put all related changes for this skill into this section, must have detailed content -->
+### skill-reference.md (detailed)
+<!-- Put all related changes for this skill into this section, must have detailed content -->
+### skill-other-files.md (detailed)
+### skill-evals
+## Data Models
+## Functions
+<!-- Put all related functions here; every function should have detailed implementaion codes or content of files to be changed-->
+### Function1
+<!-- Put all related functions here; every function should have detailed implementaion codes or content of files to be changed-->
+### Functional2
+<!-- Put all related changes for this functional design into this section, must have implenmentation codes, or content of files to be changed -->
+## AGENTS.md (to change)
+<!-- Put all related changes for this AGENTS.md into this section, must have detailed content -->
+## Tests
+<!-- Put all test stub funcions in to table, include happy path, failure path, and error path, boundry case-->
+## Documentation Changes
+<!-- if README.md or other documentation needs changing, put it here -->
+## Implementation Checklist
 
-## Skills Content Template
-
-```markdown
-### 3.x `<skill-path>/SKILL.md`
-
-Purpose:
-- <what the skill does>
-
-When to trigger:
-- <skill-creator style trigger wording>
-
-Input contract:
-- `<field>`: <type>, example `<example>`, source <where it comes from>
-
-Output contract:
-- <artifact, status line, handoff payload>
-
-Workflow/phase responsibilities:
-- <ordered responsibilities>
-
-Error/ambiguity policy:
-- <stop / ask / retry / persist>
-
-Quality rules:
-- <formatting, invariants, review requirements>
-
-Classification:
-- `shared` | `workspace-local`
-
-Why this placement:
-- <placement justification>
-
-Existing skills reused directly:
-- `<skill-name>` — <why direct reuse is sufficient>
-```
-
-## `reference.md` Content Template
-
-```markdown
-### 4.x `<skill-path>/reference.md`
-
-Must include:
-- state machine / invariants
-- schemas or field-level contracts
-- path conventions
-- validation commands
-- failure examples and recovery rules
-- package-specific defaults or exceptions
-```
-
-## Script Function Spec Template
-
-```markdown
-### 8.x `<script-path>`
-
-Invocation:
-- `<command>`
-
-Inputs / outputs / artifacts:
-- <list>
-
-| function | responsibility | inputs | outputs | side effects | failure mode |
-|----------|----------------|--------|---------|--------------|--------------|
-| `main` | <summary> | argv | stdout / files | <side effects> | <error condition> |
-```
-
-## Script Test Stub Matrix Template
-
-```markdown
-| Script Path | Test Stub Path | Scenarios | Smoke Command |
-|-------------|----------------|-----------|---------------|
-| `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | success; required-arg failure; dependency/error path | `node --test <skill-root>/scripts/test/foo.test.js` |
-```
-
-## Backfill Coverage Table Template
-
-```markdown
-| Script Path | Test Stub Path | Failure-Path Stub |
-|-------------|----------------|-------------------|
-| `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | required-arg failure |
-```
-
-## Final Notification Template
-
-```text
-✅ <Workflow> completed
-  Key:      <ISSUE_KEY>
-  Output:   <path or URL>
-  Updated:  <UTC TIME>
-Published by <Agent Name>.
+## References
 ```

@@ -1,0 +1,38 @@
+{
+  "design_id": "single-defect-analysis-and-defect-test-2026-03-12",
+  "review_date": "2026-03-12",
+  "reviewer_skill": "openclaw-agent-design-review",
+  "status": "pass",
+  "reviewed_artifacts": [
+    "workspace-reporter/docs/SINGLE_DEFECT_ANALYSIS_SKILL_DESIGN.md",
+    "workspace-reporter/docs/DEFECT_TEST_SKILL_DESIGN.md"
+  ],
+  "skill_packages": [
+    {
+      "path": ".agents/skills/single-defect-analysis",
+      "classification": "script-bearing"
+    },
+    {
+      "path": "workspace-tester/skills/defect-test",
+      "classification": "script-bearing"
+    }
+  ],
+  "script_test_coverage": {
+    "scripts_test_layout_pass": true,
+    "one_to_one_mapping_present": true
+  },
+  "report_state_non_regression": {
+    "pass": true,
+    "states": [
+      "FINAL_EXISTS",
+      "DRAFT_EXISTS",
+      "CONTEXT_ONLY",
+      "FRESH"
+    ]
+  },
+  "findings": [],
+  "notes": [
+    "Design docs include planned create/update paths that are intentionally not implemented yet.",
+    "Pathing contracts require script-derived roots and prohibit hardcoded absolute user-home paths."
+  ]
+}

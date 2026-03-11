@@ -57,13 +57,17 @@ Typical failures:
 ### 5) Skill Package Content Completeness
 
 Pass conditions:
-- Every created or redesigned skill has an explicit `SKILL.md` content specification.
-- Every created or redesigned skill has an explicit `reference.md` content specification.
+- Every created or redesigned skill has an explicit `### skill-SKILL.md (detailed)` subsection with full content spec per skill.
+- Every created or redesigned skill has an explicit `### skill-reference.md (detailed)` subsection with full content spec per skill.
+- The design includes explicit `## Data Models` when state or artifact schemas exist.
+- The design includes explicit `## Functions in Scripts` with function inventory and functional design per script when script-bearing.
 - The design includes package structure expectations and path conventions.
 
 Typical failures:
-- `P1`: Missing detailed `SKILL.md` content specification.
-- `P1`: Missing detailed `reference.md` content specification.
+- `P1`: Missing detailed `SKILL.md` content specification (skill-SKILL.md detailed subsection).
+- `P1`: Missing detailed `reference.md` content specification (skill-reference.md detailed subsection).
+- `P1`: Missing `## Data Models` when design includes state or artifact schemas.
+- `P1`: Missing `## Functions in Scripts` with function inventory and functional design when script-bearing.
 - `P1`: Package structure is incomplete or underspecified.
 
 ### 6) Script-Bearing Package Completeness
@@ -73,12 +77,14 @@ Pass conditions:
 - Script-bearing skills declare `scripts/test/` as the OpenClaw exception.
 - Every script has function-level responsibilities, inputs, outputs, side effects, and failure modes.
 - Every script has a one-to-one mapped test stub under `scripts/test/`.
+- Contract-heavy or script-bearing skills with behavioral contracts declare `evals/evals.json`; docs-only skills may omit.
 - Docs-only skills are not failed for omitting script-test sections.
 
 Typical failures:
 - `P1`: Missing script inventory or function-level details for a script-bearing skill.
 - `P1`: Missing one-to-one script-to-test mapping.
 - `P1`: Wrong test layout for a script-bearing skill.
+- `P2`: Contract-heavy skill lacks `evals/evals.json` when behavioral validation is expected.
 - `P1`: Docs-only skill is incorrectly failed for lacking script-test sections.
 
 ### 7) Design Workflow Dependencies
@@ -123,6 +129,7 @@ Typical failures:
 - `SKILL-009` (`P1`): Missing detailed `SKILL.md` content specification for one or more designed skills.
 - `SKILL-010` (`P1`): Missing detailed `reference.md` content specification for one or more designed skills.
 - `PKG-001` (`P1`): Skill package folder structure is incomplete or does not include required directories.
+- `PKG-002` (`P2`): Contract-heavy skill package lacks `evals/` or `evals/evals.json` when behavioral validation is expected.
 - `TEST-001` (`P1`): Script deliverables lack one-to-one test stub mapping.
 - `TEST-002` (`P1`): Script-bearing skill violates the canonical `scripts/test/` layout.
 - `SHELL-001` (`P1`): Shell or Node scripts are treated as the primary workflow abstraction instead of skill internals.

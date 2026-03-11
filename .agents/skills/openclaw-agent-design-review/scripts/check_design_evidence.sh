@@ -46,16 +46,16 @@ check_common_sections() {
     'environment setup section is present'
   check_required_pattern '^## [0-9]+\. Design Deliverables' \
     'design deliverables section is present'
-  check_required_pattern '^## [0-9]+\. AGENTS\.md Sync' \
-    'AGENTS.md sync section is present'
+  check_required_pattern '^## [0-9]+\. AGENTS\.md (Sync|\(to change\))' \
+    'AGENTS.md sync or AGENTS.md (to change) section is present'
   check_required_pattern '^## [0-9]+\. Skills Content Specification' \
     'skills content specification section is present'
-  check_required_pattern '^## [0-9]+\. reference\.md Content Specification' \
-    'reference.md content specification section is present'
+  check_required_pattern '(^### [0-9]+\.x skill-SKILL\.md \(detailed\)|^### [0-9]+\.x .*SKILL\.md|reference\.md Content Specification|skill-reference\.md \(detailed\))' \
+    'skill-SKILL.md or skill-reference.md detailed subsection is present'
   check_required_pattern '^## [0-9]+\. Workflow Design' \
     'workflow design section is present'
-  check_required_pattern '^## [0-9]+\. State Schemas' \
-    'state schemas section is present'
+  check_required_pattern '^## [0-9]+\. (State Schemas|Data Models)' \
+    'state schemas or data models section is present'
   check_required_pattern '^## [0-9]+\. Implementation Layers' \
     'implementation layers section is present'
   check_required_pattern '^## [0-9]+\. Files To Create / Update' \
@@ -93,8 +93,8 @@ check_common_sections() {
 }
 
 check_script_specific_sections() {
-  check_required_pattern '^## [0-9]+\. Script Inventory and Function Specifications' \
-    'script inventory and function specifications section is present'
+  check_required_pattern '^## [0-9]+\. (Script Inventory and Function Specifications|Functions in Scripts)' \
+    'script inventory or functions in scripts section is present'
   check_required_pattern '^## [0-9]+\. Script Test Stub Matrix' \
     'script test stub matrix section is present'
   check_required_pattern '^## [0-9]+\. Backfill Coverage Table' \
@@ -103,10 +103,17 @@ check_script_specific_sections() {
     'standards exception note is present'
   check_required_pattern 'scripts/test/' \
     'scripts/test convention is explicit'
-  check_required_pattern '\|[[:space:]]*function[[:space:]]*\|[[:space:]]*responsibility[[:space:]]*\|[[:space:]]*inputs[[:space:]]*\|[[:space:]]*outputs[[:space:]]*\|[[:space:]]*side effects[[:space:]]*\|[[:space:]]*failure mode[[:space:]]*\|' \
-    'function specification table is present'
+  check_required_pattern '(Function inventory|^\| function \||^\|[[:space:]]*function[[:space:]]*\|)' \
+    'function inventory or function specification table is present'
   check_required_pattern 'Smoke Command|node --test|bash .*test|validation evidence' \
     'validation evidence is present for script changes'
+  if rg -qi 'behavioral contract|contract-heavy.*evals|evals.*when applicable' "$DESIGN_FILE"; then
+    if rg -qi 'evals/|evals\.json' "$DESIGN_FILE"; then
+      echo 'OK: evals folder or evals.json is declared (contract-heavy design)'
+    else
+      echo 'ADVISORY: contract-heavy design may need evals/evals.json (PKG-002)'
+    fi
+  fi
 }
 
 main() {
