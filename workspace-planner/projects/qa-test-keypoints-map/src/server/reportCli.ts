@@ -20,7 +20,11 @@ async function main(): Promise<void> {
   }
 
   const workspaceRoot = process.env.WORKSPACE_ROOT || defaultWorkspaceRoot();
-  const repository = new QaPlanFileRepository(workspaceRoot);
+  const runsRoot = process.env.QA_PLAN_RUNS_ROOT ?? process.env.FQPO_RUNS_ROOT;
+  if (!runsRoot) {
+    throw new Error('Set QA_PLAN_RUNS_ROOT or FQPO_RUNS_ROOT to the qa-plan-orchestrator runs directory');
+  }
+  const repository = new QaPlanFileRepository(workspaceRoot, runsRoot);
   const loaded = await repository.load(featureId);
 
   if (mode === 'validate') {

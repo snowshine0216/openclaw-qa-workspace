@@ -6,7 +6,12 @@ import { documentSchema, validateRequiredColumns } from '../shared/validation/te
 const app = express();
 const port = Number(process.env.PORT || 4174);
 const workspaceRoot = process.env.WORKSPACE_ROOT || defaultWorkspaceRoot();
-const repository = new QaPlanFileRepository(workspaceRoot);
+const runsRoot = process.env.QA_PLAN_RUNS_ROOT ?? process.env.FQPO_RUNS_ROOT;
+if (!runsRoot) {
+  console.error('Set QA_PLAN_RUNS_ROOT or FQPO_RUNS_ROOT to the qa-plan-orchestrator runs directory');
+  process.exit(1);
+}
+const repository = new QaPlanFileRepository(workspaceRoot, runsRoot);
 
 app.use(express.json({ limit: '2mb' }));
 

@@ -17,17 +17,15 @@ describe('QaPlanFileRepository', () => {
     const workspaceRoot = path.join(os.tmpdir(), `qa-keypoints-${Date.now()}`);
     await mkdir(workspaceRoot, { recursive: true });
 
-    const featureDir = path.resolve(
-      workspaceRoot,
-      'workspace-planner/projects/feature-plan/BCIN-TEST-IO',
-    );
+    const runsRoot = path.join(workspaceRoot, 'runs');
+    const featureDir = path.join(runsRoot, 'BCIN-TEST-IO');
     await mkdir(featureDir, { recursive: true });
 
     const sourcePath = path.resolve(featureDir, 'qa_plan_final.md');
     const fixture = await readFile(VALID_FIXTURE, 'utf8');
     await writeFile(sourcePath, fixture, 'utf8');
 
-    const repository = new QaPlanFileRepository(workspaceRoot);
+    const repository = new QaPlanFileRepository(workspaceRoot, runsRoot);
     const loaded = await repository.load('BCIN-TEST-IO');
 
     const nextDocument = clone(loaded.document);

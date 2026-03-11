@@ -1,0 +1,53 @@
+{
+  "design_id": "qa-plan-orchestrator-rename-runs-relayout-2026-03-11",
+  "reviewed_artifacts": [
+    "workspace-planner/skills/feature-qa-planning-orchestrator/docs/QA_PLAN_ORCHESTRATOR_RENAME_AND_RUNS_RELAYOUT_DESIGN.md"
+  ],
+  "reviewed_skill_package_paths": [
+    "workspace-planner/skills/feature-qa-planning-orchestrator/",
+    "workspace-planner/skills/qa-plan-orchestrator/"
+  ],
+  "classification": {
+    "package_type": "script-bearing",
+    "scripts_test_convention": {
+      "required": "scripts/test/",
+      "status": "pass",
+      "evidence": "Design includes script inventory, script test stub matrix, and the standards exception note for scripts/test/."
+    }
+  },
+  "script_to_test_coverage_summary": {
+    "script_entries": 10,
+    "test_stub_entries": 10,
+    "one_to_one_mapping": "pass"
+  },
+  "automated_checks": [
+    {
+      "name": "check_design_evidence.sh",
+      "status": "pass",
+      "details": "All required OpenClaw design evidence checks pass after the post-review fixes."
+    },
+    {
+      "name": "path_portability_spot_check",
+      "status": "pass",
+      "details": "No hardcoded user-home skill paths remain in the design artifact."
+    }
+  ],
+  "findings": [
+    {
+      "id": "SCOPE-001",
+      "severity": "P2",
+      "summary": "The design removes all auxiliary workspace-local qa-plan-* packages, which is broader than the explicitly typed subset but consistent with the wildcard request.",
+      "evidence": "The design delete list includes qa-plan-confluence-review in addition to the explicitly typed package names.",
+      "recommended_fix": "Confirm no live consumers remain before deleting qa-plan-confluence-review during implementation."
+    },
+    {
+      "id": "LEGACY-001",
+      "severity": "P2",
+      "summary": "Legacy projects/feature-plan migration is correctly designed but requires careful implementation to preserve archive and freshness metadata.",
+      "evidence": "Phase 0 requires migration-aware handling of legacy runs.",
+      "recommended_fix": "Back migration behavior with regression coverage for archive contents and timestamp preservation."
+    }
+  ],
+  "blocking_findings": [],
+  "final_status": "pass_with_advisories"
+}

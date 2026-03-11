@@ -20,7 +20,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709 WORKSPACE_ROOT=${workspaceRoot} PORT=4174 npm run start:server`,
+      command: `FQPO_RUNS_ROOT=${workspaceRoot}/runs QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709 WORKSPACE_ROOT=${workspaceRoot} PORT=4174 npm run start:server`,
       url: 'http://127.0.0.1:4174/api/health',
       timeout: 120 * 1000,
       reuseExistingServer: false,

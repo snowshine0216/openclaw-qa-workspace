@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,16 +8,14 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const baseFixturePath = path.resolve(projectRoot, 'fixtures/qa_plan_base.md');
 const protectedFeatureIds = new Set(['BCIN-6709']);
 const fixtureFeatureId = 'BCIN-E2E';
-const qaPlanPath = path.resolve(
-  projectRoot,
-  `workspace/workspace-planner/projects/feature-plan/${fixtureFeatureId}/qa_plan_final.md`,
-);
+const qaPlanPath = path.resolve(projectRoot, `workspace/runs/${fixtureFeatureId}/qa_plan_final.md`);
 
 if (protectedFeatureIds.has(fixtureFeatureId)) {
   throw new Error('Fixture feature id must not match protected production-like feature id.');
 }
 
 async function resetFixture() {
+  await mkdir(path.dirname(qaPlanPath), { recursive: true });
   const baseline = await readFile(baseFixturePath, 'utf8');
   await writeFile(qaPlanPath, baseline, 'utf8');
 }
