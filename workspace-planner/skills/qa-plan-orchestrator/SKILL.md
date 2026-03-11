@@ -111,19 +111,19 @@ See `README.md` for the phase-to-reference mapping table.
 - Work: spawn the canonical top-layer grouper
 - Output: `phase4b_spawn_manifest.json`
 - Notes: preserve scenario granularity, allow one bounded supplemental research pass only when grouping evidence is insufficient, and leave few-shot cleanup to Phase 6
-- `--post`: validate `drafts/qa_plan_phase4b_r<round>.md`
+- `--post`: require `drafts/qa_plan_phase4b_r<round>.md` plus round progression, coverage preservation against the Phase 4a input draft, canonical layering, hierarchy, E2E minimum, and executable-step validators pass
 
 ### Phase 5a
 
 - Entry: `scripts/phase5a.sh`
 - Work: spawn a full-context review + refactor pass
 - Output: `phase5a_spawn_manifest.json`
-- Notes: allow one bounded supplemental research pass only after prerequisites exist; successful rounds rewrite `artifact_lookup_<feature-id>.md`; `review_delta` must end with `accept` or `return phase5a`
+- Notes: allow one bounded supplemental research pass only after prerequisites exist; successful rounds rewrite `artifact_lookup_<feature-id>.md`; Phase 5a audits round integrity and coverage preservation; `review_delta` must end with `accept` or `return phase5a`
 - `--post`: require:
   - `context/review_notes_<feature-id>.md`
   - `context/review_delta_<feature-id>.md`
   - `drafts/qa_plan_phase5a_r<round>.md`
-  - context coverage audit and section review checklist validators pass
+  - context coverage audit, Coverage Preservation Audit, round progression, Phase 5a acceptance gate, and section review checklist validators pass
 
 ### Phase 5b
 
@@ -131,7 +131,7 @@ See `README.md` for the phase-to-reference mapping table.
 - Work: spawn the shipment-checkpoint review + refactor pass
 - Output: `phase5b_spawn_manifest.json`
 - Notes: allow one bounded supplemental research pass only after prerequisites exist; successful rounds rewrite `artifact_lookup_<feature-id>.md`; `checkpoint_delta` must end with `accept`, `return phase5a`, or `return phase5b`
-- `--post`: require checkpoint audit, checkpoint delta, and `drafts/qa_plan_phase5b_r<round>.md`
+- `--post`: require checkpoint audit, checkpoint delta, `drafts/qa_plan_phase5b_r<round>.md`, round progression, and reviewed-coverage-preservation validation against the Phase 5a input draft
 
 ### Phase 6
 

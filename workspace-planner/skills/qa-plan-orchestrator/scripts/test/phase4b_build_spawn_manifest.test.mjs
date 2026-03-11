@@ -52,3 +52,27 @@ test('test_missing_context', async () => {
   assert.equal(result.code, 1);
   await rm(root, { recursive: true, force: true });
 });
+
+test('test_rerun_advances_to_next_real_round', async () => {
+  const { root, runDir } = await createProject();
+  await writeFile(join(runDir, 'drafts', 'qa_plan_phase4b_r1.md'), 'existing grouped draft\n');
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      feature_id: 'BCIN-501',
+      current_phase: 'phase_5a_review_refactor',
+      return_to_phase: 'phase4b',
+      latest_draft_phase: 'phase5a',
+      latest_draft_path: 'drafts/qa_plan_phase5a_r1.md',
+    }, null, 2)
+  );
+  await writeFile(join(runDir, 'drafts', 'qa_plan_phase5a_r1.md'), 'later review draft\n');
+
+  const outputPath = join(runDir, 'phase4b_spawn_manifest.json');
+  const result = await runNode(['BCIN-501', runDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  const task = manifest.requests[0].openclaw.args.task;
+  assert.ok(task.includes('qa_plan_phase4b_r2.md'), 'rerun must target the next phase4b round');
+  await rm(root, { recursive: true, force: true });
+});

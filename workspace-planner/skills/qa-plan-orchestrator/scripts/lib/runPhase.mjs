@@ -19,16 +19,20 @@ import { buildRuntimeSetup } from './runtimeEnv.mjs';
 import { evaluateEvidenceCompleteness, evaluateSourceArtifactCompleteness, evaluateSpawnPolicy } from './contextRules.mjs';
 import { writeArtifactLookup } from './artifactLookup.mjs';
 import {
+  validateCoveragePreservationAudit,
   validateCoverageLedger,
+  validateDraftCoveragePreservation,
   validateCheckpointAudit,
   validateCheckpointDelta,
   validateContextCoverageAudit,
   validateE2EMinimum,
   validateExecutableSteps,
   validateFinalLayering,
+  validatePhase5aAcceptanceGate,
   validatePhase4aSubcategoryDraft,
   validatePhase4bCategoryLayering,
   validateQualityDelta,
+  validateRoundProgression,
   validateReviewDelta,
   validateSectionReviewChecklist,
   validateXMindMarkHierarchy,
@@ -252,6 +256,8 @@ async function postValidatePhase3(featureId, runDir, state) {
 async function postValidatePhase4a(featureId, runDir, state) {
   const draftPath = await resolveDraftPath(state.task, runDir, 'phase4a');
   const content = await readRequiredText(draftPath);
+  const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase4a');
+  assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase4a', producedDraftPath: draftPath, expectedDraftPath }), 'phase4a round progression');
   assertValidation(validatePhase4aSubcategoryDraft(content), 'phase4a subcategory draft');
   assertValidation(validateExecutableSteps(content), 'phase4a draft');
   state.task.current_phase = 'phase_4a_subcategory_draft';
@@ -263,8 +269,15 @@ async function postValidatePhase4a(featureId, runDir, state) {
 }
 
 async function postValidatePhase4b(runDir, state) {
+  const beforePath = await resolvePreviousDraftPath(state.task, runDir, 'phase4b');
   const draftPath = await resolveDraftPath(state.task, runDir, 'phase4b');
-  const content = await readRequiredText(draftPath);
+  const [beforeContent, content] = await Promise.all([
+    readRequiredText(beforePath),
+    readRequiredText(draftPath),
+  ]);
+  const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase4b');
+  assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase4b', producedDraftPath: draftPath, expectedDraftPath }), 'phase4b round progression');
+  assertValidation(validateDraftCoveragePreservation(beforeContent, content, { allowTopLayerChange: true }), 'phase4b coverage preservation');
   assertValidation(validatePhase4bCategoryLayering(content), 'phase4b category layering');
   assertValidation(validateXMindMarkHierarchy(content), 'phase4b hierarchy');
   assertValidation(validateExecutableSteps(content), 'phase4b executable steps');
@@ -297,12 +310,23 @@ async function postValidatePhase5a(featureId, runDir, state) {
   }
 
   const auditReqs = await listContextAuditRequirements(runDir, featureId);
+  const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase5a');
+  const roundProgression = validateRoundProgression({ task: state.task, phaseId: 'phase5a', producedDraftPath: afterPath, expectedDraftPath });
   assertValidation(
     validateContextCoverageAudit(reviewNotesContent, auditReqs),
     'phase5a context coverage audit'
   );
+  assertValidation(
+    validateCoveragePreservationAudit(reviewNotesContent, beforeContent, afterContent),
+    'phase5a coverage preservation audit'
+  );
   assertValidation(validateSectionReviewChecklist(reviewNotesContent), 'phase5a section review checklist');
   assertValidation(validateReviewDelta(reviewDeltaContent), 'phase5a review delta');
+  assertValidation(roundProgression, 'phase5a round progression');
+  assertValidation(
+    validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundProgression.failures),
+    'phase5a acceptance gate'
+  );
 
   state.task.current_phase = 'phase_5a_review_refactor';
   state.task.return_to_phase = extractReturnToPhase(reviewDeltaContent, ['## Verdict After Refactor', '## Final Disposition']);
@@ -328,6 +352,9 @@ async function postValidatePhase5b(featureId, runDir, state) {
     throw new Error('phase5b requires the latest draft to differ from the input draft');
   }
 
+  const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase5b');
+  assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase5b', producedDraftPath: draftPath, expectedDraftPath }), 'phase5b round progression');
+  assertValidation(validateDraftCoveragePreservation(beforeContent, afterContent), 'phase5b reviewed coverage preservation');
   assertValidation(validateCheckpointAudit(checkpointAuditContent), 'phase5b checkpoint audit');
   assertValidation(validateCheckpointDelta(checkpointDeltaContent), 'phase5b checkpoint delta');
 
@@ -343,9 +370,14 @@ async function postValidatePhase5b(featureId, runDir, state) {
 async function postValidatePhase6(runDir, state) {
   const draftPath = await resolveDraftPath(state.task, runDir, 'phase6');
   const qualityDeltaPath = join(runDir, 'context', `quality_delta_${state.task.feature_id}.md`);
+  const beforePath = await resolvePreviousDraftPath(state.task, runDir, 'phase6');
+  const beforeContent = await readRequiredText(beforePath);
   const draftContent = await readRequiredText(draftPath);
   const qualityDeltaContent = await readRequiredText(qualityDeltaPath);
 
+  const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase6');
+  assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase6', producedDraftPath: draftPath, expectedDraftPath }), 'phase6 round progression');
+  assertValidation(validateDraftCoveragePreservation(beforeContent, draftContent), 'phase6 reviewed coverage preservation');
   assertValidation(validateFinalLayering(draftContent), 'phase6 final layering');
   assertValidation(validateExecutableSteps(draftContent), 'phase6 executable steps');
   assertValidation(validateXMindMarkHierarchy(draftContent), 'phase6 hierarchy');
@@ -417,6 +449,7 @@ async function resolvePreviousDraftPath(task, runDir, phaseId) {
   }
 
   const previousMap = {
+    phase4b: 'phase4a',
     phase5a: 'phase4b',
     phase5b: 'phase5a',
     phase6: 'phase5b',
@@ -518,6 +551,17 @@ function extractSection(content, heading) {
   const nextHeadingOffset = rest.search(/\n##\s+/);
   if (nextHeadingOffset === -1) return rest.trim();
   return rest.slice(0, nextHeadingOffset).trim();
+}
+
+async function readExpectedOutputDraftPath(runDir, phaseId) {
+  const manifestPath = join(runDir, `${phaseId}_spawn_manifest.json`);
+  if (!(await fileExists(manifestPath))) {
+    return '';
+  }
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const outputPath = String(manifest?.requests?.[0]?.source?.output_draft_path || '').trim();
+  if (!outputPath) return '';
+  return outputPath.startsWith(runDir) ? outputPath : join(runDir, outputPath);
 }
 
 async function maybeNotifyFeishu(featureId, runDir) {

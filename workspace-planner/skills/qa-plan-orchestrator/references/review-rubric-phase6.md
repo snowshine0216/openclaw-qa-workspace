@@ -26,6 +26,10 @@ Produce the final layered QA plan after Phase 5b and enforce final-quality struc
 5. atomic action chain
 6. observable verification leaves
 
+## Coverage Rule
+
+- preserve reviewed coverage scope from Phase 5b unless an explicit exclusion is carried with evidence
+
 ## Required `quality_delta_<feature-id>.md` Sections
 
 - `## Final Layer Audit`

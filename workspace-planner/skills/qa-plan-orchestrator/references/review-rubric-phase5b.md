@@ -23,6 +23,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 
 - Evaluate every checkpoint in this rubric against the current draft and available evidence.
 - Refactor the plan only for checkpoint-backed gaps that are fixable in the current round.
+- Do not remove, defer, or move a concern to Out of Scope unless source evidence or explicit user direction requires it.
 - Produce a Release Recommendation that matches the checkpoint evidence.
 - Rewrite `artifact_lookup_<feature-id>.md` for the successful round so new context artifacts and preserved read-state remain visible.
 
@@ -31,6 +32,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - Use local run artifacts first.
 - When checkpoint evidence is still insufficient, do at most one bounded supplemental research pass.
 - Save any new research artifact under `context/` using the `research_phase5b_<feature-id>_*.md` pattern.
+- Use bounded research before shrinking scope when checkpoint evidence is insufficient.
 
 ## Pass / Return Criteria
 

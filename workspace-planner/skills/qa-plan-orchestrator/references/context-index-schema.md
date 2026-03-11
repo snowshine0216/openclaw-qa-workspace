@@ -95,6 +95,7 @@ Scenario units and mandatory coverage candidates may overlap, but they are not i
 
 - coverage candidates prove nothing was silently dropped
 - scenario units preserve testcase granularity
+- priority behavior is unchanged in this pass
 
 ## Traceability Map
 

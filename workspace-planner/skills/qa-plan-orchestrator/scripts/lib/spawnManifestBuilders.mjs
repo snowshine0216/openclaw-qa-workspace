@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalizeSpawnInput } from './normalizeSpawnInput.mjs';
-import { fileExists, getNextPhaseRound, normalizeRequestedSourceFamilies, readJson } from './workflowState.mjs';
+import { fileExists, getNextPhaseRound, normalizeRequestedSourceFamilies, readJson, syncTaskDraftState } from './workflowState.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(__dirname, '..', '..');
@@ -39,6 +39,7 @@ function getPhaseReferenceInstructions(phaseId, skillRoot) {
 export async function writePhaseManifest(phaseId, featureId, runDir, outputPath) {
   const task = await readRequiredJson(join(runDir, 'task.json'), 'task.json');
   const run = await readRequiredJson(join(runDir, 'run.json'), 'run.json');
+  await syncTaskDraftState(task, runDir);
   const manifestPath = outputPath || join(runDir, `${phaseId}_spawn_manifest.json`);
   const requests = await buildPhaseRequests(phaseId, featureId, runDir, task, run);
   const manifest = {
@@ -104,6 +105,7 @@ function buildPhase1Request(sourceFamily, featureId, runDir, run) {
 function buildSingleRequest(phaseId, featureId, runDir, task) {
   const label = `${phaseId}-${featureId}`;
   const taskText = buildPhaseTaskText(phaseId, featureId, runDir, task);
+  const paths = resolvePhasePaths(phaseId, featureId, runDir, task);
   const request = normalizeSpawnInput({
     agent_id: DEFAULT_AGENT_ID,
     mode: DEFAULT_MODE,
@@ -116,6 +118,8 @@ function buildSingleRequest(phaseId, featureId, runDir, task) {
       kind: 'feature-qa-planning',
       phase: phaseId,
       feature_id: featureId,
+      input_draft_path: paths.inputDraftPath || '',
+      output_draft_path: paths.outputDraftPath || '',
     },
   });
   return request.requests[0];
@@ -174,10 +178,10 @@ function buildPhaseTaskText(phaseId, featureId, runDir, task) {
   const descriptions = {
     phase3: `Read ${runDir}/context/artifact_lookup_${featureId}.md and write ${runDir}/context/coverage_ledger_${featureId}.md.`,
     phase4a: `Read current context artifacts, stay below canonical top-layer grouping, and write ${paths.outputDraftPath}. You may do one bounded supplemental research pass with shared skills when evidence is insufficient, save any new artifact under ${runDir}/context, and update artifact lookup references before finishing.`,
-    phase4b: `Read ${paths.inputDraftPath}, group Phase 4a output into canonical top-layer labels, preserve subcategory and scenario granularity, and write ${paths.outputDraftPath}. If a scenario does not fit a canonical layer, keep the local grouping and add an explicit HTML exception comment. Few-shot cleanup belongs to Phase 6, not this phase. You may do one bounded supplemental research pass when grouping evidence is insufficient.`,
-    phase5a: `Read every intermediate context artifact already present under ${runDir}/context, audit ${runDir}/context/artifact_lookup_${featureId}.md with a section-by-section review, refactor ${paths.inputDraftPath}, and write ${runDir}/context/review_notes_${featureId}.md, ${runDir}/context/review_delta_${featureId}.md, and ${paths.outputDraftPath}. The pass must be self-reviewed against the Phase 5a rubric, may do one bounded supplemental research pass when evidence is insufficient, and must end with an explicit review_delta disposition of either accept or return phase5a.`,
-    phase5b: `Read ${paths.inputDraftPath}, ${runDir}/context/review_notes_${featureId}.md, and ${runDir}/context/review_delta_${featureId}.md. Evaluate every checkpoint from ${join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md')}, refactor the plan when checkpoint gaps are fixable, and write ${runDir}/context/checkpoint_audit_${featureId}.md, ${runDir}/context/checkpoint_delta_${featureId}.md, and ${paths.outputDraftPath}. Include a Release Recommendation, use one bounded supplemental research pass only when checkpoint evidence is insufficient, and end checkpoint_delta with one of: accept, return phase5a, or return phase5b.`,
-    phase6: `Read ${paths.inputDraftPath}, ${runDir}/context/review_notes_${featureId}.md, ${runDir}/context/review_delta_${featureId}.md, ${runDir}/context/checkpoint_audit_${featureId}.md, and ${runDir}/context/checkpoint_delta_${featureId}.md. Produce ${paths.outputDraftPath} plus ${runDir}/context/quality_delta_${featureId}.md. The final draft must preserve canonical top-layer grouping, subcategory layering, atomic nested steps, and final few-shot cleanup. One bounded supplemental research pass is allowed only when final-quality evidence is insufficient.`,
+    phase4b: `Read ${paths.inputDraftPath}, group Phase 4a output into canonical top-layer labels, preserve subcategory and scenario granularity, and write ${paths.outputDraftPath}. Grouping and refactor may not silently shrink coverage. If a scenario does not fit a canonical layer, keep the local grouping and add an explicit HTML exception comment. Few-shot cleanup belongs to Phase 6, not this phase. You may do one bounded supplemental research pass when grouping evidence is insufficient.`,
+    phase5a: `Read every intermediate context artifact already present under ${runDir}/context, audit ${runDir}/context/artifact_lookup_${featureId}.md with a section-by-section review, refactor ${paths.inputDraftPath}, and write ${runDir}/context/review_notes_${featureId}.md, ${runDir}/context/review_delta_${featureId}.md, and ${paths.outputDraftPath}. Do not remove, defer, or move a concern to Out of Scope unless source evidence or explicit user direction requires it. The pass must preserve or enrich evidence-backed coverage, self-review against the Phase 5a rubric, may do one bounded supplemental research pass when evidence is insufficient, and must end with an explicit review_delta disposition of either accept or return phase5a.`,
+    phase5b: `Read ${paths.inputDraftPath}, ${runDir}/context/review_notes_${featureId}.md, and ${runDir}/context/review_delta_${featureId}.md. Evaluate every checkpoint from ${join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md')}, refactor the plan when checkpoint gaps are fixable, and write ${runDir}/context/checkpoint_audit_${featureId}.md, ${runDir}/context/checkpoint_delta_${featureId}.md, and ${paths.outputDraftPath}. Do not remove, defer, or move a concern to Out of Scope unless source evidence or explicit user direction requires it. Include a Release Recommendation, use one bounded supplemental research pass only when checkpoint evidence is insufficient, and end checkpoint_delta with one of: accept, return phase5a, or return phase5b.`,
+    phase6: `Read ${paths.inputDraftPath}, ${runDir}/context/review_notes_${featureId}.md, ${runDir}/context/review_delta_${featureId}.md, ${runDir}/context/checkpoint_audit_${featureId}.md, and ${runDir}/context/checkpoint_delta_${featureId}.md. Produce ${paths.outputDraftPath} plus ${runDir}/context/quality_delta_${featureId}.md. The final draft must preserve reviewed coverage scope, canonical top-layer grouping, subcategory layering, atomic nested steps, and final few-shot cleanup. One bounded supplemental research pass is allowed only when final-quality evidence is insufficient.`,
   };
 
   const description = descriptions[phaseId];

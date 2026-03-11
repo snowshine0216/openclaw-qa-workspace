@@ -360,7 +360,9 @@ The follow-up implementation should update these files.
    - fix next-round derivation for repeated Phase 4 and Phase 5 runs
 5. `workspace-planner/skills/qa-plan-orchestrator/scripts/lib/spawnManifestBuilders.mjs`
    - ensure output draft paths use the corrected next-round calculation
-   - no change required for bounded supplemental research permission unless stricter enforcement or explicit audit logging is later approved
+   - current implementation already permits bounded supplemental research
+   - update spawned task wording if the workspace wants the stronger contract language reflected directly in Phase 5a / 5b subagent prompts
+   - no logic change is required merely to permit bounded supplemental research unless stricter enforcement or explicit audit logging is later approved
 
 ### 13.3 Tests
 

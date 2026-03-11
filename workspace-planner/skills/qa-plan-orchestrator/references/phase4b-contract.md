@@ -20,6 +20,7 @@ Group the Phase 4a draft into the canonical top-layer taxonomy without merging a
 - group scenarios under canonical top-layer categories
 - preserve the subcategory layer between top layer and scenario
 - preserve scenario nodes, atomic action chains, and observable verification leaves
+- grouping and refactor may not silently shrink coverage
 - do not apply few-shot cleanup in this phase; Phase 6 owns the final few-shot rewrite pass
 
 ## Canonical Top Layer

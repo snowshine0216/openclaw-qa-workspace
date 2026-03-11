@@ -285,9 +285,269 @@ EOF
   assert_exit_code 1 "$code"
 }
 
+test_post_validation_rejects_silent_scope_shrinkage_without_coverage_audit() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase5a_project "$temp_dir")"
+  cat > "$run_dir/drafts/qa_plan_phase4b_r1.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase5a_r1.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Core Functional Flows
+    * Save
+        - Rename report <P1>
+            - Open the rename dialog
+                - Updated name appears in the header
+EOF
+  cat > "$run_dir/context/review_notes_BCIN-80.md" <<'EOF'
+# Review Notes
+
+## Context Artifact Coverage Audit
+- context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | deferred | current draft | not applicable
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | deferred | current draft | not applicable
+- Regression / Known Risks | risky flows are isolated | deferred | current draft | not applicable
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | not applicable
+- Security | permission-sensitive flows stay separate | deferred | current draft | not applicable
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not applicable
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not applicable
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not applicable
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+EOF
+  cat > "$run_dir/context/review_delta_BCIN-80.md" <<'EOF'
+# Review Delta
+
+## Source Review
+- review_notes_BCIN-80.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase5a.sh" BCIN-80 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
+test_post_validation_rejects_accept_with_rewrite_required_coverage_item() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase5a_project "$temp_dir")"
+  cat > "$run_dir/drafts/qa_plan_phase4b_r1.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase5a_r1.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Out of Scope / Assumptions
+    * Save
+        - Save report <P1>
+            - Coverage deferred for cleanup convenience
+EOF
+  cat > "$run_dir/context/review_notes_BCIN-80.md" <<'EOF'
+# Review Notes
+
+## Context Artifact Coverage Audit
+- context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | moved_to_out_of_scope | none | rewrite_required | restore as standalone scenario
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | deferred | current draft | not applicable
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | deferred | current draft | not applicable
+- Regression / Known Risks | risky flows are isolated | deferred | current draft | not applicable
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | not applicable
+- Security | permission-sensitive flows stay separate | deferred | current draft | not applicable
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not applicable
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not applicable
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not applicable
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+EOF
+  cat > "$run_dir/context/review_delta_BCIN-80.md" <<'EOF'
+# Review Delta
+
+## Source Review
+- review_notes_BCIN-80.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase5a.sh" BCIN-80 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
+test_post_validation_rejects_inconsistent_coverage_audit_claim() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase5a_project "$temp_dir")"
+  write_task_json "$run_dir/task.json" '{"feature_id":"BCIN-80","current_phase":"phase_5b_checkpoint_refactor","return_to_phase":"phase5a","latest_draft_phase":"phase5b","latest_draft_path":"drafts/qa_plan_phase5b_r1.md","updated_at":"2026-03-10T00:00:00.000Z"}'
+  cat > "$run_dir/phase5a_spawn_manifest.json" <<EOF
+{
+  "version": 1,
+  "count": 1,
+  "requests": [
+    {
+      "source": {
+        "phase": "phase5a",
+        "output_draft_path": "$run_dir/drafts/qa_plan_phase5a_r2.md"
+      }
+    }
+  ]
+}
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase5b_r1.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase5a_r2.md" <<'EOF'
+Feature QA Plan (BCIN-80)
+
+- Core Functional Flows
+    * Rename
+        - Rename report <P1>
+            - Open rename dialog
+                - Updated title appears
+EOF
+  cat > "$run_dir/context/review_notes_BCIN-80.md" <<'EOF'
+# Review Notes
+
+## Context Artifact Coverage Audit
+- context/artifact_lookup_BCIN-80.md | (document) | consumed | Planning Inputs | inventory audit | lookup reviewed
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | preserved | jira_issue_BCIN-80.md | pass | retained after refactor
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | deferred | current draft | not applicable
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | deferred | current draft | not applicable
+- Regression / Known Risks | risky flows are isolated | deferred | current draft | not applicable
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | not applicable
+- Security | permission-sensitive flows stay separate | deferred | current draft | not applicable
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not applicable
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not applicable
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not applicable
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+EOF
+  cat > "$run_dir/context/review_delta_BCIN-80.md" <<'EOF'
+# Review Delta
+
+## Source Review
+- review_notes_BCIN-80.md
+
+## Blocking Findings Resolution
+- none
+
+## Non-Blocking Findings Resolution
+- none
+
+## Still Open
+- none
+
+## Evidence Added / Removed
+- none
+
+## Verdict After Refactor
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase5a.sh" BCIN-80 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
 test_success_manifest_output
 test_rerun_manifest_output_when_return_to_phase5a_requested
 test_post_validation_pass
 test_post_validation_sets_return_to_phase_from_review_delta
 test_post_validation_requires_artifact_lookup_audit
 test_post_validation_compares_against_rerun_input_draft
+test_post_validation_rejects_silent_scope_shrinkage_without_coverage_audit
+test_post_validation_rejects_accept_with_rewrite_required_coverage_item
+test_post_validation_rejects_inconsistent_coverage_audit_claim

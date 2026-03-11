@@ -74,5 +74,67 @@ EOF
   assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_6_quality_refactor"'
 }
 
+test_post_validation_rejects_silent_reviewed_coverage_regression() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase6_project "$temp_dir")"
+  cat > "$run_dir/drafts/qa_plan_phase5b_r1.md" <<'EOF'
+Feature QA Plan (BCIN-90)
+
+- EndToEnd
+    * Account access
+        - Sign in with valid credentials <P1>
+            - Open the login page
+                - Enter valid credentials
+                    - Click "Sign In"
+                        - Dashboard loads successfully
+- Core Functional Flows
+    * Notifications
+        - Open unread notification details <P2>
+            - Open notifications panel
+                - Click the unread item
+                    - Notification details drawer opens
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase6_r1.md" <<'EOF'
+Feature QA Plan (BCIN-90)
+
+- EndToEnd
+    * Account access
+        - Sign in with valid credentials <P1>
+            - Open the login page
+                - Enter valid credentials
+                    - Click "Sign In"
+                        - Dashboard loads successfully
+- Core Functional Flows
+    * Notifications
+        - Inspect notification summary only <P3>
+            - Open notifications panel
+                - Summary count is visible
+EOF
+  cat > "$run_dir/context/quality_delta_BCIN-90.md" <<'EOF'
+# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Account access > Sign in with valid credentials | canonical layering retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | EndToEnd > Account access | generic sign-in wording | concrete nested actions | applied
+
+## Exceptions Preserved
+- none
+
+## Verdict
+- accept
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase6.sh" BCIN-90 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
 test_success_manifest_output
 test_post_validation_pass
+test_post_validation_rejects_silent_reviewed_coverage_regression

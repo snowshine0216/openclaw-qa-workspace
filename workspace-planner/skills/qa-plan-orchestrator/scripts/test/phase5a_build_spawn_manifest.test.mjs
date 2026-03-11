@@ -39,6 +39,7 @@ test('test_success_manifest', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   const task = manifest.requests[0].openclaw.args.task;
+  assert.equal(manifest.requests[0].source.output_draft_path, join(runDir, 'drafts', 'qa_plan_phase5a_r1.md'));
   assert.ok(task.includes('review-rubric-phase5a'), 'task must reference review-rubric-phase5a');
   assert.ok(task.includes('section-by-section review'), 'task must require section-by-section review');
   assert.ok(task.includes('bounded supplemental research pass'), 'task must describe bounded supplemental research');
@@ -53,5 +54,29 @@ test('test_missing_context', async () => {
   await mkdir(runDir, { recursive: true });
   const result = await runNode(['BCIN-602', runDir]);
   assert.equal(result.code, 1);
+  await rm(root, { recursive: true, force: true });
+});
+
+test('test_rerun_advances_to_next_real_round', async () => {
+  const { root, runDir } = await createProject();
+  await writeFile(join(runDir, 'drafts', 'qa_plan_phase5a_r2.md'), 'existing phase5a rerun draft\n');
+  await writeFile(join(runDir, 'drafts', 'qa_plan_phase5b_r1.md'), 'later checkpoint draft\n');
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      feature_id: 'BCIN-601',
+      current_phase: 'phase_5b_checkpoint_refactor',
+      return_to_phase: 'phase5a',
+      latest_draft_phase: 'phase5b',
+      latest_draft_path: 'drafts/qa_plan_phase5b_r1.md',
+    }, null, 2)
+  );
+
+  const outputPath = join(runDir, 'phase5a_spawn_manifest.json');
+  const result = await runNode(['BCIN-601', runDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  const task = manifest.requests[0].openclaw.args.task;
+  assert.ok(task.includes('qa_plan_phase5a_r3.md'), 'rerun must target the next phase5a round');
   await rm(root, { recursive: true, force: true });
 });

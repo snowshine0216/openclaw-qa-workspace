@@ -12,7 +12,8 @@
         "coverage_ledger_<feature-id>.md maps mandatory candidates",
         "Latest phase6 draft passes markxmind validation",
         "phase5a and phase5b outputs both exist",
-        "Evidence saved under context/ before influencing plan"
+        "Evidence saved under context/ before influencing plan",
+        "phase-scoped reruns advance to the next real round"
       ]
     },
     {
@@ -105,9 +106,47 @@
       "expected_pass_behavior": "Review delta records only resolved blocking findings before Phase 7.",
       "expected_failure_signals": [
         "partially_resolved",
-        "not_resolved"
+        "not_resolved",
+        "rewrite_required"
       ],
       "expected_remediation_output": "updated review_delta or another review/refactor cycle"
+    },
+    {
+      "id": "round_progression",
+      "policy": "blocking",
+      "prompt": "Verify that Phase 4a, 4b, 5a, 5b, and 6 reruns advance to the next real round and never reuse r1.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Draft paths use incremented round numbers and latest_draft_path never points backward within the same phase.",
+      "expected_failure_signals": [
+        "r1 reused on rerun",
+        "latest_draft_path regression"
+      ],
+      "expected_remediation_output": "updated workflow state or manifest round calculation"
+    },
+    {
+      "id": "coverage_preservation",
+      "policy": "blocking",
+      "prompt": "Verify that Phase 5a review notes include Coverage Preservation Audit and that no evidence-backed node is silently removed, demoted, or moved to Out of Scope without justification.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Coverage Preservation Audit is present and scope reductions are justified by evidence or explicit user confirmation.",
+      "expected_failure_signals": [
+        "silent node removal",
+        "unjustified Out of Scope move",
+        "missing Coverage Preservation Audit"
+      ],
+      "expected_remediation_output": "updated review notes, review delta, and rewritten draft"
+    },
+    {
+      "id": "phase5a_acceptance_gate",
+      "policy": "blocking",
+      "prompt": "Verify that Phase 5a cannot return accept while any round-integrity or coverage-preservation item remains rewrite_required or unresolved.",
+      "fixture_files": [],
+      "expected_pass_behavior": "accept appears only when all round-integrity and coverage-preservation findings are resolved.",
+      "expected_failure_signals": [
+        "accept with rewrite_required",
+        "accept with unresolved audit items"
+      ],
+      "expected_remediation_output": "another Phase 5a review/refactor cycle"
     },
     {
       "id": "stale_doc_sync",

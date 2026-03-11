@@ -13,6 +13,7 @@ Do not introduce canonical top-layer grouping in this phase.
 ## Output
 
 - `drafts/qa_plan_phase4a_r<round>.md`
+- reruns must advance to the next real round instead of reusing `r1`
 
 ## Required Structure
 

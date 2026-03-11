@@ -25,21 +25,6 @@ Use these specialists from `.codex/config.toml`:
 - Mandatory skill: `$openclaw-agent-design-review`.
 - Mandatory process: P0/P1 findings block approval; reviewer must validate shared-vs-local skill placement, existing Phase 0 / `REPORT_STATE` preservation, and output review report artifacts.
 
-3. `playwright-test-planner`
-- Purpose: explore UI and create comprehensive plan docs.
-- Canonical workflow: `.cursor/agents/playwright-test-planner.md`.
-
-4. `playwright-test-generator`
-- Purpose: generate Playwright specs from approved plans.
-- Canonical workflow: `.cursor/agents/playwright-test-generator.md`.
-
-5. `playwright-test-healer`
-- Purpose: debug and fix failing Playwright tests.
-- Canonical workflow: `.cursor/agents/playwright-test-healer.md`.
-
-6. `wdio-to-playwright-check`
-- Purpose: run WDIO→Playwright migration quality checks and orchestrate healing.
-- Canonical workflow: `workspace-tester/projects/library-automation/.agents/workflows/script-migration-quality-check.md`.
 
 ## Orchestration Contract
 
@@ -49,17 +34,6 @@ For OpenClaw agent design work, orchestrate in strict order:
 2. `openclaw-agent-design-reviewer` validates skill-first workflow design, shared-vs-local placement, Phase 0 non-regression, path validity, validation evidence, and documentation coverage.
 3. If reviewer returns `fail`, loop back to designer until reviewer returns `pass` or `pass_with_advisories`.
 
-For test automation work, orchestrate in strict order unless explicitly overridden:
-
-1. `playwright-test-planner` outputs plan markdown.
-2. `playwright-test-generator` consumes plan and outputs spec(s).
-3. `playwright-test-healer` executes and fixes failing spec(s), with max 3 rounds.
-
-For migration quality-check work:
-
-1. `wdio-to-playwright-check` runs the quality dimensions and execution gate.
-2. On execution failures, `wdio-to-playwright-check` invokes `playwright-test-healer` (max 3 rounds).
-3. `wdio-to-playwright-check` re-runs phase tests after each round and updates progress artifacts.
 
 Handoff rules:
 - OpenClaw designer must provide the design artifact path(s) under review.
@@ -119,3 +93,21 @@ Treat each file below as a reusable playbook. Select the closest match by user i
 - Plans must be detailed, implementation-ready, and decision-complete.
 - Every plan must state the files to change, files to create, expected content changes, and validation expectations.
 - Use explicit defaults and assumptions when a design choice must be locked before implementation.
+- The Plan / Design should alwasy be structured by Goal -> Required Change for Each Phase . And group all related changes by phase instead of mentioning them all in the end. Good example:
+```
+# Title
+## Overview
+## Architecture
+### Workflow chart
+### Folder structure
+## Data Models (optional)
+## Funcioanl Design 1 
+<!-- Need put all realted changes for this functional design into this section, must have implenmentation codes, or content of files to be changed -->
+## Funcioanl Design 2
+<!-- Need put all realted changes for this functional design into this section, must have implenmentation codes, or content of files to be changed-->
+## Tests
+<!-- Need put all realted tests into this section, only stub tests are allowed, no implementation-->
+## Documentation Changes
+## Implementation Checklist
+## References
+```

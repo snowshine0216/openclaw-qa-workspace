@@ -59,6 +59,19 @@ const STOPWORDS = new Set([
   'unclear',
 ]);
 
+const CONTRADICTORY_TOKEN_GROUPS = [
+  ['enable', 'disable'],
+  ['enabled', 'disabled'],
+  ['read', 'unread'],
+  ['open', 'close'],
+  ['opened', 'closed'],
+  ['valid', 'invalid'],
+  ['grant', 'revoke'],
+  ['allow', 'deny'],
+  ['success', 'failure'],
+  ['online', 'offline'],
+];
+
 const CANONICAL_TOP_LAYERS = [
   'EndToEnd',
   'Core Functional Flows',
@@ -267,6 +280,155 @@ function nestedBlocks(content) {
 
 function extractRowsForSection(content, heading, minCells) {
   return extractTableRows(getSection(content, heading), minCells);
+}
+
+function stripPriorityTag(text) {
+  return String(text || '').replace(/\s*<P\d+>\s*$/i, '').trim();
+}
+
+function parseDraftScenarioEntries(content) {
+  const lines = normalizeContent(content).split('\n');
+  const entries = [];
+  const ancestorStack = [];
+  let currentScenario = null;
+
+  for (const line of lines) {
+    if (!/^\s*[-*] /.test(line)) {
+      if (currentScenario) currentScenario.lines.push(line);
+      continue;
+    }
+    const indent = bulletIndent(line);
+    const label = stripPriorityTag(line.replace(/^\s*[-*]\s+/, ''));
+    if (currentScenario && indent <= currentScenario.indent) {
+      entries.push(finalizeScenarioEntry(currentScenario));
+      currentScenario = null;
+    }
+
+    if (currentScenario && indent > currentScenario.indent) {
+      currentScenario.lines.push(line);
+      continue;
+    }
+
+    while (ancestorStack.length > 0 && ancestorStack[ancestorStack.length - 1].indent >= indent) {
+      ancestorStack.pop();
+    }
+
+    if (/<P\d+>/i.test(line)) {
+      currentScenario = {
+        indent,
+        ancestors: ancestorStack.map((item) => item.title),
+        title: label,
+        lines: [line],
+      };
+      continue;
+    }
+
+    ancestorStack.push({ indent, title: label });
+  }
+
+  if (currentScenario) {
+    entries.push(finalizeScenarioEntry(currentScenario));
+  }
+
+  return entries;
+}
+
+function finalizeScenarioEntry(entry) {
+  const topLayer = entry.ancestors[0] || '';
+  const subcategory = entry.ancestors.length > 1
+    ? entry.ancestors[1]
+    : entry.ancestors[0] || '';
+  return {
+    topLayer,
+    subcategory,
+    ancestors: entry.ancestors,
+    title: entry.title,
+    path: [...entry.ancestors, entry.title].filter(Boolean).join(' > '),
+    block: entry.lines.join('\n'),
+  };
+}
+
+function parseCoveragePreservationRows(content) {
+  return extractRowsForSection(content, '## Coverage Preservation Audit', 6).map((cells) => ({
+    renderedPlanPath: cells[0],
+    priorRoundStatus: cells[1],
+    currentRoundStatus: cells[2],
+    evidenceSource: cells[3],
+    disposition: String(cells[4] || '').toLowerCase(),
+    reason: cells[5],
+  }));
+}
+
+function hasScopeReductionJustification(text) {
+  return /(evidence|jira|confluence|source|user|confirmed|confirmation|unsupported|explicit|dependency|excluded|exclusion|proven)/i
+    .test(String(text || ''));
+}
+
+function parseRoundFromDraftPath(path) {
+  const match = String(path || '').match(/_r(\d+)\.md$/);
+  return match ? Number(match[1]) : 0;
+}
+
+function overlapRatio(leftTokens, rightTokens) {
+  if (leftTokens.length === 0 || rightTokens.length === 0) return 0;
+  const right = new Set(rightTokens);
+  const overlap = leftTokens.filter((token) => right.has(token)).length;
+  return overlap / Math.max(leftTokens.length, rightTokens.length);
+}
+
+function areEquivalentScenarioTitles(leftTitle, rightTitle) {
+  if (leftTitle === rightTitle) return true;
+  const leftTokens = tokenizeReference(leftTitle);
+  const rightTokens = tokenizeReference(rightTitle);
+  return overlapRatio(leftTokens, rightTokens) > 0.5
+    && !hasContradictoryTokens(leftTokens, rightTokens);
+}
+
+function hasContradictoryTokens(leftTokens, rightTokens) {
+  const left = new Set(leftTokens);
+  const right = new Set(rightTokens);
+  return CONTRADICTORY_TOKEN_GROUPS.some(([a, b]) => {
+    return (left.has(a) && right.has(b))
+      || (left.has(b) && right.has(a));
+  });
+}
+
+function areEquivalentScenarioEntries(beforeEntry, afterEntry) {
+  if (!afterEntry) return false;
+  if (beforeEntry.topLayer !== afterEntry.topLayer) return false;
+  if (!areEquivalentScenarioTitles(beforeEntry.title, afterEntry.title)) return false;
+
+  const beforeBlockTokens = tokenizeReference(beforeEntry.block);
+  const afterBlockTokens = tokenizeReference(afterEntry.block);
+  return overlapRatio(beforeBlockTokens, afterBlockTokens) > 0.6
+    && !hasContradictoryTokens(beforeBlockTokens, afterBlockTokens);
+}
+
+function areRelatedScenarioEntries(beforeEntry, afterEntry, { allowTopLayerChange = false } = {}) {
+  if (!afterEntry) return false;
+  if (!allowTopLayerChange && beforeEntry.topLayer !== afterEntry.topLayer) return false;
+
+  const beforeTitleTokens = tokenizeReference(beforeEntry.title);
+  const afterTitleTokens = tokenizeReference(afterEntry.title);
+  const beforeBlockTokens = tokenizeReference(beforeEntry.block);
+  const afterBlockTokens = tokenizeReference(afterEntry.block);
+  const hasContradiction = hasContradictoryTokens(beforeTitleTokens, afterTitleTokens)
+    || hasContradictoryTokens(beforeBlockTokens, afterBlockTokens);
+  if (hasContradiction) return false;
+
+  return overlapRatio(beforeTitleTokens, afterTitleTokens) > 0.2
+    || overlapRatio(beforeBlockTokens, afterBlockTokens) > 0.2;
+}
+
+function classifyAuditCurrentStatus(status) {
+  const normalized = String(status || '').trim().toLowerCase();
+  if (/out[_ ]of[_ ]scope/.test(normalized)) return 'out_of_scope';
+  if (/defer/.test(normalized)) return 'deferred';
+  if (/remove|deleted|drop/.test(normalized)) return 'removed';
+  if (/split/.test(normalized)) return 'split';
+  if (/clarif|rename|retitle|rewrite/.test(normalized)) return 'clarified';
+  if (/preserv|remain|keep/.test(normalized)) return 'preserved';
+  return 'other';
 }
 
 export function validateContextIndex(content) {
@@ -758,6 +920,159 @@ export function validateContextCoverageAudit(content, requiredEntries = []) {
       failures.push(`Consumed context audit row must include a mapped plan section for ${row.artifactPath}`);
     }
   }
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateCoveragePreservationAudit(reviewNotesContent, beforeDraftContent, afterDraftContent) {
+  const failures = [];
+  const beforeEntries = parseDraftScenarioEntries(beforeDraftContent);
+  const afterEntries = parseDraftScenarioEntries(afterDraftContent);
+  const auditRows = parseCoveragePreservationRows(reviewNotesContent);
+  const rowsByPath = new Map(auditRows.map((row) => [row.renderedPlanPath, row]));
+  const afterPaths = new Set(afterEntries.map((entry) => entry.path));
+  const afterByTitle = new Map(afterEntries.map((entry) => [entry.title, entry]));
+  const missingEntries = beforeEntries.filter((entry) => !afterPaths.has(entry.path));
+
+  if (missingEntries.length > 0 && auditRows.length === 0) {
+    failures.push('## Coverage Preservation Audit is required when a later round has fewer scenarios than the prior round.');
+  }
+
+  for (const row of auditRows) {
+    if (!row.renderedPlanPath || !row.priorRoundStatus || !row.currentRoundStatus || !row.evidenceSource || !row.reason) {
+      failures.push('Coverage Preservation Audit rows must include rendered path, prior status, current status, evidence source, disposition, and reason.');
+    }
+    if (!['pass', 'rewrite_required'].includes(row.disposition)) {
+      failures.push(`Coverage Preservation Audit row has invalid disposition: ${row.disposition || 'none'}`);
+    }
+  }
+
+  for (const beforeEntry of missingEntries) {
+
+    const auditRow = rowsByPath.get(beforeEntry.path);
+    if (!auditRow) {
+      failures.push(`Missing coverage audit row for prior-round scenario: ${beforeEntry.path}`);
+      continue;
+    }
+
+    const equivalentEntry = afterEntries.find((entry) => areEquivalentScenarioEntries(beforeEntry, entry));
+    const movedEntry = afterByTitle.get(beforeEntry.title);
+    const relatedEntries = afterEntries.filter((entry) => areRelatedScenarioEntries(beforeEntry, entry, { allowTopLayerChange: true }));
+    const statusClass = classifyAuditCurrentStatus(auditRow.currentRoundStatus);
+    const movedToOutOfScope = movedEntry?.topLayer === 'Out of Scope / Assumptions'
+      || equivalentEntry?.topLayer === 'Out of Scope / Assumptions'
+      || statusClass === 'out_of_scope';
+
+    if ((statusClass === 'preserved' || statusClass === 'clarified') && !equivalentEntry) {
+      failures.push(`Coverage Preservation Audit row claims ${statusClass} but the rewritten draft does not preserve the scenario: ${beforeEntry.path}`);
+      continue;
+    }
+
+    if (statusClass === 'split' && relatedEntries.length < 2) {
+      failures.push(`Coverage Preservation Audit row claims split but the rewritten draft does not split the scenario into multiple preserved children: ${beforeEntry.path}`);
+      continue;
+    }
+
+    if ((statusClass === 'removed' || statusClass === 'deferred' || statusClass === 'out_of_scope')
+      && equivalentEntry && auditRow.disposition === 'pass') {
+      failures.push(`Coverage Preservation Audit row claims ${statusClass} but an equivalent scenario is still present in the rewritten draft: ${beforeEntry.path}`);
+      continue;
+    }
+
+    if ((statusClass === 'removed' || statusClass === 'deferred' || movedToOutOfScope)
+      && !hasScopeReductionJustification(`${auditRow.evidenceSource} ${auditRow.reason}`)) {
+      failures.push(
+        `Removed, deferred, or Out of Scope treatment requires source evidence or explicit user direction: ${beforeEntry.path}`
+      );
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateDraftCoveragePreservation(beforeDraftContent, afterDraftContent, options = {}) {
+  const failures = [];
+  const beforeEntries = parseDraftScenarioEntries(beforeDraftContent);
+  const afterEntries = parseDraftScenarioEntries(afterDraftContent);
+  const afterPaths = new Set(afterEntries.map((entry) => entry.path));
+  const afterByTitle = new Map(afterEntries.map((entry) => [entry.title, entry]));
+  const allowTopLayerChange = Boolean(options.allowTopLayerChange);
+
+  for (const beforeEntry of beforeEntries) {
+    if (afterPaths.has(beforeEntry.path)) continue;
+    const clarifiedEntry = afterEntries.find((entry) => {
+      if (allowTopLayerChange) {
+        return areRelatedScenarioEntries(beforeEntry, entry, { allowTopLayerChange: true })
+          && areEquivalentScenarioTitles(beforeEntry.title, entry.title);
+      }
+      return areEquivalentScenarioEntries(beforeEntry, entry);
+    });
+    if (clarifiedEntry) continue;
+    const movedEntry = afterByTitle.get(beforeEntry.title);
+    const relatedOutOfScopeEntry = afterEntries.find((entry) => {
+      return entry.topLayer === 'Out of Scope / Assumptions'
+        && areRelatedScenarioEntries(beforeEntry, entry, { allowTopLayerChange: true });
+    });
+    const movedBlock = relatedOutOfScopeEntry ? relatedOutOfScopeEntry.block : (movedEntry ? findScenarioBlockByTitle(afterDraftContent, movedEntry.title) : '');
+    const justifiedOutOfScope = (movedEntry?.topLayer === 'Out of Scope / Assumptions'
+      || relatedOutOfScopeEntry?.topLayer === 'Out of Scope / Assumptions')
+      && hasScopeReductionJustification(movedBlock);
+    if (!justifiedOutOfScope) {
+      failures.push(`silent coverage regression detected for prior reviewed scenario: ${beforeEntry.path}`);
+    }
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validateRoundProgression({ task = {}, phaseId, producedDraftPath, expectedDraftPath = '' }) {
+  const failures = [];
+  const priorRound = Number(task?.[`${phaseId}_round`] || 0);
+  const producedRound = parseRoundFromDraftPath(producedDraftPath);
+  const latestDraftRound = task?.latest_draft_phase === phaseId
+    ? parseRoundFromDraftPath(task?.latest_draft_path)
+    : 0;
+  const rerunRequested = String(task?.return_to_phase || '').trim().toLowerCase() === phaseId;
+  const expectedRound = parseRoundFromDraftPath(expectedDraftPath);
+
+  if (producedRound === 0) {
+    failures.push(`Unable to determine round number for ${phaseId} draft: ${producedDraftPath}`);
+  }
+  if (expectedRound > 0 && producedRound !== expectedRound) {
+    failures.push(`${phaseId} produced r${producedRound} but the manifest requested r${expectedRound}`);
+  }
+  if (rerunRequested && priorRound > 0 && producedRound <= priorRound) {
+    failures.push(`${phaseId} rerun reused r${producedRound} instead of advancing beyond r${priorRound}`);
+  } else if (rerunRequested && producedRound < 2) {
+    failures.push(`${phaseId} rerun reused r${producedRound} instead of advancing beyond r1`);
+  } else if (!rerunRequested && priorRound > 0 && latestDraftRound > 0 && producedRound < latestDraftRound) {
+    failures.push(`${phaseId} rerun reused r${producedRound} instead of advancing beyond r${priorRound}`);
+  }
+  if (latestDraftRound > 0 && producedRound < latestDraftRound) {
+    failures.push(`${phaseId} draft points backward from r${latestDraftRound} to r${producedRound}`);
+  }
+
+  return { ok: failures.length === 0, failures };
+}
+
+export function validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundIntegrityFailures = []) {
+  const failures = [];
+  const verdictSection = getSection(reviewDeltaContent, '## Verdict After Refactor');
+  const { values } = parseDisposition(verdictSection, ['accept', 'return phase5a']);
+  const verdict = values[0] || '';
+  const unresolvedCoverageRows = parseCoveragePreservationRows(reviewNotesContent)
+    .filter((row) => row.disposition === 'rewrite_required');
+
+  if (verdict === 'accept' && unresolvedCoverageRows.length > 0) {
+    failures.push(
+      `Phase 5a cannot return accept while coverage-preservation items remain rewrite_required: ${unresolvedCoverageRows.map((row) => row.renderedPlanPath).join(', ')}`
+    );
+  }
+  if (verdict === 'accept' && roundIntegrityFailures.length > 0) {
+    failures.push(
+      `Phase 5a cannot return accept while round-integrity findings remain unresolved: ${roundIntegrityFailures.join('; ')}`
+    );
+  }
+
   return { ok: failures.length === 0, failures };
 }
 

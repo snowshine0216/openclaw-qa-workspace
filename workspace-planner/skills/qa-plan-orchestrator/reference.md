@@ -220,6 +220,28 @@ Do not substitute browser fetch or generic web fetch for Jira, Confluence, or Gi
 - Allowed shared skills for this pass are `jira-cli`, `confluence`, and `tavily-search`.
 - New research artifacts must be saved under `context/` so later `artifact_lookup_<feature-id>.md` rewrites can include them.
 
+## Round Progression
+
+- The first successful draft for Phase 4a, 4b, 5a, 5b, or 6 writes `r1`.
+- Every rerun for the same phase writes the next real round (`r2`, `r3`, ...).
+- `return_to_phase` rerouting must not reset the destination phase counter.
+- No rerun may reuse an earlier phase-scoped draft name.
+- `latest_draft_path` must never point backward when a later same-phase round already exists.
+
+## Coverage Preservation
+
+- Review and refactor rounds are coverage-preserving or coverage-positive.
+- Do not remove, defer, or move a concern to Out of Scope.
+- Only do so when source evidence or explicit user direction requires it.
+- Otherwise preserve, split, clarify, or extend the evidence-backed coverage already present in the draft lineage.
+- Phase 5a review notes must include `## Coverage Preservation Audit`.
+- Phase 6 must preserve reviewed coverage scope unless an explicit exclusion is recorded with evidence.
+
+## Phase 5a Acceptance Gate
+
+- Phase 5a cannot return `accept` while any round-integrity or coverage-preservation item remains `rewrite_required` or otherwise unresolved.
+- Priority behavior is deferred and unchanged in this pass.
+
 ## Validators
 
 The script-facing validator CLI is `scripts/lib/validate_plan_artifact.mjs`.
@@ -228,8 +250,12 @@ Supported validators:
 
 - `validate_context_index`
 - `validate_coverage_ledger`
+- `validate_coverage_preservation_audit`
+- `validate_draft_coverage_preservation`
 - `validate_phase4a_subcategory_draft`
 - `validate_phase4b_category_layering`
+- `validate_phase5a_acceptance_gate`
+- `validate_round_progression`
 - `validate_context_coverage_audit`
 - `validate_section_review_checklist`
 - `validate_checkpoint_audit`
@@ -250,10 +276,10 @@ Supported validators:
 - Phase 2: `artifact_lookup_<feature-id>.md` exists and contains at least one artifact row
 - Phase 3: `coverage_ledger_<feature-id>.md` passes validation
 - Phase 4a: `qa_plan_phase4a_r<round>.md` passes `validate_phase4a_subcategory_draft` and executable-step validation
-- Phase 4b: `qa_plan_phase4b_r<round>.md` passes canonical layering, hierarchy, E2E minimum, and executable-step validation
-- Phase 5a: `review_notes`, `review_delta`, and `qa_plan_phase5a_r<round>.md` exist, pass the context-coverage + section-review gates, and route with `accept` or `return phase5a`
-- Phase 5b: `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b_r<round>.md` exist, pass checkpoint audit + delta validation, and route with `accept`, `return phase5a`, or `return phase5b`
-- Phase 6: `qa_plan_phase6_r<round>.md` passes final layering, hierarchy, E2E minimum, and executable-step checks, and `quality_delta` exists
+- Phase 4b: `qa_plan_phase4b_r<round>.md` passes round progression, coverage preservation against the Phase 4a input draft, canonical layering, hierarchy, E2E minimum, and executable-step validation
+- Phase 5a: `review_notes`, `review_delta`, and `qa_plan_phase5a_r<round>.md` exist, pass round progression, context-coverage, Coverage Preservation Audit, section-review, and Phase 5a Acceptance Gate validation, and route with `accept` or `return phase5a`
+- Phase 5b: `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b_r<round>.md` exist, pass round progression, reviewed coverage preservation against the Phase 5a input draft, checkpoint audit + delta validation, and route with `accept`, `return phase5a`, or `return phase5b`
+- Phase 6: `qa_plan_phase6_r<round>.md` passes round progression, reviewed coverage preservation, final layering, hierarchy, E2E minimum, and executable-step checks, and `quality_delta` exists
 - Phase 7: explicit user approval before promotion
 
 ## Concurrent Runs

@@ -1,17 +1,21 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
 import {
+  validateCoveragePreservationAudit,
   validateCheckpointAudit,
   validateCheckpointDelta,
   validateContextIndex,
   validateContextCoverageAudit,
   validateCoverageLedger,
+  validateDraftCoveragePreservation,
   validateE2EMinimum,
   validateExecutableSteps,
   validateFinalLayering,
+  validatePhase5aAcceptanceGate,
   validatePhase4aSubcategoryDraft,
   validatePhase4bCategoryLayering,
   validateQualityDelta,
+  validateRoundProgression,
   validateScenarioGranularity,
   validateSectionReviewChecklist,
   validateReviewDelta,
@@ -68,9 +72,32 @@ switch (validatorName) {
   case 'validate_context_coverage_audit':
     result = validateContextCoverageAudit(content, rest);
     break;
+  case 'validate_coverage_preservation_audit': {
+    const beforeDraftPath = rest[0];
+    const afterDraftPath = rest[1];
+    if (!beforeDraftPath || !afterDraftPath) {
+      console.error('validate_coverage_preservation_audit requires <before-draft-path> <after-draft-path>');
+      process.exit(1);
+    }
+    const beforeDraftContent = await readFile(beforeDraftPath, 'utf8');
+    const afterDraftContent = await readFile(afterDraftPath, 'utf8');
+    result = validateCoveragePreservationAudit(content, beforeDraftContent, afterDraftContent);
+    break;
+  }
   case 'validate_section_review_checklist':
     result = validateSectionReviewChecklist(content);
     break;
+  case 'validate_phase5a_acceptance_gate': {
+    const reviewNotesPath = rest[0];
+    const roundIntegrityFailures = rest.slice(1);
+    if (!reviewNotesPath) {
+      console.error('validate_phase5a_acceptance_gate requires <review-notes-path> [round-integrity-failure...]');
+      process.exit(1);
+    }
+    const reviewNotesContent = await readFile(reviewNotesPath, 'utf8');
+    result = validatePhase5aAcceptanceGate(reviewNotesContent, content, roundIntegrityFailures);
+    break;
+  }
   case 'validate_checkpoint_audit':
     result = validateCheckpointAudit(content);
     break;
@@ -80,9 +107,30 @@ switch (validatorName) {
   case 'validate_final_layering':
     result = validateFinalLayering(content);
     break;
+  case 'validate_draft_coverage_preservation': {
+    const afterDraftPath = rest[0];
+    if (!afterDraftPath) {
+      console.error('validate_draft_coverage_preservation requires <after-draft-path>');
+      process.exit(1);
+    }
+    const afterDraftContent = await readFile(afterDraftPath, 'utf8');
+    result = validateDraftCoveragePreservation(content, afterDraftContent);
+    break;
+  }
   case 'validate_quality_delta':
     result = validateQualityDelta(content);
     break;
+  case 'validate_round_progression': {
+    const phaseId = rest[0];
+    const taskJsonPath = rest[1];
+    if (!phaseId || !taskJsonPath) {
+      console.error('validate_round_progression requires <phase-id> <task-json-path>');
+      process.exit(1);
+    }
+    const task = JSON.parse(await readFile(taskJsonPath, 'utf8'));
+    result = validateRoundProgression({ task, phaseId, producedDraftPath: filePath });
+    break;
+  }
   case 'validate_executable_steps':
     result = validateExecutableSteps(content);
     break;

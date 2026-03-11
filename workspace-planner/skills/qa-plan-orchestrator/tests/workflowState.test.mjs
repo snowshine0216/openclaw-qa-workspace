@@ -4,6 +4,7 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
+  getNextPhaseRound,
   loadState,
   resolveDefaultRunDir,
   resolveLegacyRunDir,
@@ -58,6 +59,75 @@ test('loadState migrates legacy feature-plan runs into qa-plan-orchestrator runs
     );
   } finally {
     await rm(legacyRunDir, { recursive: true, force: true });
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('loadState preserves later-phase latest draft while syncing rerun round counters from existing drafts', async () => {
+  const featureId = `BCIN-ROUND-SYNC-${Date.now()}`;
+  const runDir = resolveDefaultRunDir(featureId);
+
+  await rm(runDir, { recursive: true, force: true });
+
+  try {
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await mkdir(join(runDir, 'drafts'), { recursive: true });
+    await writeFile(join(runDir, 'drafts', 'qa_plan_phase5a_r2.md'), 'phase5a rerun draft', 'utf8');
+    await writeFile(join(runDir, 'drafts', 'qa_plan_phase5b_r1.md'), 'latest checkpoint draft', 'utf8');
+    await writeFile(join(runDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'round-sync-run',
+      current_phase: 'phase_5b_checkpoint_refactor',
+      latest_draft_phase: 'phase5b',
+      latest_draft_path: 'drafts/qa_plan_phase5b_r1.md',
+      return_to_phase: 'phase5a',
+    }, null, 2));
+    await writeFile(join(runDir, 'run.json'), JSON.stringify({
+      run_key: 'round-sync-run',
+    }, null, 2));
+
+    const state = await loadState(featureId, runDir);
+
+    assert.equal(state.task.latest_draft_phase, 'phase5b');
+    assert.equal(state.task.latest_draft_path, 'drafts/qa_plan_phase5b_r1.md');
+    assert.equal(state.task.phase5a_round, 2);
+    assert.equal(state.task.phase5b_round, 1);
+    assert.equal(getNextPhaseRound(state.task, 'phase5a'), 3);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('loadState promotes latest same-phase draft when task metadata still points to an earlier round', async () => {
+  const featureId = `BCIN-LATEST-DRAFT-${Date.now()}`;
+  const runDir = resolveDefaultRunDir(featureId);
+
+  await rm(runDir, { recursive: true, force: true });
+
+  try {
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await mkdir(join(runDir, 'drafts'), { recursive: true });
+    await writeFile(join(runDir, 'drafts', 'qa_plan_phase4b_r1.md'), 'draft r1', 'utf8');
+    await writeFile(join(runDir, 'drafts', 'qa_plan_phase4b_r2.md'), 'draft r2', 'utf8');
+    await writeFile(join(runDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'latest-draft-run',
+      current_phase: 'phase_4b_top_category_draft',
+      latest_draft_phase: 'phase4b',
+      latest_draft_path: 'drafts/qa_plan_phase4b_r1.md',
+      phase4b_round: 1,
+    }, null, 2));
+    await writeFile(join(runDir, 'run.json'), JSON.stringify({
+      run_key: 'latest-draft-run',
+    }, null, 2));
+
+    const state = await loadState(featureId, runDir);
+
+    assert.equal(state.task.phase4b_round, 2);
+    assert.equal(state.task.latest_draft_phase, 'phase4b');
+    assert.equal(state.task.latest_draft_path, 'drafts/qa_plan_phase4b_r2.md');
+    assert.equal(getNextPhaseRound(state.task, 'phase4b'), 3);
+  } finally {
     await rm(runDir, { recursive: true, force: true });
   }
 });

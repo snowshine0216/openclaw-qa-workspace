@@ -50,13 +50,10 @@ Primary design goals:
    - later rounds must not silently remove, defer, or demote already-supported concerns
 6. Make `Out of Scope / Assumptions` a justified exception bucket only:
    - it must not be used as a sink for live concerns that were already in scope
-7. Add a deterministic priority contract:
-   - placement stays valid on the rendered level-2 node
-   - Phase 5a owns semantic correctness using the binary rule `P1` for direct code-change relevance and `P2` otherwise
-8. Add one explicit `Phase 5a Acceptance Gate`:
-   - Phase 5a cannot return `accept` when any priority, round-integrity, or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
-9. Encourage review phases to use bounded supplemental research when the current artifact set cannot support evaluation or when more knowledge is required to preserve or deepen coverage.
-10. Update `reference.md`, `SKILL.md`, active phase contracts, and tests so the runtime contract matches the reshaped skill package.
+7. Add one explicit `Phase 5a Acceptance Gate`:
+   - Phase 5a cannot return `accept` when any round-integrity or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
+8. Encourage review phases to use bounded supplemental research when the current artifact set cannot support evaluation or when more knowledge is required to preserve or deepen coverage.
+9. Update `reference.md`, `SKILL.md`, active phase contracts, and tests so the runtime contract matches the reshaped skill package.
 
 Current implementation note:
 
@@ -87,7 +84,6 @@ Primary deliverables:
 - Correct round-number semantics for Phase 4a, 4b, 5a, 5b, and 6 so new rounds always advance to the next `r<round>`
 - Tighten the review/refactor contract so later rounds enrich or preserve coverage instead of shrinking it
 - Add active-contract rules that forbid moving a live concern to `Out of Scope / Assumptions` just because the latest design doc did not restate it
-- Define Phase 5a as the authoritative phase for priority correctness review
 - Produce reviewer artifacts at:
   - `projects/agent-design-review/qa-plan-orchestrator-rename-runs-relayout-2026-03-11/design_review_report.md`
   - `projects/agent-design-review/qa-plan-orchestrator-rename-runs-relayout-2026-03-11/design_review_report.json`
@@ -160,7 +156,6 @@ Quality rules:
 - script examples and validation commands must use `run-dir`, not `project-dir`
 - later review rounds must preserve or enrich evidence-backed coverage
 - a concern already supported by evidence must not be removed, deferred, or pushed into `Out of Scope / Assumptions` unless the source evidence or explicit user direction proves that treatment is correct
-- Phase 5a owns priority correctness review, not only wording cleanup
 
 Classification:
 - `workspace-local`
@@ -241,11 +236,8 @@ Must include:
 - `Out of Scope / Assumptions Contract`:
   - this section is only for explicit exclusions, unsupported paths, or user-confirmed deferrals
   - a previously in-scope concern must not be moved there without evidence or explicit user direction
-- priority contract:
-  - rendered priority belongs on the level-2 planning node
-  - Phase 5a must audit priority correctness using the binary rule `P1` for direct code-change relation and `P2` otherwise
 - `Phase 5a Acceptance Gate`:
-  - Phase 5a cannot return `accept` when any priority, round-integrity, or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
+  - Phase 5a cannot return `accept` when any round-integrity or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
 - failure and recovery examples for:
   - concurrent run conflict
   - smart refresh on new runtime root
@@ -260,7 +252,6 @@ Must include:
 - explicit round and coverage rules where the phase contract depends on them:
   - Phase 4a / 4b write contracts must describe how new rounds are named
   - Phase 5a / 5b / 6 review contracts must prohibit silent scope shrinkage
-  - Phase 5a rubric must require priority correctness review
   - Phase 5a and 5b rubrics must state: "Do not remove, defer, or move a concern to Out of Scope unless the evidence or explicit user instruction requires it"
   - Phase 5a and 5b rubrics should explicitly encourage one bounded supplemental research pass with approved tools when the current artifacts cannot support evaluation
 
@@ -339,7 +330,6 @@ Actions:
    - when those artifacts still cannot support evaluation, use one bounded supplemental research pass with approved shared tools
    - save the new research artifact under `context/`
    - use the new evidence to preserve or deepen the QA plan rather than shrink it
-9. Phase 5a must audit priority correctness and either fix it or route for another round.
 
 Implementation boundary:
 
@@ -453,7 +443,7 @@ Schema invariants:
 - round counters are append-only within a run unless the user explicitly chooses a destructive reset mode
 - `latest_draft_path` and `latest_draft_phase` must never point backward to an older surviving round after a newer round is accepted
 
-## 8. Coverage Preservation And Priority Review Contract
+## 8. Coverage Preservation Contract
 
 This refactor must preserve a stronger planning contract, not only a new directory layout.
 
@@ -492,15 +482,6 @@ Bounded supplemental research encouragement:
 4. no later round may overwrite an earlier round artifact name
 5. `latest_draft_path` must always point to the newest accepted draft
 
-Priority rules:
-
-1. Priority belongs on the rendered level-2 planning node.
-2. Phase 5a is the phase that checks whether the assigned priority is correct.
-3. The binary correctness rule for this design is:
-   - direct relation to the code change -> `P1`
-   - otherwise -> `P2`
-4. Phase 6 preserves reviewed priority placement and should not invent new semantic downgrades without routing back through the review contract.
-
 Required reviewer language to carry into active rubrics:
 
 ```text
@@ -516,7 +497,7 @@ Otherwise enrich the plan by preserving, splitting, clarifying, or extending cov
 
 `Phase 5a Acceptance Gate`:
 
-1. Phase 5a cannot return `accept` when any priority, round-integrity, or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
+1. Phase 5a cannot return `accept` when any round-integrity or coverage-preservation audit item remains `rewrite_required` or otherwise unresolved
 
 ## 9. Implementation Layers
 
@@ -650,7 +631,6 @@ Inputs / outputs / artifacts:
 Validator-specific requirement for the later implementation:
 - validate round progression and draft-path updates for repeated Phase 4a / 4b / 5a / 5b / 6 runs
 - validate that review/refactor phases do not silently remove evidence-backed concerns
-- validate Phase 5a priority correctness and block `accept` when the plan uses the wrong `P1` / `P2` assignment
 - no validator or spawn-builder change is required merely to permit bounded supplemental research, because current Phase 5a / 5b task generation already permits it
 - future changes are only needed if the workspace wants deterministic enforcement or explicit research-attempt logging
 

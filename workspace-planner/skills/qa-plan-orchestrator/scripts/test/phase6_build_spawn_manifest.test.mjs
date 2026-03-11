@@ -43,6 +43,7 @@ test('test_success_manifest', async () => {
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   assert.equal(manifest.count, 1);
   const task = manifest.requests[0].openclaw.args.task;
+  assert.equal(manifest.requests[0].source.output_draft_path, join(runDir, 'drafts', 'qa_plan_phase6_r1.md'));
   assert.ok(task.includes('review-rubric-phase6'), 'task must reference review-rubric-phase6');
   assert.ok(task.includes('checkpoint_audit_BCIN-701.md'), 'task must require checkpoint audit input');
   assert.ok(task.includes('qa_plan_phase6_r1.md'), 'task must target the phase-scoped draft path');

@@ -74,6 +74,44 @@ EOF
   assert_exit_code 1 "$code"
 }
 
+test_post_validation_rejects_silent_coverage_drop_from_phase4a() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase4b_project "$temp_dir")"
+  cat > "$run_dir/drafts/qa_plan_phase4a_r1.md" <<'EOF'
+Feature QA Plan (BCIN-70)
+
+- Authentication
+    * Sign in succeeds <P1>
+        - Open the login page
+            - Enter valid credentials
+                - Dashboard loads successfully
+- Notifications
+    * Open unread notification details <P2>
+        - Open notifications panel
+            - Click the unread item
+                - Notification details drawer opens
+EOF
+  cat > "$run_dir/drafts/qa_plan_phase4b_r1.md" <<'EOF'
+Feature QA Plan (BCIN-70)
+
+- EndToEnd
+    * Authentication
+        - Sign in succeeds <P1>
+            - Open the login page
+                - Enter valid credentials
+                    - Dashboard loads successfully
+EOF
+
+  set +e
+  bash "$SKILL_ROOT/scripts/phase4b.sh" BCIN-70 "$run_dir" --post >/dev/null 2>&1
+  local code=$?
+  set -e
+  assert_exit_code 1 "$code"
+}
+
 test_success_manifest_output
 test_post_validation_pass
 test_post_validation_rejects_noncanonical_layering
+test_post_validation_rejects_silent_coverage_drop_from_phase4a

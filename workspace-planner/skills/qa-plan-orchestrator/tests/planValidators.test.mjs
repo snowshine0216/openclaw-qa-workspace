@@ -6,17 +6,21 @@ import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
+  validateCoveragePreservationAudit,
   validateCheckpointAudit,
   validateCheckpointDelta,
   validateContextIndex,
   validateContextCoverageAudit,
   validateCoverageLedger,
+  validateDraftCoveragePreservation,
   validateE2EMinimum,
   validateExecutableSteps,
   validateFinalLayering,
+  validatePhase5aAcceptanceGate,
   validatePhase4aSubcategoryDraft,
   validatePhase4bCategoryLayering,
   validateQualityDelta,
+  validateRoundProgression,
   validateScenarioGranularity,
   validateSectionReviewChecklist,
   validateReviewDelta,
@@ -411,6 +415,171 @@ test('validateContextCoverageAudit rejects review notes that do not account for 
   assert.match(result.failures.join('\n'), /confluence_design_BCIN-1\.md/i);
 });
 
+test('validateCoveragePreservationAudit rejects silent node removal without a coverage audit section', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP1)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP1)
+
+- Core Functional Flows
+    * Save
+        - Rename report <P1>
+            - Open the rename dialog
+                - Updated name appears in the header
+`;
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/jira_issue_BCIN-CP1.md | ## Feature Summary | consumed | Core Functional Flows > Save | jira traceability | covered
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | deferred | current draft | not applicable
+- Core Functional Flows | functional scenarios stay behavior-first | pass | current draft | none
+- Error Handling / Recovery | failure states are explicit | deferred | current draft | not applicable
+- Regression / Known Risks | risky flows are isolated | deferred | current draft | not applicable
+- Compatibility | environment coverage is explicit when evidence mentions it | deferred | current draft | not applicable
+- Security | permission-sensitive flows stay separate | deferred | current draft | not applicable
+- i18n | locale-sensitive rendering is assessed when applicable | deferred | current draft | not applicable
+- Accessibility | keyboard/focus coverage is assessed when applicable | deferred | current draft | not applicable
+- Performance / Resilience | degraded-state behavior is considered when relevant | deferred | current draft | not applicable
+- Out of Scope / Assumptions | exclusions are evidence-backed | pass | current draft | none
+`;
+
+  const result = validateCoveragePreservationAudit(reviewNotes, beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Coverage Preservation Audit/i);
+  assert.match(result.failures.join('\n'), /Save report/i);
+});
+
+test('validateCoveragePreservationAudit rejects unjustified move to Out of Scope', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP2)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP2)
+
+- Out of Scope / Assumptions
+    * Save
+        - Save report <P1>
+            - Coverage deferred for cleanup convenience
+`;
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/jira_issue_BCIN-CP2.md | ## Feature Summary | consumed | Core Functional Flows > Save | jira traceability | covered
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | moved_to_out_of_scope | none | pass | narrowed after the latest summary removed it
+`;
+
+  const result = validateCoveragePreservationAudit(reviewNotes, beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /Out of Scope/i);
+  assert.match(result.failures.join('\n'), /evidence or explicit user direction/i);
+});
+
+test('validateCoveragePreservationAudit rejects missing audit rows when prior round had more scenarios', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP3)
+
+- EndToEnd
+    * Report creation
+        - Create report <P1>
+            - Open the create dialog
+                - Draft report opens
+- Core Functional Flows
+    * Save
+        - Save report <P2>
+            - Click Save
+                - Save banner appears
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP3)
+
+- EndToEnd
+    * Report creation
+        - Create report <P1>
+            - Open the create dialog
+                - Draft report opens
+`;
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- EndToEnd > Report creation > Create report | present_in_prior_round | preserved | jira_issue_BCIN-CP3.md | pass | retained
+`;
+
+  const result = validateCoveragePreservationAudit(reviewNotes, beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /missing coverage audit row/i);
+  assert.match(result.failures.join('\n'), /Save report/i);
+});
+
+test('validateCoveragePreservationAudit rejects audit rows that claim preserved coverage when the rewritten draft removed it', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP3B)
+
+- Core Functional Flows
+    * Save
+        - Save report <P1>
+            - Click Save
+                - Save banner appears
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP3B)
+
+- Core Functional Flows
+    * Rename
+        - Rename report <P1>
+            - Open rename dialog
+                - Updated title appears
+`;
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | preserved | jira_issue_BCIN-CP3B.md | pass | retained after refactor
+`;
+
+  const result = validateCoveragePreservationAudit(reviewNotes, beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /claims preserved/i);
+});
+
+test('validateCoveragePreservationAudit accepts true one-to-many splits when multiple preserved children exist', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP3C)
+
+- Core Functional Flows
+    * Save flows
+        - Save and save as stay available <P1>
+            - Open the file menu
+                - Save and Save As remain available
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP3C)
+
+- Core Functional Flows
+    * Save
+        - Save report stays available <P1>
+            - Open the file menu
+                - Save remains available
+    * Save As
+        - Save As stays available <P1>
+            - Open the file menu
+                - Save As remains available
+`;
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save flows > Save and save as stay available | present_in_prior_round | split_into_save_and_save_as | jira_issue_BCIN-CP3C.md | pass | split broad scenario into separate save and save as coverage
+`;
+
+  const result = validateCoveragePreservationAudit(reviewNotes, beforeDraft, afterDraft);
+  assert.equal(result.ok, true);
+});
+
 test('validateSectionReviewChecklist requires a rewrite request for blocking findings', () => {
   const reviewNotes = `# Review Notes
 
@@ -532,6 +701,218 @@ test('validateQualityDelta requires final layer audit and verdict sections', () 
 
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /Verdict/i);
+});
+
+test('validateDraftCoveragePreservation rejects phase6 drafts that silently shrink reviewed coverage', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4)
+
+- EndToEnd
+    * Report creation
+        - Create report <P1>
+            - Open the create dialog
+                - Draft report opens
+- Core Functional Flows
+    * Save
+        - Save report <P2>
+            - Click Save
+                - Save banner appears
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4)
+
+- EndToEnd
+    * Report creation
+        - Create report <P1>
+            - Open the create dialog
+                - Draft report opens
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /silent coverage regression/i);
+  assert.match(result.failures.join('\n'), /Save report/i);
+});
+
+test('validateDraftCoveragePreservation allows clarified wording when the reviewed scenario remains equivalent', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4B)
+
+- Core Functional Flows
+    * Notifications
+        - Open unread notification details <P2>
+            - Open notifications panel
+                - Click the unread item
+                    - Notification details drawer opens
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4B)
+
+- Core Functional Flows
+    * Notifications
+        - Inspect unread notification details <P2>
+            - Open notifications panel
+                - Click the unread item
+                    - Notification details drawer opens
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft);
+  assert.equal(result.ok, true);
+});
+
+test('validateDraftCoveragePreservation rejects opposite scenario wording that only partially overlaps', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4C)
+
+- Core Functional Flows
+    * Notifications
+        - Open unread notification details <P2>
+            - Open notifications panel
+                - Click the unread item
+                    - Notification details drawer opens
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4C)
+
+- Core Functional Flows
+    * Notifications
+        - Inspect read notification details <P2>
+            - Open notifications panel
+                - Click a previously read item
+                    - Notification details drawer opens
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /silent coverage regression/i);
+});
+
+test('validateDraftCoveragePreservation rejects contradictory action changes even when wording largely overlaps', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4D)
+
+- Core Functional Flows
+    * Scheduling
+        - Enable export scheduling <P2>
+            - Open scheduling settings
+                - Turn scheduling on
+                    - Scheduled export remains enabled
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4D)
+
+- Core Functional Flows
+    * Scheduling
+        - Disable export scheduling <P2>
+            - Open scheduling settings
+                - Turn scheduling off
+                    - Scheduled export is disabled
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /silent coverage regression/i);
+});
+
+test('validateDraftCoveragePreservation accepts regrouping from phase4a into phase4b when scenarios are preserved', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4E)
+
+- Authentication
+    * Sign in succeeds <P1>
+        - Open the login page
+            - Enter valid credentials
+                - Dashboard loads successfully
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4E)
+
+- EndToEnd
+    * Authentication
+        - Sign in succeeds <P1>
+            - Open the login page
+                - Enter valid credentials
+                    - Dashboard loads successfully
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft, { allowTopLayerChange: true });
+  assert.equal(result.ok, true);
+});
+
+test('validateDraftCoveragePreservation accepts evidence-backed out-of-scope exclusions after retitling', () => {
+  const beforeDraft = `Feature QA Plan (BCIN-CP4F)
+
+- Core Functional Flows
+    * Scheduling
+        - Enable export scheduling <P2>
+            - Open scheduling settings
+                - Turn scheduling on
+                    - Scheduled export remains enabled
+`;
+  const afterDraft = `Feature QA Plan (BCIN-CP4F)
+
+- Out of Scope / Assumptions
+    * Export scheduling excluded by admin-only constraint <P2>
+        - Evidence: confluence admin-only note confirms export scheduling is unsupported for this release
+`;
+
+  const result = validateDraftCoveragePreservation(beforeDraft, afterDraft);
+  assert.equal(result.ok, true);
+});
+
+test('validatePhase5aAcceptanceGate rejects accept when coverage audit still requires rewrite', () => {
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | removed | jira_issue_BCIN-80.md | rewrite_required | restore as standalone scenario
+`;
+  const reviewDelta = `# Review Delta
+
+## Verdict After Refactor
+- accept
+`;
+
+  const result = validatePhase5aAcceptanceGate(reviewNotes, reviewDelta, []);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /cannot return accept/i);
+  assert.match(result.failures.join('\n'), /rewrite_required/i);
+});
+
+test('validatePhase5aAcceptanceGate rejects accept when round-integrity failures remain unresolved', () => {
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | preserved | jira_issue_BCIN-80.md | pass | retained
+`;
+  const reviewDelta = `# Review Delta
+
+## Verdict After Refactor
+- accept
+`;
+
+  const result = validatePhase5aAcceptanceGate(reviewNotes, reviewDelta, ['Phase 5a rerun reused r1 instead of advancing to r2']);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /round-integrity/i);
+  assert.match(result.failures.join('\n'), /reused r1/i);
+});
+
+test('validateRoundProgression rejects reruns that reuse the current round instead of advancing', () => {
+  const result = validateRoundProgression({
+    task: {
+      phase5a_round: 2,
+      return_to_phase: 'phase5a',
+    },
+    phaseId: 'phase5a',
+    producedDraftPath: 'drafts/qa_plan_phase5a_r2.md',
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /advancing beyond r2/i);
+});
+
+test('validateRoundProgression rejects drafts that do not match the manifest-requested round', () => {
+  const result = validateRoundProgression({
+    task: {
+      phase5a_round: 2,
+      return_to_phase: 'phase5a',
+    },
+    phaseId: 'phase5a',
+    producedDraftPath: 'drafts/qa_plan_phase5a_r2.md',
+    expectedDraftPath: 'drafts/qa_plan_phase5a_r3.md',
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /manifest requested r3/i);
 });
 
 const SAVE_SCENARIO_UNITS_FIXTURE = `# Scenario Units

@@ -23,3 +23,6 @@ Feature QA Plan (<FEATURE_ID>)
 
 <!-- Traceability note:
 Inline HTML comments are the preferred location for source traceability or reviewer-only notes. -->
+
+<!-- Priority note:
+Priority behavior is unchanged in this pass. Do not rewrite priority placement as part of the coverage-preservation update. -->

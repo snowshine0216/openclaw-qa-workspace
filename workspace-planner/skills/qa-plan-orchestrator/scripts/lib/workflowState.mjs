@@ -19,6 +19,7 @@ export const PHASE_ORDER = [
 
 const PHASE_INDEX = new Map(PHASE_ORDER.map((phase, index) => [phase, index]));
 const ACTIVE_STATUSES = new Set(['in_progress', 'awaiting_approval', 'blocked']);
+const ROUND_TRACKED_PHASES = ['phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase6'];
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = resolve(MODULE_DIR, '..', '..');
 const REPO_ROOT = resolve(SKILL_ROOT, '..', '..', '..');
@@ -133,6 +134,7 @@ export async function loadState(featureId, runDir, options = {}) {
   const runPath = join(runDir, 'run.json');
   const envRunKey = String(options.runKey || process.env.FQPO_RUN_KEY || '').trim();
   const existingTask = await readJson(taskPath, null);
+  const persistedTask = existingTask ? { ...existingTask } : null;
   const runKey = envRunKey || existingTask?.run_key || randomUUID();
   const task = existingTask ? { ...defaultTask(featureId, runKey), ...existingTask } : defaultTask(featureId, runKey);
   const run = (await readJson(runPath, null))
@@ -153,7 +155,9 @@ export async function loadState(featureId, runDir, options = {}) {
     };
   }
 
-  return { taskPath, runPath, task, run };
+  await syncTaskDraftState(task, runDir);
+
+  return { taskPath, runPath, task, run, persistedTask };
 }
 
 export async function saveState({ taskPath, runPath, task, run }) {
@@ -222,6 +226,37 @@ export function updateLatestDraftMetadata(task, filename, phaseId = null) {
   task.latest_draft_path = filename;
 }
 
+export async function syncTaskDraftState(task, runDir) {
+  const draftsByPhase = await listLatestDraftsByPhase(runDir);
+
+  for (const phaseId of ROUND_TRACKED_PHASES) {
+    const key = `${phaseId}_round`;
+    const existingRound = Number(task?.[key] || 0);
+    const discoveredRound = draftsByPhase.get(phaseId)?.round || 0;
+    task[key] = Math.max(existingRound, discoveredRound);
+  }
+
+  const latestPhase = String(task?.latest_draft_phase || '').trim();
+  if (latestPhase && draftsByPhase.has(latestPhase)) {
+    const currentRound = parseRoundFromDraftName(basename(String(task?.latest_draft_path || '')));
+    const discovered = draftsByPhase.get(latestPhase);
+    if (currentRound < discovered.round) {
+      task.latest_draft_path = discovered.relativePath;
+    }
+    return task;
+  }
+
+  if (!String(task?.latest_draft_path || '').trim()) {
+    const latestDiscovered = findLatestDiscoveredDraft(draftsByPhase);
+    if (latestDiscovered) {
+      task.latest_draft_phase = latestDiscovered.phaseId;
+      task.latest_draft_path = latestDiscovered.relativePath;
+    }
+  }
+
+  return task;
+}
+
 export function resolveRunPaths(runDir, featureId) {
   return {
     runDir,
@@ -267,4 +302,46 @@ async function safeReadDir(path) {
     if (error.code === 'ENOENT') return [];
     throw error;
   }
+}
+
+async function listLatestDraftsByPhase(runDir) {
+  const draftsDir = join(runDir, 'drafts');
+  const entries = await safeReadDir(draftsDir);
+  const latest = new Map();
+
+  for (const name of entries) {
+    const match = name.match(/^qa_plan_(phase\d+[ab]?|subcategory)_r(\d+)\.md$/);
+    if (!match) continue;
+    const phaseId = normalizeDraftPhase(match[1]);
+    const round = Number(match[2]);
+    const current = latest.get(phaseId);
+    if (!current || round > current.round) {
+      latest.set(phaseId, {
+        phaseId,
+        round,
+        relativePath: join('drafts', name),
+      });
+    }
+  }
+
+  return latest;
+}
+
+function normalizeDraftPhase(rawPhase) {
+  return rawPhase === 'subcategory' ? 'phase4a' : rawPhase;
+}
+
+function parseRoundFromDraftName(name) {
+  const match = String(name || '').match(/_r(\d+)\.md$/);
+  return match ? Number(match[1]) : 0;
+}
+
+function findLatestDiscoveredDraft(draftsByPhase) {
+  let latest = null;
+  for (const phaseId of ROUND_TRACKED_PHASES) {
+    const draft = draftsByPhase.get(phaseId);
+    if (!draft) continue;
+    latest = draft;
+  }
+  return latest;
 }
