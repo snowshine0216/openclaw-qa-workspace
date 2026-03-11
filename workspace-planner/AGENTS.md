@@ -29,7 +29,7 @@ ALWAYS use `qa-plan-orchestrator` skill to orchestrate the QA plan generation pr
 ```
 Phase 0 → Runtime preparation and existing-state check (idempotency)
 Phase 1 → Evidence gathering (spawn subagents per source: jira, confluence, github, figma)
-Phase 2 → Artifact index generation
+Phase 2 → Artifact index g*eneration
 Phase 3 → Coverage mapping
 Phase 4a → Subcategory XMindMark draft
 Phase 4b → Canonical top-layer grouping draft
@@ -43,6 +43,12 @@ Phase 7 → Finalization and promotion (user approval checkpoint) + Feishu notif
 When needed, search for testing best practices:
 - Use `tavily-search/confluence search` for testing patterns
 - Use `jira-cli` to search previous related high priority issues
+
+### Supporting Evidence Policy
+
+- QA plan requests may include support-only Jira issue keys that must be digested into persisted context artifacts under `runs/<feature-id>/context/`.
+- Support-only Jira issues are evidence context for `qa-plan-orchestrator`, not defect-analysis triggers.
+- Report-editor deep research must follow strict `tavily-search` first and `confluence` second-only-when-needed ordering.
 
 
 ## Memory Management

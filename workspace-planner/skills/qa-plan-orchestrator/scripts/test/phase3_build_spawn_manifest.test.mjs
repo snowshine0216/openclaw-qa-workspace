@@ -39,6 +39,29 @@ test('test_success_manifest', async () => {
   const task = manifest.requests[0].openclaw.args.task;
   assert.ok(task.includes('context-coverage-contract'), 'task must reference context-coverage-contract');
   assert.ok(task.includes('context-index-schema'), 'task must reference context-index-schema');
+  assert.ok(!task.includes('Tavily'), 'task must not force deep research when not requested');
+  assert.equal(manifest.requests[0].source.phase, 'phase3');
+  assert.deepEqual(manifest.requests[0].source.topic_requests, []);
+  await rm(root, { recursive: true, force: true });
+});
+
+test('test_success_manifest_with_explicit_deep_research_topics', async () => {
+  const { root, runDir } = await createProject();
+  await writeFile(join(runDir, 'task.json'), JSON.stringify({
+    feature_id: 'BCIN-301',
+    deep_research_topics: [
+      'report_editor_workstation_functionality',
+      'report_editor_library_vs_workstation_gap',
+    ],
+  }, null, 2));
+  const outputPath = join(runDir, 'phase3_spawn_manifest.json');
+  const result = await runNode(['BCIN-301', runDir, outputPath]);
+  assert.equal(result.code, 0, result.stderr);
+  const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
+  const task = manifest.requests[0].openclaw.args.task;
+  assert.ok(task.includes('Tavily'), 'task must enforce Tavily-first research');
+  assert.ok(task.includes('Confluence fallback'), 'task must describe Confluence fallback');
+  assert.equal(manifest.requests[0].source.topic_requests.length, 2);
   await rm(root, { recursive: true, force: true });
 });
 

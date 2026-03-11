@@ -3,7 +3,17 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalizeSpawnInput } from './normalizeSpawnInput.mjs';
-import { fileExists, getNextPhaseRound, normalizeRequestedSourceFamilies, readJson, syncTaskDraftState } from './workflowState.mjs';
+import {
+  applyRequestModel,
+  DEFAULT_DEEP_RESEARCH_POLICY,
+  DEFAULT_DEEP_RESEARCH_TOPICS,
+  fileExists,
+  getNextPhaseRound,
+  normalizeIssueKeys,
+  normalizeRequestedSourceFamilies,
+  readJson,
+  syncTaskDraftState,
+} from './workflowState.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(__dirname, '..', '..');
@@ -39,6 +49,7 @@ function getPhaseReferenceInstructions(phaseId, skillRoot) {
 export async function writePhaseManifest(phaseId, featureId, runDir, outputPath) {
   const task = await readRequiredJson(join(runDir, 'task.json'), 'task.json');
   const run = await readRequiredJson(join(runDir, 'run.json'), 'run.json');
+  applyRequestModel(task, featureId);
   await syncTaskDraftState(task, runDir);
   const manifestPath = outputPath || join(runDir, `${phaseId}_spawn_manifest.json`);
   const requests = await buildPhaseRequests(phaseId, featureId, runDir, task, run);
@@ -76,7 +87,54 @@ async function buildPhaseRequests(phaseId, featureId, runDir, task, run) {
     if (requestedSources.length === 0) {
       throw new Error('requested_source_families must contain at least one source.');
     }
-    return requestedSources.map((sourceFamily) => buildPhase1Request(sourceFamily, featureId, runDir, run));
+    const sourceRequests = requestedSources.map((sourceFamily) => buildPhase1Request(sourceFamily, featureId, runDir, run));
+    const supportingRequests = normalizeIssueKeys(task.supporting_issue_keys).map((supportingIssueKey) => {
+      return buildSupportingIssueSpawnRequest({
+        featureId,
+        supportingIssueKey,
+        runDir,
+        requestRequirementIds: collectRequirementIds(task, 'phase1', [
+          `supporting_issue_relation_map_${featureId}`,
+          `supporting_issue_summary_${supportingIssueKey}_${featureId}`,
+          `supporting_issue_summary_${featureId}`,
+        ]),
+      });
+    });
+    return [...sourceRequests, ...supportingRequests];
+  }
+
+  if (phaseId === 'phase3') {
+    await assertPhasePrerequisites(phaseId, featureId, runDir);
+    const request = buildSingleRequest(phaseId, featureId, runDir, task);
+    const topics = Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0
+      ? task.deep_research_topics
+      : [];
+    const topicRequests = topics.map((topicSlug) => {
+      return buildDeepResearchSpawnRequest({
+        featureId,
+        topicSlug,
+        runDir,
+        deepResearchPolicy: task.deep_research_policy || DEFAULT_DEEP_RESEARCH_POLICY,
+        requestRequirementIds: collectRequirementIds(task, 'phase3', [
+          researchArtifactPath('tavily', topicSlug, featureId),
+          researchArtifactPath('confluence', topicSlug, featureId),
+          `deep_research_synthesis_report_editor_${featureId}`,
+        ]),
+      }).source;
+    });
+    request.source.topic_requests = topicRequests;
+    request.source.output_artifact_paths = [
+      `context/coverage_ledger_${featureId}.md`,
+      ...(topicRequests.length > 0
+        ? [
+            `context/deep_research_plan_${featureId}.md`,
+            `context/deep_research_execution_${featureId}.json`,
+            `context/deep_research_synthesis_report_editor_${featureId}.md`,
+            ...topicRequests.flatMap((topicRequest) => topicRequest.output_artifact_paths || []),
+          ]
+        : []),
+    ];
+    return [request];
   }
 
   await assertPhasePrerequisites(phaseId, featureId, runDir);
@@ -135,7 +193,8 @@ function buildPhase1ArtifactRequirements(sourceFamily, featureId, runDir, hasSup
     ];
     if (hasSupportingArtifacts) {
       required.push(
-        `3. Supporting summary: ${ctx(`supporting_artifact_summary_${featureId}.md`)} — when supporting Jira docs (e.g. BCED-2416) are requested, write a concise summary of supporting issues and how they inform scope/risk.`
+        `3. Supporting summary: ${ctx(`supporting_issue_summary_${featureId}.md`)} — when supporting Jira docs (e.g. BCED-2416) are requested, write a concise summary of supporting issues and how they inform scope/risk.`,
+        `4. Supporting relation map: ${ctx(`supporting_issue_relation_map_${featureId}.md`)} — record the parent chain plus linked inward and linked outward issues that were digested.`
       );
     }
     return required.join('\n');
@@ -173,10 +232,99 @@ Required artifacts (must write all):
 ${artifactReqs}`;
 }
 
+export function buildSupportingIssueSpawnRequest({
+  featureId,
+  supportingIssueKey,
+  runDir,
+  requestRequirementIds = [],
+}) {
+  if (!supportingIssueKey) {
+    throw new Error('Supporting issue spawn request requires supportingIssueKey.');
+  }
+  const outputArtifactPaths = [
+    `context/supporting_issue_relation_map_${featureId}.md`,
+    `context/supporting_issue_summary_${supportingIssueKey}_${featureId}.md`,
+    `context/supporting_issue_summary_${featureId}.md`,
+  ];
+  const request = normalizeSpawnInput({
+    agent_id: DEFAULT_AGENT_ID,
+    mode: DEFAULT_MODE,
+    runtime: DEFAULT_RUNTIME,
+    label: `supporting-${supportingIssueKey}-${featureId}`,
+    task: `Role: supporting issue context sub-agent for feature QA planning.
+
+Feature ID: ${featureId}
+Supporting issue key: ${supportingIssueKey}
+Run directory: ${runDir}
+
+Requirements:
+- Keep the supporting issue in ${'context_only_no_defect_analysis'} mode.
+- Read the issue description, parent chain, linked inward issues, and linked outward issues.
+- Save the relation map and both summary artifacts under ${runDir}/context.
+- Do not create defect-analysis artifacts or route this work into defect-analysis behavior.
+- Return the written artifact paths in the session result.`,
+    attachments: [],
+    source_kind: 'feature-qa-planning',
+    source: {
+      kind: 'supporting-issue-context',
+      feature_id: featureId,
+      supporting_issue_key: supportingIssueKey,
+      request_requirement_ids: requestRequirementIds,
+      output_artifact_paths: outputArtifactPaths,
+    },
+  });
+  return request.requests[0];
+}
+
+export function buildDeepResearchSpawnRequest({
+  featureId,
+  topicSlug,
+  runDir,
+  deepResearchPolicy,
+  requestRequirementIds = [],
+}) {
+  if (deepResearchPolicy !== DEFAULT_DEEP_RESEARCH_POLICY) {
+    throw new Error(`Deep research policy must be ${DEFAULT_DEEP_RESEARCH_POLICY}.`);
+  }
+  const outputArtifactPaths = [
+    `context/${researchArtifactPath('tavily', topicSlug, featureId)}.md`,
+    `context/${researchArtifactPath('confluence', topicSlug, featureId)}.md`,
+  ];
+  const request = normalizeSpawnInput({
+    agent_id: DEFAULT_AGENT_ID,
+    mode: DEFAULT_MODE,
+    runtime: DEFAULT_RUNTIME,
+    label: `deep-research-${topicSlug}-${featureId}`,
+    task: `Role: deep research sub-agent for feature QA planning.
+
+Feature ID: ${featureId}
+Research topic: ${topicSlug}
+Run directory: ${runDir}
+
+${getPhaseReferenceInstructions('phase3', SKILL_ROOT)}
+
+Requirements:
+- Run Tavily first and persist the Tavily artifact under ${runDir}/${outputArtifactPaths[0]}.
+- Use Confluence fallback only when Tavily evidence is insufficient, and record that insufficiency in the Tavily artifact before writing ${runDir}/${outputArtifactPaths[1]}.
+- Do not skip the Tavily pass or swap the tool order.
+- Return the written artifact paths in the session result.`,
+    attachments: [],
+    source_kind: 'feature-qa-planning',
+    source: {
+      kind: 'deep-research',
+      feature_id: featureId,
+      topic_slug: topicSlug,
+      request_requirement_ids: requestRequirementIds,
+      output_artifact_paths: outputArtifactPaths,
+    },
+  });
+  return request.requests[0];
+}
+
 function buildPhaseTaskText(phaseId, featureId, runDir, task) {
   const paths = resolvePhasePaths(phaseId, featureId, runDir, task);
   const descriptions = {
-    phase3: `Read ${runDir}/context/artifact_lookup_${featureId}.md and write ${runDir}/context/coverage_ledger_${featureId}.md.`,
+    phase3: buildPhase3Description(featureId, runDir, task),
     phase4a: `Read current context artifacts, stay below canonical top-layer grouping, and write ${paths.outputDraftPath}. You may do one bounded supplemental research pass with shared skills when evidence is insufficient, save any new artifact under ${runDir}/context, and update artifact lookup references before finishing.`,
     phase4b: `Read ${paths.inputDraftPath}, group Phase 4a output into canonical top-layer labels, preserve subcategory and scenario granularity, and write ${paths.outputDraftPath}. Grouping and refactor may not silently shrink coverage. If a scenario does not fit a canonical layer, keep the local grouping and add an explicit HTML exception comment. Few-shot cleanup belongs to Phase 6, not this phase. You may do one bounded supplemental research pass when grouping evidence is insufficient.`,
     phase5a: `Read every intermediate context artifact already present under ${runDir}/context, audit ${runDir}/context/artifact_lookup_${featureId}.md with a section-by-section review, refactor ${paths.inputDraftPath}, and write ${runDir}/context/review_notes_${featureId}.md, ${runDir}/context/review_delta_${featureId}.md, and ${paths.outputDraftPath}. Do not remove, defer, or move a concern to Out of Scope unless source evidence or explicit user direction requires it. The pass must preserve or enrich evidence-backed coverage, self-review against the Phase 5a rubric, may do one bounded supplemental research pass when evidence is insufficient, and must end with an explicit review_delta disposition of either accept or return phase5a.`,
@@ -286,4 +434,41 @@ function fallbackInputDraft(phaseId, featureId, runDir) {
     return join(runDir, 'drafts', `qa_plan_phase5b_r1.md`);
   }
   return '';
+}
+
+function collectRequirementIds(task, phaseId, artifactNeedles = []) {
+  const requirements = Array.isArray(task.request_requirements) ? task.request_requirements : [];
+  return requirements
+    .filter((requirement) => String(requirement.required_phase || '').trim().toLowerCase() === phaseId)
+    .filter((requirement) => {
+      const artifacts = Array.isArray(requirement.required_artifacts) ? requirement.required_artifacts : [];
+      return artifactNeedles.some((needle) => artifacts.some((artifact) => String(artifact || '').includes(needle)));
+    })
+    .map((requirement) => String(requirement.requirement_id || '').trim())
+    .filter(Boolean);
+}
+
+function researchArtifactPath(kind, topicSlug, featureId) {
+  const topicKey = topicSlug
+    .replace(/^report_editor_/, '')
+    .replace(/_functionality$/, '')
+    .replace(/_gap$/, '_gap')
+    .replace(/library_vs_workstation/, 'library_vs_workstation_gap');
+  const mapping = {
+    report_editor_workstation_functionality: 'report_editor_workstation',
+    report_editor_library_vs_workstation_gap: 'library_vs_workstation_gap',
+  };
+  const slug = mapping[topicSlug] || topicKey || topicSlug;
+  return `deep_research_${kind}_${slug}_${featureId}`;
+}
+
+function buildPhase3Description(featureId, runDir, task) {
+  const topics = Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0
+    ? task.deep_research_topics
+    : [];
+  if (topics.length === 0) {
+    return `Read ${runDir}/context/artifact_lookup_${featureId}.md and write ${runDir}/context/coverage_ledger_${featureId}.md. Do not invent deep research unless the user request explicitly required it.`;
+  }
+  const topicList = topics.join(' and ');
+  return `Read ${runDir}/context/artifact_lookup_${featureId}.md, write ${runDir}/context/deep_research_plan_${featureId}.md, perform Tavily-first deep research for ${topicList}, record the actual execution order in ${runDir}/context/deep_research_execution_${featureId}.json, use Confluence fallback only when the Tavily artifact records insufficiency, write ${runDir}/context/deep_research_synthesis_report_editor_${featureId}.md, and then write ${runDir}/context/coverage_ledger_${featureId}.md.`;
 }

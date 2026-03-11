@@ -3,7 +3,7 @@
 ## Structure
 
 - **`evals`** — Skill-creator compatible format for `generate_review.py`, `aggregate_benchmark`, and trigger optimization. Use for running test prompts through the skill and grading outputs.
-- **`eval_groups`** — Contract/compliance checks for context extraction, coverage usage, executable steps, E2E, review delta, doc sync, and readability.
+- **`eval_groups`** — Contract/compliance checks for context extraction, support-context integrity, deep-research ordering, request fulfillment, coverage usage, executable steps, E2E, review delta, doc sync, and readability.
 - Smoke and grading expectations assume phase-specific runtime contracts, split `phase5a`/`phase5b` review loops, and phase-scoped draft files.
 
 ## Fixture paths
@@ -36,6 +36,16 @@ Run the phase-entry smoke suite before grading prompts:
 ```bash
 bash scripts/test/run-all.sh
 node --test scripts/test/*.test.mjs
+```
+
+Include these targeted smoke checks for the support-context and deep-research flow when the change touches Phases 0-3:
+
+```bash
+bash scripts/test/phase0.test.sh
+bash scripts/test/phase1.test.sh
+bash scripts/test/phase2_artifact_index.test.sh
+bash scripts/test/phase3.test.sh
+node --test scripts/test/spawnManifestBuilders.test.mjs scripts/test/validate_plan_artifact.test.mjs
 ```
 
 ### 2. Spawn runs

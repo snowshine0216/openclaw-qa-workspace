@@ -21,7 +21,7 @@ const ARTIFACT_PATTERNS = {
   figma: ['figma_metadata_'],
 };
 
-const SUPPORTING_ARTIFACT_PATTERN = 'supporting_artifact_summary_';
+const SUPPORTING_ARTIFACT_PATTERNS = ['supporting_issue_summary_', 'supporting_artifact_summary_'];
 
 function getField(record, camelKey, snakeKey) {
   return record?.[camelKey] ?? record?.[snakeKey];
@@ -48,7 +48,7 @@ async function collectArtifactPathsForSource(contextDir, sourceFamily, featureId
         break;
       }
     }
-    if (hasSupportingArtifacts && lower.includes(SUPPORTING_ARTIFACT_PATTERN.toLowerCase())) {
+    if (hasSupportingArtifacts && SUPPORTING_ARTIFACT_PATTERNS.some((pattern) => lower.includes(pattern.toLowerCase()))) {
       if (!paths.includes(relPath)) paths.push(relPath);
     }
   }
@@ -90,11 +90,31 @@ export async function recordPhase1SpawnCompletion(featureId, runDir) {
   const recordedSources = new Set(
     existingHistory.map((e) => normalizeSourceFamily(getField(e, 'sourceFamily', 'source_family')))
   );
+  const recordedSupportKeys = new Set(
+    existingHistory
+      .filter((entry) => String(getField(entry, 'sourceKind', 'source_kind') || '').trim() === 'supporting-issue-context')
+      .map((entry) => String(entry.supporting_issue_key || '').trim())
+      .filter(Boolean)
+  );
 
   const spawnHistory = [...existingHistory];
 
   for (const req of manifest.requests) {
     const source = req.source || {};
+    const sourceKind = String(getField(source, 'kind', 'kind') || '').trim();
+    if (sourceKind === 'supporting-issue-context') {
+      const supportKey = String(source.supporting_issue_key || '').trim();
+      if (!supportKey || recordedSupportKeys.has(supportKey)) continue;
+      spawnHistory.push({
+        source_kind: 'supporting-issue-context',
+        supporting_issue_key: supportKey,
+        request_requirement_ids: getField(source, 'requestRequirementIds', 'request_requirement_ids') || [],
+        status: 'completed',
+        artifact_paths: getField(source, 'outputArtifactPaths', 'output_artifact_paths') || [],
+      });
+      recordedSupportKeys.add(supportKey);
+      continue;
+    }
     const sourceFamily = getField(source, 'sourceFamily', 'source_family');
     if (!sourceFamily) continue;
     const normalized = normalizeSourceFamily(sourceFamily);

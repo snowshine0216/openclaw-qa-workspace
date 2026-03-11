@@ -29,6 +29,7 @@ Produce the final layered QA plan after Phase 5b and enforce final-quality struc
 ## Coverage Rule
 
 - preserve reviewed coverage scope from Phase 5b unless an explicit exclusion is carried with evidence
+- preserve support-derived scenarios, Workstation functionality scenarios, and Library-vs-Workstation gap scenarios through the final cleanup pass
 
 ## Required `quality_delta_<feature-id>.md` Sections
 
@@ -36,3 +37,5 @@ Produce the final layered QA plan after Phase 5b and enforce final-quality struc
 - `## Few-Shot Rewrite Applications`
 - `## Exceptions Preserved`
 - `## Verdict`
+
+The final layer audit must explicitly note that support-derived coverage and deep-research-backed coverage were preserved.

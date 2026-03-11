@@ -48,6 +48,8 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 ### `review_notes_<feature-id>.md`
 
 - `## Context Artifact Coverage Audit`
+- `## Supporting Artifact Coverage Audit`
+- `## Deep Research Coverage Audit`
 - `## Coverage Preservation Audit`
 - `## Section Review Checklist`
 - `## Blocking Findings`
@@ -88,3 +90,7 @@ Each affected node must record:
 - evidence source
 - disposition (`pass` | `rewrite_required`)
 - reason
+
+## Request Fulfillment Gate
+
+- `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.

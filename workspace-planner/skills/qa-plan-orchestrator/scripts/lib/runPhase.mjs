@@ -1,22 +1,32 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
 import { copyFile, mkdir, readFile, readdir, rename, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import {
+  applyRequestModel,
+  buildRequestFulfillmentModel,
   classifyReportState,
+  DEFAULT_DEEP_RESEARCH_TOPICS,
   fileExists,
   isActiveStatus,
   isPhasePast,
   getNextPhaseRound,
   loadState,
+  normalizeIssueKeys,
   normalizeRequestedSourceFamilies,
   nowCompactTimestamp,
   resolveDefaultRunDir,
   saveState,
   updateLatestDraftMetadata,
+  writeJson,
 } from './workflowState.mjs';
 import { buildRuntimeSetup } from './runtimeEnv.mjs';
-import { evaluateEvidenceCompleteness, evaluateSourceArtifactCompleteness, evaluateSpawnPolicy } from './contextRules.mjs';
+import {
+  evaluateEvidenceCompleteness,
+  evaluateSourceArtifactCompleteness,
+  evaluateSpawnPolicy,
+  validateRequestFulfillmentStatus,
+} from './contextRules.mjs';
 import { writeArtifactLookup } from './artifactLookup.mjs';
 import {
   validateCoveragePreservationAudit,
@@ -93,6 +103,8 @@ export async function runPhaseCli(argv = process.argv.slice(2)) {
 async function runPhase0(featureId, runDir) {
   const state = await loadState(featureId, runDir);
   const { task, run } = state;
+  applyRequestModel(task, featureId);
+  assertSupportOnlyMode(task);
   const nextRunKey = String(process.env.FQPO_RUN_KEY || task.run_key || '').trim();
   if (nextRunKey && task.run_key && nextRunKey !== task.run_key && isActiveStatus(task.overall_status)) {
     throw new Error(`CONCURRENT_RUN_BLOCKED: active run ${task.run_key} detected; resolve it before starting a new run`);
@@ -102,7 +114,11 @@ async function runPhase0(featureId, runDir) {
     ? normalizeRequestedSourceFamilies(task.requested_source_families)
     : ['jira'];
   const contextDir = join(runDir, 'context');
-  const runtimeSetup = await buildRuntimeSetup(featureId, requestedSources, contextDir);
+  const runtimeSetup = await buildRuntimeSetup(featureId, requestedSources, contextDir, {
+    supportingIssuePolicy: task.supporting_issue_policy,
+    deepResearchPolicy: task.deep_research_policy,
+    supportingIssueKeys: task.supporting_issue_keys,
+  });
   task.has_supporting_artifacts = Boolean(runtimeSetup.has_supporting_artifacts);
   run.has_supporting_artifacts = Boolean(runtimeSetup.has_supporting_artifacts);
 
@@ -111,6 +127,8 @@ async function runPhase0(featureId, runDir) {
   task.requested_source_families = requestedSources;
   task.overall_status = runtimeSetup.ok ? 'in_progress' : 'blocked';
   run.runtime_setup_generated_at = new Date().toISOString();
+  await writePhase0RequestArtifacts(featureId, runDir, task, run);
+  await updateRequestFulfillmentForPhase(state, 'phase0', []);
 
   await saveState(state);
   if (!runtimeSetup.ok) {
@@ -125,12 +143,14 @@ async function runPhase2(featureId, runDir) {
   state.task.current_phase = 'phase_2_artifact_index';
   state.task.overall_status = 'in_progress';
   state.run.artifact_index_generated_at = new Date().toISOString();
+  await updateRequestFulfillmentForPhase(state, 'phase2', []);
   await saveState(state);
   console.log(`PHASE_2_COMPLETE: ${join(runDir, 'context', `artifact_lookup_${featureId}.md`)}`);
 }
 
 async function runPhase7(featureId, runDir) {
   const state = await loadState(featureId, runDir);
+  await assertRequestFulfillmentReady(featureId, runDir, state.run);
   const sourcePath = await selectPromotionSource(runDir, state.task);
   const finalPath = join(runDir, 'qa_plan_final.md');
   if (await fileExists(finalPath)) {
@@ -139,9 +159,10 @@ async function runPhase7(featureId, runDir) {
   }
 
   await copyFile(sourcePath, finalPath);
+  const lineage = await buildFinalizationLineage(featureId, runDir);
   await writeFile(
     join(runDir, 'context', `finalization_record_${featureId}.md`),
-    `# Finalization Record\n\n- Source: ${sourcePath}\n- Promoted at: ${new Date().toISOString()}\n`,
+    `# Finalization Record\n\n- Source: ${sourcePath}\n- Promoted at: ${new Date().toISOString()}\n\n## Supporting Context Lineage\n${lineage.supporting}\n\n## Deep Research Lineage\n${lineage.research}\n`,
     'utf8'
   );
 
@@ -152,8 +173,15 @@ async function runPhase7(featureId, runDir) {
   let feishuWarning = '';
   try {
     await maybeNotifyFeishu(featureId, runDir);
+    state.run.notification_pending = false;
   } catch (error) {
     feishuWarning = `FEISHU_NOTIFY_FAILED: ${error.message}`;
+    state.run.notification_pending = {
+      feature_id: featureId,
+      final_path: finalPath,
+      error: error.message,
+      queued_at: new Date().toISOString(),
+    };
     console.log(feishuWarning);
   }
 
@@ -204,14 +232,19 @@ async function runPostValidation(featureId, runDir, phaseId) {
 async function postValidatePhase1(state) {
   const requestedSourceFamilies = normalizeRequestedSourceFamilies(state.task.requested_source_families);
   const spawnHistory = Array.isArray(state.run.spawn_history) ? state.run.spawn_history : [];
+  const runDir = dirname(state.taskPath);
+  const contextArtifactPaths = (await readdir(join(runDir, 'context')).catch(() => []))
+    .map((name) => `context/${name}`);
   const spawnPolicy = evaluateSpawnPolicy({ requestedSourceFamilies, spawnHistory });
   const completeness = evaluateEvidenceCompleteness({
     requestedSourceFamilies,
     spawnHistory,
     hasSupportingArtifacts: Boolean(state.run.has_supporting_artifacts),
+    contextArtifactPaths,
   });
+  const supportingContext = await validateSupportingContextArtifacts(state.task, runDir);
 
-  const failures = [...spawnPolicy.failures, ...completeness.failures];
+  const failures = [...spawnPolicy.failures, ...completeness.failures, ...supportingContext.failures];
   if (failures.length > 0) {
     const families = new Set();
     requestedSourceFamilies.forEach((sourceFamily) => {
@@ -238,6 +271,8 @@ async function postValidatePhase1(state) {
   state.task.current_phase = 'phase_1_evidence_gathering';
   state.task.overall_status = 'in_progress';
   state.run.data_fetched_at = new Date().toISOString();
+  state.run.supporting_context_generated_at = supportingContext.generated ? new Date().toISOString() : state.run.supporting_context_generated_at;
+  await updateRequestFulfillmentForPhase(state, 'phase1', supportingContext.executionLog);
   await saveState(state);
   console.log('PHASE_1_COMPLETE');
 }
@@ -246,9 +281,16 @@ async function postValidatePhase3(featureId, runDir, state) {
   const ledgerPath = join(runDir, 'context', `coverage_ledger_${featureId}.md`);
   const content = await readRequiredText(ledgerPath);
   assertValidation(validateCoverageLedger(content), 'coverage ledger');
+  const researchValidation = await validateDeepResearchArtifacts(featureId, runDir, state.task);
+  if (!researchValidation.ok) {
+    throw new Error(researchValidation.failures.join('; '));
+  }
   await writeArtifactLookup(featureId, runDir);
   state.task.current_phase = 'phase_3_coverage_mapping';
   state.run.coverage_ledger_generated_at = new Date().toISOString();
+  state.run.deep_research_generated_at = new Date().toISOString();
+  state.run.deep_research_fallback_used = researchValidation.fallbackUsed;
+  await updateRequestFulfillmentForPhase(state, 'phase3', researchValidation.executionLog);
   await saveState(state);
   console.log('PHASE_3_COMPLETE');
 }
@@ -258,7 +300,7 @@ async function postValidatePhase4a(featureId, runDir, state) {
   const content = await readRequiredText(draftPath);
   const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase4a');
   assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase4a', producedDraftPath: draftPath, expectedDraftPath }), 'phase4a round progression');
-  assertValidation(validatePhase4aSubcategoryDraft(content), 'phase4a subcategory draft');
+  assertValidation(validatePhase4aSubcategoryDraft(content, buildDesignValidationContext(state.task)), 'phase4a subcategory draft');
   assertValidation(validateExecutableSteps(content), 'phase4a draft');
   state.task.current_phase = 'phase_4a_subcategory_draft';
   updateLatestDraftMetadata(state.task, draftPath, 'phase4a');
@@ -278,7 +320,7 @@ async function postValidatePhase4b(runDir, state) {
   const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase4b');
   assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase4b', producedDraftPath: draftPath, expectedDraftPath }), 'phase4b round progression');
   assertValidation(validateDraftCoveragePreservation(beforeContent, content, { allowTopLayerChange: true }), 'phase4b coverage preservation');
-  assertValidation(validatePhase4bCategoryLayering(content), 'phase4b category layering');
+  assertValidation(validatePhase4bCategoryLayering(content, buildDesignValidationContext(state.task)), 'phase4b category layering');
   assertValidation(validateXMindMarkHierarchy(content), 'phase4b hierarchy');
   assertValidation(validateExecutableSteps(content), 'phase4b executable steps');
   assertValidation(validateE2EMinimum(content, { featureClassification: 'user_facing' }), 'phase4b e2e minimum');
@@ -313,7 +355,10 @@ async function postValidatePhase5a(featureId, runDir, state) {
   const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase5a');
   const roundProgression = validateRoundProgression({ task: state.task, phaseId: 'phase5a', producedDraftPath: afterPath, expectedDraftPath });
   assertValidation(
-    validateContextCoverageAudit(reviewNotesContent, auditReqs),
+    validateContextCoverageAudit(reviewNotesContent, auditReqs, {
+      requireSupportingAuditSection: normalizeIssueKeys(state.task.supporting_issue_keys).length > 0,
+      requireDeepResearchAuditSection: Array.isArray(state.task.deep_research_topics) && state.task.deep_research_topics.length > 0,
+    }),
     'phase5a context coverage audit'
   );
   assertValidation(
@@ -323,8 +368,11 @@ async function postValidatePhase5a(featureId, runDir, state) {
   assertValidation(validateSectionReviewChecklist(reviewNotesContent), 'phase5a section review checklist');
   assertValidation(validateReviewDelta(reviewDeltaContent), 'phase5a review delta');
   assertValidation(roundProgression, 'phase5a round progression');
+  const requestFulfillment = await loadRequestFulfillment(featureId, runDir);
   assertValidation(
-    validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundProgression.failures),
+    validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundProgression.failures, {
+      unsatisfiedBlockingRequirements: collectUnsatisfiedBlockingRequirements(requestFulfillment),
+    }),
     'phase5a acceptance gate'
   );
 
@@ -357,6 +405,11 @@ async function postValidatePhase5b(featureId, runDir, state) {
   assertValidation(validateDraftCoveragePreservation(beforeContent, afterContent), 'phase5b reviewed coverage preservation');
   assertValidation(validateCheckpointAudit(checkpointAuditContent), 'phase5b checkpoint audit');
   assertValidation(validateCheckpointDelta(checkpointDeltaContent), 'phase5b checkpoint delta');
+  const requestFulfillment = await loadRequestFulfillment(featureId, runDir);
+  const unsatisfiedBlockingRequirements = collectUnsatisfiedBlockingRequirements(requestFulfillment);
+  if (unsatisfiedBlockingRequirements.length > 0) {
+    throw new Error(`phase5b cannot recommend shipment while blocking request requirements remain unsatisfied: ${unsatisfiedBlockingRequirements.join(', ')}`);
+  }
 
   state.task.current_phase = 'phase_5b_checkpoint_refactor';
   state.task.return_to_phase = extractReturnToPhase(checkpointDeltaContent, ['## Final Disposition']);
@@ -382,7 +435,10 @@ async function postValidatePhase6(runDir, state) {
   assertValidation(validateExecutableSteps(draftContent), 'phase6 executable steps');
   assertValidation(validateXMindMarkHierarchy(draftContent), 'phase6 hierarchy');
   assertValidation(validateE2EMinimum(draftContent, { featureClassification: 'user_facing' }), 'phase6 e2e minimum');
-  assertValidation(validateQualityDelta(qualityDeltaContent), 'phase6 quality delta');
+  assertValidation(validateQualityDelta(qualityDeltaContent, {
+    deep_research_topics: Array.isArray(state.task.deep_research_topics) ? state.task.deep_research_topics : [],
+    hasSupportingContext: normalizeIssueKeys(state.task.supporting_issue_keys).length > 0,
+  }), 'phase6 quality delta');
 
   state.task.current_phase = 'phase_6_quality_refactor';
   state.task.return_to_phase = extractReturnToPhase(qualityDeltaContent, ['## Verdict']);
@@ -562,6 +618,323 @@ async function readExpectedOutputDraftPath(runDir, phaseId) {
   const outputPath = String(manifest?.requests?.[0]?.source?.output_draft_path || '').trim();
   if (!outputPath) return '';
   return outputPath.startsWith(runDir) ? outputPath : join(runDir, outputPath);
+}
+
+async function writePhase0RequestArtifacts(featureId, runDir, task, run) {
+  const contextDir = join(runDir, 'context');
+  const requestPath = join(contextDir, `supporting_issue_request_${featureId}.md`);
+  const fulfillmentJsonPath = join(contextDir, `request_fulfillment_${featureId}.json`);
+  const fulfillmentMdPath = join(contextDir, `request_fulfillment_${featureId}.md`);
+  const existingFulfillment = (await fileExists(fulfillmentJsonPath))
+    ? JSON.parse(await readFile(fulfillmentJsonPath, 'utf8'))
+    : null;
+  const fulfillment = mergeRequestFulfillment(
+    buildRequestFulfillmentModel(task, featureId),
+    existingFulfillment,
+  );
+  run.request_fulfillment_generated_at = new Date().toISOString();
+  run.unsatisfied_request_requirements = fulfillment.requirements
+    .filter((requirement) => requirement.blocking_on_missing)
+    .filter((requirement) => !isResolvedRequestStatus(requirement.status))
+    .map((requirement) => requirement.requirement_id);
+  await writeFile(requestPath, renderSupportingIssueRequest(task, featureId), 'utf8');
+  await writeJson(fulfillmentJsonPath, fulfillment);
+  await writeFile(fulfillmentMdPath, renderRequestFulfillmentMarkdown(fulfillment), 'utf8');
+}
+
+function assertSupportOnlyMode(task) {
+  const hasSupportIssues = normalizeIssueKeys(task.supporting_issue_keys).length > 0;
+  if (!hasSupportIssues) return;
+  if (String(task.supporting_issue_policy || '').trim() !== 'context_only_no_defect_analysis' || task.defect_analysis_mode === true) {
+    throw new Error('support-only issue context cannot be combined with defect-analysis mode');
+  }
+}
+
+function renderSupportingIssueRequest(task, featureId) {
+  const supportKeys = normalizeIssueKeys(task.supporting_issue_keys);
+  return `# Supporting Issue Request — ${featureId}
+
+- primary_feature_id: ${task.primary_feature_id || featureId}
+- seed_confluence_url: ${task.seed_confluence_url || 'none'}
+- supporting_issue_keys: ${supportKeys.join(', ') || 'none'}
+- support issue policy: ${task.supporting_issue_policy}
+- deep research policy: ${task.deep_research_policy}
+- deep research topics: ${(task.deep_research_topics || []).join(', ') || 'none'}
+`;
+}
+
+function renderRequestFulfillmentMarkdown(document) {
+  const rows = document.requirements.map((requirement) => {
+    return `| ${requirement.requirement_id} | ${requirement.required_phase} | ${requirement.status} | \`${(requirement.required_artifacts || []).join(', ')}\` | \`${(requirement.evidence_artifacts || []).join(', ')}\` | ${requirement.blocker_or_waiver_reason || '—'} |`;
+  }).join('\n');
+  return `# Request Fulfillment — ${document.feature_id}
+
+| Requirement ID | Phase | Status | Required Artifacts | Evidence Artifacts | Blocker / Waiver |
+|---|---|---|---|---|---|
+${rows}
+`;
+}
+
+async function validateSupportingContextArtifacts(task, runDir) {
+  const failures = [];
+  const executionLog = [];
+  const featureId = task.feature_id;
+  const supportKeys = normalizeIssueKeys(task.supporting_issue_keys);
+  if (supportKeys.length === 0) {
+    return { failures, executionLog, generated: false };
+  }
+  const requiredArtifacts = [
+    join(runDir, 'context', `supporting_issue_relation_map_${featureId}.md`),
+    join(runDir, 'context', `supporting_issue_summary_${featureId}.md`),
+    ...supportKeys.map((issueKey) => join(runDir, 'context', `supporting_issue_summary_${issueKey}_${featureId}.md`)),
+  ];
+  for (const artifactPath of requiredArtifacts) {
+    if (!(await fileExists(artifactPath))) {
+      failures.push(`Missing required supporting context artifact: ${artifactPath}`);
+    }
+  }
+  const contextFiles = await readdir(join(runDir, 'context')).catch(() => []);
+  const defectArtifacts = contextFiles.filter((name) => name.toLowerCase().includes('defect_analysis'));
+  if (defectArtifacts.length > 0) {
+    failures.push(`Supporting issues must not produce defect-analysis artifacts: ${defectArtifacts.join(', ')}`);
+  }
+  if (failures.length === 0) {
+    executionLog.push({
+      phase: 'phase1',
+      requirement_family: 'supporting_context',
+      status: 'satisfied',
+      artifacts: requiredArtifacts.map((artifactPath) => artifactPath.replace(`${runDir}/`, '')),
+    });
+  }
+  return { failures, executionLog, generated: failures.length === 0 };
+}
+
+async function validateDeepResearchArtifacts(featureId, runDir, task) {
+  const failures = [];
+  const executionLog = [];
+  let fallbackUsed = false;
+  const topics = Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0
+    ? task.deep_research_topics
+    : [];
+  if (topics.length === 0) {
+    return { ok: true, failures, executionLog, fallbackUsed };
+  }
+  const planPath = join(runDir, 'context', `deep_research_plan_${featureId}.md`);
+  if (!(await fileExists(planPath))) {
+    failures.push(`Deep research plan is missing: ${planPath}`);
+  }
+  const executionPath = join(runDir, 'context', `deep_research_execution_${featureId}.json`);
+  if (!(await fileExists(executionPath))) {
+    failures.push(`Deep research execution log is missing: ${executionPath}`);
+    return { ok: failures.length === 0, failures, executionLog, fallbackUsed };
+  }
+  const executionDocument = JSON.parse(await readFile(executionPath, 'utf8'));
+  const steps = Array.isArray(executionDocument.steps) ? executionDocument.steps : [];
+  for (const topic of topics) {
+    const tavilyPath = join(runDir, 'context', researchArtifactFilename('tavily', topic, featureId));
+    const confluencePath = join(runDir, 'context', researchArtifactFilename('confluence', topic, featureId));
+    const topicSteps = steps
+      .filter((step) => String(step.topic_slug || '').trim() === topic)
+      .sort((left, right) => Number(left.step || 0) - Number(right.step || 0));
+    const tavilyStep = topicSteps.find((step) => String(step.tool || '').trim().toLowerCase() === 'tavily-search');
+    const confluenceStep = topicSteps.find((step) => String(step.tool || '').trim().toLowerCase() === 'confluence');
+    if (!(await fileExists(tavilyPath))) {
+      failures.push(`Tavily-first artifact is missing for ${topic}: ${tavilyPath}`);
+      continue;
+    }
+    if (!tavilyStep) {
+      failures.push(`Deep research execution log is missing Tavily step for ${topic}.`);
+    } else {
+      executionLog.push({
+        phase: 'phase3',
+        topic_slug: topic,
+        tool: 'tavily-search',
+        status: tavilyStep.status || 'satisfied',
+        artifacts: Array.isArray(tavilyStep.artifacts) ? tavilyStep.artifacts : [tavilyPath.replace(`${runDir}/`, '')],
+        step: tavilyStep.step,
+      });
+    }
+    if (await fileExists(confluencePath)) {
+      fallbackUsed = true;
+      const tavilyContent = await readRequiredText(tavilyPath);
+      const hasInsufficiencyMarker = /INSUFFICIENT_TAVILY_EVIDENCE/i.test(tavilyContent);
+      const lowReferenceCount = /credible_reference_count:\s*([0-2])\b/i.test(tavilyContent);
+      const missingCheckpointEvidence = /missing_checkpoints:\s*(?!none\b).+/i.test(tavilyContent);
+      if (!confluenceStep) {
+        failures.push(`Deep research execution log is missing Confluence fallback step for ${topic}.`);
+      } else if (!tavilyStep || Number(confluenceStep.step || 0) <= Number(tavilyStep.step || 0)) {
+        failures.push(`Deep research execution order is invalid for ${topic}: Tavily must be recorded before Confluence fallback.`);
+      }
+      if (!hasInsufficiencyMarker) {
+        failures.push(`Confluence fallback for ${topic} requires insufficiency to be recorded in the Tavily artifact first.`);
+      }
+      if (!lowReferenceCount && !missingCheckpointEvidence) {
+        failures.push(`Confluence fallback for ${topic} requires machine-checkable Tavily insufficiency evidence.`);
+      }
+      executionLog.push({
+        phase: 'phase3',
+        topic_slug: topic,
+        tool: 'confluence',
+        status: confluenceStep?.status || 'satisfied',
+        artifacts: Array.isArray(confluenceStep?.artifacts) ? confluenceStep.artifacts : [confluencePath.replace(`${runDir}/`, '')],
+        step: confluenceStep?.step,
+      });
+    }
+  }
+  const synthesisPath = join(runDir, 'context', `deep_research_synthesis_report_editor_${featureId}.md`);
+  if (!(await fileExists(synthesisPath))) {
+    failures.push(`Deep research synthesis is missing: ${synthesisPath}`);
+  }
+  return { ok: failures.length === 0, failures, executionLog, fallbackUsed };
+}
+
+function buildDesignValidationContext(task) {
+  return {
+    requireSupportTrace: normalizeIssueKeys(task.supporting_issue_keys).length > 0,
+    requireResearchTrace: Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0,
+    requireTraceability: normalizeIssueKeys(task.supporting_issue_keys).length > 0
+      || Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0,
+    requiredTopics: Array.isArray(task.deep_research_topics) ? task.deep_research_topics : [],
+  };
+}
+
+async function loadRequestFulfillment(featureId, runDir) {
+  const jsonPath = join(runDir, 'context', `request_fulfillment_${featureId}.json`);
+  if (!(await fileExists(jsonPath))) return null;
+  return JSON.parse(await readFile(jsonPath, 'utf8'));
+}
+
+function collectUnsatisfiedBlockingRequirements(document) {
+  const requirements = Array.isArray(document?.requirements) ? document.requirements : [];
+  return requirements
+    .filter((requirement) => requirement.blocking_on_missing)
+    .filter((requirement) => !isResolvedRequestStatus(requirement.status))
+    .map((requirement) => requirement.requirement_id);
+}
+
+async function updateRequestFulfillmentForPhase(state, phaseId, executionLog = []) {
+  const featureId = state.task.feature_id;
+  const runDir = dirname(state.taskPath);
+  const jsonPath = join(runDir, 'context', `request_fulfillment_${featureId}.json`);
+  const markdownPath = join(runDir, 'context', `request_fulfillment_${featureId}.md`);
+  const document = (await fileExists(jsonPath))
+    ? JSON.parse(await readFile(jsonPath, 'utf8'))
+    : buildRequestFulfillmentModel(state.task, featureId);
+  const requirements = Array.isArray(document.requirements) ? document.requirements : [];
+  for (const requirement of requirements) {
+    if (String(requirement.required_phase || '').trim().toLowerCase() !== phaseId) continue;
+    const requiredArtifacts = Array.isArray(requirement.required_artifacts) ? requirement.required_artifacts : [];
+    const evidenceArtifacts = [];
+    for (const artifactPath of requiredArtifacts) {
+      if (await fileExists(join(runDir, artifactPath))) {
+        evidenceArtifacts.push(artifactPath);
+      }
+    }
+    if (evidenceArtifacts.length === requiredArtifacts.length) {
+      requirement.status = 'satisfied';
+      requirement.evidence_artifacts = evidenceArtifacts;
+      requirement.blocker_or_waiver_reason = '';
+    }
+  }
+  document.generated_at = new Date().toISOString();
+  state.run.request_execution_log = mergeExecutionLog(state.run.request_execution_log, executionLog);
+  state.run.request_fulfillment_generated_at = document.generated_at;
+  state.run.unsatisfied_request_requirements = requirements
+    .filter((requirement) => requirement.blocking_on_missing)
+    .filter((requirement) => !isResolvedRequestStatus(requirement.status))
+    .map((requirement) => requirement.requirement_id);
+  await writeJson(jsonPath, document);
+  await writeFile(markdownPath, renderRequestFulfillmentMarkdown(document), 'utf8');
+}
+
+function mergeExecutionLog(existing, additions) {
+  const current = Array.isArray(existing) ? [...existing] : [];
+  for (const addition of additions) {
+    const fingerprint = JSON.stringify(addition);
+    if (!current.some((entry) => JSON.stringify(entry) === fingerprint)) {
+      current.push(addition);
+    }
+  }
+  return current;
+}
+
+function mergeRequestFulfillment(nextDocument, existingDocument) {
+  if (!existingDocument || !Array.isArray(existingDocument.requirements)) {
+    return nextDocument;
+  }
+  const priorById = new Map(
+    existingDocument.requirements.map((requirement) => [String(requirement.requirement_id || '').trim(), requirement])
+  );
+  nextDocument.requirements = nextDocument.requirements.map((requirement) => {
+    const previous = priorById.get(String(requirement.requirement_id || '').trim());
+    if (!previous) return requirement;
+    return {
+      ...requirement,
+      status: previous.status || requirement.status,
+      evidence_artifacts: Array.isArray(previous.evidence_artifacts) ? previous.evidence_artifacts : requirement.evidence_artifacts,
+      blocker_or_waiver_reason: previous.blocker_or_waiver_reason || requirement.blocker_or_waiver_reason,
+    };
+  });
+  return nextDocument;
+}
+
+async function assertRequestFulfillmentReady(featureId, runDir, run) {
+  const jsonPath = join(runDir, 'context', `request_fulfillment_${featureId}.json`);
+  if (!(await fileExists(jsonPath))) {
+    throw new Error(`Missing request fulfillment artifact: ${jsonPath}`);
+  }
+  const document = JSON.parse(await readFile(jsonPath, 'utf8'));
+  const requirements = Array.isArray(document.requirements) ? document.requirements : [];
+  for (const requirement of requirements) {
+    if (String(requirement.status || '').trim().toLowerCase() !== 'satisfied') continue;
+    const artifacts = Array.isArray(requirement.evidence_artifacts)
+      ? requirement.evidence_artifacts
+      : Array.isArray(requirement.required_artifacts)
+        ? requirement.required_artifacts
+        : [];
+    for (const artifactPath of artifacts) {
+      const absPath = join(runDir, String(artifactPath || '').trim());
+      if (artifactPath && !(await fileExists(absPath))) {
+        throw new Error(
+          `Required artifact no longer exists (deleted or moved): ${artifactPath}. ` +
+          `Cannot finalize without evidence for requirement ${requirement.requirement_id || 'unknown'}.`
+        );
+      }
+    }
+  }
+  const unsatisfiedBlockingRequirements = collectUnsatisfiedBlockingRequirements(document);
+  if (unsatisfiedBlockingRequirements.length > 0) {
+    throw new Error(`Cannot finalize with unsatisfied blocking request requirements: ${unsatisfiedBlockingRequirements.join(', ')}`);
+  }
+  const validation = validateRequestFulfillmentStatus(document);
+  if (!validation.ok) {
+    throw new Error(validation.failures.join('; '));
+  }
+}
+
+function isResolvedRequestStatus(status) {
+  return ['satisfied', 'blocked_with_reason', 'explicitly_waived_by_user'].includes(
+    String(status || '').trim().toLowerCase()
+  );
+}
+
+async function buildFinalizationLineage(featureId, runDir) {
+  const supportSummary = join(runDir, 'context', `supporting_issue_summary_${featureId}.md`);
+  const researchSynthesis = join(runDir, 'context', `deep_research_synthesis_report_editor_${featureId}.md`);
+  return {
+    supporting: (await fileExists(supportSummary)) ? `- \`context/supporting_issue_summary_${featureId}.md\`` : '- none',
+    research: (await fileExists(researchSynthesis)) ? `- \`context/deep_research_synthesis_report_editor_${featureId}.md\`` : '- none',
+  };
+}
+
+function researchArtifactFilename(kind, topic, featureId) {
+  if (topic === 'report_editor_workstation_functionality') {
+    return `deep_research_${kind}_report_editor_workstation_${featureId}.md`;
+  }
+  if (topic === 'report_editor_library_vs_workstation_gap') {
+    return `deep_research_${kind}_library_vs_workstation_gap_${featureId}.md`;
+  }
+  return `deep_research_${kind}_${topic}_${featureId}.md`;
 }
 
 async function maybeNotifyFeishu(featureId, runDir) {
