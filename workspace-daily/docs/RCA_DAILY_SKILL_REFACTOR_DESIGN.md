@@ -1789,9 +1789,14 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 - [x] Phase 4 posts Jira description and comment in separate steps so `success` vs `partial_success` is representable
 - [x] Phase4: append description (MERGE) + add comment with mentions (tqang, owner); `resolve_plan_user` supports "Xue, Yin" plan names
 - [x] Phase 3 is blocking and autonomous: batch spawn, wait, write `spawn-results.json`, then mark the phase complete before Phase 4 starts
+<<<<<<< Updated upstream
 - [x] Phase 3 reconciles terminal generation status for every issue in `manifest.json` before Phase 4 is allowed to start
 - [x] Phase 4 publish eligibility is state-driven (`generated`) rather than file-driven; stale RCA files are ignored for non-generated items
 - [x] Publish status model is coherent: `success` | `partial_success` | `skipped_no_rca` | `failed`
+=======
+- [x] Phase 3 enforces terminal completeness against `manifest.json.total_issues` before Phase 4 is allowed to start
+- [x] Publish status model is coherent: `success` | `partial_success` | `failed`
+>>>>>>> Stashed changes
 - [x] `run.json` timestamp semantics are split cleanly between `output_generated_at` and `jira_published_at`
 - [x] Jira scripts (phase2, phase4) call `load_jira_env_from_skill` before any Jira operation; phase2 uses `jira-run.sh` (not raw `jira`)
 - [x] Feishu failure persists `notification_pending` in `run.json` and does not block run completion
@@ -1800,9 +1805,15 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 - [x] Usage documented in README; scheduling in OpenClaw
 - [x] `.agents/skills/rca/SKILL.md` content is specified — 9-section template, input/output contract, fetching rules
 - [x] `workspace-daily/skills/rca-orchestrator/SKILL.md` content is specified — phases, invocation, artifact locations
+<<<<<<< Updated upstream
 - [x] Each script has a corresponding `scripts/test/` file (stub sufficient); see §4.11
 - [x] Reviewer report artifact paths are defined — `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.md`, `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.json`
 - [ ] Reviewer rerun for the 2026-03-10 revision must refresh the report artifacts and final reviewer status before approval
+=======
+- [x] Each script has a corresponding test file (stub sufficient); see §4.11
+- [x] Reviewer report artifacts generated — `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.md`, `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.json`
+- [x] Reviewer status (`openclaw-agent-design-review`) recorded as `pass_with_advisories`
+>>>>>>> Stashed changes
 
 ---
 
