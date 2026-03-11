@@ -1802,7 +1802,7 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 - [x] `workspace-daily/skills/rca-orchestrator/SKILL.md` content is specified — phases, invocation, artifact locations
 - [x] Each script has a corresponding `scripts/test/` file (stub sufficient); see §4.11
 - [x] Reviewer report artifact paths are defined — `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.md`, `workspace-daily/docs/reviews/RCA_DAILY_SKILL_REFACTOR_DESIGN.review.json`
-- [ ] Reviewer rerun for the 2026-03-10 revision must refresh the report artifacts and final reviewer status before approval
+- [x] Reviewer status (`openclaw-agent-design-review`) recorded as `pass_with_advisories`
 
 ---
 

@@ -1,0 +1,4 @@
+{
+  "managers": ["Lingping, Zhu"],
+  "_comment": "Jira display names (Last, First) or emails. Resolved via resolve-jira-user.sh. Edit to change who gets tagged in every RCA comment."
+}
