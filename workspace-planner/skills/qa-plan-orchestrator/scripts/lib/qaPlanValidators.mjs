@@ -975,6 +975,19 @@ export function validateContextCoverageAudit(content, requiredEntries = [], opti
       failures.push('Missing ## Deep Research Coverage Audit section.');
     }
   }
+
+  if (options.requireSupportingAuditSection) {
+    const supportRows = extractRowsForSection(content, '## Supporting Artifact Coverage Audit', 6);
+    if (supportRows.length === 0) {
+      failures.push('Missing ## Supporting Artifact Coverage Audit section.');
+    }
+  }
+  if (options.requireDeepResearchAuditSection) {
+    const researchRows = extractRowsForSection(content, '## Deep Research Coverage Audit', 6);
+    if (researchRows.length === 0) {
+      failures.push('Missing ## Deep Research Coverage Audit section.');
+    }
+  }
   return { ok: failures.length === 0, failures };
 }
 
