@@ -1752,6 +1752,86 @@ test('validateScenarioGranularity rejects missing_visible_outcome rewrite when g
   assert.match(result.failures.join('\n'), /RR3/);
 });
 
+// ---------------------------------------------------------------------------
+// §3.3 — Grouping bullet carrying a priority tag must be rejected (Phase 4b)
+// ---------------------------------------------------------------------------
+
+test('validatePhase4bCategoryLayering rejects grouping bullets that carry priority tags', () => {
+  // Wrong pattern from guide §3.3: subcategory/grouping node has <P1> tag,
+  // making the validator treat it as a scenario directly under the top layer.
+  const result = validatePhase4bCategoryLayering(`Feature QA Plan (BCIN-GTAG)
+
+- Core Functional Flows
+    - Editor Selection & Routing <P1>
+        * Enable preference loads the editor <P1>
+            - Open user preferences
+                - Toggle the embedded editor setting on
+                    - The embedded editor appears in the workspace
+`);
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /subcategory layer/i);
+});
+
+// ---------------------------------------------------------------------------
+// §3.4 — `all sections` text is forbidden in the Context Artifact Coverage Audit
+// ---------------------------------------------------------------------------
+
+test('validateContextCoverageAudit rejects review notes that use "all sections" as a heading placeholder', () => {
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/confluence_design_BCIN-1.md | all sections | consumed | EndToEnd > Authentication | primary journey | covered
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | jira_issue_BCIN-1.md | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+`;
+  // Pass the offending artifact's heading as a required entry; the audit row
+  // uses "all sections" instead of the explicit heading name, which should fail.
+  const requiredArtifacts = [
+    'context/confluence_design_BCIN-1.md::## Introduction',
+  ];
+
+  const result = validateContextCoverageAudit(reviewNotes, requiredArtifacts);
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /all sections/i);
+});
+
+test('validateContextCoverageAudit accepts review notes with explicit heading rows', () => {
+  const reviewNotes = `# Review Notes
+
+## Context Artifact Coverage Audit
+- context/confluence_design_BCIN-1.md | ## Introduction | consumed | EndToEnd > Authentication | primary journey | covered
+
+## Section Review Checklist
+- EndToEnd | primary user journey reaches a visible completion or recovery outcome | pass | jira_issue_BCIN-1.md | none
+
+## Blocking Findings
+- none
+
+## Advisory Findings
+- none
+
+## Rewrite Requests
+- none
+`;
+  const requiredArtifacts = [
+    'context/confluence_design_BCIN-1.md::## Introduction',
+  ];
+
+  const result = validateContextCoverageAudit(reviewNotes, requiredArtifacts);
+  assert.equal(result.ok, true);
+});
+
 test('validateScenarioGranularity passes when missing_visible_outcome rewrite is properly resolved', () => {
   const scenarioUnits = `# Scenario Units
 

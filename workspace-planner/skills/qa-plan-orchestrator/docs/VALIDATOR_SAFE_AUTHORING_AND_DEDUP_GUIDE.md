@@ -406,3 +406,49 @@ If the user explicitly asks for Security or Performance to be added, later phase
 8. record any replacement explicitly in preservation audit rows
 
 These rules should make future runs both cleaner and significantly faster.
+
+---
+
+## 9. Implementation Progress
+
+This section tracks the status of each recommendation from this guide.
+
+### 9.1 Commit `a0a6473` (2026-03-11) — Initial documentation and contract hardening
+
+| Guide Section | Recommendation | Status | Where |
+|---|---|---|---|
+| §3.2 | No compressed arrow wording in Phase 4a | ✅ done | `SUBAGENT_QUICK_CHECKLIST.md`, preflight in `spawnManifestBuilders.mjs` |
+| §3.2 | No implementation-heavy wording | ✅ done | `SUBAGENT_QUICK_CHECKLIST.md`, preflight |
+| §3.3 | Canonical top layers must be real top-level bullets | ✅ done | `references/phase4b-contract.md` |
+| §3.3 | No priority tags on grouping/subcategory bullets | ✅ done | `references/phase4b-contract.md`, `SUBAGENT_QUICK_CHECKLIST.md`, `templates/qa-plan-template.md` |
+| §3.3 | No duplicate label as both grouping and scenario | ✅ done | `references/phase4b-contract.md` |
+| §3.4 | Context audit must enumerate headings — not `all sections` | ✅ done | `references/review-rubric-phase5a.md` |
+| §3.4 | Coverage Preservation Audit row requirements | ✅ done | `references/review-rubric-phase5a.md` |
+| §3.4 | Blocking findings ↔ rewrite requests linkage rule | ✅ done | `references/review-rubric-phase5a.md` |
+| §3.4 | `accept` forbidden while `rewrite_required` rows exist | ✅ done | `references/review-rubric-phase5a.md` |
+| §3.5 | Exact checkpoint labels (`Checkpoint 1`…`Checkpoint 15`) | ✅ done | `references/review-rubric-phase5b.md` (new file) |
+| §3.6 | Resolution sections must be row-like, not prose-only | ✅ done | `references/review-rubric-phase5b.md` |
+| §3.6 | `Final Disposition` must end with exact single bullet | ✅ done | `references/review-rubric-phase5b.md` |
+| §4–5 | Dedup only when trigger + risk + outcome match | ✅ done | `references/phase4b-contract.md`, `references/context-coverage-contract.md` |
+| §7.1 | Dedup subsection in phase4b and phase5a references | ✅ done | `references/phase4b-contract.md`, `references/review-rubric-phase5a.md` |
+| §7.2 | Template comments for grouping vs. scenario | ✅ done | `templates/qa-plan-template.md` (complete rewrite) |
+| §7.4 | User-promoted coverage overrides deferred stubs | ✅ done | `references/context-coverage-contract.md`, preflight |
+| §7.3 | Final plan summary artifact | ⏳ stub only | `reference.md` §Phase 7 stub entry added; generator not yet implemented |
+
+### 9.2 Post-`a0a6473` follow-up fixes (2026-03-11)
+
+These gaps were identified after the initial commit and resolved in the follow-up:
+
+| Gap | Fix | Where |
+|---|---|---|
+| `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md` and `docs/SUBAGENT_QUICK_CHECKLIST.md` not registered as required docs | Added to `REQUIRED_FILES` in `docsContract.test.mjs` | `tests/docsContract.test.mjs` |
+| No contract assertions for new phase4b / phase5b / phase5a rules | Added 4 new contract tests | `tests/docsContract.test.mjs` |
+| `buildPhaseTaskText` preflight injection untested | Added 3 manifest tests (phase4b, phase5a, phase5b) verifying checklist path, preflight block, and grouping-tag rule appear in generated task text | `scripts/test/spawnManifestBuilders.test.mjs` |
+| No test for grouping bullet carrying priority tag (§3.3 wrong pattern) | Added `validatePhase4bCategoryLayering rejects grouping bullets that carry priority tags` | `tests/planValidators.test.mjs` |
+| No test for `all sections` prohibition in context audit (§3.4) | Added `validateContextCoverageAudit` rejects/accepts tests + enforcement check in validator | `scripts/lib/qaPlanValidators.mjs`, `tests/planValidators.test.mjs` |
+
+### 9.3 Still open
+
+| Recommendation | Status | Notes |
+|---|---|---|
+| §7.3 Final plan summary artifact generator | ⏳ not yet implemented | Stub documented in `reference.md`. Requires Phase 7 script update to emit `context/final_plan_summary_<feature-id>.md` with scenario counts, P1/P2 split, section distribution, and dedup/preservation log. |
