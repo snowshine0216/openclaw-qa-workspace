@@ -1,8 +1,9 @@
 # QA Test Key Points Interactive Page
 
-Local-first app for visualizing and editing `## 🧪 Test Key Points` in:
+Local-first app for visualizing and editing `## 🧪 Test Key Points` in QA plan finals:
 
-- `workspace-planner/projects/feature-plan/<feature-id>/qa_plan_final.md`
+- Plans live under a runs root (set via `QA_PLAN_RUNS_ROOT` or `FQPO_RUNS_ROOT`): `<runs-root>/<feature-id>/qa_plan_final.md`
+- The skill root can be anywhere; the runs root is `<skill-root>/runs/` by default
 
 The app reads markdown, renders an XMind-style graph, supports inline editing, and writes only the target section back with backup-on-change.
 
@@ -123,7 +124,7 @@ npm run test:e2e:headed
 - Playwright starts server with:
   - `WORKSPACE_ROOT=tests/e2e/workspace`
   - `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709`
-- This means E2E tests do not modify real feature plan folders.
+- This means E2E tests do not modify real qa-plan orchestrator run folders.
 - Covered behaviors:
   - graph hierarchy rendering
   - add-category/add-subtopic behavior
@@ -133,7 +134,7 @@ npm run test:e2e:headed
 ## Safety Rules
 
 - feature id regex validation: `^[A-Za-z0-9._-]+$`
-- path traversal guard: file operations restricted to `workspace-planner/projects/feature-plan`
+- path traversal guard: file operations restricted to the configured runs root
 - optional write guard via env var:
   - `QA_KEYPOINTS_READ_ONLY_FEATURE_IDS=BCIN-6709,OTHER-FEATURE`
 - malformed/missing required columns block writes

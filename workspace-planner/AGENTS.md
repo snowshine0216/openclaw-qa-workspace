@@ -24,7 +24,7 @@ _Operating instructions for test planning and strategy._
 
 ## Core Workflow: Feature QA Planning (Master Orchestrator)
 
-ALWAYS use `feature-qa-planning-orchestrator` skill to orchestrate the QA plan generation process.
+ALWAYS use `qa-plan-orchestrator` skill to orchestrate the QA plan generation process.
 
 ```
 Phase 0 → Runtime preparation and existing-state check (idempotency)

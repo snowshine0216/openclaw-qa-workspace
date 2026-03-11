@@ -42,8 +42,22 @@ export class QaPlanFileRepository {
   private readonly featurePlanRoot: string;
   private readonly readOnlyFeatureIds: Set<string>;
 
-  constructor(private readonly workspaceRoot: string) {
-    this.featurePlanRoot = path.resolve(this.workspaceRoot, 'workspace-planner/projects/feature-plan');
+  constructor(
+    private readonly workspaceRoot: string,
+    runsRoot?: string,
+  ) {
+    const resolved =
+      runsRoot ??
+      process.env.QA_PLAN_RUNS_ROOT ??
+      process.env.FQPO_RUNS_ROOT;
+    if (!resolved) {
+      throw new Error(
+        'QA plan runs root must be set: pass runsRoot to constructor or set QA_PLAN_RUNS_ROOT or FQPO_RUNS_ROOT',
+      );
+    }
+    this.featurePlanRoot = path.isAbsolute(resolved)
+      ? resolved
+      : path.resolve(this.workspaceRoot, resolved);
     this.readOnlyFeatureIds = parseReadOnlyFeatureIds(process.env.QA_KEYPOINTS_READ_ONLY_FEATURE_IDS);
   }
 
@@ -52,7 +66,7 @@ export class QaPlanFileRepository {
     const planPath = path.resolve(this.featurePlanRoot, featureId, 'qa_plan_final.md');
     const rootWithSep = `${this.featurePlanRoot}${path.sep}`;
     if (!planPath.startsWith(rootWithSep)) {
-      throw new Error(`Resolved path escaped feature-plan root: ${planPath}`);
+      throw new Error(`Resolved path escaped runs root: ${planPath}`);
     }
     return planPath;
   }
