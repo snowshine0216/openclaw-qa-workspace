@@ -28,7 +28,7 @@ Run these steps in order before finalizing any design doc:
 
 ## 1. Design Doc Template
 
-Every design output must follow this structure. Sections 8, 9, and 12 are mandatory only for script-bearing skills.
+Every design output must follow this structure. Sections 8, 9, and 12 are mandatory only for script-bearing skills. Section 8a is mandatory when the skill is contract-heavy or script-bearing with behavioral validation.
 
 ```markdown
 # <Agent Name> — Agent Design
@@ -46,19 +46,23 @@ Every design output must follow this structure. Sections 8, 9, and 12 are mandat
 
 ## 1. Design Deliverables
 
-## 2. AGENTS.md Sync
+## 2. AGENTS.md (to change)
 
 ## 3. Skills Content Specification
-
-## 4. reference.md Content Specification
+### 3.x skill-SKILL.md (detailed)
+### 4.x skill-reference.md (detailed)
 
 ## 5. Workflow Design
 
-## 6. State Schemas
+## 6. Data Models
 
 ## 7. Implementation Layers
 
-## 8. Script Inventory and Function Specifications
+## 8. Functions in Scripts
+### Function inventory
+### Functional design (per script)
+
+## 8a. Evals (when applicable)
 
 ## 9. Script Test Stub Matrix
 
@@ -119,9 +123,11 @@ If the workflow publishes, updates, or completes externally visible work, includ
 
 ## 3. Skills Content Specification
 
-For each created or materially redesigned skill, specify the exact content expected in `SKILL.md`.
+For each created or materially redesigned skill, specify the exact content expected in `SKILL.md` and `reference.md`.
 
-### Required subsection per skill
+### 3.x skill-SKILL.md (detailed)
+
+Required subsection per skill:
 
 ```markdown
 ### 3.x `<skill-path>/SKILL.md`
@@ -157,11 +163,9 @@ Existing skills reused directly:
 - `<skill-name>` — <why direct reuse is sufficient>
 ```
 
-## 4. `reference.md` Content Specification
+e### 4.x skill-reference.md (detailed)
 
-For each created or materially redesigned skill, specify what belongs in `reference.md`.
-
-### Required subsection per skill
+For each created or materially redesigned skill, specify what belongs in `reference.md`. Required subsection per skill:
 
 ```markdown
 ### 4.x `<skill-path>/reference.md`
@@ -232,7 +236,9 @@ Verification:
 | `<status>` | <event> | `<status>` |
 | any | unrecoverable error | `failed` |
 
-## 6. State Schemas
+## 6. Data Models
+
+State schemas, `task.json`, `run.json`, and artifact schemas. Include field types and write rules.
 
 ### `task.json`
 
@@ -292,19 +298,41 @@ Write rule: preserve current semantics by default, keep changes additive and bac
     └── test/
 ```
 
+#### Contract-heavy or script-bearing skill (evals)
+
+When a skill has behavioral contracts, state transitions, or validation rules, add `evals/`:
+
+```text
+<skill-root>/
+├── SKILL.md
+├── reference.md
+├── scripts/
+│   ├── <entrypoint-or-helper>
+│   ├── lib/
+│   └── test/
+└── evals/
+    └── evals.json
+```
+
 ### Standards Exception Note
 
 Every script-bearing design must state that OpenClaw uses `scripts/test/` as a package-local exception instead of a top-level `tests/` directory.
 
-## 8. Script Inventory and Function Specifications
+## 8. Functions in Scripts
 
 Required only for script-bearing skills.
+
+### Function inventory
+
+Table of script path, function name, and responsibility for each script.
+
+### Functional design (per script)
 
 For each script, include:
 - script purpose
 - invocation and arguments
 - inputs / outputs / artifacts
-- a function inventory table
+- a function spec table
 
 ### Required function table format
 
@@ -313,6 +341,10 @@ For each script, include:
 |----------|----------------|--------|---------|--------------|--------------|
 | `main` | <orchestration summary> | argv | stdout / files | reads/writes files | exit code and condition |
 ```
+
+## 8a. Evals (when applicable)
+
+Required when the skill has behavioral contracts, state transitions, or validation rules. Include `evals/evals.json` with `skill_name` and `evals` array (id, prompt, expected_output, files). See `.agents/skills/openclaw-agent-design/reference.md` Evals Folder Rule.
 
 ## 9. Script Test Stub Matrix
 
@@ -338,7 +370,8 @@ Explicit inventory. Cross-reference with Section 1 (Deliverables).
 4. `<workspace>/skills/<local-skill>/SKILL.md` — create/update when workspace-local capability is introduced or changed
 5. `<skill-root>/scripts/` — create/update only when helper automation is required
 6. `<skill-root>/scripts/test/` — create/update for every script-bearing skill
-7. `AGENTS.md` — update to reflect the final contract
+7. `<skill-root>/evals/evals.json` — create/update when skill has behavioral contracts
+8. `AGENTS.md` — update to reflect the final contract
 
 ## 11. README Impact
 
@@ -374,6 +407,7 @@ Docs-only skills may omit this section or mark it `Not applicable — no in-scop
 - [ ] Docs-only skills are not forced to carry script-test sections
 - [ ] AGENTS.md sync is explicit
 - [ ] README impact is explicitly addressed
+- [ ] Contract-heavy skills include `evals/evals.json` when behavioral validation is expected
 - [ ] Reviewer report artifacts are explicit: `projects/agent-design-review/<design_id>/design_review_report.md` and `projects/agent-design-review/<design_id>/design_review_report.json`
 - [ ] Reviewer status (`openclaw-agent-design-review`): `pass` or `pass_with_advisories`
 

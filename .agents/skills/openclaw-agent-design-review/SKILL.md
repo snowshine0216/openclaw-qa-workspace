@@ -74,8 +74,11 @@ Required report fields:
 - [ ] `skill-creator` is required for new or materially redesigned skills.
 - [ ] `code-structure-quality` is required for skill boundary and ownership design.
 - [ ] Existing shared skills `jira-cli`, `confluence`, and `feishu-notify` are reused directly when they fit.
-- [ ] Every created or redesigned skill has explicit `SKILL.md` content requirements.
-- [ ] Every created or redesigned skill has explicit `reference.md` content requirements.
+- [ ] Every created or redesigned skill has explicit `SKILL.md` content requirements (skill-SKILL.md detailed subsection).
+- [ ] Every created or redesigned skill has explicit `reference.md` content requirements (skill-reference.md detailed subsection).
+- [ ] Design includes `## Data Models` when state or artifact schemas exist.
+- [ ] Design includes `## Functions in Scripts` with function inventory and functional design when script-bearing.
+- [ ] Contract-heavy skills include `evals/evals.json` when behavioral validation is expected.
 - [ ] Script-bearing skills include package structure, script inventory, function-level details, and one-to-one test-stub mapping under `scripts/test/`.
 - [ ] Docs-only skills are not failed for omitting script-test sections.
 - [ ] Script changes include executable validation evidence when non-trivial.
