@@ -21,6 +21,8 @@ const REQUIRED_FILES = [
   'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_SPEC.md',
   'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_IMPLEMENTATION_SUMMARY.md',
   'docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md',
+  'docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md',
+  'docs/SUBAGENT_QUICK_CHECKLIST.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN_REVIEW.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_IMPLEMENTATION_SUMMARY.md',
@@ -134,4 +136,47 @@ test('active docs advertise script-driven artifacts and source routing', async (
   assert.match(evals, /"support_context_integrity"/);
   assert.match(evals, /"deep_research_ordering"/);
   assert.match(evals, /"request_fulfillment"/);
+});
+
+test('phase4b contract enforces validator-safe layering and deduplication rules', async () => {
+  const phase4bContract = await readFile(join(SKILL_ROOT, 'references', 'phase4b-contract.md'), 'utf8');
+
+  assert.match(phase4bContract, /subcategory\/grouping bullets must never carry.*P1.*P2/i);
+  assert.match(phase4bContract, /executable scenario bullets must carry priority tags/i);
+  assert.match(phase4bContract, /do not duplicate the same label as both/i);
+  assert.match(phase4bContract, /prefer one executable scenario per unique trigger.*risk.*observable outcome/i);
+  assert.match(phase4bContract, /Deduplication Rules/i);
+  assert.match(phase4bContract, /Validator-Safe Layering Rules/i);
+});
+
+test('phase5b rubric enforces canonical checkpoint labels and exact Final Disposition', async () => {
+  const phase5bRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md'), 'utf8');
+
+  assert.match(phase5bRubric, /Checkpoint 1/);
+  assert.match(phase5bRubric, /Checkpoint 15/);
+  assert.match(phase5bRubric, /Do not use bare numeric ids like `1`, `2`, `3`/i);
+  assert.match(phase5bRubric, /Final Disposition.*must end with exactly one bullet/is);
+  assert.match(phase5bRubric, /Resolution sections must contain row-like bullet entries, not prose-only paragraphs/i);
+});
+
+test('phase5a rubric enforces all-sections prohibition and acceptance gate', async () => {
+  const phase5aRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5a.md'), 'utf8');
+
+  assert.match(phase5aRubric, /Do not summarize an artifact as `all sections`/i);
+  assert.match(phase5aRubric, /accept.*is forbidden while any round-integrity or coverage-preservation item remains/i);
+  assert.match(phase5aRubric, /required action.*text.*must closely match/i);
+});
+
+test('validator-safe guide and subagent checklist advertise the correct operational rules', async () => {
+  const guide = await readFile(join(SKILL_ROOT, 'docs', 'VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md'), 'utf8');
+  const checklist = await readFile(join(SKILL_ROOT, 'docs', 'SUBAGENT_QUICK_CHECKLIST.md'), 'utf8');
+
+  assert.match(guide, /validator-safe beats prose-pretty/i);
+  assert.match(guide, /never put priority tags on grouping bullets/i);
+  assert.match(guide, /never use `all sections` in context audits/i);
+  assert.match(guide, /Checkpoint 1.*Checkpoint 15/is);
+  assert.match(guide, /deduplicate by unique trigger.*risk.*outcome/i);
+  assert.match(checklist, /Do only executable scenario bullets carry.*P1.*P2/i);
+  assert.match(checklist, /Does.*Checkpoint Summary.*use exact labels/i);
+  assert.match(checklist, /VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE/i);
 });

@@ -323,6 +323,7 @@ Requirements:
 
 function buildPhaseTaskText(phaseId, featureId, runDir, task) {
   const paths = resolvePhasePaths(phaseId, featureId, runDir, task);
+  const checklistPath = join(SKILL_ROOT, 'docs', 'SUBAGENT_QUICK_CHECKLIST.md');
   const descriptions = {
     phase3: buildPhase3Description(featureId, runDir, task),
     phase4a: `Read current context artifacts, stay below canonical top-layer grouping, and write ${paths.outputDraftPath}. You may do one bounded supplemental research pass with shared skills when evidence is insufficient, save any new artifact under ${runDir}/context, and update artifact lookup references before finishing.`,
@@ -350,6 +351,13 @@ Requirements:
 - Update artifact lookup columns for artifacts you read when applicable.
 - Use only the shared skills \`confluence\`, \`jira-cli\`, and \`tavily-search\` for any bounded supplemental research.
 - Return the written artifact paths in the session result.
+
+Preflight before you write or return any artifact:
+- Read ${checklistPath} and apply it as a short validator-safe self-check.
+- Do not tag grouping/subcategory bullets with \`<P1>\` / \`<P2>\`.
+- Deduplicate only when trigger, risk, and observable outcome are materially the same.
+- When a user explicitly promoted a coverage area, do not leave it as a deferred-only stub.
+- Prefer user-observable wording over implementation-heavy wording in executable scenarios.
 
 Task:
 ${description}`;

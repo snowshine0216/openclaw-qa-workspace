@@ -17,10 +17,8 @@ load_jira_env() { return 0; }
 EOF
 cat > "${MOCK_JIRA}/resolve-jira-user.sh" <<'EOF'
 #!/usr/bin/env bash
-if [[ "${1}" == "tqang@microstrategy.com" ]]; then
-  exit 1
-fi
-printf '[{"id":"acc","text":"@User","displayName":"User"}]\n'
+# Return valid Jira user JSON for manager/owner resolution (Lingping Zhu, Xue Yin, etc.)
+printf '[{"id":"acc-manager","text":"@Lingping Zhu","displayName":"Lingping Zhu"}]\n'
 EOF
 cat > "${MOCK_JIRA}/build-comment-payload.sh" <<'EOF'
 #!/usr/bin/env bash
@@ -49,8 +47,11 @@ chmod +x "${MOCK_BUILD_ADF}"
 
 TOOLS_FILE="${TMP_DIR}/TOOLS.md"
 printf '%s\n' 'chat_id: oc_test_chat' > "${TOOLS_FILE}"
+MAPPING_FILE="${TMP_DIR}/owner-manager-mapping.json"
+printf '%s\n' '{"managers": ["Lingping, Zhu"]}' > "${MAPPING_FILE}"
 export RCA_ORCHESTRATOR_RUNS_ROOT="${TMP_DIR}/runs"
 export RCA_ORCHESTRATOR_TOOLS_FILE="${TOOLS_FILE}"
+export RCA_ORCHESTRATOR_OWNER_MANAGER_MAPPING="${MAPPING_FILE}"
 export RCA_ORCHESTRATOR_JIRA_CLI_SCRIPTS="${MOCK_JIRA}"
 export RCA_ORCHESTRATOR_BUILD_ADF_SH="${MOCK_BUILD_ADF}"
 export RCA_TEST_PUBLISH_LOG="${TMP_DIR}/publish.log"
@@ -121,6 +122,8 @@ bash "${ROOT}/phase4_publish_to_jira.sh" 2026-03-10 >/dev/null
 assert_eq "$(jq -r '.jira_publish["BCIN-1001"].status' "${TMP_DIR}/runs/2026-03-10/run.json")" "success" "generated issue publishes"
 assert_eq "$(jq -r '.jira_publish["BCIN-1002"].status' "${TMP_DIR}/runs/2026-03-10/run.json")" "skipped_no_rca" "non-generated issue is skipped"
 assert_eq "$(jq -r '.overall_status' "${TMP_DIR}/runs/2026-03-10/task.json")" "in_progress" "optional mention lookup failure does not poison run state"
+assert_file_exists "${TMP_DIR}/runs/2026-03-10/output/comments/BCIN-1001-mentions.json" "mentions file created for published issue"
+assert_ge "$(jq 'length' "${TMP_DIR}/runs/2026-03-10/output/comments/BCIN-1001-mentions.json")" 1 "mentions file includes manager and/or owner"
 assert_contains "$(cat "${RCA_TEST_PUBLISH_LOG}")" 'BCIN-1001' "publish log contains generated issue"
 if grep -q 'BCIN-1002' "${RCA_TEST_PUBLISH_LOG}"; then
   fail "stale issue should not be published"

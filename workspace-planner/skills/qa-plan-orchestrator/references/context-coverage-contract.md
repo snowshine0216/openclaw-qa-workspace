@@ -25,8 +25,12 @@ Before drafting:
 - No artifact row may disappear between Phase 2 and the draft/refactor phases without a deliberate explanation in review notes or review delta.
 - If a source introduces a known regression or risk, the draft must include either a regression scenario or a written out-of-scope reason.
 - Required splits identified during review must stay split in the resulting draft.
+- If the user explicitly promotes a coverage area (for example Security or Performance), later phases must not leave that concern in deferred-only or stub-only form unless the user explicitly re-approves that downgrade.
+- Deduplication is valid only when it preserves the same effective trigger, risk, and observable outcome; thematic similarity alone is not enough to merge scenarios.
 - Support issue artifacts are context-only evidence and must not trigger defect-analysis behavior or `qa_plan_defect_analysis_*` artifacts.
 - Required deep-research topics must show Tavily-first provenance before any Confluence fallback is accepted.
+- If the user explicitly promotes a coverage area (for example Security or Performance), later phases must not leave that concern in deferred-only or stub-only form unless the user explicitly re-approves that downgrade.
+- Deduplication is valid only when it preserves the same effective trigger, risk, and observable outcome; thematic similarity alone is not enough to merge scenarios.
 
 ## Silent-Drop Prohibition
 

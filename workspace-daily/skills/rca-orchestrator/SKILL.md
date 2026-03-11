@@ -30,6 +30,12 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh [YYYY-MM-DD] [refres
 5. Phase 4: publish successful RCA results to Jira
 6. Phase 5: write the daily summary and send the Feishu notification
 
+## Configuration
+
+### Manager Tagging
+
+Every Jira comment posted in Phase 4 tags the manager(s) defined in `config/owner-manager-mapping.json`. Default: Lingping Zhu. See [README.md](README.md) for how to change the mapping.
+
 ## Skills Used
 
 - `.agents/skills/rca/SKILL.md`

@@ -1,0 +1,29 @@
+{
+  "skill_name": "feature-qa-planning-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a unified QA plan for an error-recovery feature. Cover every required coverage domain, use feature-fit headings, and make the output read like a concise, structured QA plan rather than an XMind tree.",
+      "expected_output": "The generated plan keeps required coverage-domain ownership explicit, uses readable grouped wording, and does not collapse into testcase-tree headings or source silos.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate a QA plan where Platform and UI - Messaging are not needed for the current feature. Replace them with feature-fit sections or explicit ownership comments instead of forcing rigid placeholders.",
+      "expected_output": "The output keeps required coverage domains covered without forcing irrelevant top-level sections.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write a unified QA plan using Confluence for the main flow, Jira for fixtures, GitHub for edge cases, and Figma for visible-state wording. Keep the manual wording user-facing and move away from source-specific phrasing.",
+      "expected_output": "The output reflects source-specific roles without reading like stitched-together domain drafts.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Review and refactor a draft that uses vague wording like recover from a supported error, verify correct recovery, and perform another valid action. Make the final draft executable and aligned to docs/BCIN-6709_qa_plan.md quality.",
+      "expected_output": "The rewritten draft replaces vague text with concrete trigger/action/result wording and improves grouping and readability.",
+      "files": []
+    }
+  ]
+}

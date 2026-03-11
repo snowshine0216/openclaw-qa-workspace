@@ -955,6 +955,25 @@ export function validateContextCoverageAudit(content, requiredEntries = [], opti
     if (row.disposition === 'consumed' && !row.mappedPlanSection) {
       failures.push(`Consumed context audit row must include a mapped plan section for ${row.artifactPath}`);
     }
+    if (row.artifactSection && /^all sections$/i.test(row.artifactSection.trim())) {
+      failures.push(
+        `Context audit row for ${row.artifactPath} uses forbidden "all sections" placeholder. ` +
+        `List explicit heading rows instead (e.g. "## Introduction", "## Design").`
+      );
+    }
+  }
+
+  if (options.requireSupportingAuditSection) {
+    const supportRows = extractRowsForSection(content, '## Supporting Artifact Coverage Audit', 6);
+    if (supportRows.length === 0) {
+      failures.push('Missing ## Supporting Artifact Coverage Audit section.');
+    }
+  }
+  if (options.requireDeepResearchAuditSection) {
+    const researchRows = extractRowsForSection(content, '## Deep Research Coverage Audit', 6);
+    if (researchRows.length === 0) {
+      failures.push('Missing ## Deep Research Coverage Audit section.');
+    }
   }
 
   if (options.requireSupportingAuditSection) {

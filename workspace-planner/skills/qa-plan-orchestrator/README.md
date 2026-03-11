@@ -10,6 +10,18 @@ Human-facing guide for the skill package. This file is intentionally short.
 - Active design/governance docs: `docs/`
 - Historical design docs: `docs/archive/`
 
+## Recommended Operational Docs
+
+Read these when updating or debugging the orchestrator behavior itself:
+
+- `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md` — validator-safe artifact rules, preservation rules, and deduplication guidance learned from a full production-style run
+- `docs/SUBAGENT_QUICK_CHECKLIST.md` — short operational checklist for subagents before they return a phase artifact
+
+These two docs are the fastest way to understand:
+- why a semantically good artifact may still fail validation
+- how to avoid grouping/scenario confusion
+- how to reduce duplicate scenarios without shrinking coverage
+
 ## What This Skill Produces
 
 - source evidence saved under `context/`

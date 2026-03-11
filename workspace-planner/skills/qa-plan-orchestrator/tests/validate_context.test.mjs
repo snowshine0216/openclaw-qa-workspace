@@ -10,7 +10,13 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const SCRIPT_DIR = join(__dirname, '..', 'scripts', 'lib');
 const VALIDATE_CONTEXT_SRC = join(SCRIPT_DIR, 'validate_context.sh');
 const VALIDATE_STRUCTURE_SRC = join(SCRIPT_DIR, 'validate_testcase_structure.sh');
+<<<<<<< Updated upstream:workspace-planner/skills/qa-plan-orchestrator/tests/validate_context.test.mjs
 const REPO_ROOT = join(__dirname, '..', '..', '..', '..');
+=======
+const VALIDATE_STRUCTURE_MJS_SRC = join(SCRIPT_DIR, 'validate_testcase_structure.mjs');
+const TESTCASE_RULES_SRC = join(SCRIPT_DIR, 'testCaseRules.mjs');
+const VALIDATE_EXEC_SRC = join(SCRIPT_DIR, 'validate_testcase_executability.sh');
+>>>>>>> Stashed changes:workspace-planner/skills/feature-qa-planning-orchestrator/tests/validate_context.test.mjs
 
 const VALID_XMINDMARK = `Feature QA Plan
 
@@ -46,6 +52,12 @@ async function setupScripts() {
   await mkdir(scriptsDir, { recursive: true });
   await cp(VALIDATE_CONTEXT_SRC, join(scriptsDir, 'validate_context.sh'));
   await cp(VALIDATE_STRUCTURE_SRC, join(scriptsDir, 'validate_testcase_structure.sh'));
+<<<<<<< Updated upstream:workspace-planner/skills/qa-plan-orchestrator/tests/validate_context.test.mjs
+=======
+  await cp(VALIDATE_STRUCTURE_MJS_SRC, join(scriptsDir, 'validate_testcase_structure.mjs'));
+  await cp(TESTCASE_RULES_SRC, join(scriptsDir, 'testCaseRules.mjs'));
+  await cp(VALIDATE_EXEC_SRC, join(scriptsDir, 'validate_testcase_executability.sh'));
+>>>>>>> Stashed changes:workspace-planner/skills/feature-qa-planning-orchestrator/tests/validate_context.test.mjs
   return { tmp, scriptsDir };
 }
 

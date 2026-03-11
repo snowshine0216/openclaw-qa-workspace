@@ -72,10 +72,35 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - `## Advisory Checkpoints`
 - `## Release Recommendation`
 
+#### Checkpoint Summary format
+
 The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
+
+Use explicit checkpoint rows keyed by the canonical labels:
+- `Checkpoint 1`
+- `Checkpoint 2`
+- ...
+- `Checkpoint 15`
+
+Do not use bare numeric ids like `1`, `2`, `3` in place of the canonical checkpoint labels.
+
+Preferred row shape:
+- `Shipment Readiness | Checkpoint 1 | pass | <evidence summary> | <required action or none>`
 
 ### `checkpoint_delta_<feature-id>.md`
 
 - `## Blocking Checkpoint Resolution`
 - `## Advisory Checkpoint Resolution`
 - `## Final Disposition`
+
+#### Checkpoint Delta format
+
+Resolution sections must contain row-like bullet entries, not prose-only paragraphs.
+
+Preferred row shape:
+- `Checkpoint 8 | Added exploratory charters | resolved | reflected in qa_plan_phase5b_r<round>.md`
+
+`## Final Disposition` must end with exactly one bullet:
+- `accept`
+- `return phase5a`
+- `return phase5b`

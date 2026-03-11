@@ -36,6 +36,31 @@ bash workspace-daily/skills/rca-orchestrator/scripts/run.sh 2026-03-10 fresh
 - Feishu chat ID present in `workspace-daily/TOOLS.md`
 - A spawn bridge module configured through `RCA_ORCHESTRATOR_SPAWN_BRIDGE` or passed to `generate-rcas-via-agent.js`
 
+## Manager Mapping
+
+Every Jira comment posted in Phase 4 tags the manager(s) so they are notified. The mapping is defined in `config/owner-manager-mapping.json`.
+
+**Path:** `workspace-daily/skills/rca-orchestrator/config/owner-manager-mapping.json`
+
+**Structure:**
+
+```json
+{
+  "managers": ["Lingping, Zhu"]
+}
+```
+
+**How to change:**
+
+1. Edit the JSON file.
+2. Add or remove entries in the `managers` array.
+3. Use Jira display names in "Last, First" format (e.g. `"Lingping, Zhu"`) or email addresses (e.g. `"lingping.zhu@microstrategy.com"`).
+4. To tag multiple managers: `["Lingping, Zhu", "Other, Manager"]`.
+
+Names are resolved via `resolve-jira-user.sh` from the jira-cli skill. Use email for reliability if display names do not match Jira.
+
+**Override at runtime:** Set `RCA_ORCHESTRATOR_OWNER_MANAGER_MAPPING` to a different JSON file path.
+
 ## Spawn Bridge Usage
 
 Phase 3 uses `scripts/lib/generate-rcas-via-agent.js`, which is manifest-driven and runtime-injected.

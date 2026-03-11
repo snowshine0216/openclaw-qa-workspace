@@ -20,10 +20,10 @@ What release version should I close test sets for?
 
 ### Step 2: Search Test Sets
 
-Run the search to find matching test sets:
+Run the search to find matching test sets (dry-run mode: lists without closing):
 
 ```bash
-scripts/close_test_sets.sh <release-version> --dry-run
+source ~/.agents/skills/jira-cli/.env && scripts/close_test_sets.sh <release-version> --dry-run
 ```
 
 This displays all test sets without closing them.
@@ -58,7 +58,7 @@ Note: Only one exclusion is supported per run. For multiple exclusions, run the 
 After user approval, close the test sets:
 
 ```bash
-source ~/.bash_profile && scripts/close_test_sets.sh <release-version> [--exclude <issue-key>]
+source ~/.agents/skills/jira-cli/.env && scripts/close_test_sets.sh <release-version> [--exclude <issue-key>]
 ```
 
 The script will:
@@ -82,7 +82,7 @@ close_test_sets.sh <release-version> [--exclude ISSUE-KEY]
 
 **JQL Query:**
 ```
-type = "Test Set" AND "Release[Version Picker (single version)]" = <version> AND assignee = currentUser()
+type = "Test Set" AND fixVersion = "<version>" AND assignee = currentUser()
 ```
 
 **Status Transition:**
