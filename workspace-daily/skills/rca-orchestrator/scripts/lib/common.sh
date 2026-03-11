@@ -11,6 +11,9 @@ FEISHU_NOTIFY_SCRIPT="${RCA_ORCHESTRATOR_FEISHU_NOTIFY_SCRIPT:-${REPO_ROOT}/.age
 JIRA_CLI_SCRIPTS="${RCA_ORCHESTRATOR_JIRA_CLI_SCRIPTS:-${REPO_ROOT}/.agents/skills/jira-cli/scripts}"
 OWNER_MANAGER_MAPPING="${RCA_ORCHESTRATOR_OWNER_MANAGER_MAPPING:-${SKILL_ROOT}/config/owner-manager-mapping.json}"
 DEFAULT_RUN_TZ="${RCA_ORCHESTRATOR_TZ:-Asia/Shanghai}"
+# Spawn bridge: default to the real OpenClaw bridge shipped alongside this script
+RCA_ORCHESTRATOR_SPAWN_BRIDGE="${RCA_ORCHESTRATOR_SPAWN_BRIDGE:-${COMMON_DIR}/openclaw-spawn-bridge.js}"
+export RCA_ORCHESTRATOR_SPAWN_BRIDGE
 
 run_dir() {
   printf '%s\n' "${RUNS_ROOT}/$1"
