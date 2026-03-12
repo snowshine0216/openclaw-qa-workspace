@@ -57,6 +57,7 @@ Phase 0: Existing-State Check
 - Preserve REPORT_STATE.
 - Preserve task.json and run.json.
 - Use skill-creator and code-structure-quality.
+- If using jira-cli/confluence: run env check, output runtime_setup_*.json
 
 Review artifacts:
 - projects/agent-design-review/example-design/design_review_report.md
@@ -144,6 +145,8 @@ function buildScriptBearingDesign() {
 Package structure for script-bearing skill:
 
 - .agents/skills/example-skill/
+- .agents/skills/example-skill/runs/
+- .agents/skills/example-skill/runs/<run-key>/
 - .agents/skills/example-skill/scripts/
 - .agents/skills/example-skill/scripts/lib/
 - .agents/skills/example-skill/scripts/test/
@@ -223,4 +226,34 @@ test('reports usage errors cleanly', () => {
 
   assert.equal(result.status, 2);
   assert.match(result.stderr, /Usage: .*check_design_evidence\.sh <design-markdown-file>/i);
+});
+
+test('emits INFO (advisory) when jira/confluence used but env check omitted', () => {
+  const baseWithEnvCheck = buildBaseSections();
+  const contentNoEnvCheck = baseWithEnvCheck.replace(
+    /- If using jira-cli\/confluence: run env check, output runtime_setup_[*]\.json\n?/,
+    '',
+  );
+  const result = runEvidenceCheck(contentNoEnvCheck);
+
+  assert.equal(result.status, 0);
+  assert.match(
+    result.stdout,
+    /INFO:.*Phase 0 env check.*runtime_setup.*\(advisory\)/i,
+  );
+});
+
+test('emits INFO (advisory) when script-bearing but runs/ omitted', () => {
+  const scriptBearingWithRuns = buildScriptBearingDesign();
+  const contentNoRuns = scriptBearingWithRuns.replace(
+    /- \.agents\/skills\/example-skill\/runs\/\n- \.agents\/skills\/example-skill\/runs\/<run-key>\/\n/,
+    '',
+  );
+  const result = runEvidenceCheck(contentNoRuns);
+
+  assert.equal(result.status, 0);
+  assert.match(
+    result.stdout,
+    /INFO:.*Runtime output under runs.*\(advisory\)/i,
+  );
 });

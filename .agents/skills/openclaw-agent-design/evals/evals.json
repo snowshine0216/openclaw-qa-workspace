@@ -1,0 +1,53 @@
+{
+  "skill_name": "openclaw-agent-design",
+  "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a new OpenClaw RCA daily workflow as a skill-first package. Scope: refactor workspace-daily RCA into a skill with Phase 0 idempotency, shared jira-cli/feishu-notify reuse, and runs/<run-key>/ output layout. Produce a design artifact following the canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References).",
+      "expected_output": "A complete design markdown with Design ID, Overview, Architecture (workflow chart + folder structure), Skills Content Specification when skills are in scope, Functional Design sections, Tests (script-to-test stub table for script-bearing skills), Evals section when skills are in scope, Documentation Changes (AGENTS.md, README), Implementation Checklist, and References.",
+      "files": [],
+      "expectations": [
+        "Design doc has ## Overview section",
+        "Design doc has ## Architecture with ### Workflow chart or ### Folder structure",
+        "Design doc has ## Documentation Changes with ### AGENTS.md",
+        "Design doc has ## Implementation Checklist",
+        "Design doc has ## References",
+        "Design doc mentions Phase 0 or REPORT_STATE or existing-status",
+        "Design doc mentions task.json or run.json",
+        "Design doc mentions skill-creator and code-structure-quality",
+        "Design doc mentions openclaw-agent-design-review before finalizing",
+        "Design doc references .agents/skills/ for shared skills",
+        "Design doc references runs/<run-key>/ for runtime output when script-bearing"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Redesign an existing QA plan orchestrator workflow into skill-first form. Preserve the current Phase 0 REPORT_STATE semantics (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH). Add Skills Content Specification for the entrypoint skill with SKILL.md and reference.md content blueprints. Include script inventory and script-to-test mapping for any scripts in scope.",
+      "expected_output": "Design doc that preserves Phase 0 state machine, adds Skills Content Specification with SKILL.md/reference.md blueprints, and includes Tests section with script-to-test stub table when script-bearing.",
+      "files": [],
+      "expectations": [
+        "Design doc preserves REPORT_STATE or Phase 0 semantics",
+        "Design doc has Skills Content Specification when skills in scope",
+        "Design doc has SKILL.md content blueprint (Purpose, When to trigger, Input/Output contract, etc.)",
+        "Design doc has reference.md content blueprint (state machine, schemas, path conventions)",
+        "Design doc has ## Tests section when script-bearing",
+        "Design doc uses scripts/test/ convention for script-bearing skills",
+        "Design doc mentions direct reuse of jira-cli, confluence, feishu-notify, or github"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Verify that the design doc at projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/sample_design.md follows the canonical template from .agents/skills/openclaw-agent-design/SKILL.md. Report which required sections are present or missing. Do not modify the file.",
+      "expected_output": "A compliance report listing required sections (Overview, Architecture, Skills Content Spec when applicable, Functional Design, Tests when script-bearing, Evals when skills in scope, Documentation Changes, Implementation Checklist, References) and their presence or absence.",
+      "files": [],
+      "expectations": [
+        "Report checks Overview, Architecture, Documentation Changes, Implementation Checklist, References",
+        "Report checks Skills Content Specification when design has skills in scope",
+        "Report checks Tests section when design is script-bearing",
+        "Report checks Evals section when design creates or redesigns skills",
+        "Report does not modify the design file"
+      ]
+    }
+  ]
+}

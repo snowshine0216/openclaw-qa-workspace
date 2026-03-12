@@ -40,6 +40,17 @@ check_required_pattern() {
   fi
 }
 
+# Advisory check: emit INFO when pattern is missing (does not increment FAILURES)
+check_advisory_pattern() {
+  local pattern="$1"
+  local message="$2"
+  if pattern_match "$pattern" "$DESIGN_FILE"; then
+    echo "OK: $message"
+  else
+    echo "INFO: $message (advisory)"
+  fi
+}
+
 has_script_deliverables() {
   pattern_match '(\.agents/skills/[^[:space:]`|]+/scripts/|workspace-[^[:space:]`|]+/skills/[^[:space:]`|]+/scripts/)' "$DESIGN_FILE"
 }
@@ -87,7 +98,7 @@ check_common_sections() {
     'skill-creator requirement is present'
   check_required_pattern 'code-structure-quality' \
     'code-structure-quality requirement is present'
-  check_required_pattern 'jira-cli|confluence|feishu-notify' \
+  check_required_pattern 'jira-cli|confluence|feishu-notify|github' \
     'existing shared skill reuse is present'
   check_required_pattern 'direct reuse is sufficient|contract gap|wrapper.*justif' \
     'direct reuse or wrapper justification is explicit'
@@ -104,6 +115,12 @@ check_common_sections() {
     check_required_pattern '^## Skills Content Specification' \
       'Skills Content Specification section is present (skills in scope)'
   fi
+
+  # Advisory: when jira/github/confluence used, env check and runtime_setup should be present
+  if pattern_match 'jira-cli|github|confluence' "$DESIGN_FILE"; then
+    check_advisory_pattern 'runtime_setup|check_runtime_env|env check' \
+      'Phase 0 env check and runtime_setup output when jira/github/confluence used'
+  fi
 }
 
 check_script_specific_sections() {
@@ -117,6 +134,9 @@ check_script_specific_sections() {
     'function specification table is present'
   check_required_pattern 'Smoke Command|node --test|bash .*test|validation evidence' \
     'validation evidence is present for script changes'
+  # Advisory: script-bearing designs with runtime output should specify runs/
+  check_advisory_pattern 'runs/|runs/<run-key>' \
+    'Runtime output under runs/<run-key>/ when script-bearing'
 }
 
 main() {

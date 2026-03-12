@@ -7,7 +7,7 @@ description: Reviews OpenClaw agent and workflow designs for skill-first package
 
 ## Purpose
 
-Mandatory quality gate for OpenClaw design outputs before finalization. Checks: canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References), shared-vs-local placement, skill-first workflow, Phase 0 / `REPORT_STATE` preservation, direct reuse of `jira-cli`/`confluence`/`feishu-notify`, `SKILL.md`/`reference.md` specs, script-bearing completeness, and documentation coverage.
+Mandatory quality gate for OpenClaw design outputs before finalization. Checks: canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References), shared-vs-local placement, skill-first workflow, Phase 0 / `REPORT_STATE` preservation, direct reuse of `jira-cli`/`confluence`/`feishu-notify`/`github`, `SKILL.md`/`reference.md` specs, script-bearing completeness, and documentation coverage.
 
 ## When To Use
 
@@ -61,13 +61,16 @@ Required report fields:
 - [ ] Shared capabilities in `.agents/skills/`, workspace-specific in `<workspace>/skills/` unless justified.
 - [ ] Phase 0 / `REPORT_STATE` and `task.json` / `run.json` semantics preserved (additive changes justified).
 - [ ] `skill-creator` and `code-structure-quality` required for new or redesigned skills.
-- [ ] Direct reuse of `jira-cli`, `confluence`, `feishu-notify` when they fit.
+- [ ] Direct reuse of `jira-cli`, `confluence`, `feishu-notify`, `github` when they fit.
 - [ ] Every created or redesigned skill has explicit `SKILL.md` and `reference.md` content specs.
 - [ ] Script-bearing skills: package structure, Functions, Tests (script-to-test mapping under `scripts/test/`).
-- [ ] Evals section present when design creates or materially redesigns skills.
+- [ ] Evals section present when design creates or materially redesigns skills. Skill evals in `evals/` (skill-creator compatible).
 - [ ] Docs-only skills not failed for omitting script-test sections.
 - [ ] AGENTS.md and README impact explicit under Documentation Changes.
 - [ ] Output/handoff artifact paths and review artifacts explicit.
+- [ ] When design uses jira-cli, github, or confluence in Phase 0: env check and runtime_setup_*.json output must be specified.
+- [ ] Script-bearing designs with runtime output: runs/<run-key>/ structure must be explicit.
+- [ ] Final workflow includes Feishu send and notification_pending fallback when publishing externally visible work.
 
 ## Additional Resources
 

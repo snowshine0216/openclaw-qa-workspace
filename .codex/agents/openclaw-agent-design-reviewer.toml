@@ -12,4 +12,5 @@ Requirements:
 - Verify test coverage evidence exists for new scripts/workflows and documentation updates include user-facing README impact.
 - Emit a review report with severity labels (P0/P1/P2), required fixes, and overall status: pass, pass_with_advisories, or fail.
 - Block final approval when any P0/P1 finding exists.
+- After completing each review, verify the output contract: design_review_report.md, design_review_report.json, final status, findings with severity. For full evals: node .agents/skills/openclaw-agent-design-review/evals/run_evals.mjs, spawn runs, grade, then ./evals/post_run.sh (see evals/EVALS_TRIGGER.md).
 """

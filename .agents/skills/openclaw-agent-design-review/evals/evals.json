@@ -1,0 +1,49 @@
+{
+  "skill_name": "openclaw-agent-design-review",
+  "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the design doc at projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/sample_design.md. Use openclaw-agent-design-review skill. Emit design_review_report.md and design_review_report.json under projects/agent-design-review/openclaw-skill-package-standard-sample-2026-03-08/. Run scripts/check_design_evidence.sh on the design. Apply the quality rubric from reference.md. Output final status: pass, pass_with_advisories, or fail.",
+      "expected_output": "design_review_report.md and design_review_report.json with reviewed paths, script-bearing vs docs-only classification, script-to-test coverage summary, findings array with severity (P0/P1/P2), and final status.",
+      "files": [],
+      "expectations": [
+        "design_review_report.md exists at specified output path",
+        "design_review_report.json exists at specified output path",
+        "Report contains findings array with severity labels",
+        "Report contains final status (pass | pass_with_advisories | fail)",
+        "Report contains reviewed skill package paths or design artifact path",
+        "check_design_evidence.sh was run or equivalent evidence checks performed",
+        "P0/P1 findings block pass when present"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review a design doc that is missing the Skills Content Specification section and Phase 0 REPORT_STATE handling. Identify all P0 and P1 findings. Recommend fixes. Emit review report with pass/fail status.",
+      "expected_output": "Review report with P0/P1 findings for missing Skills Content Spec and missing Phase 0 handling. Status should be fail when P0/P1 exist.",
+      "files": [],
+      "expectations": [
+        "Report identifies missing Skills Content Specification as P0 or P1",
+        "Report identifies missing Phase 0/REPORT_STATE handling as P0 or P1",
+        "Report status is fail when P0 or P1 findings exist",
+        "Report includes recommended fixes for each finding",
+        "Findings have severity (P0, P1, or P2)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Verify that the openclaw-agent-design-review output contract is satisfied: design_review_report.md, design_review_report.json, final status, reviewed paths, script-bearing classification, script-to-test coverage, and findings with IDs and severity. Use reference.md as the rubric.",
+      "expected_output": "Verification that review outputs conform to the required contract: markdown report, JSON report, status, paths, classification, coverage, findings.",
+      "files": [],
+      "expectations": [
+        "Verification checks for design_review_report.md",
+        "Verification checks for design_review_report.json",
+        "Verification checks for final status field",
+        "Verification checks for reviewed paths",
+        "Verification checks for script-bearing vs docs-only classification",
+        "Verification checks for script-to-test coverage summary",
+        "Verification checks for findings with severity"
+      ]
+    }
+  ]
+}

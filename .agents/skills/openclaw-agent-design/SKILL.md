@@ -79,12 +79,26 @@ Detailed templates for each section live in [reference.md](reference.md).
 - **Shared reuse**: Check direct reuse of `jira-cli`, `confluence`, `feishu-notify` before creating wrappers.
 - **Final notification**: If workflow publishes externally visible work, include notification phase and `run.json.notification_pending` fallback.
 
+## Design Patterns
+
+Apply these when the workflow uses external integrations or multi-phase orchestration:
+
+- **Phase 0 env check**: If Phase 0 uses `jira-cli`, `github`, or `confluence`, verify access before spawning subagents (`jira me`, `gh auth status`, Confluence spaces). Output `runtime_setup_*.json` with per-source status. Block if any required source fails. Copy `check_runtime_env.sh` and `check_runtime_env.mjs` from `examples/` — no need to rewrite.
+- **Runtime output location**: All runtime output (task.json, run.json, context/, drafts/, manifests, final artifacts) must live under `<skill-root>/runs/<run-key>/`. No runtime artifacts outside `runs/`.
+- **Intermediate artifacts**: Every phase must output explicit artifacts (e.g. `context/`, `drafts/`, manifests). No phase produces only in-memory state.
+- **Script-driven orchestrator**: Orchestrator calls `phaseN.sh` only; scripts own logic. Orchestrator handles user prompts and spawn-from-manifest.
+- **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation.
+- **Evidence policy**: Use approved skills (jira-cli, confluence, github) for system-of-record; never `web_fetch` for Jira/GitHub/Confluence.
+- **Feishu notification**: When finalizing, send summary via feishu-notify skill. On failure, store `notification_pending` in run.json for later retry. Copy `send_feishu_with_retry.template.sh` from `examples/` — no need to rewrite.
+
+See [reference.md](reference.md) for pattern details. All reusable scripts live in `examples/` — no dependency on other workspaces.
+
 ## When Sections Are Required
 
 | Section | Required when |
 |---------|---------------|
 | Skills Content Specification | Design creates or materially redesigns skills |
 | Functions | Script-bearing skill |
-| Tests (script-to-test mapping) | Script-bearing skill |
-| Evals | Design creates or materially redesigns skills |
+| Tests (script-to-test stub table) | Script-bearing skill — every script must have a stub row |
+| Evals | Design creates or materially redesigns skills — see `evals/` for skill-creator compatible evals |
 | Data Models | task.json / run.json or other schemas in scope |

@@ -17,4 +17,5 @@ Requirements:
 - For every workflow phase you design, include explicit user interaction checkpoints: what is done, what is blocked, and open questions.
 - Never assume missing context; raise explicit user questions before advancing the phase when ambiguity exists.
 - Every designed workflow must end with a final Feishu notification step and failure fallback: set run.json.notification_pending=<full payload> when sending fails.
+- After producing a design artifact, run the evidence checker on it: bash .agents/skills/openclaw-agent-design-review/scripts/check_design_evidence.sh <design-path>. For full evals: node .agents/skills/openclaw-agent-design/evals/run_evals.mjs, spawn runs, grade, then ./evals/post_run.sh (see evals/EVALS_TRIGGER.md).
 """

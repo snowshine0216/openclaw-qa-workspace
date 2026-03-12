@@ -35,7 +35,7 @@ Typical failures:
 ### 3) Existing Shared Skill Reuse
 
 Pass conditions:
-- Design checks direct reuse of `jira-cli`, `confluence`, and `feishu-notify`.
+- Design checks direct reuse of `jira-cli`, `confluence`, `feishu-notify`, and `github`.
 - New wrappers are introduced only when direct reuse cannot express the higher-level contract.
 - Any wrapper proposal includes an explicit contract-gap justification.
 
@@ -111,6 +111,22 @@ Typical failures:
 - `P1`: Evals section missing when skills are created or materially redesigned.
 - `P2`: Reviewer automation checks lag behind the documented standard.
 
+### 9) Phase 0 Environment Check (when integrations used)
+
+Pass conditions:
+- When design uses jira-cli, github, or confluence in Phase 0 or before spawn, design mentions env check and `runtime_setup_*.json` output.
+
+Typical failures:
+- `P1`: Design uses jira/github/confluence in Phase 0 but omits env check or runtime_setup output.
+
+### 10) Runtime Output Location
+
+Pass conditions:
+- Script-bearing designs with runtime output specify `runs/<run-key>/` structure.
+
+Typical failures:
+- `P1`: Script-bearing design with runtime output omits runs/ convention.
+
 ## Finding IDs
 
 - `SKILL-001` (`P0`): Workflow is not modeled as a skill entrypoint.
@@ -133,6 +149,8 @@ Typical failures:
 - `EVID-001` (`P1`): No executable validation evidence plan exists for script or test behavior.
 - `EVID-002` (`P2`): Reviewer automation does not yet validate the documented required sections.
 - `EVAL-001` (`P1`): Evals section missing when design creates or materially redesigns skills.
+- `ENV-001` (`P1`): Design uses jira-cli/github/confluence in Phase 0 but omits env check or runtime_setup output.
+- `RUNTIME-001` (`P1`): Script-bearing design with runtime output omits runs/ convention.
 
 ## Suggested JSON Finding Shape
 
