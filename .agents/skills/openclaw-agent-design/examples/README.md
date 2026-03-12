@@ -24,9 +24,8 @@ When the orchestrator is a script (not an agent with sessions_spawn):
 
 ## Feishu Notification (Finalize Phase)
 
-- **send_feishu_with_retry.template.sh** — sends summary via feishu-notify; on failure stores `notification_pending` in run.json for retry
-
-Copy into your skill, adapt `load_feishu_chat_id`, `set_run_field`, and paths. Reference: rca-orchestrator phase5_finalize.sh lines 69–77.
+- **emit_feishu_notify_marker.template.sh** — (preferred for agent-orchestrated) emit `FEISHU_NOTIFY:` marker when `FEISHU_CHAT_ID` set; agent reads `chat_id` from `TOOLS.md`, catches marker, sends via gateway `message` tool. Do not use CLI subprocess (unreliable for group chats). Reference: single-defect-analysis phase4.sh.
+- **send_feishu_with_retry.template.sh** — (non-agent contexts) sends summary via feishu-notify CLI; on failure stores `notification_pending` in run.json for retry. Reference: rca-orchestrator phase5_finalize.sh lines 69–77.
 
 ## Test Stub Coverage
 
@@ -36,4 +35,5 @@ Copy into your skill, adapt `load_feishu_chat_id`, `set_run_field`, and paths. R
 | check_runtime_env.sh | (covered by .mjs test) | — |
 | spawn_from_manifest.mjs | test/spawn_from_manifest.test.mjs | success; manifest-not-found; spawn-failure |
 | openclaw-spawn-bridge.template.js | test/openclaw-spawn-bridge.test.js | spawnBatch-success; spawnBatch-partial-failure |
+| emit_feishu_notify_marker.template.sh | test/emit_feishu_notify_marker.test.sh | emits-marker-when-chat-id-set; no-emit-when-chat-id-unset |
 | send_feishu_with_retry.template.sh | test/send_feishu_with_retry.test.sh | success; feishu-failure-sets-pending |

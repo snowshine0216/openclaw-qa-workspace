@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# Template: Feishu notification with retry-on-failure.
+# Template: Feishu notification with retry-on-failure (CLI path).
+# Use for non-agent contexts (e.g. cron). For agent-orchestrated workflows, prefer
+# emit_feishu_notify_marker.template.sh — the CLI subprocess is unreliable for group chats.
+#
 # Copy into your skill's scripts/. Adapt RUN_KEY, RUN_DIR, SUMMARY_FILE, TOOLS_FILE,
 # FEISHU_NOTIFY_SCRIPT, run_dir, set_run_field, load_feishu_chat_id for your skill.
 #

@@ -41,26 +41,69 @@ Every design output must follow this structure. Skills Content Specification, Fu
 
 ## Skills Content Specification (optional)
 ### 3.x skill-SKILL.md (detailed)
+
+**Required when creating/materially redesigning skills.** Include the **exact content** of the SKILL.md file. Do not use outline-style labels (Target path, Purpose, etc.). Include:
+- Full frontmatter (name, description)
+- Main content sections with concrete text (e.g. "## Required References", "## Runtime Layout", "## Phase Contract")
+- Per-phase entry, work, output, and user interaction as in qa-plan-orchestrator
+- Reference: `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
+
 ### 4.x skill-reference.md (detailed)
-### Functions
+
+**Required when creating/materially redesigning skills.** Include the **exact content** of reference.md. Do not list "Must include" bullets — write the actual content.
 
 ## Data Models (optional)
 
 ## Functional Design 1
 <!-- All related changes for this functional design, must have implementation codes or content of files to be changed -->
 
+**Required** for each script in the Script Inventory. Provide:
+
+1. **Script Path** e.g. `scripts/phase0.sh`
+2. **Script Purpose** e.g. `Prepare run directory for analysis`
+3. **Script Inputs** e.g. `runDir`
+4. **Script Outputs** e.g. `context/run_dir.json`
+5. **Script User Interaction** 
+2. **Detailed Implementation** e.g, `function phase0(runDir) { ... }`
 ## Functional Design 2
 <!-- Same as above -->
 
 ## Tests
-<!-- Stub tests only, no implementation -->
 
-## Evals (when applicable)
+**Required** for each script in the Script Inventory. Provide **detailed test stub functions** — not just scenario names. Include:
+
+1. **Script-to-test stub table** (existing)
+2. **Per-test-file detailed stubs**: For each test file, include actual code stubs with `test('...', () => { ... })` or `describe` blocks. Each stub must:
+   - Have a concrete test name (e.g. `test('returns FINAL_EXISTS when final plan is present', () => { ... })`)
+   - Include setup/teardown skeleton (e.g. `const runDir = ...`, `tmpDir`)
+   - Include assertion placeholder or mock call (e.g. `assert.equal(result, 'FINAL_EXISTS')`)
+   - Reference: `workspace-planner/skills/qa-plan-orchestrator/scripts/test/spawnManifestBuilders.test.mjs`
+
+Example (bad):
+
+```markdown
+Stub scenarios:
+- returns `FINAL_EXISTS` when final plan is present
+```
+
+Example (good):
+
+```javascript
+test('returns FINAL_EXISTS when final plan is present', () => {
+  const runDir = '/tmp/test-run';
+  const result = runCheckResume(runDir);
+  assert.equal(result, 'FINAL_EXISTS');
+});
+```
+
+## Evals
 <!-- Skill evals, benchmarks, or performance validation when the design introduces or materially redesigns skills -->
 
 ## Documentation Changes
 ### AGENTS.md
-### README
+<!-- Update or create AGENTS.md section -->
+### README.md
+<!-- Update or create README.md section -->
 
 ## Implementation Checklist
 
@@ -78,6 +121,7 @@ Detailed templates for each section live in [reference.md](reference.md).
 - **Never assume**: Stop and ask when context is missing or ambiguous. Never silently choose a destructive path.
 - **Shared reuse**: Check direct reuse of `jira-cli`, `confluence`, `feishu-notify` before creating wrappers.
 - **Final notification**: If workflow publishes externally visible work, include notification phase and `run.json.notification_pending` fallback.
+- **Exact content, never outline**: When the design creates or materially redesigns skills, Skills Content Specification (3.x skill-SKILL.md, 4.x reference.md) must contain the **actual content** that will be written to those files. No placeholder bullets like "Target path:", "Purpose:", "Input contract:" alone — include the full SKILL.md/reference.md text as it would appear in the final file. Use qa-plan-orchestrator SKILL.md as the canonical reference for "detailed" content. **Exception:** When the design only updates functions (no skill creation or material redesign), no skill-related md files need updating — skill title and SKILL.md/reference.md are not required.
 
 ## Design Patterns
 
@@ -89,7 +133,7 @@ Apply these when the workflow uses external integrations or multi-phase orchestr
 - **Script-driven orchestrator**: Orchestrator calls `phaseN.sh` only; scripts own logic. Orchestrator handles user prompts and spawn-from-manifest.
 - **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation. The spawn script must be invoked only from TUI (orchestrator workflow), not from CLI directly.
 - **Evidence policy**: Use approved skills (jira-cli, confluence, github) for system-of-record; never `web_fetch` for Jira/GitHub/Confluence.
-- **Feishu notification**: When finalizing, send summary via feishu-notify skill. On failure, store `notification_pending` in run.json for later retry. Copy `send_feishu_with_retry.template.sh` from `examples/` — no need to rewrite.
+- **Feishu notification**: When agent-orchestrated, prefer the marker-based pattern: (1) Agent reads `chat_id` from workspace `TOOLS.md` and sets `FEISHU_CHAT_ID` before running phase scripts. (2) Phase scripts emit `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>` when `FEISHU_CHAT_ID` is set. (3) Agent catches this line and sends via the gateway `message` tool directly — do not use `openclaw message send` CLI subprocess (unreliable for group chats). For non-agent contexts (e.g. cron), copy `send_feishu_with_retry.template.sh`; on failure store `notification_pending` in run.json.
 
 See [reference.md](reference.md) for pattern details. All reusable scripts live in `examples/` — no dependency on other workspaces.
 

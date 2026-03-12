@@ -57,13 +57,16 @@ Typical failures:
 ### 5) Skill Package Content Completeness
 
 Pass conditions:
-- Every created or redesigned skill has an explicit `SKILL.md` content specification (Skills Content Specification > 3.x).
-- Every created or redesigned skill has an explicit `reference.md` content specification (Skills Content Specification > 4.x).
+- Every created or redesigned skill has an explicit `SKILL.md` content specification (Skills Content Specification > 3.x) with **exact content** — full frontmatter, main sections (e.g. `## Required References`, `## Runtime Layout`, `## Phase Contract`), per-phase entry/work/output/user interaction. Reference: `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`.
+- Every created or redesigned skill has an explicit `reference.md` content specification (Skills Content Specification > 4.x) with **exact content** — write the actual content, not "Must include" bullets.
 - The design includes package structure expectations (Architecture > Folder structure).
+- **Exception:** When the design only updates functions (no skill creation or material redesign), Skills Content Spec is not required — skip this check.
 
 Typical failures:
 - `P1`: Missing detailed `SKILL.md` content specification.
 - `P1`: Missing detailed `reference.md` content specification.
+- `P1`: Skills Content uses outline-style (Target path:, Purpose:, Input contract: alone) instead of exact content.
+- `P1`: reference.md spec uses "Must include" bullets instead of actual content.
 - `P1`: Package structure is incomplete or underspecified.
 
 ### 6) Script-Bearing Package Completeness
@@ -71,13 +74,14 @@ Typical failures:
 Pass conditions:
 - The design uses the deterministic script-bearing rule from `.agents/skills/openclaw-agent-design/reference.md`.
 - Script-bearing skills declare `scripts/test/` as the OpenClaw exception (Folder structure).
-- Every script has function-level details (Skills Content Specification > Functions).
-- Every script has a one-to-one mapped test stub (Tests section).
+- Every script has function-level details (Functional Design or Functions) including implementation detail (algorithm, pseudocode, or step-by-step logic).
+- Every script has a one-to-one mapped test stub (Tests section) with **detailed test stub functions** — actual `test('...', () => { ... })` or `describe` blocks with concrete names, setup/teardown skeleton, and assertion placeholder. Reference: `workspace-planner/skills/qa-plan-orchestrator/scripts/test/spawnManifestBuilders.test.mjs`.
 - Docs-only skills are not failed for omitting script-test sections.
 
 Typical failures:
 - `P1`: Missing script inventory or function-level details for a script-bearing skill.
 - `P1`: Missing one-to-one script-to-test mapping.
+- `P1`: Tests have only "Stub scenarios:" bullet list without `test()` or `describe` blocks.
 - `P1`: Wrong test layout for a script-bearing skill.
 - `P1`: Docs-only skill is incorrectly failed for lacking script-test sections.
 
@@ -127,6 +131,17 @@ Pass conditions:
 Typical failures:
 - `P1`: Script-bearing design with runtime output omits runs/ convention.
 
+### 11) Feishu Notification (when publishing externally)
+
+Pass conditions:
+- When workflow publishes externally visible work, design includes Feishu notification.
+- When agent-orchestrated: design uses marker-based pattern — phase script emits `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>` when `FEISHU_CHAT_ID` is set; agent reads `chat_id` from workspace `TOOLS.md`, catches marker, sends via gateway `message` tool (not CLI subprocess).
+- `chat_id` is not hardcoded; always from `TOOLS.md`.
+
+Typical failures:
+- `P1`: Agent-orchestrated workflow uses `openclaw message send` CLI subprocess for Feishu (unreliable for group chats).
+- `P1`: `chat_id` hardcoded or not sourced from `TOOLS.md`.
+
 ## Finding IDs
 
 - `SKILL-001` (`P0`): Workflow is not modeled as a skill entrypoint.
@@ -151,6 +166,11 @@ Typical failures:
 - `EVAL-001` (`P1`): Evals section missing when design creates or materially redesigns skills.
 - `ENV-001` (`P1`): Design uses jira-cli/github/confluence in Phase 0 but omits env check or runtime_setup output.
 - `RUNTIME-001` (`P1`): Script-bearing design with runtime output omits runs/ convention.
+- `FEISHU-001` (`P1`): Agent-orchestrated workflow uses CLI subprocess for Feishu instead of marker-based pattern (emit `FEISHU_NOTIFY:`, agent sends via gateway `message` tool).
+- `FEISHU-002` (`P1`): Feishu `chat_id` hardcoded or not sourced from `TOOLS.md`.
+- `CONTENT-001` (`P0`): Skills Content Specification uses outline-style labels without exact content.
+- `CONTENT-002` (`P1`): Functions lack implementation detail for lib scripts.
+- `CONTENT-003` (`P1`): Tests lack detailed test stub functions.
 
 ## Suggested JSON Finding Shape
 

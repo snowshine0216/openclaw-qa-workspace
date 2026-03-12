@@ -18,7 +18,8 @@
         "Design doc mentions skill-creator and code-structure-quality",
         "Design doc mentions openclaw-agent-design-review before finalizing",
         "Design doc references .agents/skills/ for shared skills",
-        "Design doc references runs/<run-key>/ for runtime output when script-bearing"
+        "Design doc references runs/<run-key>/ for runtime output when script-bearing",
+        "When Feishu notification in scope: design mentions chat_id from TOOLS.md or FEISHU_NOTIFY marker pattern"
       ]
     },
     {

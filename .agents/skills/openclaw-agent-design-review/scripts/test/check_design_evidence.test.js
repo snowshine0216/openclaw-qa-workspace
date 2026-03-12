@@ -68,49 +68,41 @@ Review artifacts:
 - .agents/skills/example-skill/
 - workspace-planner/skills/example-local/
 
+Why this placement: shared across workspaces. jira-cli, confluence, feishu-notify — direct reuse is sufficient.
+
 ## Skills Content Specification
 
 ### 3.1 \`.agents/skills/example-skill/SKILL.md\`
 
-Purpose:
-- Example design.
+---
+name: example-skill
+description: Example skill for design review.
+---
 
-When to trigger:
-- Use when the user asks for OpenClaw workflow design help.
+# Example Skill
 
-Input contract:
-- design_id: string
+The orchestrator has exactly three responsibilities.
 
-Output contract:
-- design markdown artifact
+## Required References
 
-Workflow/phase responsibilities:
-- phase 0 preserves REPORT_STATE.
+- reference.md
+- references/phase4a-contract.md
 
-Error/ambiguity policy:
-- Stop and ask when requirements are ambiguous.
+## Runtime Layout
 
-Quality rules:
-- Use skill-creator and code-structure-quality.
+All artifacts live under runs/<feature-id>/
 
-Classification:
-- shared
+## Phase Contract
 
-Why this placement:
-- shared across workspaces.
-
-Existing skills reused directly:
-- jira-cli — direct reuse is sufficient
-- confluence — direct reuse is sufficient
-- feishu-notify — direct reuse is sufficient
+### Phase 0
+- Entry: scripts/phase0.sh
+- Work: initialize runtime state, classify REPORT_STATE
+- Output: context/runtime_setup_*.json
+- User interaction: present options when FINAL_EXISTS, DRAFT_EXISTS, or CONTEXT_ONLY
 
 ### 4.1 \`.agents/skills/example-skill/reference.md\`
 
-- state machine / invariants
-- schemas or field-level contracts
-- path conventions
-- validation commands
-- failure examples and recovery rules
+State machine / invariants, schemas, path conventions, validation commands, failure examples.
 
 ## Data Models
 
@@ -169,15 +161,24 @@ Artifacts:
 | main | Validate args and run checks | argv | stdout status | reads workspace files | exits 2 on bad usage |
 | read_report_state | Classify REPORT_STATE | task.json | REPORT_STATE | none | exits 1 when task is unreadable |
 
+Implementation detail: step 1 parse run-key from argv; step 2 read task.json and context/; step 3 classify state; step 4 print REPORT_STATE to stdout.
+
 ## Tests
 
 | Script Path | Test Stub Path | Scenarios | Smoke Command |
 |-------------|----------------|-----------|---------------|
 | .agents/skills/example-skill/scripts/check_resume.sh | .agents/skills/example-skill/scripts/test/check_resume.test.js | success; required-arg failure; dependency error | \`node --test .agents/skills/example-skill/scripts/test/check_resume.test.js\` |
 
-| Script Path | Test Stub Path | Failure-Path Stub |
-|-------------|----------------|-------------------|
-| .agents/skills/example-skill/scripts/check_resume.sh | .agents/skills/example-skill/scripts/test/check_resume.test.js | usage error |
+test('returns FINAL_EXISTS when final plan is present', () => {
+  const runDir = '/tmp/test-run';
+  const result = runCheckResume(runDir);
+  assert.equal(result, 'FINAL_EXISTS');
+});
+
+test('exits 2 on missing run-key', () => {
+  const result = runCheckResume();
+  assert.equal(result.code, 2);
+});
 `;
 }
 
@@ -230,10 +231,9 @@ test('reports usage errors cleanly', () => {
 
 test('emits INFO (advisory) when jira/confluence used but env check omitted', () => {
   const baseWithEnvCheck = buildBaseSections();
-  const contentNoEnvCheck = baseWithEnvCheck.replace(
-    /- If using jira-cli\/confluence: run env check, output runtime_setup_[*]\.json\n?/,
-    '',
-  );
+  const contentNoEnvCheck = baseWithEnvCheck
+    .replace(/- If using jira-cli\/confluence: run env check, output runtime_setup_[*]\.json\n?/, '')
+    .replace(/Output: context\/runtime_setup_\*\.json/, 'Output: context/setup.json');
   const result = runEvidenceCheck(contentNoEnvCheck);
 
   assert.equal(result.status, 0);
@@ -245,10 +245,9 @@ test('emits INFO (advisory) when jira/confluence used but env check omitted', ()
 
 test('emits INFO (advisory) when script-bearing but runs/ omitted', () => {
   const scriptBearingWithRuns = buildScriptBearingDesign();
-  const contentNoRuns = scriptBearingWithRuns.replace(
-    /- \.agents\/skills\/example-skill\/runs\/\n- \.agents\/skills\/example-skill\/runs\/<run-key>\/\n/,
-    '',
-  );
+  const contentNoRuns = scriptBearingWithRuns
+    .replace(/- \.agents\/skills\/example-skill\/runs\/\n- \.agents\/skills\/example-skill\/runs\/<run-key>\/\n/, '')
+    .replace(/All artifacts live under runs\/<feature-id>\/\n/, '');
   const result = runEvidenceCheck(contentNoRuns);
 
   assert.equal(result.status, 0);
@@ -256,4 +255,113 @@ test('emits INFO (advisory) when script-bearing but runs/ omitted', () => {
     result.stdout,
     /INFO:.*Runtime output under runs.*\(advisory\)/i,
   );
+});
+
+test('passes design with Functional Design and Script Path fields (no Functions subsection)', () => {
+  const content = `${buildBaseSections()}## Functional Design 1
+
+1. Script Path: scripts/phase0.sh
+2. Script Purpose: Prepare run directory
+3. Script Inputs: runDir
+4. Script Outputs: context/run_dir.json
+5. Script User Interaction: none
+2. Detailed Implementation: function phase0(runDir) { ... }
+
+## Tests
+
+| Script Path | Test Stub Path | Smoke Command |
+|-------------|----------------|---------------|
+| scripts/phase0.sh | scripts/test/phase0.test.js | \`node --test scripts/test/phase0.test.js\` |
+
+test('returns FINAL_EXISTS when final plan is present', () => {
+  const runDir = '/tmp/test-run';
+  const result = runCheckResume(runDir);
+  assert.equal(result, 'FINAL_EXISTS');
+});
+
+## Documentation Changes
+
+### AGENTS.md
+- Update skill routing
+
+### README
+- README.md: no change
+
+## Implementation Checklist
+
+## References
+`;
+  const result = runEvidenceCheck(content);
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /OK:.*Functions or Functional Design/i);
+});
+
+test('fails when design has outline-style Skills Content', () => {
+  const outlineContent = `# Example Design
+
+> **Design ID:** outline-test
+> **Scope:** Test outline-style rejection
+
+## Overview
+
+| Action | Path | Notes |
+|--------|------|-------|
+| UPDATE | .agents/skills/example-skill/SKILL.md | entrypoint |
+| UPDATE | workspace-planner/skills/example-local/SKILL.md | workspace-local |
+
+## Architecture
+
+### Workflow chart
+
+Entrypoint: .agents/skills/example-skill/SKILL.md
+Phase 0: REPORT_STATE, task.json, run.json
+skill-creator, code-structure-quality
+jira-cli, confluence, feishu-notify — direct reuse is sufficient
+Why this placement: shared across workspaces
+
+## Skills Content Specification
+
+### 3.1 \`.agents/skills/example-skill/SKILL.md\`
+
+Target path:
+- .agents/skills/example-skill/SKILL.md
+
+Purpose:
+- Example design.
+
+Input contract:
+- design_id: string
+
+## Functions
+
+| function | responsibility | inputs | outputs | side effects | failure mode |
+|----------|----------------|--------|---------|--------------|--------------|
+| main | run checks | argv | stdout | reads files | exits 2 |
+
+## Tests
+
+| Script Path | Test Stub Path |
+|-------------|----------------|
+| scripts/check_resume.sh | scripts/test/check_resume.test.js |
+
+Stub scenarios:
+- returns FINAL_EXISTS when final plan present
+
+## Documentation Changes
+
+### AGENTS.md
+- Update skill routing
+
+### README
+- README.md: no change
+
+## Implementation Checklist
+
+## References
+
+design_review_report.md
+`;
+  const result = runEvidenceCheck(outlineContent);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stdout, /FAIL:.*outline-style|FAIL:.*Target path|Exact-content failures|FAIL:.*Stub scenarios/i);
 });
