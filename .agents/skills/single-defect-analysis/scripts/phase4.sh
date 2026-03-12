@@ -57,7 +57,12 @@ PAYLOAD=$(cat <<EOF
 EOF
 )
 
-if ! "$SCRIPT_DIR/notify_feishu.sh" "$RUN_DIR" "$PAYLOAD"; then
+if [[ -n "${FEISHU_CHAT_ID:-}" ]]; then
+  # Emit structured marker for agent to send via gateway message tool (CLI path unreliable)
+  SUMMARY="$(jq -r '.summary // ""' "$CONTEXT_DIR/issue_summary.json" 2>/dev/null || echo "")"
+  RISK_DISPLAY="$(jq -r '.risk_level // "medium"' "$CONTEXT_DIR/fc_risk.json" 2>/dev/null || echo "medium")"
+  echo "FEISHU_NOTIFY: chat_id=${FEISHU_CHAT_ID} issue=${ISSUE_KEY} risk=${RISK_DISPLAY} plan=${PLAN_FILE}"
+elif ! "$SCRIPT_DIR/notify_feishu.sh" "$RUN_DIR" "$PAYLOAD" ""; then
   echo "NOTIFY_PENDING"
 fi
 

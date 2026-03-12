@@ -3,7 +3,8 @@ set -euo pipefail
 
 RUN_DIR="${1:-}"
 PAYLOAD_JSON="${2:-}"
-[[ -n "$RUN_DIR" && -n "$PAYLOAD_JSON" ]] || { echo "Usage: notify_feishu.sh <run_dir> <payload_json>" >&2; exit 1; }
+CHAT_ID="${3:-${FEISHU_CHAT_ID:-}}"
+[[ -n "$RUN_DIR" && -n "$PAYLOAD_JSON" ]] || { echo "Usage: notify_feishu.sh <run_dir> <payload_json> [chat_id]" >&2; exit 1; }
 [[ -f "$RUN_DIR/run.json" ]] || echo '{"notification_pending":null}' >"$RUN_DIR/run.json"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -16,7 +17,9 @@ TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
 set +e
 if [[ -x "$FEISHU_SCRIPT" ]]; then
-  node "$FEISHU_SCRIPT" --file "$TMP_PAYLOAD"
+  FEISHU_ARGS=(--file "$TMP_PAYLOAD")
+  [[ -n "$CHAT_ID" ]] && FEISHU_ARGS=(--chat-id "$CHAT_ID" --file "$TMP_PAYLOAD")
+  node "$FEISHU_SCRIPT" "${FEISHU_ARGS[@]}"
   SEND_STATUS=$?
 else
   SEND_STATUS=1

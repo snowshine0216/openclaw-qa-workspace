@@ -13,9 +13,9 @@ if [[ -n "${JIRA_ISSUE_JSON_OVERRIDE:-}" && -f "${JIRA_ISSUE_JSON_OVERRIDE}" ]];
   cp "${JIRA_ISSUE_JSON_OVERRIDE}" "$CONTEXT_DIR/issue.json"
 else
   if command -v jira >/dev/null 2>&1; then
-    jira issue view "$ISSUE_KEY" --format json >"$CONTEXT_DIR/issue.json"
+    jira issue view "$ISSUE_KEY" --raw >"$CONTEXT_DIR/issue.json"
   elif [[ -n "${JIRA_CLI_SCRIPT:-}" && -x "${JIRA_CLI_SCRIPT}" ]]; then
-    "${JIRA_CLI_SCRIPT}" issue view "$ISSUE_KEY" --format json >"$CONTEXT_DIR/issue.json"
+    "${JIRA_CLI_SCRIPT}" issue view "$ISSUE_KEY" --raw >"$CONTEXT_DIR/issue.json"
   else
     echo "Jira fetch failed: jira-cli unavailable and no override provided" >&2
     exit 1

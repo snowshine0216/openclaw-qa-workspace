@@ -22,6 +22,7 @@ fi
 RUN_DIR="${SKILL_ROOT}/runs/${ISSUE_KEY}"
 mkdir -p "$RUN_DIR/context" "$RUN_DIR/drafts"
 
+export FEISHU_CHAT_ID="${FEISHU_CHAT_ID:-}"
 export SELECTED_MODE="$REFRESH_MODE"
 
 for PHASE in 0 1 2 3 4; do

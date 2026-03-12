@@ -28,9 +28,11 @@ All artifacts for a run live under `<skill-root>/runs/<issue_key>/`:
 
 ## Orchestrator Loop
 
-1. Run `scripts/phaseN.sh <issue_key> <run-dir>` for phases 0 to 4.
-2. If phase 2 prints `SPAWN_MANIFEST: <path>`, spawn requests and rerun `phase2.sh --post`.
-3. Stop on non-zero exit.
+1. Set `FEISHU_CHAT_ID=<chat_id>` from TOOLS.md before running `orchestrate.sh`.
+2. Run `scripts/phaseN.sh <issue_key> <run-dir>` for phases 0 to 4.
+3. If phase 2 prints `SPAWN_MANIFEST: <path>`, spawn requests and rerun `phase2.sh --post`.
+4. If any phase prints `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>`, send a formatted Feishu message via the `message` tool (NOT the CLI) to that chat_id. The CLI path (openclaw message send subprocess) cannot send to group chats reliably — use gateway `message` tool directly.
+5. Stop on non-zero exit.
 
 ## Input Contract
 
