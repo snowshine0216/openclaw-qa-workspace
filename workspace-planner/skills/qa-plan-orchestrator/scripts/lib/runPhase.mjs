@@ -48,6 +48,7 @@ import {
   validateXMindMarkHierarchy,
 } from './qaPlanValidators.mjs';
 import { writePhaseManifest } from './spawnManifestBuilders.mjs';
+import { generateFinalPlanSummaryFromRunDir } from './finalPlanSummary.mjs';
 
 const PHASE_TO_GATE = {
   phase1: 'phase_1_evidence_gathering',
@@ -165,6 +166,8 @@ async function runPhase7(featureId, runDir) {
     `# Finalization Record\n\n- Source: ${sourcePath}\n- Promoted at: ${new Date().toISOString()}\n\n## Supporting Context Lineage\n${lineage.supporting}\n\n## Deep Research Lineage\n${lineage.research}\n`,
     'utf8'
   );
+
+  await generateFinalPlanSummaryFromRunDir(featureId, runDir);
 
   state.task.current_phase = 'phase_7_finalization';
   state.task.overall_status = 'completed';

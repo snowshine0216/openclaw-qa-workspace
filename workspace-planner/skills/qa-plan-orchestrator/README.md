@@ -42,11 +42,11 @@ Each spawned subagent receives explicit instructions in its task text to read th
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Phase 1 | `reference.md`, `references/context-coverage-contract.md`                                                                          | Source routing, approved collection paths                |
 | Phase 3 | `references/context-coverage-contract.md`, `references/context-index-schema.md`                                                   | Tavily-first deep research, coverage ledger rules, artifact lookup structure         |
-| Phase 4a | `references/phase4a-contract.md`                                                                                                  | Subcategory-only draft, atomic nested steps, few shots   |
-| Phase 4b | `references/phase4b-contract.md`                                                                                                  | Canonical top-layer grouping, bounded research, no few-shot cleanup |
-| Phase 5a | `references/review-rubric-phase5a.md`                                                                                             | Full-context audit, section checklist, rerun disposition |
-| Phase 5b | `references/review-rubric-phase5b.md`                                                                                             | Shipment checkpoints, checkpoint audit, release verdict, rerun disposition |
-| Phase 6 | `references/review-rubric-phase6.md`, `references/e2e-coverage-rules.md`                                                           | Final layering, few-shot cleanup, quality delta          |
+| Phase 4a | `references/phase4a-contract.md`, `references/subagent-quick-checklist.md`                                                       | Subcategory-only draft, atomic nested steps, few shots   |
+| Phase 4b | `references/phase4b-contract.md`, `references/subagent-quick-checklist.md`                                                       | Canonical top-layer grouping, bounded research, no few-shot cleanup |
+| Phase 5a | `references/review-rubric-phase5a.md`, `references/subagent-quick-checklist.md`                                                  | Full-context audit, section checklist, rerun disposition |
+| Phase 5b | `references/review-rubric-phase5b.md`, `references/subagent-quick-checklist.md`                                                  | Shipment checkpoints, checkpoint audit, release verdict, rerun disposition |
+| Phase 6 | `references/review-rubric-phase6.md`, `references/e2e-coverage-rules.md`, `references/subagent-quick-checklist.md`                | Final layering, few-shot cleanup, quality delta          |
 
 ## Support And Research Guardrails
 

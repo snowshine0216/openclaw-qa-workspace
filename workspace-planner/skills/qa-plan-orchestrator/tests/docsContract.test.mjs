@@ -22,7 +22,7 @@ const REQUIRED_FILES = [
   'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_IMPLEMENTATION_SUMMARY.md',
   'docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md',
   'docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md',
-  'docs/SUBAGENT_QUICK_CHECKLIST.md',
+  'references/subagent-quick-checklist.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN_REVIEW.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_IMPLEMENTATION_SUMMARY.md',
@@ -140,7 +140,7 @@ test('active docs advertise script-driven artifacts and source routing', async (
 
 test('validator-safe guide and subagent checklist advertise the correct operational rules', async () => {
   const guide = await readFile(join(SKILL_ROOT, 'docs', 'VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md'), 'utf8');
-  const checklist = await readFile(join(SKILL_ROOT, 'docs', 'SUBAGENT_QUICK_CHECKLIST.md'), 'utf8');
+  const checklist = await readFile(join(SKILL_ROOT, 'references', 'subagent-quick-checklist.md'), 'utf8');
 
   assert.match(guide, /validator-safe beats prose-pretty/i);
   assert.match(guide, /never put priority tags on grouping bullets/i);

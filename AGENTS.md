@@ -93,21 +93,28 @@ Treat each file below as a reusable playbook. Select the closest match by user i
 - Plans must be detailed, implementation-ready, and decision-complete.
 - Every plan must state the files to change, files to create, expected content changes, and validation expectations.
 - Use explicit defaults and assumptions when a design choice must be locked before implementation.
-- The Plan / Design should alwasy be structured by Goal -> Required Change for Each Phase . And group all related changes by phase instead of mentioning them all in the end. Good example:
+- The Plan / Design should always be structured by Goal -> Required Change for Each Phase. Group all related changes by phase instead of mentioning them all in the end. Good example:
 ```
 # Title
 ## Overview
 ## Architecture
 ### Workflow chart
 ### Folder structure
+## Skills Content Specification (optional)
+### 3.x skill-SKILL.md (detailed)
+### 4.x skill-reference.md (detailed)
+### Functions
 ## Data Models (optional)
-## Funcioanl Design 1 
-<!-- Need put all realted changes for this functional design into this section, must have implenmentation codes, or content of files to be changed -->
-## Funcioanl Design 2
-<!-- Need put all realted changes for this functional design into this section, must have implenmentation codes, or content of files to be changed-->
+## Functional Design 1
+<!-- All related changes for this functional design, must have implementation codes or content of files to be changed -->
+## Functional Design 2
+<!-- Same as above -->
 ## Tests
-<!-- Need put all realted tests into this section, only stub tests are allowed, no implementation-->
+<!-- Stub tests only, no implementation -->
+## Evals (when applicable)
 ## Documentation Changes
+### AGENTS.md
+### README
 ## Implementation Checklist
 ## References
 ```

@@ -38,6 +38,97 @@ Use these existing shared skills directly when they fit:
 
 Create a wrapper only when direct reuse cannot express the needed higher-level contract.
 
+## Design Patterns (from qa-plan-orchestrator)
+
+### Phase 0 Environment Check
+
+When the workflow uses jira-cli, github, or confluence in Phase 0 or before spawning subagents:
+
+| Source | Validation command | Skill |
+|--------|--------------------|-------|
+| Jira | `jira me` (via jira-run.sh with env loaded) | jira-cli |
+| GitHub | `gh auth status` | github |
+| Confluence | `confluence spaces` or workspace-specific check | confluence |
+
+- Run validation before Phase 1 or any spawn that fetches from these sources.
+- Output `context/runtime_setup_<run-key>.json` with `setup_entries[].status` (pass/blocked).
+- If any required source is blocked, set `task.json.overall_status = "blocked"` and stop.
+
+### Example Scripts (Copy-Ready)
+
+Copy from `.agents/skills/openclaw-agent-design/examples/` into your skill's `scripts/`:
+
+- `check_runtime_env.sh` — wrapper
+- `check_runtime_env.mjs` — standalone env validation (jira, confluence, github)
+- `send_feishu_with_retry.template.sh` — Feishu notification with retry-on-failure (store notification_pending in run.json)
+
+Usage: `bash scripts/check_runtime_env.sh <run-key> <jira,confluence,github> [output-dir]`
+
+Output: `runtime_setup_<run-key>.json`, `runtime_setup_<run-key>.md` in output-dir (default: `./runs/<run-key>/context/` when omitted).
+
+Feishu: Copy `send_feishu_with_retry.template.sh`, adapt `load_feishu_chat_id`, `set_run_field`, and paths. Reference: rca-orchestrator phase5_finalize.sh lines 69–77.
+
+### Runtime Output Location
+
+**All runtime output must live under `<skill-root>/runs/<run-key>/`.**
+
+- `task.json`, `run.json` → `runs/<run-key>/`
+- `context/`, `drafts/` → `runs/<run-key>/context/`, `runs/<run-key>/drafts/`
+- Phase manifests → `runs/<run-key>/phaseN_spawn_manifest.json`
+- Final artifacts → `runs/<run-key>/` (e.g. `qa_plan_final.md`)
+
+No runtime artifacts outside `runs/`. This keeps skill output predictable and isolated per run.
+
+### Intermediate Artifacts Per Phase
+
+Every phase must persist artifacts under `runs/<run-key>/`. Examples:
+
+| Phase | Artifacts |
+|-------|-----------|
+| Phase 0 | `runs/<key>/context/runtime_setup_*.md`, `runtime_setup_*.json`, `request_fulfillment_*.md` |
+| Phase 1 | `runs/<key>/phase1_spawn_manifest.json`, `runs/<key>/context/<source>_*.md` |
+| Phase N | `runs/<key>/phaseN_spawn_manifest.json`, `runs/<key>/drafts/`, `runs/<key>/context/artifact_lookup_*.md` |
+
+No phase should produce only in-memory state; all outputs must be files under `runs/<run-key>/`.
+
+### Script-Driven Orchestrator
+
+- Orchestrator: (1) call `phaseN.sh`, (2) handle user prompts (REPORT_STATE, approvals), (3) spawn from manifests and wait.
+- Scripts: own all logic, validators, artifact writes.
+- Canonical example: `workspace-planner/skills/qa-plan-orchestrator`.
+
+### Spawn Bridge (Script-Driven Context)
+
+When the orchestrator is a script (not an agent with sessions_spawn tool), copy from `examples/`:
+
+- **Generic**: `spawn_from_manifest.mjs` — reads `phaseN_spawn_manifest.json` (requests[].openclaw.args), runs `openclaw sessions spawn` per request.
+- **Domain-specific**: `openclaw-spawn-bridge.template.js` — implements `spawnBatch(requests, context)` contract. Copy into your skill, customize task extraction for your manifest format. Uses `openclaw agent` (--agent reporter). Invoke only from TUI (orchestrator workflow), not from CLI directly.
+- **Feishu notification**: `send_feishu_with_retry.template.sh` — sends summary via feishu-notify; on failure stores `notification_pending` in run.json for retry. Reference: rca-orchestrator phase5_finalize.sh.
+
+### Feishu Notification (Finalize Phase)
+
+When the workflow sends a summary or report to Feishu at finalization:
+
+- Use the shared `feishu-notify` skill: `node <feishu-notify>/scripts/send-feishu-notification.js --chat-id <id> --file <path>`.
+- Load `chat_id` from workspace `TOOLS.md` (grep `oc_[a-zA-Z0-9_]+` or use feishu-notify's resolve).
+- **On failure**: Store `notification_pending` in `run.json` so a retry step can resend later. Example:
+
+```bash
+# From rca-orchestrator phase5_finalize.sh (lines 69–77)
+send_feishu() {
+  local pending=false
+  load_feishu_chat_id
+  if ! node "${FEISHU_NOTIFY_SCRIPT}" --chat-id "${FEISHU_CHAT_ID}" --file "${SUMMARY_FILE}"; then
+    set_run_field "${RUN_DATE}" ".notification_pending = {chat_id: \"${FEISHU_CHAT_ID}\", file: \"${SUMMARY_FILE}\"}"
+    pending=true
+  fi
+  ${pending} || set_run_field "${RUN_DATE}" '.notification_pending = null'
+}
+```
+
+- **On success**: Clear `notification_pending` in run.json.
+- Copy `send_feishu_with_retry.template.sh` from `examples/` — adapt `load_feishu_chat_id`, `set_run_field`, and paths for your skill.
+
 ## Script-Bearing Skill Rule
 
 A skill is script-bearing if either of these is true:
@@ -96,6 +187,76 @@ For OpenClaw skill-package design work, `scripts/test/` is the canonical test lo
 | CREATE/UPDATE | `<workspace>/skills/<local-skill>/SKILL.md` | workspace-local capability via skill-creator |
 | UPDATE | `AGENTS.md` | sync design and skill references |
 ```
+
+## Workflow Chart Template
+
+Place under **Architecture > Workflow chart**. Include Phase 0 and status transitions.
+
+```markdown
+### Workflow chart
+
+[Use mermaid flowchart or table]
+
+Phase 0: Existing-State Check
+- Run REPORT_STATE check (see reference.md)
+- If using jira-cli/github/confluence: run env check, output runtime_setup_*.json
+- Present options by state (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH)
+- Archive prior output if regenerate selected
+- Initialize task.json / run.json
+
+Phase N: <Phase Name>
+- <actions>
+
+| From | Event | To |
+|------|-------|----|
+| <status> | <event> | <status> |
+| any | unrecoverable error | failed |
+```
+
+## Folder Structure Template
+
+Place under **Architecture > Folder structure**.
+
+**Docs-only skill:**
+```text
+<skill-root>/
+├── SKILL.md
+└── reference.md
+```
+
+**Script-bearing skill:**
+```text
+<skill-root>/
+├── SKILL.md
+├── reference.md
+└── scripts/
+    ├── <entrypoint-or-helper>
+    ├── lib/
+    └── test/
+```
+
+**Script-bearing skill (with runtime output):**
+```text
+<skill-root>/
+├── SKILL.md
+├── reference.md
+├── runs/
+│   └── <run-key>/
+│       ├── context/
+│       ├── drafts/
+│       ├── task.json
+│       ├── run.json
+│       ├── phaseN_spawn_manifest.json
+│       └── <final-artifact>.md
+└── scripts/
+    ├── <entrypoint-or-helper>
+    ├── lib/
+    └── test/          # Stub tests; every script must have a row in Tests table
+```
+
+**Runtime output rule:** All runtime artifacts (task.json, run.json, context/, drafts/, manifests, final output) must live under `<skill-root>/runs/<run-key>/`. No runtime output outside `runs/`.
+
+OpenClaw uses `scripts/test/` as package-local exception (not top-level `tests/`).
 
 ## Skills Content Template
 
@@ -171,12 +332,37 @@ Inputs / outputs / artifacts:
 | `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | success; required-arg failure; dependency/error path | `node --test <skill-root>/scripts/test/foo.test.js` |
 ```
 
+### Test Stub Coverage (Required for Script-Bearing Skills)
+
+Every script-bearing design must include a **Tests** section with a stub table. Every script in the Script Inventory must have a row. Stub tests only — no implementation.
+
+| Script Path | Test Stub Path | Scenarios (stub) |
+|-------------|----------------|------------------|
+| `scripts/phase0.sh` | `scripts/test/phase0.test.sh` | success; missing-run-key |
+| `scripts/lib/foo.mjs` | `scripts/test/foo.test.mjs` | parseInput; validateOutput; error-path |
+| `scripts/bar.sh` | `scripts/test/bar.test.sh` | success; required-arg failure |
+
+**Coverage rule:** Each script in the design must have a corresponding test stub row. Scenarios column lists stub scenario names (e.g. `success`, `required-arg failure`, `dependency-error`) — implementation deferred.
+
 ## Backfill Coverage Table Template
 
 ```markdown
 | Script Path | Test Stub Path | Failure-Path Stub |
 |-------------|----------------|-------------------|
 | `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | required-arg failure |
+```
+
+## Evals Template (when applicable)
+
+Place under **Evals** when the design creates or materially redesigns skills.
+
+```markdown
+## Evals (when applicable)
+
+- Eval scenarios: <describe what to measure>
+- Metrics: <trigger accuracy, output quality, etc.>
+- Tool: Use skill-creator evals or equivalent benchmarks
+- Validation: Run evals before finalizing skill changes
 ```
 
 ## Final Notification Template
