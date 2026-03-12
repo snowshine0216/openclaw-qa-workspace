@@ -71,6 +71,7 @@ Required report fields:
 - [ ] When design uses jira-cli, github, or confluence in Phase 0: env check and runtime_setup_*.json output must be specified.
 - [ ] Script-bearing designs with runtime output: runs/<run-key>/ structure must be explicit.
 - [ ] Final workflow includes Feishu send and notification_pending fallback when publishing externally visible work.
+- [ ] When agent-orchestrated with Feishu: design uses marker-based pattern (emit `FEISHU_NOTIFY:` when `FEISHU_CHAT_ID` set; agent sends via gateway `message` tool; `chat_id` from `TOOLS.md`). Do not rely on `openclaw message send` CLI subprocess for group chats.
 - [ ] When Skills Content Spec is in scope: contains exact SKILL.md/reference.md content, not outline-style (skip when design only updates functions). Reference: `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`.
 - [ ] Functional Design / Functions include implementation detail for scripts (algorithm, pseudocode, or step-by-step logic).
 - [ ] Tests include detailed test stub functions (`test(...)` or `describe` blocks) with concrete names, setup, and assertions — not just scenario names. Reference: `workspace-planner/skills/qa-plan-orchestrator/scripts/test/spawnManifestBuilders.test.mjs`.

@@ -60,13 +60,16 @@ Copy from `.agents/skills/openclaw-agent-design/examples/` into your skill's `sc
 
 - `check_runtime_env.sh` — wrapper
 - `check_runtime_env.mjs` — standalone env validation (jira, confluence, github)
-- `send_feishu_with_retry.template.sh` — Feishu notification with retry-on-failure (store notification_pending in run.json)
+- `emit_feishu_notify_marker.template.sh` — emit `FEISHU_NOTIFY:` marker when `FEISHU_CHAT_ID` set; agent sends via gateway `message` tool (preferred for agent-orchestrated workflows)
+- `send_feishu_with_retry.template.sh` — Feishu notification via CLI with retry-on-failure (store notification_pending in run.json; use for non-agent contexts)
 
 Usage: `bash scripts/check_runtime_env.sh <run-key> <jira,confluence,github> [output-dir]`
 
 Output: `runtime_setup_<run-key>.json`, `runtime_setup_<run-key>.md` in output-dir (default: `./runs/<run-key>/context/` when omitted).
 
-Feishu: Copy `send_feishu_with_retry.template.sh`, adapt `load_feishu_chat_id`, `set_run_field`, and paths. Reference: rca-orchestrator phase5_finalize.sh lines 69–77.
+Feishu (agent-orchestrated): Copy `emit_feishu_notify_marker.template.sh`; agent reads `chat_id` from `TOOLS.md`, sets `FEISHU_CHAT_ID`, catches marker, sends via gateway `message` tool. Reference: single-defect-analysis phase4.sh.
+
+Feishu (non-agent): Copy `send_feishu_with_retry.template.sh`, adapt `load_feishu_chat_id`, `set_run_field`, and paths. Reference: rca-orchestrator phase5_finalize.sh lines 69–77.
 
 ### Runtime Output Location
 
@@ -103,31 +106,25 @@ When the orchestrator is a script (not an agent with sessions_spawn tool), copy 
 
 - **Generic**: `spawn_from_manifest.mjs` — reads `phaseN_spawn_manifest.json` (requests[].openclaw.args), runs `openclaw sessions spawn` per request.
 - **Domain-specific**: `openclaw-spawn-bridge.template.js` — implements `spawnBatch(requests, context)` contract. Copy into your skill, customize task extraction for your manifest format. Uses `openclaw agent` (--agent reporter). Invoke only from TUI (orchestrator workflow), not from CLI directly.
-- **Feishu notification**: `send_feishu_with_retry.template.sh` — sends summary via feishu-notify; on failure stores `notification_pending` in run.json for retry. Reference: rca-orchestrator phase5_finalize.sh.
+- **Feishu notification (agent-orchestrated)**: `emit_feishu_notify_marker.template.sh` — phase script emits `FEISHU_NOTIFY:` marker when `FEISHU_CHAT_ID` set; agent sends via gateway `message` tool. Reference: single-defect-analysis phase4.sh.
+- **Feishu notification (non-agent)**: `send_feishu_with_retry.template.sh` — sends via feishu-notify CLI; on failure stores `notification_pending` in run.json. Reference: rca-orchestrator phase5_finalize.sh.
 
 ### Feishu Notification (Finalize Phase)
 
 When the workflow sends a summary or report to Feishu at finalization:
 
-- Use the shared `feishu-notify` skill: `node <feishu-notify>/scripts/send-feishu-notification.js --chat-id <id> --file <path>`.
-- Load `chat_id` from workspace `TOOLS.md` (grep `oc_[a-zA-Z0-9_]+` or use feishu-notify's resolve).
-- **On failure**: Store `notification_pending` in `run.json` so a retry step can resend later. Example:
+**Preferred (agent-orchestrated):** Use the marker-based pattern. The `openclaw message send` CLI subprocess is unreliable for group chats (error 230002). The agent (main session) should send via the gateway `message` tool directly.
 
-```bash
-# From rca-orchestrator phase5_finalize.sh (lines 69–77)
-send_feishu() {
-  local pending=false
-  load_feishu_chat_id
-  if ! node "${FEISHU_NOTIFY_SCRIPT}" --chat-id "${FEISHU_CHAT_ID}" --file "${SUMMARY_FILE}"; then
-    set_run_field "${RUN_DATE}" ".notification_pending = {chat_id: \"${FEISHU_CHAT_ID}\", file: \"${SUMMARY_FILE}\"}"
-    pending=true
-  fi
-  ${pending} || set_run_field "${RUN_DATE}" '.notification_pending = null'
-}
-```
+1. **Agent setup**: Read `chat_id` from workspace `TOOLS.md` (grep `oc_[a-zA-Z0-9_]+` or use feishu-notify's resolve). Set `FEISHU_CHAT_ID` before running phase scripts.
+2. **Phase script**: When `FEISHU_CHAT_ID` is set, emit a structured marker instead of calling the CLI:
+   ```
+   FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>
+   ```
+3. **Agent handling**: Catch this line in phase output and send the formatted message via the gateway `message` tool to that `chat_id`. Do not spawn `openclaw message send` as a subprocess.
 
-- **On success**: Clear `notification_pending` in run.json.
-- Copy `send_feishu_with_retry.template.sh` from `examples/` — adapt `load_feishu_chat_id`, `set_run_field`, and paths for your skill.
+Copy `emit_feishu_notify_marker.template.sh` from `examples/` for the emit pattern. Reference: single-defect-analysis `phase4.sh`.
+
+**Fallback (non-agent contexts, e.g. cron):** Use `send_feishu_with_retry.template.sh` — calls `node <feishu-notify>/scripts/send-feishu-notification.js --chat-id <id> --file <path>`. Load `chat_id` from `TOOLS.md`. On failure, store `notification_pending` in `run.json` for later retry. Note: CLI path may fail for group chats; prefer marker-based when agent is in the loop.
 
 ## Script-Bearing Skill Rule
 

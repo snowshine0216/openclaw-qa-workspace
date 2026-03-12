@@ -131,6 +131,17 @@ Pass conditions:
 Typical failures:
 - `P1`: Script-bearing design with runtime output omits runs/ convention.
 
+### 11) Feishu Notification (when publishing externally)
+
+Pass conditions:
+- When workflow publishes externally visible work, design includes Feishu notification.
+- When agent-orchestrated: design uses marker-based pattern — phase script emits `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>` when `FEISHU_CHAT_ID` is set; agent reads `chat_id` from workspace `TOOLS.md`, catches marker, sends via gateway `message` tool (not CLI subprocess).
+- `chat_id` is not hardcoded; always from `TOOLS.md`.
+
+Typical failures:
+- `P1`: Agent-orchestrated workflow uses `openclaw message send` CLI subprocess for Feishu (unreliable for group chats).
+- `P1`: `chat_id` hardcoded or not sourced from `TOOLS.md`.
+
 ## Finding IDs
 
 - `SKILL-001` (`P0`): Workflow is not modeled as a skill entrypoint.
@@ -155,6 +166,8 @@ Typical failures:
 - `EVAL-001` (`P1`): Evals section missing when design creates or materially redesigns skills.
 - `ENV-001` (`P1`): Design uses jira-cli/github/confluence in Phase 0 but omits env check or runtime_setup output.
 - `RUNTIME-001` (`P1`): Script-bearing design with runtime output omits runs/ convention.
+- `FEISHU-001` (`P1`): Agent-orchestrated workflow uses CLI subprocess for Feishu instead of marker-based pattern (emit `FEISHU_NOTIFY:`, agent sends via gateway `message` tool).
+- `FEISHU-002` (`P1`): Feishu `chat_id` hardcoded or not sourced from `TOOLS.md`.
 - `CONTENT-001` (`P0`): Skills Content Specification uses outline-style labels without exact content.
 - `CONTENT-002` (`P1`): Functions lack implementation detail for lib scripts.
 - `CONTENT-003` (`P1`): Tests lack detailed test stub functions.

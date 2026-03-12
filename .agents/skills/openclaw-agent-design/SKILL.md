@@ -133,7 +133,7 @@ Apply these when the workflow uses external integrations or multi-phase orchestr
 - **Script-driven orchestrator**: Orchestrator calls `phaseN.sh` only; scripts own logic. Orchestrator handles user prompts and spawn-from-manifest.
 - **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation. The spawn script must be invoked only from TUI (orchestrator workflow), not from CLI directly.
 - **Evidence policy**: Use approved skills (jira-cli, confluence, github) for system-of-record; never `web_fetch` for Jira/GitHub/Confluence.
-- **Feishu notification**: When finalizing, send summary via feishu-notify skill. On failure, store `notification_pending` in run.json for later retry. Copy `send_feishu_with_retry.template.sh` from `examples/` — no need to rewrite.
+- **Feishu notification**: When agent-orchestrated, prefer the marker-based pattern: (1) Agent reads `chat_id` from workspace `TOOLS.md` and sets `FEISHU_CHAT_ID` before running phase scripts. (2) Phase scripts emit `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>` when `FEISHU_CHAT_ID` is set. (3) Agent catches this line and sends via the gateway `message` tool directly — do not use `openclaw message send` CLI subprocess (unreliable for group chats). For non-agent contexts (e.g. cron), copy `send_feishu_with_retry.template.sh`; on failure store `notification_pending` in run.json.
 
 See [reference.md](reference.md) for pattern details. All reusable scripts live in `examples/` — no dependency on other workspaces.
 
