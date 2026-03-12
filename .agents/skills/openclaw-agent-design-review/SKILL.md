@@ -1,13 +1,13 @@
 ---
 name: openclaw-agent-design-review
-description: Reviews OpenClaw agent and workflow designs for skill-first package architecture, canonical shared-vs-local placement, Phase 0 state-machine non-regression, direct reuse of existing shared skills, detailed SKILL.md/reference.md content contracts, script inventory plus test-stub completeness, and reviewer automation coverage. Emits blocking pass/fail review artifacts aligned with `.agents/skills/openclaw-agent-design/SKILL.md`.
+description: Reviews OpenClaw agent and workflow designs for skill-first package architecture, canonical shared-vs-local placement, Phase 0 state-machine non-regression, direct reuse of existing shared skills, exact SKILL.md/reference.md content (not outline-style), script inventory plus detailed test-stub functions, and reviewer automation coverage. Emits blocking pass/fail review artifacts aligned with `.agents/skills/openclaw-agent-design/SKILL.md`. Uses qa-plan-orchestrator and spawnManifestBuilders.test.mjs as canonical references for Skills Content and Tests.
 ---
 
 # OpenClaw Agent Design Review
 
 ## Purpose
 
-Mandatory quality gate for OpenClaw design outputs before finalization. Checks: canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References), shared-vs-local placement, skill-first workflow, Phase 0 / `REPORT_STATE` preservation, direct reuse of `jira-cli`/`confluence`/`feishu-notify`/`github`, `SKILL.md`/`reference.md` specs, script-bearing completeness, and documentation coverage.
+Mandatory quality gate for OpenClaw design outputs before finalization. Checks: canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References), shared-vs-local placement, skill-first workflow, Phase 0 / `REPORT_STATE` preservation, direct reuse of `jira-cli`/`confluence`/`feishu-notify`/`github`, `SKILL.md`/`reference.md` specs, script-bearing completeness, documentation coverage, and exact content contract (reject outline-style Skills Content when in scope; require full SKILL.md/reference.md text as in qa-plan-orchestrator; require detailed test stub functions with `test()` blocks as in spawnManifestBuilders.test.mjs; function-only updates exempt from Skills Content checks).
 
 ## When To Use
 
@@ -71,10 +71,14 @@ Required report fields:
 - [ ] When design uses jira-cli, github, or confluence in Phase 0: env check and runtime_setup_*.json output must be specified.
 - [ ] Script-bearing designs with runtime output: runs/<run-key>/ structure must be explicit.
 - [ ] Final workflow includes Feishu send and notification_pending fallback when publishing externally visible work.
+- [ ] When Skills Content Spec is in scope: contains exact SKILL.md/reference.md content, not outline-style (skip when design only updates functions). Reference: `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`.
+- [ ] Functional Design / Functions include implementation detail for scripts (algorithm, pseudocode, or step-by-step logic).
+- [ ] Tests include detailed test stub functions (`test(...)` or `describe` blocks) with concrete names, setup, and assertions — not just scenario names. Reference: `workspace-planner/skills/qa-plan-orchestrator/scripts/test/spawnManifestBuilders.test.mjs`.
 
 ## Additional Resources
 
 - Detailed rubric: [reference.md](reference.md)
 - Path checker: `scripts/validate_paths.sh`
 - Evidence checker: `scripts/check_design_evidence.sh`
+- Exact content checker: `scripts/check_exact_content.sh`
 - Canonical design template: `.agents/skills/openclaw-agent-design/SKILL.md`

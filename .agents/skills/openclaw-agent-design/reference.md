@@ -176,17 +176,6 @@ For OpenClaw skill-package design work, `scripts/test/` is the canonical test lo
 }
 ```
 
-## Design Doc Deliverables Table Format
-
-```markdown
-| Action | Path | Notes |
-|--------|------|-------|
-| UPDATE | `.agents/skills/<entrypoint-skill>/SKILL.md` | entrypoint skill contract |
-| UPDATE | `.agents/skills/<entrypoint-skill>/reference.md` | canonical behavior notes |
-| CREATE/UPDATE | `.agents/skills/<shared-skill>/SKILL.md` | shared capability via skill-creator |
-| CREATE/UPDATE | `<workspace>/skills/<local-skill>/SKILL.md` | workspace-local capability via skill-creator |
-| UPDATE | `AGENTS.md` | sync design and skill references |
-```
 
 ## Workflow Chart Template
 
@@ -260,69 +249,43 @@ OpenClaw uses `scripts/test/` as package-local exception (not top-level `tests/`
 
 ## Skills Content Template
 
+**When design creates or materially redesigns skills:** Design must include the actual SKILL.md content, not an outline. **When design only updates functions:** No skill-related md files need updating; Skills Content Spec is not required.
+
+Structure:
+
 ```markdown
-### 3.x `<skill-path>/SKILL.md`
+### 3.x `<skill-path>/SKILL.md` (exact content)
 
-Purpose:
-- <what the skill does>
+---
+name: <skill-name>
+description: <one-line description>
+---
 
-When to trigger:
-- <skill-creator style trigger wording>
+# <Skill Title>
 
-Input contract:
-- `<field>`: <type>, example `<example>`, source <where it comes from>
+<concrete content — e.g. "The orchestrator has exactly three responsibilities:", "## Required References", "## Runtime Layout", etc.>
 
-Output contract:
-- <artifact, status line, handoff payload>
+## Phase Contract (or equivalent)
 
-Workflow/phase responsibilities:
-- <ordered responsibilities>
+### Phase 0
+- Entry: `scripts/phase0.sh`
+- Work: <concrete description>
+- Output: <exact paths>
+- User interaction: <concrete options>
 
-Error/ambiguity policy:
-- <stop / ask / retry / persist>
-
-Quality rules:
-- <formatting, invariants, review requirements>
-
-Classification:
-- `shared` | `workspace-local`
-
-Why this placement:
-- <placement justification>
-
-Existing skills reused directly:
-- `<skill-name>` — <why direct reuse is sufficient>
+...
 ```
 
 ## `reference.md` Content Template
 
-```markdown
-### 4.x `<skill-path>/reference.md`
-
-Must include:
-- state machine / invariants
-- schemas or field-level contracts
-- path conventions
-- validation commands
-- failure examples and recovery rules
-- package-specific defaults or exceptions
-```
+Same scope as Skills Content Template above. Include the exact content of reference.md. Do not list "Must include" bullets — write the actual content.
 
 ## Script Function Spec Template
 
-```markdown
-### 8.x `<script-path>`
+For each script, include:
+- Path
+- **Implementation detail**: actual implementation code
 
-Invocation:
-- `<command>`
-
-Inputs / outputs / artifacts:
-- <list>
-
-| function | responsibility | inputs | outputs | side effects | failure mode |
-|----------|----------------|--------|---------|--------------|--------------|
-| `main` | <summary> | argv | stdout / files | <side effects> | <error condition> |
-```
 
 ## Script Test Stub Matrix Template
 
@@ -334,7 +297,13 @@ Inputs / outputs / artifacts:
 
 ### Test Stub Coverage (Required for Script-Bearing Skills)
 
-Every script-bearing design must include a **Tests** section with a stub table. Every script in the Script Inventory must have a row. Stub tests only — no implementation.
+Every script-bearing design must include:
+1. Script-to-test stub table (existing)
+2. **Detailed test stub functions**: For each test file, include actual `test('...', () => { ... })` or `describe` blocks with:
+   - Concrete test name
+   - Setup/teardown skeleton
+   - Assertion placeholder or mock call
+   - No placeholder-only text like "Stub scenarios: - returns X when Y"
 
 | Script Path | Test Stub Path | Scenarios (stub) |
 |-------------|----------------|------------------|
@@ -342,7 +311,7 @@ Every script-bearing design must include a **Tests** section with a stub table. 
 | `scripts/lib/foo.mjs` | `scripts/test/foo.test.mjs` | parseInput; validateOutput; error-path |
 | `scripts/bar.sh` | `scripts/test/bar.test.sh` | success; required-arg failure |
 
-**Coverage rule:** Each script in the design must have a corresponding test stub row. Scenarios column lists stub scenario names (e.g. `success`, `required-arg failure`, `dependency-error`) — implementation deferred.
+**Coverage rule:** Each script in the design must have a corresponding test stub row. Include detailed `test()` blocks with concrete names, setup, and assertions — not just scenario names.
 
 ## Backfill Coverage Table Template
 

@@ -102,8 +102,8 @@ check_common_sections() {
     'existing shared skill reuse is present'
   check_required_pattern 'direct reuse is sufficient|contract gap|wrapper.*justif' \
     'direct reuse or wrapper justification is explicit'
-  check_required_pattern 'Purpose:|When to trigger:|Input contract:|Output contract:|Workflow/phase responsibilities:|Error/ambiguity policy:|Quality rules:' \
-    'SKILL.md content blueprint is explicit'
+  check_required_pattern '## Required References|## Runtime Layout|## Phase Contract|## Orchestrator Loop|## QA Plan Format|Purpose:|When to trigger:|Input contract:|Output contract:' \
+    'SKILL.md exact content or content blueprint is explicit (prefer ## headers per qa-plan-orchestrator)'
   check_required_pattern 'state machine / invariants|schemas or field-level contracts|path conventions|validation commands|failure examples and recovery rules' \
     'reference.md content blueprint is explicit'
   check_required_pattern 'README\.md|README' \
@@ -124,19 +124,30 @@ check_common_sections() {
 }
 
 check_script_specific_sections() {
-  check_required_pattern '^### Functions|^\| function \|' \
-    'Functions subsection or function table is present'
+  check_required_pattern '^### Functions|^## Functional Design|^\| function \||Detailed Implementation|Implementation detail' \
+    'Functions or Functional Design with implementation detail is present'
   check_required_pattern '^## Tests' \
     'Tests section is present'
   check_required_pattern 'scripts/test/' \
     'scripts/test convention is explicit'
-  check_required_pattern '\|[[:space:]]*function[[:space:]]*\|[[:space:]]*responsibility[[:space:]]*\|[[:space:]]*inputs[[:space:]]*\|[[:space:]]*outputs[[:space:]]*\|[[:space:]]*side effects[[:space:]]*\|[[:space:]]*failure mode[[:space:]]*\|' \
-    'function specification table is present'
+  check_required_pattern '\|[[:space:]]*function[[:space:]]*\|[[:space:]]*responsibility[[:space:]]*\|[[:space:]]*inputs[[:space:]]*\|[[:space:]]*outputs[[:space:]]*\|[[:space:]]*side effects[[:space:]]*\|[[:space:]]*failure mode[[:space:]]*\||Script Path|Script Purpose|Script Inputs|Script Outputs' \
+    'function specification table or Functional Design script fields is present'
   check_required_pattern 'Smoke Command|node --test|bash .*test|validation evidence' \
     'validation evidence is present for script changes'
   # Advisory: script-bearing designs with runtime output should specify runs/
   check_advisory_pattern 'runs/|runs/<run-key>' \
     'Runtime output under runs/<run-key>/ when script-bearing'
+}
+
+run_exact_content_check() {
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local exact_script="${script_dir}/check_exact_content.sh"
+  if [ -x "$exact_script" ] && pattern_match 'Skills Content Specification|^## Functions|^## Functional Design|^## Tests' "$DESIGN_FILE"; then
+    if ! bash "$exact_script" "$DESIGN_FILE"; then
+      FAILURES=$((FAILURES + 1))
+    fi
+  fi
 }
 
 main() {
@@ -149,6 +160,8 @@ main() {
   else
     echo 'INFO: no script deliverables detected; skipping script-specific gates'
   fi
+
+  run_exact_content_check
 
   echo "Failures: $FAILURES"
   if [ "$FAILURES" -gt 0 ]; then

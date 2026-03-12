@@ -1,0 +1,74 @@
+{
+  "skill_name": "single-defect-analysis",
+  "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run single-defect-analysis for Jira issue ABC-123. Use the skill. Produce FC risk, testing plan, and tester handoff artifacts under .agents/skills/single-defect-analysis/runs/ABC-123/. Follow the orchestrator loop: phase0 through phase4, handle REPORT_STATE if existing artifacts exist, spawn PR analysis if phase2 emits SPAWN_MANIFEST.",
+      "expected_output": "runs/ABC-123/ with ABC-123_TESTING_PLAN.md, tester_handoff.json, task.json, run.json. task.json has overall_status, current_phase, analysis_ready_at. run.json has analysis_scope=phase0_to_phase4_only, spawn_history, notification_pending.",
+      "files": [],
+      "expectations": [
+        "runs/ABC-123/ABC-123_TESTING_PLAN.md exists",
+        "runs/ABC-123/tester_handoff.json exists with issue_key, testing_plan_path, risk_level, fc_steps_count",
+        "runs/ABC-123/task.json has required fields: run_key, overall_status, current_phase, updated_at",
+        "runs/ABC-123/run.json has analysis_scope, spawn_history, notification_pending, updated_at",
+        "Orchestrator ran phase0 through phase4 in order",
+        "Output artifacts live strictly under skill-root/runs/<issue_key>/"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Given a run directory with existing ABC-123_TESTING_PLAN.md, run check_resume.sh for issue ABC-123 and report REPORT_STATE. Present user options per reference.md (use_existing, smart_refresh, full_regenerate for FINAL_EXISTS). Verify phase0 exits with USER_CHOICE_REQUIRED when state is not FRESH and SELECTED_MODE is unset.",
+      "expected_output": "REPORT_STATE=FINAL_EXISTS when plan exists. User options: use_existing, smart_refresh, full_regenerate. Phase0 exits 2 with USER_CHOICE_REQUIRED when no SELECTED_MODE.",
+      "files": [
+        ".agents/skills/single-defect-analysis/runs/ABC-123"
+      ],
+      "expectations": [
+        "check_resume.sh outputs REPORT_STATE=FINAL_EXISTS when TESTING_PLAN.md exists",
+        "check_resume.sh outputs REPORT_STATE=FRESH when run dir is empty or missing",
+        "check_resume.sh outputs REPORT_STATE=DRAFT_EXISTS when drafts/ has content but no plan",
+        "check_resume.sh outputs REPORT_STATE=CONTEXT_ONLY when context/issue.json or issue_summary.json exists but no drafts",
+        "Phase0 exits 2 with USER_CHOICE_REQUIRED when state is not FRESH and SELECTED_MODE unset",
+        "User options match reference.md for each REPORT_STATE"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Validate Phase 4 output bundle: runs/<issue_key>/ must contain <issue_key>_TESTING_PLAN.md, tester_handoff.json, task.json, run.json. tester_handoff.json must have issue_key, testing_plan_path, risk_level, fc_steps_count, exploratory_required, affected_domains, generated_at. task.json must have analysis_ready_at, testing_plan_generated_at, overall_status=completed.",
+      "expected_output": "Verification that Phase 4 outputs conform to the required contract per SKILL.md and reference.md.",
+      "files": [],
+      "expectations": [
+        "<issue_key>_TESTING_PLAN.md exists under runs/<issue_key>/",
+        "tester_handoff.json exists with issue_key, testing_plan_path, risk_level, fc_steps_count, exploratory_required, affected_domains, generated_at",
+        "task.json has analysis_ready_at, testing_plan_generated_at, overall_status=completed after phase4",
+        "run.json has output_generated_at, updated_at",
+        "When workspace-reporter exists, legacy outputs copied to workspace-reporter/projects/defects-analysis/<issue_key>/"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Verify notification_pending fallback: when notify_feishu.sh fails, run.json.notification_pending must persist the pending payload object. Success path: notification_pending is null. Failure path: notification_pending contains the payload that was not sent.",
+      "expected_output": "run.json correctly reflects notification state: null on success, payload object on failure.",
+      "files": [],
+      "expectations": [
+        "run.json has notification_pending field",
+        "On notify success: notification_pending is null",
+        "On notify failure: notification_pending contains payload object (issue_key, plan_file, generated_at)",
+        "reference.md Final Notification Fallback semantics are followed"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Verify Phase 2 spawn/post behavior: when phase2.sh prints SPAWN_MANIFEST: <path>, run openclaw-spawn-bridge.js with the manifest, then run phase2.sh --post. On partial spawn failure, --post must verify required output files before consolidation.",
+      "expected_output": "Spawn manifest format { requests: [{ openclaw: { args: { task, label, output_file }}}] }. Bridge spawns requests; --post consolidates only when outputs exist.",
+      "files": [],
+      "expectations": [
+        "phase2_spawn_manifest.json has requests array with openclaw args",
+        "Each request has task, label, output_file in openclaw.args",
+        "openclaw-spawn-bridge.js consumes manifest and spawns",
+        "phase2.sh --post verifies required output files before consolidation",
+        "Orchestrator handles SPAWN_MANIFEST output and runs bridge then --post"
+      ]
+    }
+  ]
+}
