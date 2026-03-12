@@ -7,17 +7,7 @@ description: Reviews OpenClaw agent and workflow designs for skill-first package
 
 ## Purpose
 
-Provide the mandatory quality gate for OpenClaw design outputs before they are finalized.
-
-This skill checks:
-1. Canonical design-doc structure and output contract.
-2. Shared-vs-local skill placement, placement justification, and path validity.
-3. Skill-first workflow definition rather than script-first design.
-4. Preservation of the current Phase 0 / `REPORT_STATE` model and `task.json` / `run.json` semantics unless additive changes are justified.
-5. Direct reuse of existing shared skills such as `jira-cli`, `confluence`, and `feishu-notify` when they fit, or explicit contract-gap justification when wrappers are introduced.
-6. Detailed `SKILL.md` and `reference.md` content specifications for every created or redesigned skill.
-7. Script-bearing package completeness: package tree, script inventory, function details, test-stub mapping, and validation evidence.
-8. Documentation completeness, reviewer artifacts, AGENTS.md sync coverage, and README impact.
+Mandatory quality gate for OpenClaw design outputs before finalization. Checks: canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References), shared-vs-local placement, skill-first workflow, Phase 0 / `REPORT_STATE` preservation, direct reuse of `jira-cli`/`confluence`/`feishu-notify`, `SKILL.md`/`reference.md` specs, script-bearing completeness, and documentation coverage.
 
 ## When To Use
 
@@ -66,22 +56,18 @@ Required report fields:
 
 ## Quality Gates
 
-- [ ] Design doc follows the canonical template from `.agents/skills/openclaw-agent-design/SKILL.md`.
-- [ ] Workflow entrypoints are modeled as skills, not only prose or script bundles.
-- [ ] Shared capabilities are placed in `.agents/skills/` and workspace-specific capabilities in `<workspace>/skills/` unless explicitly justified.
-- [ ] Existing `REPORT_STATE` / Phase 0 behavior is preserved.
-- [ ] Existing `task.json` / `run.json` semantics are preserved unless additive changes are justified in both the design doc and review artifacts.
-- [ ] `skill-creator` is required for new or materially redesigned skills.
-- [ ] `code-structure-quality` is required for skill boundary and ownership design.
-- [ ] Existing shared skills `jira-cli`, `confluence`, and `feishu-notify` are reused directly when they fit.
-- [ ] Every created or redesigned skill has explicit `SKILL.md` content requirements.
-- [ ] Every created or redesigned skill has explicit `reference.md` content requirements.
-- [ ] Script-bearing skills include package structure, script inventory, function-level details, and one-to-one test-stub mapping under `scripts/test/`.
-- [ ] Docs-only skills are not failed for omitting script-test sections.
-- [ ] Script changes include executable validation evidence when non-trivial.
-- [ ] AGENTS.md sync is explicitly listed.
-- [ ] README impact is explicitly addressed.
-- [ ] Output/handoff artifact paths and review artifacts are explicit.
+- [ ] Design doc follows the canonical template (Overview, Architecture, Skills Content Spec, Functional Design, Tests, Evals when applicable, Documentation Changes, Implementation Checklist, References).
+- [ ] Workflow entrypoints are modeled as skills, not prose or script bundles.
+- [ ] Shared capabilities in `.agents/skills/`, workspace-specific in `<workspace>/skills/` unless justified.
+- [ ] Phase 0 / `REPORT_STATE` and `task.json` / `run.json` semantics preserved (additive changes justified).
+- [ ] `skill-creator` and `code-structure-quality` required for new or redesigned skills.
+- [ ] Direct reuse of `jira-cli`, `confluence`, `feishu-notify` when they fit.
+- [ ] Every created or redesigned skill has explicit `SKILL.md` and `reference.md` content specs.
+- [ ] Script-bearing skills: package structure, Functions, Tests (script-to-test mapping under `scripts/test/`).
+- [ ] Evals section present when design creates or materially redesigns skills.
+- [ ] Docs-only skills not failed for omitting script-test sections.
+- [ ] AGENTS.md and README impact explicit under Documentation Changes.
+- [ ] Output/handoff artifact paths and review artifacts explicit.
 
 ## Additional Resources
 

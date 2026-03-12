@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Use ripgrep (rg) if available, else grep -E for pattern matching
+pattern_match() {
+  local pattern="$1"
+  local file="$2"
+  if command -v rg &>/dev/null; then
+    rg -qi "$pattern" "$file"
+  else
+    grep -qiE "$pattern" "$file" 2>/dev/null || false
+  fi
+}
+
 usage() {
   echo "Usage: $0 <design-markdown-file>" >&2
   exit 2
@@ -21,7 +32,7 @@ require_design_file() {
 check_required_pattern() {
   local pattern="$1"
   local message="$2"
-  if rg -qi "$pattern" "$DESIGN_FILE"; then
+  if pattern_match "$pattern" "$DESIGN_FILE"; then
     echo "OK: $message"
   else
     echo "FAIL: $message"
@@ -30,36 +41,36 @@ check_required_pattern() {
 }
 
 has_script_deliverables() {
-  rg -qi '(\.agents/skills/[^[:space:]`|]+/scripts/|workspace-[^[:space:]`|]+/skills/[^[:space:]`|]+/scripts/)' "$DESIGN_FILE"
+  pattern_match '(\.agents/skills/[^[:space:]`|]+/scripts/|workspace-[^[:space:]`|]+/skills/[^[:space:]`|]+/scripts/)' "$DESIGN_FILE"
 }
 
 has_script_inventory_entries() {
-  rg -qi '^### .*`.*scripts/.*`|^\| .*scripts/.*\|' "$DESIGN_FILE"
+  pattern_match '^### .*`.*scripts/.*`|^\| .*scripts/.*\|' "$DESIGN_FILE"
 }
 
 is_script_bearing_design() {
   has_script_deliverables || has_script_inventory_entries
 }
 
+has_skills_in_scope() {
+  pattern_match '\.agents/skills/|workspace-[^/]+/skills/' "$DESIGN_FILE"
+}
+
 check_common_sections() {
-  check_required_pattern '^## [0-9]+\. Environment Setup' \
-    'environment setup section is present'
-  check_required_pattern '^## [0-9]+\. Design Deliverables' \
-    'design deliverables section is present'
-  check_required_pattern '^## [0-9]+\. AGENTS\.md Sync' \
-    'AGENTS.md sync section is present'
-  check_required_pattern '^## [0-9]+\. Skills Content Specification' \
-    'skills content specification section is present'
-  check_required_pattern '^## [0-9]+\. reference\.md Content Specification' \
-    'reference.md content specification section is present'
-  check_required_pattern '^## [0-9]+\. Workflow Design' \
-    'workflow design section is present'
-  check_required_pattern '^## [0-9]+\. State Schemas' \
-    'state schemas section is present'
-  check_required_pattern '^## [0-9]+\. Implementation Layers' \
-    'implementation layers section is present'
-  check_required_pattern '^## [0-9]+\. Files To Create / Update' \
-    'files to create or update section is present'
+  check_required_pattern '^## Overview' \
+    'Overview section is present'
+  check_required_pattern '^## Architecture' \
+    'Architecture section is present'
+  check_required_pattern '^### Workflow chart|^### Folder structure' \
+    'Workflow chart or Folder structure subsection is present'
+  check_required_pattern '^## Documentation Changes' \
+    'Documentation Changes section is present'
+  check_required_pattern '^### AGENTS\.md|AGENTS\.md' \
+    'AGENTS.md subsection or impact is present'
+  check_required_pattern '^## Implementation Checklist' \
+    'Implementation Checklist section is present'
+  check_required_pattern '^## References' \
+    'References section is present'
   check_required_pattern '\.agents/skills/' \
     'shared skill pathing is explicit'
   check_required_pattern '<workspace>/skills/|workspace-[^/]+/skills/' \
@@ -84,23 +95,22 @@ check_common_sections() {
     'SKILL.md content blueprint is explicit'
   check_required_pattern 'state machine / invariants|schemas or field-level contracts|path conventions|validation commands|failure examples and recovery rules' \
     'reference.md content blueprint is explicit'
-  check_required_pattern 'AGENTS\.md' \
-    'AGENTS.md impact is explicitly described'
   check_required_pattern 'README\.md|README' \
     'README impact is explicitly mentioned'
   check_required_pattern 'design_review_report\.md|design_review_report\.json|review report' \
     'review artifact paths or report outputs are explicit'
+
+  if has_skills_in_scope; then
+    check_required_pattern '^## Skills Content Specification' \
+      'Skills Content Specification section is present (skills in scope)'
+  fi
 }
 
 check_script_specific_sections() {
-  check_required_pattern '^## [0-9]+\. Script Inventory and Function Specifications' \
-    'script inventory and function specifications section is present'
-  check_required_pattern '^## [0-9]+\. Script Test Stub Matrix' \
-    'script test stub matrix section is present'
-  check_required_pattern '^## [0-9]+\. Backfill Coverage Table' \
-    'backfill coverage table section is present'
-  check_required_pattern 'Standards Exception Note' \
-    'standards exception note is present'
+  check_required_pattern '^### Functions|^\| function \|' \
+    'Functions subsection or function table is present'
+  check_required_pattern '^## Tests' \
+    'Tests section is present'
   check_required_pattern 'scripts/test/' \
     'scripts/test convention is explicit'
   check_required_pattern '\|[[:space:]]*function[[:space:]]*\|[[:space:]]*responsibility[[:space:]]*\|[[:space:]]*inputs[[:space:]]*\|[[:space:]]*outputs[[:space:]]*\|[[:space:]]*side effects[[:space:]]*\|[[:space:]]*failure mode[[:space:]]*\|' \

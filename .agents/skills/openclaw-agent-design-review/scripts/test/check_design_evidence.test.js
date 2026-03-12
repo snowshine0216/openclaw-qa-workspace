@@ -38,11 +38,7 @@ function buildBaseSections() {
 > **Status:** Draft
 > **Scope:** Example scope
 
-## 0. Environment Setup
-
-No special setup required.
-
-## 1. Design Deliverables
+## Overview
 
 | Action | Path | Notes |
 |--------|------|-------|
@@ -51,12 +47,27 @@ No special setup required.
 | UPDATE | workspace-planner/skills/example-local/SKILL.md | workspace-local alternative |
 | UPDATE | AGENTS.md | sync design and skill references |
 
-## 2. AGENTS.md Sync
+## Architecture
 
-- Update AGENTS.md skill routing.
-- Note workspace-planner/skills/example-local/ as the workspace-local counterpart.
+### Workflow chart
 
-## 3. Skills Content Specification
+Entrypoint skill path: .agents/skills/example-skill/SKILL.md
+
+Phase 0: Existing-State Check
+- Preserve REPORT_STATE.
+- Preserve task.json and run.json.
+- Use skill-creator and code-structure-quality.
+
+Review artifacts:
+- projects/agent-design-review/example-design/design_review_report.md
+- projects/agent-design-review/example-design/design_review_report.json
+
+### Folder structure
+
+- .agents/skills/example-skill/
+- workspace-planner/skills/example-local/
+
+## Skills Content Specification
 
 ### 3.1 \`.agents/skills/example-skill/SKILL.md\`
 
@@ -92,8 +103,6 @@ Existing skills reused directly:
 - confluence — direct reuse is sufficient
 - feishu-notify — direct reuse is sufficient
 
-## 4. reference.md Content Specification
-
 ### 4.1 \`.agents/skills/example-skill/reference.md\`
 
 - state machine / invariants
@@ -102,30 +111,37 @@ Existing skills reused directly:
 - validation commands
 - failure examples and recovery rules
 
-## 5. Workflow Design
-
-Entrypoint skill path: .agents/skills/example-skill/SKILL.md
-
-### Phase 0: Existing-State Check
-
-- Preserve REPORT_STATE.
-- Preserve task.json and run.json.
-- Use skill-creator and code-structure-quality.
-
-Review artifacts:
-- projects/agent-design-review/example-design/design_review_report.md
-- projects/agent-design-review/example-design/design_review_report.json
-
-## 6. State Schemas
+## Data Models
 
 - task.json
 - run.json
 
+## Documentation Changes
+
+### AGENTS.md
+
+- Update AGENTS.md skill routing.
+- Note workspace-planner/skills/example-local/ as the workspace-local counterpart.
+
+### README
+
+- README.md: no change
+
+## Implementation Checklist
+
+- .agents/skills/example-skill/SKILL.md
+- .agents/skills/example-skill/reference.md
+
+## References
+
+- .agents/skills/openclaw-agent-design/reference.md
 `;
 }
 
 function buildScriptBearingDesign() {
-  return `${buildBaseSections()}## 7. Implementation Layers
+  return `${buildBaseSections()}## Functional Design 1
+
+Package structure for script-bearing skill:
 
 - .agents/skills/example-skill/
 - .agents/skills/example-skill/scripts/
@@ -135,7 +151,7 @@ function buildScriptBearingDesign() {
 Standards Exception Note:
 - OpenClaw skill-package designs use \`scripts/test/\` as a domain-specific exception instead of a top-level \`tests/\` folder.
 
-## 8. Script Inventory and Function Specifications
+### Functions
 
 ### 8.1 \`.agents/skills/example-skill/scripts/check_resume.sh\`
 
@@ -150,24 +166,11 @@ Artifacts:
 | main | Validate args and run checks | argv | stdout status | reads workspace files | exits 2 on bad usage |
 | read_report_state | Classify REPORT_STATE | task.json | REPORT_STATE | none | exits 1 when task is unreadable |
 
-## 9. Script Test Stub Matrix
+## Tests
 
 | Script Path | Test Stub Path | Scenarios | Smoke Command |
 |-------------|----------------|-----------|---------------|
 | .agents/skills/example-skill/scripts/check_resume.sh | .agents/skills/example-skill/scripts/test/check_resume.test.js | success; required-arg failure; dependency error | \`node --test .agents/skills/example-skill/scripts/test/check_resume.test.js\` |
-
-## 10. Files To Create / Update
-
-- .agents/skills/example-skill/SKILL.md
-- .agents/skills/example-skill/reference.md
-- .agents/skills/example-skill/scripts/check_resume.sh
-- .agents/skills/example-skill/scripts/test/check_resume.test.js
-
-## 11. README Impact
-
-- README.md: no change
-
-## 12. Backfill Coverage Table
 
 | Script Path | Test Stub Path | Failure-Path Stub |
 |-------------|----------------|-------------------|
@@ -176,22 +179,15 @@ Artifacts:
 }
 
 function buildDocsOnlyDesign() {
-  return `${buildBaseSections()}## 7. Implementation Layers
+  return `${buildBaseSections()}## Functional Design 1
+
+Package structure for docs-only skill:
 
 - .agents/skills/example-skill/
 - .agents/skills/example-skill/reference.md
 
 Standards Exception Note:
 - This design is docs-only. No script deliverables are in scope, so \`scripts/test/\` is not required.
-
-## 8. Files To Create / Update
-
-- .agents/skills/example-skill/SKILL.md
-- .agents/skills/example-skill/reference.md
-
-## 9. README Impact
-
-- README.md: no change
 `;
 }
 
@@ -200,16 +196,16 @@ test('passes a script-bearing design with package content and script test matrix
 
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
   assert.match(result.stdout, /OK: skills content specification section is present/i);
-  assert.match(result.stdout, /OK: script test stub matrix section is present/i);
+  assert.match(result.stdout, /OK: Tests section is present/i);
 });
 
-test('fails a script-bearing design that omits script test stubs', () => {
-  const result = runEvidenceCheck(
-    buildScriptBearingDesign().replace(/## 9\. Script Test Stub Matrix[\s\S]*?## 10\./, '## 10.'),
-  );
+test('fails a script-bearing design that omits Tests section', () => {
+  const fullContent = buildScriptBearingDesign();
+  const contentWithoutTests = fullContent.replace(/## Tests[\s\S]*$/m, '');
+  const result = runEvidenceCheck(contentWithoutTests);
 
   assert.notEqual(result.status, 0);
-  assert.match(result.stdout, /FAIL: script test stub matrix section is present/i);
+  assert.match(result.stdout, /FAIL: Tests section is present/i);
 });
 
 test('allows docs-only designs to omit script sections', () => {

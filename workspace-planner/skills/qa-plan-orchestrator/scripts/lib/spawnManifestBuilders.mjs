@@ -323,7 +323,7 @@ Requirements:
 
 function buildPhaseTaskText(phaseId, featureId, runDir, task) {
   const paths = resolvePhasePaths(phaseId, featureId, runDir, task);
-  const checklistPath = join(SKILL_ROOT, 'docs', 'SUBAGENT_QUICK_CHECKLIST.md');
+  const checklistPath = join(SKILL_ROOT, 'references', 'subagent-quick-checklist.md');
   const descriptions = {
     phase3: buildPhase3Description(featureId, runDir, task),
     phase4a: `Read current context artifacts, stay below canonical top-layer grouping, and write ${paths.outputDraftPath}. You may do one bounded supplemental research pass with shared skills when evidence is insufficient, save any new artifact under ${runDir}/context, and update artifact lookup references before finishing.`,

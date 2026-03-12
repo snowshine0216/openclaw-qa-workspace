@@ -97,6 +97,54 @@ For OpenClaw skill-package design work, `scripts/test/` is the canonical test lo
 | UPDATE | `AGENTS.md` | sync design and skill references |
 ```
 
+## Workflow Chart Template
+
+Place under **Architecture > Workflow chart**. Include Phase 0 and status transitions.
+
+```markdown
+### Workflow chart
+
+[Use mermaid flowchart or table]
+
+Phase 0: Existing-State Check
+- Run REPORT_STATE check (see reference.md)
+- Present options by state (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH)
+- Archive prior output if regenerate selected
+- Initialize task.json / run.json
+
+Phase N: <Phase Name>
+- <actions>
+
+| From | Event | To |
+|------|-------|----|
+| <status> | <event> | <status> |
+| any | unrecoverable error | failed |
+```
+
+## Folder Structure Template
+
+Place under **Architecture > Folder structure**.
+
+**Docs-only skill:**
+```text
+<skill-root>/
+├── SKILL.md
+└── reference.md
+```
+
+**Script-bearing skill:**
+```text
+<skill-root>/
+├── SKILL.md
+├── reference.md
+└── scripts/
+    ├── <entrypoint-or-helper>
+    ├── lib/
+    └── test/
+```
+
+OpenClaw uses `scripts/test/` as package-local exception (not top-level `tests/`).
+
 ## Skills Content Template
 
 ```markdown
@@ -177,6 +225,19 @@ Inputs / outputs / artifacts:
 | Script Path | Test Stub Path | Failure-Path Stub |
 |-------------|----------------|-------------------|
 | `<skill-root>/scripts/foo.sh` | `<skill-root>/scripts/test/foo.test.js` | required-arg failure |
+```
+
+## Evals Template (when applicable)
+
+Place under **Evals** when the design creates or materially redesigns skills.
+
+```markdown
+## Evals (when applicable)
+
+- Eval scenarios: <describe what to measure>
+- Metrics: <trigger accuracy, output quality, etc.>
+- Tool: Use skill-creator evals or equivalent benchmarks
+- Validation: Run evals before finalizing skill changes
 ```
 
 ## Final Notification Template

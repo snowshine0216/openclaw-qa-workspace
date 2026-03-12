@@ -87,7 +87,7 @@ test('phase4b manifest task includes SUBAGENT_QUICK_CHECKLIST preflight block', 
   assert.equal(result.code, 0, result.stderr);
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('SUBAGENT_QUICK_CHECKLIST.md'), 'task must reference the checklist file');
+  assert.ok(task.includes('subagent-quick-checklist'), 'task must reference the checklist file');
   assert.ok(task.includes('Preflight before you write'), 'task must contain preflight instruction block');
   assert.ok(task.includes('Do not tag grouping/subcategory bullets'), 'task must include the grouping-tag rule');
   assert.ok(task.includes('Deduplicate only when trigger'), 'task must include the dedup rule');
@@ -106,7 +106,7 @@ test('phase5a manifest task includes SUBAGENT_QUICK_CHECKLIST preflight block', 
   assert.equal(result.code, 0, result.stderr);
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('SUBAGENT_QUICK_CHECKLIST.md'), 'phase5a task must reference the checklist file');
+  assert.ok(task.includes('subagent-quick-checklist'), 'phase5a task must reference the checklist file');
   assert.ok(task.includes('Preflight before you write'), 'phase5a task must contain preflight instruction block');
   await rm(root, { recursive: true, force: true });
 });
@@ -122,7 +122,7 @@ test('phase5b manifest task includes SUBAGENT_QUICK_CHECKLIST preflight block', 
   assert.equal(result.code, 0, result.stderr);
   const manifest = JSON.parse(await readFile(outputPath, 'utf8'));
   const task = manifest.requests[0].openclaw.args.task;
-  assert.ok(task.includes('SUBAGENT_QUICK_CHECKLIST.md'), 'phase5b task must reference the checklist file');
+  assert.ok(task.includes('subagent-quick-checklist'), 'phase5b task must reference the checklist file');
   assert.ok(task.includes('Preflight before you write'), 'phase5b task must contain preflight instruction block');
   assert.ok(task.includes('Do not tag grouping/subcategory bullets'), 'phase5b task must include the grouping-tag rule');
   await rm(root, { recursive: true, force: true });

@@ -417,10 +417,10 @@ This section tracks the status of each recommendation from this guide.
 
 | Guide Section | Recommendation | Status | Where |
 |---|---|---|---|
-| §3.2 | No compressed arrow wording in Phase 4a | ✅ done | `SUBAGENT_QUICK_CHECKLIST.md`, preflight in `spawnManifestBuilders.mjs` |
-| §3.2 | No implementation-heavy wording | ✅ done | `SUBAGENT_QUICK_CHECKLIST.md`, preflight |
+| §3.2 | No compressed arrow wording in Phase 4a | ✅ done | `references/subagent-quick-checklist.md`, preflight in `spawnManifestBuilders.mjs` |
+| §3.2 | No implementation-heavy wording | ✅ done | `references/subagent-quick-checklist.md`, preflight |
 | §3.3 | Canonical top layers must be real top-level bullets | ✅ done | `references/phase4b-contract.md` |
-| §3.3 | No priority tags on grouping/subcategory bullets | ✅ done | `references/phase4b-contract.md`, `SUBAGENT_QUICK_CHECKLIST.md`, `templates/qa-plan-template.md` |
+| §3.3 | No priority tags on grouping/subcategory bullets | ✅ done | `references/phase4b-contract.md`, `references/subagent-quick-checklist.md`, `templates/qa-plan-template.md` |
 | §3.3 | No duplicate label as both grouping and scenario | ✅ done | `references/phase4b-contract.md` |
 | §3.4 | Context audit must enumerate headings — not `all sections` | ✅ done | `references/review-rubric-phase5a.md` |
 | §3.4 | Coverage Preservation Audit row requirements | ✅ done | `references/review-rubric-phase5a.md` |
@@ -441,7 +441,7 @@ These gaps were identified after the initial commit and resolved in the follow-u
 
 | Gap | Fix | Where |
 |---|---|---|
-| `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md` and `docs/SUBAGENT_QUICK_CHECKLIST.md` not registered as required docs | Added to `REQUIRED_FILES` in `docsContract.test.mjs` | `tests/docsContract.test.mjs` |
+| `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md` and `references/subagent-quick-checklist.md` not registered as required docs | Added to `REQUIRED_FILES` in `docsContract.test.mjs` | `tests/docsContract.test.mjs` |
 | No contract assertions for new phase4b / phase5b / phase5a rules | Added 4 new contract tests | `tests/docsContract.test.mjs` |
 | `buildPhaseTaskText` preflight injection untested | Added 3 manifest tests (phase4b, phase5a, phase5b) verifying checklist path, preflight block, and grouping-tag rule appear in generated task text | `scripts/test/spawnManifestBuilders.test.mjs` |
 | No test for grouping bullet carrying priority tag (§3.3 wrong pattern) | Added `validatePhase4bCategoryLayering rejects grouping bullets that carry priority tags` | `tests/planValidators.test.mjs` |
@@ -451,4 +451,4 @@ These gaps were identified after the initial commit and resolved in the follow-u
 
 | Recommendation | Status | Notes |
 |---|---|---|
-| §7.3 Final plan summary artifact generator | ⏳ not yet implemented | Stub documented in `reference.md`. Requires Phase 7 script update to emit `context/final_plan_summary_<feature-id>.md` with scenario counts, P1/P2 split, section distribution, and dedup/preservation log. |
+| §7.3 Final plan summary artifact generator | ✅ done | Phase 7 calls `scripts/lib/finalPlanSummary.mjs` to emit `context/final_plan_summary_<feature-id>.md` with scenario counts, P1/P2 split, and section distribution for Feishu and audit. |

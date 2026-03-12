@@ -57,9 +57,9 @@ Typical failures:
 ### 5) Skill Package Content Completeness
 
 Pass conditions:
-- Every created or redesigned skill has an explicit `SKILL.md` content specification.
-- Every created or redesigned skill has an explicit `reference.md` content specification.
-- The design includes package structure expectations and path conventions.
+- Every created or redesigned skill has an explicit `SKILL.md` content specification (Skills Content Specification > 3.x).
+- Every created or redesigned skill has an explicit `reference.md` content specification (Skills Content Specification > 4.x).
+- The design includes package structure expectations (Architecture > Folder structure).
 
 Typical failures:
 - `P1`: Missing detailed `SKILL.md` content specification.
@@ -70,9 +70,9 @@ Typical failures:
 
 Pass conditions:
 - The design uses the deterministic script-bearing rule from `.agents/skills/openclaw-agent-design/reference.md`.
-- Script-bearing skills declare `scripts/test/` as the OpenClaw exception.
-- Every script has function-level responsibilities, inputs, outputs, side effects, and failure modes.
-- Every script has a one-to-one mapped test stub under `scripts/test/`.
+- Script-bearing skills declare `scripts/test/` as the OpenClaw exception (Folder structure).
+- Every script has function-level details (Skills Content Specification > Functions).
+- Every script has a one-to-one mapped test stub (Tests section).
 - Docs-only skills are not failed for omitting script-test sections.
 
 Typical failures:
@@ -98,16 +98,17 @@ Typical failures:
 ### 8) Documentation and Validation Completeness
 
 Pass conditions:
-- AGENTS.md sync is explicit.
-- README impact is explicit.
+- AGENTS.md sync is explicit (Documentation Changes > AGENTS.md).
+- README impact is explicit (Documentation Changes > README).
 - Non-trivial scripts include test, smoke, or validation evidence.
-- Reviewer automation is updated to validate the required sections.
+- Evals section present when design creates or materially redesigns skills.
 - Output and handoff artifact paths are explicit.
 
 Typical failures:
-- `P1`: No AGENTS.md sync section.
-- `P1`: No README impact section.
+- `P1`: No AGENTS.md sync under Documentation Changes.
+- `P1`: No README impact under Documentation Changes.
 - `P1`: Non-trivial script changes lack validation evidence.
+- `P1`: Evals section missing when skills are created or materially redesigned.
 - `P2`: Reviewer automation checks lag behind the documented standard.
 
 ## Finding IDs
@@ -131,6 +132,7 @@ Typical failures:
 - `SHELL-004` (`P1`): Script function-level responsibilities, IO, or failure details are missing.
 - `EVID-001` (`P1`): No executable validation evidence plan exists for script or test behavior.
 - `EVID-002` (`P2`): Reviewer automation does not yet validate the documented required sections.
+- `EVAL-001` (`P1`): Evals section missing when design creates or materially redesigns skills.
 
 ## Suggested JSON Finding Shape
 

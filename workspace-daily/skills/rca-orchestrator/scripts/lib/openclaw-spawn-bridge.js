@@ -2,7 +2,7 @@
  * openclaw-spawn-bridge.js
  *
  * Real spawn bridge for the RCA orchestrator that uses the OpenClaw
- * `sessions_spawn` tool via the `openclaw session spawn` CLI.
+ * `sessions_spawn` tool via the `openclaw sessions spawn` CLI.
  *
  * Contract: export spawnBatch(requests, context) => Promise<result[]>
  * Each result must contain: issue_key, label, status, started_at, finished_at, output_file
@@ -51,10 +51,10 @@ function spawnOne(request) {
 
   const startedAt = isoNow();
 
-  // Build CLI args for openclaw session spawn
+  // Build CLI args for openclaw sessions spawn
   // Uses --print / --wait so it runs synchronously in the background process
   const args = [
-    'session', 'spawn',
+    'sessions', 'spawn',
     '--runtime', 'subagent',
     '--mode', 'run',
     '--label', label,

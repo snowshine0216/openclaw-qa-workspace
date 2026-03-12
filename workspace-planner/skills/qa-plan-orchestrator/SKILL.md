@@ -33,6 +33,7 @@ Always read:
 - `references/review-rubric-phase5b.md`
 - `references/review-rubric-phase6.md`
 - `references/e2e-coverage-rules.md`
+- `references/subagent-quick-checklist.md`
 
 ## Runtime Layout
 
@@ -152,7 +153,7 @@ See `README.md` for the phase-to-reference mapping table.
 ### Phase 7
 
 - Entry: `scripts/phase7.sh`
-- Work: archive any existing final plan, promote the best available draft, write the finalization record, attempt Feishu notification
+- Work: archive any existing final plan, promote the best available draft, write the finalization record, use `scripts/lib/finalPlanSummary.mjs` to generate `context/final_plan_summary_<feature-id>.md` from `qa_plan_final.md`, then attempt Feishu notification. The summary provides scenario counts, P1/P2 split, and section distribution for Feishu and audit.
 - User interaction: explicit approval before running the script
 
 ## QA Plan Format
