@@ -87,7 +87,7 @@ Apply these when the workflow uses external integrations or multi-phase orchestr
 - **Runtime output location**: All runtime output (task.json, run.json, context/, drafts/, manifests, final artifacts) must live under `<skill-root>/runs/<run-key>/`. No runtime artifacts outside `runs/`.
 - **Intermediate artifacts**: Every phase must output explicit artifacts (e.g. `context/`, `drafts/`, manifests). No phase produces only in-memory state.
 - **Script-driven orchestrator**: Orchestrator calls `phaseN.sh` only; scripts own logic. Orchestrator handles user prompts and spawn-from-manifest.
-- **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation.
+- **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation. The spawn script must be invoked only from TUI (orchestrator workflow), not from CLI directly.
 - **Evidence policy**: Use approved skills (jira-cli, confluence, github) for system-of-record; never `web_fetch` for Jira/GitHub/Confluence.
 - **Feishu notification**: When finalizing, send summary via feishu-notify skill. On failure, store `notification_pending` in run.json for later retry. Copy `send_feishu_with_retry.template.sh` from `examples/` — no need to rewrite.
 

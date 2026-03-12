@@ -20,7 +20,7 @@ Output: `runtime_setup_<run-key>.json`, `runtime_setup_<run-key>.md` in output-d
 When the orchestrator is a script (not an agent with sessions_spawn):
 
 - **spawn_from_manifest.mjs** — generic: reads `phaseN_spawn_manifest.json`, runs `openclaw sessions spawn` per request
-- **openclaw-spawn-bridge.template.js** — domain-specific: implements `spawnBatch(requests, context)`. Copy and customize task extraction.
+- **openclaw-spawn-bridge.template.js** — domain-specific: implements `spawnBatch(requests, context)`. Copy and customize task extraction. Uses `openclaw agent` (--agent reporter). Invoke only from TUI (orchestrator workflow), not from CLI directly.
 
 ## Feishu Notification (Finalize Phase)
 

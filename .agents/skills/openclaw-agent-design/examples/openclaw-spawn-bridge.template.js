@@ -7,7 +7,10 @@
  * Contract: export spawnBatch(requests, context) => Promise<result[]>
  * Each result: { label, status, started_at, finished_at, output_file?, session_error? }
  *
- * Uses openclaw sessions spawn --wait. Reference: rca-orchestrator openclaw-spawn-bridge.js
+ * Uses openclaw agent (--agent reporter) for synchronous single-turn runs.
+ * Reference: workspace-daily/skills/rca-orchestrator/scripts/lib/openclaw-spawn-bridge.js
+ *
+ * IMPORTANT: Invoke only from TUI (orchestrator workflow), not from CLI directly.
  */
 
 'use strict';
@@ -23,9 +26,9 @@ function isoNow() {
 }
 
 /**
- * Extract task and label from a request. CUSTOMIZE for your manifest format.
+ * Extract task, label, and output file from a request. CUSTOMIZE for your manifest format.
  * @param {object} request - One entry from manifest.requests[]
- * @returns {{ task: string, label: string, outputFile?: string }}
+ * @returns {{ task: string, label: string, outputFile?: string, issueKey?: string }}
  */
 function extractTaskAndLabel(request) {
   // Example: qa-plan format
@@ -36,37 +39,33 @@ function extractTaskAndLabel(request) {
   // const label = request?.request?.label;
   // const outputFile = request?.handoff?.result_contract?.expected_outputs?.[0];
   // const task = buildRcaTask(request);
-  // return { task, label, outputFile };
+  // return { task, label, outputFile, issueKey: request?.source?.issue_key };
 
   const args = request?.openclaw?.args || request?.request;
   return {
     task: args?.task || '',
     label: args?.label || request?.request?.label || 'spawn',
     outputFile: request?.handoff?.result_contract?.expected_outputs?.[0],
+    issueKey: request?.source?.issue_key,
   };
 }
 
 /**
- * Spawn one request. Customize if your domain needs different CLI args.
+ * Spawn one request using openclaw agent (synchronous single-turn).
+ * Use --agent reporter so it never contends with the daily main session file.
  */
 function spawnOne(request, cwd) {
-  const { task, label, outputFile } = extractTaskAndLabel(request);
+  const { task, label, outputFile, issueKey } = extractTaskAndLabel(request);
   const startedAt = isoNow();
 
+  const sessionId = `${(issueKey || label).toString().toLowerCase()}-${Date.now()}`;
   const args = [
-    'sessions',
-    'spawn',
-    '--runtime',
-    'subagent',
-    '--mode',
-    'run',
-    '--label',
-    label,
-    '--cwd',
-    cwd,
-    '--wait',
-    '--task',
-    task,
+    'agent',
+    '--agent', 'reporter',
+    '--session-id', sessionId,
+    '--message', task,
+    '--timeout', '360',
+    '--json',
   ];
 
   const result = spawnSync(OPENCLAW_BIN, args, {

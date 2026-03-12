@@ -102,7 +102,7 @@ No phase should produce only in-memory state; all outputs must be files under `r
 When the orchestrator is a script (not an agent with sessions_spawn tool), copy from `examples/`:
 
 - **Generic**: `spawn_from_manifest.mjs` — reads `phaseN_spawn_manifest.json` (requests[].openclaw.args), runs `openclaw sessions spawn` per request.
-- **Domain-specific**: `openclaw-spawn-bridge.template.js` — implements `spawnBatch(requests, context)` contract. Copy into your skill, customize task extraction for your manifest format.
+- **Domain-specific**: `openclaw-spawn-bridge.template.js` — implements `spawnBatch(requests, context)` contract. Copy into your skill, customize task extraction for your manifest format. Uses `openclaw agent` (--agent reporter). Invoke only from TUI (orchestrator workflow), not from CLI directly.
 - **Feishu notification**: `send_feishu_with_retry.template.sh` — sends summary via feishu-notify; on failure stores `notification_pending` in run.json for retry. Reference: rca-orchestrator phase5_finalize.sh.
 
 ### Feishu Notification (Finalize Phase)
