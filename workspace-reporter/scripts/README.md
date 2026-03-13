@@ -1,5 +1,20 @@
 # Reporter Scripts
 
+## Canonical Defect Analysis Entrypoint
+
+**Use the skill orchestrator for defect analysis:**
+
+```bash
+bash workspace-reporter/skills/defects-analysis/scripts/orchestrate.sh <INPUT>
+```
+
+- `<INPUT>`: Jira issue key/URL, feature key, JQL query, or release version
+- Single Jira `Issue`/`Bug`/`Defect` inputs are delegated in Phase 0 to `.agents/skills/single-defect-analysis`
+- `Story`/`Feature`/`Epic`, JQL, and release inputs stay in reporter scope
+- `workspace-reporter/.agents/workflows/defect-analysis.md` is a **compatibility shim** — it routes to the skill; do not treat it as the canonical workflow body
+
+## Script Inventory
+
 | Script | Source | Notes |
 |--------|--------|------|
 | `retry.sh` | Symlink → `workspace-planner/projects/feature-plan/scripts/retry.sh` | Shared, no duplication |
