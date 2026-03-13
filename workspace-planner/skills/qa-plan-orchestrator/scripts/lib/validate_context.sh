@@ -1,6 +1,7 @@
 #!/bin/bash
 # validate_context.sh — Verify required context artifacts exist before phase transition
 # Usage: ./validate_context.sh <feature-id> <artifact-name>...
+#   Or: FQPO_RUN_DIR=<run-dir> ./validate_context.sh <feature-id> <artifact-name>...
 # Modes:
 #   --resolve-sub-testcases <domain...>  # compatibility mode for legacy synthesize callers
 #   --validate-testcase-structure <file-path>  # XMindMark validation via markxmind only
@@ -8,8 +9,10 @@ set -euo pipefail
 
 FEATURE_ID="${1:?Usage: validate_context.sh <feature-id> <artifact-name>...}"
 shift
-BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONTEXT_DIR="$BASE_DIR/$FEATURE_ID/context"
+# All artifacts under <skill-root>/runs/<feature-id>/context
+SKILL_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+RUN_DIR="${FQPO_RUN_DIR:-${FQPO_PROJECT_DIR:-$SKILL_ROOT/runs/$FEATURE_ID}}"
+CONTEXT_DIR="$RUN_DIR/context"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 resolve_latest_sub_testcase() {
