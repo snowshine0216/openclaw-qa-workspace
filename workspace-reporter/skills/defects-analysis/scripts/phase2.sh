@@ -80,7 +80,7 @@ elif [[ "$route_kind" == "reporter_scope_jql" ]]; then
     load_jira_env
     jira_runner="$(resolve_jira_runner)"
     [[ -n "$jira_runner" ]] || { echo "Unable to resolve jira-run.sh for Jira extraction" >&2; exit 1; }
-    /bin/bash "$jira_runner" issue list --jql "$RAW_INPUT" --format json --paginate 50 >"$CONTEXT_DIR/jira_raw.json"
+    /bin/bash "$jira_runner" issue list --jql "$RAW_INPUT" --raw --paginate 50 >"$CONTEXT_DIR/jira_raw.json"
   fi
   normalize_jira_raw_file "$CONTEXT_DIR/jira_raw.json"
 elif [[ "$feature_count" == "0" ]]; then
@@ -97,7 +97,7 @@ else
   tmp_dir="$(mktemp -d)"
   while IFS= read -r feature_key; do
     [[ -n "$feature_key" ]] || continue
-    /bin/bash "$jira_runner" issue list --jql "project in (${project_keys}) AND issuetype = Defect AND (parent=\"${feature_key}\" OR text ~ \"${feature_key}\")" --format json --paginate 50 >"$tmp_dir/${feature_key}.json"
+    /bin/bash "$jira_runner" issue list --jql "project in (${project_keys}) AND issuetype = Defect AND (parent=\"${feature_key}\" OR text ~ \"${feature_key}\")" --raw --paginate 50 >"$tmp_dir/${feature_key}.json"
   done < <(jq -r '.feature_keys[]' "$CONTEXT_DIR/feature_keys.json")
   if compgen -G "$tmp_dir/*.json" >/dev/null; then
     jq -s '{issues: ([ .[] | if type == "array" then .[] else (.issues // [])[] end ] | unique_by(.key))}' "$tmp_dir"/*.json >"$CONTEXT_DIR/jira_raw.json"

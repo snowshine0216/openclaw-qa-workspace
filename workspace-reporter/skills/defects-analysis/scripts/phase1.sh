@@ -62,7 +62,7 @@ discover_feature_keys() {
     query="$RAW_INPUT"
   fi
 
-  /bin/bash "$jira_runner" issue list --jql "$query" --format json --paginate 50 >"$output_file"
+  /bin/bash "$jira_runner" issue list --jql "$query" --raw --paginate 50 >"$output_file"
   jq -n --argjson keys "$(list_payload_keys "$output_file" | jq -R -s 'split("\n") | map(select(length>0))')" '{feature_keys: $keys}'
 }
 
