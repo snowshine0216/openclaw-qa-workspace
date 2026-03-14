@@ -10,12 +10,38 @@ Act as a quality gatekeeper for defect analysis draft reports. Ensure the report
 
 ---
 
+## **Run Directory**
+
+When invoked by the defects-analysis skill, all paths are relative to:
+
+```text
+<run-dir> = <skill-root>/runs/<run-key>/
+```
+
+Where `<skill-root>` = `workspace-reporter/skills/defects-analysis` and `<run-key>` is the run identifier (e.g. `BCIN-5809`, `release_26.03`, `jql_<sha1_12>`).
+
+---
+
+## **Invocation**
+
+This skill is invoked by `defect-analysis` Phase 5 with `<run-dir>` as the working directory. The caller provides the run directory path; the reviewer reads and writes all artifacts relative to it.
+
+---
+
+## **Required References**
+
+- `workspace-reporter/skills/defects-analysis/reference.md` — run layout (context/, drafts/, reports/, archive/, task.json, run.json)
+- `defect-analysis-reporter` skill — required 12 sections and report format
+
+---
+
 ## **Inputs**
+
 Provide the reviewer with:
-1. `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md` (The draft report)
-2. `projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json` (Raw defects data)
-3. `projects/defects-analysis/<FEATURE_KEY>/context/prs/*.md` (PR analysis metadata and diff info)
-4. Previous final reports (if available) for trend comparison.
+1. `<run-dir>/<run-key>_REPORT_DRAFT.md` (The draft report)
+2. `<run-dir>/context/jira_raw.json` (Raw defects data)
+3. `<run-dir>/context/prs/*.md` (PR analysis metadata and diff info)
+4. Previous final reports (if available) in `<run-dir>/archive/` for trend comparison.
 
 ---
 
@@ -54,12 +80,30 @@ Identify the top areas representing the majority of the risk:
 ## **Output Requirements**
 
 Generate a structured review summary saved as:
-`projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REVIEW_SUMMARY.md`
+`<run-dir>/<run-key>_REVIEW_SUMMARY.md`
+
+### **Review Result**
+
+The summary must include a machine-parseable status line as the **first H2** in the document. Phase 5 uses this to decide whether to finalize or auto-fix. Use exactly one of:
+
+```markdown
+## Review Result: pass
+```
+```markdown
+## Review Result: pass_with_advisories
+```
+```markdown
+## Review Result: fail
+```
+
+- **pass**: All objective checks pass; no blocking issues.
+- **pass_with_advisories**: Objective checks pass; subjective warnings present. The exit gate is satisfied by this status.
+- **fail**: Objective errors (missing sections, defect count mismatch, etc.) that require auto-fix or regeneration.
 
 ### **Format of the Summary**
 
 The summary must include:
-1. **Pass/Warn/Fail Status**: State explicitly the outcome of the review.
+1. **Review Result (machine-parseable)**: The `## Review Result: <status>` line as the first H2 in the document.
 2. **Focus Areas (20/80)**: Call out where the human reviewer should spend 80% of their attention.
 3. **Actionable Fixes**: If objective errors (like a missing section or mismatching defect count) were encountered, explain what they were so they can be (or have been) auto-fixed.
 4. **Recommendations for the Reviewer**: Outline the subjective concerns (warnings) that require human judgment.
@@ -69,5 +113,5 @@ The summary must include:
 ## **Hybrid Auto-fix Protocol Integration**
 
 When applying this skill in a workflow:
-- **Objective Errors** (Rule 1 & Rule 2): Auto-fix the draft and regenerate up to 1-2 times before failing.
-- **Subjective Warnings** (Rules 3, 4, 5, 6): DO NOT auto-fix. Emit warnings directly into `_REVIEW_SUMMARY.md` to be presented to the user during the approval phase.
+- **Objective Errors** (Rule 1 & Rule 2): Emit `## Review Result: fail`. Auto-fix the draft and regenerate up to 1-2 times before failing.
+- **Subjective Warnings** (Rules 3, 4, 5, 6): DO NOT auto-fix. Emit `## Review Result: pass_with_advisories` and include warnings in `<run-dir>/<run-key>_REVIEW_SUMMARY.md` to be presented to the user during the approval phase.

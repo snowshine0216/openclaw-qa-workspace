@@ -92,6 +92,12 @@ npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/obra/superpowers --skill requesting-code-review
 npx skills add https://github.com/obra/superpowers --skill receiving-code-review
 npx skills add https://github.com/vercel-labs/agent-browser --skill agent-browser
+npx skills add anthropics/skills --skill frontend-design
+npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+npx skills add tavily-ai/skills --skill search
+npx skills add kepano/obsidian-skills --skill obsidian-cli
+npx skills add remotion-dev/skills --skill remotion-best-practices
+npx skills add obra/superpowers --skill brainstorming
 ```
 
 

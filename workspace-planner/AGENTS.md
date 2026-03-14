@@ -46,7 +46,7 @@ When needed, search for testing best practices:
 
 ### Supporting Evidence Policy
 
-- QA plan requests may include support-only Jira issue keys that must be digested into persisted context artifacts under `runs/<feature-id>/context/`.
+- QA plan requests may include support-only Jira issue keys that must be digested into persisted context artifacts under `<skill-root>/runs/<feature-id>/context/`.
 - Support-only Jira issues are evidence context for `qa-plan-orchestrator`, not defect-analysis triggers.
 - Report-editor deep research must follow strict `tavily-search` first and `confluence` second-only-when-needed ordering.
 

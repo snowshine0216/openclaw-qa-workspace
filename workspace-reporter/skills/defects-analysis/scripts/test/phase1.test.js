@@ -1,0 +1,125 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+
+const SCRIPT = join(process.cwd(), 'workspace-reporter/skills/defects-analysis/scripts/phase1.sh');
+
+test('expands release scope into feature keys and default actions', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
+  );
+
+  const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810"]',
+    },
+  });
+
+  assert.equal(result.status, 0);
+  const keys = JSON.parse(await readFile(join(runDir, 'context', 'feature_keys.json'), 'utf8'));
+  const matrix = JSON.parse(
+    await readFile(join(runDir, 'context', 'feature_state_matrix.json'), 'utf8'),
+  );
+  assert.deepEqual(keys.feature_keys, ['BCIN-5809', 'BCIN-5810']);
+  assert.equal(matrix.features.length, 2);
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('uses plain jira project list output for release discovery', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-live-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  cat <<'EOF'
+NAME KEY TYPE
+Alpha BCIN software
+Beta QA software
+EOF
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  cat <<'EOF'
+[{"key":"BCIN-5809"},{"key":"BCIN-5810"}]
+EOF
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
+    encoding: 'utf8',
+    env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+  });
+
+  assert.equal(result.status, 0);
+  const keys = JSON.parse(await readFile(join(runDir, 'context', 'feature_keys.json'), 'utf8'));
+  const log = await readFile(logFile, 'utf8');
+  const projectListLine = log
+    .split('\n')
+    .find((line) => line.startsWith('CMD=project list'));
+  assert.deepEqual(keys.feature_keys, ['BCIN-5809', 'BCIN-5810']);
+  assert.match(log, /CMD=project list/);
+  assert.equal(projectListLine, 'CMD=project list');
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('treats reporter_scope_jql as a direct query instead of feature keys', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-jql-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'jql_deadbeefcafe', route_kind: 'reporter_scope_jql' }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1 $2" == "issue list" ]]; then
+  cat <<'EOF'
+[{"key":"BUG-123"},{"key":"BUG-456"}]
+EOF
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const rawInput = 'project = BCIN AND issuetype = Defect';
+  const result = spawnSync('bash', [SCRIPT, rawInput, runDir], {
+    encoding: 'utf8',
+    env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+  });
+
+  assert.equal(result.status, 0);
+  const keys = JSON.parse(await readFile(join(runDir, 'context', 'feature_keys.json'), 'utf8'));
+  const scope = JSON.parse(await readFile(join(runDir, 'context', 'scope.json'), 'utf8'));
+  assert.deepEqual(keys.feature_keys, []);
+  assert.equal(scope.query_mode, 'direct_jql');
+  assert.equal(scope.raw_input, rawInput);
+
+  await rm(runDir, { recursive: true, force: true });
+});
