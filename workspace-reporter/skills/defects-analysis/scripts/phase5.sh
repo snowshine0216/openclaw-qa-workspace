@@ -42,7 +42,7 @@ load_jira_server() {
 
 JIRA_BASE_URL="$(load_jira_server)"
 
-REPORTER_SCRIPT="$SCRIPT_DIR/../../defect-analysis-reporter/scripts/generate.mjs"
+REPORTER_SCRIPT="$SCRIPT_DIR/lib/generate_report.mjs"
 REVIEWER_SCRIPT="$SCRIPT_DIR/../../report-quality-reviewer/scripts/review.mjs"
 
 generate_report() {

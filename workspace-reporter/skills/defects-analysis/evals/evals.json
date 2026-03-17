@@ -51,7 +51,7 @@
       "expectations": [
         "Phase 4 emits SPAWN_MANIFEST when pr_links.json has entries",
         "phase4 --post writes context/pr_impact_summary.json",
-        "Phase 5 invokes defect-analysis-reporter and report-quality-reviewer",
+        "Phase 5 orchestrator generates draft report and invokes report-quality-reviewer",
         "Self-review loop exits with pass",
         "FEISHU_NOTIFY: or notification_pending"
       ]
@@ -62,7 +62,7 @@
       "expected_output": "Phase 5 loop: generate draft -> review -> if fail, auto-fix and retry (max 3). Exit gate: review result pass. Only then promote to final and send Feishu.",
       "files": [],
       "expectations": [
-        "Phase 5 invokes defect-analysis-reporter for draft generation",
+        "Phase 5 orchestrator directly generates draft report",
         "Phase 5 invokes report-quality-reviewer for review",
         "Loop exits when review result is pass",
         "No finalization before pass",

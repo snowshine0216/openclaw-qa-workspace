@@ -50,21 +50,21 @@ _Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary pu
 
 ## Core Workflow: QA Summary
 
-Full design: `projects/docs/QA_SUMMARY_AGENT_DESIGN.md`
+**Skill-first entrypoint:** `workspace-reporter/skills/qa-summary`
 
-Built on top of the Defect Analysis Agent, this acts as the orchestrator to publish targeted summary sections to Confluence. It replaces the concept of a "Feature Summary Workflow" referenced in some earlier designs.
+Built on top of the Defect Analysis Agent. Resolves planner artifacts from `workspace-planner/skills/qa-plan-orchestrator/runs/<feature-key>/qa_plan_final.md` by default. Defect state is resolved through `workspace-reporter/skills/defects-analysis`. **Confluence publish requires explicit user confirmation** after the reviewed draft is shown.
 
-### Phases (summary)
+### Phases (qa-summary skill)
 
 | Phase | Action |
 |-------|--------|
-| **0. Pre-Flight** | Check idempotency, identify Confluence page ID, check codebase state (Final / Draft / Cache / Fresh). Prompt user for refresh strategy. |
-| **1. Sub-Agent** | Spawn the `defect-analysis` sub-agent (see Core Workflow above) to fetch and aggregate Jira/PR data. |
-| **2. Generation** | Apply `qa-summary` skill. Construct the QA Summary draft (`<KEY>_QA_SUMMARY_DRAFT.md`) following the emoji-heading + 1-based subsection template. Use `[PENDING]` placeholders for missing data. |
-| **3. Self-Review** | Apply `qa-summary-review` skill. Coverage + Formatting quality gate. Auto-apply minor fixes. MUST explicitly render final version to user console upon pass. |
-| **4. Approval Gate** | **STOP. Ask user to APPROVE or REJECT.** Render summary entirely to chat. |
-| **5. Confluence Update**| Surgical merge on Confluence using ID. Preserve all sections outside `QA Summary`. |
-| **6. Notification** | Feishu (or Wacli fallback). |
+| **0. Pre-Flight** | Load `config/runtime-sources.json`, classify `REPORT_STATE`, apply archive-before-overwrite for destructive modes. |
+| **1. Planner Resolution** | Resolve planner artifacts, extract Section 1 Feature Overview table. Block if no QA plan found. |
+| **2. Defect Coordination** | Inspect defect-analysis artifacts, ask reuse/regenerate when prior analysis exists, spawn `defects-analysis` when needed. |
+| **3. Draft Generation** | Build sections 1–10 from planner + defect context. Apply `references/summary-formatting.md`. |
+| **4. Review Gate** | Run `qa-summary-review` until verdict is `pass`. Render reviewed draft and require explicit APPROVE. |
+| **5. Publish Decision** | Ask skip / update_existing / create_new. Require Confluence page ID for update. Validate access before publish. |
+| **6. Finalize** | Copy reviewed draft to final, send Feishu or record `notification_pending`. |
 
 ---
 
@@ -86,11 +86,15 @@ skills/defects-analysis/runs/        ← Canonical runtime root for reporter def
 projects/defects-analysis/           ← Legacy compatibility outputs still used by downstream flows
 └── <ISSUE_KEY>/                     ← currently mirrored by shared single-defect-analysis for tester handoff
 
-projects/qa-summaries/               ← Managed by QA Summary orchestrator
+skills/qa-summary/runs/               ← Canonical runtime root for QA Summary
 └── <FEATURE_KEY>/
-    ├── run.json
+    ├── context/
+    ├── drafts/
+    │   └── <FEATURE_KEY>_QA_SUMMARY_DRAFT.md
     ├── archive/
-    ├── <FEATURE_KEY>_QA_SUMMARY_DRAFT.md
+    ├── task.json
+    ├── run.json
+    ├── <FEATURE_KEY>_QA_SUMMARY_REVIEW.md
     └── <FEATURE_KEY>_QA_SUMMARY_FINAL.md
 ```
 

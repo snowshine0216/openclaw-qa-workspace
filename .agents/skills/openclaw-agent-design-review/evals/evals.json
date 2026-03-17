@@ -27,7 +27,8 @@
         "Report identifies missing Phase 0/REPORT_STATE handling as P0 or P1",
         "Report status is fail when P0 or P1 findings exist",
         "Report includes recommended fixes for each finding",
-        "Findings have severity (P0, P1, or P2)"
+        "Findings have severity (P0, P1, or P2)",
+        "Report flags hardcoded .agents/skills or workspace-*/skills paths as P1 (PATH-001) when present"
       ]
     },
     {
@@ -43,6 +44,17 @@
         "Verification checks for script-bearing vs docs-only classification",
         "Verification checks for script-to-test coverage summary",
         "Verification checks for findings with severity"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review a design doc that hardcodes $REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh in a phase script. Identify PATH-001 and recommend using skill-path-registrar.",
+      "expected_output": "Review report with PATH-001 finding for hardcoded path, recommendation to use skill-path-registrar, and status fail.",
+      "files": [],
+      "expectations": [
+        "Report contains PATH-001 finding",
+        "Report recommends skill-path-registrar",
+        "Report status is fail (P1 blocks pass)"
       ]
     }
   ]

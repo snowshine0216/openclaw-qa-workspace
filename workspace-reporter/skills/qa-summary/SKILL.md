@@ -1,218 +1,231 @@
 ---
 name: qa-summary
-description: Draft generation guide for QA Summary documents. Provides the canonical section template, data source mapping, placeholder policy, and Confluence formatting rules. Invoke in Phase 2 to build the QA summary draft section-by-section from defect-analysis output.
+description: Builds QA summary drafts and optional Confluence updates for a feature. Use this whenever the task is to write a QA summary for a feature.
 ---
 
-# `qa-summary` Skill
+# QA Summary Skill
 
-## Goal
+This skill is the canonical entrypoint for QA summary generation and optional publication.
 
-Guide the agent in constructing a well-structured QA Summary draft (`<KEY>_QA_SUMMARY_DRAFT.md`) from the defect-analysis output. This skill defines what each section must contain, where the data comes from, how to handle missing data, and what formatting rules apply.
+The orchestrator has exactly three responsibilities:
 
----
+1. Call `phaseN.sh`
+2. Handle blocking user interaction only when a phase requires a `REPORT_STATE` decision, a missing-artifact handoff, a defect-analysis reuse/regenerate choice, a publish choice, or final summary approval
+3. When any phase prints `SPAWN_MANIFEST: <path>`, spawn subagents from that manifest, wait for completion, then call the same phase with `--post`
 
-## Inputs
+The orchestrator does not resolve planner files inline, does not generate summary content inline, and does not mutate Confluence inline. Scripts own those behaviors.
 
-Before generating the draft, the agent must have access to:
+## Required References
 
-1. `projects/defects-analysis/<KEY>/<KEY>_REPORT_FINAL.md` — primary source of truth for defect counts, risk, PR analysis.
-2. `projects/defects-analysis/<KEY>/context/jira_raw.json` — raw Jira issues for cross-referencing.
-3. `projects/defects-analysis/<KEY>/context/prs/<PR_ID>_impact.md` — per-PR fix risk analyses.
-4. `projects/qa-summaries/<KEY>/run.json` — Confluence page ID and run metadata.
+Always read:
 
-**Never read from `_REPORT_DRAFT.md`. Always use `_REPORT_FINAL.md` as the source.**
+- `reference.md`
+- `references/runtime-and-state.md`
 
----
+Load phase-specific references only when the phase needs them:
 
-## Section Template
+- `references/planner-and-defects.md` for Phase 1 and Phase 2
+- `references/summary-formatting.md` for Phase 3
+- `references/publish-and-notification.md` for Phase 5 and Phase 6
 
-The draft represents the sections the reporter **appends** to the existing Confluence QA Summary section. Section 1 (`Code Changes`) already exists on the Confluence page from the QA plan and must **not** be regenerated.
+## Required Runtime Config
 
-**No `5.x` numeric prefixes. No tables except where explicitly specified below.**
+Always load:
 
-```markdown
-## 📊 QA Summary
-(Note: Section 1 "Code Changes" already exists on the Confluence page from the QA plan.
-This draft contains sections 2–10 to be appended after it.)
+- `config/runtime-sources.json`
 
-### 2. Defects Code Changes        ← TABLE REQUIRED
-### 3. Overall QA Status
-### 4. Defect Status Summary       ← TABLE REQUIRED
-### 5. Resolved Defects Detail     ← TABLE REQUIRED (P0/P1 only)
-### 6. Test Coverage
-### 7. Performance
-### 8. Security / Compliance
-### 9. Regression Testing
-### 10. Automation Coverage
+This file is the source of truth for default planner and defect-analysis run roots. Caller-provided path overrides may replace these defaults for one run, but the skill must always load the config file first and persist the resolved values into `task.json`.
+
+When Phase 2 delegates or refreshes defect state, also respect skill: `defects-analysis`
+
+When Phase 4 reviews and refactors the draft, also respect skill: `qa-summary-review`
+
+## Resume Flow
+
+The orchestrator must resume from the phase implied by `task.json.current_phase` and `task.json.overall_status` instead of always restarting useful completed work.
+
+Required behavior:
+
+- `not_started` or missing `task.json` -> start at Phase 0
+- `in_progress` with `current_phase = phase0|phase1|phase2|phase3|phase4|phase5|phase6` -> rerun that phase
+- `review_in_progress` -> resume at Phase 4
+- `awaiting_approval` -> render the reviewed draft and wait for approval; if the user requests revision, regenerate the draft from the persisted Phase 1-3 context with the approval feedback applied, then return to Phase 4 review
+- `approved` -> resume at Phase 5
+- `completed` with `selected_mode = use_existing` -> return final output
+
+Phase scripts are shell entrypoints that invoke Node modules under `scripts/lib/` (e.g. `phase0.sh` calls `node scripts/lib/phase0.mjs` or equivalent). The `.sh` files are orchestration boundaries; pure extraction and transformation logic belongs in the `.mjs` helpers. `check_resume.sh` is a thin shell wrapper around `scripts/lib/detectReportState.mjs`.
+
+## Runtime Layout
+
+All artifacts for one run live under `<skill-root>/runs/<feature-key>/`:
+
+```text
+<skill-root>/runs/<feature-key>/
+  context/
+  drafts/
+  archive/
+  task.json
+  run.json
+  phase2_spawn_manifest.json
+  phase4_spawn_manifest.json
+  <feature-key>_QA_SUMMARY_REVIEW.md
+  <feature-key>_QA_SUMMARY_MERGED.md
+  <feature-key>_QA_SUMMARY_FINAL.md
 ```
 
----
+## Input Contract
 
-## Section-by-Section Generation Guide
+Required:
 
-### 2. Defects Code Changes
+- `feature_key`
 
-**Data source:** PR impact files in `context/prs/` — filter to PRs that fix defects (linked Jira issues with type Bug/Defect). Fall back to PR links from defect issues in `jira_raw.json`.
+Optional:
 
-**Format:** Markdown table. Columns: `Repository`, `PR`, `Defects Fixed`, `Risk Level`, `Notes`.
+- `planner_run_root` — optional per-run override; default is loaded from `config/runtime-sources.json`
+- `planner_plan_path` — direct Markdown override supplied by the caller or the user
+- `defects_run_root` — optional per-run override; default is loaded from `config/runtime-sources.json`
+- `refresh_mode` — `use_existing`, `resume`, `generate_from_cache`, `smart_refresh`, `full_regenerate`
+- `publish_mode` — `skip`, `update_existing`, `create_new`
+- `confluence_page_url`
+- `confluence_page_id`
+- `notification_target`
+- `skip_notification`
 
-**Rules:**
-- One row per defect-fixing PR.
-- `Defects Fixed`: comma-separated hyperlinked Jira IDs (e.g. `[ISSUE-101](url), [ISSUE-102](url)`).
-- Risk Level: HIGH / MEDIUM / LOW (from `_impact.md` fix risk rating).
-- Notes: one-line summary of the fix scope.
-- If a PR impact file is missing: use `[PENDING — PR analysis not available]` in the Notes cell.
-- If there are no defect-fixing PRs: include a single row with `—` in all data columns and a note: `No defect-fixing PRs identified in this release.`
+## Output Contract
 
----
+Always:
 
-### 3. Overall QA Status
+- `<skill-root>/runs/<feature-key>/task.json`
+- `<skill-root>/runs/<feature-key>/run.json`
+- `<skill-root>/runs/<feature-key>/context/planner_artifact_lookup.json`
+- `<skill-root>/runs/<feature-key>/context/feature_overview_table.md`
+- `<skill-root>/runs/<feature-key>/drafts/<feature-key>_QA_SUMMARY_DRAFT.md`
+- `<skill-root>/runs/<feature-key>/<feature-key>_QA_SUMMARY_REVIEW.md`
+- `<skill-root>/runs/<feature-key>/<feature-key>_QA_SUMMARY_FINAL.md`
 
-**Data source:** Risk rating and open defect summary from `_REPORT_FINAL.md`.
+Conditional:
 
-**Format:** Bullet list. No table.
+- `<skill-root>/runs/<feature-key>/context/no_defects.json`
+- `<skill-root>/runs/<feature-key>/context/feature_overview_source.json`
+- `<skill-root>/runs/<feature-key>/phase2_spawn_manifest.json`
+- `<skill-root>/runs/<feature-key>/phase4_spawn_manifest.json`
+- `<skill-root>/runs/<feature-key>/<feature-key>_QA_SUMMARY_MERGED.md`
 
-**Required content:**
-- Overall risk level (HIGH / MEDIUM / LOW) with one-sentence rationale.
-- Total defects logged (number).
-- Currently open defects (number and priority breakdown, e.g. "2 High, 1 Medium").
-- One-line release recommendation (e.g. "Ready for release with monitoring" or "Block release — open High defects").
+## Shared Skill Reuse
 
----
+- Direct shared reuse: `confluence`, `feishu-notify`
+- Reporter-local reuse: `defects-analysis`, `qa-summary-review`
+- Explicit non-use: direct `jira-cli` and `github` access inside this skill. Those remain owned by `defects-analysis`.
 
-### 4. Defect Status Summary
+## Phase Contract
 
-**Data source:** Defect counts from `_REPORT_FINAL.md` and `jira_raw.json`.
+### Phase 0
 
-**Format:** Markdown table. Columns: `Status`, `P0 / Critical`, `P1 / High`, `P2 / Medium`, `P3 / Low`, `Total`.
+- Entry: `scripts/phase0.sh`
+- Work: load `config/runtime-sources.json`, resolve the effective planner and defect-analysis run roots, classify `REPORT_STATE`, initialize run state, apply archive-before-overwrite rules, capture planner lookup configuration, and record whether planner artifacts must come from config defaults or per-run overrides
+- Reference: `references/runtime-and-state.md`
+- Output:
+  - `task.json`
+  - `run.json`
+  - `context/planner_artifact_lookup.json`
+  - `context/planner_artifact_lookup.md`
+- User interaction:
+  - when `REPORT_STATE` is `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`, present the canonical options from `references/runtime-and-state.md`
+  - if the user selects a destructive mode, archive current draft/final artifacts before continuing
 
-**Rules:**
-- Rows: Open, Resolved, Won't Fix, Total.
-- Counts must exactly match `_REPORT_FINAL.md`. Any discrepancy must be flagged as a `[MISMATCH — verify]` note.
+### Phase 1
 
----
+- Entry: `scripts/phase1.sh`
+- Work: resolve planner artifacts from the config-backed planner run root or the direct override, persist the exact source paths used for generation, write a planner seed artifact for later draft generation, and extract a normalized Section 1 Feature Overview table for draft mode
+- Reference: `references/planner-and-defects.md`
+- Output:
+  - `context/planner_artifact_lookup.json`
+  - `context/planner_artifact_lookup.md`
+  - `context/planner_summary_seed.md`
+  - `context/feature_overview_table.md`
+  - `context/feature_overview_source.json`
+- User interaction:
+  - if neither `planner_plan_path` nor the default planner artifact exists, stop and ask the user to provide a QA plan in Markdown
 
-### 5. Resolved Defects Detail
+### Phase 2
 
-**Data source:** Resolved issues from `jira_raw.json` filtered to P0/P1 only.
+- Entry: `scripts/phase2.sh`
+- Work: inspect existing reporter defect-analysis artifacts from the resolved config-backed run root, ask the user whether to reuse or regenerate when prior analysis exists, spawn `defects-analysis` only when needed, then consolidate defect context into summary-friendly metadata, including both defect-fix PRs and feature-level PRs
+- Reference: `references/planner-and-defects.md`
+- Output:
+  - `context/defect_context_state.json`
+  - `context/defect_summary.json`
+  - `context/no_defects.json` when zero defects are found
+  - `phase2_spawn_manifest.json` when defect-analysis must run
+- User interaction:
+  - when prior defect-analysis artifacts exist, ask the user to choose `reuse_existing_defects` or `regenerate_defects`
+  - when the user selects `regenerate_defects`, Phase 2 post-processing must summarize the freshly spawned default defects-analysis run instead of stale override artifacts
 
-**Format:** Markdown table. Columns: `Defect ID`, `Summary`, `Priority`, `Resolution`, `Notes`.
+### Phase 3
 
-**Rules:**
-- Include **only P0 / Critical and P1 / High** resolved issues.
-- After the table, append a count line:
-  > *"X additional resolved defects (P2/P3) not shown. Full list: [Jira filter link]."*
-- Omit the count line only if there are genuinely zero P2/P3 resolved defects.
-- Defect ID must be a hyperlink to the Jira issue.
+- Entry: `scripts/phase3.sh`
+- Work: build the draft by combining the planner-sourced Section 1 table with defect context sections 2 through 10 and applying the section, placeholder, and table rules from `references/summary-formatting.md`
+- Reference: `references/summary-formatting.md`
+- Output:
+  - `drafts/<feature-key>_QA_SUMMARY_DRAFT.md`
+  - `context/summary_generation.json`
+- User interaction:
+  - none
 
----
+### Phase 4
 
-### 6. Test Coverage
+- Entry: `scripts/phase4.sh`
+- Work: when `task.json.overall_status = awaiting_approval`, re-render the already reviewed draft and block for approval; if approval feedback is provided, regenerate the draft from persisted planner and defect context with that feedback applied, then re-enter the Phase 4 review loop. Otherwise run the `qa-summary-review` quality gate, persist the review output, apply a refactor pass when the verdict is not `pass`, rerun `qa-summary-review`, and only render the draft to the user once the review verdict is `pass`
+- Reference: `workspace-reporter/skills/qa-summary-review/SKILL.md`
+- Output:
+  - `<feature-key>_QA_SUMMARY_REVIEW.md`
+  - `context/review_result.json`
+  - `phase4_spawn_manifest.json` when the review is delegated through a spawn manifest
+- User interaction:
+  - no approval prompt is shown until `qa-summary-review` returns `pass`
+  - print the reviewed draft in chat only after a passing review
+  - require explicit `APPROVE` or revision feedback before continuing
 
-**Data source:** Testing notes and functional area breakdown from `_REPORT_FINAL.md`.
+### Phase 5
 
-**Format:** Bullet list. No table.
+- Entry: `scripts/phase5.sh`
+- Work: ask the user whether to skip publish, update an existing Confluence page, or create a new Confluence page; if publish is selected, validate Confluence access, merge Markdown, and publish according to `references/publish-and-notification.md`
+- Reference: `references/publish-and-notification.md`
+- Output:
+  - `context/publish_choice.json`
+  - `context/confluence_target.json`
+  - `context/runtime_setup_<feature-key>.json`
+  - `context/runtime_setup_<feature-key>.md`
+  - `<feature-key>_QA_SUMMARY_MERGED.md` when publish is selected
+- User interaction:
+  - `skip`
+  - `update_existing` — requires a Confluence link or exact page ID from the user
+  - `create_new` — may optionally accept a parent page link or destination details from the user
 
-**Required content:**
-- Functional areas tested and coverage level (Full / Partial / Skipped).
-- Notable gaps or areas with limited coverage.
-- Manual vs. automated breakdown if available.
+### Phase 6
 
----
+- Entry: `scripts/phase6.sh`
+- Work: finalize local artifacts by copying the reviewed draft (post-Phase 4 auto-fix loop) to final output, update terminal timestamps, and send Feishu notification or record `notification_pending`
+- Reference: `references/publish-and-notification.md`
+- Output:
+  - `<feature-key>_QA_SUMMARY_FINAL.md`
+  - `task.json`
+  - `run.json`
+- User interaction:
+  - none unless notification delivery fails and the caller chooses to retry immediately
 
-### 7. Performance
+## Automated Resume Policy
 
-**Data source:** PR notes or dedicated performance test results if available.
+Unless the caller explicitly overrides the mode:
 
-**Format:** Bullet list. No table.
+- `FINAL_EXISTS` -> `use_existing`
+- `DRAFT_EXISTS` -> `resume`
+- `CONTEXT_ONLY` -> `generate_from_cache`
+- `FRESH` -> `proceed`
 
-**Required content:**
-- Performance test outcome (Pass / Fail / Not run).
-- Any regressions observed.
-- If no performance data: `[PENDING — No performance test results available.]`
+## Boundary Exclusions
 
----
-
-### 8. Security / Compliance
-
-**Data source:** Security-related defects or review notes in `_REPORT_FINAL.md`.
-
-**Format:** Bullet list. No table.
-
-**Required content:**
-- Security test outcome.
-- Any open security defects.
-- Compliance status if applicable.
-- If no data: `[PENDING — No security review data available.]`
-
----
-
-### 9. Regression Testing
-
-**Data source:** Regression scope from `_REPORT_FINAL.md` or Jira labels/components.
-
-**Format:** Bullet list. No table.
-
-**Required content:**
-- Regression test scope (what was run).
-- Pass/Fail summary.
-- Any regressions found with defect IDs linked.
-- If not run: `[PENDING — Regression suite not executed for this cycle.]`
-
----
-
-### 10. Automation Coverage
-
-**Data source:** Automation labels or notes in Jira issues and PR descriptions.
-
-**Format:** Bullet list. No table.
-
-**Required content:**
-- Automated test coverage percentage or scope (if known).
-- New automated cases added in this release.
-- Any manual-only areas flagged for future automation.
-- If no data: `[PENDING — Automation coverage data not available.]`
-
----
-
-## Confluence Merge Strategy (MANDATORY)
-
-This draft is appended to the existing Confluence QA Summary section — it does **NOT** replace the full section. During Phase 5 (Confluence Update):
-
-1. **Locate** the `## 📊 QA Summary` section on the Confluence page, which should be located at the **very end** of the document.
-2. **Preserve** the existing `### 1. Code Changes` subsection (from the QA plan) — do not overwrite it.
-3. **Append** sections 2–10 from this draft immediately after the existing Code Changes table (since it's at the end of the document, this naturally appends to the end of the page).
-4. **Do not duplicate** any subsection already present on the page.
-
----
-
-## Placeholder Policy (MANDATORY)
-
-- Every section (2–10) **must** be present in the draft, even if data is missing.
-- If data is unavailable for a section, write: `[PENDING — <specific reason>]`.
-- Never leave a section blank or omit it.
-- `[PENDING]` in table cells must not break table structure — place in the `Notes` column or as a full-row note below the table.
-
----
-
-## Formatting Rules (MANDATORY)
-
-| Rule | Requirement |
-|---|---|
-| Top-level heading | `## 📊 QA Summary` — emoji prefix, no numeric prefix |
-| Subsection headings | `### 2.` through `### 10.` — numbering starts at 2 (section 1 is plan's Code Changes) |
-| Tables | ONLY for sections 2, 4, 5 (Defects Code Changes, Defect Status Summary, Resolved Defects) |
-| All other sections | Bullet lists (`-`) or plain prose — no tables |
-| Hyperlinks | All Jira issue IDs and GitHub PR numbers must be markdown hyperlinks |
-| Raw Markdown in tables | Not allowed — no `**bold**` or backtick spans in table cell content |
-
----
-
-## Output
-
-Save the completed draft to:
-```
-projects/qa-summaries/<KEY>/<KEY>_QA_SUMMARY_DRAFT.md
-```
-
-After saving, pass the draft to the `qa-summary-review` skill (Phase 3) for quality gate review.
+- No direct Jira or GitHub fetching in this skill
+- No silent Confluence publish
+- No summary generation without a planner Markdown source
+- No deletion of historical summary artifacts; archive only

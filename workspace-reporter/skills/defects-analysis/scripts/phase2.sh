@@ -6,7 +6,8 @@ RUN_DIR="${2:-}"
 CONTEXT_DIR="$RUN_DIR/context"
 TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
+REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase2.sh <input> <run-dir>" >&2; exit 1; }
 [[ -f "$CONTEXT_DIR/feature_keys.json" ]] || { echo "Missing feature_keys.json" >&2; exit 1; }
@@ -35,9 +36,12 @@ resolve_jira_runner() {
     echo "$JIRA_CLI_SCRIPT"
     return
   fi
-  if [[ -x "$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh" ]]; then
-    echo "$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh"
-    return
+  if [[ -f "$REGISTRAR_SH" ]]; then
+    source "$REGISTRAR_SH"
+    if resolve_shared_skill_script jira-cli scripts/jira-run.sh && [[ -x "$RESOLVED_SKILL_SCRIPT" ]]; then
+      echo "$RESOLVED_SKILL_SCRIPT"
+      return
+    fi
   fi
   echo ""
 }

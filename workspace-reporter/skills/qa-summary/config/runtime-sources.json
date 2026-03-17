@@ -1,0 +1,4 @@
+{
+  "planner_run_root": "workspace-planner/skills/qa-plan-orchestrator/runs",
+  "defects_run_root": "workspace-reporter/skills/defects-analysis/runs"
+}

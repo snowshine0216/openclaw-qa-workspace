@@ -1,0 +1,13 @@
+{
+  "issues": [
+    {
+      "key": "BCIN-ROOT-1",
+      "fields": {
+        "summary": "Fixture defect",
+        "status": { "name": "Resolved" },
+        "priority": { "name": "P1" },
+        "resolution": { "name": "Done" }
+      }
+    }
+  ]
+}

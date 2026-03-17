@@ -7,7 +7,8 @@ MODE="${3:-}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUN_KEY="$(basename "$RUN_DIR")"
 CONTEXT_DIR="$RUN_DIR/context"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
+REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase0.sh <input> <run-dir> [--post]" >&2; exit 1; }
 mkdir -p "$CONTEXT_DIR" "$RUN_DIR/drafts" "$RUN_DIR/reports" "$RUN_DIR/archive"
@@ -57,8 +58,12 @@ fetch_issue_type() {
     echo ""
     return
   fi
-  jira_script="${JIRA_CLI_SCRIPT:-$REPO_ROOT/.agents/skills/jira-cli/scripts/jira-run.sh}"
-  if [[ -x "$jira_script" ]]; then
+  jira_script="${JIRA_CLI_SCRIPT:-}"
+  if [[ -z "$jira_script" && -f "$REGISTRAR_SH" ]]; then
+    source "$REGISTRAR_SH"
+    resolve_shared_skill_script jira-cli scripts/jira-run.sh && jira_script="$RESOLVED_SKILL_SCRIPT"
+  fi
+  if [[ -n "$jira_script" && -x "$jira_script" ]]; then
     set +e
     issue_type="$(/bin/bash "$jira_script" issue view "$issue_key" --raw 2>/dev/null | jq -r '.fields.issuetype.name // empty' 2>/dev/null)"
     set -e

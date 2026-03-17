@@ -130,6 +130,23 @@ Fallback path for non-agent execution:
 - `scripts/notify_feishu.sh` calls shared `feishu-notify`
 - on failure, persist the complete retry payload under `run.json.notification_pending`
 
+## Report Format (12 Sections)
+
+The orchestrator generates draft reports with these required sections. The report-quality-reviewer validates their presence:
+
+1. Report Header — title, feature key, date, total defects
+2. Executive Summary — defect distribution table, risk rating
+3. Defect Breakdown by Status — completed, in progress, to do, additional open
+4. Risk Analysis by Functional Area
+5. Defect Analysis by Priority
+6. Code Change Analysis — PR impact summaries
+7. Residual Risk Assessment
+8. Recommended QA Focus Areas
+9. Test Environment Recommendations
+10. Verification Checklist for Release
+11. Conclusion
+12. Appendix: Defect Reference List — Jira URLs
+
 ## Validation Commands
 
 - `node --test workspace-reporter/skills/defects-analysis/scripts/test/*.test.js`

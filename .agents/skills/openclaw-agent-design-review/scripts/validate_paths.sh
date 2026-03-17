@@ -2,7 +2,8 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: $0 <path-list-file> [repo-root]" >&2
+  echo "Usage: $0 <path-list-file> [repo-root] [--check-hardcoded]" >&2
+  echo "  --check-hardcoded: also scan file contents for hardcoded .agents/skills or workspace-*/skills paths (PATH-001)" >&2
   exit 2
 }
 
@@ -11,12 +12,21 @@ trim() {
 }
 
 require_inputs() {
-  if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+  if [ "$#" -lt 1 ]; then
     usage
   fi
 
   PATH_LIST_FILE="$1"
-  REPO_ROOT="${2:-$(pwd)}"
+  CHECK_HARDCODED=false
+  if [[ "${2:-}" == "--check-hardcoded" ]]; then
+    CHECK_HARDCODED=true
+    REPO_ROOT="$(pwd)"
+  elif [[ "${3:-}" == "--check-hardcoded" ]]; then
+    CHECK_HARDCODED=true
+    REPO_ROOT="${2:-$(pwd)}"
+  else
+    REPO_ROOT="${2:-$(pwd)}"
+  fi
 
   if [ ! -f "$PATH_LIST_FILE" ]; then
     echo "ERROR: path list file not found: $PATH_LIST_FILE" >&2
@@ -72,6 +82,13 @@ validate_entry() {
   fi
 
   if [ -e "$candidate" ]; then
+    if [[ "$CHECK_HARDCODED" == "true" && -f "$candidate" ]]; then
+      if grep -E '\$REPO_ROOT/\.agents/skills|\.agents/skills/[^/]+/|workspace-[^/]+/skills/' "$candidate" 2>/dev/null | grep -v -E 'skill-path-registrar|resolveSharedSkill|resolve_shared_skill' >/dev/null 2>&1; then
+        echo "FAIL: hardcoded skill path (PATH-001) in: $line"
+        FAILURES=$((FAILURES + 1))
+        return 0
+      fi
+    fi
     echo "OK: $line"
     return 0
   fi

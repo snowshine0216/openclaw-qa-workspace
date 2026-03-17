@@ -1,6 +1,6 @@
 ---
 name: defect-analysis
-description: Runs reporter-owned defect analysis for a Jira issue, feature, story, epic, JQL query, or release version. Use this whenever the task is to analyze defects and produce a reporter-style QA risk report. Phase 0 classifies the input: single Jira Issue/Bug/Defect inputs are delegated to the shared `single-defect-analysis` skill, while Story/Feature/Epic/JQL/release inputs stay in this skill. Phase 5 runs a self-review + finalize loop until the review result is `pass`; only then does it finalize and send Feishu. This workflow does not publish to Confluence and does not pause for routine human approval; it only blocks when safe automated progress is impossible.
+description: Runs defect analysis for a Jira issue, feature, story, epic, JQL query, or release version. Use this whenever the task is to analyze defects and produce QA risk report.
 ---
 
 # Defect Analysis Skill
@@ -92,7 +92,7 @@ On reporter-local runs:
 ## Shared Skill Reuse
 
 - Direct reuse: `jira-cli`, `github`, `feishu-notify`, `single-defect-analysis`
-- Reporter-local reuse: `defect-analysis-reporter`, `report-quality-reviewer`
+- Reporter-local reuse: `report-quality-reviewer`
 - Explicit non-use: `confluence`
 
 ## Phase Contract
@@ -122,7 +122,7 @@ On reporter-local runs:
 
 ### Phase 5
 
-- report generation
+- orchestrator directly generates draft report from context
 - self-review + finalize loop
 - bundle validation
 - Feishu completion marker or fallback notification persistence

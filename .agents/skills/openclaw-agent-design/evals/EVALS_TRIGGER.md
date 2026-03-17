@@ -58,6 +58,7 @@ on:
     paths:
       - '.agents/skills/openclaw-agent-design/**'
       - '.agents/skills/openclaw-agent-design-review/**'
+      - '.agents/skills/skill-path-registrar/**'
 jobs:
   evals:
     runs-on: ubuntu-latest

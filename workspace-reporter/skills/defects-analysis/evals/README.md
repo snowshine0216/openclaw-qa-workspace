@@ -27,6 +27,6 @@ TEST_JIRA_ISSUE_TYPE=Feature TEST_RUNTIME_SETUP_OK=1 bash scripts/orchestrate.sh
 ## Acceptance criteria
 
 - Phase 0 route classification proves both delegated and reporter-local branches
-- Phase 5 invokes defect-analysis-reporter and report-quality-reviewer
+- Phase 5 orchestrator generates report and invokes report-quality-reviewer
 - No Confluence publish step
 - Every script has matching `scripts/test/` stub

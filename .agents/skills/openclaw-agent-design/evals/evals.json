@@ -19,7 +19,8 @@
         "Design doc mentions openclaw-agent-design-review before finalizing",
         "Design doc references .agents/skills/ for shared skills",
         "Design doc references runs/<run-key>/ for runtime output when script-bearing",
-        "When Feishu notification in scope: design mentions chat_id from TOOLS.md or FEISHU_NOTIFY marker pattern"
+        "When Feishu notification in scope: design mentions chat_id from TOOLS.md or FEISHU_NOTIFY marker pattern",
+        "Design doc uses skill-path-registrar or mandates no hardcoded skill paths for shared skill script resolution"
       ]
     },
     {
@@ -34,7 +35,8 @@
         "Design doc has reference.md content blueprint (state machine, schemas, path conventions)",
         "Design doc has ## Tests section when script-bearing",
         "Design doc uses scripts/test/ convention for script-bearing skills",
-        "Design doc mentions direct reuse of jira-cli, confluence, feishu-notify, or github"
+        "Design doc mentions direct reuse of jira-cli, confluence, feishu-notify, or github",
+        "Design doc uses skill-path-registrar or mandates no hardcoded skill paths for shared skill script resolution"
       ]
     },
     {
@@ -48,6 +50,17 @@
         "Report checks Tests section when design is script-bearing",
         "Report checks Evals section when design creates or redesigns skills",
         "Report does not modify the design file"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Design a script-bearing skill that invokes jira-cli and feishu-notify. Ensure the design specifies path resolution via skill-path-registrar and documents the user-confirmation flow when a shared skill script is not found.",
+      "expected_output": "Design doc with script inventory, path resolution via skill-path-registrar, fallback order, and user-confirmation flow when script not found.",
+      "files": [],
+      "expectations": [
+        "Design doc references skill-path-registrar for shared skill script resolution",
+        "Design doc documents fallback order for path resolution",
+        "Design doc includes user-confirmation flow when shared skill script is not found"
       ]
     }
   ]

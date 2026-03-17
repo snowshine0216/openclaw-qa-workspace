@@ -30,8 +30,7 @@ This skill is invoked by `defect-analysis` Phase 5 with `<run-dir>` as the worki
 
 ## **Required References**
 
-- `workspace-reporter/skills/defects-analysis/reference.md` — run layout (context/, drafts/, reports/, archive/, task.json, run.json)
-- `defect-analysis-reporter` skill — required 12 sections and report format
+- `workspace-reporter/skills/defects-analysis/reference.md` — run layout (context/, drafts/, reports/, archive/, task.json, run.json) and report format
 
 ---
 
@@ -48,7 +47,7 @@ Provide the reviewer with:
 ## **Process / Checklist**
 
 ### 1. **Section Completeness**
-- Verify all required 12 sections are present, as defined in `defect-analysis-reporter` skill.
+- Verify all required 12 sections are present, as defined in defects-analysis reference (Section 1–12).
 - Ensure there are **no** `[TODO]` or placeholder `<X>` values left unpopulated.
 
 ### 2. **Defect Count & Consistency**
