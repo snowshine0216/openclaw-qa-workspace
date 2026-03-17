@@ -4,6 +4,7 @@
  */
 
 import { normalizeRiskLevel, strongerRisk } from './riskLevels.mjs';
+import { extractBackgroundSolutionSeed } from './extractBackgroundSolution.mjs';
 
 const OPEN_STATUSES = new Set(['Open', 'In Progress', 'To Do', 'In Review']);
 const RESOLVED_STATUSES = new Set(['Resolved', 'Closed', 'Done']);
@@ -149,6 +150,7 @@ function normalizePlannerEvidence(plannerContext) {
     plannerContext?.planMarkdown,
     plannerContext?.summaryMarkdown,
     plannerContext?.seedMarkdown,
+    plannerContext?.backgroundSolutionSeed,
   ]
     .filter(Boolean)
     .join('\n');
@@ -317,8 +319,80 @@ function formatLinkedDefectKeys(linkedDefectKeys, defects) {
   return links.join(', ') || '—';
 }
 
+/**
+ * Extract "Out of Scope" mentions from planner markdown for a given topic.
+ */
+function extractOutOfScopeJustification(markdown, topicPattern) {
+  const lines = String(markdown || '').split(/\r?\n/);
+  let inOutOfScope = false;
+  for (const line of lines) {
+    if (/out of scope\s*[/\-–]?\s*assumptions/i.test(line)) {
+      inOutOfScope = true;
+      continue;
+    }
+    if (inOutOfScope) {
+      const bullet = line.match(/^\s*\*\s+(.+)$/);
+      if (bullet && topicPattern.test(bullet[1])) {
+        return bullet[1].replace(/\s*<P\d>\s*$/i, '').trim();
+      }
+      // Also check inline bullet format
+      const inlineBullet = line.match(/^[-*]\s+(.+)$/);
+      if (inlineBullet && topicPattern.test(inlineBullet[1])) {
+        return inlineBullet[1].replace(/\s*<P\d>\s*$/i, '').trim();
+      }
+      if (line.trim() && /^#{1,4}\s/.test(line)) inOutOfScope = false;
+    }
+  }
+  return null;
+}
+
+export function buildBackgroundSolution(plannerContext) {
+  // Prefer structured JSON data extracted during Phase 1 (avoids re-parsing and duplication).
+  // Fall back to re-extracting from raw seed text or full plan markdown.
+  const seed = plannerContext?.backgroundSolutionData
+    || extractBackgroundSolutionSeed(
+        [
+          plannerContext?.backgroundSolutionSeed,
+          plannerContext?.planMarkdown,
+          plannerContext?.summaryMarkdown,
+          plannerContext?.seedMarkdown,
+        ].filter(Boolean).join('\n\n') || ''
+      );
+
+  const header = '### 2. Background & Solution\n';
+
+  const hasContent = seed.backgroundText || seed.problemText || seed.solutionText || seed.outOfScopeText;
+  if (!hasContent) {
+    return `${header}\n- [PENDING — No background or solution context found in planner artifacts. Please provide manually.]\n`;
+  }
+
+  const bullets = [];
+
+  if (seed.backgroundText) {
+    bullets.push(`**Background:** ${seed.backgroundText}`);
+  }
+  if (seed.problemText && seed.problemText !== seed.backgroundText) {
+    bullets.push(`**Problem:** ${seed.problemText}`);
+  }
+  if (seed.solutionText) {
+    bullets.push(`**Solution:** ${seed.solutionText}`);
+  }
+  if (seed.outOfScopeText) {
+    const outLines = seed.outOfScopeText.split('\n').filter(Boolean);
+    for (const line of outLines) {
+      bullets.push(`**Out of Scope:** ${line.replace(/^-\s*/, '')}`);
+    }
+  }
+
+  if (bullets.length === 0) {
+    return `${header}\n- [PENDING — No background or solution context found in planner artifacts. Please provide manually.]\n`;
+  }
+
+  return `${header}\n${bullets.map((b) => `- ${b}`).join('\n')}\n`;
+}
+
 function buildCodeChangesTable(prs, defects) {
-  const header = '### 2. Code Changes Summary\n';
+  const header = '### 3. Code Changes Summary\n';
   const tableHeader = '| Repository | PR | Type | Defects Fixed | Risk Level | Notes |';
   const tableSep = '| --- | --- | --- | --- | --- | --- |';
   if (!prs || prs.length === 0) {
@@ -340,12 +414,16 @@ function buildOverallStatus(defectSummary, plannerEvidence, approvalFeedback) {
   const total = s.totalDefects ?? 0;
   const open = s.openDefects ?? 0;
   const resolved = s.resolvedDefects ?? 0;
-  const header = '### 3. Overall QA Status\n';
+  const header = '### 4. Overall QA Status\n';
   const risk = extractApprovalRiskOverride(approvalFeedback) || deriveOverallRisk(s, plannerEvidence);
   const recommendation = approvalReleaseRecommendation(approvalFeedback) || releaseRecommendation(risk);
   const bullets = approvalFeedbackBullets(approvalFeedback);
   if (total === 0) {
-    return `${header}- Overall risk: ${risk}\n- Total defects: 0\n- Open defects: 0\n- Resolved: 0\n- No feature defects were found in the chosen defect-analysis scope.\n- Release recommendation: ${recommendation}\n${bullets.map((bullet) => `- ${bullet}\n`).join('')}`;
+    const riskExplanation =
+      risk !== 'LOW' && risk !== null
+        ? `- Note: Risk elevated to ${risk} due to incomplete QA coverage (QA testing not yet commenced), not open defects.\n`
+        : '';
+    return `${header}- Overall risk: ${risk}\n- Total defects: 0\n- Open defects: 0\n- Resolved: 0\n- No feature defects were found in the chosen defect-analysis scope.\n${riskExplanation}- Release recommendation: ${recommendation}\n${bullets.map((bullet) => `- ${bullet}\n`).join('')}`;
   }
   return `${header}- Overall risk: ${risk}\n- Total defects: ${total}\n- Open defects: ${open}\n- Resolved: ${resolved}\n- Release recommendation: ${recommendation}\n${bullets.map((bullet) => `- ${bullet}\n`).join('')}`;
 }
@@ -362,7 +440,7 @@ function buildDefectStatusTable(defectSummary) {
     p3: open.p3 + resolved.p3,
     total: open.total + resolved.total,
   };
-  const header = '### 4. Defect Status Summary\n';
+  const header = '### 5. Defect Status Summary\n';
   const tableHeader = '| Status | P0 / Critical | P1 / High | P2 / Medium | P3 / Low | Total |';
   const tableSep = '| --- | --- | --- | --- | --- | --- |';
   const rows = [
@@ -391,7 +469,7 @@ function buildResolvedDefects(defectSummary) {
   const resolved = resolvedDefects.filter((d) =>
     ['p0', 'p1'].includes(normalizePriorityBucket(d.priority))
   );
-  const header = '### 5. Resolved Defects Detail\n';
+  const header = '### 6. Resolved Defects Detail\n';
   const tableHeader = '| Defect ID | Summary | Priority | Resolution | Notes |';
   const tableSep = '| --- | --- | --- | --- | --- |';
   const omittedCount = resolvedDefects.filter(
@@ -424,7 +502,7 @@ function buildTestCoverage(plannerEvidence, defectSummary) {
   const coreFlows = firstPlannerEntry(plannerEvidence.testCoverage, 'core functional flows');
   const openKeys = collectOpenDefectKeys(defectSummary);
   return renderBulletSection(
-    '6. Test Coverage',
+    '7. Test Coverage',
     [
       endToEnd ? `EndToEnd coverage includes: ${endToEnd}.` : null,
       coreFlows ? `Core functional coverage includes: ${coreFlows}.` : null,
@@ -435,19 +513,50 @@ function buildTestCoverage(plannerEvidence, defectSummary) {
 }
 
 function buildPerformance(plannerEvidence) {
+  const entries = plannerEvidence.performance.map((group) => group.entries[0]).filter(Boolean);
+
+  if (entries.length > 0) {
+    return renderBulletSection('8. Performance', entries, '');
+  }
+
+  // Check Out of Scope for performance/i18n/accessibility/resilience not applicable
+  const outOfScopeJustification = extractOutOfScopeJustification(
+    plannerEvidence.markdown,
+    /performance|i18n|accessibility|resilience/i
+  );
+
+  if (outOfScopeJustification) {
+    return `### 8. Performance\n\n- Not applicable: ${outOfScopeJustification}\n`;
+  }
+
   return renderBulletSection(
-    '7. Performance',
-    plannerEvidence.performance.map((group) => group.entries[0]).filter(Boolean),
-    '[PENDING — No performance data available.]'
+    '8. Performance',
+    [],
+    '[PENDING — No performance scenarios found in QA plan. Add execution results or confirm not applicable.]'
   );
 }
 
 function buildSecurity(plannerEvidence, defectSummary) {
   const openKeys = collectOpenDefectKeys(defectSummary);
+  const securityEntries = plannerEvidence.security.map((group) => group.entries[0]).filter(Boolean);
+
+  if (securityEntries.length > 0) {
+    const bullets = [
+      '⚠️ Draft — Planned coverage, not yet executed:',
+      ...securityEntries,
+      openKeys.length > 0 ? `Open-defect validation includes permission and data-safety checks for ${openKeys.join(', ')}.` : null,
+    ].filter(Boolean);
+    return renderBulletSection('9. Security / Compliance', bullets, '');
+  }
+
+  // No security entries, no open defects, no security section in planner
+  if (openKeys.length === 0 && plannerEvidence.security.length === 0) {
+    return `### 9. Security / Compliance\n\n- Not applicable: Feature involves privilege/UI changes only; no authentication, data access, or compliance scope identified in QA plan.\n`;
+  }
+
   return renderBulletSection(
-    '8. Security / Compliance',
+    '9. Security / Compliance',
     [
-      ...plannerEvidence.security.map((group) => group.entries[0]).filter(Boolean),
       openKeys.length > 0 ? `Open-defect validation includes permission and data-safety checks for ${openKeys.join(', ')}.` : null,
     ],
     '[PENDING — No security or compliance data available.]'
@@ -456,10 +565,20 @@ function buildSecurity(plannerEvidence, defectSummary) {
 
 function buildRegression(plannerEvidence, defectSummary) {
   const openKeys = collectOpenDefectKeys(defectSummary);
+  const regressionEntries = plannerEvidence.regression.map((group) => group.entries[0]).filter(Boolean);
+
+  if (regressionEntries.length > 0) {
+    const bullets = [
+      '⚠️ Draft — Planned regression scenarios, not yet executed:',
+      ...regressionEntries,
+      openKeys.length > 0 ? `Open defects requiring regression validation: ${openKeys.join(', ')}.` : null,
+    ].filter(Boolean);
+    return renderBulletSection('10. Regression Testing', bullets, '');
+  }
+
   return renderBulletSection(
-    '9. Regression Testing',
+    '10. Regression Testing',
     [
-      ...plannerEvidence.regression.map((group) => group.entries[0]).filter(Boolean),
       openKeys.length > 0 ? `Open defects requiring regression validation: ${openKeys.join(', ')}.` : null,
     ],
     '[PENDING — Regression execution evidence was not provided.]'
@@ -471,17 +590,35 @@ function buildAutomationCoverage(plannerEvidence, defectSummary) {
     .filter((pr) => pr.sourceKind === 'defect_fix')
     .filter((pr) => normalizeRiskLevel(pr.riskLevel, 'LOW') === 'HIGH');
   const openKeys = collectOpenDefectKeys(defectSummary);
+  const endToEndEntry = firstPlannerEntry(plannerEvidence.testCoverage, 'endtoend');
+
+  const bullets = [
+    openKeys.length > 0 ? `Defect-driven automation priority: ${openKeys.join(', ')}.` : null,
+    highRiskPrs.length > 0
+      ? `High-risk fix coverage target: ${highRiskPrs.map((pr) => `#${pr.number}`).join(', ')}.`
+      : null,
+    endToEndEntry
+      ? `Automation should prioritize the planner-owned EndToEnd path first.`
+      : null,
+  ].filter(Boolean);
+
+  // Add planned automation targets if endtoend coverage entries exist
+  const endToEndEntries = plannerEvidence.testCoverage
+    .filter((g) => normalizePlannerLabel(g.title) === 'endtoend')
+    .flatMap((g) => g.entries);
+
+  if (endToEndEntries.length > 0) {
+    const automationBullets = [
+      ...bullets,
+      '⚠️ Draft — Planned automation targets, not yet confirmed.',
+      ...endToEndEntries.map((e) => `${e} — P1 — Automation candidate (E2E)`),
+    ].filter(Boolean);
+    return renderBulletSection('11. Automation Coverage', automationBullets, '');
+  }
+
   return renderBulletSection(
-    '10. Automation Coverage',
-    [
-      openKeys.length > 0 ? `Defect-driven automation priority: ${openKeys.join(', ')}.` : null,
-      highRiskPrs.length > 0
-        ? `High-risk fix coverage target: ${highRiskPrs.map((pr) => `#${pr.number}`).join(', ')}.`
-        : null,
-      firstPlannerEntry(plannerEvidence.testCoverage, 'endtoend')
-        ? `Automation should prioritize the planner-owned EndToEnd path first.`
-        : null,
-    ],
+    '11. Automation Coverage',
+    bullets,
     '[PENDING — Automation coverage data is not available.]'
   );
 }
@@ -497,6 +634,7 @@ export async function buildSummaryDraft({
   const plannerEvidence = normalizePlannerEvidence(plannerContext);
   const sections = [
     featureOverviewTable.trim(),
+    buildBackgroundSolution(plannerContext),
     buildCodeChangesTable(prs, defectSummary?.defects),
     buildOverallStatus(defectSummary, plannerEvidence, approvalFeedback),
     buildDefectStatusTable(defectSummary),
@@ -516,7 +654,7 @@ export async function buildSummaryDraft({
       featureKey,
       generatedAt: new Date().toISOString(),
       approvalFeedbackApplied: Boolean(feedbackSummary(approvalFeedback)),
-      sectionsPresent: 10,
+      sectionsPresent: 11,
     },
   };
 }

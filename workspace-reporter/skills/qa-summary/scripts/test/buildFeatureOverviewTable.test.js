@@ -61,3 +61,22 @@ test('falls back to planner metadata when section 1 absent', async () => {
   assert.match(result.markdown, /\| UX Design \| Bob \|/);
   assert.equal(result.metadata.source, 'planner_metadata');
 });
+
+test('jiraMetadata overrides PENDING rows for Release and QA Owner', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-bfot-jira-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    '# QA Plan\n\n### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |\n'
+  );
+  const result = await buildFeatureOverviewTable({
+    featureKey: 'BCIN-7289',
+    planPath,
+    summaryPath: null,
+    jiraMetadata: { release: 'v2.0', qa_owner: 'alice@company.com' },
+  });
+  assert.match(result.markdown, /v2\.0/);
+  assert.match(result.markdown, /alice@company\.com/);
+  assert.doesNotMatch(result.markdown, /\[PENDING.*Release/);
+  assert.doesNotMatch(result.markdown, /\[PENDING.*QA Owner/);
+});

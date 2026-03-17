@@ -18,7 +18,7 @@ test('extractPageIdFromUrl returns null for invalid URL', () => {
   assert.equal(extractPageIdFromUrl(''), null);
 });
 
-test('create_new appends summary to planner when no QA Summary in planner', async () => {
+test('create_new publishes only summary without planner content', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-merge-'));
   await mkdir(join(runDir, 'drafts'), { recursive: true });
   await writeFile(
@@ -39,7 +39,7 @@ test('create_new appends summary to planner when no QA Summary in planner', asyn
   assert.match(merged, /### 1\. Feature Overview/);
 });
 
-test('create_new replaces planner QA Summary block when planner has duplicate', async () => {
+test('create_new publishes only the summary draft regardless of planner QA Summary blocks', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-merge-'));
   await mkdir(join(runDir, 'drafts'), { recursive: true });
   const plannerContent = '# Plan\n## 📊 QA Summary\n### 1. Old\nold content\n## Other';
@@ -60,19 +60,18 @@ test('create_new replaces planner QA Summary block when planner has duplicate', 
   });
   assert.match(merged, /## 📊 QA Summary/);
   assert.match(merged, /Feature \| BCIN-1/);
-  const count = (merged.match(/## 📊 QA Summary/g) || []).length;
-  assert.equal(count, 1, 'must not duplicate QA Summary heading');
+  // create_new publishes only summary — planner content must not bleed through
+  assert.doesNotMatch(merged, /# Plan/);
+  assert.doesNotMatch(merged, /old content/);
 });
 
-test('replaceQaSummarySection preserves content before and after QA Summary', async () => {
+test('update_existing preserves content before and after QA Summary in existing page', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-merge-'));
   await mkdir(join(runDir, 'drafts'), { recursive: true });
-  const plannerContent = '# Before\n## 📊 QA Summary\n### 1. Old\nold\n## After\nrest';
   await writeFile(
     join(runDir, 'task.json'),
-    JSON.stringify({ planner_plan_resolved_path: join(runDir, 'plan.md') })
+    JSON.stringify({ planner_plan_resolved_path: null })
   );
-  await writeFile(join(runDir, 'plan.md'), plannerContent);
   await writeFile(
     join(runDir, 'drafts', 'BCIN-1_QA_SUMMARY_DRAFT.md'),
     '## 📊 QA Summary\n### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-1 |'
@@ -80,12 +79,14 @@ test('replaceQaSummarySection preserves content before and after QA Summary', as
   const merged = await mergeConfluenceMarkdown({
     featureKey: 'BCIN-1',
     runDir,
-    publishMode: 'create_new',
-    target: {},
+    publishMode: 'update_existing',
+    target: { pageId: '123' },
+    readPageContent: async () => '# Before\n## 📊 QA Summary\n### 1. Old\nold\n## After\nrest',
   });
   assert.match(merged, /# Before/);
   assert.match(merged, /## After/);
   assert.match(merged, /rest/);
+  assert.doesNotMatch(merged, /### 1\. Old/);
 });
 
 test('update_existing replaces QA Summary on existing page content', async () => {
@@ -212,4 +213,27 @@ test('update_existing blocks when current page content cannot be read safely', a
     }),
     /Unable to read existing Confluence page content/
   );
+});
+
+test('create_new publishes only QA summary without planner content', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-merge-'));
+  await mkdir(join(runDir, 'drafts'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_plan_resolved_path: join(runDir, 'plan.md') })
+  );
+  await writeFile(join(runDir, 'plan.md'), '# Full QA Plan\n## Background\nDetailed plan content here.');
+  await writeFile(
+    join(runDir, 'drafts', 'BCIN-1_QA_SUMMARY_DRAFT.md'),
+    '## 📊 QA Summary\n### 1. Feature Overview\n| Field | Value |'
+  );
+  const merged = await mergeConfluenceMarkdown({
+    featureKey: 'BCIN-1',
+    runDir,
+    publishMode: 'create_new',
+    target: {},
+  });
+  assert.match(merged, /## 📊 QA Summary/);
+  assert.doesNotMatch(merged, /# Full QA Plan/);
+  assert.doesNotMatch(merged, /Detailed plan content here/);
 });

@@ -123,7 +123,8 @@ export async function mergeConfluenceMarkdown({
   const summary = await loadSummaryDraft(runDir, featureKey);
 
   if (publishMode === 'create_new') {
-    return mergePlannerWithSummary(planner, summary);
+    // Publish only the QA Summary — do not embed the full QA plan.
+    return summary.trim() + '\n';
   }
 
   if (publishMode === 'update_existing' && (target?.pageId || target?.pageUrl)) {

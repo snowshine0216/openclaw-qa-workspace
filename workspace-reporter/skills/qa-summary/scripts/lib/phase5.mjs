@@ -57,6 +57,7 @@ async function publishMergedMarkdown({
   publishSpace,
   publishTitle,
   featureKey,
+  parentPageId,
 }) {
   if (publishToConfluence) {
     return publishToConfluence({
@@ -66,6 +67,7 @@ async function publishMergedMarkdown({
       publishSpace,
       publishTitle,
       featureKey,
+      parentPageId,
     });
   }
 
@@ -85,6 +87,9 @@ async function publishMergedMarkdown({
   const publishArgs = ['--input', mergedPath];
   if (publishMode === 'update_existing' && resolvedPageId) {
     publishArgs.push('--page-id', resolvedPageId);
+  } else if (publishMode === 'create_new' && parentPageId) {
+    // Use create-child when a parent page ID is available
+    publishArgs.push('--parent-id', parentPageId, '--title', publishTitle || `QA Summary — ${featureKey}`);
   } else if (publishMode === 'create_new' && publishSpace) {
     publishArgs.push('--space', publishSpace, '--title', publishTitle || `QA Summary — ${featureKey}`);
   }
@@ -129,13 +134,44 @@ async function persistPublishChoice(runDir, publishMode) {
 }
 
 async function readPersistedTarget(runDir, task) {
-  if (task?.confluence_target) return task.confluence_target;
+  const base = task?.confluence_target || {};
+  let fileTarget = {};
   try {
     const raw = await readFile(join(runDir, 'context', 'confluence_target.json'), 'utf8');
-    return JSON.parse(raw);
+    fileTarget = JSON.parse(raw);
   } catch {
-    return {};
+    /* ignore */
   }
+  const merged = { ...fileTarget, ...base };
+  if (!merged.parent_page_id) {
+    merged.parent_page_id = task?.parent_page_id || fileTarget?.parent_page_id || null;
+  }
+  return merged;
+}
+
+async function resolveFeatureSummary(featureKey, runDir, fetchFeatureSummary) {
+  if (fetchFeatureSummary) return fetchFeatureSummary(featureKey);
+  try {
+    const raw = await readFile(join(runDir, 'context', 'jira_feature_meta.json'), 'utf8');
+    const meta = JSON.parse(raw);
+    if (meta.summary) return meta.summary;
+  } catch {
+    /* not available */
+  }
+
+  try {
+    const { spawnSync } = await import('node:child_process');
+    const result = spawnSync('jira', ['issue', 'view', featureKey, '--output', 'json'], {
+      encoding: 'utf8',
+    });
+    if (result.status === 0 && result.stdout) {
+      const issue = JSON.parse(result.stdout);
+      return issue.fields?.summary || issue.summary || null;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
 }
 
 async function findConfluencePageIdByTitle({
@@ -260,6 +296,12 @@ export async function runPhase5(featureKey, runDir, input = {}, deps = {}) {
   const pageUrl = input.confluence_page_url || process.env.CONFLUENCE_PAGE_URL || persistedTarget.pageUrl;
   let publishSpace = input.publish_space || process.env.PUBLISH_SPACE || persistedTarget.publishSpace;
   const publishTitle = input.publish_title || process.env.PUBLISH_TITLE || persistedTarget.publishTitle;
+  const parentPageId =
+    input.parent_page_id ||
+    process.env.PARENT_PAGE_ID ||
+    persistedTarget.parent_page_id ||
+    task?.parent_page_id ||
+    null;
 
   if (publishMode === 'update_existing' && !pageId && !pageUrl) {
     console.error('BLOCKED: Provide Confluence link or exact page ID');
@@ -278,7 +320,19 @@ export async function runPhase5(featureKey, runDir, input = {}, deps = {}) {
     publishSpace = process.env.PUBLISH_SPACE || process.env.DEFAULT_PUBLISH_SPACE || defaultSpace;
   }
 
-  const target = { pageId, pageUrl, publishSpace, publishTitle };
+  let resolvedTitle = publishTitle;
+  if (publishMode === 'create_new' && !resolvedTitle) {
+    const featureSummary = await resolveFeatureSummary(featureKey, runDir, deps.fetchFeatureSummary);
+    resolvedTitle = featureSummary ? `${featureKey} ${featureSummary}` : `QA Summary — ${featureKey}`;
+  }
+
+  const target = {
+    pageId,
+    pageUrl,
+    publishSpace,
+    publishTitle: resolvedTitle,
+    parent_page_id: parentPageId,
+  };
   await writeFile(
     join(runDir, 'context', 'confluence_target.json'),
     `${JSON.stringify(target, null, 2)}\n`,
@@ -315,8 +369,9 @@ export async function runPhase5(featureKey, runDir, input = {}, deps = {}) {
     publishMode,
     resolvedPageId,
     publishSpace,
-    publishTitle,
+    publishTitle: resolvedTitle,
     featureKey,
+    parentPageId,
   });
 
   if (!publishResult.ok) {
@@ -330,7 +385,7 @@ export async function runPhase5(featureKey, runDir, input = {}, deps = {}) {
     publishResult,
     resolvedPageId,
     publishSpace,
-    publishTitle,
+    publishTitle: resolvedTitle,
     skillRoot,
     findConfluencePageId: deps.findConfluencePageId,
   });
@@ -372,6 +427,7 @@ async function main() {
     confluence_page_url: process.env.CONFLUENCE_PAGE_URL,
     publish_space: process.env.PUBLISH_SPACE,
     publish_title: process.env.PUBLISH_TITLE,
+    parent_page_id: process.env.PARENT_PAGE_ID,
   };
   const code = await runPhase5(featureKey, runDir, input);
   process.exit(code);

@@ -106,3 +106,107 @@ test('resolves repo-relative planner roots even when run_dir is outside the repo
   assert.match(featureTable, /Feature Overview/);
   assert.match(featureTable, /BCIN-ROOT/);
 });
+
+test('writes background_solution_seed.md to context when planner has intro text', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-bg-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    [
+      '# QA Plan',
+      '',
+      '### 1. Feature Overview',
+      '| Field | Value |',
+      '| --- | --- |',
+      '| Feature | BCIN-7289 |',
+      '| QA Owner | team |',
+      '',
+      '## 1. Introduction',
+      '',
+      'As users migrate from the old UI, they need new capabilities in the updated product.',
+    ].join('\n')
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-bg-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      planner_run_root: planDir,
+      planner_plan_path: planPath,
+    })
+  );
+  const code = await runPhase1('BCIN-7289', runDir);
+  assert.equal(code, 0);
+  const seed = await readFile(join(runDir, 'context', 'background_solution_seed.md'), 'utf8');
+  assert.match(seed, /As users migrate from the old UI/);
+});
+
+test('writes empty background_solution_seed.md when no intro section exists in planner', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-nobg-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    [
+      '# QA Plan',
+      '',
+      '### 1. Feature Overview',
+      '| Field | Value |',
+      '| --- | --- |',
+      '| Feature | BCIN-7289 |',
+      '| QA Owner | team |',
+    ].join('\n')
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-nobg-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      planner_run_root: planDir,
+      planner_plan_path: planPath,
+    })
+  );
+  const code = await runPhase1('BCIN-7289', runDir);
+  assert.equal(code, 0);
+  const seed = await readFile(join(runDir, 'context', 'background_solution_seed.md'), 'utf8');
+  // Should be empty or minimal when no intro section
+  assert.equal(seed.trim(), '');
+});
+
+test('persists jira_feature_meta.json when jira returns metadata', async () => {
+  const { execSync } = await import('node:child_process');
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-jira-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    '# QA Plan\n\n### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |\n'
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-jira-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: planDir, planner_plan_path: planPath })
+  );
+
+  // Create a fake jira CLI that returns metadata JSON
+  const fakeJiraDir = await mkdtemp(join(tmpdir(), 'fake-jira-'));
+  const fakeJira = join(fakeJiraDir, 'jira');
+  await writeFile(
+    fakeJira,
+    '#!/usr/bin/env bash\necho \'{"fields":{"summary":"My Feature","fixVersions":[{"name":"v3.0"}],"customfield_qa_owner":{"displayName":"bob"}}}\'\n'
+  );
+  execSync(`chmod +x "${fakeJira}"`);
+
+  const origPath = process.env.PATH;
+  process.env.PATH = `${fakeJiraDir}:${origPath}`;
+  try {
+    const { runPhase1 } = await import('../lib/phase1.mjs');
+    const code = await runPhase1('BCIN-7289', runDir);
+    assert.equal(code, 0);
+    const meta = JSON.parse(await readFile(join(runDir, 'context', 'jira_feature_meta.json'), 'utf8'));
+    assert.equal(meta.release, 'v3.0');
+    assert.equal(meta.qa_owner, 'bob');
+    assert.equal(meta.summary, 'My Feature');
+  } finally {
+    process.env.PATH = origPath;
+  }
+});

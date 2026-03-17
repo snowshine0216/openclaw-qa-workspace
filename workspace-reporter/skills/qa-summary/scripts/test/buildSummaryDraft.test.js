@@ -4,7 +4,7 @@ import { buildSummaryDraft } from '../lib/buildSummaryDraft.mjs';
 
 const FEATURE_OVERVIEW = '### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |';
 
-test('renders section 1 plus sections 2 through 10 in fixed order', async () => {
+test('renders section 1 plus sections 2 through 11 in fixed order', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {},
@@ -12,9 +12,10 @@ test('renders section 1 plus sections 2 through 10 in fixed order', async () => 
     defectSummary: { totalDefects: 1, openDefects: 0, defects: [], prs: [] },
   });
   assert.match(result.markdown, /### 1\. Feature Overview/);
-  assert.match(result.markdown, /### 2\. Code Changes Summary/);
-  assert.match(result.markdown, /### 10\. Automation Coverage/);
-  assert.equal(result.metadata.sectionsPresent, 10);
+  assert.match(result.markdown, /### 2\. Background & Solution/);
+  assert.match(result.markdown, /### 3\. Code Changes Summary/);
+  assert.match(result.markdown, /### 11\. Automation Coverage/);
+  assert.equal(result.metadata.sectionsPresent, 11);
 });
 
 test('renders zero-defect tables without omitting required sections', async () => {
@@ -34,7 +35,7 @@ test('renders zero-defect tables without omitting required sections', async () =
   assert.match(result.markdown, /Overall risk: LOW/);
   assert.match(result.markdown, /Total defects: 0/);
   assert.match(result.markdown, /Open defects: 0/);
-  assert.match(result.markdown, /### 5\. Resolved Defects Detail/);
+  assert.match(result.markdown, /### 6\. Resolved Defects Detail/);
 });
 
 test('renders Code Changes Summary from both defect-fix and feature PR entries', async () => {
@@ -76,7 +77,7 @@ test('renders Code Changes Summary from both defect-fix and feature PR entries',
   assert.match(result.markdown, /Defect Fix/);
   assert.match(result.markdown, /Feature PR/);
   assert.match(result.markdown, /\[BCIN-1\]\(https:\/\/jira\/browse\/BCIN-1\)/);
-  assert.equal(result.metadata.sectionsPresent, 10);
+  assert.equal(result.metadata.sectionsPresent, 11);
 });
 
 test('applies approval feedback overrides to the regenerated draft', async () => {
@@ -129,7 +130,7 @@ test('derives severity counts from defect priorities for open and resolved rows'
   assert.match(result.markdown, /\| Total \| 2 \| 1 \| 2 \| 2 \| 7 \|/);
 });
 
-test('lists each open defect in section 4 with review-required columns', async () => {
+test('lists each open defect in section 5 with review-required columns', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {},
@@ -161,12 +162,12 @@ test('lists each open defect in section 4 with review-required columns', async (
     },
   });
 
-  assert.match(result.markdown, /### 4\. Defect Status Summary/);
+  assert.match(result.markdown, /### 5\. Defect Status Summary/);
   assert.match(result.markdown, /\| Defect ID \| Summary \| Status \| Priority \| Notes \|/);
   assert.match(result.markdown, /\| \[BCIN-1\]\(https:\/\/jira\/browse\/BCIN-1\) \| Login button is disabled \| Open \| High \| Pending backend validation \|/);
 });
 
-test('includes resolved Highest and Blocker defects in section 5 details', async () => {
+test('includes resolved Highest and Blocker defects in section 6 details', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {},
@@ -189,7 +190,7 @@ test('includes resolved Highest and Blocker defects in section 5 details', async
   assert.match(result.markdown, /1 additional resolved defects \(P2\/P3\) not shown/);
 });
 
-test('reports omitted resolved P2 and P3 defects even when section 5 has no P0 or P1 rows', async () => {
+test('reports omitted resolved P2 and P3 defects even when section 6 has no P0 or P1 rows', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {},
@@ -293,7 +294,7 @@ test('elevates overall risk from planner-only P1 markers when no defects are ope
   assert.match(result.markdown, /Overall risk: MEDIUM/);
 });
 
-test('builds sections 6 through 10 from planner evidence before using pending placeholders', async () => {
+test('builds sections 7 through 11 from planner evidence before using pending placeholders', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {
@@ -346,15 +347,150 @@ test('builds sections 6 through 10 from planner evidence before using pending pl
     },
   });
 
-  assert.match(result.markdown, /### 6\. Test Coverage/);
+  assert.match(result.markdown, /### 7\. Test Coverage/);
   assert.match(result.markdown, /EndToEnd coverage includes: Edit an existing report/);
-  assert.match(result.markdown, /### 7\. Performance/);
+  assert.match(result.markdown, /### 8\. Performance/);
   assert.match(result.markdown, /Cold first open or first create remains usable/);
-  assert.match(result.markdown, /### 8\. Security \/ Compliance/);
+  assert.match(result.markdown, /### 9\. Security \/ Compliance/);
   assert.match(result.markdown, /Respect report edit and save privileges/);
-  assert.match(result.markdown, /### 9\. Regression Testing/);
+  assert.match(result.markdown, /### 10\. Regression Testing/);
   assert.match(result.markdown, /Save, Save As, and template-related flows do not regress/);
-  assert.match(result.markdown, /### 10\. Automation Coverage/);
+  assert.match(result.markdown, /### 11\. Automation Coverage/);
   assert.match(result.markdown, /Defect-driven automation priority: BCIN-1/);
   assert.doesNotMatch(result.markdown, /\[PENDING — Test coverage data from planner and defect context\.\]/);
+});
+
+// New tests for Section 2 Background & Solution
+
+test('renders Section 2 Background & Solution from planner intro text', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: '## 1. Introduction\n\nAs users migrate from the old UI, they need new capabilities in the updated product.\n',
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 2\. Background & Solution/);
+  assert.match(result.markdown, /As users migrate from the old UI/);
+});
+
+test('renders Section 2 Background & Solution with PENDING when no intro text in planner', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: '## Some Other Section\n\n- item one\n',
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 2\. Background & Solution/);
+  assert.match(result.markdown, /PENDING — No background or solution context found/);
+});
+
+test('renders Section 2 Out of Scope bullets from planner assumptions section', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: [
+        '## 1. Introduction',
+        '',
+        'Background text here.',
+        '',
+        '## Design Assumptions & Scope',
+        '',
+        '- Remove privilege checks for edit mode',
+        '- Out of Scope / Assumptions',
+        '    * i18n, Accessibility, and Performance testing are not applicable based on available evidence <P2>',
+      ].join('\n'),
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 2\. Background & Solution/);
+  assert.match(result.markdown, /Out of Scope:/);
+  assert.match(result.markdown, /i18n, Accessibility, and Performance testing are not applicable/);
+});
+
+test('performance section renders not-applicable justification from Out of Scope planner section', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: [
+        '## Design Assumptions & Scope',
+        '',
+        '- Out of Scope / Assumptions',
+        '    * i18n, Accessibility, and Performance testing are not applicable based on available evidence <P2>',
+      ].join('\n'),
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 8\. Performance/);
+  assert.match(result.markdown, /Not applicable:/);
+  assert.match(result.markdown, /i18n, Accessibility, and Performance testing are not applicable/);
+});
+
+test('security section renders draft label when planner has security scenarios', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: [
+        '- Permissions / Security / Data Safety',
+        '    * Validate role-based access for the new feature <P1>',
+      ].join('\n'),
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 9\. Security \/ Compliance/);
+  assert.match(result.markdown, /⚠️ Draft — Planned coverage, not yet executed:/);
+  assert.match(result.markdown, /Validate role-based access for the new feature/);
+});
+
+test('regression section renders draft label when planner has regression scenarios', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: [
+        '- Regression / Known Risks',
+        '    * Verify that existing save flows are not broken <P1>',
+      ].join('\n'),
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 10\. Regression Testing/);
+  assert.match(result.markdown, /⚠️ Draft — Planned regression scenarios, not yet executed:/);
+  assert.match(result.markdown, /Verify that existing save flows are not broken/);
+});
+
+test('zero defects with elevated risk renders risk explanation bullet', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: { planMarkdown: '- E2E Testing\n  * Some scenario <P1>' },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: {
+      totalDefects: 0,
+      openDefects: 0,
+      noDefectsFound: true,
+      analysisRiskLevel: 'MEDIUM',
+      defects: [],
+      prs: [],
+    },
+  });
+  assert.match(result.markdown, /Note: Risk elevated to MEDIUM/);
+  assert.match(result.markdown, /QA testing not yet commenced/);
+  assert.match(result.markdown, /not open defects/);
+});
+
+test('zero defects with LOW risk does NOT render risk elevation explanation', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {},
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, noDefectsFound: true, defects: [], prs: [] },
+  });
+  assert.doesNotMatch(result.markdown, /Note: Risk elevated/);
+  assert.match(result.markdown, /Overall risk: LOW/);
 });

@@ -33,7 +33,7 @@ test('exits non-zero when feishu script not found (invalid path)', () => {
     assert.fail('Expected non-zero exit');
   } catch (e) {
     assert.ok(e.status > 0);
-    assert.match(e.stderr || e.stdout || '', /FEISHU_NOTIFY_PENDING|not found|script/i);
+    assert.match(e.stderr || e.stdout || '', /FEISHU_NOTIFY_FAILED|FEISHU_NOTIFY_PENDING|not found|script/i);
   }
 });
 
@@ -101,4 +101,27 @@ test('falls back to CODEX_HOME skill-path-registrar and feishu-notify skill', as
     stdio: 'pipe',
     env: { ...process.env, REPO_ROOT: '/nonexistent', CODEX_HOME: codexHome },
   });
+});
+
+test('falls back to wacli when skill-path-registrar is not found', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-notify-wacli-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(join(runDir, 'run.json'), JSON.stringify({ updated_at: new Date().toISOString() }));
+  const finalPath = join(runDir, 'BCIN-1_QA_SUMMARY_FINAL.md');
+  await writeFile(finalPath, '# final');
+
+  const fakeWacliDir = await mkdtemp(join(tmpdir(), 'fake-wacli-'));
+  const fakeWacli = join(fakeWacliDir, 'wacli');
+  await writeFile(fakeWacli, '#!/usr/bin/env bash\nexit 0\n');
+  execSync(`chmod +x "${fakeWacli}"`);
+
+  execSync(
+    `bash "${SCRIPT_DIR}/notify_feishu.sh" oc-xxx "${finalPath}" "https://example.com/page" "${runDir}"`,
+    {
+      encoding: 'utf8',
+      stdio: 'pipe',
+      env: { ...process.env, REPO_ROOT: '/nonexistent', CODEX_HOME: '', WACLI_BIN: fakeWacli },
+    }
+  );
+  // exit 0 via wacli fallback — no assertion needed beyond not throwing
 });

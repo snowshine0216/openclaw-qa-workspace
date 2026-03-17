@@ -86,6 +86,14 @@ export async function runPhase0(featureKey, runDir, input = {}) {
 
   const plannerRunRoot = input.planner_run_root || runtimeSources.planner_run_root;
   const defectsRunRoot = input.defects_run_root || runtimeSources.defects_run_root;
+
+  // Parse parent_page_id from confluence URL if provided
+  let parentPageId = input.parent_page_id || null;
+  if (!parentPageId && input.confluence_parent_url) {
+    const urlMatch = String(input.confluence_parent_url).match(/\/pages\/(\d+)(?:\/|$)/);
+    if (urlMatch) parentPageId = urlMatch[1];
+  }
+
   const reportState = detectReportState(runDir, featureKey);
   const canonicalOptions = getCanonicalOptions(reportState);
   const skipNotification = normalizeOptionalBoolean(input.skip_notification);
@@ -140,6 +148,7 @@ export async function runPhase0(featureKey, runDir, input = {}) {
     defect_reuse_mode: null,
     publish_mode: input.publish_mode || null,
     confluence_target: null,
+    parent_page_id: parentPageId,
     notification_target: input.notification_target || null,
     skip_notification: skipNotification,
     overall_status: 'in_progress',
@@ -199,6 +208,8 @@ async function main() {
     planner_plan_path: process.env.PLANNER_PLAN_PATH,
     refresh_mode: process.env.REFRESH_MODE,
     publish_mode: process.env.PUBLISH_MODE,
+    parent_page_id: process.env.PARENT_PAGE_ID,
+    confluence_parent_url: process.env.CONFLUENCE_PARENT_URL,
     notification_target: process.env.NOTIFICATION_TARGET,
     skip_notification: process.env.SKIP_NOTIFICATION,
   };

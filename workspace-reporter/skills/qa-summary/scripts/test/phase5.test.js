@@ -384,3 +384,93 @@ test('blocks update_existing when merged markdown cannot safely preserve current
 
   assert.equal(code, 2);
 });
+
+test('create_new with parent_page_id passes parentPageId to publishToConfluence', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase5-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      overall_status: 'approved',
+      publish_mode: 'create_new',
+      parent_page_id: '5918294023',
+    })
+  );
+  let publishCall = null;
+  const code = await runPhase5(
+    'BCIN-7289', runDir,
+    { publish_mode: 'create_new', publish_space: 'ENG', publish_title: 'BCIN-7289 Test Summary' },
+    {
+      checkRuntimeEnv: async () => ({ ok: true }),
+      mergeMarkdown: async () => '# merged',
+      publishToConfluence: async (args) => { publishCall = args; return { ok: true, stdout: 'page_id=67890\naction=create\n' }; },
+    }
+  );
+  assert.equal(code, 0);
+  assert.equal(publishCall?.parentPageId, '5918294023');
+});
+
+test('forwards parent_page_id from confluence_target in task.json for create_new', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase5-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({
+      overall_status: 'approved',
+      publish_mode: 'create_new',
+      confluence_target: { publishSpace: 'ENG', publishTitle: 'BCIN-7289 Summary', parent_page_id: '5918294023' },
+    })
+  );
+  let publishCall = null;
+  const code = await runPhase5(
+    'BCIN-7289', runDir, {},
+    {
+      checkRuntimeEnv: async () => ({ ok: true }),
+      mergeMarkdown: async () => '# merged',
+      publishToConfluence: async (args) => { publishCall = args; return { ok: true, stdout: 'page_id=67890\naction=create\n' }; },
+    }
+  );
+  assert.equal(code, 0);
+  assert.equal(publishCall?.parentPageId, '5918294023');
+});
+
+test('create_new title is <feature-key> <feature-summary> when fetchFeatureSummary provided', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase5-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(join(runDir, 'task.json'), JSON.stringify({ overall_status: 'approved', publish_mode: 'create_new' }));
+  let publishCall = null;
+  const code = await runPhase5(
+    'BCIN-7289', runDir,
+    { publish_mode: 'create_new', publish_space: 'ENG' },
+    {
+      checkRuntimeEnv: async () => ({ ok: true }),
+      mergeMarkdown: async () => '# merged',
+      fetchFeatureSummary: async () => 'My Feature Title',
+      publishToConfluence: async (args) => { publishCall = args; return { ok: true, stdout: 'page_id=99999\naction=create\n' }; },
+    }
+  );
+  assert.equal(code, 0);
+  assert.equal(publishCall?.publishTitle, 'BCIN-7289 My Feature Title');
+});
+
+test('create_new title reads feature summary from jira_feature_meta.json when present', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase5-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(join(runDir, 'task.json'), JSON.stringify({ overall_status: 'approved', publish_mode: 'create_new' }));
+  await writeFile(
+    join(runDir, 'context', 'jira_feature_meta.json'),
+    JSON.stringify({ summary: 'Meta Feature Summary', release: 'v1.0', qa_owner: 'tester' })
+  );
+  let publishCall = null;
+  const code = await runPhase5(
+    'BCIN-7289', runDir,
+    { publish_mode: 'create_new', publish_space: 'ENG' },
+    {
+      checkRuntimeEnv: async () => ({ ok: true }),
+      mergeMarkdown: async () => '# merged',
+      publishToConfluence: async (args) => { publishCall = args; return { ok: true, stdout: 'page_id=99999\naction=create\n' }; },
+    }
+  );
+  assert.equal(code, 0);
+  assert.equal(publishCall?.publishTitle, 'BCIN-7289 Meta Feature Summary');
+});

@@ -25,6 +25,13 @@ async function loadPlannerContext(runDir) {
       planMarkdown: await readOptionalText(plannerContext.planPath),
       summaryMarkdown: await readOptionalText(plannerContext.summaryPath),
       seedMarkdown: await readOptionalText(join(runDir, 'context', 'planner_summary_seed.md')),
+      backgroundSolutionSeed: await readOptionalText(join(runDir, 'context', 'background_solution_seed.md')),
+      backgroundSolutionData: await (async () => {
+        try {
+          const raw = await readFile(join(runDir, 'context', 'background_solution_seed.json'), 'utf8');
+          return JSON.parse(raw);
+        } catch { return null; }
+      })(),
     };
   } catch {
     return {};

@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runPhase3 } from '../lib/phase3.mjs';
 
-test('builds full draft with section 1 plus sections 2 through 10', async () => {
+test('builds full draft with section 1 plus sections 2 through 11', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase3-'));
   await mkdir(join(runDir, 'context'), { recursive: true });
   await mkdir(join(runDir, 'drafts'), { recursive: true });
@@ -28,7 +28,7 @@ test('builds full draft with section 1 plus sections 2 through 10', async () => 
   assert.equal(code, 0);
   const draft = await readFile(join(runDir, 'drafts', 'BCIN-7289_QA_SUMMARY_DRAFT.md'), 'utf8');
   assert.match(draft, /### 1\. Feature Overview/);
-  assert.match(draft, /### 10\. Automation Coverage/);
+  assert.match(draft, /### 11\. Automation Coverage/);
 });
 
 test('blocks when feature overview table is missing', async () => {

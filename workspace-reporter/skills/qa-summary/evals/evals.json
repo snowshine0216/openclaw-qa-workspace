@@ -16,7 +16,13 @@
     {
       "id": 3,
       "prompt": "After the QA summary draft is approved, update the existing Confluence page at the link I provide and send a Feishu completion message.",
-      "expected_output": "Requires explicit page identity, validates Confluence access, writes merged markdown, and emits or records notification output.",
+      "expected_output": "Requires explicit page identity, validates Confluence access, writes merged markdown (summary only for create_new; merged with existing page for update_existing), uses title format '<feature-key> <feature-summary>' for new pages, and emits or records notification output. If Feishu notify script is not found, falls back to wacli then FEISHU_WEBHOOK_URL before recording notification_pending.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Generate a QA summary for BCIN-9000 and publish as a new Confluence page. The Confluence page title should be the feature key followed by the feature summary from Jira.",
+      "expected_output": "Fetches feature summary from jira_feature_meta.json (written by Phase 1) or falls back to jira CLI, constructs title as 'BCIN-9000 <feature-summary>', publishes only the QA Summary content (no full QA plan), and uses --parent-id when parent_page_id is available.",
       "files": []
     }
   ]

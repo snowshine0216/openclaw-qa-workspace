@@ -108,14 +108,17 @@ function buildRowLookup(rows) {
   return byLabel;
 }
 
-function normalizeFeatureOverviewRows({ featureKey, parsedRows, summaryMarkdown }) {
+function normalizeFeatureOverviewRows({ featureKey, parsedRows, summaryMarkdown, jiraMetadata }) {
   const planRowsByKey = buildRowLookup(parsedRows);
   const summaryRowsByKey = buildRowLookup(parseSummaryMetadataRows(summaryMarkdown));
   const result = [];
   for (const { label, key } of REQUIRED_ROWS) {
     const existing = planRowsByKey[key] ?? summaryRowsByKey[key];
+    const jiraValue = jiraMetadata?.[key] ?? null;
     if (existing && existing.value && !existing.value.includes('[PENDING]')) {
       result.push({ ...existing, usedPending: false });
+    } else if (jiraValue) {
+      result.push({ label, value: String(jiraValue), usedPending: false });
     } else if (key === 'feature') {
       result.push({ label, value: featureKey, usedPending: false });
     } else {
@@ -145,7 +148,7 @@ function renderFeatureOverviewSection(rows) {
   return `${header}\n\n${tableHeader}\n${tableSep}\n${tableRows}\n`;
 }
 
-export async function buildFeatureOverviewTable({ featureKey, planPath, summaryPath }) {
+export async function buildFeatureOverviewTable({ featureKey, planPath, summaryPath, jiraMetadata }) {
   let planMarkdown = '';
   let summaryMarkdown = '';
   if (planPath) {
@@ -170,6 +173,7 @@ export async function buildFeatureOverviewTable({ featureKey, planPath, summaryP
     featureKey,
     parsedRows,
     summaryMarkdown,
+    jiraMetadata,
   });
 
   const usedSection = !!section;

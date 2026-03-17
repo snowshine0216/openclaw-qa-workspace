@@ -102,8 +102,44 @@ if [[ -z "$FEISHU_SCRIPT" && -f "$REGISTRAR_SH" ]]; then
 fi
 
 if [[ ! -f "$FEISHU_SCRIPT" ]]; then
-  last_error="script not found"
-  echo "FEISHU_NOTIFY_PENDING: script not found at $FEISHU_SCRIPT" >&2
+  # Fallback A: wacli (OpenClaw CLI / LLM gateway)
+  WACLI_BIN="${WACLI_BIN:-wacli}"
+  if command -v "$WACLI_BIN" >/dev/null 2>&1; then
+    _feature_key="$(basename "${run_dir:-$(dirname "$final_path")}")"
+    _msg="📊 QA Summary published: ${_feature_key}"
+    [[ "$page_url" != "none" && -n "$page_url" ]] && _msg="${_msg}
+Confluence: ${page_url}"
+    if "$WACLI_BIN" feishu send --chat-id "$chat_id" --text "$_msg" 2>/dev/null; then
+      if [[ -n "$run_dir" ]]; then
+        RUN_DIR="$run_dir" node -e "
+          const fs = require('fs');
+          const rp = process.env.RUN_DIR + '/run.json';
+          if (fs.existsSync(rp)) {
+            const r = JSON.parse(fs.readFileSync(rp,'utf8'));
+            r.notification_sent_at = new Date().toISOString();
+            r.notification_pending = null;
+            r.updated_at = new Date().toISOString();
+            fs.writeFileSync(rp, JSON.stringify(r,null,2)+'\\n');
+          }
+        " 2>/dev/null || true
+      fi
+      exit 0
+    fi
+  fi
+
+  # Fallback B: direct Feishu webhook URL
+  _webhook="${FEISHU_WEBHOOK_URL:-}"
+  if [[ -n "$_webhook" ]]; then
+    _feature_key="$(basename "${run_dir:-$(dirname "$final_path")}")"
+    _text="📊 QA Summary published: ${_feature_key}. Confluence: ${page_url}"
+    _payload="{\"msg_type\":\"text\",\"content\":{\"text\":\"${_text}\"}}"
+    if curl -sf -X POST -H "Content-Type: application/json" -d "$_payload" "$_webhook" >/dev/null 2>&1; then
+      exit 0
+    fi
+  fi
+
+  last_error="feishu-notify skill not found; wacli and webhook fallbacks also failed"
+  echo "FEISHU_NOTIFY_FAILED: $last_error" >&2
   if [[ -n "$run_dir" ]]; then
     persist_notification_pending
   fi
