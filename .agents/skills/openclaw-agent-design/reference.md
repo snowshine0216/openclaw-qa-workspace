@@ -28,6 +28,18 @@ When redesigning a workflow into skill-first form:
 | Workspace-local skill | `<workspace>/skills/<skill-name>/` | Use when behavior is tightly coupled to one workspace or agent family |
 | Skill helper automation | `<skill-root>/scripts/` | Shell/Node helpers that implement the skill contract |
 
+## Skill Path Resolution
+
+Scripts that invoke shared skill scripts (jira-cli, feishu-notify, etc.) must use **skill-path-registrar** — no hardcoded paths.
+
+**Fallback order:** env override → `~/.openclaw/skill_paths.json` → repo-local `.agents/skills/<skill>/<path>` → CODEX_HOME → ~/.agents/skills → ~/.openclaw/skills.
+
+**When not found:** Return `needUserConfirm`; prompt user for path; validate; call `persistSkillPath`; retry.
+
+**Bash:** `source .agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh`; `resolve_shared_skill_script <skill> <relpath>`; use `$RESOLVED_SKILL_SCRIPT`.
+
+**Node:** `import { resolveSharedSkill } from '.agents/skills/skill-path-registrar/lib/resolveSharedSkill.mjs'`.
+
 ## Existing Shared Skills to Reuse Directly
 
 Use these existing shared skills directly when they fit:

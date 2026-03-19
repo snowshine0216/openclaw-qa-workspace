@@ -1,0 +1,26 @@
+{
+  "skill_name": "skill-path-registrar",
+  "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Resolve jira-cli scripts/jira-run.sh with REPO_ROOT set to the current workspace. Output must be a valid path or needUserConfirm.",
+      "expected_output": "Absolute path to jira-run.sh if found, or JSON with needUserConfirm and triedPaths if not found.",
+      "files": [],
+      "expectations": [
+        "Output is a valid absolute path or JSON with needUserConfirm true",
+        "Resolution uses skill-path-registrar"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Resolve feishu-notify scripts/send-feishu-notification.js when run from repo root. Should return path from repo .agents/skills or needUserConfirm.",
+      "expected_output": "Absolute path if script exists in repo, or needUserConfirm object.",
+      "files": [],
+      "expectations": [
+        "Output is path or needUserConfirm",
+        "Fallback order is followed"
+      ]
+    }
+  ]
+}

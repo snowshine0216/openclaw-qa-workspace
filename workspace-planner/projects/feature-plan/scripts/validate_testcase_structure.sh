@@ -7,15 +7,20 @@ set -euo pipefail
 FILE_PATH="${1:?Usage: validate_testcase_structure.sh <file-path>}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../../.." && pwd)}"
-VALIDATOR="$REPO_ROOT/.agents/skills/markxmind/scripts/validate_xmindmark.mjs"
+REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
+VALIDATOR="${MARKXMIND_VALIDATOR:-}"
+if [[ -z "$VALIDATOR" && -f "$REGISTRAR_SH" ]]; then
+  source "$REGISTRAR_SH"
+  resolve_shared_skill_script markxmind scripts/validate_xmindmark.mjs && VALIDATOR="$RESOLVED_SKILL_SCRIPT"
+fi
 
 if [ ! -f "$FILE_PATH" ]; then
   echo "STRUCTURE_FILE_MISSING: $FILE_PATH"
   exit 1
 fi
 
-if [ ! -f "$VALIDATOR" ]; then
-  echo "MARKXMIND_VALIDATOR_MISSING: $VALIDATOR"
+if [[ -z "$VALIDATOR" || ! -f "$VALIDATOR" ]]; then
+  echo "MARKXMIND_VALIDATOR_MISSING: set MARKXMIND_VALIDATOR or run ./src/init-skills to link markxmind skill"
   exit 1
 fi
 

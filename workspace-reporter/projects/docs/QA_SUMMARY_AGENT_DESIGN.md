@@ -1,5 +1,8 @@
 # QA Summary Agent Design
 
+> **DEPRECATED:** This document is superseded by `workspace-reporter/docs/QA_SUMMARY_SKILL_DESIGN.md`.
+> The skill-driven implementation is canonical. See `workspace-reporter/skills/qa-summary/`.
+
 ## Overview
 
 The **QA Summary Agent** is an orchestration agent built on top of the existing **Defect Analysis Agent**. It automates the generation, review, and targeted publication of comprehensive QA summaries to Confluence. It acts as an orchestrator: delegating data gathering to the `defect-analysis` sub-agent, structuring the summary following a standardized template, self-reviewing the content, then **surgically updating the `QA Summary` section of an existing Confluence page** — never overwriting unrelated content. A notification is sent upon successful publication.

@@ -17,22 +17,21 @@ _Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary pu
 ## Core Workflow: Defect Analysis
 
 **Workflow routing:**
-- When input is **exactly one Jira issue key/URL** with no QA plan → invoke `single-defect-analysis` skill.
-- When input is Feature ID / JQL / release version → invoke `.agents/workflows/defect-analysis.md`.
+- Use `workspace-reporter/skills/defects-analysis` as the canonical reporter-owned entrypoint.
+- When input is **exactly one Jira issue key/URL** whose Jira type resolves to `Issue`, `Bug`, or `Defect` → delegate in Phase 0 to the shared `single-defect-analysis` skill.
+- When input is `Story`, `Feature`, `Epic`, Feature ID, JQL, or release version → continue in reporter scope through `workspace-reporter/skills/defects-analysis/scripts/orchestrate.sh`.
 
 
-### Phases (defect-analysis.md — Feature/JQL/Release only)
+### Phases (defects-analysis skill)
 
 | Phase | Action |
 |-------|--------|
-| **0. Prep** | Parse input (Feature ID / JQL / release version). Confirm with user. Run `scripts/check_resume.sh` → read `REPORT_STATE`. If `FINAL_EXISTS`, `DRAFT_EXISTS`, or `CONTEXT_ONLY`: **STOP and present options** (Use Existing / Smart Refresh / Full Regenerate / Resume / Generate from Cache). Run `scripts/archive_report.sh` before any overwrite. Init `task.json` with freshness fields. |
-| **0a. Release Discovery** | Fetch feature keys via JQL → run `check_resume.sh` per feature → **STOP, present per-feature state matrix, wait for user approval** before fetching defects. |
-| **1. Jira Extraction** | Fetch defects via `scripts/retry.sh 3 2 jira issue list --jql '...' --paginate 50`. Save to `projects/defects-analysis/<FEATURE_KEY>/context/jira_raw.json`. |
-| **2. Issue Triage** | Parse issues → extract Status, Priority, Assignee, Fixed Date, PR links. Save per-issue JSON to `context/jira_issues/`. |
-| **3. PR Analysis** | Spawn parallel sub-agents (max 5). Fetch diffs via `github` skill. Save Fix Risk Analysis to `context/prs/<PR_ID>_impact.md`. Heartbeat every 60s. |
-| **4. Report Generation** | Invoke `defect-analysis-reporter` skill. Save draft to `projects/defects-analysis/<FEATURE_KEY>/<FEATURE_KEY>_REPORT_DRAFT.md`. |
-| **5. Approval** | **STOP. Ask user to review draft. Wait for APPROVE or REJECT.** |
-| **6. Publish** | APPROVE → publish `_REPORT_FINAL.md` via `confluence update ... --format markdown`; if no page exists, create a new Confluence page with the **full postmortem version** from `_REPORT_FINAL.md`. REJECT → broadcast via `message` (Feishu). Final report already exists (promoted in Phase 4a). |
+| **0. Prep + Routing** | Parse input, classify `REPORT_STATE`, auto-select a safe default refresh mode, validate Jira/GitHub runtime access, and route exact `Issue`/`Bug`/`Defect` inputs to shared `single-defect-analysis`. |
+| **1. Scope Discovery** | Expand reporter-local input into a feature list for single-key, JQL, or release runs. Persist the auto-selected feature state matrix under `skills/defects-analysis/runs/<run-key>/context/`. |
+| **2. Jira Extraction** | Fetch defects for the selected reporter-local scope and persist raw Jira payloads plus per-issue files under `skills/defects-analysis/runs/<run-key>/context/`. |
+| **3. Issue Triage** | Normalize issues and extract deduplicated GitHub PR links. |
+| **4. PR Analysis** | Emit a spawn manifest when PR analysis is required, then consolidate returned `context/prs/*_impact.md` files during the `--post` step. |
+| **5. Finalize** | Generate the draft report, run the self-review + finalize loop until the review result is `pass`, validate the report bundle, and send Feishu. No Confluence publish step remains in this workflow. |
 
 
 
@@ -51,46 +50,51 @@ _Defect analysis, PR deep dives, QA risk reporting, and Confluence QA Summary pu
 
 ## Core Workflow: QA Summary
 
-Full design: `projects/docs/QA_SUMMARY_AGENT_DESIGN.md`
+**Skill-first entrypoint:** `workspace-reporter/skills/qa-summary`
 
-Built on top of the Defect Analysis Agent, this acts as the orchestrator to publish targeted summary sections to Confluence. It replaces the concept of a "Feature Summary Workflow" referenced in some earlier designs.
+Built on top of the Defect Analysis Agent. Resolves planner artifacts from `workspace-planner/skills/qa-plan-orchestrator/runs/<feature-key>/qa_plan_final.md` by default. Defect state is resolved through `workspace-reporter/skills/defects-analysis`. **Confluence publish requires explicit user confirmation** after the reviewed draft is shown.
 
-### Phases (summary)
+### Phases (qa-summary skill)
 
 | Phase | Action |
 |-------|--------|
-| **0. Pre-Flight** | Check idempotency, identify Confluence page ID, check codebase state (Final / Draft / Cache / Fresh). Prompt user for refresh strategy. |
-| **1. Sub-Agent** | Spawn the `defect-analysis` sub-agent (see Core Workflow above) to fetch and aggregate Jira/PR data. |
-| **2. Generation** | Apply `qa-summary` skill. Construct the QA Summary draft (`<KEY>_QA_SUMMARY_DRAFT.md`) following the emoji-heading + 1-based subsection template. Use `[PENDING]` placeholders for missing data. |
-| **3. Self-Review** | Apply `qa-summary-review` skill. Coverage + Formatting quality gate. Auto-apply minor fixes. MUST explicitly render final version to user console upon pass. |
-| **4. Approval Gate** | **STOP. Ask user to APPROVE or REJECT.** Render summary entirely to chat. |
-| **5. Confluence Update**| Surgical merge on Confluence using ID. Preserve all sections outside `QA Summary`. |
-| **6. Notification** | Feishu (or Wacli fallback). |
+| **0. Pre-Flight** | Load `config/runtime-sources.json`, classify `REPORT_STATE`, apply archive-before-overwrite for destructive modes. |
+| **1. Planner Resolution** | Resolve planner artifacts, extract Section 1 Feature Overview table. Block if no QA plan found. |
+| **2. Defect Coordination** | Inspect defect-analysis artifacts, ask reuse/regenerate when prior analysis exists, spawn `defects-analysis` when needed. |
+| **3. Draft Generation** | Build sections 1–10 from planner + defect context. Apply `references/summary-formatting.md`. |
+| **4. Review Gate** | Run `qa-summary-review` until verdict is `pass`. Render reviewed draft and require explicit APPROVE. |
+| **5. Publish Decision** | Ask skip / update_existing / create_new. Require Confluence page ID for update. Validate access before publish. |
+| **6. Finalize** | Copy reviewed draft to final, send Feishu or record `notification_pending`. |
 
 ---
 
 ## File Organization
 
 ```
-projects/defects-analysis/           ← Managed by Defect Analysis sub-agent
-├── <FEATURE_KEY>/
-│   ├── task.json                    ← includes jira_fetched_at, pr_analysis_timestamps, archive_log
+skills/defects-analysis/runs/        ← Canonical runtime root for reporter defect analysis
+├── <RUN_KEY>/
+│   ├── task.json
+│   ├── run.json
 │   ├── context/
-│   │   ├── jira_raw.json
-│   │   ├── jira_issues/<KEY>.json
-│   │   └── prs/<PR_ID>_impact.md
-│   ├── archive/                     ← previous reports (never deleted)
-│   │   └── <KEY>_REPORT_FINAL_<YYYYMMDD>.md
-│   ├── <FEATURE_KEY>_REPORT_DRAFT.md
-│   ├── <FEATURE_KEY>_REVIEW_SUMMARY.md
-│   └── <FEATURE_KEY>_REPORT_FINAL.md
-└── release_<VERSION>/
+│   ├── drafts/
+│   ├── reports/
+│   ├── archive/
+│   ├── <RUN_KEY>_REPORT_DRAFT.md
+│   ├── <RUN_KEY>_REVIEW_SUMMARY.md
+│   └── <RUN_KEY>_REPORT_FINAL.md
 
-projects/qa-summaries/               ← Managed by QA Summary orchestrator
+projects/defects-analysis/           ← Legacy compatibility outputs still used by downstream flows
+└── <ISSUE_KEY>/                     ← currently mirrored by shared single-defect-analysis for tester handoff
+
+skills/qa-summary/runs/               ← Canonical runtime root for QA Summary
 └── <FEATURE_KEY>/
-    ├── run.json
+    ├── context/
+    ├── drafts/
+    │   └── <FEATURE_KEY>_QA_SUMMARY_DRAFT.md
     ├── archive/
-    ├── <FEATURE_KEY>_QA_SUMMARY_DRAFT.md
+    ├── task.json
+    ├── run.json
+    ├── <FEATURE_KEY>_QA_SUMMARY_REVIEW.md
     └── <FEATURE_KEY>_QA_SUMMARY_FINAL.md
 ```
 
@@ -113,5 +117,4 @@ Write it down. Mental notes don't survive session restarts.
 
 ---
 
-_You are the defect analysis and QA risk reporting specialist. Precise, thorough, always human-in-the-loop._
-w
+_You are the defect analysis and QA risk reporting specialist. Precise, thorough, and automation-first unless a genuine blocker requires user input._

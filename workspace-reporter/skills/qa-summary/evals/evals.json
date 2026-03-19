@@ -1,0 +1,29 @@
+{
+  "skill_name": "qa-summary",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Generate a QA summary for BCIN-7289 using the planner run under workspace-planner/skills/qa-plan-orchestrator/runs/BCIN-7289 and reuse the existing reporter defect-analysis output if present. Stop before Confluence publish and show me the reviewed draft.",
+      "expected_output": "Creates planner lookup artifacts, materializes Section 1 feature overview table in draft context, asks reuse/regenerate if defect analysis exists, produces reviewed sections 1-10, and waits for approval.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate a QA summary for BCIN-8001 when no defects are found. Use the planner run artifacts if available, otherwise prompt for the QA plan markdown.",
+      "expected_output": "Produces a no-defect summary with valid tables and non-empty sections instead of failing.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "After the QA summary draft is approved, update the existing Confluence page at the link I provide and send a Feishu completion message.",
+      "expected_output": "Requires explicit page identity, validates Confluence access, writes merged markdown (summary only for create_new; merged with existing page for update_existing), uses title format '<feature-key> <feature-summary>' for new pages, and emits or records notification output. If Feishu notify script is not found, falls back to wacli then FEISHU_WEBHOOK_URL before recording notification_pending.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Generate a QA summary for BCIN-9000 and publish as a new Confluence page. The Confluence page title should be the feature key followed by the feature summary from Jira.",
+      "expected_output": "Fetches feature summary from jira_feature_meta.json (written by Phase 1) or falls back to jira CLI, constructs title as 'BCIN-9000 <feature-summary>', publishes only the QA Summary content (no full QA plan), and uses --parent-id when parent_page_id is available.",
+      "files": []
+    }
+  ]
+}

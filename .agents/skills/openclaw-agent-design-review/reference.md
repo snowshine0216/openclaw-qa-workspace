@@ -131,7 +131,17 @@ Pass conditions:
 Typical failures:
 - `P1`: Script-bearing design with runtime output omits runs/ convention.
 
-### 11) Feishu Notification (when publishing externally)
+### 11) Skill Path Resolution (script-bearing, when invoking shared skills)
+
+Pass conditions:
+- Scripts that invoke shared skills (jira-cli, feishu-notify, etc.) use skill-path-registrar — no hardcoded `.agents/skills` or `workspace-*/skills` paths.
+- Design documents fallback order and user-confirmation flow when script not found.
+
+Typical failures:
+- `P1` (`PATH-001`): Script or design contains hardcoded `.agents/skills` or `workspace-*/skills` path instead of using skill-path-registrar.
+- `P2` (`PATH-002`): Shared skill script resolution lacks fallback order or user-confirmation flow when not found.
+
+### 12) Feishu Notification (when publishing externally)
 
 Pass conditions:
 - When workflow publishes externally visible work, design includes Feishu notification.
@@ -168,6 +178,8 @@ Typical failures:
 - `RUNTIME-001` (`P1`): Script-bearing design with runtime output omits runs/ convention.
 - `FEISHU-001` (`P1`): Agent-orchestrated workflow uses CLI subprocess for Feishu instead of marker-based pattern (emit `FEISHU_NOTIFY:`, agent sends via gateway `message` tool).
 - `FEISHU-002` (`P1`): Feishu `chat_id` hardcoded or not sourced from `TOOLS.md`.
+- `PATH-001` (`P1`): Script or design contains hardcoded `.agents/skills` or `workspace-*/skills` path instead of using skill-path-registrar.
+- `PATH-002` (`P2`): Shared skill script resolution lacks fallback order or user-confirmation flow when not found.
 - `CONTENT-001` (`P0`): Skills Content Specification uses outline-style labels without exact content.
 - `CONTENT-002` (`P1`): Functions lack implementation detail for lib scripts.
 - `CONTENT-003` (`P1`): Tests lack detailed test stub functions.

@@ -53,6 +53,8 @@ reports/
 temp/
 data/
 defects-analysis/
+!workspace-reporter/skills/defects-analysis/
+!workspace-reporter/skills/defects-analysis/**
 qa-summaries/
 feature-plan/
 test-reports/
@@ -63,3 +65,4 @@ run/
 runs/
 test-plans/
 workspace-planner/projects/test-plans/
+cv/

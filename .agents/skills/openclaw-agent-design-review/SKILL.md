@@ -75,6 +75,7 @@ Required report fields:
 - [ ] When Skills Content Spec is in scope: contains exact SKILL.md/reference.md content, not outline-style (skip when design only updates functions). Reference: `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`.
 - [ ] Functional Design / Functions include implementation detail for scripts (algorithm, pseudocode, or step-by-step logic).
 - [ ] Tests include detailed test stub functions (`test(...)` or `describe` blocks) with concrete names, setup, and assertions — not just scenario names. Reference: `workspace-planner/skills/qa-plan-orchestrator/scripts/test/spawnManifestBuilders.test.mjs`.
+- [ ] No hardcoded skill paths; design uses skill-path-registrar when scripts invoke shared skills (PATH-001, PATH-002).
 
 ## Additional Resources
 

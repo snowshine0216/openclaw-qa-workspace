@@ -25,10 +25,16 @@ import { spawn } from 'node:child_process';
 
 const SCRIPT_SRC = join(__dirname, '..', 'scripts', 'lib', 'save_context.sh');
 
-async function runSaveContext(scriptsDir, args) {
+/** Skill-root layout: tmp/scripts/lib/save_context.sh → SKILL_ROOT=tmp, output under tmp/runs/<feature-id>/context */
+function skillRootLayout(tmp) {
+  return join(tmp, 'scripts', 'lib');
+}
+
+async function runSaveContext(scriptsLibDir, args, env = {}) {
   return new Promise((resolve, reject) => {
-    const proc = spawn('bash', [join(scriptsDir, 'save_context.sh'), ...args], {
-      cwd: join(scriptsDir, '..'),
+    const proc = spawn('bash', [join(scriptsLibDir, 'save_context.sh'), ...args], {
+      cwd: join(scriptsLibDir, '..', '..'),
+      env: { ...process.env, ...env },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let stdout = '';
@@ -42,18 +48,18 @@ async function runSaveContext(scriptsDir, args) {
 
 test('save_inline_content: saves inline content to context/<artifact>.md', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const { code, stdout } = await runSaveContext(scriptsDir, [
+  const { code, stdout } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'jira_issue_BCIN-6709',
     'Summary: Add pause mode\nDescription: User can pause the report.',
   ]);
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
+  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('Summary: Add pause mode'));
   assert.ok(content.includes('Description: User can pause the report.'));
@@ -64,21 +70,21 @@ test('save_inline_content: saves inline content to context/<artifact>.md', async
 
 test('copy_file_content: copies file when 3rd arg is file path', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
   const srcFile = join(tmp, 'diff.md');
   await writeFile(srcFile, 'diff --git a/foo b/foo\n+new line');
 
-  const { code } = await runSaveContext(scriptsDir, [
+  const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'github_diff_biweb',
     srcFile,
   ]);
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'BCIN-6709', 'context', 'github_diff_biweb.md');
+  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'github_diff_biweb.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('diff --git'));
   assert.ok(content.includes('+new line'));
@@ -88,16 +94,16 @@ test('copy_file_content: copies file when 3rd arg is file path', async () => {
 
 test('archive_before_overwrite: archives existing file before overwrite', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const ctxDir = join(tmp, 'BCIN-6709', 'context');
+  const ctxDir = join(tmp, 'runs', 'BCIN-6709', 'context');
   await mkdir(ctxDir, { recursive: true });
   const firstPath = join(ctxDir, 'qa_plan_atlassian_BCIN-6709.md');
   await writeFile(firstPath, 'original content');
 
-  const { code } = await runSaveContext(scriptsDir, [
+  const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'qa_plan_atlassian_BCIN-6709',
     'updated content',
@@ -117,18 +123,18 @@ test('archive_before_overwrite: archives existing file before overwrite', async 
 
 test('support_subpaths: creates figma/ subdir for figma/figma_metadata_...', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const { code } = await runSaveContext(scriptsDir, [
+  const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'figma/figma_metadata_BCIN-6709',
     'Figma metadata JSON here',
   ]);
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'BCIN-6709', 'context', 'figma', 'figma_metadata_BCIN-6709.md');
+  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'figma', 'figma_metadata_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('Figma metadata JSON here'));
 
@@ -137,18 +143,18 @@ test('support_subpaths: creates figma/ subdir for figma/figma_metadata_...', asy
 
 test('normalize_md_suffix: strips .md from artifact name when provided', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const { code } = await runSaveContext(scriptsDir, [
+  const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'jira_issue_BCIN-6709.md',
     'content',
   ]);
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
+  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('content'));
 
@@ -157,13 +163,13 @@ test('normalize_md_suffix: strips .md from artifact name when provided', async (
 
 test('fail_missing_args: exits non-zero when required args missing', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const { code: code1 } = await runSaveContext(scriptsDir, []);
-  const { code: code2 } = await runSaveContext(scriptsDir, ['BCIN-6709']);
-  const { code: code3 } = await runSaveContext(scriptsDir, ['BCIN-6709', 'artifact']);
+  const { code: code1 } = await runSaveContext(scriptsLibDir, []);
+  const { code: code2 } = await runSaveContext(scriptsLibDir, ['BCIN-6709']);
+  const { code: code3 } = await runSaveContext(scriptsLibDir, ['BCIN-6709', 'artifact']);
 
   assert.notEqual(code1, 0);
   assert.notEqual(code2, 0);
@@ -174,11 +180,11 @@ test('fail_missing_args: exits non-zero when required args missing', async () =>
 
 test('emit_saved_message: prints SAVED: context/<name>.md on success', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
-  const scriptsDir = join(tmp, 'scripts');
-  await mkdir(scriptsDir, { recursive: true });
-  await cp(SCRIPT_SRC, join(scriptsDir, 'save_context.sh'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  await mkdir(scriptsLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const { code, stdout } = await runSaveContext(scriptsDir, [
+  const { code, stdout } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'research_bg_tavily_reCreateReportInstance_BCIN-6709',
     'search result',

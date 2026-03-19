@@ -92,8 +92,38 @@ npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/obra/superpowers --skill requesting-code-review
 npx skills add https://github.com/obra/superpowers --skill receiving-code-review
 npx skills add https://github.com/vercel-labs/agent-browser --skill agent-browser
+npx skills add anthropics/skills --skill frontend-design
+npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+npx skills add tavily-ai/skills --skill search
+npx skills add kepano/obsidian-skills --skill obsidian-cli
+npx skills add remotion-dev/skills --skill remotion-best-practices
+npx skills add obra/superpowers --skill brainstorming
 ```
 
+### Skill Path Setup
+
+Scripts that invoke shared skills (e.g. jira-cli, feishu-notify) must use the **skill-path-registrar** to resolve paths — no hardcoded `.agents/skills` or `workspace-*/skills` paths.
+
+**Resolution order (first found wins):**
+1. Env override: `JIRA_CLI_SCRIPT`, `FEISHU_NOTIFY_SCRIPT`, etc.
+2. Persisted config: `~/.openclaw/skill_paths.json`
+3. Repo-local: `$REPO_ROOT/.agents/skills/<skill>/<path>`
+4. `CODEX_HOME/skills/<skill>/<path>`
+5. `~/.agents/skills/<skill>/<path>`
+6. `~/.openclaw/skills/<skill>/<path>`
+
+**When a script is not found:** The agent or script will prompt you for the exact path. After you provide it, the path is validated and written to `~/.openclaw/skill_paths.json` for future runs.
+
+**Config file:** `~/.openclaw/skill_paths.json` stores user-confirmed paths:
+
+```json
+{
+  "jira-cli/scripts/jira-run.sh": "/absolute/path/to/jira-run.sh",
+  "feishu-notify/scripts/send-feishu-notification.js": "/absolute/path/to/send-feishu-notification.js"
+}
+```
+
+**For script authors:** See [.agents/skills/skill-path-registrar/README.md](.agents/skills/skill-path-registrar/README.md) for API usage. Full details: [docs/SKILL_PATH_SETUP.md](docs/SKILL_PATH_SETUP.md).
 
 ## QA Test Key Points Interactive Page
 

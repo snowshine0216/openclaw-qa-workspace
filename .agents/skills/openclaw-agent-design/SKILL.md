@@ -120,6 +120,7 @@ Detailed templates for each section live in [reference.md](reference.md).
 - **Test layout**: OpenClaw uses `scripts/test/` for script-bearing skills (exception to top-level `tests/`).
 - **Never assume**: Stop and ask when context is missing or ambiguous. Never silently choose a destructive path.
 - **Shared reuse**: Check direct reuse of `jira-cli`, `confluence`, `feishu-notify` before creating wrappers.
+- **Skill path resolution**: No hardcoded `.agents/skills` or `workspace-*/skills` paths. Use skill-path-registrar for shared skill script resolution. See `.agents/skills/skill-path-registrar/README.md`.
 - **Final notification**: If workflow publishes externally visible work, include notification phase and `run.json.notification_pending` fallback.
 - **Exact content, never outline**: When the design creates or materially redesigns skills, Skills Content Specification (3.x skill-SKILL.md, 4.x reference.md) must contain the **actual content** that will be written to those files. No placeholder bullets like "Target path:", "Purpose:", "Input contract:" alone — include the full SKILL.md/reference.md text as it would appear in the final file. Use qa-plan-orchestrator SKILL.md as the canonical reference for "detailed" content. **Exception:** When the design only updates functions (no skill creation or material redesign), no skill-related md files need updating — skill title and SKILL.md/reference.md are not required.
 
@@ -134,6 +135,7 @@ Apply these when the workflow uses external integrations or multi-phase orchestr
 - **Spawn from script**: When orchestrator is script-driven, copy `spawn_from_manifest.mjs` or `openclaw-spawn-bridge.template.js` from `examples/`. No need to rewrite openclaw CLI invocation. The spawn script must be invoked only from TUI (orchestrator workflow), not from CLI directly.
 - **Evidence policy**: Use approved skills (jira-cli, confluence, github) for system-of-record; never `web_fetch` for Jira/GitHub/Confluence.
 - **Feishu notification**: When agent-orchestrated, prefer the marker-based pattern: (1) Agent reads `chat_id` from workspace `TOOLS.md` and sets `FEISHU_CHAT_ID` before running phase scripts. (2) Phase scripts emit `FEISHU_NOTIFY: chat_id=<id> issue=<key> risk=<level> plan=<path>` when `FEISHU_CHAT_ID` is set. (3) Agent catches this line and sends via the gateway `message` tool directly — do not use `openclaw message send` CLI subprocess (unreliable for group chats). For non-agent contexts (e.g. cron), copy `send_feishu_with_retry.template.sh`; on failure store `notification_pending` in run.json.
+- **Skill path resolution**: No hardcoded skill paths. Use skill-path-registrar to resolve jira-cli, feishu-notify, etc. Fallback: env → ~/.openclaw/skill_paths.json → repo → CODEX_HOME → ~/.agents → ~/.openclaw. When not found, prompt user and persist via `persistSkillPath`.
 
 See [reference.md](reference.md) for pattern details. All reusable scripts live in `examples/` — no dependency on other workspaces.
 

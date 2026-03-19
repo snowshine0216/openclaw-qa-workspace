@@ -1,0 +1,73 @@
+{
+  "skill_name": "defects-analysis",
+  "default_failure_policy": "blocking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run defect analysis for Jira issue BCIN-9000. The issue type resolves to Issue. Use the defects-analysis skill. Phase 0 must delegate to single-defect-analysis for issue-class inputs.",
+      "expected_output": "Phase 0 emits SPAWN_MANIFEST, orchestrator spawns single-defect-analysis, phase0 --post writes delegated_run.json and prints DELEGATED_RUN. No reporter-local phases run.",
+      "files": [],
+      "expectations": [
+        "Phase 0 classifies route as issue_class",
+        "context/phase0_delegation_manifest.json exists with single-defect-analysis request",
+        "SPAWN_MANIFEST emitted before delegation",
+        "context/delegated_run.json written after spawn completes",
+        "DELEGATED_RUN: printed to stdout"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Run defect analysis for Jira issue BCIN-5809. The issue type resolves to Feature. Use the defects-analysis skill. Phase 0 must keep the run in reporter-local scope without blocking for manual approval.",
+      "expected_output": "Phase 0 classifies route as reporter_scope_single_key. Phases 1-5 run. No delegation. No Confluence publish. Final Feishu notification.",
+      "files": [],
+      "expectations": [
+        "Phase 0 classifies route as reporter_scope_single_key",
+        "No SPAWN_MANIFEST for delegation",
+        "Phases 1-5 run in order",
+        "runs/<run-key>/<run-key>_REPORT_FINAL.md exists",
+        "No Confluence publish step",
+        "FEISHU_NOTIFY: or notification_pending in run.json"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Run defect analysis for release version 26.03. Prior runs have mixed states: FINAL_EXISTS for some features, DRAFT_EXISTS for others, CONTEXT_ONLY and FRESH for the rest. Verify automatic default plan selection per feature_state_matrix.",
+      "expected_output": "Phase 1 expands release into feature keys. Per-feature default actions: use_existing, resume, generate_from_cache, proceed. No manual approval prompt.",
+      "files": [],
+      "expectations": [
+        "context/feature_state_matrix.json has per-feature report_state and default_action",
+        "FINAL_EXISTS -> use_existing",
+        "DRAFT_EXISTS -> resume",
+        "CONTEXT_ONLY -> generate_from_cache",
+        "FRESH -> proceed",
+        "No blocking for routine approval"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Run defect analysis for JQL query 'project = BCIN AND issuetype = Defect'. The query returns defects with PR links. Verify phase4 spawn/post behavior and final Feishu notification.",
+      "expected_output": "Phase 4 emits SPAWN_MANIFEST for PR analysis. Orchestrator spawns subagents. Phase 4 --post consolidates pr_impact_summary.json. Phase 5 generates report, self-review loop exits with pass, Feishu sent.",
+      "files": [],
+      "expectations": [
+        "Phase 4 emits SPAWN_MANIFEST when pr_links.json has entries",
+        "phase4 --post writes context/pr_impact_summary.json",
+        "Phase 5 orchestrator generates draft report and invokes report-quality-reviewer",
+        "Self-review loop exits with pass",
+        "FEISHU_NOTIFY: or notification_pending"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Verify self-review + finalize loop: when report-quality-reviewer returns fail (missing section), auto-fix applies, draft regenerated, re-review until pass. Loop exits with pass before finalization and Feishu.",
+      "expected_output": "Phase 5 loop: generate draft -> review -> if fail, auto-fix and retry (max 3). Exit gate: review result pass. Only then promote to final and send Feishu.",
+      "files": [],
+      "expectations": [
+        "Phase 5 orchestrator directly generates draft report",
+        "Phase 5 invokes report-quality-reviewer for review",
+        "Loop exits when review result is pass",
+        "No finalization before pass",
+        "FEISHU_NOTIFY or notification_pending only after pass"
+      ]
+    }
+  ]
+}
