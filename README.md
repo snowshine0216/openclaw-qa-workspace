@@ -34,6 +34,16 @@ npm install -g confluence-cli
 ```
 3. Run `confluence init` to finish setup.
 
+### GitHub CLI setup (macOS)
+1. Install GitHub CLI:
+```bash
+brew install gh
+```
+2. Authenticate GitHub CLI:
+```bash
+gh auth login
+```
+
 ### Mcporter setup
 1. Required skill: `mcporter`
 2. Install `mcporter` on macOS. For other platforms, refer to the [GitHub project](https://github.com/mcporter-dev/mcporter).
