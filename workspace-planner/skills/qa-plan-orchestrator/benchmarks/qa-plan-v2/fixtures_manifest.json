@@ -58,6 +58,13 @@
           "included_in_blind": true
         },
         {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCIN-7289 adjacent issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.adjacent-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
+        },
+        {
           "material_type": "confluence_design_doc",
           "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/TPAC/pages/5949096102/BCIN-7289+Use+Embedding+report+in+Workstation+Plugin",
           "included_in_blind": true
@@ -266,6 +273,13 @@
           "included_in_blind": true
         },
         {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCED-4860 parent feature summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-4860.parent-feature.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because BCED-4860 is a story and no explicit customer signal was found on the story or parent feature at freeze time."
+        },
+        {
           "material_type": "confluence_design_doc",
           "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/BEC/pages/6012076298/BCED-4860+Supporting+Data+Labels+in+Donut+Chart",
           "included_in_blind": true
@@ -349,6 +363,13 @@
           "included_in_blind": true
         },
         {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCVE-6797 linked issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6797.linked-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
+        },
+        {
           "material_type": "confluence_design_doc",
           "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/EE/pages/5902402099/26.04+-+BCVE-6797+Highlighting+effect+for+HeatMap",
           "included_in_blind": true
@@ -381,6 +402,13 @@
           "source_id_or_url": "BCVE-6678 customer scope export",
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6678.customer-scope.json",
           "included_in_blind": true
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCVE-6678 adjacent issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6678.adjacent-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
         },
         {
           "material_type": "confluence_design_doc",

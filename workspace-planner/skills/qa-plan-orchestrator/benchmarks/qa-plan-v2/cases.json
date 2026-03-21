@@ -316,6 +316,171 @@
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering"
+    },
+    {
+      "case_id": "RE-P4A-SCENARIO-DRAFT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes"
+    },
+    {
+      "case_id": "RE-P5B-SHIP-GATE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety"
+    },
+    {
+      "case_id": "NE-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations"
+    },
+    {
+      "case_id": "NE-P5B-CHECKPOINT-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes"
+    },
+    {
+      "case_id": "GRID-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCIN-7231",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7231-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting"
+    },
+    {
+      "case_id": "GRID-P5B-CHECKPOINT-001",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7547-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety"
+    },
+    {
+      "case_id": "VIZ-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCED-4860",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-4860-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation"
+    },
+    {
+      "case_id": "VIZ-P5B-CHECKPOINT-001",
+      "feature_id": "BCVE-6797",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6797-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap"
+    },
+    {
+      "case_id": "EXPORT-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting"
+    },
+    {
+      "case_id": "EXPORT-P4A-SCENARIO-DRAFT-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes"
+    },
+    {
+      "case_id": "SELECTOR-P5B-CHECKPOINT-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows"
     }
   ]
 }

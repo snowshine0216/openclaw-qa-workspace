@@ -373,9 +373,9 @@ Each task contains:
 
 For `qa-plan-v2`, the prepared baseline currently expects:
 
-- `21` cases
+- `32` cases
 - `3` runs per configuration
-- `126` total runs
+- `192` total runs
 
 ### Grade the runs
 
