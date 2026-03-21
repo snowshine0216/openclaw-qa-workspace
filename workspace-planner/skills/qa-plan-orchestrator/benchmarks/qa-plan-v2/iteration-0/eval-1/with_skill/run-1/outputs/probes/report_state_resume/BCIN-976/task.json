@@ -1,0 +1,7 @@
+{
+  "feature_id": "BCIN-976",
+  "run_key": "resume-probe",
+  "current_phase": "phase_4a_subcategory_draft",
+  "overall_status": "in_progress",
+  "requested_source_families": ["jira"]
+}

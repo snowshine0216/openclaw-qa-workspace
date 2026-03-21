@@ -1,42 +1,26 @@
-# Benchmark Result: P0-IDEMPOTENCY-001
+# Benchmark Result
 
-Verdict: FAIL (blocking)
+## Verdict
 
-- Feature: `BCIN-976`
-- Feature family: `report-editor`
-- Primary phase: `phase0`
-- Evidence mode: `blind_pre_defect`
+FAIL
 
-## Scope
+BCIN-976 stays within the blind customer-only fixture scope, but the phase0 resume contract is not stable. The active phase0 contract requires `apply_user_choice.sh` to handle `reuse` or `resume` after `REPORT_STATE` detection, while the implementation only accepts `full_regenerate` and `smart_refresh`.
 
-Blind feature evidence stayed within the copied customer-only bundle. `BCIN-976.customer-scope.json` confirms `BCIN-976` is a customer-signaled report-editor feature under `all_customer_issues_only`, with explicit customer references and no non-customer issue expansion.
+## Evidence
 
-## Phase 0 Assessment
+1. The active phase0 contract requires `REPORT_STATE` handling plus a post-choice call to `scripts/apply_user_choice.sh`, and it explicitly includes `reuse` for phase0 resume flow. See `skill_snapshot/SKILL.md` lines 79-89.
+2. The runtime reference defines `FINAL_EXISTS`, `DRAFT_EXISTS`, `CONTEXT_ONLY`, and `FRESH`, says `reuse` or `resume` must continue from current state without reset, and again requires `scripts/apply_user_choice.sh <mode> <feature-id> <run-dir>` after the user choice. See `skill_snapshot/reference.md` lines 46-63.
+3. The implementation does not satisfy that contract. `skill_snapshot/scripts/lib/applyUserChoice.mjs` lines 18-19 define the only supported modes as `full_regenerate` and `smart_refresh`; lines 60-64 reject any other mode as invalid; lines 116-125 expose the same two-mode CLI.
+4. The active docs are also inconsistent for `CONTEXT_ONLY`: `skill_snapshot/SKILL.md` line 89 uses `reuse`, while `skill_snapshot/reference.md` line 52 says `generate from cache`. That inconsistency reinforces that the phase0 resume semantics are not stable.
+5. Phase0 alignment itself is present. `skill_snapshot/scripts/lib/runPhase.mjs` lines 104-138 classify `report_state`, set `current_phase` to `phase_0_runtime_setup`, and write phase0 request artifacts. `skill_snapshot/scripts/lib/runPhase.mjs` lines 626-645 write `supporting_issue_request_<feature-id>.md` and `request_fulfillment_<feature-id>.{md,json}`. `skill_snapshot/scripts/lib/workflowState.mjs` lines 205-221 implement `FINAL_EXISTS`, `DRAFT_EXISTS`, `CONTEXT_ONLY`, and `FRESH`.
+6. Test coverage does not protect the missing resume path. `skill_snapshot/tests/applyUserChoice.test.mjs` lines 8-92 and `skill_snapshot/scripts/test/apply_user_choice.test.sh` lines 18-47 cover `full_regenerate`, `smart_refresh`, and invalid-mode rejection, but no `reuse` or `resume` success case.
+7. The blind fixture scope is customer-only and valid for this review: `inputs/fixtures/BCIN-976-blind-pre-defect-bundle/materials/BCIN-976.customer-scope.json` lines 44-48 show `customer_signal_present: true` and `customer_issue_policy: "all_customer_issues_only"`.
 
-What works:
+## Expectation Check
 
-- The phase0 contract is defined as runtime setup plus `REPORT_STATE` classification and request artifact generation in `skill_snapshot/SKILL.md:79-89`.
-- Runtime state classification is implemented in `skill_snapshot/scripts/lib/workflowState.mjs:205-221`, which returns `FINAL_EXISTS`, `DRAFT_EXISTS`, `CONTEXT_ONLY`, or `FRESH` from final, draft, and context artifact presence.
-- Phase0 calls that classifier and writes request-fulfillment artifacts in `skill_snapshot/scripts/lib/runPhase.mjs:104-138` and `skill_snapshot/scripts/lib/runPhase.mjs:626-645`.
-- Existing request-fulfillment state is intentionally preserved across reruns via `mergeRequestFulfillment` in `skill_snapshot/scripts/lib/runPhase.mjs:864-882`, and the phase0 shell test includes `test_reuse_preserves_existing_request_fulfillment` in `skill_snapshot/scripts/test/phase0.test.sh:102-141`.
+- `[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable`: Failed. The documented `reuse` or `resume` path is missing from the mode handler.
+- `[phase_contract][blocking] Output aligns with primary phase phase0`: Passed. The snapshot still defines and implements phase0 artifact generation and `REPORT_STATE` classification.
 
-Blocking failure:
+## Conclusion
 
-- The documented non-fresh resume path is not implemented.
-- `skill_snapshot/SKILL.md:89` says phase0 must offer `full_regenerate`, `smart_refresh`, and `reuse`, then continue from the current phase on `reuse`.
-- `skill_snapshot/reference.md:50-63` likewise documents `reuse / resume` behavior for `FINAL_EXISTS` and `DRAFT_EXISTS`, with no-reset continuation after `scripts/apply_user_choice.sh`.
-- The actual handler only accepts `full_regenerate` and `smart_refresh` in `skill_snapshot/scripts/lib/applyUserChoice.mjs:18-19`, rejects any other mode in `skill_snapshot/scripts/lib/applyUserChoice.mjs:60-64`, and only emits next phases for those two modes in `skill_snapshot/scripts/lib/applyUserChoice.mjs:116-129`.
-- The bundled tests also cover only `full_regenerate`, `smart_refresh`, and invalid-mode rejection in `skill_snapshot/scripts/test/apply_user_choice.test.sh:18-52` and `skill_snapshot/tests/applyUserChoice.test.mjs:8-103`.
-
-Conclusion:
-
-`REPORT_STATE` classification itself exists, but the required resume semantics are not stable because the contract advertises `reuse` / `resume` while the implementation rejects those modes. That is a blocking phase0 contract miss for this case family.
-
-## Expectation Status
-
-- `[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable` -> FAIL
-- `[phase_contract][blocking] Output aligns with primary phase phase0` -> PASS
-
-## Execution Limits
-
-Targeted runtime verification was partially blocked by the workspace image: the bundled phase0 and apply-choice scripts depend on `node`, and the local environment does not provide it. See `outputs/phase0_test.log` and `outputs/applyUserChoice_node_test.log`. This blocker does not change the source-level contract mismatch above.
+This benchmark case should be graded as a blocking failure. The skill snapshot is phase0-aligned, but it does not preserve the promised resume semantics for existing draft or final states.

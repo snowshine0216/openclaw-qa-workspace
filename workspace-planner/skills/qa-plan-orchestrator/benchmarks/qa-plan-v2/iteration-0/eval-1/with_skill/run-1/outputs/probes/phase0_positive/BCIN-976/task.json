@@ -1,0 +1,6 @@
+{
+  "feature_id": "BCIN-976",
+  "requested_source_families": ["jira"],
+  "overall_status": "not_started",
+  "raw_user_request_text": "Benchmark phase0 probe for BCIN-976 using only the copied blind customer fixture."
+}

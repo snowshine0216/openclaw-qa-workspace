@@ -53,8 +53,8 @@
       "with_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1",
+          "output_dir": "eval-1/with_skill/run-1/outputs",
+          "run_dir": "eval-1/with_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -62,8 +62,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-2",
+          "output_dir": "eval-1/with_skill/run-2/outputs",
+          "run_dir": "eval-1/with_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -71,8 +71,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-3",
+          "output_dir": "eval-1/with_skill/run-3/outputs",
+          "run_dir": "eval-1/with_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -82,8 +82,8 @@
       "without_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1",
+          "output_dir": "eval-1/without_skill/run-1/outputs",
+          "run_dir": "eval-1/without_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -91,8 +91,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-2",
+          "output_dir": "eval-1/without_skill/run-2/outputs",
+          "run_dir": "eval-1/without_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -100,8 +100,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-3",
+          "output_dir": "eval-1/without_skill/run-3/outputs",
+          "run_dir": "eval-1/without_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -109,14 +109,14 @@
         }
       ],
       "with_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P0-IDEMPOTENCY-001 with the current champion skill snapshot loaded. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1/outputs."
+        "output_dir": "eval-1/with_skill/run-1/outputs",
+        "run_dir": "eval-1/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P0-IDEMPOTENCY-001 with the current champion skill snapshot loaded. Save outputs under eval-1/with_skill/run-1/outputs."
       },
       "without_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P0-IDEMPOTENCY-001 without the skill as the baseline. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1/outputs."
+        "output_dir": "eval-1/without_skill/run-1/outputs",
+        "run_dir": "eval-1/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P0-IDEMPOTENCY-001 without the skill as the baseline. Save outputs under eval-1/without_skill/run-1/outputs."
       }
     },
     {
@@ -155,8 +155,8 @@
       "with_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1",
+          "output_dir": "eval-2/with_skill/run-1/outputs",
+          "run_dir": "eval-2/with_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -164,8 +164,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-2",
+          "output_dir": "eval-2/with_skill/run-2/outputs",
+          "run_dir": "eval-2/with_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -173,8 +173,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-3",
+          "output_dir": "eval-2/with_skill/run-3/outputs",
+          "run_dir": "eval-2/with_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -184,8 +184,8 @@
       "without_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1",
+          "output_dir": "eval-2/without_skill/run-1/outputs",
+          "run_dir": "eval-2/without_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -193,8 +193,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-2",
+          "output_dir": "eval-2/without_skill/run-2/outputs",
+          "run_dir": "eval-2/without_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -202,8 +202,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-3",
+          "output_dir": "eval-2/without_skill/run-3/outputs",
+          "run_dir": "eval-2/without_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -211,14 +211,14 @@
         }
       ],
       "with_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P1-SUPPORT-CONTEXT-001 with the current champion skill snapshot loaded. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1/outputs."
+        "output_dir": "eval-2/with_skill/run-1/outputs",
+        "run_dir": "eval-2/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P1-SUPPORT-CONTEXT-001 with the current champion skill snapshot loaded. Save outputs under eval-2/with_skill/run-1/outputs."
       },
       "without_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P1-SUPPORT-CONTEXT-001 without the skill as the baseline. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1/outputs."
+        "output_dir": "eval-2/without_skill/run-1/outputs",
+        "run_dir": "eval-2/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P1-SUPPORT-CONTEXT-001 without the skill as the baseline. Save outputs under eval-2/without_skill/run-1/outputs."
       }
     },
     {
@@ -257,8 +257,8 @@
       "with_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1",
+          "output_dir": "eval-3/with_skill/run-1/outputs",
+          "run_dir": "eval-3/with_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -266,8 +266,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-2",
+          "output_dir": "eval-3/with_skill/run-2/outputs",
+          "run_dir": "eval-3/with_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -275,8 +275,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-3",
+          "output_dir": "eval-3/with_skill/run-3/outputs",
+          "run_dir": "eval-3/with_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -286,8 +286,8 @@
       "without_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1",
+          "output_dir": "eval-3/without_skill/run-1/outputs",
+          "run_dir": "eval-3/without_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -295,8 +295,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-2",
+          "output_dir": "eval-3/without_skill/run-2/outputs",
+          "run_dir": "eval-3/without_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -304,8 +304,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-3",
+          "output_dir": "eval-3/without_skill/run-3/outputs",
+          "run_dir": "eval-3/without_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -313,14 +313,14 @@
         }
       ],
       "with_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P3-RESEARCH-ORDER-001 with the current champion skill snapshot loaded. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1/outputs."
+        "output_dir": "eval-3/with_skill/run-1/outputs",
+        "run_dir": "eval-3/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P3-RESEARCH-ORDER-001 with the current champion skill snapshot loaded. Save outputs under eval-3/with_skill/run-1/outputs."
       },
       "without_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case P3-RESEARCH-ORDER-001 without the skill as the baseline. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1/outputs."
+        "output_dir": "eval-3/without_skill/run-1/outputs",
+        "run_dir": "eval-3/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case P3-RESEARCH-ORDER-001 without the skill as the baseline. Save outputs under eval-3/without_skill/run-1/outputs."
       }
     },
     {
@@ -359,8 +359,8 @@
       "with_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1",
+          "output_dir": "eval-23/with_skill/run-1/outputs",
+          "run_dir": "eval-23/with_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -368,8 +368,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-2",
+          "output_dir": "eval-23/with_skill/run-2/outputs",
+          "run_dir": "eval-23/with_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -377,8 +377,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-3",
+          "output_dir": "eval-23/with_skill/run-3/outputs",
+          "run_dir": "eval-23/with_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -388,8 +388,8 @@
       "without_skill_runs": [
         {
           "run_number": 1,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1",
+          "output_dir": "eval-23/without_skill/run-1/outputs",
+          "run_dir": "eval-23/without_skill/run-1",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -397,8 +397,8 @@
         },
         {
           "run_number": 2,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-2/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-2",
+          "output_dir": "eval-23/without_skill/run-2/outputs",
+          "run_dir": "eval-23/without_skill/run-2",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -406,8 +406,8 @@
         },
         {
           "run_number": 3,
-          "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-3/outputs",
-          "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-3",
+          "output_dir": "eval-23/without_skill/run-3/outputs",
+          "run_dir": "eval-23/without_skill/run-3",
           "has_outputs": true,
           "has_grading": true,
           "has_timing": true,
@@ -415,14 +415,14 @@
         }
       ],
       "with_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case RE-P5B-SHIP-GATE-001 with the current champion skill snapshot loaded. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1/outputs."
+        "output_dir": "eval-23/with_skill/run-1/outputs",
+        "run_dir": "eval-23/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case RE-P5B-SHIP-GATE-001 with the current champion skill snapshot loaded. Save outputs under eval-23/with_skill/run-1/outputs."
       },
       "without_skill": {
-        "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1/outputs",
-        "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1",
-        "instruction": "Execute qa-plan-orchestrator benchmark case RE-P5B-SHIP-GATE-001 without the skill as the baseline. Save outputs under /Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1/outputs."
+        "output_dir": "eval-23/without_skill/run-1/outputs",
+        "run_dir": "eval-23/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case RE-P5B-SHIP-GATE-001 without the skill as the baseline. Save outputs under eval-23/without_skill/run-1/outputs."
       }
     }
   ]

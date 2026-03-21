@@ -1,0 +1,1 @@
+./skill_snapshot/scripts/apply_user_choice.sh: line 5: node: command not found

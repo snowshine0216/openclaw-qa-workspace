@@ -1,0 +1,1 @@
+./skill_snapshot/scripts/classify_reported_state.sh: line 5: node: command not found
