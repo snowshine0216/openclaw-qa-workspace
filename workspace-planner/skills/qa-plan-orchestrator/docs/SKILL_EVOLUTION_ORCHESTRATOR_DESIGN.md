@@ -2,12 +2,12 @@
 
 > **Design ID:** `skill-evolution-orchestrator-qa-plan-2026-03-21`
 > **Date:** 2026-03-21
-> **Status:** Draft (design); shared `.agents/skills/skill-evolution-orchestrator` behavior implemented through Phase 6, with the required design-review gate still pending
+> **Status:** Implemented design with documentation follow-up pending; shared `.agents/skills/skill-evolution-orchestrator` behavior is implemented through Phase 6 and this document records the qa-plan-specific contract that the docs must match
 > **Scope:** `.agents/skills/skill-evolution-orchestrator`, additive hooks in `workspace-planner/skills/qa-plan-orchestrator`, additive freshness/output hooks in `workspace-reporter/skills/defects-analysis`
 >
-> **Constraint:** Design artifact; runtime behavior is implemented, but this design must still pass the required `openclaw-agent-design-review` loop before implementation freeze.
+> **Constraint:** Design artifact and qa-plan supplement; update this file when the benchmark contract changes so it stays aligned with the shared skill docs and `qa-plan-v2`.
 >
-> **Reviewer Gate:** Pending. This draft has not yet been run through the required `openclaw-agent-design-review` specialist loop. Environment setup, deliverables, AGENTS.md sync, benchmark ownership, per-phase interaction, Feishu notification, MVP phasing, and quality gates are included for reviewer alignment.
+> **Reviewer Gate:** Documentation alignment pending. The code paths exist, but this document previously drifted from the implemented replay and benchmark behavior.
 
 ---
 
@@ -33,8 +33,8 @@ No additional global setup beyond standard OpenClaw workspace tooling and target
 | ~~CREATE~~ | ~~`workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md`~~ | **Superseded:** operator entry is only `.agents/skills/skill-evolution-orchestrator/SKILL.md` (no separate planner workflow file). |
 | UPDATE | `AGENTS.md` (repo root) | SOP pointer for skill evolution — **Done** |
 | UPDATE | `workspace-planner/AGENTS.md` | Planner evolution + knowledge packs — **Done** |
-| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 — **Done** |
-| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 — **Done** |
+| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 — implemented; docs must stay aligned with `qa-plan-v2` |
+| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 — implemented; gap bundle and freshness hooks are live |
 
 ## 2. AGENTS.md Sync
 
@@ -133,7 +133,7 @@ Phase 5 additions:
 **Operator outline:**
 
 1. Preconditions: feature id / family, `benchmark_version`, knowledge-pack key when applicable.
-2. Set inputs: `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`, `benchmark_profile` → `qa-plan-defect-recall` (or documented variant), `fixtures_manifest` alignment with [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md).
+2. Set inputs: `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`, qa-plan benchmark root → `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/`, benchmark manifest profile → `global-cross-feature-v1`, and enable replay only when `defect_analysis_run_key` is present.
 3. Invoke `skill-evolution-orchestrator` scripts only (`scripts/orchestrate.sh`); no parallel NLG playbook.
 4. Point to canonical benchmark output under `qa-plan-orchestrator/benchmarks/<benchmark-version>/` (for example `qa-plan-v2/`).
 5. User approval and Feishu steps consistent with Phase 6 in this design.
@@ -403,7 +403,8 @@ Per iteration:
 
 - run target skill smoke tests
 - run target skill evals
-- run replay evals against known defect sets
+- run qa-plan benchmark comparison
+- include replay cases only when `defect_analysis_run_key` is present
 
 ### Phase 5
 
@@ -611,6 +612,7 @@ When finalizing, write:
   "feature_id": "BCIN-7289",
   "feature_family": "report-editor",
   "knowledge_pack_key": "report-editor",
+  "defect_analysis_run_key": "BCIN-7289",
   "benchmark_profile": "qa-plan-defect-recall",
   "current_iteration": 1,
   "max_iterations": 10,

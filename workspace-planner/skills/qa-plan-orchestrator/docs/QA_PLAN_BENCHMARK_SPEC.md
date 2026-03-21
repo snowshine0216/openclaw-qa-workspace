@@ -703,11 +703,16 @@ Each iteration `>= 1` must produce `scorecard.json`.
 
 ```json
 {
-  "benchmark_version": "qa-plan-v1",
+  "benchmark_version": "qa-plan-v2",
   "iteration": 1,
-  "comparison_mode": "iteration_compare",
+  "comparison_mode": "executed_benchmark_compare",
+  "scoring_fidelity": "executed",
   "primary_configuration": "new_skill",
   "reference_configuration": "old_skill",
+  "active_evidence_modes": [
+    "blind_pre_defect",
+    "holdout_regression"
+  ],
   "acceptance_checks": {
     "blocking_cases_pass": true,
     "blind_pre_defect_non_regression": true,
@@ -716,8 +721,9 @@ Each iteration `>= 1` must produce `scorecard.json`.
     "policy": {
       "require_blocking_cases_pass": true,
       "require_non_decreasing_blind_score": true,
-      "require_non_decreasing_replay_score": true,
-      "require_no_holdout_regression": true
+      "require_non_decreasing_replay_score": false,
+      "require_no_holdout_regression": true,
+      "null_score_policy": "reject"
     }
   },
   "mode_scores": {
@@ -775,7 +781,7 @@ Each iteration `>= 1` must produce `scorecard.json`.
   },
   "decision": {
     "result": "accept",
-    "reason": "blind_pre_defect did not regress, retrospective_replay improved, and holdout_regression did not regress."
+    "reason": "blind_pre_defect did not regress and holdout_regression did not regress. retrospective_replay was not active for this comparison."
   }
 }
 ```
@@ -784,18 +790,33 @@ Each iteration `>= 1` must produce `scorecard.json`.
 
 ### Candidate acceptance
 
-Accept the candidate only when:
+`qa-plan-v2` supports two acceptance modes.
+
+Default evolution acceptance:
+
+1. `blocking_cases_pass == true`
+2. `blind_pre_defect_non_regression == true`
+3. `holdout_regression_non_regression == true`
+4. `retrospective_replay_improved` is ignored unless replay is explicitly enabled for the iteration
+
+Replay-enabled acceptance:
 
 1. `blocking_cases_pass == true`
 2. `blind_pre_defect_non_regression == true`
 3. `retrospective_replay_improved == true`
 4. `holdout_regression_non_regression == true`
 
+Replay is enabled only when the comparison entry point is given `defect_analysis_run_key`. In that case `benchmark_context.json` and `scorecard.json` must record:
+
+1. `active_evidence_modes`
+2. `replay_enabled_by_operator`
+3. `replay_source_identifier`
+
 ### Tie policy
 
-If `retrospective_replay` does not improve, keep the current champion even when blind and holdout are tied.
+If replay is active and `retrospective_replay` does not improve, keep the current champion even when blind and holdout are tied.
 
-If replay improves but blind and holdout both tie exactly:
+If replay is active and replay improves but blind and holdout both tie exactly:
 
 1. prefer the lower-regression-risk candidate
 2. then prefer lower mean time
@@ -806,9 +827,9 @@ If replay improves but blind and holdout both tie exactly:
 
 When comparing models for the same skill snapshot:
 
-1. do not replace the reference model unless the evidence-mode acceptance checks are at least equal
-2. require replay improvement without blind or holdout regression, or
-3. require equal evidence-mode checks with materially better efficiency:
+1. do not replace the reference model unless the active evidence-mode acceptance checks are at least equal
+2. when replay is active, require replay improvement without blind or holdout regression, or
+3. otherwise require equal active evidence-mode checks with materially better efficiency:
    - `>= 10%` lower time, or
    - `>= 15%` lower tokens
 

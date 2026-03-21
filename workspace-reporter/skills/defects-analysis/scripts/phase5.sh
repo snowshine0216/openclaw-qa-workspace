@@ -51,13 +51,10 @@ generate_report() {
 
 write_evolution_support_artifacts() {
   local freshness_json="$CONTEXT_DIR/analysis_freshness_${RUN_KEY}.json"
-  local self_test_gap_md="$RUN_DIR/${RUN_KEY}_SELF_TEST_GAP_ANALYSIS.md"
-  local qa_plan_cross_md="$RUN_DIR/${RUN_KEY}_QA_PLAN_CROSS_ANALYSIS.md"
   local source_issue_timestamp=""
   local pr_timestamp=""
   local upstream_qa_plan_timestamp=""
   local knowledge_pack_version=""
-  local bullet_summaries
 
   source_issue_timestamp="$(jq -r '[.issues[]?.fields.updated?, .issues[]?.fields.resolutiondate?, .issues[]?.fields.created?] | map(select(. != null and . != "")) | .[0] // empty' "$CONTEXT_DIR/jira_raw.json" 2>/dev/null || true)"
   if [[ -f "$CONTEXT_DIR/pr_impact_summary.json" ]]; then
@@ -86,33 +83,6 @@ write_evolution_support_artifacts() {
       upstream_qa_plan_timestamp: ($upstream_qa_plan_timestamp | select(length > 0) // null),
       knowledge_pack_version_used: ($knowledge_pack_version | select(length > 0) // null)
     }' >"$freshness_json"
-
-  bullet_summaries="$(jq -r '.issues[]? | "- " + (.fields.summary // .key // "issue")' "$CONTEXT_DIR/jira_raw.json" 2>/dev/null || true)"
-  if [[ -z "$bullet_summaries" ]]; then
-    bullet_summaries='- No issue summaries available'
-  fi
-
-  cat >"$self_test_gap_md" <<EOF
-# ${RUN_KEY} Self-Test Gap Analysis
-
-## Key Gaps
-${bullet_summaries}
-
-## Guidance
-- Explain why self-testing missed each issue.
-- Convert the miss into actionable QA or developer smoke checks.
-EOF
-
-  cat >"$qa_plan_cross_md" <<EOF
-# ${RUN_KEY} QA Plan Cross Analysis
-
-## QA Plan Misses
-${bullet_summaries}
-
-## Required Follow-up
-- Add missing scenario coverage.
-- Preserve traceability back to the defect evidence.
-EOF
 }
 
 attempt=1

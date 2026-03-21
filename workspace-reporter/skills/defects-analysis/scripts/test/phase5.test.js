@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { access, mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -57,16 +58,18 @@ test('generates final bundle and emits feishu marker after a passing review', as
   const freshness = JSON.parse(
     await readFile(join(runDir, 'context', 'analysis_freshness_BCIN-5809.json'), 'utf8'),
   );
-  const selfTestGap = await readFile(join(runDir, 'BCIN-5809_SELF_TEST_GAP_ANALYSIS.md'), 'utf8');
-  const qaPlanCross = await readFile(join(runDir, 'BCIN-5809_QA_PLAN_CROSS_ANALYSIS.md'), 'utf8');
   const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
   assert.match(finalReport, /QA Risk & Defect Analysis Report/);
   assert.match(finalReport, /\[BUG-1\]\(https:\/\/jira\.real\.example\/browse\/BUG-1\)/);
   assert.match(finalReport, /Crash when a < b/);
   assert.match(review, /## Review Result: pass/);
   assert.equal(freshness.source_issue_timestamp, '2026-03-10T12:00:00.000+0000');
-  assert.match(selfTestGap, /Self-Test Gap Analysis/);
-  assert.match(qaPlanCross, /QA Plan Cross Analysis/);
+  await assert.rejects(
+    access(join(runDir, 'BCIN-5809_SELF_TEST_GAP_ANALYSIS.md'), constants.R_OK),
+  );
+  await assert.rejects(
+    access(join(runDir, 'BCIN-5809_QA_PLAN_CROSS_ANALYSIS.md'), constants.R_OK),
+  );
   assert.equal(task.overall_status, 'completed');
   assert.equal(task.notification_status, 'sent');
 

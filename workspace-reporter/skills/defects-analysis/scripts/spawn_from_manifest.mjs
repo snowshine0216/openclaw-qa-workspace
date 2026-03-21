@@ -6,17 +6,24 @@ import { fileURLToPath } from 'node:url';
 
 async function materializeOutputs(manifestPath, requests) {
   for (const request of requests) {
-    const outputFile = request?.openclaw?.args?.output_file;
+    const args = request?.openclaw?.args ?? {};
+    const outputFile = args.output_file;
     if (!outputFile) {
       continue;
     }
     const absPath = resolve(dirname(manifestPath), outputFile);
+    const content = args.output_format === 'json'
+      ? `${JSON.stringify({
+          run_key: 'TEST-RUN',
+          generated_at: '2026-03-21T00:00:00.000Z',
+          feature_id: 'TEST-RUN',
+          feature_family: 'test-family',
+          source_artifacts: ['REPORT_FINAL.md'],
+          gaps: [],
+        }, null, 2)}\n`
+      : '# Generated PR Impact\n\nRisk: Medium\nDomains: api,ui\n';
     await mkdir(dirname(absPath), { recursive: true });
-    await writeFile(
-      absPath,
-      '# Generated PR Impact\n\nRisk: Medium\nDomains: api,ui\n',
-      'utf8',
-    );
+    await writeFile(absPath, content, 'utf8');
   }
   return requests.map((request) => ({ label: request?.openclaw?.args?.label ?? 'spawn', status: 'completed' }));
 }
@@ -26,7 +33,7 @@ function buildSpawnTask(manifestPath, args) {
   const instructions = [args.task ?? ''];
   if (outputFile) {
     instructions.push(`Write the analysis to: ${outputFile}`);
-    instructions.push('Output markdown only.');
+    instructions.push(args.output_format === 'json' ? 'Output JSON only.' : 'Output markdown only.');
   }
   return instructions.filter(Boolean).join('\n\n');
 }
