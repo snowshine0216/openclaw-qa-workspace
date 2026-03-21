@@ -58,6 +58,11 @@ Handoff rules:
 - Reuse existing shared skills before creating new ones; when adding a new skill, decide explicitly whether it should be shared (`.agents/skills`) or workspace-local (`workspace-*/skills`).
 - For OpenClaw design work, prefer direct reuse of existing shared skills such as `jira-cli`, `confluence`, and `feishu-notify` before introducing wrappers or duplicate integrations.
 
+## Skill self-improvement
+
+- For **bounded champion-vs-challenger skill evolution** (evidence refresh, eval-gated mutations, iteration cap), use the shared skill at `.agents/skills/skill-evolution-orchestrator/` (`SKILL.md`, `scripts/phase0.sh`–`phase6.sh`).
+- Planner entry for evolving **qa-plan-orchestrator**: `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` (delegates to the generic orchestrator; benchmark layout per `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`).
+
 ## Command Playbooks (.cursor/commands)
 
 Treat each file below as a reusable playbook. Select the closest match by user intent and follow it as procedural guidance.

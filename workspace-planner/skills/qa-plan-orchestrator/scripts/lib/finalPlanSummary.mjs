@@ -60,6 +60,55 @@ function parsePlanStats(content) {
   };
 }
 
+function extractDeveloperSmokeRows(content) {
+  const text = normalizeContent(content);
+  const lines = text.split('\n');
+  const rows = [];
+  let currentSection = '';
+
+  for (const line of lines) {
+    if (!/^\s*[-*] /.test(line)) continue;
+    const indent = bulletIndent(line);
+    const label = line.replace(/^\s*[-*]\s+/, '').trim();
+
+    if (indent === 0) {
+      currentSection = label.replace(/\s*<P\d+>\s*$/i, '').trim();
+      continue;
+    }
+
+    const isP1 = /<P1>/i.test(label);
+    const isAnalogGate = /\[ANALOG-GATE\]/i.test(label);
+    if (!isP1 && !isAnalogGate) {
+      continue;
+    }
+
+    rows.push({
+      checklist: '[ ]',
+      source: isAnalogGate ? 'ANALOG-GATE' : 'P1',
+      section: currentSection || '(unsectioned)',
+      scenario: label.replace(/\s*<P\d+>\s*/gi, '').trim(),
+    });
+  }
+
+  return rows;
+}
+
+function buildDeveloperSmokeMarkdown({ featureId, rows, generatedAt }) {
+  const dateStr = new Date(generatedAt).toUTCString().replace(' GMT', ' UTC');
+  const tableRows = rows.length
+    ? rows.map((row) => `| ${row.checklist} | ${row.source} | ${row.section} | ${row.scenario} |`).join('\n')
+    : '| [ ] | NONE | (none) | No P1 or [ANALOG-GATE] scenarios detected |';
+
+  return `# Developer Smoke Test (${featureId})
+
+**Generated:** ${dateStr}
+
+| Check | Source | Section | Scenario |
+|-------|--------|---------|----------|
+${tableRows}
+`;
+}
+
 function truncateSummary(text, maxLen = 60) {
   const s = String(text || '').trim();
   if (s.length <= maxLen) return s;
@@ -73,6 +122,7 @@ function truncateSummary(text, maxLen = 60) {
  * @param {string} options.planContent - Content of qa_plan_final.md
  * @param {string} options.finalPath - Absolute path to qa_plan_final.md
  * @param {string} options.summaryPath - Output path for the summary (context/final_plan_summary_<feature-id>.md)
+ * @param {string} [options.developerSmokePath] - Output path for the developer smoke markdown
  * @param {string} [options.generatedAt] - ISO timestamp (default: now)
  * @returns {Promise<string>} Path to the written summary file
  */
@@ -81,9 +131,11 @@ export async function generateFinalPlanSummary({
   planContent,
   finalPath,
   summaryPath,
+  developerSmokePath,
   generatedAt = new Date().toISOString(),
 }) {
   const stats = parsePlanStats(planContent);
+  const developerSmokeRows = extractDeveloperSmokeRows(planContent);
   const dateStr = new Date(generatedAt).toUTCString().replace(' GMT', ' UTC');
   const centralTopic = planContent.split('\n')[0]?.trim() || featureId;
   const summaryShort = truncateSummary(centralTopic);
@@ -130,6 +182,14 @@ ${sectionRows || '| (none) | 0 |'}
 `;
 
   await writeFile(summaryPath, report, 'utf8');
+  if (developerSmokePath) {
+    const developerSmoke = buildDeveloperSmokeMarkdown({
+      featureId,
+      rows: developerSmokeRows,
+      generatedAt,
+    });
+    await writeFile(developerSmokePath, developerSmoke, 'utf8');
+  }
   return summaryPath;
 }
 
@@ -142,11 +202,13 @@ ${sectionRows || '| (none) | 0 |'}
 export async function generateFinalPlanSummaryFromRunDir(featureId, runDir) {
   const finalPath = join(runDir, 'qa_plan_final.md');
   const summaryPath = join(runDir, 'context', `final_plan_summary_${featureId}.md`);
+  const developerSmokePath = join(runDir, 'context', `developer_smoke_test_${featureId}.md`);
   const planContent = await readFile(finalPath, 'utf8');
   return generateFinalPlanSummary({
     featureId,
     planContent,
     finalPath,
     summaryPath,
+    developerSmokePath,
   });
 }

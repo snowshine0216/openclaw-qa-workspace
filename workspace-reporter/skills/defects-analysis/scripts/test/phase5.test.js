@@ -54,11 +54,19 @@ test('generates final bundle and emits feishu marker after a passing review', as
   assert.match(result.stdout, /FEISHU_NOTIFY:/);
   const finalReport = await readFile(join(runDir, 'BCIN-5809_REPORT_FINAL.md'), 'utf8');
   const review = await readFile(join(runDir, 'BCIN-5809_REVIEW_SUMMARY.md'), 'utf8');
+  const freshness = JSON.parse(
+    await readFile(join(runDir, 'context', 'analysis_freshness_BCIN-5809.json'), 'utf8'),
+  );
+  const selfTestGap = await readFile(join(runDir, 'BCIN-5809_SELF_TEST_GAP_ANALYSIS.md'), 'utf8');
+  const qaPlanCross = await readFile(join(runDir, 'BCIN-5809_QA_PLAN_CROSS_ANALYSIS.md'), 'utf8');
   const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
   assert.match(finalReport, /QA Risk & Defect Analysis Report/);
   assert.match(finalReport, /\[BUG-1\]\(https:\/\/jira\.real\.example\/browse\/BUG-1\)/);
   assert.match(finalReport, /Crash when a < b/);
   assert.match(review, /## Review Result: pass/);
+  assert.equal(freshness.source_issue_timestamp, '2026-03-10T12:00:00.000+0000');
+  assert.match(selfTestGap, /Self-Test Gap Analysis/);
+  assert.match(qaPlanCross, /QA Plan Cross Analysis/);
   assert.equal(task.overall_status, 'completed');
   assert.equal(task.notification_status, 'sent');
 

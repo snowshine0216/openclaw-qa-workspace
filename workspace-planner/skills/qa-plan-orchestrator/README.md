@@ -18,6 +18,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - `request_fulfillment_<feature-id>.md` and `.json` under `context/`
 - `artifact_lookup_<feature-id>.md` under `context/`
 - versioned phase-scoped draft QA plans under `drafts/` (`qa_plan_phase4a_r<round>.md`, `qa_plan_phase4b_r<round>.md`, `qa_plan_phase5a_r<round>.md`, `qa_plan_phase5b_r<round>.md`, `qa_plan_phase6_r<round>.md`)
+- `developer_smoke_test_<feature-id>.md` under `context/`, derived from P1 and `[ANALOG-GATE]` scenarios during Phase 7
 - phase spawn manifests under the project root
 - a promoted `qa_plan_final.md` only after user approval
 
@@ -32,6 +33,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - `references/review-rubric-phase6.md`
 - `references/context-index-schema.md`
 - `references/e2e-coverage-rules.md`
+- `knowledge-packs/` when a feature family has a mandatory pack
 - `docs/DOCS_GOVERNANCE.md`
 
 ## Phase-to-Reference Mapping
@@ -53,3 +55,4 @@ Each spawned subagent receives explicit instructions in its task text to read th
 - Supporting issues remain `context_only_no_defect_analysis` evidence inputs. They are never defect-analysis triggers in this workflow.
 - Report-editor deep research must record the `tavily-search` pass before any `confluence` fallback for the same topic.
 - Every support or deep-research artifact that influences drafting must live under `context/` and appear in `artifact_lookup_<feature-id>.md`.
+- When `knowledge-packs/report-editor/` is in scope, required capabilities, analog gates, SDK-visible contracts, and interaction pairs must map to scenarios, review gates, or explicit exclusions.

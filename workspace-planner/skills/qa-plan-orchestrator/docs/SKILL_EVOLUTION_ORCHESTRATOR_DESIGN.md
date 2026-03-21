@@ -2,10 +2,10 @@
 
 > **Design ID:** `skill-evolution-orchestrator-qa-plan-2026-03-21`
 > **Date:** 2026-03-21
-> **Status:** Draft
+> **Status:** Draft (design); **MVP implemented** for shared `.agents/skills/skill-evolution-orchestrator` (2026-03-21)
 > **Scope:** `.agents/skills/skill-evolution-orchestrator`, additive hooks in `workspace-planner/skills/qa-plan-orchestrator`, additive freshness/output hooks in `workspace-reporter/skills/defects-analysis`
 >
-> **Constraint:** This is a design artifact. Do not implement until approved.
+> **Constraint:** Design artifact; shared orchestrator scripts are implemented per MVP. Remaining items (qa-plan hooks, defects-analysis metadata, full replay evals) follow the Implementation Checklist below.
 >
 > **Reviewer Gate:** Pending. This draft has not yet been run through the required `openclaw-agent-design-review` specialist loop. Environment setup, deliverables, AGENTS.md sync, benchmark ownership, per-phase interaction, Feishu notification, MVP phasing, and quality gates are included for reviewer alignment.
 
@@ -25,16 +25,16 @@ No additional global setup beyond standard OpenClaw workspace tooling and target
 
 | Action | Path | Notes |
 |--------|------|-------|
-| CREATE | `.agents/skills/skill-evolution-orchestrator/SKILL.md` | Via `skill-creator` |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/reference.md` | Runtime state, scoring, gates |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/README.md` | Operator overview |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/scripts/` | `phase0.sh`–`phase6.sh`, `lib/`, `scripts/test/` |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/evals/evals.json` | Benchmark profiles |
-| CREATE | `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` | NLG playbook: qa-plan-only parameters and evidence hooks; calls generic orchestrator |
-| UPDATE | `AGENTS.md` (repo root) | SOP pointer for skill evolution |
-| UPDATE | `workspace-planner/AGENTS.md` | Planner evolution + knowledge packs |
-| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 |
-| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 |
+| CREATE | `.agents/skills/skill-evolution-orchestrator/SKILL.md` | Via `skill-creator` — **Done** |
+| CREATE | `.agents/skills/skill-evolution-orchestrator/reference.md` | Runtime state, scoring, gates — **Done** |
+| CREATE | `.agents/skills/skill-evolution-orchestrator/README.md` | Operator overview — **Done** |
+| CREATE | `.agents/skills/skill-evolution-orchestrator/scripts/` | `phase0.sh`–`phase6.sh`, `lib/`, `scripts/test/` — **Done** |
+| CREATE | `.agents/skills/skill-evolution-orchestrator/evals/evals.json` | Benchmark profiles — **Done** |
+| CREATE | `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` | NLG playbook: qa-plan-only parameters and evidence hooks; calls generic orchestrator — **Done** |
+| UPDATE | `AGENTS.md` (repo root) | SOP pointer for skill evolution — **Done** |
+| UPDATE | `workspace-planner/AGENTS.md` | Planner evolution + knowledge packs — **Done** |
+| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 — **Pending** |
+| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 — **Pending** |
 
 ## 2. AGENTS.md Sync
 
@@ -1269,19 +1269,19 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 
 ## Implementation Checklist
 
-1. Create `.agents/skills/skill-evolution-orchestrator/` with `SKILL.md`, `reference.md`, `README.md`, `scripts/`, `scripts/test/`, and `evals/`.
-2. Implement Phase 0-6 entry scripts and helper modules with persistent artifacts only under `runs/<run-key>/`.
-3. Add **profile-driven** evidence freshness in Phase 1: always inspect target skill artifacts and eval catalog; run defects-analysis refresh, knowledge-pack version checks, and related hooks **only** when the selected `benchmark_profile` declares them (see qa-plan extensions in Architecture).
-4. Add mutation backlog and candidate scoring artifacts.
+1. ~~Create `.agents/skills/skill-evolution-orchestrator/` with `SKILL.md`, `reference.md`, `README.md`, `scripts/`, `scripts/test/`, and `evals/`.~~ **Done**
+2. ~~Implement Phase 0-6 entry scripts and helper modules with persistent artifacts only under `runs/<run-key>/`.~~ **Done** (`scripts/phase0.sh`–`phase6.sh`, `scripts/lib/*.mjs`, optional `--run-root` / `--repo-root`)
+3. Add **profile-driven** evidence freshness in Phase 1: always inspect target skill artifacts and eval catalog; run defects-analysis refresh, knowledge-pack version checks, and related hooks **only** when the selected `benchmark_profile` declares them (see qa-plan extensions in Architecture). **Partial** (profiles + knowledge-pack check for qa-plan adapter; defects-analysis spawn manifest stub when blocking)
+4. ~~Add mutation backlog and candidate scoring artifacts.~~ **Done**
 5. Add `qa-plan-orchestrator/knowledge-packs/report-editor/pack.md` and `pack.json`.
 6. Update `phase4a` and `phase5a/5b` contracts to consume knowledge-pack and analog-gate rules.
 7. Update `phase7.sh` and `finalPlanSummary.mjs` to generate `developer_smoke_test_<feature-id>.md`.
 8. Extend `qa-plan-orchestrator/evals/evals.json` with replay and knowledge-pack eval groups.
 9. Extend `defects-analysis` output metadata for freshness-aware reuse.
-10. Add script tests and eval fixtures before implementation is considered review-ready.
-11. Run target-skill smoke tests and evals after each candidate mutation.
+10. ~~Add script tests and eval fixtures before implementation is considered review-ready.~~ **Partial** (`npm test`: unit tests + minimal-target integration fixture; extend per Tests section as needed)
+11. Run target-skill smoke tests and evals after each candidate mutation. **Operational** (phase4 runs `npm test` + `evals/run_evals.mjs --dry-run` when present)
 12. Do not finalize implementation until the required design-review gate passes.
-13. Create `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` (NLG playbook for qa-plan evolution) and wire it from `workspace-planner/AGENTS.md` per §2 AGENTS.md Sync.
+13. ~~Create `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` (NLG playbook for qa-plan evolution) and wire it from `workspace-planner/AGENTS.md` per §2 AGENTS.md Sync.~~ **Done** (root `AGENTS.md` updated with skill pointer)
 
 ## References
 

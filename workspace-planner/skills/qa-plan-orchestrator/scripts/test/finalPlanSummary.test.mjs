@@ -79,10 +79,46 @@ test('generateFinalPlanSummaryFromRunDir reads from run dir and writes to contex
   const report = await import('node:fs/promises').then((fs) =>
     fs.readFile(join(contextDir, 'final_plan_summary_BCIN-100.md'), 'utf8')
   );
+  const developerSmoke = await import('node:fs/promises').then((fs) =>
+    fs.readFile(join(contextDir, 'developer_smoke_test_BCIN-100.md'), 'utf8')
+  );
 
   assert.match(report, /Final Plan Summary Complete/i);
   assert.match(report, /BCIN-100/);
   assert.match(report, /Total Scenarios.*1/);
+  assert.match(developerSmoke, /Developer Smoke Test/);
+  assert.match(developerSmoke, /\| \[ \] \| P1 \|/);
+
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('generateFinalPlanSummary writes analog-gate rows into developer smoke output', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'final-summary-analog-'));
+  const finalPath = join(tmp, 'qa_plan_final.md');
+  const summaryPath = join(tmp, 'final_plan_summary_BCIN-7289.md');
+  const developerSmokePath = join(tmp, 'developer_smoke_test_BCIN-7289.md');
+  const planContent = `Feature QA Plan (BCIN-7289)
+
+- Regression / Known Risks
+    * Save dialog completeness [ANALOG-GATE]
+        - Open save dialog <P1>
+            - Save dialog remains interactive
+`;
+
+  await generateFinalPlanSummary({
+    featureId: 'BCIN-7289',
+    planContent,
+    finalPath,
+    summaryPath,
+    developerSmokePath,
+    generatedAt: '2026-03-21T12:00:00.000Z',
+  });
+
+  const developerSmoke = await import('node:fs/promises').then((fs) =>
+    fs.readFile(developerSmokePath, 'utf8')
+  );
+  assert.match(developerSmoke, /ANALOG-GATE/);
+  assert.match(developerSmoke, /Save dialog completeness/);
 
   await rm(tmp, { recursive: true, force: true });
 });
