@@ -398,6 +398,38 @@ For `qa-plan-v2`, the prepared baseline currently expects:
 - `3` runs per configuration
 - `192` total runs
 
+For one-click batch execution, use:
+
+```bash
+npm run benchmark:v2:execute:codex -- --batch 1
+```
+
+Equivalent explicit form:
+
+```bash
+npm run benchmark:v2:execute -- \
+  --batch 1 \
+  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
+  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
+```
+
+Execution contract:
+
+- the executor script is invoked once per run with `--request <run-dir>/execution_request.json`
+- it must write outputs under `run.output_dir`
+- it may write `outputs/metrics.json` with `total_tokens`
+- the grader script is optional only if the executor itself writes `grading.json`
+- the harness writes `timing.json` and refreshes the batch manifest/checklist after execution
+- set `CODEX_BIN=/path/to/codex` only when you need to override the installed Codex CLI
+- set `CODEX_BENCHMARK_MODEL=<model>` to pin a non-default model for runner/grader calls
+
+Each `execution_request.json` includes:
+
+- case metadata, prompt, expectations, and fixture refs
+- isolated copied fixture inputs under `run-dir/inputs/fixtures/`
+- `skill_snapshot_path` for `with_skill` runs and `null` for `without_skill`
+- canonical paths for `output_dir`, `grading.json`, `timing.json`, and transcript log
+
 ### Grade the runs
 
 Each run directory must receive:
