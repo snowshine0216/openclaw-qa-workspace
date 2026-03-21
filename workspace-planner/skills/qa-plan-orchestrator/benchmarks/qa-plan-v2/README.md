@@ -360,7 +360,9 @@ This will:
 
 ### Materialize a batch checklist
 
-To materialize one execution batch from the prepared manifest:
+`benchmark:v2:batch` requires a completed `benchmark:v2:prepare` run first.
+
+To materialize one baseline-execution batch from the prepared manifest:
 
 ```bash
 npm run benchmark:v2:batch -- --batch 1
@@ -372,6 +374,8 @@ This writes:
 - `iteration-0/batches/batch-1/batch_checklist.md`
 
 Use this when you want a concrete per-batch execution surface without re-reading the full `spawn_manifest.json`.
+
+Batches are for the `iteration-0` baseline workflow. Iteration comparison for challenger scoring is separate and uses `run_iteration_compare.mjs`.
 
 Natural-language command example for an agent:
 
@@ -456,7 +460,7 @@ This writes:
 For iteration comparisons after `benchmark.json` exists:
 
 ```bash
-npm run benchmark:v2:score -- --iteration 1 --comparison-mode iteration_compare --primary-configuration new_skill --reference-configuration old_skill
+npm run benchmark:v2:score -- --iteration 1 --comparison-mode executed_benchmark_compare --primary-configuration new_skill --reference-configuration old_skill
 ```
 
 The scorer evaluates acceptance by `evidence_mode`:
@@ -464,6 +468,12 @@ The scorer evaluates acceptance by `evidence_mode`:
 1. no regression on `blind_pre_defect`
 2. improvement on `retrospective_replay`
 3. no regression on `holdout_regression`
+
+### Executed vs synthetic iteration comparison
+
+- `scripts/run_iteration_compare.mjs` is the promotion path. It assembles `benchmark.json` from real per-run `outputs/`, `grading.json`, and `timing.json`.
+- `scripts/lib/publishIterationComparison.mjs` is a synthetic structural fallback. It does not execute the benchmark and cannot promote a challenger.
+- Replay cases are opt-in. Without `defect_analysis_run_key`, iteration comparison includes only `blind_pre_defect` and `holdout_regression`.
 
 ## Practical Workflow
 

@@ -61,7 +61,7 @@ Handoff rules:
 ## Skill self-improvement
 
 - For **bounded champion-vs-challenger skill evolution** (evidence refresh, eval-gated mutations, iteration cap), use the shared skill at `.agents/skills/skill-evolution-orchestrator/` (`SKILL.md`, `scripts/phase0.sh`–`phase6.sh`).
-- Planner entry for evolving **qa-plan-orchestrator**: `workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md` (delegates to the generic orchestrator; benchmark layout per `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`).
+- To evolve **qa-plan-orchestrator**, use the shared skill `.agents/skills/skill-evolution-orchestrator/` (`SKILL.md`, `reference.md`, `scripts/orchestrate.sh`). Benchmark layout: `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md` (campaign root: `benchmarks/qa-plan-v2/`).
 
 ## Command Playbooks (.cursor/commands)
 

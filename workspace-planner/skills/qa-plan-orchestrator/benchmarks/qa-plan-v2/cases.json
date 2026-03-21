@@ -481,6 +481,21 @@
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows"
+    },
+    {
+      "case_id": "RE-DEFECT-FEEDBACKLOOP-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase8",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "defect feedback loop injects scenarios from prior defects into next feature QA plan"
     }
   ]
 }

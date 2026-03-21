@@ -15,7 +15,7 @@ function parseArgs(argv) {
   const options = {
     benchmarkRoot: DEFAULT_BENCHMARK_ROOT,
     iteration: 1,
-    comparisonMode: 'iteration_compare',
+    comparisonMode: 'executed_benchmark_compare',
     primaryConfiguration: 'new_skill',
     referenceConfiguration: 'old_skill',
   };

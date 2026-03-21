@@ -7,14 +7,6 @@ export async function loadCaseIndex(casesPath) {
   return new Map(casesDocument.cases.map((caseDefinition, index) => [index + 1, caseDefinition]));
 }
 
-function buildEmptyModeScore() {
-  return {
-    eval_count: 0,
-    run_count: 0,
-    mean_pass_rate: null,
-  };
-}
-
 function calculateMean(values) {
   if (values.length === 0) {
     return null;
@@ -100,6 +92,26 @@ function computeBlockingCasePass({
   return blockingRuns.every((run) => run.result.pass_rate >= 1);
 }
 
+function isModeActive(activeEvidenceModes, mode) {
+  return activeEvidenceModes.has(mode);
+}
+
+function evaluateModeCheck({
+  activeEvidenceModes,
+  mode,
+  primaryMean,
+  referenceMean,
+  predicate,
+}) {
+  if (!isModeActive(activeEvidenceModes, mode)) {
+    return true;
+  }
+  if (primaryMean == null || referenceMean == null) {
+    return false;
+  }
+  return predicate(primaryMean, referenceMean);
+}
+
 export function buildScorecard({
   benchmark,
   benchmarkManifest,
@@ -108,6 +120,7 @@ export function buildScorecard({
   primaryConfiguration,
   referenceConfiguration,
   iteration,
+  scoringFidelity = benchmark.metadata?.scoring_fidelity ?? 'executed',
 }) {
   const modeScores = computeModeScores({
     benchmark,
@@ -115,6 +128,12 @@ export function buildScorecard({
     primaryConfiguration,
     referenceConfiguration,
   });
+  const activeEvidenceModes = new Set(
+    benchmark.metadata?.active_evidence_modes ??
+      Object.entries(modeScores.primary)
+        .filter(([, value]) => value.run_count > 0)
+        .map(([mode]) => mode),
+  );
 
   const primaryBlind = modeScores.primary.blind_pre_defect.mean_pass_rate;
   const referenceBlind = modeScores.reference.blind_pre_defect.mean_pass_rate;
@@ -129,34 +148,52 @@ export function buildScorecard({
       caseIndex,
       configuration: primaryConfiguration,
     }),
-    blind_pre_defect_non_regression: primaryBlind == null || referenceBlind == null
-      ? true
-      : primaryBlind >= referenceBlind,
-    retrospective_replay_improved: primaryReplay == null || referenceReplay == null
-      ? true
-      : primaryReplay > referenceReplay,
-    holdout_regression_non_regression: primaryHoldout == null || referenceHoldout == null
-      ? true
-      : primaryHoldout >= referenceHoldout,
+    blind_pre_defect_non_regression: evaluateModeCheck({
+      activeEvidenceModes,
+      mode: 'blind_pre_defect',
+      primaryMean: primaryBlind,
+      referenceMean: referenceBlind,
+      predicate: (primary, reference) => primary >= reference,
+    }),
+    retrospective_replay_improved: evaluateModeCheck({
+      activeEvidenceModes,
+      mode: 'retrospective_replay',
+      primaryMean: primaryReplay,
+      referenceMean: referenceReplay,
+      predicate: (primary, reference) => primary > reference,
+    }),
+    holdout_regression_non_regression: evaluateModeCheck({
+      activeEvidenceModes,
+      mode: 'holdout_regression',
+      primaryMean: primaryHoldout,
+      referenceMean: referenceHoldout,
+      predicate: (primary, reference) => primary >= reference,
+    }),
   };
 
   const shouldRequireBlocking = benchmarkManifest.acceptance_policy?.require_blocking_cases_pass !== false;
-  const shouldRequireBlind = benchmarkManifest.acceptance_policy?.require_non_decreasing_blind_score !== false;
-  const shouldRequireReplay = benchmarkManifest.acceptance_policy?.require_non_decreasing_replay_score !== false;
-  const shouldRequireHoldout = benchmarkManifest.acceptance_policy?.require_no_holdout_regression !== false;
+  const shouldRequireBlind = isModeActive(activeEvidenceModes, 'blind_pre_defect') &&
+    benchmarkManifest.acceptance_policy?.require_non_decreasing_blind_score !== false;
+  const shouldRequireReplay = isModeActive(activeEvidenceModes, 'retrospective_replay') &&
+    benchmarkManifest.acceptance_policy?.require_non_decreasing_replay_score !== false;
+  const shouldRequireHoldout = isModeActive(activeEvidenceModes, 'holdout_regression') &&
+    benchmarkManifest.acceptance_policy?.require_no_holdout_regression !== false;
 
   const decisionPassed =
     (!shouldRequireBlocking || acceptanceChecks.blocking_cases_pass) &&
     (!shouldRequireBlind || acceptanceChecks.blind_pre_defect_non_regression) &&
     (!shouldRequireReplay || acceptanceChecks.retrospective_replay_improved) &&
     (!shouldRequireHoldout || acceptanceChecks.holdout_regression_non_regression);
+  const blockedSynthetic = scoringFidelity === 'synthetic';
 
   return {
     benchmark_version: benchmarkManifest.benchmark_version,
     iteration,
     comparison_mode: comparisonMode,
+    scoring_fidelity: scoringFidelity,
     primary_configuration: primaryConfiguration,
     reference_configuration: referenceConfiguration,
+    active_evidence_modes: [...activeEvidenceModes],
     acceptance_checks: {
       ...acceptanceChecks,
       policy: {
@@ -164,14 +201,19 @@ export function buildScorecard({
         require_non_decreasing_blind_score: shouldRequireBlind,
         require_non_decreasing_replay_score: shouldRequireReplay,
         require_no_holdout_regression: shouldRequireHoldout,
+        null_score_policy: 'reject',
       },
     },
     mode_scores: modeScores,
     decision: {
-      result: decisionPassed ? 'accept' : 'reject',
-      reason: decisionPassed
-        ? 'blind_pre_defect did not regress, retrospective_replay improved, and holdout_regression did not regress.'
-        : 'One or more evidence-mode acceptance checks failed.',
+      result: blockedSynthetic
+        ? 'blocked_synthetic'
+        : (decisionPassed ? 'accept' : 'reject'),
+      reason: blockedSynthetic
+        ? 'Synthetic structural comparison is informative only and cannot promote a challenger.'
+        : (decisionPassed
+          ? 'blind_pre_defect did not regress, retrospective_replay improved, and holdout_regression did not regress.'
+          : 'One or more evidence-mode acceptance checks failed.'),
     },
   };
 }
@@ -183,6 +225,7 @@ export async function writeScorecardForIteration({
   comparisonMode,
   primaryConfiguration,
   referenceConfiguration,
+  scoringFidelity = null,
 }) {
   const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
   const caseIndex = await loadCaseIndex(join(benchmarkRoot, 'cases.json'));
@@ -196,6 +239,7 @@ export async function writeScorecardForIteration({
     primaryConfiguration,
     referenceConfiguration,
     iteration,
+    scoringFidelity: scoringFidelity ?? benchmark.metadata?.scoring_fidelity ?? 'executed',
   });
 
   const scorecardPath = join(iterationDir, 'scorecard.json');

@@ -65,9 +65,12 @@ Runner added:
 
 `qa-plan-v2` currently prepares:
 
-- `21` cases
+- `32` cases
 - `3` runs per configuration
-- `126` total baseline runs
+- `192` total baseline runs
+- `24` blind_pre_defect cases
+- `6` retrospective_replay cases
+- `2` holdout_regression cases
 
 ### 3. Global benchmark schema completed
 
@@ -94,7 +97,53 @@ Supported `evidence_mode` values:
 - non-customer issues are excluded from blind mode
 - raw materials belong in `fixtures_manifest.json`, not inline in `cases.json`
 
-### 4. Evidence-mode scoring completed
+### 4. Frozen Jira evidence completed
+
+Blind bundles are no longer URL-only placeholders.
+
+Completed:
+
+- frozen Jira raw exports under `benchmarks/qa-plan-v2/fixtures/jira/`
+- normalized `*.customer-scope.json` snapshots per feature
+- frozen adjacent Jira evidence for weak customer-signal cases
+- frozen BCED-2416 parented-issue export for BCIN-7289 analog borrowing
+
+Current blind evidence state:
+
+- direct customer-signal snapshots exist for `BCIN-976`, `BCIN-6709`, `BCED-1719`, `BCIN-7231`, `BCDA-8653`, `BCIN-7547`, and `BCED-2416`
+- adjacent frozen Jira evidence is attached for weaker cases such as `BCIN-7289`, `BCED-4860`, `BCVE-6797`, and `BCVE-6678`
+
+This means the blind benchmark is now reproducible from frozen local artifacts instead of depending on live Jira reads at execution time.
+
+### 5. Complete blind-coverage matrix completed
+
+The blind benchmark is no longer only breadth-first.
+
+Completed:
+
+- expanded from `13` blind cases to `24`
+- moved from one-case-per-family breadth to multi-phase coverage for key families
+- added intake, scenario-draft, and shipment-checkpoint blind cases for tier-1 and tier-2 families
+- added one new blocking blind ship-gate case for `BCIN-7289`
+
+Current family coverage:
+
+- `report-editor`
+  - `phase0`, `phase1`, `phase3`, `phase4a`, `phase4b`, `phase5b`, `phase6`
+- `native-embedding`
+  - `phase1`, `phase4a`, `phase5b`
+- `modern-grid`
+  - `phase1`, `phase4a`, `phase5b`
+- `visualization`
+  - `phase1`, `phase4a`, `phase5b`
+- `export`
+  - `phase1`, `phase4a`, `phase5b`
+- `search-box-selector`
+  - `phase4a`, `phase5b`
+- `docs`
+  - `docs`
+
+### 6. Evidence-mode scoring completed
 
 Scorer added:
 
@@ -107,7 +156,7 @@ Acceptance is now split by evidence mode:
 2. improvement on `retrospective_replay`
 3. no regression on `holdout_regression`
 
-### 5. Benchmark spec and docs synced
+### 7. Benchmark spec and docs synced
 
 Updated:
 
@@ -135,10 +184,11 @@ Current result:
 Prepared:
 
 - `benchmarks/qa-plan-v2/iteration-0/spawn_manifest.json`
+- `docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
 
 Not yet done:
 
-- execute the `84` real baseline runs
+- execute the `192` real baseline runs
 - create real `grading.json` for each run
 - create real `timing.json` for each run
 - aggregate to `benchmark.json` / `benchmark.md`
@@ -162,7 +212,7 @@ The benchmark schema now supports `knowledge_pack_key`, but feature-family knowl
 Run the real `qa-plan-v2` baseline against the current champion skill:
 
 1. use `benchmarks/qa-plan-v2/iteration-0/spawn_manifest.json`
-2. execute all `with_skill` and `without_skill` runs
+2. follow `docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md` and execute batch by batch
 3. save `grading.json` and `timing.json` for each run
 4. run:
 

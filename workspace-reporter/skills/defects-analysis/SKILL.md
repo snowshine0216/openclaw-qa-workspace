@@ -88,6 +88,9 @@ On reporter-local runs:
 - `<skill-root>/runs/<run-key>/<run-key>_REPORT_DRAFT.md`
 - `<skill-root>/runs/<run-key>/<run-key>_REVIEW_SUMMARY.md`
 - `<skill-root>/runs/<run-key>/<run-key>_REPORT_FINAL.md`
+- `<skill-root>/runs/<run-key>/<run-key>_QA_PLAN_CROSS_ANALYSIS.md`
+- `<skill-root>/runs/<run-key>/<run-key>_SELF_TEST_GAP_ANALYSIS.md`
+- `<skill-root>/runs/<run-key>/context/gap_bundle_<run-key>.json`
 
 ## Shared Skill Reuse
 

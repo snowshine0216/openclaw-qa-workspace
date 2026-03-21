@@ -4,14 +4,23 @@
 **Benchmark:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2`
 **Prepared manifest:** `benchmarks/qa-plan-v2/iteration-0/spawn_manifest.json`
 
-Use this document to execute the prepared benchmark in stable batches instead of trying to run all `192` runs at once.
+Use this document to execute the prepared `iteration-0` baseline in stable batches instead of trying to run all `192` runs at once.
+
+## Precondition
+
+Before materializing any batch, refresh the baseline surface:
+
+```bash
+cd workspace-planner/skills/qa-plan-orchestrator
+npm run benchmark:v2:prepare
+```
+
+`benchmark:v2:batch` depends on the generated `iteration-0/spawn_manifest.json`. The batch command is not missing; it is unblocked by baseline preparation.
 
 ## Batch Materialization Command
 
-Materialize a concrete batch manifest and checklist with:
-
 ```bash
-cd /Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator
+cd workspace-planner/skills/qa-plan-orchestrator
 npm run benchmark:v2:batch -- --batch 1
 ```
 
@@ -20,17 +29,7 @@ This writes:
 - `benchmarks/qa-plan-v2/iteration-0/batches/batch-1/batch_manifest.json`
 - `benchmarks/qa-plan-v2/iteration-0/batches/batch-1/batch_checklist.md`
 
-Natural-language command example for an agent:
-
-```text
-Materialize benchmark batch 1 for qa-plan-v2 and show me the generated batch manifest and checklist paths.
-```
-
-Each case has:
-
-- `3` `with_skill` runs
-- `3` `without_skill` runs
-- `6` runs total per case
+Batches are for baseline execution only. Challenger iteration comparison is a separate workflow handled by `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`.
 
 ## Totals
 
@@ -163,7 +162,7 @@ For each case in the active batch:
 4. write `grading.json` for each run
 5. write `timing.json` for each run
 
-After all batches complete:
+After all baseline batches complete:
 
 ```bash
 cd workspace-planner/skills/qa-plan-orchestrator
@@ -183,5 +182,6 @@ Update these lines manually as execution progresses.
 
 ## Notes
 
-- Do not edit `cases.json`, `fixtures_manifest.json`, or `benchmark_manifest.json` once real batch execution starts.
-- If the benchmark contract must change after execution starts, fork to a new benchmark version.
+- Do not edit `cases.json`, `fixtures_manifest.json`, or `benchmark_manifest.json` once real baseline execution starts.
+- Replay remains opt-in for iteration comparison. Batch 5 exists for baseline replay execution, not for implicit challenger promotion.
+- Synthetic structural comparison is not equivalent to executed benchmark evidence.

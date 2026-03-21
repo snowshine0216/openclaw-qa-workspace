@@ -177,7 +177,7 @@ export function parseBatchArgs(argv) {
   for (let index = 0; index < args.length; index += 1) {
     const value = args[index];
     if (value === '--batch' && args[index + 1]) {
-      options.batchNumber = parseBatchNumber(args[index + 1]);
+      options.batchNumber = getBatchDefinition(args[index + 1]).batch_number;
       index += 1;
     } else if (value === '--benchmark-root' && args[index + 1]) {
       options.benchmarkRoot = args[index + 1];

@@ -146,6 +146,84 @@ test('buildScorecard rejects when blind_pre_defect regresses even if replay impr
   assert.equal(scorecard.acceptance_checks.retrospective_replay_improved, true);
 });
 
+test('buildScorecard rejects missing evidence instead of silently passing null mean scores', () => {
+  const caseIndex = new Map([
+    [1, { evidence_mode: 'blind_pre_defect', blocking: true }],
+    [2, { evidence_mode: 'holdout_regression', blocking: true }],
+  ]);
+  const benchmark = {
+    metadata: {
+      active_evidence_modes: ['blind_pre_defect', 'holdout_regression'],
+    },
+    runs: [],
+  };
+  const manifest = {
+    benchmark_version: 'qa-plan-v2',
+    acceptance_policy: {
+      require_blocking_cases_pass: true,
+      require_no_holdout_regression: true,
+      require_non_decreasing_blind_score: true,
+      require_non_decreasing_replay_score: true,
+    },
+  };
+
+  const scorecard = buildScorecard({
+    benchmark,
+    benchmarkManifest: manifest,
+    caseIndex,
+    comparisonMode: 'executed_benchmark_compare',
+    primaryConfiguration: 'new_skill',
+    referenceConfiguration: 'old_skill',
+    iteration: 1,
+  });
+
+  assert.equal(scorecard.decision.result, 'reject');
+  assert.equal(scorecard.acceptance_checks.blind_pre_defect_non_regression, false);
+  assert.equal(scorecard.acceptance_checks.holdout_regression_non_regression, false);
+  assert.equal(scorecard.acceptance_checks.policy.null_score_policy, 'reject');
+});
+
+test('buildScorecard blocks synthetic scorecards from promotion', () => {
+  const caseIndex = new Map([
+    [1, { evidence_mode: 'blind_pre_defect', blocking: true }],
+    [2, { evidence_mode: 'holdout_regression', blocking: true }],
+  ]);
+  const benchmark = {
+    metadata: {
+      active_evidence_modes: ['blind_pre_defect', 'holdout_regression'],
+    },
+    runs: [
+      buildRun({ evalId: 1, configuration: 'new_skill', passRate: 1 }),
+      buildRun({ evalId: 1, configuration: 'old_skill', passRate: 0.8 }),
+      buildRun({ evalId: 2, configuration: 'new_skill', passRate: 1 }),
+      buildRun({ evalId: 2, configuration: 'old_skill', passRate: 0.9 }),
+    ],
+  };
+  const manifest = {
+    benchmark_version: 'qa-plan-v2',
+    acceptance_policy: {
+      require_blocking_cases_pass: true,
+      require_no_holdout_regression: true,
+      require_non_decreasing_blind_score: true,
+      require_non_decreasing_replay_score: true,
+    },
+  };
+
+  const scorecard = buildScorecard({
+    benchmark,
+    benchmarkManifest: manifest,
+    caseIndex,
+    comparisonMode: 'synthetic_structural_compare',
+    primaryConfiguration: 'new_skill',
+    referenceConfiguration: 'old_skill',
+    iteration: 1,
+    scoringFidelity: 'synthetic',
+  });
+
+  assert.equal(scorecard.scoring_fidelity, 'synthetic');
+  assert.equal(scorecard.decision.result, 'blocked_synthetic');
+});
+
 test('writeScorecardForIteration writes scorecard.json from benchmark and case metadata', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'benchmark-v2-score-'));
   const benchmarkRoot = join(tmp, 'benchmarks', 'qa-plan-v2');

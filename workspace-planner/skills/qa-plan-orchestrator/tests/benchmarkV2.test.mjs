@@ -372,6 +372,9 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.deepEqual(spawnManifest.tasks[0].fixture_refs, ['BCIN-7289-defect-analysis-run']);
     assert.equal(spawnManifest.tasks[1].blind_policy.cutoff_policy, 'all_customer_issues_only');
     assert.deepEqual(spawnManifest.tasks[1].blind_policy.issue_scope.include_issue_classes, ['customer']);
+    assert.equal(spawnManifest.skill_path, skillRoot);
+    assert.equal(spawnManifest.workspace, benchmarkRoot);
+    assert.equal(spawnManifest.iteration_dir, join(benchmarkRoot, 'iteration-0'));
 
     const comparisonMetadata = JSON.parse(await readFile(
       join(benchmarkRoot, 'iteration-0', 'eval-1', 'with_skill', 'run-1', 'comparison_metadata.json'),
@@ -388,6 +391,10 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       'utf8',
     ));
     assert.equal(blindComparisonMetadata.blind_policy.cutoff_policy, 'all_customer_issues_only');
+    assert.equal(
+      JSON.stringify(spawnManifest).includes('/Users/vizcitest'),
+      false,
+    );
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

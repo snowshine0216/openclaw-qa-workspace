@@ -7,10 +7,10 @@
   "reference_configuration": "without_skill",
   "skill_snapshot_role": "champion_seed",
   "skill_snapshot_path": "iteration-0/champion_snapshot",
-  "executor_model": null,
-  "reasoning_effort": null,
+  "executor_model": "gpt-5.4",
+  "reasoning_effort": "high",
   "runs_per_configuration": 3,
-  "prepared_at": "2026-03-21T05:46:23.739Z",
+  "prepared_at": "2026-03-21T06:36:53.539Z",
   "case_count": 32,
   "evidence_mode_counts": {
     "blind_pre_defect": 24,

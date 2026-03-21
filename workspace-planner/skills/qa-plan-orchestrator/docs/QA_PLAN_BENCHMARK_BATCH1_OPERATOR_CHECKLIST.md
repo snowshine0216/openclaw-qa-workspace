@@ -7,6 +7,15 @@
 **Runs:** `24`
 **Status:** `completed`
 
+## Workflow
+
+Run Batch 1 in this order:
+
+1. `npm run benchmark:v2:prepare`
+2. `npm run benchmark:v2:batch -- --batch 1`
+3. execute the listed runs
+4. `npm run benchmark:v2:aggregate` after all baseline batches finish
+
 ## Cases
 
 - `eval-1` `P0-IDEMPOTENCY-001` `BCIN-976`
@@ -26,6 +35,7 @@ Each run is complete only when all of these exist in the run directory:
 
 ### Eval 1
 
+<<<<<<< Updated upstream
 - [x] `with_skill` `run-1`
   Path: `/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1`
 - [x] `with_skill` `run-2`
@@ -83,6 +93,65 @@ Each run is complete only when all of these exist in the run directory:
   Path: `/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-2`
 - [x] `without_skill` `run-3`
   Path: `/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-3`
+=======
+- [ ] `with_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-1`
+- [ ] `with_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-2`
+- [ ] `with_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/with_skill/run-3`
+- [ ] `without_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-1`
+- [ ] `without_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-2`
+- [ ] `without_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-1/without_skill/run-3`
+
+### Eval 2
+
+- [ ] `with_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-1`
+- [ ] `with_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-2`
+- [ ] `with_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/with_skill/run-3`
+- [ ] `without_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-1`
+- [ ] `without_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-2`
+- [ ] `without_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-2/without_skill/run-3`
+
+### Eval 3
+
+- [ ] `with_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-1`
+- [ ] `with_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-2`
+- [ ] `with_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/with_skill/run-3`
+- [ ] `without_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-1`
+- [ ] `without_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-2`
+- [ ] `without_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-3/without_skill/run-3`
+
+### Eval 23
+
+- [ ] `with_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-1`
+- [ ] `with_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-2`
+- [ ] `with_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/with_skill/run-3`
+- [ ] `without_skill` `run-1`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-1`
+- [ ] `without_skill` `run-2`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-2`
+- [ ] `without_skill` `run-3`
+  Path: `benchmarks/qa-plan-v2/iteration-0/eval-23/without_skill/run-3`
+>>>>>>> Stashed changes
 
 ## Batch Completion
 
@@ -94,4 +163,4 @@ Batch 1 is complete only when:
 Then update:
 
 - this file: `Status: completed`
-- [QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md): `Batch 1: completed`
+- [QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md](./QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md): `Batch 1: completed`
