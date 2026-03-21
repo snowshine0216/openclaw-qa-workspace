@@ -2,6 +2,129 @@
   "benchmark_version": "qa-plan-v2",
   "fixtures": [
     {
+      "fixture_id": "BCIN-976-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-976",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7289",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCED-2416-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCED-2416",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "snapshot_path": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-6709-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-6709",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "DOCS-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "DOCS",
+      "feature_family": "docs",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/README.md",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/README.md",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
       "fixture_id": "BCIN-7289-defect-analysis-run",
       "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
       "type": "defect_replay_source",

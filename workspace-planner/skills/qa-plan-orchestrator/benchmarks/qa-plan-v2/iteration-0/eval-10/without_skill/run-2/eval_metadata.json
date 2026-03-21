@@ -1,7 +1,7 @@
 {
   "eval_id": 10,
   "eval_name": "p6-quality-polish-001",
-  "prompt": "Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "prompt": "Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-6709-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
   "assertions": [
     "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
     "[phase_contract][advisory] Output aligns with primary phase phase6"
@@ -15,7 +15,19 @@
   "evidence_mode": "blind_pre_defect",
   "blocking": false,
   "fixture_refs": [
-    "embedding-dashboard-editor-compare-result"
+    "BCIN-6709-blind-pre-defect-bundle"
   ],
-  "benchmark_profile": "global-cross-feature-v1"
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": "BCIN-6709-blind-pre-defect-bundle",
+  "blind_policy": {
+    "cutoff_policy": "all_customer_issues_only",
+    "issue_scope": {
+      "include_issue_classes": [
+        "customer"
+      ],
+      "exclude_issue_classes": [
+        "non_customer"
+      ]
+    }
+  }
 }

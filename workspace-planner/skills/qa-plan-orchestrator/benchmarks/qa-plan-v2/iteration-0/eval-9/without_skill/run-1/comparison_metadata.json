@@ -5,8 +5,8 @@
   "skill_name": "qa-plan-orchestrator",
   "skill_snapshot_path": null,
   "skill_snapshot_label": "no-skill-baseline",
-  "model_name": "gpt-5.4",
-  "reasoning_effort": "high",
+  "model_name": null,
+  "reasoning_effort": null,
   "knowledge_pack_version": null,
   "benchmark_version": "qa-plan-v2",
   "eval_id": 9,
@@ -22,5 +22,7 @@
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"
   ],
-  "benchmark_profile": "global-cross-feature-v1"
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
 }

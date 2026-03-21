@@ -17,5 +17,7 @@
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"
   ],
-  "benchmark_profile": "global-cross-feature-v1"
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
 }

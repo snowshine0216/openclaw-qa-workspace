@@ -18,6 +18,18 @@ const __dirname = dirname(__filename);
 export const DEFAULT_BENCHMARK_ROOT = resolve(__dirname, '../..');
 export const DEFAULT_SKILL_ROOT = resolve(__dirname, '../../../..');
 export const DEFAULT_ITERATION = 0;
+const SUPPORTED_EVIDENCE_MODES = ['blind_pre_defect', 'retrospective_replay', 'holdout_regression'];
+const BLIND_BUNDLE_TYPE = 'blind_pre_defect_bundle';
+const BLIND_CUTOFF_POLICY = 'all_customer_issues_only';
+const BLIND_INCLUDE_CLASS = 'customer';
+const BLIND_EXCLUDE_CLASS = 'non_customer';
+const BLIND_PROHIBITED_MATERIAL_TYPES = new Set([
+  'defect_analysis_run',
+  'defect_replay_source',
+  'gap_analysis',
+  'postmortem',
+  'retrospective_analysis',
+]);
 
 function getGroupLabel(kind) {
   return kind.replace(/_/g, ' ');
@@ -25,6 +37,117 @@ function getGroupLabel(kind) {
 
 function getBlockingLabel(blocking) {
   return blocking ? 'blocking' : 'advisory';
+}
+
+function buildFixtureIndex(fixturesDocument) {
+  return new Map((fixturesDocument.fixtures || []).map((fixture) => [fixture.fixture_id, fixture]));
+}
+
+function buildBlindPolicy(caseDefinition) {
+  if (!caseDefinition.blind_policy) {
+    return [];
+  }
+  return [
+    `Blind evidence policy: use customer issues only under ${caseDefinition.blind_policy.cutoff_policy}.`,
+    'Blind evidence policy: exclude non-customer issues.',
+  ];
+}
+
+function hydrateCaseDefinition(caseDefinition, fixtureIndex) {
+  if (caseDefinition.evidence_mode !== 'blind_pre_defect') {
+    return caseDefinition;
+  }
+  const blindFixture = fixtureIndex.get(caseDefinition.fixture_refs[0]);
+  if (!blindFixture) {
+    return caseDefinition;
+  }
+  return {
+    ...caseDefinition,
+    blind_fixture_id: blindFixture.fixture_id,
+    blind_policy: {
+      cutoff_policy: blindFixture.cutoff_policy,
+      issue_scope: blindFixture.issue_scope,
+    },
+  };
+}
+
+function ensureBlindFixtureType(caseDefinition, blindFixture) {
+  if (!blindFixture || blindFixture.type !== BLIND_BUNDLE_TYPE) {
+    throw new Error(`case ${caseDefinition.case_id} must reference exactly one blind_pre_defect_bundle`);
+  }
+  if (blindFixture.cutoff_policy !== BLIND_CUTOFF_POLICY) {
+    throw new Error(`case ${caseDefinition.case_id} blind fixture must use cutoff_policy ${BLIND_CUTOFF_POLICY}`);
+  }
+}
+
+function validateBlindIssueScope(caseDefinition, blindFixture) {
+  if (!blindFixture.issue_scope || !Array.isArray(blindFixture.issue_scope.include_issue_classes) || !Array.isArray(blindFixture.issue_scope.exclude_issue_classes)) {
+    throw new Error(`case ${caseDefinition.case_id} blind fixture must define issue_scope include/exclude classes`);
+  }
+  if (!blindFixture.issue_scope.include_issue_classes.includes(BLIND_INCLUDE_CLASS) ||
+    !blindFixture.issue_scope.exclude_issue_classes.includes(BLIND_EXCLUDE_CLASS)) {
+    throw new Error(`case ${caseDefinition.case_id} blind fixture must include customer and exclude non_customer issue classes`);
+  }
+}
+
+function validateBlindMaterials(caseDefinition, blindFixture) {
+  if (!Array.isArray(blindFixture.materials) || blindFixture.materials.length === 0) {
+    throw new Error(`case ${caseDefinition.case_id} blind fixture must include materials`);
+  }
+  for (const material of blindFixture.materials) {
+    if (BLIND_PROHIBITED_MATERIAL_TYPES.has(material.material_type)) {
+      throw new Error(`case ${caseDefinition.case_id} blind fixture must exclude replay and retrospective artifacts`);
+    }
+    const issueClass = String(material.issue_class || '').trim().toLowerCase();
+    if (material.material_type === 'jira_non_customer_issue' || issueClass === BLIND_EXCLUDE_CLASS) {
+      throw new Error(`case ${caseDefinition.case_id} blind fixture must exclude non-customer issues`);
+    }
+  }
+}
+
+function validateBlindFixture(caseDefinition, blindFixture) {
+  ensureBlindFixtureType(caseDefinition, blindFixture);
+  validateBlindIssueScope(caseDefinition, blindFixture);
+  validateBlindMaterials(caseDefinition, blindFixture);
+}
+
+function validateCaseDefinition(caseDefinition, fixtureIndex) {
+  const requiredFields = [
+    'case_id',
+    'feature_id',
+    'feature_family',
+    'knowledge_pack_key',
+    'primary_phase',
+    'kind',
+    'evidence_mode',
+    'blocking',
+    'fixture_refs',
+    'benchmark_profile',
+    'focus',
+  ];
+
+  for (const field of requiredFields) {
+    if (!(field in caseDefinition)) {
+      throw new Error(`case ${caseDefinition.case_id || '<unknown>'} is missing required field: ${field}`);
+    }
+  }
+  if (!Array.isArray(caseDefinition.fixture_refs)) {
+    throw new Error(`case ${caseDefinition.case_id} field fixture_refs must be an array`);
+  }
+  if (!SUPPORTED_EVIDENCE_MODES.includes(caseDefinition.evidence_mode)) {
+    throw new Error(`case ${caseDefinition.case_id} has unsupported evidence_mode: ${caseDefinition.evidence_mode}`);
+  }
+  for (const fixtureRef of caseDefinition.fixture_refs) {
+    if (!fixtureIndex.has(fixtureRef)) {
+      throw new Error(`case ${caseDefinition.case_id} references missing fixture id: ${fixtureRef}`);
+    }
+  }
+  if (caseDefinition.evidence_mode === 'blind_pre_defect') {
+    if (caseDefinition.fixture_refs.length !== 1) {
+      throw new Error(`case ${caseDefinition.case_id} must reference exactly one blind_pre_defect_bundle`);
+    }
+    validateBlindFixture(caseDefinition, fixtureIndex.get(caseDefinition.fixture_refs[0]));
+  }
 }
 
 export function getIterationDir(benchmarkRoot, iteration = DEFAULT_ITERATION) {
@@ -47,6 +170,7 @@ export function buildCasePrompt(caseDefinition) {
     `Priority: ${getBlockingLabel(caseDefinition.blocking)}.`,
     `Benchmark profile: ${caseDefinition.benchmark_profile}.`,
     `Fixture references: ${caseDefinition.fixture_refs.length ? caseDefinition.fixture_refs.join(', ') : 'none'}.`,
+    ...buildBlindPolicy(caseDefinition),
     `Focus: ${caseDefinition.focus}.`,
     'Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case.',
     'Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.',
@@ -76,6 +200,8 @@ export function buildCaseEvalMetadata(caseDefinition, evalId) {
     blocking: caseDefinition.blocking,
     fixture_refs: caseDefinition.fixture_refs,
     benchmark_profile: caseDefinition.benchmark_profile,
+    blind_fixture_id: caseDefinition.blind_fixture_id || null,
+    blind_policy: caseDefinition.blind_policy || null,
   };
 }
 
@@ -111,6 +237,8 @@ export function buildComparisonMetadata({
     blocking: caseDefinition.blocking,
     fixture_refs: caseDefinition.fixture_refs,
     benchmark_profile: caseDefinition.benchmark_profile,
+    blind_fixture_id: caseDefinition.blind_fixture_id || null,
+    blind_policy: caseDefinition.blind_policy || null,
   };
 }
 
@@ -134,34 +262,13 @@ function buildConfigurationRuns({
 export async function validateCaseMatrix({
   benchmarkManifest,
   casesDocument,
+  fixturesDocument = { fixtures: [] },
 }) {
   const caseIds = new Set(casesDocument.cases.map((entry) => entry.case_id));
-  const requiredFields = [
-    'case_id',
-    'feature_id',
-    'feature_family',
-    'knowledge_pack_key',
-    'primary_phase',
-    'kind',
-    'evidence_mode',
-    'blocking',
-    'fixture_refs',
-    'benchmark_profile',
-    'focus',
-  ];
+  const fixtureIndex = buildFixtureIndex(fixturesDocument);
 
   for (const caseDefinition of casesDocument.cases) {
-    for (const field of requiredFields) {
-      if (!(field in caseDefinition)) {
-        throw new Error(`case ${caseDefinition.case_id || '<unknown>'} is missing required field: ${field}`);
-      }
-    }
-    if (!Array.isArray(caseDefinition.fixture_refs)) {
-      throw new Error(`case ${caseDefinition.case_id} field fixture_refs must be an array`);
-    }
-    if (!['blind_pre_defect', 'retrospective_replay', 'holdout_regression'].includes(caseDefinition.evidence_mode)) {
-      throw new Error(`case ${caseDefinition.case_id} has unsupported evidence_mode: ${caseDefinition.evidence_mode}`);
-    }
+    validateCaseDefinition(caseDefinition, fixtureIndex);
   }
 
   for (const caseId of benchmarkManifest.blocking_case_ids || []) {
@@ -188,9 +295,12 @@ export async function prepareBenchmarkV2Baseline({
   const snapshotDir = join(iterationDir, 'champion_snapshot');
   const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
   const casesDocument = await loadJson(join(benchmarkRoot, 'cases.json'));
+  const fixturesDocument = await loadJson(join(benchmarkRoot, 'fixtures_manifest.json'));
+  const fixtureIndex = buildFixtureIndex(fixturesDocument);
 
-  await validateCaseMatrix({ benchmarkManifest, casesDocument });
+  await validateCaseMatrix({ benchmarkManifest, casesDocument, fixturesDocument });
   await seedChampionSnapshot(skillRoot, snapshotDir);
+  const resolvedCases = casesDocument.cases.map((caseDefinition) => hydrateCaseDefinition(caseDefinition, fixtureIndex));
 
   const benchmarkContext = {
     benchmark_version: benchmarkManifest.benchmark_version,
@@ -205,8 +315,8 @@ export async function prepareBenchmarkV2Baseline({
     reasoning_effort: reasoningEffort,
     runs_per_configuration: benchmarkManifest.runs_per_configuration,
     prepared_at: new Date().toISOString(),
-    case_count: casesDocument.cases.length,
-    evidence_mode_counts: casesDocument.cases.reduce((accumulator, caseDefinition) => {
+    case_count: resolvedCases.length,
+    evidence_mode_counts: resolvedCases.reduce((accumulator, caseDefinition) => {
       accumulator[caseDefinition.evidence_mode] = (accumulator[caseDefinition.evidence_mode] || 0) + 1;
       return accumulator;
     }, {}),
@@ -242,7 +352,7 @@ export async function prepareBenchmarkV2Baseline({
     tasks: [],
   };
 
-  for (const [index, caseDefinition] of casesDocument.cases.entries()) {
+  for (const [index, caseDefinition] of resolvedCases.entries()) {
     const evalId = index + 1;
     const evalDir = join(iterationDir, `eval-${evalId}`);
     const metadata = buildCaseEvalMetadata(caseDefinition, evalId);
@@ -280,6 +390,8 @@ export async function prepareBenchmarkV2Baseline({
       blocking: caseDefinition.blocking,
       fixture_refs: caseDefinition.fixture_refs,
       benchmark_profile: caseDefinition.benchmark_profile,
+      blind_fixture_id: caseDefinition.blind_fixture_id || null,
+      blind_policy: caseDefinition.blind_policy || null,
       prompt: metadata.prompt,
       expectations: metadata.assertions,
       runs_per_configuration: benchmarkManifest.runs_per_configuration,
@@ -312,7 +424,7 @@ export async function prepareBenchmarkV2Baseline({
     '',
     'This is the real multi-case baseline for `qa-plan-v2`.',
     '',
-    `Cases: ${casesDocument.cases.length}`,
+    `Cases: ${resolvedCases.length}`,
     `Blocking: ${(benchmarkManifest.blocking_case_ids || []).length}`,
     `Advisory: ${(benchmarkManifest.advisory_case_ids || []).length}`,
     '',
@@ -322,7 +434,7 @@ export async function prepareBenchmarkV2Baseline({
   return {
     iterationDir,
     snapshotDir,
-    caseCount: casesDocument.cases.length,
+    caseCount: resolvedCases.length,
     spawnManifestPath: join(iterationDir, 'spawn_manifest.json'),
   };
 }

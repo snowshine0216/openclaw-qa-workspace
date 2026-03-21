@@ -11,7 +11,7 @@
       "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
-        "BCIN-976-run-history"
+        "BCIN-976-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "REPORT_STATE and resume semantics remain stable"
@@ -26,7 +26,7 @@
       "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
-        "BCIN-7289-defect-analysis-run"
+        "BCIN-7289-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "supporting issues stay context_only_no_defect_analysis and produce summaries"
@@ -41,7 +41,7 @@
       "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
-        "BCIN-7289-defect-analysis-run"
+        "BCIN-7289-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "Tavily-first then Confluence fallback ordering"
@@ -86,7 +86,7 @@
       "evidence_mode": "blind_pre_defect",
       "blocking": false,
       "fixture_refs": [
-        "embedding-dashboard-editor-compare-result"
+        "BCED-2416-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "canonical top-layer grouping without collapsing scenarios"
@@ -146,7 +146,7 @@
       "evidence_mode": "blind_pre_defect",
       "blocking": false,
       "fixture_refs": [
-        "embedding-dashboard-editor-compare-result"
+        "BCIN-6709-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "final quality pass preserves layering and executable wording"
@@ -175,7 +175,9 @@
       "kind": "phase_contract",
       "evidence_mode": "blind_pre_defect",
       "blocking": false,
-      "fixture_refs": [],
+      "fixture_refs": [
+        "DOCS-blind-pre-defect-bundle"
+      ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "SKILL.md, README.md, reference.md, and AGENTS docs stay aligned"
     },
@@ -204,7 +206,7 @@
       "evidence_mode": "holdout_regression",
       "blocking": true,
       "fixture_refs": [
-        "BCIN-976-run-history"
+        "BCIN-976-blind-pre-defect-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "promotion/finalization behavior remains stable on another feature"

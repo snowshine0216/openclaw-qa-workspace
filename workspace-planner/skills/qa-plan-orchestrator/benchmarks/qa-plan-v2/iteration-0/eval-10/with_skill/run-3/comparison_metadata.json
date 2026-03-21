@@ -5,8 +5,8 @@
   "skill_name": "qa-plan-orchestrator",
   "skill_snapshot_path": "iteration-0/champion_snapshot",
   "skill_snapshot_label": "champion-v0",
-  "model_name": "gpt-5.4",
-  "reasoning_effort": "high",
+  "model_name": null,
+  "reasoning_effort": null,
   "knowledge_pack_version": null,
   "benchmark_version": "qa-plan-v2",
   "eval_id": 10,
@@ -20,7 +20,19 @@
   "evidence_mode": "blind_pre_defect",
   "blocking": false,
   "fixture_refs": [
-    "embedding-dashboard-editor-compare-result"
+    "BCIN-6709-blind-pre-defect-bundle"
   ],
-  "benchmark_profile": "global-cross-feature-v1"
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": "BCIN-6709-blind-pre-defect-bundle",
+  "blind_policy": {
+    "cutoff_policy": "all_customer_issues_only",
+    "issue_scope": {
+      "include_issue_classes": [
+        "customer"
+      ],
+      "exclude_issue_classes": [
+        "non_customer"
+      ]
+    }
+  }
 }

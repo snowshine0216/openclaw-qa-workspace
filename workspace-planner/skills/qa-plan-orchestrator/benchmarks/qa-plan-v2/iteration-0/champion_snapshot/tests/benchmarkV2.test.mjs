@@ -13,6 +13,38 @@ import {
   validateCaseMatrix,
 } from '../benchmarks/qa-plan-v2/scripts/lib/benchmarkV2.mjs';
 
+function buildFixturesDocument() {
+  return {
+    benchmark_version: 'qa-plan-v2',
+    fixtures: [
+      {
+        fixture_id: 'BLIND-DOCS-001',
+        type: 'blind_pre_defect_bundle',
+        feature_id: 'DOCS',
+        feature_family: 'docs',
+        cutoff_policy: 'all_customer_issues_only',
+        issue_scope: {
+          include_issue_classes: ['customer'],
+          exclude_issue_classes: ['non_customer'],
+        },
+        materials: [
+          {
+            material_type: 'other',
+            source_id_or_url: 'docs/README.md',
+            included_in_blind: true,
+          },
+        ],
+      },
+      {
+        fixture_id: 'BCIN-7289-defect-analysis-run',
+        path: 'workspace-reporter/skills/defects-analysis/runs/BCIN-7289',
+        type: 'defect_replay_source',
+        status: 'active',
+      },
+    ],
+  };
+}
+
 test('buildCasePrompt encodes feature, phase, kind, and focus', () => {
   const prompt = buildCasePrompt({
     case_id: 'P5B-ANALOG-GATE-001',
@@ -60,6 +92,36 @@ test('buildCaseEvalMetadata keeps case identity and blocking semantics', () => {
   assert.equal(metadata.evidence_mode, 'holdout_regression');
 });
 
+test('buildCasePrompt and metadata surface blind customer-only policy', () => {
+  const caseDefinition = {
+    case_id: 'DOC-SYNC-001',
+    feature_id: 'DOCS',
+    feature_family: 'docs',
+    knowledge_pack_key: 'docs',
+    primary_phase: 'docs',
+    kind: 'phase_contract',
+    evidence_mode: 'blind_pre_defect',
+    blocking: false,
+    fixture_refs: ['BLIND-DOCS-001'],
+    benchmark_profile: 'global-cross-feature-v1',
+    focus: 'docs stay aligned',
+    blind_policy: {
+      cutoff_policy: 'all_customer_issues_only',
+      issue_scope: {
+        include_issue_classes: ['customer'],
+        exclude_issue_classes: ['non_customer'],
+      },
+    },
+  };
+
+  const prompt = buildCasePrompt(caseDefinition);
+  const metadata = buildCaseEvalMetadata(caseDefinition, 2);
+
+  assert.match(prompt, /customer issues only/i);
+  assert.match(prompt, /exclude non-customer issues/i);
+  assert.deepEqual(metadata.blind_policy, caseDefinition.blind_policy);
+});
+
 test('buildCaseAssertions prefixes kind and blocking labels', () => {
   const assertions = buildCaseAssertions({
     case_id: 'DOC-SYNC-001',
@@ -94,14 +156,15 @@ test('validateCaseMatrix rejects missing case ids referenced by manifest', async
           knowledge_pack_key: 'report-editor',
           primary_phase: 'phase4a',
           kind: 'defect_replay',
-          evidence_mode: 'blind_pre_defect',
+          evidence_mode: 'retrospective_replay',
           blocking: true,
-          fixture_refs: [],
+          fixture_refs: ['BCIN-7289-defect-analysis-run'],
           benchmark_profile: 'global-cross-feature-v1',
           focus: 'present case only',
         },
       ],
     },
+    fixturesDocument: buildFixturesDocument(),
   }), /missing blocking case id/);
 });
 
@@ -123,7 +186,84 @@ test('validateCaseMatrix rejects cases missing required multi-feature fields', a
         },
       ],
     },
+    fixturesDocument: buildFixturesDocument(),
   }), /missing required field/);
+});
+
+test('validateCaseMatrix rejects blind cases without a customer-only blind bundle', async () => {
+  await assert.rejects(() => validateCaseMatrix({
+    benchmarkManifest: {
+      blocking_case_ids: ['DOC-1'],
+      advisory_case_ids: [],
+    },
+    casesDocument: {
+      cases: [
+        {
+          case_id: 'DOC-1',
+          feature_id: 'DOCS',
+          feature_family: 'docs',
+          knowledge_pack_key: 'docs',
+          primary_phase: 'docs',
+          kind: 'phase_contract',
+          evidence_mode: 'blind_pre_defect',
+          blocking: true,
+          fixture_refs: ['BCIN-7289-defect-analysis-run'],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'docs only',
+        },
+      ],
+    },
+    fixturesDocument: buildFixturesDocument(),
+  }), /must reference exactly one blind_pre_defect_bundle/);
+});
+
+test('validateCaseMatrix rejects blind bundles that include non-customer issues', async () => {
+  await assert.rejects(() => validateCaseMatrix({
+    benchmarkManifest: {
+      blocking_case_ids: ['DOC-1'],
+      advisory_case_ids: [],
+    },
+    casesDocument: {
+      cases: [
+        {
+          case_id: 'DOC-1',
+          feature_id: 'DOCS',
+          feature_family: 'docs',
+          knowledge_pack_key: 'docs',
+          primary_phase: 'docs',
+          kind: 'phase_contract',
+          evidence_mode: 'blind_pre_defect',
+          blocking: true,
+          fixture_refs: ['BLIND-DOCS-001'],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'docs only',
+        },
+      ],
+    },
+    fixturesDocument: {
+      benchmark_version: 'qa-plan-v2',
+      fixtures: [
+        {
+          fixture_id: 'BLIND-DOCS-001',
+          type: 'blind_pre_defect_bundle',
+          feature_id: 'DOCS',
+          feature_family: 'docs',
+          cutoff_policy: 'all_customer_issues_only',
+          issue_scope: {
+            include_issue_classes: ['customer'],
+            exclude_issue_classes: ['non_customer'],
+          },
+          materials: [
+            {
+              material_type: 'jira_non_customer_issue',
+              source_id_or_url: 'INT-1',
+              included_in_blind: true,
+            },
+          ],
+        },
+      ],
+    },
+  }), /must exclude non-customer issues/);
 });
 
 test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 workspace', async () => {
@@ -142,6 +282,35 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       runs_per_configuration: 2,
       blocking_case_ids: ['CASE-1'],
       advisory_case_ids: ['CASE-2'],
+    }, null, 2), 'utf8');
+    await writeFile(join(benchmarkRoot, 'fixtures_manifest.json'), JSON.stringify({
+      benchmark_version: 'qa-plan-v2',
+      fixtures: [
+        {
+          fixture_id: 'BCIN-7289-defect-analysis-run',
+          path: 'workspace-reporter/skills/defects-analysis/runs/BCIN-7289',
+          type: 'defect_replay_source',
+          status: 'active',
+        },
+        {
+          fixture_id: 'BLIND-DOCS-001',
+          type: 'blind_pre_defect_bundle',
+          feature_id: 'DOCS',
+          feature_family: 'docs',
+          cutoff_policy: 'all_customer_issues_only',
+          issue_scope: {
+            include_issue_classes: ['customer'],
+            exclude_issue_classes: ['non_customer'],
+          },
+          materials: [
+            {
+              material_type: 'other',
+              source_id_or_url: 'docs/README.md',
+              included_in_blind: true,
+            },
+          ],
+        },
+      ],
     }, null, 2), 'utf8');
     await writeFile(join(benchmarkRoot, 'cases.json'), JSON.stringify({
       benchmark_version: 'qa-plan-v2',
@@ -168,7 +337,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
           kind: 'phase_contract',
           evidence_mode: 'blind_pre_defect',
           blocking: false,
-          fixture_refs: [],
+          fixture_refs: ['BLIND-DOCS-001'],
           benchmark_profile: 'global-cross-feature-v1',
           focus: 'docs remain aligned',
         },
@@ -201,6 +370,8 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(spawnManifest.tasks[0].knowledge_pack_key, 'report-editor');
     assert.equal(spawnManifest.tasks[0].evidence_mode, 'retrospective_replay');
     assert.deepEqual(spawnManifest.tasks[0].fixture_refs, ['BCIN-7289-defect-analysis-run']);
+    assert.equal(spawnManifest.tasks[1].blind_policy.cutoff_policy, 'all_customer_issues_only');
+    assert.deepEqual(spawnManifest.tasks[1].blind_policy.issue_scope.include_issue_classes, ['customer']);
 
     const comparisonMetadata = JSON.parse(await readFile(
       join(benchmarkRoot, 'iteration-0', 'eval-1', 'with_skill', 'run-1', 'comparison_metadata.json'),
@@ -211,6 +382,12 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(comparisonMetadata.feature_family, 'report-editor');
     assert.equal(comparisonMetadata.knowledge_pack_key, 'report-editor');
     assert.equal(comparisonMetadata.evidence_mode, 'retrospective_replay');
+
+    const blindComparisonMetadata = JSON.parse(await readFile(
+      join(benchmarkRoot, 'iteration-0', 'eval-2', 'with_skill', 'run-1', 'comparison_metadata.json'),
+      'utf8',
+    ));
+    assert.equal(blindComparisonMetadata.blind_policy.cutoff_policy, 'all_customer_issues_only');
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

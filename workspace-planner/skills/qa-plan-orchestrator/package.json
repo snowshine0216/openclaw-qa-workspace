@@ -8,6 +8,7 @@
     "benchmark:iteration0:aggregate": "node benchmarks/qa-plan-v1/scripts/run_iteration0.mjs --aggregate-only",
     "benchmark:iteration0:seed-validate": "node benchmarks/qa-plan-v1/scripts/run_iteration0.mjs --seed-validate --executor-model gpt-5.4 --reasoning-effort high",
     "benchmark:v2:prepare": "node benchmarks/qa-plan-v2/scripts/run_baseline.mjs --prepare-only --executor-model gpt-5.4 --reasoning-effort high",
-    "benchmark:v2:aggregate": "node benchmarks/qa-plan-v2/scripts/run_baseline.mjs --aggregate-only"
+    "benchmark:v2:aggregate": "node benchmarks/qa-plan-v2/scripts/run_baseline.mjs --aggregate-only",
+    "benchmark:v2:score": "node benchmarks/qa-plan-v2/scripts/score_iteration.mjs"
   }
 }

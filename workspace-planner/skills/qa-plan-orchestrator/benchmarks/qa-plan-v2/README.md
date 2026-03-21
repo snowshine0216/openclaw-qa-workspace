@@ -48,7 +48,8 @@ To make that explicit, every case in `qa-plan-v2` must declare `evidence_mode`.
 Supported values:
 
 1. `blind_pre_defect`
-   - use only evidence that should have existed before the defects were known
+   - use only customer-issue evidence and exclude non-customer issues
+   - define the allowed blind evidence through one frozen `blind_pre_defect_bundle` in `fixtures_manifest.json`
    - use this for true no-regression and predictive planning checks
 2. `retrospective_replay`
    - use known defect history and retrospective evidence on purpose
@@ -103,6 +104,10 @@ Each case defines:
 - `benchmark_profile`
 - `focus`
 
+Do not inline all raw benchmark materials into `cases.json`.
+
+`cases.json` should stay at the benchmark-intent level. Put Jira ids, design-doc references, GitHub PR references, and other frozen evidence under `fixtures_manifest.json`, then reference the bundle id from `fixture_refs`.
+
 Example:
 
 ```json
@@ -118,6 +123,41 @@ Example:
   "fixture_refs": ["BCIN-7289-defect-analysis-run"],
   "benchmark_profile": "global-cross-feature-v1",
   "focus": "historical analogs become required-before-ship gates"
+}
+```
+
+### `fixtures_manifest.json`
+
+This is the source of truth for frozen evidence bundles.
+
+For `blind_pre_defect`, each case must reference exactly one fixture with:
+
+- `type: blind_pre_defect_bundle`
+- `cutoff_policy: all_customer_issues_only`
+- `issue_scope.include_issue_classes: ["customer"]`
+- `issue_scope.exclude_issue_classes: ["non_customer"]`
+- `materials`
+
+Example:
+
+```json
+{
+  "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
+  "type": "blind_pre_defect_bundle",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "cutoff_policy": "all_customer_issues_only",
+  "issue_scope": {
+    "include_issue_classes": ["customer"],
+    "exclude_issue_classes": ["non_customer"]
+  },
+  "materials": [
+    {
+      "material_type": "jira_feature",
+      "source_id_or_url": "BCIN-7289",
+      "included_in_blind": true
+    }
+  ]
 }
 ```
 
@@ -236,7 +276,8 @@ This regenerates:
 - `blocking`
   - whether the case is intended to block candidate acceptance
 - `fixture_refs`
-  - fixture ids or evidence ids this case depends on
+  - fixture ids this case depends on
+  - `blind_pre_defect` cases must reference exactly one `blind_pre_defect_bundle`
 - `benchmark_profile`
   - grouping label for the benchmark campaign, currently `global-cross-feature-v1`
 - `focus`
@@ -286,7 +327,8 @@ Then update:
 Use `blind_pre_defect` when:
 
 1. you want to know whether the skill would have produced a good plan before defects were known
-2. the inputs exclude post-defect retrospective analysis
+2. the inputs are restricted to customer issues only
+3. the inputs exclude non-customer issues and post-defect retrospective analysis
 
 Use `retrospective_replay` when:
 
@@ -355,6 +397,20 @@ This writes:
 
 - `iteration-0/benchmark.json`
 - `iteration-0/benchmark.md`
+
+### Compute the scorecard
+
+For iteration comparisons after `benchmark.json` exists:
+
+```bash
+npm run benchmark:v2:score -- --iteration 1 --comparison-mode iteration_compare --primary-configuration new_skill --reference-configuration old_skill
+```
+
+The scorer evaluates acceptance by `evidence_mode`:
+
+1. no regression on `blind_pre_defect`
+2. improvement on `retrospective_replay`
+3. no regression on `holdout_regression`
 
 ## Practical Workflow
 

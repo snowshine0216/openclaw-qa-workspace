@@ -17,5 +17,7 @@
   "fixture_refs": [
     "embedding-dashboard-editor-compare-result"
   ],
-  "benchmark_profile": "global-cross-feature-v1"
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
 }

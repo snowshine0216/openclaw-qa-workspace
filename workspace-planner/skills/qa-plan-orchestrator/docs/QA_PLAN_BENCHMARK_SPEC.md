@@ -32,6 +32,8 @@ The spec is intentionally compatible with the existing `skill-creator` aggregati
 - `~/.agents/skills/skill-creator/scripts/aggregate_benchmark.py`
 - `~/.agents/skills/skill-creator/eval-viewer/generate_review.py`
 
+`qa-plan-v2` is the first real global benchmark version. It is not a single-feature benchmark. Cases from multiple feature families live under one benchmark campaign and are explicitly separated by `evidence_mode`.
+
 ## Environment setup
 
 - **In-repo:** Node.js and the eval harness under `workspace-planner/skills/qa-plan-orchestrator/evals/` (`run_evals.mjs`, `post_run.sh`).
@@ -52,6 +54,7 @@ When creating or extending a benchmark version under `benchmarks/<benchmark-vers
    - knowledge-pack version
 4. Do not accept a candidate if any blocking gate regresses, even if the aggregate score rises.
 5. Use pairwise comparisons only. Every benchmark run must have one primary contender and one reference contender.
+6. Keep `blind_pre_defect`, `retrospective_replay`, and `holdout_regression` separate in both scoring and acceptance. Replay gains must not hide blind regressions.
 
 ## Canonical Root Layout
 
@@ -211,8 +214,19 @@ Frozen contract for the benchmark campaign.
   "benchmark_version": "qa-plan-v1",
   "skill_name": "qa-plan-orchestrator",
   "skill_path": "workspace-planner/skills/qa-plan-orchestrator",
+  "benchmark_scope": "global",
+  "benchmark_profile": "global-cross-feature-v1",
   "frozen_at": "2026-03-21T00:00:00Z",
   "runs_per_configuration": 3,
+  "evidence_modes": [
+    "blind_pre_defect",
+    "retrospective_replay",
+    "holdout_regression"
+  ],
+  "supported_feature_families": [
+    "report-editor",
+    "docs"
+  ],
   "comparison_modes": [
     "baseline_value",
     "iteration_compare",
@@ -235,16 +249,15 @@ Frozen contract for the benchmark campaign.
     "holdout_regression"
   ],
   "weights": {
-    "defect_recall_replay": 0.45,
-    "knowledge_pack_coverage": 0.2,
-    "self_test_actionability": 0.15,
-    "holdout_regression": 0.2
+    "blind_pre_defect": 0.25,
+    "retrospective_replay": 0.6,
+    "holdout_regression": 0.15
   },
   "acceptance_policy": {
-    "require_blocking_pass": true,
-    "require_no_regression": true,
-    "require_non_decreasing_defect_recall": true,
-    "minimum_mean_runs": 3
+    "require_blocking_cases_pass": true,
+    "require_no_holdout_regression": true,
+    "require_non_decreasing_blind_score": true,
+    "require_non_decreasing_replay_score": true
   }
 }
 ```
@@ -257,6 +270,24 @@ Frozen list of fixtures and artifact sources used by this benchmark version.
 {
   "benchmark_version": "qa-plan-v1",
   "fixtures": [
+    {
+      "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": ["customer"],
+        "exclude_issue_classes": ["non_customer"]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7289",
+          "included_in_blind": true
+        }
+      ]
+    },
     {
       "fixture_id": "BCIN-7289-defect-analysis",
       "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
@@ -505,10 +536,59 @@ This stays compatible with `skill-creator`:
     "Plan contains template-sourced new-report save scenario",
     "Plan distinguishes create-new-report from overwrite-template behavior"
   ],
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "evidence_mode": "retrospective_replay",
+  "fixture_refs": ["BCIN-7289-defect-analysis-run"],
+  "benchmark_profile": "global-cross-feature-v1",
   "eval_group": "defect_recall_replay",
   "severity_weight": 1.0
 }
 ```
+
+### `cases.json`
+
+This is the frozen case catalog for the benchmark version. Every case must declare:
+
+```json
+{
+  "case_id": "P5B-ANALOG-GATE-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase5b",
+  "kind": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
+  "blocking": true,
+  "fixture_refs": ["BCIN-7289-defect-analysis-run"],
+  "benchmark_profile": "global-cross-feature-v1",
+  "focus": "historical analogs become required-before-ship gates"
+}
+```
+
+Do not inline all raw source materials into `cases.json`.
+
+Use `cases.json` for benchmark intent only. Frozen Jira ids, design-doc references, GitHub PR references, and similar benchmark inputs must live in `fixtures_manifest.json`.
+
+Required fields:
+
+1. `case_id`
+2. `feature_id`
+3. `feature_family`
+4. `knowledge_pack_key`
+5. `primary_phase`
+6. `kind`
+7. `evidence_mode`
+8. `blocking`
+9. `fixture_refs`
+10. `benchmark_profile`
+11. `focus`
+
+Supported `evidence_mode` values:
+
+1. `blind_pre_defect`
+2. `retrospective_replay`
+3. `holdout_regression`
 
 ### `grading.json`
 
@@ -540,99 +620,82 @@ Example:
 }
 ```
 
+## Evidence Modes
+
+### `blind_pre_defect`
+
+Use only customer-issue evidence and exclude non-customer issues.
+
+Purpose:
+
+1. predictive QA-plan quality
+2. no-regression gate for future iterations
+
+Contract:
+
+1. every `blind_pre_defect` case must reference exactly one fixture of type `blind_pre_defect_bundle`
+2. that bundle must declare `cutoff_policy: all_customer_issues_only`
+3. `issue_scope` must include `customer` and exclude `non_customer`
+4. replay, postmortem, or gap-analysis artifacts must not appear in that bundle
+
+### `retrospective_replay`
+
+Use known defect history and retrospective evidence on purpose.
+
+Purpose:
+
+1. verify the skill learned from known misses
+2. measure replay improvement after skill evolution
+
+### `holdout_regression`
+
+Use unrelated features or holdout cases to protect against overfitting.
+
+Purpose:
+
+1. keep unrelated planning quality stable
+2. reject changes that improve replay but damage other flows
+
 ## Scoring Schema
 
 Use two decision layers:
 
-1. blocking gates
-2. weighted quality score
+1. blocking case gate
+2. evidence-mode acceptance checks
 
-### 1. Blocking gates
+### 1. Blocking case gate
 
-A candidate automatically loses if any of these are false:
+The primary contender automatically fails if any blocking case has aggregate pass rate `< 1.0`.
 
-1. `smoke_checks_pass == true`
-2. `contract_evals_pass == true`
-3. `holdout_regression_pass == true`
-4. `blocking_regression_count == 0`
-5. `defect_recall_mean >= champion_defect_recall_mean`
+### 2. Evidence-mode acceptance checks
 
-### 2. Weighted quality score
+Acceptance must be evaluated separately by evidence mode:
 
-Only compute this after blocking gates pass.
+1. `blind_pre_defect`
+   - no regression
+   - primary mean pass rate must be `>=` reference mean pass rate
+2. `retrospective_replay`
+   - improvement required
+   - primary mean pass rate must be `>` reference mean pass rate
+3. `holdout_regression`
+   - no regression
+   - primary mean pass rate must be `>=` reference mean pass rate
 
-```text
-quality_score =
-  0.45 * defect_recall_replay_score +
-  0.20 * knowledge_pack_coverage_score +
-  0.15 * self_test_actionability_score +
-  0.20 * holdout_regression_score
-```
+### Mode score definition
 
-All component scores are normalized to `0.0 - 1.0`.
-
-### Component definitions
-
-#### `defect_recall_replay_score`
-
-Definition:
-
-- weighted pass rate over defect-replay evals
-
-Formula:
+For each evidence mode, compute:
 
 ```text
-sum(passed_assertion_weight) / sum(all_assertion_weight)
+mean_pass_rate = average(run.result.pass_rate for runs in that mode and configuration)
 ```
 
-Severity weights:
+This produces:
 
-- `high`: `1.0`
-- `medium`: `0.6`
-- `low`: `0.3`
+1. `mode_scores.primary.<mode>.mean_pass_rate`
+2. `mode_scores.reference.<mode>.mean_pass_rate`
+3. `mode_scores.delta.<mode>.mean_pass_rate`
 
-#### `knowledge_pack_coverage_score`
-
-Definition:
-
-- fraction of required knowledge-pack items that map to:
-  - explicit scenario
-  - explicit gate
-  - explicit exclusion with rationale
-
-Formula:
-
-```text
-mapped_items / required_items
-```
-
-#### `self_test_actionability_score`
-
-Definition:
-
-- fraction of required smoke-test rows generated with:
-  - scenario name
-  - trigger
-  - acceptance signal
-  - estimated time
-
-Formula:
-
-```text
-valid_smoke_rows / required_smoke_rows
-```
-
-#### `holdout_regression_score`
-
-Definition:
-
-- weighted pass rate over holdout evals not used to design the mutation
-
-Formula:
-
-```text
-sum(passed_holdout_weight) / sum(all_holdout_weight)
-```
+If a mode has no cases in a comparison, its acceptance check may be treated as `true`, but this should be rare in a frozen benchmark version.
 
 ## Scorecard Schema
 
@@ -643,49 +706,76 @@ Each iteration `>= 1` must produce `scorecard.json`.
   "benchmark_version": "qa-plan-v1",
   "iteration": 1,
   "comparison_mode": "iteration_compare",
-  "primary_role": "candidate_skill",
-  "reference_role": "champion_skill",
   "primary_configuration": "new_skill",
   "reference_configuration": "old_skill",
-  "blocking_gates": {
-    "smoke_checks_pass": true,
-    "contract_evals_pass": true,
-    "holdout_regression_pass": true,
-    "blocking_regression_count": 0,
-    "defect_recall_non_decreasing": true
-  },
-  "scores": {
-    "candidate": {
-      "defect_recall_replay_score": 0.88,
-      "knowledge_pack_coverage_score": 0.92,
-      "self_test_actionability_score": 0.95,
-      "holdout_regression_score": 0.84,
-      "quality_score": 0.891
-    },
-    "champion": {
-      "defect_recall_replay_score": 0.76,
-      "knowledge_pack_coverage_score": 0.81,
-      "self_test_actionability_score": 0.42,
-      "holdout_regression_score": 0.84,
-      "quality_score": 0.725
-    },
-    "delta": {
-      "defect_recall_replay_score": 0.12,
-      "knowledge_pack_coverage_score": 0.11,
-      "self_test_actionability_score": 0.53,
-      "holdout_regression_score": 0.0,
-      "quality_score": 0.166
+  "acceptance_checks": {
+    "blocking_cases_pass": true,
+    "blind_pre_defect_non_regression": true,
+    "retrospective_replay_improved": true,
+    "holdout_regression_non_regression": true,
+    "policy": {
+      "require_blocking_cases_pass": true,
+      "require_non_decreasing_blind_score": true,
+      "require_non_decreasing_replay_score": true,
+      "require_no_holdout_regression": true
     }
   },
-  "efficiency": {
-    "candidate_mean_time_seconds": 210.4,
-    "champion_mean_time_seconds": 198.9,
-    "candidate_mean_tokens": 48120,
-    "champion_mean_tokens": 45005
+  "mode_scores": {
+    "primary": {
+      "blind_pre_defect": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.88
+      },
+      "retrospective_replay": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.91
+      },
+      "holdout_regression": {
+        "eval_count": 2,
+        "run_count": 6,
+        "mean_pass_rate": 0.84
+      }
+    },
+    "reference": {
+      "blind_pre_defect": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.88
+      },
+      "retrospective_replay": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.76
+      },
+      "holdout_regression": {
+        "eval_count": 2,
+        "run_count": 6,
+        "mean_pass_rate": 0.84
+      }
+    },
+    "delta": {
+      "blind_pre_defect": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": 0.0
+      },
+      "retrospective_replay": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": 0.15
+      },
+      "holdout_regression": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": 0.0
+      }
+    }
   },
   "decision": {
     "result": "accept",
-    "reason": "Blocking gates passed and quality score improved without holdout regression."
+    "reason": "blind_pre_defect did not regress, retrospective_replay improved, and holdout_regression did not regress."
   }
 }
 ```
@@ -696,14 +786,16 @@ Each iteration `>= 1` must produce `scorecard.json`.
 
 Accept the candidate only when:
 
-1. all blocking gates pass
-2. `candidate.quality_score > champion.quality_score`
-3. `candidate.defect_recall_replay_score >= champion.defect_recall_replay_score`
-4. `candidate.holdout_regression_score >= champion.holdout_regression_score`
+1. `blocking_cases_pass == true`
+2. `blind_pre_defect_non_regression == true`
+3. `retrospective_replay_improved == true`
+4. `holdout_regression_non_regression == true`
 
 ### Tie policy
 
-If `quality_score` ties within `±0.01`:
+If `retrospective_replay` does not improve, keep the current champion even when blind and holdout are tied.
+
+If replay improves but blind and holdout both tie exactly:
 
 1. prefer the lower-regression-risk candidate
 2. then prefer lower mean time
@@ -714,9 +806,9 @@ If `quality_score` ties within `±0.01`:
 
 When comparing models for the same skill snapshot:
 
-1. do not replace the reference model unless blocking gates are equal
-2. require `quality_score` improvement of at least `0.02`, or
-3. require equal quality with materially better efficiency:
+1. do not replace the reference model unless the evidence-mode acceptance checks are at least equal
+2. require replay improvement without blind or holdout regression, or
+3. require equal evidence-mode checks with materially better efficiency:
    - `>= 10%` lower time, or
    - `>= 15%` lower tokens
 
@@ -729,7 +821,7 @@ Use the existing evals and smoke tests:
 1. current `evals/evals.json`
 2. `npm test`
 
-### `defect_replay`
+### `retrospective_replay`
 
 Start with BCIN-7289 and create replay evals for:
 
@@ -743,6 +835,10 @@ Start with BCIN-7289 and create replay evals for:
 ### `holdout_regression`
 
 Use at least two non-BCIN-7289 features from the same skill family, but not the ones used to propose the mutation.
+
+### `blind_pre_defect`
+
+Use cases that rely only on evidence available before the relevant defects were known.
 
 ### `knowledge_pack_coverage`
 
@@ -770,6 +866,11 @@ Start with:
 3. aggregate results
 4. compute `scorecard.json`
 5. update `history.json`
+
+The canonical scorer for `qa-plan-v2` is:
+
+- `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/lib/scoreBenchmarkV2.mjs`
+- CLI: `npm run benchmark:v2:score`
 
 ### Run model compare
 
