@@ -370,11 +370,14 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(spawnManifest.tasks[0].knowledge_pack_key, 'report-editor');
     assert.equal(spawnManifest.tasks[0].evidence_mode, 'retrospective_replay');
     assert.deepEqual(spawnManifest.tasks[0].fixture_refs, ['BCIN-7289-defect-analysis-run']);
+    assert.equal(spawnManifest.tasks[0].with_skill_runs[0].run_dir, 'eval-1/with_skill/run-1');
+    assert.equal(spawnManifest.tasks[0].with_skill_runs[0].output_dir, 'eval-1/with_skill/run-1/outputs');
+    assert.equal(spawnManifest.tasks[0].without_skill.run_dir, 'eval-1/without_skill/run-1');
     assert.equal(spawnManifest.tasks[1].blind_policy.cutoff_policy, 'all_customer_issues_only');
     assert.deepEqual(spawnManifest.tasks[1].blind_policy.issue_scope.include_issue_classes, ['customer']);
-    assert.equal(spawnManifest.skill_path, skillRoot);
-    assert.equal(spawnManifest.workspace, benchmarkRoot);
-    assert.equal(spawnManifest.iteration_dir, join(benchmarkRoot, 'iteration-0'));
+    assert.equal(spawnManifest.skill_path, '../..');
+    assert.equal(spawnManifest.workspace, '.');
+    assert.equal(spawnManifest.iteration_dir, 'iteration-0');
 
     const comparisonMetadata = JSON.parse(await readFile(
       join(benchmarkRoot, 'iteration-0', 'eval-1', 'with_skill', 'run-1', 'comparison_metadata.json'),
@@ -391,10 +394,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       'utf8',
     ));
     assert.equal(blindComparisonMetadata.blind_policy.cutoff_policy, 'all_customer_issues_only');
-    assert.equal(
-      JSON.stringify(spawnManifest).includes('/Users/vizcitest'),
-      false,
-    );
+    assert.equal(JSON.stringify(spawnManifest).includes(tmp), false);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

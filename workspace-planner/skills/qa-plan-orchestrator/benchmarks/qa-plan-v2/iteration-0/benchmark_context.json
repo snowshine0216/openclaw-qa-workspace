@@ -10,10 +10,10 @@
   "executor_model": "gpt-5.4",
   "reasoning_effort": "high",
   "runs_per_configuration": 3,
-  "prepared_at": "2026-03-21T06:36:53.539Z",
-  "case_count": 32,
+  "prepared_at": "2026-03-21T07:28:47.044Z",
+  "case_count": 33,
   "evidence_mode_counts": {
-    "blind_pre_defect": 24,
+    "blind_pre_defect": 25,
     "retrospective_replay": 6,
     "holdout_regression": 2
   },
@@ -27,10 +27,10 @@
     "P7-DEV-SMOKE-001",
     "HOLDOUT-REGRESSION-001",
     "HOLDOUT-REGRESSION-002",
-    "RE-P5B-SHIP-GATE-001"
+    "RE-P5B-SHIP-GATE-001",
+    "P4A-MISSING-SCENARIO-001"
   ],
   "advisory_case_ids": [
-    "P4A-MISSING-SCENARIO-001",
     "P4B-LAYERING-001",
     "P5A-COVERAGE-PRESERVATION-001",
     "P6-QUALITY-POLISH-001",
@@ -51,6 +51,7 @@
     "VIZ-P5B-CHECKPOINT-001",
     "EXPORT-P1-CONTEXT-INTAKE-001",
     "EXPORT-P4A-SCENARIO-DRAFT-001",
-    "SELECTOR-P5B-CHECKPOINT-001"
+    "SELECTOR-P5B-CHECKPOINT-001",
+    "RE-DEFECT-FEEDBACKLOOP-001"
   ]
 }

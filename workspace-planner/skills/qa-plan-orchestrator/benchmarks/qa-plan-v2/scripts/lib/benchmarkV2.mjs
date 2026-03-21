@@ -243,6 +243,7 @@ export function buildComparisonMetadata({
 }
 
 function buildConfigurationRuns({
+  iterationDir,
   evalDir,
   configurationDir,
   runsPerConfiguration,
@@ -252,8 +253,8 @@ function buildConfigurationRuns({
     const runDir = join(evalDir, configurationDir, `run-${runNumber}`);
     runs.push({
       run_number: runNumber,
-      output_dir: join(runDir, 'outputs'),
-      run_dir: runDir,
+      output_dir: relative(iterationDir, join(runDir, 'outputs')),
+      run_dir: relative(iterationDir, runDir),
     });
   }
   return runs;
@@ -344,10 +345,10 @@ export async function prepareBenchmarkV2Baseline({
 
   const manifest = {
     skill_name: benchmarkManifest.skill_name,
-    skill_path: skillRoot,
-    workspace: benchmarkRoot,
+    skill_path: relative(benchmarkRoot, skillRoot) || '.',
+    workspace: '.',
     iteration,
-    iteration_dir: iterationDir,
+    iteration_dir: relative(benchmarkRoot, iterationDir) || '.',
     benchmark_version: benchmarkManifest.benchmark_version,
     tasks: [],
   };
@@ -396,24 +397,26 @@ export async function prepareBenchmarkV2Baseline({
       expectations: metadata.assertions,
       runs_per_configuration: benchmarkManifest.runs_per_configuration,
       with_skill_runs: buildConfigurationRuns({
+        iterationDir,
         evalDir,
         configurationDir: 'with_skill',
         runsPerConfiguration: benchmarkManifest.runs_per_configuration,
       }),
       without_skill_runs: buildConfigurationRuns({
+        iterationDir,
         evalDir,
         configurationDir: 'without_skill',
         runsPerConfiguration: benchmarkManifest.runs_per_configuration,
       }),
       with_skill: {
-        output_dir: join(evalDir, 'with_skill', 'run-1', 'outputs'),
-        run_dir: join(evalDir, 'with_skill', 'run-1'),
-        instruction: `Execute qa-plan-orchestrator benchmark case ${caseDefinition.case_id} with the current champion skill snapshot loaded. Save outputs under ${join(evalDir, 'with_skill', 'run-1', 'outputs')}.`,
+        output_dir: relative(iterationDir, join(evalDir, 'with_skill', 'run-1', 'outputs')),
+        run_dir: relative(iterationDir, join(evalDir, 'with_skill', 'run-1')),
+        instruction: `Execute qa-plan-orchestrator benchmark case ${caseDefinition.case_id} with the current champion skill snapshot loaded. Save outputs under ${relative(iterationDir, join(evalDir, 'with_skill', 'run-1', 'outputs'))}.`,
       },
       without_skill: {
-        output_dir: join(evalDir, 'without_skill', 'run-1', 'outputs'),
-        run_dir: join(evalDir, 'without_skill', 'run-1'),
-        instruction: `Execute qa-plan-orchestrator benchmark case ${caseDefinition.case_id} without the skill as the baseline. Save outputs under ${join(evalDir, 'without_skill', 'run-1', 'outputs')}.`,
+        output_dir: relative(iterationDir, join(evalDir, 'without_skill', 'run-1', 'outputs')),
+        run_dir: relative(iterationDir, join(evalDir, 'without_skill', 'run-1')),
+        instruction: `Execute qa-plan-orchestrator benchmark case ${caseDefinition.case_id} without the skill as the baseline. Save outputs under ${relative(iterationDir, join(evalDir, 'without_skill', 'run-1', 'outputs'))}.`,
       },
     });
   }

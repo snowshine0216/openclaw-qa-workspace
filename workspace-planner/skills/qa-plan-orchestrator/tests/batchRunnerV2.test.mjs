@@ -41,11 +41,11 @@ test('writeBatchArtifacts writes batch manifest and checklist with completion st
           evidence_mode: 'blind_pre_defect',
           blocking: true,
           with_skill_runs: [
-            { run_number: 1, run_dir: join(iterationDir, 'eval-1', 'with_skill', 'run-1'), output_dir: join(iterationDir, 'eval-1', 'with_skill', 'run-1', 'outputs') },
-            { run_number: 2, run_dir: join(iterationDir, 'eval-1', 'with_skill', 'run-2'), output_dir: join(iterationDir, 'eval-1', 'with_skill', 'run-2', 'outputs') },
+            { run_number: 1, run_dir: 'eval-1/with_skill/run-1', output_dir: 'eval-1/with_skill/run-1/outputs' },
+            { run_number: 2, run_dir: 'eval-1/with_skill/run-2', output_dir: 'eval-1/with_skill/run-2/outputs' },
           ],
           without_skill_runs: [
-            { run_number: 1, run_dir: join(iterationDir, 'eval-1', 'without_skill', 'run-1'), output_dir: join(iterationDir, 'eval-1', 'without_skill', 'run-1', 'outputs') },
+            { run_number: 1, run_dir: 'eval-1/without_skill/run-1', output_dir: 'eval-1/without_skill/run-1/outputs' },
           ],
         },
         {
@@ -55,7 +55,7 @@ test('writeBatchArtifacts writes batch manifest and checklist with completion st
           evidence_mode: 'blind_pre_defect',
           blocking: true,
           with_skill_runs: [
-            { run_number: 1, run_dir: join(iterationDir, 'eval-2', 'with_skill', 'run-1'), output_dir: join(iterationDir, 'eval-2', 'with_skill', 'run-1', 'outputs') },
+            { run_number: 1, run_dir: 'eval-2/with_skill/run-1', output_dir: 'eval-2/with_skill/run-1/outputs' },
           ],
           without_skill_runs: [],
         },
@@ -76,11 +76,16 @@ test('writeBatchArtifacts writes batch manifest and checklist with completion st
     assert.equal(manifest.batch.batch_number, 1);
     assert.equal(manifest.summary.completed_run_count, 1);
     assert.equal(manifest.summary.pending_run_count, 3);
+    assert.equal(manifest.tasks[0].with_skill_runs[0].run_dir, 'eval-1/with_skill/run-1');
+    assert.equal(manifest.tasks[0].with_skill_runs[0].output_dir, 'eval-1/with_skill/run-1/outputs');
+    assert.equal(JSON.stringify(manifest).includes(tmp), false);
 
     const checklist = await readFile(written.batchChecklistPath, 'utf8');
     assert.match(checklist, /P0-IDEMPOTENCY-001/);
     assert.match(checklist, /\*\*Completed runs:\*\* `1`/);
     assert.match(checklist, /\*\*Pending runs:\*\* `3`/);
+    assert.doesNotMatch(checklist, /<<<<<<<|=======|>>>>>>>/);
+    assert.doesNotMatch(checklist, new RegExp(tmp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

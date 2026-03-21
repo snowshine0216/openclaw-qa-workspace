@@ -48,10 +48,19 @@ async function pathExists(path) {
   }
 }
 
-async function getRunStatus(runEntry) {
-  const hasOutputs = await pathExists(runEntry.output_dir);
-  const hasGrading = await pathExists(join(runEntry.run_dir, 'grading.json'));
-  const hasTiming = await pathExists(join(runEntry.run_dir, 'timing.json'));
+function resolveIterationPath(iterationDir, candidatePath) {
+  if (!candidatePath) {
+    return candidatePath;
+  }
+  return candidatePath.startsWith('/') ? candidatePath : join(iterationDir, candidatePath);
+}
+
+async function getRunStatus(iterationDir, runEntry) {
+  const resolvedOutputDir = resolveIterationPath(iterationDir, runEntry.output_dir);
+  const resolvedRunDir = resolveIterationPath(iterationDir, runEntry.run_dir);
+  const hasOutputs = await pathExists(resolvedOutputDir);
+  const hasGrading = await pathExists(join(resolvedRunDir, 'grading.json'));
+  const hasTiming = await pathExists(join(resolvedRunDir, 'timing.json'));
   return {
     ...runEntry,
     has_outputs: hasOutputs,
@@ -61,9 +70,9 @@ async function getRunStatus(runEntry) {
   };
 }
 
-async function buildTaskStatus(task) {
-  const withSkillRuns = await Promise.all(task.with_skill_runs.map(getRunStatus));
-  const withoutSkillRuns = await Promise.all(task.without_skill_runs.map(getRunStatus));
+async function buildTaskStatus(iterationDir, task) {
+  const withSkillRuns = await Promise.all(task.with_skill_runs.map((runEntry) => getRunStatus(iterationDir, runEntry)));
+  const withoutSkillRuns = await Promise.all(task.without_skill_runs.map((runEntry) => getRunStatus(iterationDir, runEntry)));
   return {
     ...task,
     with_skill_runs: withSkillRuns,
@@ -132,7 +141,7 @@ export async function writeBatchArtifacts({
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const spawnManifest = await loadJson(join(iterationDir, 'spawn_manifest.json'));
   const selectedTasks = spawnManifest.tasks.filter((task) => batchDefinition.eval_ids.includes(task.eval_id));
-  const tasks = await Promise.all(selectedTasks.map(buildTaskStatus));
+  const tasks = await Promise.all(selectedTasks.map((task) => buildTaskStatus(iterationDir, task)));
   const runCount = countRuns(tasks);
   const completedRunCount = countCompletedRuns(tasks);
   const batchDir = getBatchDir(iterationDir, batchDefinition);

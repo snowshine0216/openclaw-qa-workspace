@@ -57,7 +57,7 @@ This gives the highest-signal blind gating first, then broadens into the remaini
 **Goal:** blocking blind signal first
 **Cases:** `4`
 **Runs:** `24`
-**Status:** `pending`
+**Status:** `completed`
 **Operator checklist:** [QA_PLAN_BENCHMARK_BATCH1_OPERATOR_CHECKLIST.md](./QA_PLAN_BENCHMARK_BATCH1_OPERATOR_CHECKLIST.md)
 
 - `eval-1` `P0-IDEMPOTENCY-001` `BCIN-976`
@@ -135,6 +135,25 @@ This gives the highest-signal blind gating first, then broadens into the remaini
 
 ## Run Procedure
 
+Preferred command for one-click execution of the active batch:
+
+```bash
+cd workspace-planner/skills/qa-plan-orchestrator
+npm run benchmark:v2:execute:codex -- --batch 1
+```
+
+Equivalent explicit form:
+
+```bash
+cd workspace-planner/skills/qa-plan-orchestrator
+npm run benchmark:v2:execute -- \
+  --batch 1 \
+  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
+  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
+```
+
+The executor receives `--request <run-dir>/execution_request.json` once per run. The harness copies referenced fixtures into `run-dir/inputs/fixtures/`, writes `timing.json`, and refreshes the batch manifest/checklist after the batch finishes.
+
 For each case in the active batch:
 
 1. execute the `with_skill` runs under `iteration-0/eval-<N>/with_skill/run-1..3/`
@@ -154,7 +173,7 @@ npm run benchmark:v2:aggregate
 
 Update these lines manually as execution progresses.
 
-- Batch 1: `pending`
+- Batch 1: `completed`
 - Batch 2: `pending`
 - Batch 3: `pending`
 - Batch 4: `pending`

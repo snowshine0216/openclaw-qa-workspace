@@ -2,17 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { chmod, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const RUNNER = join(
-  process.cwd(),
-  'workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs',
+  __dirname,
+  '../benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs',
 );
 const GRADER = join(
-  process.cwd(),
-  'workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs',
+  __dirname,
+  '../benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs',
 );
 
 async function writeJson(path, value) {

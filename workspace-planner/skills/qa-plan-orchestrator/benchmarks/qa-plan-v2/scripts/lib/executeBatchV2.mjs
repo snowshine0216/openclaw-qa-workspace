@@ -17,6 +17,19 @@ function configurationRuns(task) {
   ];
 }
 
+function resolveIterationPath(iterationDir, candidatePath) {
+  if (!candidatePath) return candidatePath;
+  return candidatePath.startsWith('/') ? candidatePath : join(iterationDir, candidatePath);
+}
+
+function normalizeRunEntry(iterationDir, runEntry) {
+  return {
+    ...runEntry,
+    run_dir: resolveIterationPath(iterationDir, runEntry.run_dir),
+    output_dir: resolveIterationPath(iterationDir, runEntry.output_dir),
+  };
+}
+
 async function pathExists(path) {
   try {
     await stat(path);
@@ -320,7 +333,8 @@ export async function executeBatchRuns({
   const failures = [];
 
   for (const task of selectedTasks) {
-    for (const runEntry of configurationRuns(task)) {
+    for (const rawRunEntry of configurationRuns(task)) {
+      const runEntry = normalizeRunEntry(iterationDir, rawRunEntry);
       if (!rerunCompleted && await runEntryCompleted(runEntry)) {
         skippedRuns += 1;
         continue;
