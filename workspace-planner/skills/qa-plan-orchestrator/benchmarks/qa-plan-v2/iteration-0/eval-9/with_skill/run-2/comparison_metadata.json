@@ -20,7 +20,8 @@
   "evidence_mode": "retrospective_replay",
   "blocking": true,
   "fixture_refs": [
-    "BCIN-7289-defect-analysis-run"
+    "BCIN-7289-defect-analysis-run",
+    "BCED-2416-analog-issue-bundle"
   ],
   "benchmark_profile": "global-cross-feature-v1",
   "blind_fixture_id": null,

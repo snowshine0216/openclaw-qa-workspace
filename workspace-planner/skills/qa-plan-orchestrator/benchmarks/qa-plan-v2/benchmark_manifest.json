@@ -14,7 +14,12 @@
   ],
   "supported_feature_families": [
     "report-editor",
-    "docs"
+    "docs",
+    "native-embedding",
+    "modern-grid",
+    "visualization",
+    "search-box-selector",
+    "export"
   ],
   "comparison_modes": [
     "baseline_value",
@@ -33,9 +38,18 @@
     "HOLDOUT-REGRESSION-002"
   ],
   "advisory_case_ids": [
+    "P4A-MISSING-SCENARIO-001",
     "P4B-LAYERING-001",
+    "P5A-COVERAGE-PRESERVATION-001",
     "P6-QUALITY-POLISH-001",
-    "DOC-SYNC-001"
+    "DOC-SYNC-001",
+    "NE-P4A-COMPONENT-STACK-001",
+    "GRID-P4A-BANDING-001",
+    "VIZ-P4A-DONUT-LABELS-001",
+    "SELECTOR-P4A-CONFIRMATION-001",
+    "VIZ-P4A-HEATMAP-HIGHLIGHT-001",
+    "EXPORT-P5B-GSHEETS-001",
+    "GRID-P4A-HYPERLINK-STYLE-001"
   ],
   "score_groups": {
     "blind_pre_defect": 0.25,

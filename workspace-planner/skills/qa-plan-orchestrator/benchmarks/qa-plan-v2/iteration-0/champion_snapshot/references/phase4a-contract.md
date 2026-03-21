@@ -69,3 +69,5 @@ If current evidence is insufficient, do one bounded research pass with `confluen
 
 - Support-derived risks must remain visible in the Phase 4a scenario set.
 - Report-editor Workstation behavior and Library-vs-Workstation gap implications must be represented as evidence-backed scenarios or explicit exclusions.
+- When a knowledge pack applies, each required capability must map to a scenario, a release gate, or an explicit exclusion.
+- SDK/API visible outcomes must remain testable in scenario leaves, not hidden behind implementation wording.

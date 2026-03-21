@@ -131,7 +131,8 @@
       "evidence_mode": "retrospective_replay",
       "blocking": true,
       "fixture_refs": [
-        "BCIN-7289-defect-analysis-run"
+        "BCIN-7289-defect-analysis-run",
+        "BCED-2416-analog-issue-bundle"
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "historical analogs become required-before-ship gates"
@@ -210,6 +211,111 @@
       ],
       "benchmark_profile": "global-cross-feature-v1",
       "focus": "promotion/finalization behavior remains stable on another feature"
+    },
+    {
+      "case_id": "NE-P4A-COMPONENT-STACK-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states"
+    },
+    {
+      "case_id": "GRID-P4A-BANDING-001",
+      "feature_id": "BCIN-7231",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7231-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes"
+    },
+    {
+      "case_id": "VIZ-P4A-DONUT-LABELS-001",
+      "feature_id": "BCED-4860",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-4860-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes"
+    },
+    {
+      "case_id": "SELECTOR-P4A-CONFIRMATION-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes"
+    },
+    {
+      "case_id": "VIZ-P4A-HEATMAP-HIGHLIGHT-001",
+      "feature_id": "BCVE-6797",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6797-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "heatmap highlighting effect scenarios cover activation, persistence, and reset behavior"
+    },
+    {
+      "case_id": "EXPORT-P5B-GSHEETS-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations"
+    },
+    {
+      "case_id": "GRID-P4A-HYPERLINK-STYLE-001",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7547-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering"
     }
   ]
 }

@@ -51,6 +51,8 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 - `## Supporting Artifact Coverage Audit`
 - `## Deep Research Coverage Audit`
 - `## Coverage Preservation Audit`
+- `## Knowledge Pack Coverage Audit`
+- `## Cross-Section Interaction Audit`
 - `## Section Review Checklist`
 - `## Blocking Findings`
 - `## Advisory Findings`
@@ -94,3 +96,4 @@ Each affected node must record:
 ## Request Fulfillment Gate
 
 - `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.
+- `accept` is forbidden while any knowledge-pack capability or required interaction pair lacks a mapped scenario, gate, or explicit exclusion.

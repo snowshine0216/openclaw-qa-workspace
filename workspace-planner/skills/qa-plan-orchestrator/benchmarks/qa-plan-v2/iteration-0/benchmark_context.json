@@ -10,10 +10,10 @@
   "executor_model": null,
   "reasoning_effort": null,
   "runs_per_configuration": 3,
-  "prepared_at": "2026-03-21T04:34:47.900Z",
-  "case_count": 14,
+  "prepared_at": "2026-03-21T05:21:22.650Z",
+  "case_count": 21,
   "evidence_mode_counts": {
-    "blind_pre_defect": 6,
+    "blind_pre_defect": 13,
     "retrospective_replay": 6,
     "holdout_regression": 2
   },
@@ -29,8 +29,17 @@
     "HOLDOUT-REGRESSION-002"
   ],
   "advisory_case_ids": [
+    "P4A-MISSING-SCENARIO-001",
     "P4B-LAYERING-001",
+    "P5A-COVERAGE-PRESERVATION-001",
     "P6-QUALITY-POLISH-001",
-    "DOC-SYNC-001"
+    "DOC-SYNC-001",
+    "NE-P4A-COMPONENT-STACK-001",
+    "GRID-P4A-BANDING-001",
+    "VIZ-P4A-DONUT-LABELS-001",
+    "SELECTOR-P4A-CONFIRMATION-001",
+    "VIZ-P4A-HEATMAP-HIGHLIGHT-001",
+    "EXPORT-P5B-GSHEETS-001",
+    "GRID-P4A-HYPERLINK-STYLE-001"
   ]
 }

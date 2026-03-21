@@ -65,9 +65,9 @@ Runner added:
 
 `qa-plan-v2` currently prepares:
 
-- `14` cases
+- `21` cases
 - `3` runs per configuration
-- `84` total baseline runs
+- `126` total baseline runs
 
 ### 3. Global benchmark schema completed
 

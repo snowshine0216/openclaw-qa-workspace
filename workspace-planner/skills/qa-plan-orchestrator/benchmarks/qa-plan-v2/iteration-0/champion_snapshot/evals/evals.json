@@ -224,6 +224,74 @@
         "overly verbose grouping"
       ],
       "expected_remediation_output": "readability-oriented refactor suggestions"
+    },
+    {
+      "id": "defect_recall_replay",
+      "policy": "blocking",
+      "prompt": "Replay known defect evidence and verify the plan contains scenarios or gates that would expose the known misses.",
+      "fixture_files": [
+        "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/fixtures_manifest.json"
+      ],
+      "expected_pass_behavior": "Replay defects are covered by concrete, actionable scenarios or explicit release gates.",
+      "expected_failure_signals": [
+        "missing known miss scenario",
+        "missing replay coverage",
+        "analog gate absent"
+      ],
+      "expected_remediation_output": "updated scenarios, review gates, or replay coverage artifacts"
+    },
+    {
+      "id": "self_test_gap_explanation",
+      "policy": "blocking",
+      "prompt": "Verify the plan or its review outputs explain why self-testing missed the defect and what observable checks would catch it.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Self-test misses are explained with actionable QA scenarios or explicit developer smoke checks.",
+      "expected_failure_signals": [
+        "missing self-test explanation",
+        "missing developer smoke follow-up"
+      ],
+      "expected_remediation_output": "updated review notes, replay analysis, or developer smoke artifact"
+    },
+    {
+      "id": "knowledge_pack_coverage",
+      "policy": "blocking",
+      "prompt": "Verify every knowledge-pack capability maps to a scenario, gate, or explicit exclusion.",
+      "fixture_files": [
+        "workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json"
+      ],
+      "expected_pass_behavior": "All required knowledge-pack items are traceable in contracts, review rubrics, evals, or explicit exclusions.",
+      "expected_failure_signals": [
+        "missing capability mapping",
+        "missing analog gate",
+        "missing SDK visible contract"
+      ],
+      "expected_remediation_output": "updated pack mapping, contract rules, or eval coverage"
+    },
+    {
+      "id": "developer_smoke_generation",
+      "policy": "blocking",
+      "prompt": "Verify Phase 7 produces developer_smoke_test_<feature-id>.md with deterministic checklist rows from P1 and analog gates.",
+      "fixture_files": [],
+      "expected_pass_behavior": "Developer smoke artifact exists and contains deterministic P1 plus [ANALOG-GATE] rows.",
+      "expected_failure_signals": [
+        "missing developer_smoke_test",
+        "non-deterministic row generation"
+      ],
+      "expected_remediation_output": "updated final summary generation or developer smoke artifact"
+    },
+    {
+      "id": "interaction_matrix_coverage",
+      "policy": "blocking",
+      "prompt": "Verify required interaction pairs from the knowledge pack appear in scenarios or explicit exclusions.",
+      "fixture_files": [
+        "workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json"
+      ],
+      "expected_pass_behavior": "Each required interaction pair is represented in planning or explicitly excluded with rationale.",
+      "expected_failure_signals": [
+        "missing interaction pair coverage",
+        "silent interaction omission"
+      ],
+      "expected_remediation_output": "updated interaction scenarios or explicit exclusions"
     }
   ]
 }

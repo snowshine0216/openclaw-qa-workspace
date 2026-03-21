@@ -1,0 +1,38 @@
+{
+  "semantic_role": "champion_seed",
+  "comparison_mode": "baseline_value",
+  "configuration_dir": "with_skill",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_snapshot_path": "iteration-0/champion_snapshot",
+  "skill_snapshot_label": "champion-v0",
+  "model_name": null,
+  "reasoning_effort": null,
+  "knowledge_pack_version": null,
+  "benchmark_version": "qa-plan-v2",
+  "eval_id": 15,
+  "run_number": 3,
+  "case_id": "NE-P4A-COMPONENT-STACK-001",
+  "feature_id": "BCED-1719",
+  "feature_family": "native-embedding",
+  "knowledge_pack_key": "native-embedding",
+  "primary_phase": "phase4a",
+  "case_kind": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCED-1719-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": "BCED-1719-blind-pre-defect-bundle",
+  "blind_policy": {
+    "cutoff_policy": "all_customer_issues_only",
+    "issue_scope": {
+      "include_issue_classes": [
+        "customer"
+      ],
+      "exclude_issue_classes": [
+        "non_customer"
+      ]
+    }
+  }
+}
