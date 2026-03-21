@@ -78,8 +78,8 @@ test('writeBatchArtifacts writes batch manifest and checklist with completion st
 
     const checklist = await readFile(written.batchChecklistPath, 'utf8');
     assert.match(checklist, /P0-IDEMPOTENCY-001/);
-    assert.match(checklist, /completed/);
-    assert.match(checklist, /pending/);
+    assert.match(checklist, /Completed runs:\s*`1`/);
+    assert.match(checklist, /Pending runs:\s*`3`/);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

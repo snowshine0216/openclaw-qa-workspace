@@ -358,6 +358,27 @@ This will:
 4. create `without_skill/run-1..run-3`
 5. write `iteration-0/spawn_manifest.json`
 
+### Materialize a batch checklist
+
+To materialize one execution batch from the prepared manifest:
+
+```bash
+npm run benchmark:v2:batch -- --batch 1
+```
+
+This writes:
+
+- `iteration-0/batches/batch-1/batch_manifest.json`
+- `iteration-0/batches/batch-1/batch_checklist.md`
+
+Use this when you want a concrete per-batch execution surface without re-reading the full `spawn_manifest.json`.
+
+Natural-language command example for an agent:
+
+```text
+Materialize benchmark batch 1 for qa-plan-v2 and show me the generated batch manifest and checklist paths.
+```
+
 ### Execute the benchmark
 
 Use:

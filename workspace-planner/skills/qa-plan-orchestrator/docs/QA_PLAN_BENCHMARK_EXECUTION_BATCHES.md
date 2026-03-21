@@ -6,6 +6,26 @@
 
 Use this document to execute the prepared benchmark in stable batches instead of trying to run all `192` runs at once.
 
+## Batch Materialization Command
+
+Materialize a concrete batch manifest and checklist with:
+
+```bash
+cd /Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator
+npm run benchmark:v2:batch -- --batch 1
+```
+
+This writes:
+
+- `benchmarks/qa-plan-v2/iteration-0/batches/batch-1/batch_manifest.json`
+- `benchmarks/qa-plan-v2/iteration-0/batches/batch-1/batch_checklist.md`
+
+Natural-language command example for an agent:
+
+```text
+Materialize benchmark batch 1 for qa-plan-v2 and show me the generated batch manifest and checklist paths.
+```
+
 Each case has:
 
 - `3` `with_skill` runs
