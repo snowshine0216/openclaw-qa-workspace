@@ -29,6 +29,42 @@ Why:
 
 This does not mean every feature family must have the same number of cases. It means they live under one benchmark version and one acceptance policy.
 
+## Why Evidence Mode Matters
+
+Known defects can bias benchmark results.
+
+If a benchmark case is executed using inputs that already contain:
+
+1. linked defects
+2. defect-analysis runs
+3. self-test gap analysis
+4. QA-plan cross-analysis
+5. postmortem-derived knowledge created after the original QA planning moment
+
+then the case is no longer a clean forward-looking planning benchmark.
+
+To make that explicit, every case in `qa-plan-v2` must declare `evidence_mode`.
+
+Supported values:
+
+1. `blind_pre_defect`
+   - use only evidence that should have existed before the defects were known
+   - use this for true no-regression and predictive planning checks
+2. `retrospective_replay`
+   - use known defect history and retrospective evidence on purpose
+   - use this for skill-improvement and missed-coverage replay
+3. `holdout_regression`
+   - use unrelated features or cases to prevent overfitting
+   - use this as the anti-regression guardrail
+
+### Acceptance intent
+
+As a rule:
+
+1. do not let replay improvements hide blind regressions
+2. do not let replay-heavy cases become the only benchmark evidence
+3. keep holdout cases green before accepting a skill change
+
 ## Files
 
 - `benchmark_manifest.json`
@@ -61,6 +97,7 @@ Each case defines:
 - `knowledge_pack_key`
 - `primary_phase`
 - `kind`
+- `evidence_mode`
 - `blocking`
 - `fixture_refs`
 - `benchmark_profile`
@@ -76,6 +113,7 @@ Example:
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase5b",
   "kind": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
   "blocking": true,
   "fixture_refs": ["BCIN-7289-defect-analysis-run"],
   "benchmark_profile": "global-cross-feature-v1",
@@ -189,6 +227,12 @@ This regenerates:
     - `defect_replay`
     - `checkpoint_enforcement`
     - `holdout_regression`
+- `evidence_mode`
+  - what kind of evidence the benchmark case is allowed to use
+  - supported values:
+    - `blind_pre_defect`
+    - `retrospective_replay`
+    - `holdout_regression`
 - `blocking`
   - whether the case is intended to block candidate acceptance
 - `fixture_refs`
@@ -220,6 +264,7 @@ Example skeleton:
   "knowledge_pack_key": "dashboard-editor",
   "primary_phase": "phase5b",
   "kind": "checkpoint_enforcement",
+  "evidence_mode": "blind_pre_defect",
   "blocking": true,
   "fixture_refs": ["DASH-8100-defect-history"],
   "benchmark_profile": "global-cross-feature-v1",
@@ -235,6 +280,23 @@ Then update:
 2. `fixtures_manifest.json`
    - register the new fixture ids
 3. rerun `npm run benchmark:v2:prepare`
+
+### Choosing `evidence_mode`
+
+Use `blind_pre_defect` when:
+
+1. you want to know whether the skill would have produced a good plan before defects were known
+2. the inputs exclude post-defect retrospective analysis
+
+Use `retrospective_replay` when:
+
+1. you intentionally want to test whether known misses are now covered
+2. the inputs depend on defect-analysis or gap-analysis artifacts
+
+Use `holdout_regression` when:
+
+1. the case is meant to ensure changes for one family do not degrade another case
+2. the case is acting as anti-overfitting protection
 
 ## How To Run
 

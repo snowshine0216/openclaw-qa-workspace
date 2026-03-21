@@ -1,7 +1,7 @@
 {
   "eval_id": 11,
   "eval_name": "p7-dev-smoke-001",
-  "prompt": "Benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase7. Case family: checkpoint enforcement. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: developer smoke checklist is derived from P1 and analog-gate scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "prompt": "Benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase7. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: developer smoke checklist is derived from P1 and analog-gate scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
   "assertions": [
     "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
     "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7"
@@ -12,6 +12,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase7",
   "eval_group": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
   "blocking": true,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"

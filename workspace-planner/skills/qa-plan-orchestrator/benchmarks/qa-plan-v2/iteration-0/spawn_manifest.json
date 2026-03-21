@@ -15,12 +15,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase0",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
         "BCIN-976-run-history"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P0-IDEMPOTENCY-001 for qa-plan-orchestrator. Use feature BCIN-976 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase0. Case family: phase contract. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-976-run-history. Focus: REPORT_STATE and resume semantics remain stable. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P0-IDEMPOTENCY-001 for qa-plan-orchestrator. Use feature BCIN-976 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase0. Case family: phase contract. Evidence mode: blind pre defect. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-976-run-history. Focus: REPORT_STATE and resume semantics remain stable. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
         "[phase_contract][blocking] Output aligns with primary phase phase0"
@@ -80,12 +81,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase1",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P1-SUPPORT-CONTEXT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase1. Case family: phase contract. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: supporting issues stay context_only_no_defect_analysis and produce summaries. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P1-SUPPORT-CONTEXT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase1. Case family: phase contract. Evidence mode: blind pre defect. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: supporting issues stay context_only_no_defect_analysis and produce summaries. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
         "[phase_contract][blocking] Output aligns with primary phase phase1"
@@ -145,12 +147,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase3",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P3-RESEARCH-ORDER-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase3. Case family: phase contract. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: Tavily-first then Confluence fallback ordering. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P3-RESEARCH-ORDER-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase3. Case family: phase contract. Evidence mode: blind pre defect. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: Tavily-first then Confluence fallback ordering. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
         "[phase_contract][blocking] Output aligns with primary phase phase3"
@@ -210,12 +213,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase4a",
       "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P4A-SDK-CONTRACT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: SDK/API visible outcomes like window title become explicit scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P4A-SDK-CONTRACT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: SDK/API visible outcomes like window title become explicit scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
         "[defect_replay][blocking] Output aligns with primary phase phase4a"
@@ -275,12 +279,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase4a",
       "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
       "blocking": false,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P4A-MISSING-SCENARIO-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: missing scenario generation for template-save and report-builder loading. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P4A-MISSING-SCENARIO-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Evidence mode: retrospective replay. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: missing scenario generation for template-save and report-builder loading. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
         "[defect_replay][advisory] Output aligns with primary phase phase4a"
@@ -340,12 +345,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase4b",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": false,
       "fixture_refs": [
         "embedding-dashboard-editor-compare-result"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P4B-LAYERING-001 for qa-plan-orchestrator. Use feature BCED-2416 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4b. Case family: phase contract. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: canonical top-layer grouping without collapsing scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P4B-LAYERING-001 for qa-plan-orchestrator. Use feature BCED-2416 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4b. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: canonical top-layer grouping without collapsing scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
         "[phase_contract][advisory] Output aligns with primary phase phase4b"
@@ -405,12 +411,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase5a",
       "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P5A-INTERACTION-AUDIT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: cross-section interaction audit catches template x pause-mode and prompt-editor-open states. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P5A-INTERACTION-AUDIT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: cross-section interaction audit catches template x pause-mode and prompt-editor-open states. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
         "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a"
@@ -470,12 +477,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase5a",
       "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
       "blocking": false,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P5A-COVERAGE-PRESERVATION-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: review loop does not silently drop evidence-backed nodes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P5A-COVERAGE-PRESERVATION-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: review loop does not silently drop evidence-backed nodes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
         "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a"
@@ -535,12 +543,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase5b",
       "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P5B-ANALOG-GATE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: historical analogs become required-before-ship gates. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P5B-ANALOG-GATE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: historical analogs become required-before-ship gates. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
         "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b"
@@ -600,12 +609,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase6",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": false,
       "fixture_refs": [
         "embedding-dashboard-editor-compare-result"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
         "[phase_contract][advisory] Output aligns with primary phase phase6"
@@ -665,12 +675,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "phase7",
       "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
       "blocking": true,
       "fixture_refs": [
         "BCIN-7289-defect-analysis-run"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase7. Case family: checkpoint enforcement. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: developer smoke checklist is derived from P1 and analog-gate scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase7. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: developer smoke checklist is derived from P1 and analog-gate scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
         "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7"
@@ -730,10 +741,11 @@
       "knowledge_pack_key": "docs",
       "primary_phase": "docs",
       "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
       "blocking": false,
       "fixture_refs": [],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case DOC-SYNC-001 for qa-plan-orchestrator. Use the qa-plan-orchestrator documentation set as the target artifact family. Feature family: docs. Knowledge pack: docs. Primary phase/checkpoint under test: docs. Case family: phase contract. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: none. Focus: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case DOC-SYNC-001 for qa-plan-orchestrator. Use the qa-plan-orchestrator documentation set as the target artifact family. Feature family: docs. Knowledge pack: docs. Primary phase/checkpoint under test: docs. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: none. Focus: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
         "[phase_contract][advisory] Output aligns with primary phase docs"
@@ -793,12 +805,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "holdout",
       "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
       "blocking": true,
       "fixture_refs": [
         "embedding-dashboard-editor-compare-result"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: skill improvements for report-editor do not regress a different feature planning flow. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: skill improvements for report-editor do not regress a different feature planning flow. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
         "[holdout_regression][blocking] Output aligns with primary phase holdout"
@@ -858,12 +871,13 @@
       "knowledge_pack_key": "report-editor",
       "primary_phase": "holdout",
       "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
       "blocking": true,
       "fixture_refs": [
         "BCIN-976-run-history"
       ],
       "benchmark_profile": "global-cross-feature-v1",
-      "prompt": "Benchmark case HOLDOUT-REGRESSION-002 for qa-plan-orchestrator. Use feature BCIN-976 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-976-run-history. Focus: promotion/finalization behavior remains stable on another feature. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "prompt": "Benchmark case HOLDOUT-REGRESSION-002 for qa-plan-orchestrator. Use feature BCIN-976 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-976-run-history. Focus: promotion/finalization behavior remains stable on another feature. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
       "expectations": [
         "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
         "[holdout_regression][blocking] Output aligns with primary phase holdout"

@@ -17,6 +17,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase3",
   "case_kind": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
   "blocking": true,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"

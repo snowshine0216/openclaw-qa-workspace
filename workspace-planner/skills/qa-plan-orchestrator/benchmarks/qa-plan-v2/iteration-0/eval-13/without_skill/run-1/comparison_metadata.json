@@ -17,6 +17,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "holdout",
   "case_kind": "holdout_regression",
+  "evidence_mode": "holdout_regression",
   "blocking": true,
   "fixture_refs": [
     "embedding-dashboard-editor-compare-result"

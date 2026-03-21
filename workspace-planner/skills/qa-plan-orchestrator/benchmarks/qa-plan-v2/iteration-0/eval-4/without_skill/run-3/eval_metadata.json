@@ -1,7 +1,7 @@
 {
   "eval_id": 4,
   "eval_name": "p4a-sdk-contract-001",
-  "prompt": "Benchmark case P4A-SDK-CONTRACT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: SDK/API visible outcomes like window title become explicit scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "prompt": "Benchmark case P4A-SDK-CONTRACT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: SDK/API visible outcomes like window title become explicit scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
   "assertions": [
     "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
     "[defect_replay][blocking] Output aligns with primary phase phase4a"
@@ -12,6 +12,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase4a",
   "eval_group": "defect_replay",
+  "evidence_mode": "retrospective_replay",
   "blocking": true,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"

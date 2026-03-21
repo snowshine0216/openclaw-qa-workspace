@@ -10,8 +10,13 @@
   "executor_model": "gpt-5.4",
   "reasoning_effort": "high",
   "runs_per_configuration": 3,
-  "prepared_at": "2026-03-21T03:25:56.268Z",
+  "prepared_at": "2026-03-21T03:38:30.015Z",
   "case_count": 14,
+  "evidence_mode_counts": {
+    "blind_pre_defect": 6,
+    "retrospective_replay": 6,
+    "holdout_regression": 2
+  },
   "blocking_case_ids": [
     "P0-IDEMPOTENCY-001",
     "P1-SUPPORT-CONTEXT-001",

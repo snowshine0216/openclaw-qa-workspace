@@ -7,6 +7,14 @@
 
 ---
 
+## Relationship to skill-evolution-orchestrator
+
+- **Canonical campaign (this spec):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` is the frozen, aggregateable source for `skill-creator` tooling and the eval viewer.
+- **Evolution workflow root:** `skill-evolution-orchestrator` stores run state and working files under `.agents/skills/skill-evolution-orchestrator/runs/<run-key>/` (including `benchmarks/scoreboard_<run-key>.json` during a run).
+- **Consistency rule:** When evolving `qa-plan-orchestrator`, Phases 4–6 must publish per-iteration results into this spec’s `benchmarks/<benchmark-version>/iteration-<n>/` layout so manifests, `benchmark.json`, and `scorecard.json` have a single authoritative location. The evolution run directory remains the idempotency and resume root.
+
+See [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) (section *Benchmark layout: canonical vs evolution run*).
+
 ## Overview
 
 This spec defines the canonical benchmark layout, metadata, and scoring schema for `qa-plan-orchestrator`.
@@ -23,6 +31,16 @@ The spec is intentionally compatible with the existing `skill-creator` aggregati
 - `evals/post_run.sh`
 - `~/.agents/skills/skill-creator/scripts/aggregate_benchmark.py`
 - `~/.agents/skills/skill-creator/eval-viewer/generate_review.py`
+
+## Environment setup
+
+- **In-repo:** Node.js and the eval harness under `workspace-planner/skills/qa-plan-orchestrator/evals/` (`run_evals.mjs`, `post_run.sh`).
+- **Host install:** `skill-creator` scripts and viewer under `~/.agents/skills/skill-creator/` (or the equivalent path on the machine running aggregation); not vendored in this repository.
+- **Optional:** `jq` for inspecting `benchmark.json`, `scorecard.json`, and manifests under `benchmarks/<benchmark-version>/`.
+
+## Deliverables (benchmark campaign artifacts)
+
+When creating or extending a benchmark version under `benchmarks/<benchmark-version>/`, these files are required at minimum (see [Files That Must Exist At Benchmark Root](#files-that-must-exist-at-benchmark-root)): `benchmark_manifest.json`, `fixtures_manifest.json`, `grading_rubric.md`, plus per-iteration directories as defined in this spec. `history.json`, `scoreboard.json`, and `notes.md` are updated as the campaign progresses.
 
 ## Non-Negotiable Rules
 
@@ -763,8 +781,10 @@ Start with:
 
 ## References
 
-1. [run_evals.mjs](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/evals/run_evals.mjs)
-2. [post_run.sh](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/evals/post_run.sh)
-3. [schemas.md](/Users/vizcitest/.agents/skills/skill-creator/references/schemas.md)
-4. [aggregate_benchmark.py](/Users/vizcitest/.agents/skills/skill-creator/scripts/aggregate_benchmark.py)
-5. [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md)
+Repository paths are relative to the repo root unless they start with `~/` (host-local OpenClaw skills install).
+
+1. [run_evals.mjs](../evals/run_evals.mjs) — `workspace-planner/skills/qa-plan-orchestrator/evals/run_evals.mjs`
+2. [post_run.sh](../evals/post_run.sh) — `workspace-planner/skills/qa-plan-orchestrator/evals/post_run.sh`
+3. `~/.agents/skills/skill-creator/references/schemas.md` — not vendored in this repo; use the same `skill-creator` install as eval aggregation
+4. `~/.agents/skills/skill-creator/scripts/aggregate_benchmark.py` — not vendored in this repo
+5. [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) — paired design for evolution runs and benchmark ownership

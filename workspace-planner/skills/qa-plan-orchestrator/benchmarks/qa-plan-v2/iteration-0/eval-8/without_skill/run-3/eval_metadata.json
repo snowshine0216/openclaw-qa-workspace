@@ -1,7 +1,7 @@
 {
   "eval_id": 8,
   "eval_name": "p5a-coverage-preservation-001",
-  "prompt": "Benchmark case P5A-COVERAGE-PRESERVATION-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: review loop does not silently drop evidence-backed nodes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "prompt": "Benchmark case P5A-COVERAGE-PRESERVATION-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: review loop does not silently drop evidence-backed nodes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
   "assertions": [
     "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
     "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a"
@@ -12,6 +12,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase5a",
   "eval_group": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
   "blocking": false,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"

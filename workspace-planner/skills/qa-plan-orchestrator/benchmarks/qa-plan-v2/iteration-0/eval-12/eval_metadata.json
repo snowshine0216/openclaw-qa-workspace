@@ -1,7 +1,7 @@
 {
   "eval_id": 12,
   "eval_name": "doc-sync-001",
-  "prompt": "Benchmark case DOC-SYNC-001 for qa-plan-orchestrator. Use the qa-plan-orchestrator documentation set as the target artifact family. Feature family: docs. Knowledge pack: docs. Primary phase/checkpoint under test: docs. Case family: phase contract. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: none. Focus: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "prompt": "Benchmark case DOC-SYNC-001 for qa-plan-orchestrator. Use the qa-plan-orchestrator documentation set as the target artifact family. Feature family: docs. Knowledge pack: docs. Primary phase/checkpoint under test: docs. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: none. Focus: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
   "assertions": [
     "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
     "[phase_contract][advisory] Output aligns with primary phase docs"
@@ -12,6 +12,7 @@
   "knowledge_pack_key": "docs",
   "primary_phase": "docs",
   "eval_group": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
   "blocking": false,
   "fixture_refs": [],
   "benchmark_profile": "global-cross-feature-v1"

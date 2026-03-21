@@ -21,6 +21,7 @@ test('buildCasePrompt encodes feature, phase, kind, and focus', () => {
     knowledge_pack_key: 'report-editor',
     primary_phase: 'phase5b',
     kind: 'checkpoint_enforcement',
+    evidence_mode: 'retrospective_replay',
     blocking: true,
     fixture_refs: ['BCIN-7289-defect-analysis-run'],
     benchmark_profile: 'global-cross-feature-v1',
@@ -31,6 +32,7 @@ test('buildCasePrompt encodes feature, phase, kind, and focus', () => {
   assert.match(prompt, /report-editor/);
   assert.match(prompt, /phase5b/);
   assert.match(prompt, /checkpoint enforcement/);
+  assert.match(prompt, /retrospective replay/);
   assert.match(prompt, /required-before-ship gates/);
 });
 
@@ -42,6 +44,7 @@ test('buildCaseEvalMetadata keeps case identity and blocking semantics', () => {
     knowledge_pack_key: 'report-editor',
     primary_phase: 'holdout',
     kind: 'holdout_regression',
+    evidence_mode: 'holdout_regression',
     blocking: true,
     fixture_refs: ['embedding-dashboard-editor-compare-result'],
     benchmark_profile: 'global-cross-feature-v1',
@@ -54,6 +57,7 @@ test('buildCaseEvalMetadata keeps case identity and blocking semantics', () => {
   assert.equal(metadata.eval_group, 'holdout_regression');
   assert.equal(metadata.feature_family, 'report-editor');
   assert.equal(metadata.knowledge_pack_key, 'report-editor');
+  assert.equal(metadata.evidence_mode, 'holdout_regression');
 });
 
 test('buildCaseAssertions prefixes kind and blocking labels', () => {
@@ -64,6 +68,7 @@ test('buildCaseAssertions prefixes kind and blocking labels', () => {
     knowledge_pack_key: 'docs',
     primary_phase: 'docs',
     kind: 'phase_contract',
+    evidence_mode: 'blind_pre_defect',
     blocking: false,
     fixture_refs: [],
     benchmark_profile: 'global-cross-feature-v1',
@@ -82,7 +87,19 @@ test('validateCaseMatrix rejects missing case ids referenced by manifest', async
     },
     casesDocument: {
       cases: [
-        { case_id: 'PRESENT-001' },
+        {
+          case_id: 'PRESENT-001',
+          feature_id: 'BCIN-1',
+          feature_family: 'report-editor',
+          knowledge_pack_key: 'report-editor',
+          primary_phase: 'phase4a',
+          kind: 'defect_replay',
+          evidence_mode: 'blind_pre_defect',
+          blocking: true,
+          fixture_refs: [],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'present case only',
+        },
       ],
     },
   }), /missing blocking case id/);
@@ -136,6 +153,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
           knowledge_pack_key: 'report-editor',
           primary_phase: 'phase5b',
           kind: 'checkpoint_enforcement',
+          evidence_mode: 'retrospective_replay',
           blocking: true,
           fixture_refs: ['BCIN-7289-defect-analysis-run'],
           benchmark_profile: 'global-cross-feature-v1',
@@ -148,6 +166,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
           knowledge_pack_key: 'docs',
           primary_phase: 'docs',
           kind: 'phase_contract',
+          evidence_mode: 'blind_pre_defect',
           blocking: false,
           fixture_refs: [],
           benchmark_profile: 'global-cross-feature-v1',
@@ -180,6 +199,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(spawnManifest.tasks[0].without_skill_runs[1].run_number, 2);
     assert.equal(spawnManifest.tasks[0].feature_family, 'report-editor');
     assert.equal(spawnManifest.tasks[0].knowledge_pack_key, 'report-editor');
+    assert.equal(spawnManifest.tasks[0].evidence_mode, 'retrospective_replay');
     assert.deepEqual(spawnManifest.tasks[0].fixture_refs, ['BCIN-7289-defect-analysis-run']);
 
     const comparisonMetadata = JSON.parse(await readFile(
@@ -190,6 +210,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(comparisonMetadata.case_kind, 'checkpoint_enforcement');
     assert.equal(comparisonMetadata.feature_family, 'report-editor');
     assert.equal(comparisonMetadata.knowledge_pack_key, 'report-editor');
+    assert.equal(comparisonMetadata.evidence_mode, 'retrospective_replay');
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

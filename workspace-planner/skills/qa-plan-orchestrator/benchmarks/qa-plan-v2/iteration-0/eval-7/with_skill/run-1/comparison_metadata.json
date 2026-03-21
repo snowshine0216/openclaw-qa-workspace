@@ -17,6 +17,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase5a",
   "case_kind": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
   "blocking": true,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"

@@ -17,6 +17,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase6",
   "case_kind": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
   "blocking": false,
   "fixture_refs": [
     "embedding-dashboard-editor-compare-result"

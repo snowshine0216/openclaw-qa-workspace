@@ -17,6 +17,7 @@
   "knowledge_pack_key": "report-editor",
   "primary_phase": "phase4a",
   "case_kind": "defect_replay",
+  "evidence_mode": "retrospective_replay",
   "blocking": false,
   "fixture_refs": [
     "BCIN-7289-defect-analysis-run"
