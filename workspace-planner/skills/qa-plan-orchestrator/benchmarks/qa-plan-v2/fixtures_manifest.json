@@ -1,0 +1,23 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-7289-defect-analysis-run",
+      "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
+      "type": "defect_replay_source",
+      "status": "active"
+    },
+    {
+      "fixture_id": "embedding-dashboard-editor-compare-result",
+      "path": "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md",
+      "type": "existing_eval_fixture",
+      "status": "active"
+    },
+    {
+      "fixture_id": "report-editor-knowledge-pack",
+      "path": "workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor",
+      "type": "knowledge_pack",
+      "status": "planned"
+    }
+  ]
+}

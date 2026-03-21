@@ -1,0 +1,62 @@
+{
+  "expectations": [
+    {
+      "text": "artifact_lookup_<feature-id>.md exists",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "coverage_ledger_<feature-id>.md maps mandatory candidates",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "Latest phase6 draft passes markxmind validation",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "phase5a and phase5b outputs both exist",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "Evidence saved under context/ before influencing plan",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "phase-scoped reruns advance to the next real round",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 15,
+      "Write": 4,
+      "Bash": 5
+    },
+    "total_tool_calls": 24,
+    "total_steps": 7,
+    "errors_encountered": 0,
+    "output_chars": 14600,
+    "transcript_chars": 4300
+  },
+  "timing": {
+    "total_duration_seconds": 201
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": [
+      "Synthetic seed validation run for with_skill"
+    ]
+  }
+}

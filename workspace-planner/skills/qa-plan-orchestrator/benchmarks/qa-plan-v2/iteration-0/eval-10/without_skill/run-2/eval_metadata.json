@@ -1,0 +1,20 @@
+{
+  "eval_id": 10,
+  "eval_name": "p6-quality-polish-001",
+  "prompt": "Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+    "[phase_contract][advisory] Output aligns with primary phase phase6"
+  ],
+  "case_id": "P6-QUALITY-POLISH-001",
+  "feature_id": "BCIN-6709",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase6",
+  "eval_group": "phase_contract",
+  "blocking": false,
+  "fixture_refs": [
+    "embedding-dashboard-editor-compare-result"
+  ],
+  "benchmark_profile": "global-cross-feature-v1"
+}

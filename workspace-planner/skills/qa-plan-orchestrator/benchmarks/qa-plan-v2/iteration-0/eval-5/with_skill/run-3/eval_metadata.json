@@ -1,0 +1,20 @@
+{
+  "eval_id": 5,
+  "eval_name": "p4a-missing-scenario-001",
+  "prompt": "Benchmark case P4A-MISSING-SCENARIO-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: missing scenario generation for template-save and report-builder loading. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+    "[defect_replay][advisory] Output aligns with primary phase phase4a"
+  ],
+  "case_id": "P4A-MISSING-SCENARIO-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase4a",
+  "eval_group": "defect_replay",
+  "blocking": false,
+  "fixture_refs": [
+    "BCIN-7289-defect-analysis-run"
+  ],
+  "benchmark_profile": "global-cross-feature-v1"
+}

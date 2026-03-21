@@ -1,0 +1,213 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "cases": [
+    {
+      "case_id": "P0-IDEMPOTENCY-001",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase0",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-976-run-history"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "REPORT_STATE and resume semantics remain stable"
+    },
+    {
+      "case_id": "P1-SUPPORT-CONTEXT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "supporting issues stay context_only_no_defect_analysis and produce summaries"
+    },
+    {
+      "case_id": "P3-RESEARCH-ORDER-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase3",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "Tavily-first then Confluence fallback ordering"
+    },
+    {
+      "case_id": "P4A-SDK-CONTRACT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "SDK/API visible outcomes like window title become explicit scenarios"
+    },
+    {
+      "case_id": "P4A-MISSING-SCENARIO-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "missing scenario generation for template-save and report-builder loading"
+    },
+    {
+      "case_id": "P4B-LAYERING-001",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4b",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "embedding-dashboard-editor-compare-result"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "canonical top-layer grouping without collapsing scenarios"
+    },
+    {
+      "case_id": "P5A-INTERACTION-AUDIT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5a",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "cross-section interaction audit catches template x pause-mode and prompt-editor-open states"
+    },
+    {
+      "case_id": "P5A-COVERAGE-PRESERVATION-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5a",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "review loop does not silently drop evidence-backed nodes"
+    },
+    {
+      "case_id": "P5B-ANALOG-GATE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "historical analogs become required-before-ship gates"
+    },
+    {
+      "case_id": "P6-QUALITY-POLISH-001",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase6",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "embedding-dashboard-editor-compare-result"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "final quality pass preserves layering and executable wording"
+    },
+    {
+      "case_id": "P7-DEV-SMOKE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase7",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "developer smoke checklist is derived from P1 and analog-gate scenarios"
+    },
+    {
+      "case_id": "DOC-SYNC-001",
+      "feature_id": "DOCS",
+      "feature_family": "docs",
+      "knowledge_pack_key": "docs",
+      "primary_phase": "docs",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "SKILL.md, README.md, reference.md, and AGENTS docs stay aligned"
+    },
+    {
+      "case_id": "HOLDOUT-REGRESSION-001",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "embedding-dashboard-editor-compare-result"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "skill improvements for report-editor do not regress a different feature planning flow"
+    },
+    {
+      "case_id": "HOLDOUT-REGRESSION-002",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-976-run-history"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "promotion/finalization behavior remains stable on another feature"
+    }
+  ]
+}

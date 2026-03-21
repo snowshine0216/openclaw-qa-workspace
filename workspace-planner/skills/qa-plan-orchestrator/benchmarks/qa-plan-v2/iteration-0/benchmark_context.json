@@ -1,0 +1,31 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration": 0,
+  "status": "prepared_pending_execution",
+  "comparison_mode": "baseline_value",
+  "primary_configuration": "with_skill",
+  "reference_configuration": "without_skill",
+  "skill_snapshot_role": "champion_seed",
+  "skill_snapshot_path": "iteration-0/champion_snapshot",
+  "executor_model": "gpt-5.4",
+  "reasoning_effort": "high",
+  "runs_per_configuration": 3,
+  "prepared_at": "2026-03-21T03:25:56.268Z",
+  "case_count": 14,
+  "blocking_case_ids": [
+    "P0-IDEMPOTENCY-001",
+    "P1-SUPPORT-CONTEXT-001",
+    "P3-RESEARCH-ORDER-001",
+    "P4A-SDK-CONTRACT-001",
+    "P5A-INTERACTION-AUDIT-001",
+    "P5B-ANALOG-GATE-001",
+    "P7-DEV-SMOKE-001",
+    "HOLDOUT-REGRESSION-001",
+    "HOLDOUT-REGRESSION-002"
+  ],
+  "advisory_case_ids": [
+    "P4B-LAYERING-001",
+    "P6-QUALITY-POLISH-001",
+    "DOC-SYNC-001"
+  ]
+}

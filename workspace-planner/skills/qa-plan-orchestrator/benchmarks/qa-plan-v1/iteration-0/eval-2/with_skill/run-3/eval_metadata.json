@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2",
+  "prompt": "Review a QA plan draft for executable-step quality and final layering. Reject vague phrases like 'verify correct behavior' or 'ensure it works' and preserve canonical top-layer, subcategory, and scenario structure.",
+  "assertions": [
+    "No vague phrases (verify correct behavior, ensure it works) in manual steps",
+    "Action steps are user-visible and concrete",
+    "Review artifact records rewrite requests",
+    "Final layered draft preserves top category -> subcategory -> scenario structure"
+  ],
+  "eval_group": "core_regression"
+}

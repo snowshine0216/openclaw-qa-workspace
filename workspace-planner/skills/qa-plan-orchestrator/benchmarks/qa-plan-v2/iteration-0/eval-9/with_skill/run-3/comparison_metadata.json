@@ -1,0 +1,25 @@
+{
+  "semantic_role": "champion_seed",
+  "comparison_mode": "baseline_value",
+  "configuration_dir": "with_skill",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_snapshot_path": "iteration-0/champion_snapshot",
+  "skill_snapshot_label": "champion-v0",
+  "model_name": "gpt-5.4",
+  "reasoning_effort": "high",
+  "knowledge_pack_version": null,
+  "benchmark_version": "qa-plan-v2",
+  "eval_id": 9,
+  "run_number": 3,
+  "case_id": "P5B-ANALOG-GATE-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase5b",
+  "case_kind": "checkpoint_enforcement",
+  "blocking": true,
+  "fixture_refs": [
+    "BCIN-7289-defect-analysis-run"
+  ],
+  "benchmark_profile": "global-cross-feature-v1"
+}

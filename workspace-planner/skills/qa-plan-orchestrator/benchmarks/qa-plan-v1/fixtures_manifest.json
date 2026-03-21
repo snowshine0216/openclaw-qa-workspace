@@ -1,0 +1,26 @@
+{
+  "benchmark_version": "qa-plan-v1",
+  "fixtures": [
+    {
+      "fixture_id": "embedding-dashboard-editor-compare-result",
+      "path": "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md",
+      "type": "existing_eval_fixture",
+      "status": "active",
+      "locked_at": "2026-03-21T00:00:00Z"
+    },
+    {
+      "fixture_id": "BCIN-7289-defect-analysis-run",
+      "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
+      "type": "planned_defect_replay_source",
+      "status": "available_not_yet_active",
+      "locked_at": "2026-03-21T00:00:00Z"
+    },
+    {
+      "fixture_id": "BCED-2416-qa-plan-draft-v1",
+      "path": "workspace-planner/skills/qa-plan-orchestrator/runs/BCED-2416/drafts/qa-plan-draft-v1.md",
+      "type": "existing_eval_fixture",
+      "status": "missing",
+      "locked_at": "2026-03-21T00:00:00Z"
+    }
+  ]
+}

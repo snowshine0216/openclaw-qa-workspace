@@ -1,0 +1,15 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "started_at": "2026-03-21T00:00:00Z",
+  "current_champion_iteration": 0,
+  "iterations": [
+    {
+      "iteration": 0,
+      "label": "baseline",
+      "role": "champion_seed",
+      "skill_snapshot": "iteration-0/champion_snapshot",
+      "grading_result": "pending_baseline_execution",
+      "is_current_champion": true
+    }
+  ]
+}

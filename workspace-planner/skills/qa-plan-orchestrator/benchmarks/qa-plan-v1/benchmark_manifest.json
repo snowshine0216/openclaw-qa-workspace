@@ -1,0 +1,56 @@
+{
+  "benchmark_version": "qa-plan-v1",
+  "status": "seeded_iteration_0_pending_execution",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_path": "workspace-planner/skills/qa-plan-orchestrator",
+  "frozen_at": "2026-03-21T00:00:00Z",
+  "baseline_iteration": 0,
+  "runs_per_configuration": 3,
+  "comparison_modes": [
+    "baseline_value",
+    "iteration_compare",
+    "model_compare"
+  ],
+  "active_eval_sets": {
+    "core_regression": [
+      1,
+      2,
+      3
+    ]
+  },
+  "active_fixture_ids": [
+    "embedding-dashboard-editor-compare-result",
+    "BCIN-7289-defect-analysis-run"
+  ],
+  "known_fixture_gaps": [
+    "BCED-2416 qa-plan draft fixture referenced by current eval_groups is missing in this workspace"
+  ],
+  "blocking_sources": [
+    "npm test",
+    "evals/evals.json eval ids 1,2,3",
+    "eval_groups with policy=blocking from evals/evals.json"
+  ],
+  "scored_groups": [
+    "core_regression_pass_rate"
+  ],
+  "planned_expansion": {
+    "defect_replay": {
+      "status": "planned",
+      "source": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289"
+    },
+    "knowledge_pack_coverage": {
+      "status": "planned",
+      "source": "workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor"
+    },
+    "holdout_regression": {
+      "status": "planned",
+      "source": "to_be_selected_after_replay_set_is_frozen"
+    }
+  },
+  "acceptance_policy": {
+    "iteration_0_goal": "freeze the baseline and establish with_skill versus without_skill value proof",
+    "future_iterations_require_blocking_pass": true,
+    "future_iterations_require_no_regression": true,
+    "future_iterations_require_non_decreasing_defect_recall": true
+  }
+}
