@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": true,
+      "evidence": "Phase-5b draft sections cover template operations, prompt-related save/close flows, builder loading, and close-confirmation safety, and checkpoint audit/delta end in accept."
+    },
+    {
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "Checkpoint audit/delta artifacts show explicit shipment-readiness gating, which is phase-5b aligned."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 10,
+      "Write": 3,
+      "Bash": 2
+    },
+    "total_tool_calls": 15,
+    "total_steps": 5,
+    "errors_encountered": 0,
+    "output_chars": 3200,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 219
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Benchmark evidence is drawn from the current champion contract/runtime plus frozen fixtures rather than a fresh automated replay runner."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Reused champion runtime artifacts where the frozen batch lacks a local full-run executor."
+    ]
+  }
+}
