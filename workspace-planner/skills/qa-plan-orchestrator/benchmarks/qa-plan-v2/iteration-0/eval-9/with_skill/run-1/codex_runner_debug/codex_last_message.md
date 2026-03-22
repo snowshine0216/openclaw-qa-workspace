@@ -1,0 +1,3 @@
+Wrote the benchmark deliverables to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-UjfRXL/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-UjfRXL/outputs/execution_notes.md).
+
+Summary: `P5B-ANALOG-GATE-001` is assessed as `FAIL (blocking)`. The snapshot is clearly aligned to `phase5b`, and the rubric/knowledge pack now mention `[ANALOG-GATE]`, but the actual Phase 5b validator path still does not enforce historical analogs as required-before-ship gates.

@@ -1,0 +1,10 @@
+{
+  "key": "BCIN-7668",
+  "summary": "Two loading icons when create/edit report",
+  "status": "To Do",
+  "priority": "Low",
+  "assignee": "Kai Wang",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"6eafbd68b45b\"},\"content\":[{\"text\":\"Two loading icons when create/edit report\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"2cfb2fd12f0f\",\"width\":671,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"image-20260317-101440.png\",\"collection\":\"\",\"height\":931,\"id\":\"0fd8d0d7-936f-4456-a6d3-e7dcf4f653e9\",\"localId\":\"a538a63c929d\",\"type\":\"file\",\"width\":1384},\"marks\":[{\"attrs\":{\"color\":\"#091e4224\",\"size\":2},\"type\":\"border\"}],\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"localId\":\"ea261d187426\"},\"content\":[{\"text\":\"Steps to reproduce:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"b6136f7c1424\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"e4435fdceb57\"},\"content\":[{\"attrs\":{\"localId\":\"40f93bbd8095\"},\"content\":[{\"text\":\"Login \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" by bxu with empty password on workstation\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"e4435fdceb57\"},\"content\":[{\"attrs\":{\"localId\":\"0d45970a22c7\"},\"content\":[{\"text\":\"Create a report and choose blank report >> issue here: two loading icon will show during loading\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": []
+}

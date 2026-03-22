@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-Ulf2U5/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-Ulf2U5/outputs/execution_notes.md).
+
+The phase4a replay assessment concludes the snapshot is not fully satisfied for `P4A-MISSING-SCENARIO-001`: the Phase 4a contract and report-editor knowledge pack now express the right intent for template-save and report-builder loading, but the live Phase 4a spawn and post-validation path still does not explicitly enforce those scenarios. The notes file records the exact fixture and snapshot evidence used and the only limitation: this was a retrospective review, not a runnable historical phase4a draft replay.

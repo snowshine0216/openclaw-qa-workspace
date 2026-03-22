@@ -1,0 +1,3 @@
+Wrote the benchmark outputs to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-8xhnF4/outputs/result.md), [developer_smoke_test_BCIN-7289.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-8xhnF4/outputs/developer_smoke_test_BCIN-7289.md), and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-8xhnF4/outputs/execution_notes.md).
+
+The replay verdict is `FAIL`: the copied evidence stops at phase5, does not show a phase7 `developer_smoke_test_<feature-id>.md`, and does not show analog-gate enforcement. I also included a reconstructed phase7-style smoke checklist, derived only from the fixture evidence, to demonstrate the expected output shape for this checkpoint.

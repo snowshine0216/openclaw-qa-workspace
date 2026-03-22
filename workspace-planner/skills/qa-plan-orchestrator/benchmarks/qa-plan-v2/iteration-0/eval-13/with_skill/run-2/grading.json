@@ -1,0 +1,41 @@
+{
+  "expectations": [
+    {
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "Exact focus phrase found in outputs: skill improvements for report-editor do not regress a different feature planning flow"
+    },
+    {
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "Primary phase token found in output content: holdout"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 0,
+      "Write": 0,
+      "Bash": 0
+    },
+    "total_tool_calls": 0,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 4661,
+    "transcript_chars": 0
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Local heuristic grader used instead of Codex-backed grading due external grader instability."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Expectation scoring is based on deterministic token and phrase matching over output artifacts."
+    ]
+  }
+}

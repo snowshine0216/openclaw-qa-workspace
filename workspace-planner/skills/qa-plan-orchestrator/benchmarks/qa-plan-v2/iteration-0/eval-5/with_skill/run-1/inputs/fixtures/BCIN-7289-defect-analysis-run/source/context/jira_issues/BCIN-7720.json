@@ -1,0 +1,12 @@
+{
+  "key": "BCIN-7720",
+  "summary": "i18n | Confirm / Cancel button is not tranlsated in converting to intellegent cube/ datamart confirmation window",
+  "status": "To Do",
+  "priority": "Low",
+  "assignee": "Xue Yin",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"5e0248a5af96\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"e148f2310879\"},\"content\":[{\"attrs\":{\"localId\":\"a97f2b63d50d\"},\"content\":[{\"text\":\"connecting to \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" as bxu (in library, change user’s preference to Chinese)\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"e148f2310879\"},\"content\":[{\"attrs\":{\"localId\":\"9d4f62be3030\"},\"content\":[{\"text\":\"edit one report → click on converting intellgent cube button\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"localId\":\"7ed3966f9656\"},\"content\":[{\"text\":\"issue here:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"1226ff36a062\",\"width\":525,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"d62fdfe3-4cfb-443e-a707-7955f668d1aa-20260320-021224.png\",\"collection\":\"\",\"height\":243,\"id\":\"e43afbc4-1bdd-4951-9e88-58b048a0529c\",\"localId\":\"b27456785746\",\"type\":\"file\",\"width\":525},\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"ed4a647551e3\",\"width\":559,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"255510d5-042c-42c2-b2ac-98041854c10d-20260320-021326.png\",\"collection\":\"\",\"height\":249,\"id\":\"1d14154d-530f-451e-91dd-178a57985ad2\",\"localId\":\"b8fa9876b5c0\",\"type\":\"file\",\"width\":559},\"type\":\"media\"}],\"type\":\"mediaSingle\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/web-dossier/pull/22596\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/web-dossier/pull/22596"
+  ]
+}

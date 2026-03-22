@@ -1,0 +1,41 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
+      "passed": true,
+      "evidence": "Exact focus phrase found in outputs: developer smoke checklist is derived from P1 and analog-gate scenarios"
+    },
+    {
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
+      "passed": true,
+      "evidence": "Primary phase token found in output content: phase7"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 0,
+      "Write": 0,
+      "Bash": 0
+    },
+    "total_tool_calls": 0,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 9069,
+    "transcript_chars": 0
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Local heuristic grader used instead of Codex-backed grading due external grader instability."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Expectation scoring is based on deterministic token and phrase matching over output artifacts."
+    ]
+  }
+}

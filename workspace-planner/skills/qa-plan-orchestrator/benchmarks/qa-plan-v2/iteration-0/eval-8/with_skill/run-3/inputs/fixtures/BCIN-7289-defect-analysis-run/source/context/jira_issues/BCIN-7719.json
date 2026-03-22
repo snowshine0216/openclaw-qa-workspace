@@ -1,0 +1,10 @@
+{
+  "key": "BCIN-7719",
+  "summary": "New Intelligent Cube Report ｜ The window's title should be `New Intelligent Cube Report` and title should be updated after saving report",
+  "status": "Done",
+  "priority": "High",
+  "assignee": "Xue Yin",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"cb6851be25ff\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"e7f1618ebf08\"},\"content\":[{\"attrs\":{\"localId\":\"778a167fbd41\"},\"content\":[{\"text\":\"connecting to \",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"e7f1618ebf08\"},\"content\":[{\"attrs\":{\"localId\":\"c91cba4fc240\"},\"content\":[{\"text\":\"Go to dataset blade → rmc on one intelligent cube → new intelligent cube report\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"localId\":\"bec12dfb8624\"},\"content\":[{\"text\":\"issue here:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"ea405d2f0a9e\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"6a334d52b72e\"},\"content\":[{\"attrs\":{\"localId\":\"2516ada54463\"},\"content\":[{\"text\":\"the window title is incorrect \",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"6a334d52b72e\"},\"content\":[{\"attrs\":{\"localId\":\"4778acfcc78e\"},\"content\":[{\"text\":\"after save the window title remains new subset report\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"d8b0cdb66a19\",\"width\":732,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"25f59ef7-71c1-4762-8b10-561acd797ee4-20260319-103903.png\",\"collection\":\"\",\"height\":767,\"id\":\"3af2960b-30dc-4fa0-8d01-6ebaff00bbbe\",\"localId\":\"ac0e914dd299\",\"type\":\"file\",\"width\":1370},\"type\":\"media\"}],\"type\":\"mediaSingle\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": []
+}

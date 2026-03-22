@@ -1,0 +1,12 @@
+{
+  "key": "BCIN-7675",
+  "summary": "Performance | Creating a blank report in 26.04 takes 80% longer than in 26.03 (9s vs. 5s for Platform Analytics Project)",
+  "status": "Done",
+  "priority": "High",
+  "assignee": "Xue Yin",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"1b15319e6c9b\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"4d10f22f12a9\"},\"content\":[{\"attrs\":{\"localId\":\"53aac3afe979\"},\"content\":[{\"text\":\"in latest workstation, connecting to \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" login as bxu\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4d10f22f12a9\"},\"content\":[{\"attrs\":{\"localId\":\"d5aed710f391\"},\"content\":[{\"text\":\"new report → choose Platform Analytics Project, it takes around 9s (no matter first or 2nd run)\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4d10f22f12a9\"},\"content\":[{\"attrs\":{\"localId\":\"95f076f3f2bf\"},\"content\":[{\"text\":\"then swtich to aqdt library server, new report → choose Platform Analytics Project, it takes around 5s\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"localId\":\"7d1069ac58e1\"},\"content\":[{\"text\":\"issue here:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"497c3680c94e\"},\"content\":[{\"text\":\"for 26.04, it would take 80% longer  than in 26.03 release\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/workstation-report-editor/pull/684\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/workstation-report-editor/pull/684"
+  ]
+}

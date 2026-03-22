@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-algEX8/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-algEX8/outputs/execution_notes.md).
+
+The holdout result explicitly covers the regression focus by keeping BCIN-976 unpromoted and unfinalized. That decision is grounded in the copied evidence only: the feature is still `In Progress`, unresolved, tied to unreleased version `26.04`, still shows scope expansion in comments, and the blind bundle does not contain linked implementation or test evidence.

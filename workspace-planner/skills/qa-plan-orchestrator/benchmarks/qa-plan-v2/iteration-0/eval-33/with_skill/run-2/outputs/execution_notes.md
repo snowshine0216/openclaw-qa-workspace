@@ -1,0 +1,22 @@
+# Execution Notes
+
+- Evidence used:
+  - `benchmark_request.json`
+  - `inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.issue.raw.json`
+  - `inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.customer-scope.json`
+  - `inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.adjacent-issues.summary.json`
+  - `skill_snapshot/SKILL.md`
+  - `skill_snapshot/README.md`
+  - `skill_snapshot/reference.md`
+  - `skill_snapshot/references/phase4a-contract.md`
+  - `skill_snapshot/references/review-rubric-phase5a.md`
+  - `skill_snapshot/references/review-rubric-phase5b.md`
+  - `skill_snapshot/references/context-coverage-contract.md`
+  - `skill_snapshot/knowledge-packs/report-editor/pack.json`
+  - `skill_snapshot/scripts/lib/finalPlanSummary.mjs`
+- Files produced:
+  - `outputs/result.md`
+  - `outputs/execution_notes.md`
+- Blockers:
+  - Snapshot phase model stops at Phase 7; no native `phase8` contract is present.
+  - Blind bundle exposes no customer-signal prior defects for `BCIN-7289`; adjacent defects exist but are not customer-qualified in the copied evidence.

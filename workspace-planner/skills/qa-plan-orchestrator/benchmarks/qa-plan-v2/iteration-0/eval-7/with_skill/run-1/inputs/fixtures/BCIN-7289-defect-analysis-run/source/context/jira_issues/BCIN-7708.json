@@ -1,0 +1,13 @@
+{
+  "key": "BCIN-7708",
+  "summary": "Confirm to close report editor popup is not shown when prompt editor is open",
+  "status": "To Do",
+  "priority": "Lowest",
+  "assignee": "Bin (Jason) Xu",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"63365bb5c26d\"},\"content\":[{\"text\":\"Confirm to close report editor popup is not shown when prompt editor is open.\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"7af82f043343\",\"width\":671,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"Kapture 2026-03-19 at 13.26.44-20260319-052911.gif\",\"collection\":\"\",\"height\":954,\"id\":\"f6a7341b-3a67-4dd5-92ac-1a37fa8409a6\",\"localId\":\"af825c8d5bf4\",\"type\":\"file\",\"width\":1759},\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"localId\":\"0d3e306c2a9e\"},\"content\":[{\"text\":\"Steps to reproduce:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"98e38cbfd8b0\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"4fa5976e0ef4\"},\"content\":[{\"attrs\":{\"localId\":\"e91898f8d670\"},\"content\":[{\"text\":\"Login \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/\",\"type\":\"text\"},{\"text\":\" by bxu with empty password on workstation\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4fa5976e0ef4\"},\"content\":[{\"attrs\":{\"localId\":\"4cd27f4806e4\"},\"content\":[{\"text\":\"Edit report rpt_prompt, execute the report, then cancel prompt\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4fa5976e0ef4\"},\"content\":[{\"attrs\":{\"localId\":\"6a2c824c7f76\"},\"content\":[{\"text\":\"Execute the report again, then click X to close the window >> issue here: confirm to close popup is under report editor\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/web-dossier/pull/22582\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/web-dossier/pull/22582",
+    "https://github.com/mstr-kiai/web-dossier/pull/22608\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/web-dossier/pull/22608"
+  ]
+}

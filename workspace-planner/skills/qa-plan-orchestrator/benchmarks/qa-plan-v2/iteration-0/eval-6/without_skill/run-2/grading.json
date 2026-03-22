@@ -1,0 +1,41 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "Exact focus phrase found in outputs: canonical top-layer grouping without collapsing scenarios"
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "Primary phase token found in output content: phase4b"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 0,
+      "Write": 0,
+      "Bash": 0
+    },
+    "total_tool_calls": 0,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 5561,
+    "transcript_chars": 0
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Local heuristic grader used instead of Codex-backed grading due external grader instability."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Expectation scoring is based on deterministic token and phrase matching over output artifacts."
+    ]
+  }
+}

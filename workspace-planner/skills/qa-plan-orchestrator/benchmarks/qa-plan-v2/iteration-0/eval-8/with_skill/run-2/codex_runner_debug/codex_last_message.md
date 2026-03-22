@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-aStSdC/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-aStSdC/outputs/execution_notes.md).
+
+The benchmark assessment is an advisory `return phase5a`: the snapshot does enforce silent-drop protection for scenarios already present in the phase5a input draft, but it does not deterministically enforce recovery of BCIN-7289 evidence-backed knowledge-pack and cross-section nodes if they were dropped before phase5a. Verification included targeted preservation and acceptance-gate tests (`8/8` passing) plus `scripts/test/phase5a.test.sh` passing after a local Node PATH workaround.
