@@ -1,0 +1,8 @@
+{
+  "name": "minimal-evolution-target-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node -e \"process.exit(0)\""
+  }
+}

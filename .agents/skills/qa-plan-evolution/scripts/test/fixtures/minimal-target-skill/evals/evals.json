@@ -1,0 +1,4 @@
+{
+  "skill_name": "minimal-fixture",
+  "evals": [{ "id": 1, "prompt": "noop", "expectations": [] }]
+}

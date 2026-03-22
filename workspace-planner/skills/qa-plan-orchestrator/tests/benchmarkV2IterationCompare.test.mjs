@@ -369,6 +369,133 @@ test('publishIterationComparison includes replay cases when defect analysis is e
   }
 });
 
+test('publishIterationComparison honors explicit evidence mode filters even when replay is available', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'benchmark-v2-synthetic-profile-filter-'));
+  const skillRoot = join(tmp, 'workspace-planner', 'skills', 'qa-plan-orchestrator');
+  const benchmarkRoot = join(skillRoot, 'benchmarks', 'qa-plan-v2');
+
+  try {
+    await mkdir(join(skillRoot, 'evals'), { recursive: true });
+    await mkdir(join(skillRoot, 'references'), { recursive: true });
+    await mkdir(join(skillRoot, 'scripts', 'lib'), { recursive: true });
+    await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot'), { recursive: true });
+
+    await writeFile(join(skillRoot, 'SKILL.md'), 'REPORT_STATE\nphase0\nphase5a\nphase5b\n', 'utf8');
+    await writeFile(join(skillRoot, 'reference.md'), 'REPORT_STATE\nphase0\nphase5a\nphase5b\n', 'utf8');
+    await writeFile(join(skillRoot, 'README.md'), 'developer_smoke_test_\nREADME.md\nreference.md\n', 'utf8');
+    await writeFile(join(skillRoot, 'evals', 'evals.json'), '{"eval_groups":[]}', 'utf8');
+    await writeFile(join(skillRoot, 'references', 'phase4a-contract.md'), 'SDK/API visible outcomes\nrequired capability\n', 'utf8');
+    await writeFile(join(skillRoot, 'references', 'phase4b-contract.md'), 'top-layer\n', 'utf8');
+    await writeFile(join(skillRoot, 'references', 'review-rubric-phase5a.md'), 'Coverage Preservation Audit\nCross-Section Interaction Audit\n', 'utf8');
+    await writeFile(join(skillRoot, 'references', 'review-rubric-phase5b.md'), '[ANALOG-GATE]\nRelease Recommendation\n', 'utf8');
+    await writeFile(join(skillRoot, 'references', 'review-rubric-phase6.md'), 'phase6 quality\n', 'utf8');
+    await writeFile(join(skillRoot, 'scripts', 'lib', 'finalPlanSummary.mjs'), 'Final Plan Summary\n', 'utf8');
+
+    await writeJson(join(benchmarkRoot, 'benchmark_manifest.json'), {
+      benchmark_version: 'qa-plan-v2',
+      runs_per_configuration: 1,
+      acceptance_policy: {
+        require_blocking_cases_pass: true,
+        require_non_decreasing_blind_score: true,
+        require_non_decreasing_replay_score: true,
+        require_no_holdout_regression: true,
+      },
+    });
+    await writeJson(join(benchmarkRoot, 'cases.json'), {
+      benchmark_version: 'qa-plan-v2',
+      cases: [
+        {
+          case_id: 'BLIND-1',
+          feature_id: 'BCIN-1',
+          feature_family: 'report-editor',
+          knowledge_pack_key: 'report-editor',
+          primary_phase: 'phase0',
+          kind: 'phase_contract',
+          evidence_mode: 'blind_pre_defect',
+          blocking: true,
+          fixture_refs: [],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'blind check',
+        },
+        {
+          case_id: 'REPLAY-1',
+          feature_id: 'BCIN-2',
+          feature_family: 'report-editor',
+          knowledge_pack_key: 'report-editor',
+          primary_phase: 'phase5b',
+          kind: 'checkpoint_enforcement',
+          evidence_mode: 'retrospective_replay',
+          blocking: true,
+          fixture_refs: [],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'replay check',
+        },
+        {
+          case_id: 'HOLDOUT-1',
+          feature_id: 'BCIN-3',
+          feature_family: 'report-editor',
+          knowledge_pack_key: 'report-editor',
+          primary_phase: 'holdout',
+          kind: 'holdout_regression',
+          evidence_mode: 'holdout_regression',
+          blocking: true,
+          fixture_refs: [],
+          benchmark_profile: 'global-cross-feature-v1',
+          focus: 'holdout check',
+        },
+      ],
+    });
+    await writeJson(join(benchmarkRoot, 'history.json'), {
+      benchmark_version: 'qa-plan-v2',
+      current_champion_iteration: 0,
+      iterations: [
+        {
+          iteration: 0,
+          role: 'champion_seed',
+          skill_snapshot: 'iteration-0/champion_snapshot',
+          is_current_champion: true,
+        },
+      ],
+    });
+
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'reference.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'README.md'), 'README.md\nreference.md\n', 'utf8');
+    await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references'), { recursive: true });
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references', 'phase4a-contract.md'), '', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references', 'phase4b-contract.md'), '', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references', 'review-rubric-phase5a.md'), '', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references', 'review-rubric-phase5b.md'), '', 'utf8');
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'references', 'review-rubric-phase6.md'), '', 'utf8');
+    await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'scripts', 'lib'), { recursive: true });
+    await writeFile(join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'scripts', 'lib', 'finalPlanSummary.mjs'), '', 'utf8');
+
+    const result = await publishIterationComparison({
+      benchmarkRoot,
+      skillRoot,
+      iteration: 1,
+      defectAnalysisRunKey: 'BCIN-7289',
+      enabledEvidenceModes: ['blind_pre_defect'],
+      targetFeatureFamily: 'report-editor',
+    });
+
+    const benchmark = JSON.parse(await readFile(result.benchmarkJsonPath, 'utf8'));
+    const scorecard = JSON.parse(await readFile(result.scorecardPath, 'utf8'));
+    const context = JSON.parse(await readFile(join(result.iterationDir, 'benchmark_context.json'), 'utf8'));
+
+    assert.deepEqual(context.active_evidence_modes, ['blind_pre_defect']);
+    assert.equal(context.replay_enabled_by_operator, false);
+    assert.equal(context.replay_source_identifier, null);
+    assert.equal(context.target_feature_family, 'report-editor');
+    assert.equal(benchmark.metadata.target_feature_family, 'report-editor');
+    assert.equal(benchmark.runs.every((run) => run.eval_id === 1), true);
+    assert.equal(scorecard.acceptance_checks.policy.require_non_decreasing_replay_score, false);
+    assert.equal(scorecard.acceptance_checks.policy.require_no_holdout_regression, false);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
 test('runIterationCompare rejects missing grading files for executed benchmark mode', async () => {
   const tmp = await mkdtemp(join(tmpdir(), 'benchmark-v2-executed-missing-'));
   const skillRoot = join(tmp, 'workspace-planner', 'skills', 'qa-plan-orchestrator');

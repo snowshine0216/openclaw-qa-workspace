@@ -221,6 +221,7 @@ function buildBenchmarkMetadata(prepared) {
     active_evidence_modes: prepared.benchmarkContext.active_evidence_modes,
     replay_enabled_by_operator: prepared.benchmarkContext.replay_enabled_by_operator,
     replay_source_identifier: prepared.benchmarkContext.replay_source_identifier,
+    target_feature_family: prepared.benchmarkContext.target_feature_family ?? null,
   };
 }
 
@@ -229,6 +230,8 @@ export async function publishIterationComparison({
   skillRoot,
   iteration,
   defectAnalysisRunKey = null,
+  enabledEvidenceModes = null,
+  targetFeatureFamily = null,
 }) {
   const prepared = await materializeIterationComparison({
     benchmarkRoot,
@@ -237,6 +240,8 @@ export async function publishIterationComparison({
     comparisonMode: SYNTHETIC_STRUCTURAL_COMPARE,
     scoringFidelity: 'synthetic',
     defectAnalysisRunKey,
+    enabledEvidenceModes,
+    targetFeatureFamily,
   });
   const candidateCorpus = await buildSnapshotCorpus(prepared.candidateSnapshotDir);
   const championCorpus = await buildSnapshotCorpus(prepared.currentChampionSnapshot);

@@ -15,7 +15,7 @@ Run these steps in order before finalizing any design doc:
 4. **Invoke openclaw-agent-design-review** — resolve all P0/P1 findings before final output.
 
 Reference designs (canonical Phase 0 examples — skills are the operator entry):
-- `.agents/skills/skill-evolution-orchestrator/SKILL.md`
+- `.agents/skills/qa-plan-evolution/SKILL.md`
 - `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
 
 ---

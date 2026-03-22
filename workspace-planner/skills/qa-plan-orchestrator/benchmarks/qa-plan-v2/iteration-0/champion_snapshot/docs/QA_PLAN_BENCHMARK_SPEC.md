@@ -7,13 +7,13 @@
 
 ---
 
-## Relationship to skill-evolution-orchestrator
+## Relationship to qa-plan-evolution
 
 - **Canonical campaign (this spec):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` is the frozen, aggregateable source for `skill-creator` tooling and the eval viewer.
-- **Evolution workflow root:** `skill-evolution-orchestrator` stores run state and working files under `.agents/skills/skill-evolution-orchestrator/runs/<run-key>/` (including `benchmarks/scoreboard_<run-key>.json` during a run).
+- **Evolution workflow root:** `qa-plan-evolution` stores run state and working files under `.agents/skills/qa-plan-evolution/runs/<run-key>/` (including `benchmarks/scoreboard_<run-key>.json` during a run).
 - **Consistency rule:** When evolving `qa-plan-orchestrator`, Phases 4–6 must publish per-iteration results into this spec’s `benchmarks/<benchmark-version>/iteration-<n>/` layout so manifests, `benchmark.json`, and `scorecard.json` have a single authoritative location. The evolution run directory remains the idempotency and resume root.
 
-See [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) (section *Benchmark layout: canonical vs evolution run*).
+See [QA_PLAN_EVOLUTION_DESIGN.md](./QA_PLAN_EVOLUTION_DESIGN.md) (section *Benchmark layout: canonical vs evolution run*).
 
 ## Overview
 
@@ -888,4 +888,4 @@ Repository paths are relative to the repo root unless they start with `~/` (host
 2. [post_run.sh](../evals/post_run.sh) — `workspace-planner/skills/qa-plan-orchestrator/evals/post_run.sh`
 3. `~/.agents/skills/skill-creator/references/schemas.md` — not vendored in this repo; use the same `skill-creator` install as eval aggregation
 4. `~/.agents/skills/skill-creator/scripts/aggregate_benchmark.py` — not vendored in this repo
-5. [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) — paired design for evolution runs and benchmark ownership
+5. [QA_PLAN_EVOLUTION_DESIGN.md](./QA_PLAN_EVOLUTION_DESIGN.md) — paired design for evolution runs and benchmark ownership

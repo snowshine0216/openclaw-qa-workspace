@@ -1,13 +1,13 @@
-# Skill Evolution Orchestrator — Agent Design
+# QA Plan Evolution — Agent Design
 
-> **Design ID:** `skill-evolution-orchestrator-qa-plan-2026-03-21`
+> **Design ID:** `qa-plan-evolution-qa-plan-2026-03-21`
 > **Date:** 2026-03-21
-> **Status:** Draft (design); shared `.agents/skills/skill-evolution-orchestrator` behavior implemented through Phase 6, with the required design-review gate still pending
-> **Scope:** `.agents/skills/skill-evolution-orchestrator`, additive hooks in `workspace-planner/skills/qa-plan-orchestrator`, additive freshness/output hooks in `workspace-reporter/skills/defects-analysis`
+> **Status:** Implemented design aligned to the current shared runtime and qa-plan benchmark contract; this document records the qa-plan-specific supplement that must stay synchronized with `.agents/skills/qa-plan-evolution`
+> **Scope:** `.agents/skills/qa-plan-evolution`, additive hooks in `workspace-planner/skills/qa-plan-orchestrator`, additive freshness/output hooks in `workspace-reporter/skills/defects-analysis`
 >
-> **Constraint:** Design artifact; runtime behavior is implemented, but this design must still pass the required `openclaw-agent-design-review` loop before implementation freeze.
+> **Constraint:** Design artifact and qa-plan supplement; update this file when the benchmark contract changes so it stays aligned with the shared skill docs and `qa-plan-v2`.
 >
-> **Reviewer Gate:** Pending. This draft has not yet been run through the required `openclaw-agent-design-review` specialist loop. Environment setup, deliverables, AGENTS.md sync, benchmark ownership, per-phase interaction, Feishu notification, MVP phasing, and quality gates are included for reviewer alignment.
+> **Reviewer Gate:** Keep this document aligned with the shared skill docs, `qa-plan-v2`, and the implemented gap-source pipeline whenever the benchmark contract changes.
 
 ---
 
@@ -25,27 +25,27 @@ No additional global setup beyond standard OpenClaw workspace tooling and target
 
 | Action | Path | Notes |
 |--------|------|-------|
-| CREATE | `.agents/skills/skill-evolution-orchestrator/SKILL.md` | Via `skill-creator` — **Done** |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/reference.md` | Runtime state, scoring, gates — **Done** |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/README.md` | Operator overview — **Done** |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/scripts/` | `phase0.sh`–`phase6.sh`, `lib/`, `scripts/test/` — **Done** |
-| CREATE | `.agents/skills/skill-evolution-orchestrator/evals/evals.json` | Benchmark profiles — **Done** |
-| ~~CREATE~~ | ~~`workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md`~~ | **Superseded:** operator entry is only `.agents/skills/skill-evolution-orchestrator/SKILL.md` (no separate planner workflow file). |
+| CREATE | `.agents/skills/qa-plan-evolution/SKILL.md` | Via `skill-creator` — **Done** |
+| CREATE | `.agents/skills/qa-plan-evolution/reference.md` | Runtime state, scoring, gates — **Done** |
+| CREATE | `.agents/skills/qa-plan-evolution/README.md` | Operator overview — **Done** |
+| CREATE | `.agents/skills/qa-plan-evolution/scripts/` | `phase0.sh`–`phase6.sh`, `lib/`, `scripts/test/` — **Done** |
+| CREATE | `.agents/skills/qa-plan-evolution/evals/evals.json` | Benchmark profiles — **Done** |
+| ~~CREATE~~ | ~~`workspace-planner/.agents/workflows/qa-plan-orchestrator-skill-evolution.md`~~ | **Superseded:** operator entry is only `.agents/skills/qa-plan-evolution/SKILL.md` (no separate planner workflow file). |
 | UPDATE | `AGENTS.md` (repo root) | SOP pointer for skill evolution — **Done** |
 | UPDATE | `workspace-planner/AGENTS.md` | Planner evolution + knowledge packs — **Done** |
-| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 — **Done** |
-| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 — **Done** |
+| UPDATE | `workspace-planner/skills/qa-plan-orchestrator/` | Per Functional Design 5 — implemented; docs must stay aligned with `qa-plan-v2` |
+| UPDATE | `workspace-reporter/skills/defects-analysis/` | Per Functional Design 6 — implemented; gap bundle and freshness hooks are live |
 
 ## 2. AGENTS.md Sync
 
-- **Root `AGENTS.md`:** Add `skill-evolution-orchestrator` as the canonical entry for skill self-improvement; include the skill path under `.agents/skills/skill-evolution-orchestrator/`.
-- **`workspace-planner/AGENTS.md`:** State that planner-side **qa-plan** skill evolution uses the shared skill `.agents/skills/skill-evolution-orchestrator/` (this design doc is the qa-plan supplement); state that `knowledge-packs/` under `qa-plan-orchestrator` are mandatory coverage inputs when present for the feature family.
+- **Root `AGENTS.md`:** Add `qa-plan-evolution` as the canonical entry for skill self-improvement; include the skill path under `.agents/skills/qa-plan-evolution/`.
+- **`workspace-planner/AGENTS.md`:** State that planner-side **qa-plan** skill evolution uses the shared skill `.agents/skills/qa-plan-evolution/` (this design doc is the qa-plan supplement); state that `knowledge-packs/` under `qa-plan-orchestrator` are mandatory coverage inputs when present for the feature family.
 
 ## Overview
 
 The current `qa-plan-orchestrator` produces structurally valid QA plans, but the BCIN-7289 retrospective shows a repeatable failure mode: the plan can pass current contract checks and still miss concrete defect-exposing scenarios, cross-state interactions, developer self-test guidance, and feature-specific historical risks.
 
-This design introduces a reusable self-improvement workflow named `skill-evolution-orchestrator`. Its job is to evolve one target skill at a time using a champion-vs-challenger loop modeled after the useful parts of Karpathy's `autoresearch` pattern:
+This design introduces a reusable self-improvement workflow named `qa-plan-evolution`. Its job is to evolve one target skill at a time using a champion-vs-challenger loop modeled after the useful parts of Karpathy's `autoresearch` pattern:
 
 1. Freeze a benchmark set.
 2. Refresh missing or stale evidence.
@@ -72,7 +72,7 @@ The result is a repeatable SOP for evolving `qa-plan-orchestrator` now and other
 
 ### Workflow chart (generic — all target skills)
 
-`skill-evolution-orchestrator` is **profile-driven**: Phase 1–2 and 4–5 only load optional evidence sources, gap sources, and scoring dimensions that the selected **benchmark profile** declares. Steps such as `defects-analysis` refresh, defect replay, or knowledge-pack deltas are **not** universal; they apply only when the profile enables them (for example `qa-plan-defect-recall`). Generic skills with `generic-skill-regression` typically run: inspect target artifacts → build benchmark catalog → gap taxonomy from eval failures and contracts → smoke + contract evals → score regression only.
+`qa-plan-evolution` is **profile-driven**: Phase 1–2 and 4–5 only load optional evidence sources, gap sources, and scoring dimensions that the selected **benchmark profile** declares. Steps such as `defects-analysis` refresh, defect replay, or knowledge-pack deltas are **not** universal; they apply only when the profile enables them (for example `qa-plan-defect-recall`). Generic skills with `generic-skill-regression` typically run: inspect target artifacts → build benchmark catalog → gap taxonomy from eval failures and contracts → smoke + contract evals → score regression only.
 
 ```text
 User request
@@ -100,7 +100,7 @@ User request
 
 ### Workflow extension (qa-plan-orchestrator only)
 
-When the target is `qa-plan-orchestrator` and the profile is one of `qa-plan-defect-recall`, `qa-plan-knowledge-pack-coverage`, or similar, the **same phase numbers** apply but the orchestrator uses a **qa-plan evidence adapter** (implemented in phase scripts + `benchmark_profile` config): Phase 1 may refresh `defects-analysis` runs and check knowledge-pack versions; Phase 2 may pull gap taxonomy from self-test QA cross-analysis and knowledge-pack omissions; Phase 4 runs defect replay and holdout evals as defined in [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md); Phase 5 includes defect-replay and coverage dimensions when the profile lists them.
+When the target is `qa-plan-orchestrator` and the orchestrator profile is one of `qa-plan-defect-recall`, `qa-plan-knowledge-pack-coverage`, or similar, the **same phase numbers** apply but the shared orchestrator uses a **qa-plan evidence adapter** plus profile-declared gap sources. Phase 1 may refresh `defects-analysis` runs and check knowledge-pack versions; Phase 2 resolves adapter-backed `gap_sources` such as `defects_cross_analysis` and `knowledge_pack_coverage`; Phase 4 runs qa-plan benchmark comparison with replay enabled only when `defect_analysis_run_key` is present; Phase 5 scores against the canonical `qa-plan-v2` outputs that the profile and benchmark mode produced.
 
 ```text
 (Extends generic chart — same Phase 0–6 shell)
@@ -110,8 +110,9 @@ Phase 1 additions:
   -> verify feature knowledge-pack paths and versions referenced by the benchmark fixtures
 
 Phase 2 additions:
-  -> self-test miss vs QA plan cross-analysis gaps
-  -> feature knowledge-pack omissions (when packs apply)
+  -> resolve profile-declared gap sources
+  -> normalize `GapObservation` records from defects cross-analysis, replay misses, and knowledge-pack coverage inputs
+  -> build one bounded mutation backlog entry per hypothesis cluster
 
 Phase 3 additions:
   -> knowledge-pack delta files when mutation targets coverage rules
@@ -128,13 +129,18 @@ Phase 5 additions:
 
 **Purpose:** Keep the shared skill generic while documenting how planners evolve `qa-plan-orchestrator`.
 
-**Canonical entry:** `.agents/skills/skill-evolution-orchestrator/SKILL.md` and `reference.md`, plus this file and [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md). There is no separate planner workflow file under `workspace-planner/.agents/workflows/`.
+**Canonical entry:** `.agents/skills/qa-plan-evolution/SKILL.md` and `reference.md`, plus this file and [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md). There is no separate planner workflow file under `workspace-planner/.agents/workflows/`.
 
 **Operator outline:**
 
 1. Preconditions: feature id / family, `benchmark_version`, knowledge-pack key when applicable.
-2. Set inputs: `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`, `benchmark_profile` → `qa-plan-defect-recall` (or documented variant), `fixtures_manifest` alignment with [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md).
-3. Invoke `skill-evolution-orchestrator` scripts only (`scripts/orchestrate.sh`); no parallel NLG playbook.
+2. Set inputs:
+   - orchestrator `benchmark_profile` → usually `qa-plan-knowledge-pack-coverage` for blind/holdout-only iterations or `qa-plan-defect-recall` when replay evidence is intentionally enabled
+   - `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`
+   - qa-plan benchmark root → `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/`
+   - qa-plan-v2 benchmark manifest profile → `global-cross-feature-v1`
+   - enable replay only when `defect_analysis_run_key` is present
+3. Invoke `qa-plan-evolution` scripts only (`scripts/orchestrate.sh`); no parallel NLG playbook.
 4. Point to canonical benchmark output under `qa-plan-orchestrator/benchmarks/<benchmark-version>/` (for example `qa-plan-v2/`).
 5. User approval and Feishu steps consistent with Phase 6 in this design.
 
@@ -161,7 +167,7 @@ State transitions:
 ### Folder structure
 
 ```text
-.agents/skills/skill-evolution-orchestrator/
+.agents/skills/qa-plan-evolution/
   SKILL.md
   reference.md
   README.md
@@ -179,11 +185,27 @@ State transitions:
     lib/
       workflowState.mjs
       evidenceFreshness.mjs
+      evidence/
+        adapters/qa-plan.mjs
       benchmarkCatalog.mjs
+      gapSources/
+        index.mjs
+        targetEvalFailures.mjs
+        contractDrift.mjs
+        smokeRegressions.mjs
+        replayEvalMisses.mjs
+        knowledgePackCoverage.mjs
+        defectsCrossAnalysis.mjs
+      gapTaxonomy.mjs
+      loadProfile.mjs
+      manifestRunner.mjs
+      mutationBacklog.mjs
       mutationPlanner.mjs
+      runTargetValidation.mjs
       scoreCandidate.mjs
       knowledgePackIndex.mjs
       artifactCatalog.mjs
+      snapshot.mjs
   scripts/test/
   evals/
   runs/<run-key>/
@@ -223,14 +245,14 @@ workspace-reporter/skills/defects-analysis/
 
 Design placement:
 
-1. `skill-evolution-orchestrator` is shared because the SOP should work for multiple skills.
+1. `qa-plan-evolution` is shared because the SOP should work for multiple skills.
 2. `qa-plan-orchestrator` knowledge packs stay workspace-local because they are planner-domain artifacts and should evolve with planner contracts.
 3. `defects-analysis` remains reporter-local; only freshness and output contracts are extended.
 
 ### Benchmark layout: canonical vs evolution run
 
 - **Canonical frozen campaign (`qa-plan-orchestrator`):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — manifests, `iteration-*`, scorecards, and `skill-creator` aggregates per [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md). This is the **authoritative** record for champion versus candidate comparisons and reporting.
-- **Per-run operational tree:** `.agents/skills/skill-evolution-orchestrator/runs/<run-key>/benchmarks/` — working artifacts (`scoreboard_<run-key>.json`, `benchmark_catalog_<run-key>.json`, and related files) for idempotency and resume.
+- **Per-run operational tree:** `.agents/skills/qa-plan-evolution/runs/<run-key>/benchmarks/` — working artifacts (`scoreboard_<run-key>.json`, `benchmark_catalog_<run-key>.json`, and related files) for idempotency and resume.
 - **Consistency rule:** For target `qa-plan-orchestrator`, Phases 4–6 **must** publish iteration results into the canonical `benchmarks/<benchmark-version>/iteration-<n>/` tree so `aggregate_benchmark.py` and the eval viewer consume the same layout as the benchmark spec. The evolution run directory remains the workflow root for `REPORT_STATE` and task state; the qa-plan benchmark tree is the frozen campaign record.
 
 ### Target skill profile (generalization)
@@ -247,6 +269,32 @@ Design placement:
 Gap taxonomy buckets apply fully to QA-plan profiles; other skills use a subset or profile-specific mappings **without** changing the phase structure.
 
 **Implementation note:** Encode QA-plan-specific Phase 1–2 and 4–5 behavior in `benchmark_profile` manifests and small adapter modules (for example `evidence/adapters/qa-plan.mjs`) rather than hard-coding `qa-plan-orchestrator` in every phase script.
+
+### Gap-source model
+
+Each orchestrator `benchmark_profile` declares `gap_sources`. A gap source is an adapter-backed evidence input that can produce normalized findings for Phase 2.
+
+Shared orchestrator responsibilities:
+
+1. resolve enabled `gap_sources`
+2. invoke the corresponding adapter
+3. collect `GapObservation[]`
+4. map observations into shared taxonomy buckets
+5. create bounded mutation backlog entries
+
+Target-skill responsibilities:
+
+1. provide source artifacts that adapters can read
+2. keep source-specific parsing in adapter modules
+3. keep target-specific file targeting and eval mapping reviewable in artifacts
+
+Example profile-to-source mapping:
+
+| Orchestrator profile | Gap sources |
+|---|---|
+| `generic-skill-regression` | `target_eval_failures`, `contract_drift`, `smoke_regressions` |
+| `qa-plan-defect-recall` | `target_eval_failures`, `replay_eval_misses`, `defects_cross_analysis`, `knowledge_pack_coverage` |
+| `qa-plan-knowledge-pack-coverage` | `target_eval_failures`, `knowledge_pack_coverage`, `contract_drift` |
 
 ### Workflow phases — user interaction and notifications
 
@@ -270,21 +318,21 @@ Gap taxonomy buckets apply fully to QA-plan profiles; other skills use a subset 
 - **Verification command:**
 
 ```bash
-jq '.notification_pending' ".agents/skills/skill-evolution-orchestrator/runs/<run-key>/run.json"
+jq '.notification_pending' ".agents/skills/qa-plan-evolution/runs/<run-key>/run.json"
 # Expect null or false after a successful send; non-null object indicates pending manual notification
 ```
 
 ## Skills Content Specification
 
-### 3.1 `.agents/skills/skill-evolution-orchestrator/SKILL.md`
+### 3.1 `.agents/skills/qa-plan-evolution/SKILL.md`
 
 ```md
 ---
-name: skill-evolution-orchestrator
+name: qa-plan-evolution
 description: Evolves an existing skill through a bounded champion-vs-challenger loop. Use whenever the user asks to improve a skill, reduce misses or blind spots in a skill output, compare known defects to generated outputs, add feature-specific knowledge packs, or run repeatable eval-safe skill improvement with a maximum iteration cap.
 ---
 
-# Skill Evolution Orchestrator
+# QA Plan Evolution
 
 This skill is the canonical entrypoint for repeatable skill self-improvement in OpenClaw workspaces.
 
@@ -403,7 +451,8 @@ Per iteration:
 
 - run target skill smoke tests
 - run target skill evals
-- run replay evals against known defect sets
+- run qa-plan benchmark comparison
+- include replay cases only when `defect_analysis_run_key` is present
 
 ### Phase 5
 
@@ -427,10 +476,10 @@ Per iteration:
 6. Preserve target-skill idempotency semantics and runtime state contracts unless the iteration explicitly benchmarks a contract change.
 ```
 
-### 4.1 `.agents/skills/skill-evolution-orchestrator/reference.md`
+### 4.1 `.agents/skills/qa-plan-evolution/reference.md`
 
 ```md
-# Skill Evolution Orchestrator — Reference
+# QA Plan Evolution — Reference
 
 ## Ownership
 
@@ -598,7 +647,7 @@ When finalizing, write:
 
 ## Data Models
 
-### `skill-evolution-orchestrator/task.json`
+### `qa-plan-evolution/task.json`
 
 ```json
 {
@@ -611,17 +660,18 @@ When finalizing, write:
   "feature_id": "BCIN-7289",
   "feature_family": "report-editor",
   "knowledge_pack_key": "report-editor",
+  "defect_analysis_run_key": "BCIN-7289",
   "benchmark_profile": "qa-plan-defect-recall",
   "current_iteration": 1,
   "max_iterations": 10,
   "accepted_iteration": null,
-  "champion_snapshot_path": ".agents/skills/skill-evolution-orchestrator/runs/.../archive/champion-initial",
+  "champion_snapshot_path": ".agents/skills/qa-plan-evolution/runs/.../archive/champion-initial",
   "created_at": "2026-03-21T10:00:00Z",
   "updated_at": "2026-03-21T10:10:00Z"
 }
 ```
 
-### `skill-evolution-orchestrator/run.json`
+### `qa-plan-evolution/run.json`
 
 ```json
 {
@@ -687,7 +737,7 @@ Create a canonical evolution workflow that preserves OpenClaw idempotency while 
 
 ### Required Change for Phase 0
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase0.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase0.sh`
 
 **Script Purpose:** Initialize the evolution run, preserve `REPORT_STATE`, normalize inputs, and enforce `max_iterations <= 10`.
 
@@ -714,7 +764,7 @@ Create a canonical evolution workflow that preserves OpenClaw idempotency while 
 
 **Detailed Implementation:**
 
-1. Resolve run root under `.agents/skills/skill-evolution-orchestrator/runs/<run-key>/`.
+1. Resolve run root under `.agents/skills/qa-plan-evolution/runs/<run-key>/`.
 2. Detect `REPORT_STATE` from prior artifacts.
 3. Reject `max_iterations > 10`.
 4. Snapshot current target skill into `archive/champion-initial/` when starting fresh.
@@ -722,7 +772,7 @@ Create a canonical evolution workflow that preserves OpenClaw idempotency while 
 
 ### Required Change for Phase 1
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase1.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase1.sh`
 
 **Script Purpose:** Build an evidence catalog and refresh missing or stale prerequisites before mutation planning starts.
 
@@ -761,20 +811,33 @@ Create a canonical evolution workflow that preserves OpenClaw idempotency while 
 
 ### Goal
 
-Turn retrospective evidence into reusable root-cause buckets and bounded candidate mutations instead of ad hoc edits.
+Derive the gap taxonomy and mutation backlog from profile-declared evidence sources instead of placeholder heuristics or inline target-specific parsing.
 
 ### Required Change for Phase 2
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase2.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase2.sh`
 
-**Script Purpose:** Build the gap taxonomy and mutation backlog from refreshed evidence.
+**Primary implementation module:** `.agents/skills/qa-plan-evolution/scripts/lib/mutationBacklog.mjs`
+
+**New support modules:**
+
+1. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/index.mjs`
+2. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/targetEvalFailures.mjs`
+3. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/contractDrift.mjs`
+4. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/smokeRegressions.mjs`
+5. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/replayEvalMisses.mjs`
+6. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/knowledgePackCoverage.mjs`
+7. `.agents/skills/qa-plan-evolution/scripts/lib/gapSources/defectsCrossAnalysis.mjs`
+8. `.agents/skills/qa-plan-evolution/scripts/lib/gapTaxonomy.mjs`
+
+**Script Purpose:** Build the gap taxonomy and mutation backlog from normalized evidence observations selected by the orchestrator `benchmark_profile`.
 
 **Script Inputs:**
 
-- fresh defect-analysis outputs
-- current target skill outputs and contracts
+- selected orchestrator profile from `.agents/skills/qa-plan-evolution/evals/evals.json`
+- fresh target-skill artifacts and contracts
 - benchmark catalog
-- optional knowledge pack
+- profile-selected evidence sources such as defects-analysis outputs, replay eval misses, and knowledge-pack coverage inputs
 
 **Script Outputs:**
 
@@ -789,18 +852,22 @@ Turn retrospective evidence into reusable root-cause buckets and bounded candida
 
 **Detailed Implementation:**
 
-1. Parse gap-analysis artifacts and classify every defect miss.
-2. Separate:
-   - plan gap
-   - self-test execution gap
-   - knowledge gap
-   - traceability gap
-3. Create one mutation item per bounded hypothesis.
-4. Require each mutation to name target files and affected evals.
+1. Load the selected profile from `.agents/skills/qa-plan-evolution/evals/evals.json`.
+2. Resolve `gap_sources` from the profile.
+3. Invoke one adapter per enabled source.
+4. Require adapter outputs to conform to a normalized `GapObservation` model.
+5. Reject Phase 2 when a profile-required source is unresolved and Phase 1 allowed progress only because that source was optional for freshness.
+6. Map each observation into one or more shared taxonomy buckets.
+7. Cluster related observations into one bounded mutation candidate per hypothesis.
+8. Reject any mutation candidate that:
+   - has no source observations
+   - has empty `target_files`
+   - has empty `evals_affected`
+   - mixes multiple root-cause hypotheses
 
 ### Required Change for Phase 3
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase3.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase3.sh`
 
 **Script Purpose:** Select one mutation for the current challenger iteration and prepare a concrete patch plan.
 
@@ -838,7 +905,7 @@ Validate candidate improvements with real target-skill smoke checks and replay-s
 
 ### Required Change for Phase 4
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase4.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase4.sh`
 
 **Script Purpose:** Execute validation for the current challenger.
 
@@ -870,7 +937,7 @@ Validate candidate improvements with real target-skill smoke checks and replay-s
 
 ### Required Change for Phase 5
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase5.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase5.sh`
 
 **Script Purpose:** Score challenger vs champion and produce an accept/reject decision.
 
@@ -911,7 +978,7 @@ Finalize the accepted champion, stop at clear boundaries, and make learnings reu
 
 ### Required Change for Phase 6
 
-**Script Path:** `.agents/skills/skill-evolution-orchestrator/scripts/phase6.sh`
+**Script Path:** `.agents/skills/qa-plan-evolution/scripts/phase6.sh`
 
 **Script Purpose:** Archive the accepted candidate, stop or loop, and emit a final evolution summary.
 
@@ -1030,25 +1097,25 @@ Make `defects-analysis` a reliable freshness source rather than a one-off manual
 
 | Script | Test file | Required stub focus |
 |---|---|---|
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase0.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase0.test.sh` | REPORT_STATE handling, max-iteration cap, champion snapshot initialization |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase1.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase1.test.sh` | freshness detection, stale defect-analysis routing, benchmark catalog generation |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase2.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase2.test.sh` | gap taxonomy generation, mutation backlog integrity |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase3.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase3.test.sh` | single-mutation selection, knowledge-pack delta generation |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase4.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase4.test.sh` | smoke/eval ordering, fail-fast regression behavior |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase5.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase5.test.sh` | challenger scoring, acceptance gate, regression rejection |
-| `.agents/skills/skill-evolution-orchestrator/scripts/phase6.sh` | `.agents/skills/skill-evolution-orchestrator/scripts/test/phase6.test.sh` | accept/reject routing, stop conditions, final summary generation |
-| `.agents/skills/skill-evolution-orchestrator/scripts/lib/evidenceFreshness.mjs` | `.agents/skills/skill-evolution-orchestrator/scripts/test/evidenceFreshness.test.mjs` | timestamp/hash freshness rules |
-| `.agents/skills/skill-evolution-orchestrator/scripts/lib/scoreCandidate.mjs` | `.agents/skills/skill-evolution-orchestrator/scripts/test/scoreCandidate.test.mjs` | defect recall and regression scoring math |
+| `.agents/skills/qa-plan-evolution/scripts/phase0.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase0.test.sh` | REPORT_STATE handling, max-iteration cap, champion snapshot initialization |
+| `.agents/skills/qa-plan-evolution/scripts/phase1.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase1.test.sh` | freshness detection, stale defect-analysis routing, benchmark catalog generation |
+| `.agents/skills/qa-plan-evolution/scripts/phase2.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase2.test.sh` | gap taxonomy generation, mutation backlog integrity |
+| `.agents/skills/qa-plan-evolution/scripts/phase3.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase3.test.sh` | single-mutation selection, knowledge-pack delta generation |
+| `.agents/skills/qa-plan-evolution/scripts/phase4.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase4.test.sh` | smoke/eval ordering, fail-fast regression behavior |
+| `.agents/skills/qa-plan-evolution/scripts/phase5.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase5.test.sh` | challenger scoring, acceptance gate, regression rejection |
+| `.agents/skills/qa-plan-evolution/scripts/phase6.sh` | `.agents/skills/qa-plan-evolution/scripts/test/phase6.test.sh` | accept/reject routing, stop conditions, final summary generation |
+| `.agents/skills/qa-plan-evolution/scripts/lib/evidenceFreshness.mjs` | `.agents/skills/qa-plan-evolution/scripts/test/evidenceFreshness.test.mjs` | timestamp/hash freshness rules |
+| `.agents/skills/qa-plan-evolution/scripts/lib/scoreCandidate.mjs` | `.agents/skills/qa-plan-evolution/scripts/test/scoreCandidate.test.mjs` | defect recall and regression scoring math |
 | `workspace-planner/skills/qa-plan-orchestrator/scripts/lib/finalPlanSummary.mjs` | `workspace-planner/skills/qa-plan-orchestrator/scripts/test/finalPlanSummary.test.mjs` | developer smoke generation from P1 and analog gates |
 
 ### Per-test-file detailed stubs
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase0.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase0.test.sh
 test_phase0_rejects_iteration_cap_over_ten() {
   local run_dir="/tmp/skill-evolution-phase0-cap"
   mkdir -p "$run_dir"
-  run_script_expect_failure ".agents/skills/skill-evolution-orchestrator/scripts/phase0.sh" \
+  run_script_expect_failure ".agents/skills/qa-plan-evolution/scripts/phase0.sh" \
     "RUN-1" "$run_dir" "workspace-planner/skills/qa-plan-orchestrator" "qa-plan-orchestrator" "BCIN-7289" "report-editor" "report-editor" "11"
   assert_output_contains "max_iterations"
 }
@@ -1056,7 +1123,7 @@ test_phase0_rejects_iteration_cap_over_ten() {
 test_phase0_initializes_champion_snapshot_for_fresh_run() {
   local run_dir="/tmp/skill-evolution-phase0-fresh"
   mkdir -p "$run_dir"
-  run_script_expect_success ".agents/skills/skill-evolution-orchestrator/scripts/phase0.sh" \
+  run_script_expect_success ".agents/skills/qa-plan-evolution/scripts/phase0.sh" \
     "RUN-2" "$run_dir" "workspace-planner/skills/qa-plan-orchestrator" "qa-plan-orchestrator"
   assert_file_exists "$run_dir/archive/champion-initial"
   assert_json_value "$run_dir/task.json" "report_state" "FRESH"
@@ -1064,11 +1131,11 @@ test_phase0_initializes_champion_snapshot_for_fresh_run() {
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase1.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase1.test.sh
 test_phase1_marks_defect_analysis_stale_when_qa_plan_is_newer() {
   local run_dir="/tmp/skill-evolution-phase1-stale"
   arrange_stale_defect_analysis_fixture "$run_dir"
-  run_script_expect_success ".agents/skills/skill-evolution-orchestrator/scripts/phase1.sh" "RUN-3" "$run_dir"
+  run_script_expect_success ".agents/skills/qa-plan-evolution/scripts/phase1.sh" "RUN-3" "$run_dir"
   assert_output_contains "SPAWN_MANIFEST:"
   assert_json_value "$run_dir/context/evidence_freshness_RUN-3.json" "required_items.defect_analysis.status" "stale"
 }
@@ -1076,13 +1143,13 @@ test_phase1_marks_defect_analysis_stale_when_qa_plan_is_newer() {
 test_phase1_builds_benchmark_catalog_with_replay_bucket() {
   local run_dir="/tmp/skill-evolution-phase1-bench"
   arrange_benchmark_fixture "$run_dir"
-  run_script_expect_success ".agents/skills/skill-evolution-orchestrator/scripts/phase1.sh" "RUN-4" "$run_dir"
+  run_script_expect_success ".agents/skills/qa-plan-evolution/scripts/phase1.sh" "RUN-4" "$run_dir"
   assert_json_array_contains "$run_dir/benchmarks/benchmark_catalog_RUN-4.json" "buckets" "defect_replay_evals"
 }
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase2.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase2.test.sh
 test_phase2_generates_gap_taxonomy_from_cross_analysis() {
   const runDir = '/tmp/skill-evolution-phase2-taxonomy';
   const result = runPhase2Fixture(runDir, 'BCIN-7289');
@@ -1097,7 +1164,7 @@ test_phase2_rejects_mutation_without_target_files() {
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase3.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase3.test.sh
 test('selects exactly one mutation for the challenger iteration', () => {
   const runDir = '/tmp/skill-evolution-phase3-select';
   const result = runPhase3Fixture(runDir, { selectedCount: 1 });
@@ -1113,7 +1180,7 @@ test('writes knowledge-pack delta when the mutation touches feature coverage rul
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase4.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase4.test.sh
 test('fails fast when a blocking smoke test regresses', () => {
   const runDir = '/tmp/skill-evolution-phase4-regression';
   const result = runPhase4Fixture(runDir, { smokePass: false });
@@ -1129,7 +1196,7 @@ test('runs replay evals after target smoke and contract evals', () => {
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase5.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase5.test.sh
 test('rejects challenger when defect recall drops below champion', () => {
   const score = scoreCandidate({ championRecall: 0.82, challengerRecall: 0.76, regressionCount: 0 });
   assert.equal(score.decision, 'reject');
@@ -1142,25 +1209,25 @@ test('accepts challenger that improves recall without regressions', () => {
 ```
 
 ```bash
-# .agents/skills/skill-evolution-orchestrator/scripts/test/phase6.test.sh
+# .agents/skills/qa-plan-evolution/scripts/test/phase6.test.sh
 test_phase6_routes_back_to_phase2_after_rejected_iteration_when_budget_remains() {
   local run_dir="/tmp/skill-evolution-phase6-retry"
   arrange_rejected_iteration_fixture "$run_dir"
-  run_script_expect_success ".agents/skills/skill-evolution-orchestrator/scripts/phase6.sh" "RUN-6" "$run_dir"
+  run_script_expect_success ".agents/skills/qa-plan-evolution/scripts/phase6.sh" "RUN-6" "$run_dir"
   assert_json_value "$run_dir/task.json" "current_phase" "phase2"
 }
 
 test_phase6_finalizes_after_third_consecutive_rejection() {
   local run_dir="/tmp/skill-evolution-phase6-stop"
   arrange_three_rejections_fixture "$run_dir"
-  run_script_expect_success ".agents/skills/skill-evolution-orchestrator/scripts/phase6.sh" "RUN-7" "$run_dir"
+  run_script_expect_success ".agents/skills/qa-plan-evolution/scripts/phase6.sh" "RUN-7" "$run_dir"
   assert_file_exists "$run_dir/evolution_final.md"
   assert_output_contains "stop_condition=three_consecutive_rejections"
 }
 ```
 
 ```javascript
-// .agents/skills/skill-evolution-orchestrator/scripts/test/evidenceFreshness.test.mjs
+// .agents/skills/qa-plan-evolution/scripts/test/evidenceFreshness.test.mjs
 test('marks evidence stale when referenced knowledge-pack version changes', () => {
   const result = computeEvidenceFreshness({
     artifactUpdatedAt: '2026-03-20T10:00:00Z',
@@ -1171,7 +1238,7 @@ test('marks evidence stale when referenced knowledge-pack version changes', () =
 ```
 
 ```javascript
-// .agents/skills/skill-evolution-orchestrator/scripts/test/scoreCandidate.test.mjs
+// .agents/skills/qa-plan-evolution/scripts/test/scoreCandidate.test.mjs
 test('reports regression_count when any blocking eval fails', () => {
   const result = scoreCandidate({
     championRecall: 0.8,
@@ -1200,7 +1267,7 @@ test('generates developer smoke rows from P1 scenarios and analog gates', () => 
 
 ### New eval workspace
 
-Create `.agents/skills/skill-evolution-orchestrator/evals/evals.json` with benchmark profiles for:
+Create `.agents/skills/qa-plan-evolution/evals/evals.json` with benchmark profiles for:
 
 1. `qa-plan-defect-recall`
 2. `qa-plan-knowledge-pack-coverage`
@@ -1233,14 +1300,14 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 ### AGENTS.md
 
 1. Root `AGENTS.md`
-   - mention `skill-evolution-orchestrator` as the canonical SOP for skill self-improvement work
+   - mention `qa-plan-evolution` as the canonical SOP for skill self-improvement work
 2. `workspace-planner/AGENTS.md`
-   - add that **qa-plan** skill evolution uses `.agents/skills/skill-evolution-orchestrator/` (generic skill) plus this design doc; no separate planner workflow file
+   - add that **qa-plan** skill evolution uses `.agents/skills/qa-plan-evolution/` (generic skill) plus this design doc; no separate planner workflow file
    - add that knowledge packs under `qa-plan-orchestrator/knowledge-packs/` are mandatory coverage inputs when present
 
 ### README.md
 
-1. Add `.agents/skills/skill-evolution-orchestrator/README.md`
+1. Add `.agents/skills/qa-plan-evolution/README.md`
 2. Update `workspace-planner/skills/qa-plan-orchestrator/README.md` to document:
    - knowledge-pack inputs
    - developer smoke artifact
@@ -1248,7 +1315,7 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 
 ### README impact
 
-- New operator-facing content lives in `.agents/skills/skill-evolution-orchestrator/README.md` (how to run phases, run root layout, link to benchmark spec for qa-plan).
+- New operator-facing content lives in `.agents/skills/qa-plan-evolution/README.md` (how to run phases, run root layout, link to benchmark spec for qa-plan).
 - `qa-plan-orchestrator/README.md` must cross-link to `docs/QA_PLAN_BENCHMARK_SPEC.md` and `benchmarks/<version>/` for frozen campaigns.
 
 ## MVP and release phasing
@@ -1269,7 +1336,7 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 
 ## Implementation Checklist
 
-1. ~~Create `.agents/skills/skill-evolution-orchestrator/` with `SKILL.md`, `reference.md`, `README.md`, `scripts/`, `scripts/test/`, and `evals/`.~~ **Done**
+1. ~~Create `.agents/skills/qa-plan-evolution/` with `SKILL.md`, `reference.md`, `README.md`, `scripts/`, `scripts/test/`, and `evals/`.~~ **Done**
 2. ~~Implement Phase 0-6 entry scripts and helper modules with persistent artifacts only under `runs/<run-key>/`.~~ **Done** (`scripts/phase0.sh`–`phase6.sh`, `scripts/lib/*.mjs`, optional `--run-root` / `--repo-root`)
 3. Add **profile-driven** evidence freshness in Phase 1: always inspect target skill artifacts and eval catalog; run defects-analysis refresh, knowledge-pack version checks, and related hooks **only** when the selected `benchmark_profile` declares them (see qa-plan extensions in Architecture). **Done**
 4. ~~Add mutation backlog and candidate scoring artifacts.~~ **Done**

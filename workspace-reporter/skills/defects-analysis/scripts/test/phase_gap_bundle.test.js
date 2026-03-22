@@ -13,11 +13,11 @@ const SCRIPT = join(
 test('gap bundle phase requires a finalized report', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-gap-bundle-missing-'));
   await mkdir(join(runDir, 'context'), { recursive: true });
-  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"skill-evolution-orchestrator"}\n');
+  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"qa-plan-evolution"}\n');
 
   const result = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir], {
     encoding: 'utf8',
-    env: { ...process.env, INVOKED_BY: 'skill-evolution-orchestrator' },
+    env: { ...process.env, INVOKED_BY: 'qa-plan-evolution' },
   });
 
   assert.equal(result.status, 1);
@@ -29,7 +29,7 @@ test('gap bundle phase requires a finalized report', async () => {
 test('gap bundle phase reuses a fresh existing bundle', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-gap-bundle-reuse-'));
   await mkdir(join(runDir, 'context'), { recursive: true });
-  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"skill-evolution-orchestrator"}\n');
+  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"qa-plan-evolution"}\n');
   await writeFile(join(runDir, 'context', 'jira_raw.json'), '{"issues":[]}\n');
   await writeFile(join(runDir, 'BCIN-5809_REPORT_FINAL.md'), '# final\n', 'utf8');
   await writeFile(
@@ -57,7 +57,7 @@ test('gap bundle phase reuses a fresh existing bundle', async () => {
 
   const result = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir], {
     encoding: 'utf8',
-    env: { ...process.env, INVOKED_BY: 'skill-evolution-orchestrator' },
+    env: { ...process.env, INVOKED_BY: 'qa-plan-evolution' },
   });
 
   assert.equal(result.status, 0);
@@ -69,7 +69,7 @@ test('gap bundle phase reuses a fresh existing bundle', async () => {
 test('gap bundle phase emits manifest and renders bundle-derived markdown on --post', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-gap-bundle-post-'));
   await mkdir(join(runDir, 'context'), { recursive: true });
-  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"skill-evolution-orchestrator"}\n');
+  await writeFile(join(runDir, 'task.json'), '{"run_key":"BCIN-5809","invoked_by":"qa-plan-evolution"}\n');
   await writeFile(
     join(runDir, 'context', 'jira_raw.json'),
     JSON.stringify({
@@ -83,7 +83,7 @@ test('gap bundle phase emits manifest and renders bundle-derived markdown on --p
 
   const first = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir], {
     encoding: 'utf8',
-    env: { ...process.env, INVOKED_BY: 'skill-evolution-orchestrator' },
+    env: { ...process.env, INVOKED_BY: 'qa-plan-evolution' },
   });
   assert.equal(first.status, 0);
   assert.match(first.stdout, /SPAWN_MANIFEST:/);
@@ -119,7 +119,7 @@ test('gap bundle phase emits manifest and renders bundle-derived markdown on --p
 
   const second = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir, '--post'], {
     encoding: 'utf8',
-    env: { ...process.env, INVOKED_BY: 'skill-evolution-orchestrator' },
+    env: { ...process.env, INVOKED_BY: 'qa-plan-evolution' },
   });
   assert.equal(second.status, 0);
 

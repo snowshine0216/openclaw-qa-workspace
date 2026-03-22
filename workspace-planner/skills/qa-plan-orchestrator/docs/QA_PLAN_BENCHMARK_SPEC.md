@@ -7,13 +7,13 @@
 
 ---
 
-## Relationship to skill-evolution-orchestrator
+## Relationship to qa-plan-evolution
 
 - **Canonical campaign (this spec):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` is the frozen, aggregateable source for `skill-creator` tooling and the eval viewer.
-- **Evolution workflow root:** `skill-evolution-orchestrator` stores run state and working files under `.agents/skills/skill-evolution-orchestrator/runs/<run-key>/` (including `benchmarks/scoreboard_<run-key>.json` during a run).
+- **Evolution workflow root:** `qa-plan-evolution` stores run state and working files under `.agents/skills/qa-plan-evolution/runs/<run-key>/` (including `benchmarks/scoreboard_<run-key>.json` during a run).
 - **Consistency rule:** When evolving `qa-plan-orchestrator`, Phases 4–6 must publish per-iteration results into this spec’s `benchmarks/<benchmark-version>/iteration-<n>/` layout so manifests, `benchmark.json`, and `scorecard.json` have a single authoritative location. The evolution run directory remains the idempotency and resume root.
 
-See [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) (section *Benchmark layout: canonical vs evolution run*).
+See [QA_PLAN_EVOLUTION_DESIGN.md](./QA_PLAN_EVOLUTION_DESIGN.md) (section *Benchmark layout: canonical vs evolution run*).
 
 ## Overview
 
@@ -718,11 +718,13 @@ Each iteration `>= 1` must produce `scorecard.json`.
     "blind_pre_defect_non_regression": true,
     "retrospective_replay_improved": true,
     "holdout_regression_non_regression": true,
+    "non_target_family_non_regression": true,
     "policy": {
       "require_blocking_cases_pass": true,
       "require_non_decreasing_blind_score": true,
       "require_non_decreasing_replay_score": false,
       "require_no_holdout_regression": true,
+      "require_non_target_family_non_regression": true,
       "null_score_policy": "reject"
     }
   },
@@ -779,9 +781,18 @@ Each iteration `>= 1` must produce `scorecard.json`.
       }
     }
   },
+  "family_mode_scores": {
+    "delta": {
+      "blind_pre_defect": {
+        "visualization": {
+          "mean_pass_rate": 0.02
+        }
+      }
+    }
+  },
   "decision": {
     "result": "accept",
-    "reason": "blind_pre_defect did not regress and holdout_regression did not regress. retrospective_replay was not active for this comparison."
+    "reason": "Mode checks passed. Non-target families improved/stable with no blind/holdout regressions."
   }
 }
 ```
@@ -797,7 +808,8 @@ Default evolution acceptance:
 1. `blocking_cases_pass == true`
 2. `blind_pre_defect_non_regression == true`
 3. `holdout_regression_non_regression == true`
-4. `retrospective_replay_improved` is ignored unless replay is explicitly enabled for the iteration
+4. `non_target_family_non_regression == true` for active blind/holdout modes
+5. `retrospective_replay_improved` is ignored unless replay is explicitly enabled for the iteration
 
 Replay-enabled acceptance:
 
@@ -805,6 +817,7 @@ Replay-enabled acceptance:
 2. `blind_pre_defect_non_regression == true`
 3. `retrospective_replay_improved == true`
 4. `holdout_regression_non_regression == true`
+5. `non_target_family_non_regression == true`
 
 Replay is enabled only when the comparison entry point is given `defect_analysis_run_key`. In that case `benchmark_context.json` and `scorecard.json` must record:
 
@@ -909,4 +922,4 @@ Repository paths are relative to the repo root unless they start with `~/` (host
 2. [post_run.sh](../evals/post_run.sh) — `workspace-planner/skills/qa-plan-orchestrator/evals/post_run.sh`
 3. `~/.agents/skills/skill-creator/references/schemas.md` — not vendored in this repo; use the same `skill-creator` install as eval aggregation
 4. `~/.agents/skills/skill-creator/scripts/aggregate_benchmark.py` — not vendored in this repo
-5. [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](./SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md) — paired design for evolution runs and benchmark ownership
+5. [QA_PLAN_EVOLUTION_DESIGN.md](./QA_PLAN_EVOLUTION_DESIGN.md) — paired design for evolution runs and benchmark ownership

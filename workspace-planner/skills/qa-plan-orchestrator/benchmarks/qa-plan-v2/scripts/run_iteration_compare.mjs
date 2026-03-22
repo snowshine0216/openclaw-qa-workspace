@@ -28,6 +28,8 @@ function parseArgs(argv) {
     benchmarkRoot: DEFAULT_BENCHMARK_ROOT,
     iteration: 1,
     defectAnalysisRunKey: null,
+    enabledEvidenceModes: null,
+    targetFeatureFamily: null,
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -40,6 +42,13 @@ function parseArgs(argv) {
       index += 1;
     } else if (value === '--defect-analysis-run-key' && args[index + 1]) {
       options.defectAnalysisRunKey = args[index + 1];
+      index += 1;
+    } else if (value === '--enabled-evidence-mode' && args[index + 1]) {
+      options.enabledEvidenceModes ??= [];
+      options.enabledEvidenceModes.push(args[index + 1]);
+      index += 1;
+    } else if (value === '--target-feature-family' && args[index + 1]) {
+      options.targetFeatureFamily = args[index + 1];
       index += 1;
     }
   }
@@ -58,6 +67,7 @@ function buildBenchmarkMetadata(prepared) {
     active_evidence_modes: prepared.benchmarkContext.active_evidence_modes,
     replay_enabled_by_operator: prepared.benchmarkContext.replay_enabled_by_operator,
     replay_source_identifier: prepared.benchmarkContext.replay_source_identifier,
+    target_feature_family: prepared.benchmarkContext.target_feature_family ?? null,
   };
 }
 
@@ -66,6 +76,8 @@ export async function runIterationCompare({
   skillRoot,
   iteration,
   defectAnalysisRunKey = null,
+  enabledEvidenceModes = null,
+  targetFeatureFamily = null,
   gradingHarness = null,
 }) {
   const prepared = await materializeIterationComparison({
@@ -75,6 +87,8 @@ export async function runIterationCompare({
     comparisonMode: EXECUTED_BENCHMARK_COMPARE,
     scoringFidelity: 'executed',
     defectAnalysisRunKey,
+    enabledEvidenceModes,
+    targetFeatureFamily,
   });
   const benchmarkRuns = [];
 

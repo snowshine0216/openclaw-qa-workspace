@@ -75,7 +75,7 @@ Run-key derivation:
 
 ## Evolution Support Artifacts
 
-When the shared `skill-evolution-orchestrator` uses `defects-analysis` as an evidence source, these additive artifacts may exist under `runs/<run-key>/`:
+When the shared `qa-plan-evolution` uses `defects-analysis` as an evidence source, these additive artifacts may exist under `runs/<run-key>/`:
 
 - `context/analysis_freshness_<run-key>.json`
 - `context/gap_bundle_<run-key>.json`
@@ -98,7 +98,7 @@ These fields are additive only. Reporter-local flows remain valid when evolution
 
 - Evolution callers should prefer `smart_refresh` and regenerate only when the freshness artifact is stale relative to the target-skill evidence they compare against.
 - If freshness metadata is current, `use_existing`, `resume`, or `generate_from_cache` should be preferred over destructive refresh.
-- Gap-bundle generation is a separate additive phase. It is not part of the default reporter 0–5 loop and should run only when `invoked_by=skill-evolution-orchestrator`.
+- Gap-bundle generation is a separate additive phase. It is not part of the default reporter 0–5 loop and should run only when `invoked_by=qa-plan-evolution`.
 
 ## task.json Additive Schema
 

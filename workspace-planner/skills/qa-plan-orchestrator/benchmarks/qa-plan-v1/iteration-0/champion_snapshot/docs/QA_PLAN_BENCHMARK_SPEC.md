@@ -767,4 +767,4 @@ Start with:
 2. [post_run.sh](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/evals/post_run.sh)
 3. [schemas.md](/Users/vizcitest/.agents/skills/skill-creator/references/schemas.md)
 4. [aggregate_benchmark.py](/Users/vizcitest/.agents/skills/skill-creator/scripts/aggregate_benchmark.py)
-5. [SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md)
+5. [QA_PLAN_EVOLUTION_DESIGN.md](/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md)

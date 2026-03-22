@@ -75,6 +75,83 @@ export function computeModeScores({
   return { primary, reference, delta };
 }
 
+function ensureFamilyBucket(container, mode, family) {
+  if (!container[mode][family]) {
+    container[mode][family] = [];
+  }
+}
+
+function formatFamilyScoresFromBuckets(primaryBuckets, referenceBuckets, modes) {
+  const primary = {};
+  const reference = {};
+  const delta = {};
+
+  for (const mode of modes) {
+    const families = [...new Set([
+      ...Object.keys(primaryBuckets[mode]),
+      ...Object.keys(referenceBuckets[mode]),
+    ])].sort();
+
+    primary[mode] = {};
+    reference[mode] = {};
+    delta[mode] = {};
+
+    for (const family of families) {
+      const primaryValues = primaryBuckets[mode][family] ?? [];
+      const referenceValues = referenceBuckets[mode][family] ?? [];
+      const primaryMean = calculateMean(primaryValues);
+      const referenceMean = calculateMean(referenceValues);
+
+      primary[mode][family] = {
+        run_count: primaryValues.length,
+        mean_pass_rate: primaryMean,
+      };
+      reference[mode][family] = {
+        run_count: referenceValues.length,
+        mean_pass_rate: referenceMean,
+      };
+      delta[mode][family] = {
+        run_count_delta: primaryValues.length - referenceValues.length,
+        mean_pass_rate: primaryMean == null || referenceMean == null
+          ? null
+          : Number((primaryMean - referenceMean).toFixed(4)),
+      };
+    }
+  }
+
+  return { primary, reference, delta };
+}
+
+export function computeFamilyModeScores({
+  benchmark,
+  caseIndex,
+  primaryConfiguration,
+  referenceConfiguration,
+}) {
+  const modes = ['blind_pre_defect', 'retrospective_replay', 'holdout_regression'];
+  const primaryBuckets = Object.fromEntries(modes.map((mode) => [mode, {}]));
+  const referenceBuckets = Object.fromEntries(modes.map((mode) => [mode, {}]));
+
+  for (const run of benchmark.runs || []) {
+    const caseDefinition = caseIndex.get(run.eval_id);
+    if (!caseDefinition) {
+      continue;
+    }
+    const mode = caseDefinition.evidence_mode;
+    const family = caseDefinition.feature_family || 'unknown';
+
+    if (run.configuration === primaryConfiguration) {
+      ensureFamilyBucket(primaryBuckets, mode, family);
+      primaryBuckets[mode][family].push(run.result.pass_rate);
+    } else if (run.configuration === referenceConfiguration) {
+      ensureFamilyBucket(referenceBuckets, mode, family);
+      referenceBuckets[mode][family].push(run.result.pass_rate);
+    }
+  }
+
+  return formatFamilyScoresFromBuckets(primaryBuckets, referenceBuckets, modes);
+}
+
 function computeBlockingCasePass({
   benchmark,
   caseIndex,
@@ -112,6 +189,55 @@ function evaluateModeCheck({
   return predicate(primaryMean, referenceMean);
 }
 
+function evaluateNonTargetFamilyNonRegression({
+  familyModeScores,
+  activeEvidenceModes,
+  targetFeatureFamily,
+}) {
+  const target = targetFeatureFamily || null;
+  const scopedModes = ['blind_pre_defect', 'holdout_regression']
+    .filter((mode) => activeEvidenceModes.has(mode));
+  const improved = [];
+  const stable = [];
+  const regressed = [];
+  const ignoredTargetFamily = [];
+
+  for (const mode of scopedModes) {
+    const families = [...new Set([
+      ...Object.keys(familyModeScores.primary[mode] || {}),
+      ...Object.keys(familyModeScores.reference[mode] || {}),
+    ])];
+    for (const family of families) {
+      if (target && family === target) {
+        ignoredTargetFamily.push(`${mode}:${family}`);
+        continue;
+      }
+      const primaryMean = familyModeScores.primary[mode]?.[family]?.mean_pass_rate ?? null;
+      const referenceMean = familyModeScores.reference[mode]?.[family]?.mean_pass_rate ?? null;
+      if (primaryMean == null || referenceMean == null) {
+        regressed.push(`${mode}:${family}(insufficient_data)`);
+        continue;
+      }
+      const delta = Number((primaryMean - referenceMean).toFixed(4));
+      if (delta < 0) {
+        regressed.push(`${mode}:${family}(${delta})`);
+      } else if (delta > 0) {
+        improved.push(`${mode}:${family}(+${delta})`);
+      } else {
+        stable.push(`${mode}:${family}(0)`);
+      }
+    }
+  }
+
+  return {
+    pass: regressed.length === 0,
+    improved,
+    stable,
+    regressed,
+    ignored_target_family: ignoredTargetFamily,
+  };
+}
+
 export function buildScorecard({
   benchmark,
   benchmarkManifest,
@@ -123,6 +249,12 @@ export function buildScorecard({
   scoringFidelity = benchmark.metadata?.scoring_fidelity ?? 'executed',
 }) {
   const modeScores = computeModeScores({
+    benchmark,
+    caseIndex,
+    primaryConfiguration,
+    referenceConfiguration,
+  });
+  const familyModeScores = computeFamilyModeScores({
     benchmark,
     caseIndex,
     primaryConfiguration,
@@ -170,6 +302,12 @@ export function buildScorecard({
       predicate: (primary, reference) => primary >= reference,
     }),
   };
+  const nonTargetFamilyCheck = evaluateNonTargetFamilyNonRegression({
+    familyModeScores,
+    activeEvidenceModes,
+    targetFeatureFamily: benchmark.metadata?.target_feature_family ?? null,
+  });
+  acceptanceChecks.non_target_family_non_regression = nonTargetFamilyCheck.pass;
 
   const shouldRequireBlocking = benchmarkManifest.acceptance_policy?.require_blocking_cases_pass !== false;
   const shouldRequireBlind = isModeActive(activeEvidenceModes, 'blind_pre_defect') &&
@@ -178,12 +316,17 @@ export function buildScorecard({
     benchmarkManifest.acceptance_policy?.require_non_decreasing_replay_score !== false;
   const shouldRequireHoldout = isModeActive(activeEvidenceModes, 'holdout_regression') &&
     benchmarkManifest.acceptance_policy?.require_no_holdout_regression !== false;
+  const shouldRequireNonTargetFamily =
+    (isModeActive(activeEvidenceModes, 'blind_pre_defect') ||
+      isModeActive(activeEvidenceModes, 'holdout_regression')) &&
+    benchmarkManifest.acceptance_policy?.require_non_target_family_non_regression !== false;
 
   const decisionPassed =
     (!shouldRequireBlocking || acceptanceChecks.blocking_cases_pass) &&
     (!shouldRequireBlind || acceptanceChecks.blind_pre_defect_non_regression) &&
     (!shouldRequireReplay || acceptanceChecks.retrospective_replay_improved) &&
-    (!shouldRequireHoldout || acceptanceChecks.holdout_regression_non_regression);
+    (!shouldRequireHoldout || acceptanceChecks.holdout_regression_non_regression) &&
+    (!shouldRequireNonTargetFamily || acceptanceChecks.non_target_family_non_regression);
   const blockedSynthetic = scoringFidelity === 'synthetic';
 
   return {
@@ -201,10 +344,12 @@ export function buildScorecard({
         require_non_decreasing_blind_score: shouldRequireBlind,
         require_non_decreasing_replay_score: shouldRequireReplay,
         require_no_holdout_regression: shouldRequireHoldout,
+        require_non_target_family_non_regression: shouldRequireNonTargetFamily,
         null_score_policy: 'reject',
       },
     },
     mode_scores: modeScores,
+    family_mode_scores: familyModeScores,
     decision: {
       result: blockedSynthetic
         ? 'blocked_synthetic'
@@ -212,8 +357,8 @@ export function buildScorecard({
       reason: blockedSynthetic
         ? 'Synthetic structural comparison is informative only and cannot promote a challenger.'
         : (decisionPassed
-          ? 'blind_pre_defect did not regress, retrospective_replay improved, and holdout_regression did not regress.'
-          : 'One or more evidence-mode acceptance checks failed.'),
+          ? `Mode checks passed. Non-target families improved/stable: ${[...nonTargetFamilyCheck.improved, ...nonTargetFamilyCheck.stable].join(', ') || 'none'}.`
+          : `One or more acceptance checks failed. Non-target family regressions: ${nonTargetFamilyCheck.regressed.join(', ') || 'none'}.`),
     },
   };
 }

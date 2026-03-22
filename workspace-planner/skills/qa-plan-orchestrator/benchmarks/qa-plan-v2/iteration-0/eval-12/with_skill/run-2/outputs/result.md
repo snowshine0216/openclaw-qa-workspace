@@ -9,7 +9,7 @@ Verdict: does not satisfy the docs phase-contract benchmark in its current state
 - `skill_snapshot/reference.md`
 - `skill_snapshot/docs/DOCS_GOVERNANCE.md`
 - `skill_snapshot/docs/SUPPORTING_ARTIFACT_SUMMARIZATION_AND_DEEP_RESEARCH_DESIGN.md`
-- `skill_snapshot/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md`
+- `skill_snapshot/docs/QA_PLAN_EVOLUTION_DESIGN.md`
 - `skill_snapshot/tests/docsContract.test.mjs`
 - fixture copies under `inputs/fixtures/DOCS-blind-pre-defect-bundle/materials/`
 
@@ -34,7 +34,7 @@ The fixture `README.md` and `reference.md` are byte-for-byte identical to `skill
    - `skill_snapshot/SKILL.md:153-157` says Phase 7 writes the finalization record and generates `context/final_plan_summary_<feature-id>.md`.
    - `skill_snapshot/reference.md:205-208` lists only `context/finalization_record_<feature-id>.md` and `qa_plan_final.md` for Phase 7.
    - `skill_snapshot/README.md:20-23` instead advertises `developer_smoke_test_<feature-id>.md` as a Phase 7-derived output, while neither `SKILL.md` nor `reference.md` mention it.
-   - Active design material reinforces that `developer_smoke_test_<feature-id>.md` should be generated in Phase 7: `skill_snapshot/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md:977-980`.
+   - Active design material reinforces that `developer_smoke_test_<feature-id>.md` should be generated in Phase 7: `skill_snapshot/docs/QA_PLAN_EVOLUTION_DESIGN.md:977-980`.
    - Result: Phase 7 behavior is described differently depending on which primary doc is read.
 
 ## Expectation Check

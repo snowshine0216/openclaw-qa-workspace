@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 
 import {
   buildScorecard,
+  computeFamilyModeScores,
   computeModeScores,
   loadCaseIndex,
   writeScorecardForIteration,
@@ -144,6 +145,79 @@ test('buildScorecard rejects when blind_pre_defect regresses even if replay impr
   assert.equal(scorecard.decision.result, 'reject');
   assert.equal(scorecard.acceptance_checks.blind_pre_defect_non_regression, false);
   assert.equal(scorecard.acceptance_checks.retrospective_replay_improved, true);
+});
+
+test('computeFamilyModeScores computes per-family pass rates by mode', () => {
+  const caseIndex = new Map([
+    [1, { evidence_mode: 'blind_pre_defect', feature_family: 'report-editor', blocking: true }],
+    [2, { evidence_mode: 'blind_pre_defect', feature_family: 'visualization', blocking: true }],
+    [3, { evidence_mode: 'holdout_regression', feature_family: 'docs', blocking: true }],
+  ]);
+  const benchmark = {
+    runs: [
+      buildRun({ evalId: 1, configuration: 'new_skill', passRate: 0.9 }),
+      buildRun({ evalId: 1, configuration: 'old_skill', passRate: 0.9 }),
+      buildRun({ evalId: 2, configuration: 'new_skill', passRate: 0.95 }),
+      buildRun({ evalId: 2, configuration: 'old_skill', passRate: 0.9 }),
+      buildRun({ evalId: 3, configuration: 'new_skill', passRate: 1 }),
+      buildRun({ evalId: 3, configuration: 'old_skill', passRate: 1 }),
+    ],
+  };
+
+  const scores = computeFamilyModeScores({
+    benchmark,
+    caseIndex,
+    primaryConfiguration: 'new_skill',
+    referenceConfiguration: 'old_skill',
+  });
+
+  assert.equal(scores.delta.blind_pre_defect['visualization'].mean_pass_rate, 0.05);
+  assert.equal(scores.delta.holdout_regression.docs.mean_pass_rate, 0);
+});
+
+test('buildScorecard rejects when non-target families regress on blind/holdout modes', () => {
+  const caseIndex = new Map([
+    [1, { evidence_mode: 'blind_pre_defect', feature_family: 'report-editor', blocking: true }],
+    [2, { evidence_mode: 'blind_pre_defect', feature_family: 'visualization', blocking: true }],
+    [3, { evidence_mode: 'holdout_regression', feature_family: 'docs', blocking: true }],
+  ]);
+  const benchmark = {
+    metadata: {
+      target_feature_family: 'report-editor',
+      active_evidence_modes: ['blind_pre_defect', 'holdout_regression'],
+    },
+    runs: [
+      buildRun({ evalId: 1, configuration: 'new_skill', passRate: 1 }),
+      buildRun({ evalId: 1, configuration: 'old_skill', passRate: 0.95 }),
+      buildRun({ evalId: 2, configuration: 'new_skill', passRate: 0.7 }),
+      buildRun({ evalId: 2, configuration: 'old_skill', passRate: 0.9 }),
+      buildRun({ evalId: 3, configuration: 'new_skill', passRate: 1 }),
+      buildRun({ evalId: 3, configuration: 'old_skill', passRate: 1 }),
+    ],
+  };
+  const manifest = {
+    benchmark_version: 'qa-plan-v2',
+    acceptance_policy: {
+      require_blocking_cases_pass: true,
+      require_no_holdout_regression: true,
+      require_non_decreasing_blind_score: true,
+      require_non_decreasing_replay_score: false,
+      require_non_target_family_non_regression: true,
+    },
+  };
+
+  const scorecard = buildScorecard({
+    benchmark,
+    benchmarkManifest: manifest,
+    caseIndex,
+    comparisonMode: 'executed_benchmark_compare',
+    primaryConfiguration: 'new_skill',
+    referenceConfiguration: 'old_skill',
+    iteration: 1,
+  });
+
+  assert.equal(scorecard.decision.result, 'reject');
+  assert.equal(scorecard.acceptance_checks.non_target_family_non_regression, false);
 });
 
 test('buildScorecard rejects missing evidence instead of silently passing null mean scores', () => {

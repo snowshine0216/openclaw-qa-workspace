@@ -22,21 +22,42 @@ function normalizeKey(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
 
+function normalizeEnabledEvidenceModes(enabledEvidenceModes) {
+  if (!Array.isArray(enabledEvidenceModes)) {
+    return null;
+  }
+
+  const normalized = enabledEvidenceModes
+    .map((mode) => normalizeKey(mode))
+    .filter(Boolean);
+  return new Set(normalized);
+}
+
 function listActiveEvidenceModes(cases) {
   return [...new Set(cases.map((caseDefinition) => caseDefinition.evidence_mode))];
 }
 
-export function filterCasesForIteration(cases, { defectAnalysisRunKey = null } = {}) {
+export function filterCasesForIteration(
+  cases,
+  { defectAnalysisRunKey = null, enabledEvidenceModes = null } = {},
+) {
   const replaySourceIdentifier = normalizeKey(defectAnalysisRunKey);
-  const replayEnabledByOperator = replaySourceIdentifier !== null;
-  const filteredCases = cases.filter((caseDefinition) =>
-    replayEnabledByOperator || caseDefinition.evidence_mode !== 'retrospective_replay');
+  const enabledModes = normalizeEnabledEvidenceModes(enabledEvidenceModes);
+  const replayEnabledByOperator =
+    replaySourceIdentifier !== null &&
+    (!enabledModes || enabledModes.has('retrospective_replay'));
+  const filteredCases = cases.filter((caseDefinition) => {
+    if (enabledModes && !enabledModes.has(caseDefinition.evidence_mode)) {
+      return false;
+    }
+    return replayEnabledByOperator || caseDefinition.evidence_mode !== 'retrospective_replay';
+  });
 
   return {
     filteredCases,
     activeEvidenceModes: listActiveEvidenceModes(filteredCases),
     replayEnabledByOperator,
-    replaySourceIdentifier,
+    replaySourceIdentifier: replayEnabledByOperator ? replaySourceIdentifier : null,
   };
 }
 
@@ -132,6 +153,7 @@ function buildBenchmarkContext({
   activeEvidenceModes,
   replayEnabledByOperator,
   replaySourceIdentifier,
+  targetFeatureFamily,
 }) {
   return {
     benchmark_version: benchmarkManifest.benchmark_version,
@@ -148,6 +170,7 @@ function buildBenchmarkContext({
     active_evidence_modes: activeEvidenceModes,
     replay_source_identifier: replaySourceIdentifier,
     replay_enabled_by_operator: replayEnabledByOperator,
+    target_feature_family: targetFeatureFamily ?? null,
   };
 }
 
@@ -158,6 +181,8 @@ export async function materializeIterationComparison({
   comparisonMode,
   scoringFidelity,
   defectAnalysisRunKey = null,
+  enabledEvidenceModes = null,
+  targetFeatureFamily = null,
 }) {
   const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
   const casesDocument = await loadJson(join(benchmarkRoot, 'cases.json'));
@@ -171,7 +196,10 @@ export async function materializeIterationComparison({
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const candidateSnapshotDir = join(iterationDir, 'candidate_snapshot');
   const benchmarkContextPath = join(iterationDir, 'benchmark_context.json');
-  const filtered = filterCasesForIteration(casesDocument.cases, { defectAnalysisRunKey });
+  const filtered = filterCasesForIteration(casesDocument.cases, {
+    defectAnalysisRunKey,
+    enabledEvidenceModes,
+  });
   const knowledgePackVersion = await readKnowledgePackVersion(skillRoot);
   const configurations = buildConfigurations({
     benchmarkRoot,
@@ -197,6 +225,7 @@ export async function materializeIterationComparison({
     activeEvidenceModes: filtered.activeEvidenceModes,
     replayEnabledByOperator: filtered.replayEnabledByOperator,
     replaySourceIdentifier: filtered.replaySourceIdentifier,
+    targetFeatureFamily,
   });
   await writeJson(benchmarkContextPath, benchmarkContext);
 

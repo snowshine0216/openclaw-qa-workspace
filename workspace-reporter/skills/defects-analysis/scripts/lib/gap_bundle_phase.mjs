@@ -29,8 +29,8 @@ function requireInvokedBy(runDir) {
   const taskPath = join(runDir, 'task.json');
   const taskInvokedBy = existsSync(taskPath) ? readJson(taskPath).invoked_by : null;
   const invokedBy = process.env.INVOKED_BY || taskInvokedBy;
-  if (invokedBy !== 'skill-evolution-orchestrator') {
-    throw new Error('gap bundle phase is only available to skill-evolution-orchestrator');
+  if (invokedBy !== 'qa-plan-evolution') {
+    throw new Error('gap bundle phase is only available to qa-plan-evolution');
   }
 }
 

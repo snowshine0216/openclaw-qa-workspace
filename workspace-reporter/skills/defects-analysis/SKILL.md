@@ -90,7 +90,7 @@ On reporter-local runs:
 - `<skill-root>/runs/<run-key>/<run-key>_REPORT_FINAL.md`
 - `<skill-root>/runs/<run-key>/context/analysis_freshness_<run-key>.json`
 
-When `invoked_by=skill-evolution-orchestrator` triggers the dedicated gap-bundle phase:
+When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 
 - `<skill-root>/runs/<run-key>/<run-key>_QA_PLAN_CROSS_ANALYSIS.md`
 - `<skill-root>/runs/<run-key>/<run-key>_SELF_TEST_GAP_ANALYSIS.md`
@@ -137,7 +137,7 @@ When `invoked_by=skill-evolution-orchestrator` triggers the dedicated gap-bundle
 ### Dedicated Gap Bundle Phase
 
 - `scripts/phase_gap_bundle.sh` is additive and not part of the default 0–5 operator flow
-- it is only available when `invoked_by=skill-evolution-orchestrator`
+- it is only available when `invoked_by=qa-plan-evolution`
 - it emits a gap-bundle spawn manifest, validates the JSON response, writes `gap_bundle_<run-key>.json`, and deterministically renders the two markdown gap analyses
 
 ## Automated Resume Policy
