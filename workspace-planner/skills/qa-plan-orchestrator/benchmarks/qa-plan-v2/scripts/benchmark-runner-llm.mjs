@@ -7,7 +7,7 @@
  * Usage:
  *   node benchmark-runner-llm.mjs --request <execution_request.json>
  *
- * Reads LLM config from environment (.env loaded by caller via --env-file):
+ * Reads LLM config from .env (skill root) via loadEnv:
  *   OPENAI_API_KEY or ANTHROPIC_API_KEY or GEMINI_API_KEY
  *   LLM_API_BASE_URL  (optional — redirect to any OpenAI-compatible endpoint)
  *   BENCHMARK_LLM_MODEL, BENCHMARK_LLM_MAX_TOKENS  (optional overrides)
@@ -17,11 +17,13 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { loadEnv } from './lib/loadEnv.mjs';
 import { materializeRequestWorkspace, finalizeOutputs, writeJson } from './lib/codexBenchmarkRuntime.mjs';
-import { callLlm } from './lib/llmApiClient.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+loadEnv(join(__dirname, '../../..'));
+import { callLlm } from './lib/llmApiClient.mjs';
 
 function parseArgs(argv) {
   const args = argv.slice(2);

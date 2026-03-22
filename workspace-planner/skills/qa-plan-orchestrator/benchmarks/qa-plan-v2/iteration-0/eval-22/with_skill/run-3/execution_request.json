@@ -1,6 +1,6 @@
 {
   "benchmark_version": "qa-plan-v2",
-  "iteration_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
+  "iteration_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
   "case_id": "RE-P4A-SCENARIO-DRAFT-001",
   "eval_id": 22,
   "eval_name": "re-p4a-scenario-draft-001",
@@ -35,14 +35,14 @@
   "run": {
     "configuration_dir": "with_skill",
     "run_number": 3,
-    "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3",
-    "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/outputs",
-    "transcript_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/execution_transcript.log",
-    "grading_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/grading.json",
-    "timing_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/timing.json",
-    "metrics_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/outputs/metrics.json"
+    "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3",
+    "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/outputs",
+    "transcript_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/execution_transcript.log",
+    "grading_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/grading.json",
+    "timing_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/timing.json",
+    "metrics_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/outputs/metrics.json"
   },
-  "skill_snapshot_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
+  "skill_snapshot_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
   "fixtures": [
     {
       "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
@@ -64,14 +64,14 @@
           "source_id_or_url": "BCIN-7289",
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.issue.raw.json",
           "included_in_blind": true,
-          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.issue.raw.json"
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.issue.raw.json"
         },
         {
           "material_type": "jira_customer_issue_export",
           "source_id_or_url": "BCIN-7289 customer scope export",
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.customer-scope.json",
           "included_in_blind": true,
-          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.customer-scope.json"
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.customer-scope.json"
         },
         {
           "material_type": "jira_adjacent_issue_export",
@@ -79,7 +79,7 @@
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.adjacent-issues.summary.json",
           "included_in_blind": true,
           "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time.",
-          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.adjacent-issues.summary.json"
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-22/with_skill/run-3/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.adjacent-issues.summary.json"
         },
         {
           "material_type": "confluence_design_doc",

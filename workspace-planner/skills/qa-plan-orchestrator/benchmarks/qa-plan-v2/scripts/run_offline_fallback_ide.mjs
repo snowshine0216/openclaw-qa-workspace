@@ -15,11 +15,15 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadJson } from '../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
+import { loadEnv } from './lib/loadEnv.mjs';
 import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
+  DEFAULT_SKILL_ROOT,
   getIterationDir,
 } from './lib/benchmarkV2.mjs';
+
+loadEnv(DEFAULT_SKILL_ROOT);
 import {
   clearRunArtifactsForIdeRerun,
   collectOfflineFallbackRunDirs,

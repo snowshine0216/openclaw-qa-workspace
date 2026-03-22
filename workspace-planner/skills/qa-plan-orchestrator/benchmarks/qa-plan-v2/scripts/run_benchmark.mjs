@@ -11,7 +11,7 @@
  *   npm run benchmark:v2:run -- --dry-run
  *   npm run benchmark:v2:run -- --no-aggregate
  *
- * .env is loaded by the npm script via --env-file=.env.
+ * .env is loaded from skill root (shell-compatible parsing).
  * Required: OPENAI_API_KEY or ANTHROPIC_API_KEY or GEMINI_API_KEY
  * Optional: LLM_API_BASE_URL, BENCHMARK_LLM_MODEL, BENCHMARK_LLM_MAX_TOKENS
  */
@@ -22,11 +22,15 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { loadEnv } from './lib/loadEnv.mjs';
 import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
+  DEFAULT_SKILL_ROOT,
   getIterationDir,
 } from './lib/benchmarkV2.mjs';
+
+loadEnv(DEFAULT_SKILL_ROOT);
 import { executeSelectedRuns } from './lib/executeSelectionV2.mjs';
 import { writeBatchArtifacts } from './lib/batchRunnerV2.mjs';
 import {

@@ -18,8 +18,8 @@
   "summary": {
     "task_count": 9,
     "run_count": 54,
-    "completed_run_count": 54,
-    "pending_run_count": 0
+    "completed_run_count": 0,
+    "pending_run_count": 54
   },
   "tasks": [
     {
@@ -61,27 +61,27 @@
           "output_dir": "eval-17/with_skill/run-1/outputs",
           "run_dir": "eval-17/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-17/with_skill/run-2/outputs",
           "run_dir": "eval-17/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-17/with_skill/run-3/outputs",
           "run_dir": "eval-17/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -90,27 +90,27 @@
           "output_dir": "eval-17/without_skill/run-1/outputs",
           "run_dir": "eval-17/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-17/without_skill/run-2/outputs",
           "run_dir": "eval-17/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-17/without_skill/run-3/outputs",
           "run_dir": "eval-17/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -163,27 +163,27 @@
           "output_dir": "eval-18/with_skill/run-1/outputs",
           "run_dir": "eval-18/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-18/with_skill/run-2/outputs",
           "run_dir": "eval-18/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-18/with_skill/run-3/outputs",
           "run_dir": "eval-18/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -192,27 +192,27 @@
           "output_dir": "eval-18/without_skill/run-1/outputs",
           "run_dir": "eval-18/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-18/without_skill/run-2/outputs",
           "run_dir": "eval-18/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-18/without_skill/run-3/outputs",
           "run_dir": "eval-18/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -265,27 +265,27 @@
           "output_dir": "eval-19/with_skill/run-1/outputs",
           "run_dir": "eval-19/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-19/with_skill/run-2/outputs",
           "run_dir": "eval-19/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-19/with_skill/run-3/outputs",
           "run_dir": "eval-19/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -294,27 +294,27 @@
           "output_dir": "eval-19/without_skill/run-1/outputs",
           "run_dir": "eval-19/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-19/without_skill/run-2/outputs",
           "run_dir": "eval-19/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-19/without_skill/run-3/outputs",
           "run_dir": "eval-19/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -367,27 +367,27 @@
           "output_dir": "eval-20/with_skill/run-1/outputs",
           "run_dir": "eval-20/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-20/with_skill/run-2/outputs",
           "run_dir": "eval-20/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-20/with_skill/run-3/outputs",
           "run_dir": "eval-20/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -396,27 +396,27 @@
           "output_dir": "eval-20/without_skill/run-1/outputs",
           "run_dir": "eval-20/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-20/without_skill/run-2/outputs",
           "run_dir": "eval-20/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-20/without_skill/run-3/outputs",
           "run_dir": "eval-20/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -469,27 +469,27 @@
           "output_dir": "eval-28/with_skill/run-1/outputs",
           "run_dir": "eval-28/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-28/with_skill/run-2/outputs",
           "run_dir": "eval-28/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-28/with_skill/run-3/outputs",
           "run_dir": "eval-28/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -498,27 +498,27 @@
           "output_dir": "eval-28/without_skill/run-1/outputs",
           "run_dir": "eval-28/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-28/without_skill/run-2/outputs",
           "run_dir": "eval-28/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-28/without_skill/run-3/outputs",
           "run_dir": "eval-28/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -571,27 +571,27 @@
           "output_dir": "eval-29/with_skill/run-1/outputs",
           "run_dir": "eval-29/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-29/with_skill/run-2/outputs",
           "run_dir": "eval-29/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-29/with_skill/run-3/outputs",
           "run_dir": "eval-29/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -600,27 +600,27 @@
           "output_dir": "eval-29/without_skill/run-1/outputs",
           "run_dir": "eval-29/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-29/without_skill/run-2/outputs",
           "run_dir": "eval-29/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-29/without_skill/run-3/outputs",
           "run_dir": "eval-29/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -673,27 +673,27 @@
           "output_dir": "eval-30/with_skill/run-1/outputs",
           "run_dir": "eval-30/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-30/with_skill/run-2/outputs",
           "run_dir": "eval-30/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-30/with_skill/run-3/outputs",
           "run_dir": "eval-30/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -702,27 +702,27 @@
           "output_dir": "eval-30/without_skill/run-1/outputs",
           "run_dir": "eval-30/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-30/without_skill/run-2/outputs",
           "run_dir": "eval-30/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-30/without_skill/run-3/outputs",
           "run_dir": "eval-30/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -775,27 +775,27 @@
           "output_dir": "eval-31/with_skill/run-1/outputs",
           "run_dir": "eval-31/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-31/with_skill/run-2/outputs",
           "run_dir": "eval-31/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-31/with_skill/run-3/outputs",
           "run_dir": "eval-31/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -804,27 +804,27 @@
           "output_dir": "eval-31/without_skill/run-1/outputs",
           "run_dir": "eval-31/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-31/without_skill/run-2/outputs",
           "run_dir": "eval-31/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-31/without_skill/run-3/outputs",
           "run_dir": "eval-31/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
@@ -877,27 +877,27 @@
           "output_dir": "eval-32/with_skill/run-1/outputs",
           "run_dir": "eval-32/with_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-32/with_skill/run-2/outputs",
           "run_dir": "eval-32/with_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-32/with_skill/run-3/outputs",
           "run_dir": "eval-32/with_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "without_skill_runs": [
@@ -906,27 +906,27 @@
           "output_dir": "eval-32/without_skill/run-1/outputs",
           "run_dir": "eval-32/without_skill/run-1",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 2,
           "output_dir": "eval-32/without_skill/run-2/outputs",
           "run_dir": "eval-32/without_skill/run-2",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         },
         {
           "run_number": 3,
           "output_dir": "eval-32/without_skill/run-3/outputs",
           "run_dir": "eval-32/without_skill/run-3",
           "has_outputs": true,
-          "has_grading": true,
-          "has_timing": true,
-          "status": "completed"
+          "has_grading": false,
+          "has_timing": false,
+          "status": "pending"
         }
       ],
       "with_skill": {
