@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "The output explicitly structures Phase 1 context intake around the three required categories and states they are what must be captured before scenario drafting: \"Phase 1 context intake (what would be captured before scenario drafting)\" with sections \"A. Google Sheets export entry points (must be preserved)\", \"B. Scope boundaries (in-scope vs out-of-scope)\", and \"C. Format constraints (must be preserved)\"."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The deliverable is labeled and organized as Phase 1: title \"EXPORT-P1-CONTEXT-INTAKE-001 — Phase 1 (Context Intake) Deliverable\" and \"Primary phase under test: phase1 (context intake)\", and the content consists of evidence intake status, context categories to capture, checkpoint conclusion, and blockers—consistent with context intake rather than scenario drafting."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

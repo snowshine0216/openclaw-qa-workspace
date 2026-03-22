@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The output explicitly structures Phase 1 intake around all three required focus areas, with dedicated sections: “A. Component-stack constraints (must be explicitly captured)”, “B. Embedding lifecycle assumptions (must be explicitly captured)”, and “C. Integration-sensitive customer expectations (must be explicitly captured from customer issues)”. It also restates the requirement: “The benchmark requires Phase 1 to preserve: 1) component-stack constraints, 2) embedding lifecycle assumptions, and 3) integration-sensitive customer expectations.” Although customer expectations cannot be populated due to missing evidence, the case focus is still explicitly covered in the intake schema and preservation rules."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The document is labeled “Phase 1 (Context Intake) Baseline Output” and limits itself to evidence gating, intake checklists/fields, and blockers/requests for evidence. It explicitly claims phase alignment: “preserving the orchestrator phase1 contract by producing only context-intake artifacts (no test plan, no execution design).” No downstream planning or execution content is included."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

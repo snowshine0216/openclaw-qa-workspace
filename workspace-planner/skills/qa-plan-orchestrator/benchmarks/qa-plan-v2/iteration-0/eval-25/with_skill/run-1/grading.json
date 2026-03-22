@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The run states it cannot validate the checkpoint focus due to missing evidence: \"There is insufficient eligible evidence to perform phase5b checkpoint enforcement validation\" and \"Checkpoint enforcement conclusion: NOT DETERMINABLE (BLOCKED).\" It lists the required focus items but does not demonstrate they are covered by actual shipment checkpoint artifacts."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output explicitly targets phase5b: \"Primary phase under test: phase5b (shipment checkpoint)\" and includes a dedicated \"Phase alignment check (phase5b)\" section. While the determination is \"BLOCKED (no evidence)\", the content is aligned to the phase5b scope."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

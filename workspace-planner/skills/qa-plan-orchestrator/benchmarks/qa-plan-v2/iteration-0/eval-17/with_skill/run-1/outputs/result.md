@@ -1,56 +1,88 @@
-# VIZ-P4A-DONUT-LABELS-001
+# ./outputs/result.md
 
-## Phase/Contract Verdict
-- Primary phase alignment: `phase4a` confirmed (subcategory-first draft, no canonical top-layer grouping).
-- Case focus coverage: explicitly covered for donut-chart data labels across visibility, density, and overlap-sensitive outcomes.
-- Blind evidence policy status: `all_customer_issues_only` honored; fixture indicates no customer-signal issues were available, so this phase4a draft is scope-targeted and advisory.
+## QA Plan Orchestrator — Phase 4a Checkpoint Review  
+**Benchmark case:** VIZ-P4A-DONUT-LABELS-001  
+**Primary feature:** BCED-4860  
+**Feature family / knowledge pack:** Visualization / visualization  
+**Primary phase under test:** phase4a  
+**Evidence mode:** blind_pre_defect (customer-issues-only policy)  
+**Priority:** Advisory  
+**Focus (must be explicitly covered):** donut-chart data label coverage that distinguishes **label visibility**, **label density**, and **overlap-sensitive outcomes**.
 
-## Phase4a Draft Artifact (XMindMark)
-Feature QA Plan (BCED-4860)
+---
 
-- Donut Data Label Visibility
-  * Labels render for slices when data labels are enabled <P1>
-    - Open a dashboard containing a donut chart with at least three slices
-      - Confirm data labels are enabled for the donut visualization
-        - Render the visualization
-          - A text label is visible for each eligible slice
-          - Each visible label value matches its slice data value
-  * Labels are not shown when data labels are disabled <P1>
-    - Open a dashboard containing a donut chart with data labels currently enabled
-      - Disable data labels in donut chart formatting
-        - Apply the formatting change
-          - No slice-level data labels are visible in the rendered donut chart
-          - Slice colors and geometry remain visible after labels are hidden
+## 1) Phase 4a Contract Target (What this checkpoint must ensure)
+Phase 4a, per the orchestrator phase model, should validate that the QA plan’s test coverage is *complete and discriminating* for the specified focus area. For this benchmark, that means the plan must *explicitly* include donut-chart data label scenarios that separate:
 
-- Donut Data Label Density
-  * High slice count preserves readable label behavior under dense layout <P1>
-    - Open a donut chart configured with many small slices (dense distribution)
-      - Resize the chart to a constrained canvas area
-        - Render the visualization
-          - Labels that remain visible are legible and anchored to correct slices
-          - Any omitted labels follow deterministic density behavior instead of random disappearance
-  * Density behavior remains stable after data refresh <P2>
-    - Open a donut chart with dense slice distribution and visible labels
-      - Trigger a dataset refresh that keeps category set but changes values
-        - Re-render the chart
-          - Label visibility decisions remain consistent with post-refresh slice geometry
-          - No stale labels remain from the pre-refresh render
+1. **Label visibility** (labels shown/hidden/conditional)  
+2. **Label density** (few vs many slices; thin slices)  
+3. **Overlap-sensitive outcomes** (collision/occlusion/auto-hide/leader-lines; deterministic rules)
 
-- Donut Data Label Overlap-Sensitive Outcomes
-  * Overlap resolution prevents unreadable collisions <P1>
-    - Open a donut chart where adjacent small slices cause potential label collisions
-      - Render the chart at normal dashboard zoom
-        - Inspect neighboring label positions
-          - Labels do not overlap in a way that makes text unreadable
-          - When collision handling activates, the resulting visible/hidden state is consistent across repeated renders
-  * Resize/reflow recalculates overlap-sensitive label placement <P2>
-    - Open a donut chart with labels visible and potential near-collision cases
-      - Resize the container from wide to narrow and then back to wide
-        - Wait for chart reflow after each resize
-          - Label placement updates to the new geometry after each reflow
-          - No duplicated labels or orphaned connector placements remain after reflow
+And it must do so **using only allowed evidence** under blind policy (customer issues only; exclude non-customer issues).
 
-## Focus-to-Scenario Mapping
-- Visibility: `Donut Data Label Visibility` scenarios.
-- Density: `Donut Data Label Density` scenarios.
-- Overlap-sensitive outcomes: `Donut Data Label Overlap-Sensitive Outcomes` scenarios.
+---
+
+## 2) Evidence Compliance Check (Blind policy)
+**Required evidence source:** “all_customer_issues_only” (customer issues only).  
+**Provided fixtures:** `BCED-4860-blind-pre-defect-bundle` (no local path).  
+**Local evidence available to evaluate:** None.
+
+**Result:** Cannot verify evidence compliance or derive customer-issue-grounded scenarios because the referenced bundle is not accessible in the benchmark environment.
+
+---
+
+## 3) Focus Coverage Check (Donut labels: visibility, density, overlap)
+Because no customer-issue evidence contents are available, there is no admissible basis to confirm that phase4a artifacts cover the required distinctions. Specifically, we cannot confirm the plan includes test cases such as:
+
+- Visibility rules: always show vs threshold-based vs “show on hover only”
+- Density stress: 2–5 slices vs 20–50 slices; many small segments; near-zero values
+- Overlap outcomes: collision handling (hide some labels, shorten text, leader lines, reposition outside ring), and expected deterministic behavior
+
+**Result:** Focus coverage cannot be demonstrated from available evidence.
+
+---
+
+## 4) Phase 4a Alignment Check
+To assert alignment with phase4a, we would need the phase4a artifact(s) produced by the skill (e.g., phase4a coverage validation notes, traceability to customer issues, scenario matrix, or gap analysis). None are present or accessible here.
+
+**Result:** Phase alignment cannot be confirmed.
+
+---
+
+## 5) Outcome (Advisory)
+### Status: **BLOCKED**
+**Reason:** The benchmark requires “use only customer issues” evidence, but no customer-issue content is available (fixture bundle has no local path). Therefore, we cannot produce or review the minimal phase4a artifacts needed to demonstrate donut-label coverage distinguishing visibility, density, and overlap-sensitive outcomes.
+
+---
+
+## 6) What is needed to complete this phase4a checkpoint
+One of the following is required:
+
+1. Provide an accessible local path or contents for `BCED-4860-blind-pre-defect-bundle` (customer issues), **or**
+2. Provide the specific customer issue text(s)/IDs and descriptions relevant to BCED-4860, **or**
+3. Provide the already-generated phase4a artifact(s) created from customer issues (scenario coverage matrix / gap analysis) for review.
+
+With that, phase4a can be evaluated against the benchmark focus and contract.
+
+---
+
+# ./outputs/execution_notes.md
+
+## Evidence used
+- ./skill_snapshot/SKILL.md was required by instructions but **not available** in provided files.
+- Fixture reference: **BCED-4860-blind-pre-defect-bundle** — **not accessible (no local path)**.
+- No customer-issue evidence content was available locally.
+
+## Files produced
+- ./outputs/result.md
+- ./outputs/execution_notes.md
+
+## Blockers
+- Missing `./skill_snapshot/SKILL.md` (authoritative workflow package not accessible).
+- Missing accessible contents/path for `BCED-4860-blind-pre-defect-bundle` (customer-issues-only evidence required by blind policy).
+- No phase4a artifacts provided to assess coverage and alignment.
+
+---
+
+## Execution summary
+Generated phase4a checkpoint review for VIZ-P4A-DONUT-LABELS-001 but marked **BLOCKED** due to unavailable required evidence (customer issues bundle) and missing SKILL.md workflow reference; therefore could not demonstrate donut label coverage (visibility/density/overlap) or confirm phase4a alignment.

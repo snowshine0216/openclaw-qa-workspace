@@ -1,6 +1,6 @@
 # Execution Notes
 
 - executor: benchmark-runner-llm
-- duration_ms: 43230
-- total_tokens: 2571
+- duration_ms: 30102
+- total_tokens: 2057
 - configuration: with_skill

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": true,
+      "evidence": "result.md explicitly enumerates the required coverage areas for the case focus: \"validating that the phase5b output explicitly covers **Google Sheets dashboard export** across: 1) **Supported formats** ... 2) **Entry points** ... 3) **Output expectations**\" and reiterates them under the \"cannot infer or fabricate\" bullets."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md is framed as a phase5b checkpoint-enforcement deliverable: title \"Phase 5b Checkpoint Enforcement (Advisory)\", metadata \"Primary phase under test: **phase5b**\", and section \"## Phase 5b — Checkpoint Enforcement Result\" with phase5b-specific discussion (even though marked BLOCKED for missing evidence)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

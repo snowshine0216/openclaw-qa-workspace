@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": false,
+      "evidence": "No scenario-drafting content is present in the provided outputs. Only execution metadata (execution_notes.md), a numeric grading_summary.md, metrics.json, and result.md referencing execution_notes.md are included; none mention Google Sheets export paths, option combinations, or completion outcomes."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No phase4a deliverable/content is provided. The outputs contain only run metadata and a grading summary; there is no phase4a-aligned scenario draft or related artifacts to evaluate alignment."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": false,
+      "evidence": "In result.md the run states it cannot demonstrate coverage due to missing/ inaccessible evidence: \"Because the blind evidence bundle contents are not available here, no customer-issue-backed behaviors can be extracted to demonstrate phase4a planning coverage for: - OK confirmation - Cancel confirmation - Pending selection state - Dismissal outcomes\" and under contract check: \"Requirement: Case focus explicitly covered - Not demonstrable from the provided evidence.\""
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is explicitly titled and scoped to phase4a: \"# Phase 4a — Confirmation & dismissal outcomes coverage\" and includes \"Primary phase under test: phase4a\" plus a section \"Phase 4a contract check\" focused on confirmation/dismissal outcomes."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

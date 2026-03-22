@@ -2,40 +2,19 @@
   "expectations": [
     {
       "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
-      "passed": true,
-      "evidence": "Matched focus tokens in outputs: blind, scenario, prompt, handling, template, save, report, builder, loading, visible, title"
+      "passed": false,
+      "evidence": "In result.md, the required focus areas are listed, but no scenarios are drafted: \"### Scenario set (blocked: cannot draft from customer evidence)\" and \"No phase4a scenarios can be produced compliantly\". The file’s own compliance check marks this expectation as \"BLOCKED\" and notes it \"contains no scenarios\"."
     },
     {
       "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "Primary phase token found in output content: phase4a"
+      "evidence": "result.md is explicitly a phase4a artifact: title \"# Phase 4a — Scenario Draft (Blind, Pre‑defect)\" and states \"Primary phase under test: phase4a (scenario drafting)\". The content stays within phase4a scope (scenario drafting status + evidence constraints) even though scenarios are blocked."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "Read": 0,
-      "Write": 0,
-      "Bash": 0
-    },
-    "total_tool_calls": 0,
-    "total_steps": 1,
-    "errors_encountered": 0,
-    "output_chars": 9904,
-    "transcript_chars": 0
-  },
-  "user_notes_summary": {
-    "uncertainties": [
-      "Local heuristic grader used instead of Codex-backed grading due external grader instability."
-    ],
-    "needs_review": [],
-    "workarounds": [
-      "Expectation scoring is based on deterministic token and phrase matching over output artifacts."
-    ]
+    "pass_rate": 0.5
   }
 }

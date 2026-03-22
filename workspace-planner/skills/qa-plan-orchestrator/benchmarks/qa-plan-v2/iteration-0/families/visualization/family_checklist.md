@@ -3,8 +3,8 @@
 **Goal:** feature-family focus: visualization
 **Cases:** `4`
 **Runs:** `24`
-**Completed runs:** `0`
-**Pending runs:** `24`
+**Completed runs:** `24`
+**Pending runs:** `0`
 
 ## Eval 17
 
@@ -14,20 +14,20 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-17/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-17/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-17/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-17/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-17/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-17/without_skill/run-3`
 
 ## Eval 19
@@ -38,20 +38,20 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-19/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-19/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-19/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-19/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-19/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-19/without_skill/run-3`
 
 ## Eval 28
@@ -62,20 +62,20 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-28/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-28/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-28/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-28/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-28/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-28/without_skill/run-3`
 
 ## Eval 29
@@ -86,18 +86,18 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-29/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-29/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-29/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-29/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-29/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-29/without_skill/run-3`

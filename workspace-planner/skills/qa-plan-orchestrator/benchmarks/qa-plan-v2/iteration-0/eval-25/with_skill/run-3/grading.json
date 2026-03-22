@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The output enumerates the three required focus areas, but does not actually demonstrate they are covered by an enforced shipment checkpoint; it marks them as unassessable: \"Status: BLOCKED — cannot assess / cannot demonstrate compliance\" and the matrix shows each item as \"BLOCKED\" (\"no evidence / no SKILL.md\"). Therefore the case focus is not explicitly covered in delivered checkpoint content."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "While the document labels \"Primary phase under test: phase5b\", it explicitly states it cannot verify phase5b contract/artifacts: \"Status: BLOCKED\" and \"Cannot confirm which artifacts are required at phase5b... because `./skill_snapshot/SKILL.md` is unavailable\" and \"Output aligns with primary phase phase5b | Yes | BLOCKED (cannot validate phase model contract)\". So alignment is not demonstrated."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

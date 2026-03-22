@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus requirement and then drafts multiple scenarios that distinguish (a) dashboard-level export paths (Export vs Share/Send/Publish), (b) option combinations (defaults, non-default toggles, cancel/abort, error), and (c) visible completion outcomes (success/started/completed, cancelled/not completed, error). Quote: \"This phase 4a draft explicitly distinguishes: - Dashboard-level Google Sheets export paths... - Option combinations... - Visible completion outcomes...\""
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md labels \"Primary phase under test: phase4a (scenario drafting)\" and the body is a \"4a. Scenario draft set\" with scenarios named \"Scenario 4a-S1\" through \"4a-S5\", all written as scenario drafts (goals, preconditions, steps, expected outcomes), matching phase4a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

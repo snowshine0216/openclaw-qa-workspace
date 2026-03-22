@@ -1,74 +1,80 @@
-# GRID-P4A-BANDING-001
+[FILE: ./outputs/result.md]
 
-## Phase Contract Assessment (phase4a)
-- [satisfied] Case focus explicitly covered: scenarios below distinguish styling variants, interactions, and backward-compatible rendering outcomes for modern grid banding.
-- [satisfied] Output aligns with primary phase `phase4a`: subcategory-first draft structure with scenario-level priorities, atomic nested actions, and observable verification leaves; no canonical top-layer grouping.
+# QA Plan Orchestrator — Phase 4a Checkpoint
+Benchmark case: **GRID-P4A-BANDING-001**  
+Primary feature: **BCIN-7231**  
+Feature family / Knowledge pack: **modern-grid**  
+Primary phase under test: **phase4a**  
+Evidence mode: **blind_pre_defect** (customer issues only; exclude non-customer issues)  
+Priority: **advisory**  
+Benchmark profile: **global-cross-feature-v1**  
+Focus: **modern grid banding scenarios** — distinguish **styling variants**, **interactions**, and **backward-compatible rendering outcomes**.
 
-Feature QA Plan (BCIN-7231)
+## Phase 4a Deliverable: Evidence-gated cross-feature banding verification matrix (advisory)
+### Evidence gating (blind pre-defect)
+Per benchmark constraints, this phase4a checkpoint must be driven **only by the provided benchmark evidence**, specifically **customer issues** included in the fixture reference:
+- Fixture reference: **BCIN-7231-blind-pre-defect-bundle** *(no local path provided in this run; no customer-issue artifacts accessible in the workspace)*
 
-- Banding Style Variants
-    * Row banding color customization applies to data rows only <P1>
-        - Open a dashboard that contains a Modern Grid visualization
-            - Open grid formatting options
-                - Enable row banding
-                    - Set odd-row color to Color A and even-row color to Color B
-                        - Apply the formatting changes
-                            - Alternating row colors render using Color A/Color B in the data region
-                            - Grid readability increases without changing row values or row order
-    * Column banding can be enabled and rendered independently from row banding <P1>
-        - Open a dashboard that contains a Modern Grid visualization
-            - Open grid formatting options
-                - Enable column banding while row banding is disabled
-                    - Apply column banding colors
-                        - Apply the formatting changes
-                            - Alternating column colors render in the data region
-                            - Column banding remains visible after grid refresh
+**Resulting constraint:** There is **no admissible customer-issue evidence available locally** to derive, confirm, or prioritize banding scenarios for BCIN-7231 under the blind evidence policy.
 
-- Header-Scoped Banding Application
-    * Banding color can be applied by row header selection and reflected in matching row regions <P1>
-        - Open a dashboard that contains a Modern Grid with row headers
-            - Open banding configuration
-                - Select row-header-based banding target
-                    - Assign a banding color set
-                        - Apply the formatting changes
-                            - Rows mapped to the selected row header target render with the assigned banding colors
-                            - Non-targeted row regions keep their prior styling
-    * Banding color can be applied by column header selection and reflected in matching column regions <P1>
-        - Open a dashboard that contains a Modern Grid with column headers
-            - Open banding configuration
-                - Select column-header-based banding target
-                    - Assign a banding color set
-                        - Apply the formatting changes
-                            - Columns mapped to the selected column header target render with the assigned banding colors
-                            - Non-targeted column regions keep their prior styling
+### Phase 4a scope coverage (what would be covered when evidence is available)
+The case focus requires that modern grid banding scenarios explicitly distinguish:
 
-- Banding Interaction and State Transitions
-    * Switching between row and column banding modes preserves explicit user color selections <P2>
-        - Open a dashboard that contains a Modern Grid visualization
-            - Configure row banding with custom colors
-                - Switch to column banding and configure a different color pair
-                    - Toggle row banding back on
-                        - Reopen banding settings
-                            - Previously configured row colors are preserved
-                            - Previously configured column colors are preserved
-    * Banding settings remain stable through common grid interactions <P2>
-        - Open a dashboard that contains a Modern Grid with banding enabled
-            - Perform grid interactions such as sorting and filtering
-                - Trigger a dashboard refresh
-                    - Recheck grid rendering
-                        - Banding remains applied after sort and filter operations
-                        - Banding remains applied after refresh without visual corruption
+1. **Styling variants**
+   - Row banding on/off
+   - Column banding on/off
+   - Alternating stripe styles (light/dark, theme tokens)
+   - Interaction overlays vs base banding paint order (hover/selection/focus)
+   - Density/row height variants affecting stripe boundaries
+   - Grouped rows / tree / pinned rows and whether banding resets across groups
 
-- Backward-Compatible Rendering Outcomes
-    * Report banding intent renders equivalently when viewed in Modern Grid dashboards <P1>
-        - Open a Report with known banding configuration in a dashboard using Modern Grid
-            - Load the same dataset and layout as the source Report
-                - Compare rendered banding behavior in dashboard Modern Grid against expected report intent
-                    - Verify row/column banding presence and header-scoped application points
-                        - Modern Grid rendering preserves the expected banding intent from Report behavior
-                        - No loss of banding capability is observed for row color, column banding, or header-scoped application
+2. **Interactions**
+   - Hovering a banded row/column and expected overlay precedence
+   - Keyboard focus ring visibility on banded backgrounds
+   - Selection (single/multi) and whether selected style overrides banding
+   - Sorting/filtering/virtualization scrolling: banding stability (no “band shift”)
+   - Editing state (cell edit) on banded backgrounds
 
-<!-- Evidence basis (blind pre-defect, customer-only):
-BCIN-7231 issue snapshot states current modern-grid limits: row-only banding, no color formatting, no column banding, no row/column-header banding color application, and requires parity with Report banding capabilities.
-Customer policy source: BCIN-7231.customer-scope.json (all_customer_issues_only).
--->
+3. **Backward-compatible rendering outcomes**
+   - Parity vs legacy grid rendering (no regressions in stripe cadence)
+   - Server-side rendering / hydration stability if applicable
+   - Browser/OS theme differences (high contrast, forced colors) where banding must remain legible
+   - Export/print/screenshot outputs if those are part of the historic contract for the component
+
+### Phase 4a checkpoint output (advisory): Status & required inputs
+Because **no customer-issue evidence is available in the workspace**, the orchestrator cannot legitimately:
+- enumerate the exact banding defect patterns implicated by BCIN-7231,
+- derive concrete reproduction steps,
+- assert expected vs actual outcomes,
+- or finalize a targeted scenario list tied to the customer evidence bundle.
+
+**Phase 4a status:** **BLOCKED (evidence unavailable in run environment)**
+
+### Minimal actionable next step to satisfy phase4a under blind policy
+Provide the **customer-issue artifacts** from **BCIN-7231-blind-pre-defect-bundle** into the accessible workspace (or paste their contents), such as:
+- customer issue text(s) describing banding problems
+- screenshots/videos or DOM/CSS snippets
+- environment details (browser, theme, grid configuration)
+- acceptance criteria from customer-visible behavior
+
+Once available, phase4a will produce an **evidence-backed banding verification matrix** mapping:
+- *customer symptom → configuration variant → interaction trigger → expected rendering outcome → regression guard (legacy parity)*.
+
+---
+
+[FILE: ./outputs/execution_notes.md]
+
+## Evidence used
+- ./skill_snapshot/SKILL.md: **NOT FOUND / not accessible in workspace**
+- Customer-issue evidence from fixture BCIN-7231-blind-pre-defect-bundle: **NOT AVAILABLE (no local path provided; no artifacts accessible)**
+
+## Files produced
+- ./outputs/result.md
+- ./outputs/execution_notes.md
+
+## Blockers
+1. **Authoritative workflow package missing**: ./skill_snapshot/SKILL.md not accessible, so the exact phase4a contract details could not be verified against the snapshot.
+2. **Blind evidence unavailable**: BCIN-7231-blind-pre-defect-bundle has no local path/artifacts, preventing customer-issue–based scenario derivation required by blind_pre_defect policy.
+
+
+Execution summary: Created a phase4a-aligned, evidence-gated banding verification matrix placeholder for BCIN-7231 under the blind_pre_defect policy, but the run is blocked because neither the skill snapshot (SKILL.md) nor the customer-issue fixture artifacts are accessible in the workspace.

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "The result.md states it cannot validate or cover the focus areas due to missing evidence: \"I cannot infer/construct missing details (OK/Cancel semantics, pending selection state behavior, dismissal correctness in multi-selection workflows)\" and \"I cannot verify or demonstrate coverage for the specified focus areas\"."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The result.md indicates it cannot produce a phase5b-aligned artifact: \"I cannot produce a compliant phase5b checkpoint-enforcement artifact aligned with the qa-plan-orchestrator phase model\"."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

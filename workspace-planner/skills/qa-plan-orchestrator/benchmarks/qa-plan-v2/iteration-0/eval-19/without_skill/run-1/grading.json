@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus and provides scenarios under three sections: “A. Activation scenarios”, “B. Persistence scenarios”, and “C. Reset behavior scenarios”, and reiterates: “Case focus explicitly covered: Yes — scenarios are organized and comprehensive across activation, persistence, and reset behaviors for heatmap highlighting.”"
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md declares “Primary phase/checkpoint under test: phase4a” and structures the deliverable as “Phase 4a deliverable (Phase contract alignment)” with sections “4a.1”, “4a.2”, and “4a.3”, including: “Primary phase alignment (phase4a): Yes — this deliverable is a phase4a scenario coverage artifact (no defect claims, no post-discovery evidence usage).”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

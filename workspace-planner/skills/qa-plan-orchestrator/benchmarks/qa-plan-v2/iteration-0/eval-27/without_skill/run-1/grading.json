@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": true,
+      "evidence": "The result explicitly restates the required focus and covers all three sub-areas in dedicated sections: “Focus (must cover): shipment checkpoint distinguishes (1) hyperlink styling, (2) contextual navigation behavior, and (3) fallback rendering safety.” It then provides: “Checkpoint: Shipment checkpoint hyperlink styling”, “Checkpoint: Contextual navigation behavior”, and “Checkpoint: Fallback rendering safety”."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output repeatedly anchors to phase5b and frames the content as a phase5b advisory enforcement: title “Phase5b Checkpoint Enforcement (Advisory)”, metadata “Primary phase under test: phase5b”, section “Phase5b checkpoint enforcement assessment (advisory)”, and “This output is constrained to a phase5b checkpoint enforcement advisory review.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

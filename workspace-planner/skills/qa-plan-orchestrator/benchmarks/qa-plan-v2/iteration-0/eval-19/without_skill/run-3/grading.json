@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": false,
+      "evidence": "The output names the focus areas but does not actually provide scenarios covering them due to an evidence block: \"Status: NOT DEMONSTRABLE (blocked by missing evidence).\" and \"Cannot verify or derive concrete heatmap highlight scenarios grounded in customer issues.\""
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The result.md is explicitly structured as a phase4a contract output and states alignment: \"## Phase 4a Contract Output (Advisory)\" and \"This output is aligned to phase4a by: - Performing evidence gating under blind policy...\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": true,
+      "evidence": "result.md explicitly defines the checkpoint focus and enumerates all three required topics under “Phase 5b checkpoint scope (what must be covered)”: “1) OK / Cancel semantics 2) Pending selection state 3) Dismissal correctness for multi-selection workflows”. It then assesses each item (marked “Not assessable” due to missing evidence), demonstrating explicit coverage of the focus areas."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md is titled “QA Plan Orchestrator — Phase 5b Checkpoint Review (Baseline)” and states “Primary phase under test: phase5b”. The structure and sections repeatedly reference “Phase 5b checkpoint scope”, “Phase 5b checkpoint assessment”, “Phase 5b-aligned artifacts”, and “Overall phase5b checkpoint outcome”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

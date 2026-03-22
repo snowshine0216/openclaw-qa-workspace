@@ -2,43 +2,19 @@
   "expectations": [
     {
       "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
-      "passed": false,
-      "evidence": "Baseline output names the risk themes but does not convert them into a concrete phase-5b gate with audit/delta artifacts."
+      "passed": true,
+      "evidence": "result.md explicitly lists the required scope areas under “Phase5b checkpoint scope (what must be covered)”: “1. Prompt lifecycle… 2. Template flow… 3. Builder loading… 4. Close or save decision safety”, and includes a coverage table enumerating all four areas."
     },
     {
       "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "The output is explicitly framed as a shipment-checkpoint memo, so it is phase-5b aligned even though it misses the core gate."
+      "evidence": "result.md repeatedly aligns the output to phase5b: title “Phase5b Shipment Checkpoint”, field “Primary phase under test: phase5b”, section “Phase5b checkpoint scope”, and “Checkpoint enforcement assessment (phase5b)”."
     }
   ],
   "summary": {
-    "passed": 1,
-    "failed": 1,
+    "passed": 2,
+    "failed": 0,
     "total": 2,
-    "pass_rate": 0.5
-  },
-  "execution_metrics": {
-    "tool_calls": {
-      "Read": 4,
-      "Write": 2,
-      "Bash": 1
-    },
-    "total_tool_calls": 7,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 1850,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 118
-  },
-  "user_notes_summary": {
-    "uncertainties": [
-      "Baseline run is a prompt-only blind assessment because the repo does not provide a local one-click no-skill executor."
-    ],
-    "needs_review": [],
-    "workarounds": [
-      "Used frozen fixture review as the no-skill baseline."
-    ]
+    "pass_rate": 1
   }
 }

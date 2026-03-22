@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": true,
+      "evidence": "The output explicitly states the focus and then covers each required area: it defines the focus as “Single embedding component planning that covers: - panel-stack composition - embedding lifecycle - regression-sensitive integration states” and provides dedicated sections for “Panel-stack composition risks” (§3.1), “Embedding lifecycle risks” (§3.2), and “Regression-sensitive integration states” (§3.3), plus a detailed test matrix mapped to each (§4.1–§4.5). It also enforces the single-component constraint in “Out-of-scope” (§6)."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The document declares “Primary phase under test: phase4a” and frames the intent as “integration-focused, regression-sensitive QA plan” (§1). The content is predominantly integration/lifecycle/navigation/race-condition gating scenarios (e.g., rapid push/pop during load, background/foreground transitions, focus/back arbitration) and includes “Acceptance Criteria (phase4a gate)” (§5), matching phase4a expectations rather than unit or implementation detail."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The provided output files contain only execution metadata and a schema instruction in result.md. There is no QA plan content mentioning shipment checkpoints, highlight activation/persistence/deselection, interaction safety, or bar chart/heatmap."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "No content in the outputs references phase5b or demonstrates phase5b-specific deliverables. execution_notes.md and metrics.json are generic run metadata; grading_summary.md is just counts; result.md is a JSON schema instruction, not phase-aligned output."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

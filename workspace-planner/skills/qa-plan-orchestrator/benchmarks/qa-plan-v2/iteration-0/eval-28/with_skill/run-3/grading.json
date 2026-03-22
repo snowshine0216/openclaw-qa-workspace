@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "The only referenced content in result.md is \"./outputs/execution_notes.md\", and execution_notes.md contains only run metadata (executor, duration, tokens, configuration). There is no mention of donut-label assumptions, label visibility, density limits, or overlap-sensitive presentation."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "No phase1 deliverable content is present. result.md points to execution_notes.md, which contains only metadata and does not demonstrate alignment with phase1."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

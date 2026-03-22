@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "The Phase 1 artifact explicitly includes dedicated intake sections for all three required focus areas: \"2.2 Entry points to preserve (Google Sheets export)\", \"2.3 Scope boundaries to preserve\", and \"2.4 Format constraints to preserve (Google Sheets export)\" and it states it will not draft scenarios: \"This artifact intentionally does not draft scenarios, test cases, or validation steps.\" Although details are marked BLOCKED due to missing evidence, the case focus areas are explicitly covered in the context intake structure."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is labeled \"QA Plan Orchestrator — Phase 1 (Context Intake)\" and explicitly limits itself to phase1 activities: it gates on evidence availability, records context-intake fields, and avoids scenario drafting: \"This artifact intentionally does not draft scenarios, test cases, or validation steps\" and \"This remains aligned to phase1 (context intake).\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

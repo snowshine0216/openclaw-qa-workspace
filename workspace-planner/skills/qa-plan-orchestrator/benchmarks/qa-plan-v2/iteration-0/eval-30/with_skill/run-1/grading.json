@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": false,
+      "evidence": "The provided output files contain only execution metadata (execution_notes.md, metrics.json) and a grading summary. There is no phase1 content showing context intake, Google Sheets export entry points, scope boundaries, or format constraints."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "No phase deliverable content is present. result.md only points to execution_notes.md, which includes executor/config/duration/tokens but nothing demonstrating alignment to phase1."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

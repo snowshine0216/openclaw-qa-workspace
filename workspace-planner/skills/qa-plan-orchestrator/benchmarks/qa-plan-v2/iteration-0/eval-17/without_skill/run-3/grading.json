@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": true,
+      "evidence": "The output explicitly restates the required focus and breaks it into the required sub-elements: “Donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes.” It also includes a table enumerating “Label visibility behavior,” “Label density behavior,” and “Overlap-sensitive outcomes,” plus “Distinguishes among visibility vs density vs overlap outcomes.” Although marked “Not verifiable” due to missing evidence, the focus itself is explicitly covered."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The result is structured as a phase4a contract check and repeatedly frames conclusions in phase4a terms: “Primary phase under test: phase4a,” “Phase 4a Contract Output (Advisory),” “Goal (phase4a),” and “Phase4a Output Alignment.” This matches the expected primary phase alignment."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

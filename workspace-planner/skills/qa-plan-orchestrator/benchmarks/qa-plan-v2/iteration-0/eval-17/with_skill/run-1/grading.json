@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": true,
+      "evidence": "The output explicitly states the required focus and enumerates the three distinctions: \"Focus (must be explicitly covered): donut-chart data label coverage that distinguishes **label visibility**, **label density**, and **overlap-sensitive outcomes**.\" It also reiterates in Section 1: \"explicitly include donut-chart data label scenarios that separate: 1. Label visibility ... 2. Label density ... 3. Overlap-sensitive outcomes...\""
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The document is framed as a phase4a checkpoint review throughout: title \"QA Plan Orchestrator — Phase 4a Checkpoint Review\" and \"Primary phase under test: phase4a\". It also defines phase4a expectations in Section 1 (\"Phase 4a ... should validate that the QA plan’s test coverage is complete and discriminating\") and includes a \"Phase 4a Alignment Check\" section, even though it concludes alignment cannot be confirmed due to missing artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

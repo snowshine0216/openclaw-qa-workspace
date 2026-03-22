@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": false,
+      "evidence": "The provided outputs (execution_notes.md, grading_summary.md, metrics.json, result.md) contain no content describing shipment checkpoints, hyperlink styling, contextual navigation behavior, or fallback rendering safety. grading_summary.md only reports aggregate pass counts without supporting details."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "No output file content references 'phase5b' or provides phase-specific artifacts. execution_notes.md only lists executor, duration, tokens, and configuration; result.md only points to execution_notes.md."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

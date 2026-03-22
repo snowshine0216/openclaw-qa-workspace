@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The result explicitly states the required coverage areas but does not actually cover them with a shipment checkpoint artifact; it declares the run blocked due to missing evidence: “BLOCKED / NOT DEMONSTRABLE WITH PROVIDED EVIDENCE” and “there is insufficient admissible evidence to produce a compliant phase5b checkpoint artifact”. It further marks this expectation as “Not achievable”."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The output cannot demonstrate alignment to phase5b requirements and explicitly says so: “Phase alignment check (phase5b) Cannot be verified without SKILL.md” and “Output aligns with phase5b: Not achievable (SKILL.md not available; phase requirements cannot be applied).”"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

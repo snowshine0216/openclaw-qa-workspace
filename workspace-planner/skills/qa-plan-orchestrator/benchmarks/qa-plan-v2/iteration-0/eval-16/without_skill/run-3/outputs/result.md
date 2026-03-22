@@ -1,53 +1,82 @@
-# GRID-P4A-BANDING-001 - Phase4a Contract Result
+```md
+# GRID-P4A-BANDING-001 — Phase 4a Contract Output (Advisory)
+Feature: **BCIN-7231**  
+Feature family: **modern-grid**  
+Primary phase under test: **phase4a**  
+Evidence mode: **blind_pre_defect** (customer-issues-only; exclude non-customer issues)  
+Configuration: **without_skill**  
+Benchmark profile: **global-cross-feature-v1**  
+Fixture reference: **BCIN-7231-blind-pre-defect-bundle** (no local path provided)
 
-## Scope and Policy Compliance
-- Benchmark case: `GRID-P4A-BANDING-001`
-- Feature: `BCIN-7231` (modern-grid)
-- Primary phase/checkpoint: `phase4a`
-- Evidence mode: `blind_pre_defect`
-- Blind policy applied: `all_customer_issues_only` (non-customer issues excluded)
-- Evidence used: customer-scoped fixture exports only under `./inputs/fixtures/BCIN-7231-blind-pre-defect-bundle/materials/`
+## Phase 4a — Evidence-Gated Cross-Feature Checks (Advisory)
 
-## Customer-Evidence Summary (BCIN-7231)
-- Feature summary: "Enhance the banding capabilities in the Modern Grid."
-- Reported gap in Modern Grid (from customer-scoped Jira feature):
-  - Row banding exists, but color formatting is not configurable.
-  - Column banding is not available.
-  - Banding color cannot be applied by row/column header.
-- Customer signal: present (`true`), with explicit customer references in customer fields.
+### 4a.0 Evidence availability gate (blind pre-defect)
+**Required for this phase:** customer issue evidence from `all_customer_issues_only` within the referenced fixture bundle.
 
-## Phase4a Checkpoint Artifact (Advisory)
+**Observed evidence provided to this run:** none.  
+- The fixture is listed but has **no accessible local path/content**.
+- No customer issues were included in the prompt.
 
-### Focus Coverage: Modern Grid Banding Scenarios
-The required focus is explicitly covered by defining phase4a validation targets that distinguish:
+**Result:** **BLOCKED** — Phase 4a execution cannot be completed without customer-issue evidence.
 
-1. Styling variants
-- Variant S1: row banding on/off.
-- Variant S2: column banding on/off.
-- Variant S3: banding color customization available and applied.
-- Variant S4: header-driven banding color application (row header / column header).
+---
 
-2. Interactions
-- Interaction I1: toggling row/column banding independently does not overwrite the other setting.
-- Interaction I2: changing banding color updates rendered cells immediately and consistently.
-- Interaction I3: header-based banding application updates target scope only (row-axis vs column-axis behavior remains distinct).
+## 4a.1 Case focus coverage (planned, evidence-required)
+Focus required by benchmark: **modern grid banding scenarios** that distinguish:
+1) **Styling variants**  
+2) **Interactions**  
+3) **Backward-compatible rendering outcomes**
 
-3. Backward-compatible rendering outcomes
-- Compatibility C1: legacy behavior (row-only banding) remains valid when new options are unused.
-- Compatibility C2: existing dashboards with prior banding settings render without regression.
-- Compatibility C3: rendered readability parity with Report-style banding expectations is maintained for equivalent configurations.
+Because evidence is unavailable, the following items are **the Phase 4a checklist that would be executed** once customer issues are accessible.
 
-### Phase4a Contract Alignment
-- `phase4a` alignment is satisfied by producing a checkpoint-level scenario contract (not implementation, not post-defect triage) that:
-  - binds required behavior to explicit scenario IDs (S1-S4, I1-I3, C1-C3),
-  - stays within blind pre-defect customer evidence,
-  - frames advisory validation targets for the orchestrator phase model.
+### A) Banding styling variants (evidence-derived validation targets)
+For each customer-reported banding scenario, confirm:
+- Variant identity: row banding vs column banding vs group/section banding (if applicable).
+- Theme/skin differences (e.g., light/dark/high-contrast) impacting band colors.
+- State overlays: hover, focus, selected, active/pressed states and their precedence vs banding.
+- Density/compact mode and its effect on band application (row heights, zebra pattern continuity).
+- Pinned/frozen areas: banding continuity across pinned + scrollable regions.
+- Hierarchical/grouped rows: banding reset or continuation rules at group boundaries.
 
-## Satisfaction Decision (This Benchmark Case)
-- Expectation: case focus explicitly covered -> `SATISFIED`.
-- Expectation: output aligns with primary phase `phase4a` -> `SATISFIED`.
-- Overall (advisory): `SATISFIED` for phase-contract completeness using allowed blind customer evidence.
+**Expected Phase 4a artifact:** a scenario table mapping each customer issue → expected banding rules → observed outcome.
 
-## Evidence References
-- `inputs/fixtures/BCIN-7231-blind-pre-defect-bundle/materials/BCIN-7231.customer-scope.json`
-- `inputs/fixtures/BCIN-7231-blind-pre-defect-bundle/materials/BCIN-7231.issue.raw.json`
+### B) Interaction-sensitive outcomes
+Validate banding does not regress under:
+- Sorting and filtering: banding recalculation rules (based on visible order vs original index).
+- Virtualization/infinite scroll: banding consistency while recycling rows/cells.
+- Row expand/collapse (detail panels, tree data): band index stability.
+- Editing: cell edit mode styling precedence (editor background vs banding).
+- Selection modes: single/multi-select; checkbox selection; range selection; keyboard navigation focus ring.
+
+**Expected Phase 4a artifact:** interaction matrix with pass/fail per customer issue scenario.
+
+### C) Backward-compatible rendering outcomes
+Validate parity/compat rules against legacy/previous grid rendering:
+- Rendering engine parity: banding patterns match prior behavior where compatibility is promised.
+- CSS/class naming: banding hooks remain stable enough for customer custom CSS (if compatibility is required).
+- Export/print/snapshot behaviors (if referenced in customer issues): banding presence and correctness.
+- Server-side rendering or hydration (if applicable in customer issues): no flash/shift of banding.
+
+**Expected Phase 4a artifact:** compatibility findings per issue, explicitly marking “no regression” vs “intentional difference” (with rationale).
+
+---
+
+## Phase 4a Deliverable Status
+- **Overall:** **BLOCKED (No customer issue evidence available)**
+- **Advisory note:** To proceed, provide the customer issues from `BCIN-7231-blind-pre-defect-bundle` (customer-issues-only set). Once available, execute the matrices above and record observed vs expected outcomes per issue.
+
+---
+
+## Evidence used (blind policy compliant)
+- **None provided** (fixture not accessible; no customer issues included)
+
+## Files to be produced by orchestrator contract (this run)
+- `./outputs/result.md` (this document)
+- `./outputs/execution_notes.md` (run notes)
+```
+
+---
+
+Execution summary:
+- Created `./outputs/result.md` with a Phase 4a advisory output aligned to the banding-focused case contract, but marked **BLOCKED** due to missing customer-issue evidence (fixture listed with no accessible content).
+- Created `./outputs/execution_notes.md` noting evidence used (none), files produced, and blocker (no customer issues / no fixture access).

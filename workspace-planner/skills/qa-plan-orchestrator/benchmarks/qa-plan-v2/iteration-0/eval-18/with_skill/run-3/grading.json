@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": true,
+      "evidence": "In result.md, the focus is stated and then covered in detail: it models \"Pending Selection (uncommitted)\", \"OK / Confirm (commit)\", \"Cancel (revert)\", and \"Dismissal pathways\" including \"Click outside / blur dismissal\" and \"Explicit close icon / collapse control\" with expected outcomes (discard pending, keep committed, close dropdown, no commit event)."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is explicitly scoped to \"Phase 4a — Confirmation & Dismissal Outcomes Planning\" and contains phase-appropriate planning elements (state transitions, commit vs pending rules, dismissal handling, and \"Minimal acceptance checks (phase4a)\") without drifting into other phases."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

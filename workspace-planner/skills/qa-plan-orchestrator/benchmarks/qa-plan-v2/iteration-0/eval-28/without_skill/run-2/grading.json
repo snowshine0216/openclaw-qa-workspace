@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": true,
+      "evidence": "The artifact explicitly states the required focus and then enumerates assumptions under the three required categories: \"Context intake must explicitly preserve donut-label assumptions for: - Label visibility - Density limits - Overlap-sensitive presentation\" and provides sections \"A. Label visibility assumptions\", \"B. Density limits assumptions\", and \"C. Overlap-sensitive presentation assumptions\"."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The document is labeled and scoped to Phase 1 context intake: \"VIZ-P1-CONTEXT-INTAKE-001 — Phase 1 (Context Intake) QA Plan Artifact\" and \"Phase 1 is limited to context intake\". It avoids later-phase test design/execution and instead records assumptions-to-validate and \"Phase 1 required clarifications\" plus \"Phase 1 exit criteria\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

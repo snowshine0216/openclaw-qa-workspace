@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": true,
+      "evidence": "Result explicitly frames Phase 1 objective as capturing/preserving constraints before scenarios: \"Capture and preserve requirements and constraints... Banding requirements... Style constraints... Rendering assumptions\" and \"This artifact intentionally does not draft test scenarios\". It then includes dedicated sections \"3.1 Banding requirements\", \"3.2 Style constraints\", and \"3.3 Rendering assumptions\" with preservation notes."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The document is titled \"QA Plan Orchestrator — Phase 1 (Context Intake)\" and states \"Primary phase under test: phase1 (context intake)\". It reinforces phase alignment by noting: \"This artifact intentionally does not draft test scenarios\" and provides \"Open questions (must be answered to proceed to Phase 2)\" plus \"Phase 1 exit criteria\"—all consistent with phase1 context intake rather than scenario drafting."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

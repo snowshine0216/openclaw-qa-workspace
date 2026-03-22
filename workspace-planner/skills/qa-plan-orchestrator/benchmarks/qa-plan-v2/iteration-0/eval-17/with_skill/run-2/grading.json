@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": false,
+      "evidence": "The only referenced artifact in result.md is \"./outputs/execution_notes.md\", which contains only run metadata (executor, duration, tokens, configuration). There is no content discussing donut-chart data label coverage, visibility, density, or overlap-sensitive outcomes."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No phase4a-aligned deliverable is present. result.md only points to execution_notes.md, and execution_notes.md contains no phase identification or phase4a outputs—only execution metadata."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

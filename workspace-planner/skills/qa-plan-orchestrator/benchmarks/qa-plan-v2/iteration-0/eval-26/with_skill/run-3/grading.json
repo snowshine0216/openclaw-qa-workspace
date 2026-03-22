@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": false,
+      "evidence": "No phase output content is provided beyond references/metadata. The only substantive file listed is execution_notes.md (executor, duration, tokens, configuration). result.md contains only a path reference ('./outputs/execution_notes.md'). There is no text demonstrating context intake, banding requirements, style constraints, rendering assumptions, or scenario drafting."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "No phase1 deliverable/content is present in the provided outputs. grading_summary.md reports 2/2 passed, but it does not include evidence. With only metadata and no phase-specific content, alignment to 'phase1' cannot be verified."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

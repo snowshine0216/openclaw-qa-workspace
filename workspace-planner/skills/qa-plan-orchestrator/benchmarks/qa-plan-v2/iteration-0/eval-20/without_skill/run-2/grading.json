@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": true,
+      "evidence": "The output explicitly structures the checkpoint around the three required dimensions: “Supported formats”, “Entry points (how the export is initiated)”, and “Output expectations (what “correct” looks like after export)” under “What must be explicitly covered (minimum acceptance for this checkpoint)”. It also reiterates the focus line: “Focus: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations.”"
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The document is explicitly a phase5b checkpoint enforcement artifact: title “EXPORT-P5B-GSHEETS-001 — Phase 5b Checkpoint Enforcement (Advisory)”, states “Primary phase under test: phase5b”, and provides a “Phase 5b Checkpoint” section with acceptance criteria and an enforcement verdict."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

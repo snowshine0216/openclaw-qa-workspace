@@ -1,14 +1,6 @@
-- Case executed: `GRID-P4A-BANDING-001` for feature `BCIN-7231` (primary phase `phase4a`, evidence mode `blind_pre_defect`).
-- Skill workflow references used:
-  - `./skill_snapshot/SKILL.md`
-  - `./skill_snapshot/reference.md`
-  - `./skill_snapshot/references/phase4a-contract.md`
-  - `./skill_snapshot/references/subagent-quick-checklist.md`
-- Fixture evidence used (customer-only blind scope):
-  - `./inputs/fixtures/BCIN-7231-blind-pre-defect-bundle/materials/BCIN-7231.issue.raw.json`
-  - `./inputs/fixtures/BCIN-7231-blind-pre-defect-bundle/materials/BCIN-7231.customer-scope.json`
-- Files produced:
-  - `./outputs/result.md`
-  - `./outputs/execution_notes.md`
-- Blockers:
-  - None.
+# Execution Notes
+
+- executor: benchmark-runner-llm
+- duration_ms: 33399
+- total_tokens: 2231
+- configuration: with_skill

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The output explicitly states the phase objective and case focus, and structures the intake around the three required focus areas: \"Capture and preserve the minimum sufficient context needed to plan QA later while maintaining: - Component-stack constraints ... - Embedding lifecycle assumptions ... - Integration-sensitive customer expectations\". It also enumerates required intake fields under sections 4A/4B/4C corresponding to each area."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The document is labeled and constrained to Phase 1: \"NE-P1-CONTEXT-INTAKE-001 — Phase 1 (Context Intake)\" and \"This output is limited to context intake only and intentionally does not propose test designs or phase-2+ artifacts.\" It provides context intake records and gaps/checklist, consistent with phase1."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

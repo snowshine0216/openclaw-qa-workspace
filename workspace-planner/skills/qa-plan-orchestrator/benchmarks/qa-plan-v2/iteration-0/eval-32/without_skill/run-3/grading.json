@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "No content in the provided output files (execution_notes.md, grading_summary.md, metrics.json, result.md) discusses shipment checkpoint OK/Cancel semantics, pending selection state, or dismissal correctness. result.md only contains a path reference: \"./outputs/execution_notes.md\"."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The provided outputs do not mention \"phase5b\" or any phase alignment. execution_notes.md lists executor/duration/tokens/config only; grading_summary.md only shows pass counts; metrics.json only shows token/duration metadata; result.md is just a file pointer."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

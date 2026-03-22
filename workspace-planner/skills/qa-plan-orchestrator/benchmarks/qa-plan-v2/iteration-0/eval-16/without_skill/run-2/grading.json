@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly restates the required focus and provides an explicit coverage map: \"confirm the case focus is explicitly covered (modern grid banding scenarios across styling variants, interactions, and backward-compatible rendering outcomes)\" and Section 3 enumerates \"Styling variants\", \"Interactions\", and \"Backward-compatible rendering outcomes\" with concrete sub-bullets."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is labeled \"Phase 4a Output\" and frames content as phase-contract-limited: \"Phase 4a output here is limited to what can be concluded from provided benchmark evidence while maintaining the phase contract\". It performs an evidence availability check (Section 2), marks verification blocked due to missing admissible evidence (Sections 2 and 4), and summarizes contract status (Section 6), which is consistent with phase4a alignment in blind_pre_defect mode."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

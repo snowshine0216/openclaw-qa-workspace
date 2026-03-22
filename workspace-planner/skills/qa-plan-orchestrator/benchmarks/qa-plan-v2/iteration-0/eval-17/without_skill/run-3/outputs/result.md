@@ -1,28 +1,68 @@
-# VIZ-P4A-DONUT-LABELS-001 - Phase4a Contract Check
+# ./outputs/result.md
 
-- Case: `VIZ-P4A-DONUT-LABELS-001`
-- Feature: `BCED-4860` (`visualization`)
-- Primary phase: `phase4a`
-- Evidence mode: `blind_pre_defect`
-- Blind policy enforced: `all_customer_issues_only` (exclude non-customer issues)
-- Priority: `advisory`
+## Benchmark Case
+- **ID:** VIZ-P4A-DONUT-LABELS-001  
+- **Feature:** BCED-4860  
+- **Feature family / knowledge pack:** visualization  
+- **Primary phase under test:** **phase4a**  
+- **Case family:** phase contract  
+- **Evidence mode:** blind_pre_defect  
+- **Priority:** advisory  
+- **Profile:** global-cross-feature-v1  
+- **Fixture references:** BCED-4860-blind-pre-defect-bundle (**not provided locally**)  
+- **Blind evidence policy:** **all_customer_issues_only** (exclude non-customer issues)
 
-## Phase4a Outcome
+## Phase 4a Contract Output (Advisory)
+### Goal (phase4a)
+Validate that the phase4a artifact(s) explicitly cover the benchmark focus for BCED-4860:
 
-`phase4a` output is aligned to the phase contract by producing a focused coverage checkpoint for donut-chart data labels with explicit treatment of visibility, density, and overlap-sensitive outcomes.
+> **Donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes.**
 
-## Focus Coverage (Donut Data Labels)
+### Evidence Availability & Compliance Check
+- **Customer-issue evidence provided:** **None** (no customer issues included in the prompt; fixture bundle has no accessible/local contents).
+- **Non-customer evidence:** Not permitted by policy and none provided.
+- **Result:** **Insufficient evidence to demonstrate phase4a coverage** for the required focus area.
 
-| Focus dimension | What must be distinguished | Customer-only evidence status | Phase4a checkpoint result |
-|---|---|---|---|
-| Label visibility | visible vs not rendered/hidden labels per slice | No qualifying customer issue evidence present | Covered as required dimension; execution evidence unavailable in blind set |
-| Label density | behavior under low/medium/high slice density | No qualifying customer issue evidence present | Covered as required dimension; execution evidence unavailable in blind set |
-| Overlap-sensitive outcomes | non-overlap vs collision/avoidance behavior | No qualifying customer issue evidence present | Covered as required dimension; execution evidence unavailable in blind set |
+### Coverage Determination (What can be concluded from available evidence)
+| Required focus element | Needs to be explicitly covered in phase4a | Evidence available | Status |
+|---|---:|---:|---|
+| Label visibility behavior (shown/hidden rules) | Yes | None | **Not verifiable** |
+| Label density behavior (many slices / tight spacing) | Yes | None | **Not verifiable** |
+| Overlap-sensitive outcomes (collision, truncation, suppression, leader lines) | Yes | None | **Not verifiable** |
+| Distinguishes among visibility vs density vs overlap outcomes | Yes | None | **Not verifiable** |
 
-## Evidence-Constrained Assessment
+### Phase4a Output Alignment
+- Because no phase4a artifact or customer-issue evidence is available, **alignment to phase4a cannot be validated** beyond restating the intended focus.
 
-- Customer-scope export reports `customer_signal_present: false` for `BCED-4860`.
-- Parent feature summary (`BCED-4814`) also reports `customer_signal_present: false`.
-- Under blind policy, non-customer sources are excluded from evaluative evidence.
+## Advisory Finding
+- **Finding:** **Blocked / Cannot assess**  
+- **Reason:** The benchmark requires demonstrating phase4a coverage using **customer issues only**, but **no customer-issue evidence** or accessible fixture contents were provided. Therefore it is not possible to verify that the phase4a plan/artifact distinguishes donut data label **visibility**, **density**, and **overlap-sensitive** outcomes.
 
-Assessment for this advisory phase-contract case: **contract focus coverage is explicitly represented and phase alignment is satisfied; customer-evidence-based behavioral confirmation is inconclusive due to empty eligible evidence set**.
+## Required Next Input (to proceed under blind evidence rules)
+Provide one of the following (customer-issue evidence only):
+1. The customer-issue text(s) included in **BCED-4860-blind-pre-defect-bundle**, or  
+2. A local/exported copy of that bundle’s customer issues, or  
+3. Direct excerpts summarizing donut label problems observed by customers (with enough detail to map to visibility vs density vs overlap scenarios).
+
+Only after such evidence is provided can phase4a coverage be assessed for the specific focus.
+
+---
+
+# ./outputs/execution_notes.md
+
+## Evidence used
+- Benchmark prompt text (this chat message) only.
+- No customer issues were provided; fixture bundle referenced but not accessible.
+
+## Files produced
+- `./outputs/result.md`
+- `./outputs/execution_notes.md`
+
+## Blockers
+- `BCED-4860-blind-pre-defect-bundle` has no local path / contents provided.
+- Blind evidence policy requires **customer issues only**; none available, so focus coverage cannot be verified.
+
+---
+
+## Execution summary
+Generated a phase4a-aligned advisory result, but marked the case **blocked/not verifiable** because no customer-issue evidence or accessible fixture contents were provided under the **all_customer_issues_only** blind evidence policy.

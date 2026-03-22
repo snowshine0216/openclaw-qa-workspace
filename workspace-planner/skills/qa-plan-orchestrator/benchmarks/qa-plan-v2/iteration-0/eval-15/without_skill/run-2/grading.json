@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": true,
+      "evidence": "The deliverable explicitly scopes and structures coverage around all three required focus areas. In “4a.1 Scope & Objective” it lists: (1) “Panel-stack composition”, (2) “Embedding lifecycle”, and (3) “Regression-sensitive integration states”. It then provides dedicated sections “4a.3 Panel-Stack Composition Coverage”, “4a.4 Embedding Lifecycle Coverage”, and “4a.5 Regression-Sensitive Integration States”."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The document is explicitly labeled and organized as a phase4a planning deliverable: header states “Primary phase under test: phase4a” and “Phase 4a Deliverable: Component Stack QA Planning (Single Embedding Component)”. It is planning-focused (test scenarios, checkpoints, minimal test set, entry/exit criteria) rather than execution or defect analysis, matching phase4a intent."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "The only content in result.md is a directive to \"Respond with ONLY valid JSON\" and a schema. There is no mention of Google Sheets dashboard export, supported formats, entry points, or output expectations anywhere in the provided output files."
+    },
+    {
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "No phase5b-related content is present. result.md contains only an instruction and JSON schema; execution_notes.md/metrics.json contain metadata only. There is nothing demonstrating alignment to phase5b."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+      "passed": false,
+      "evidence": "The provided outputs (execution_notes.md, grading_summary.md, metrics.json, result.md) contain only run metadata and a self-reported pass count. There is no content demonstrating that hyperlink-style coverage or separation of contextual-link styling from ordinary element rendering is explicitly addressed."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No phase4a-related content is present in any output file. result.md only points to execution_notes.md, which includes metadata (executor, duration, tokens, configuration) but no phase alignment evidence."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": true,
+      "evidence": "Result.md explicitly scopes Phase 1 to preserving donut-label assumptions and enumerates all three required areas: it states the phase must ensure assumptions are represented for “Label visibility”, “Density limits”, and “Overlap-sensitive presentation” (Section 1), then captures them in dedicated subsections 3.1, 3.2, and 3.3 with carry-forward assumptions/questions and “Phase 1 preservation requirement” statements for each."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is labeled “QA Plan Orchestrator — Phase 1 (Context Intake)” and restricts content to intake artifacts: assumptions/placeholders, open questions, and evidence gaps/blockers (Sections 2–4 and 6). It does not design tests or proceed to later-phase execution, and it explicitly notes it “cannot cite or extract specific requirements from evidence” due to missing fixtures (Section 2)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

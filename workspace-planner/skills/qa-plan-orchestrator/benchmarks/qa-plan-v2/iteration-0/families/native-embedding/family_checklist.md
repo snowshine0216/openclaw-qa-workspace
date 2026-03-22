@@ -3,8 +3,8 @@
 **Goal:** feature-family focus: native-embedding
 **Cases:** `3`
 **Runs:** `18`
-**Completed runs:** `1`
-**Pending runs:** `17`
+**Completed runs:** `18`
+**Pending runs:** `0`
 
 ## Eval 15
 
@@ -16,18 +16,18 @@
 
 - [x] `with_skill` `run-1`
   Path: `eval-15/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-15/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-15/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-15/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-15/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-15/without_skill/run-3`
 
 ## Eval 24
@@ -38,20 +38,20 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-24/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-24/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-24/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-24/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-24/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-24/without_skill/run-3`
 
 ## Eval 25
@@ -62,18 +62,18 @@
 
 ### with_skill runs
 
-- [ ] `with_skill` `run-1`
+- [x] `with_skill` `run-1`
   Path: `eval-25/with_skill/run-1`
-- [ ] `with_skill` `run-2`
+- [x] `with_skill` `run-2`
   Path: `eval-25/with_skill/run-2`
-- [ ] `with_skill` `run-3`
+- [x] `with_skill` `run-3`
   Path: `eval-25/with_skill/run-3`
 
 ### without_skill runs
 
-- [ ] `without_skill` `run-1`
+- [x] `without_skill` `run-1`
   Path: `eval-25/without_skill/run-1`
-- [ ] `without_skill` `run-2`
+- [x] `without_skill` `run-2`
   Path: `eval-25/without_skill/run-2`
-- [ ] `without_skill` `run-3`
+- [x] `without_skill` `run-3`
   Path: `eval-25/without_skill/run-3`

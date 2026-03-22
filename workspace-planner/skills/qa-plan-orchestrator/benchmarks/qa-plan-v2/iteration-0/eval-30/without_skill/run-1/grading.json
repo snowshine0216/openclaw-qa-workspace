@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "In result.md, the Phase 1 snapshot is structured explicitly around the three required context elements and keeps them in intake form (not scenarios):\n- \"## 2.1 Google Sheets export entry points (to be preserved)\" → \"Unknown\"\n- \"## 2.2 Scope boundaries (in-scope / out-of-scope)\" → \"Unknown\"\n- \"## 2.3 Format constraints (Google Sheets export)\" → \"Unknown\"\nIt also directly states the case-focus expectation under \"### Case focus coverage check\" and explains it is \"NOT DEMONSTRABLE\" due to missing admissible evidence, which still constitutes explicit coverage of the required items in the intake."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md is titled \"# Phase 1 — Context Intake (Contract Check)\" and stays in context intake/constraints mode, explicitly avoiding scenario drafting. It includes \"### Phase alignment check\" with \"Status: PASS — this output avoids scenarios and stays in intake/constraints mode, while clearly marking unknowns due to evidence unavailability.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

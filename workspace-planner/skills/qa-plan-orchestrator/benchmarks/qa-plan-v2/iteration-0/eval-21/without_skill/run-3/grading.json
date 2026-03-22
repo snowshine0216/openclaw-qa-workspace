@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+      "passed": true,
+      "evidence": "Result explicitly states the case focus in multiple places, e.g. in the Phase 4a objective: \"explicitly covers the case focus: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering\" and throughout section 3/4: \"tests the separation between: 1) contextual-link styling, and 2) ordinary element rendering within modern grid.\""
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The output is labeled and structured as Phase 4a and provides a \"focused test coverage contract\" consistent with phase4a: Title \"Phase 4a (Advisory) QA Plan Output\", includes \"Primary phase under test: phase4a\", and section \"1) Phase 4a Objective (Checkpoint Contract)\" plus a \"Test Design Contract (Phase 4a)\" and \"Phase 4a Acceptance Criteria\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

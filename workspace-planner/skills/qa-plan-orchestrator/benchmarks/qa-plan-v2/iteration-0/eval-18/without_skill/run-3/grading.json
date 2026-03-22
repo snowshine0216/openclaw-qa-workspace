@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": true,
+      "evidence": "The Phase 4a output explicitly covers all required elements: it defines \"Committed selection\" vs \"Pending selection\" in the state model, and includes dedicated sections for \"2.1 OK / Confirm behavior\", \"2.2 Cancel behavior\", and \"4. Dismissal outcomes (non-explicit close)\" with an explicit requirement to define whether dismissal behaves like Cancel or Confirm. It also includes a \"Test coverage checklist\" with OK, Cancel, and dismissal paths."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The document is titled \"QA Plan Orchestrator — Phase 4a Output (Advisory)\" and repeatedly frames content as \"Phase 4a — Confirmation / Commit Semantics\" with \"Objective (Phase 4a contract focus)\" and phase4a-specific deliverable requirements (e.g., \"Phase 4a requires a defined policy for closing without OK/Cancel\"). The content is focused on commit/confirmation semantics, which matches phase4a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

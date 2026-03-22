@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": false,
+      "evidence": "The only provided content in result.md is a reference to ./outputs/execution_notes.md and a JSON schema instruction. None of the output files contain any phase1/context-intake content covering component-stack constraints, embedding lifecycle assumptions, or integration-sensitive customer expectations."
+    },
+    {
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "No phase1 deliverable content is present in the provided outputs. execution_notes.md/metrics.json only include run metadata, and result.md contains only a pointer and schema instruction, so alignment with phase1 cannot be evidenced."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

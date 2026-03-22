@@ -1,6 +1,4 @@
-{
-  "passed": 2,
-  "failed": 0,
-  "total": 2,
-  "pass_rate": 1
-}
+pass_rate: 0
+passed: 0
+failed: 2
+total: 2
