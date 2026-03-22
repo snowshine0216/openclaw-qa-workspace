@@ -12,7 +12,7 @@ This benchmark case passes on a holdout review basis. The copied fixture shows t
 
 - `benchmark_request.json` marks this case as `holdout`, `holdout_regression`, and `blocking`, with focus on avoiding regression in a different feature planning flow.
 - `inputs/fixtures/embedding-dashboard-editor-compare-result/source/compare-result.md` says Plan 1 should remain the main report-editor QA plan, while selected strengths from Plan 2 should be imported without replacing core report coverage. That is a non-regression requirement, not a report-only rewrite.
-- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md` defines `holdout_regression` as protection against overfitting and requires no holdout regression for acceptance.
+- `skill_snapshot/references/qa-plan-benchmark-spec.md` defines `holdout_regression` as protection against overfitting and requires no holdout regression for acceptance.
 - `skill_snapshot/references/context-coverage-contract.md` forbids silent drops and requires every discovered capability family, journey, and risk to land in an explicit coverage bucket or `OutOfScope`.
 - `skill_snapshot/references/phase4a-contract.md` requires report-editor gap implications and knowledge-pack capabilities to remain represented as scenarios, release gates, or explicit exclusions.
 - `skill_snapshot/references/phase4b-contract.md` forbids anti-compression mistakes, including merging distinct Workstation-only and Library-gap scenarios when their risks differ.

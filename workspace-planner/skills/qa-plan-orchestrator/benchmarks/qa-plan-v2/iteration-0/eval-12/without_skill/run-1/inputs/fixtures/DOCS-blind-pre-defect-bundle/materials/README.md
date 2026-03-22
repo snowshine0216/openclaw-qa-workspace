@@ -34,7 +34,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - `references/context-index-schema.md`
 - `references/e2e-coverage-rules.md`
 - `knowledge-packs/` when a feature family has a mandatory pack
-- `docs/DOCS_GOVERNANCE.md`
+- `references/docs-governance.md`
 
 ## Phase-to-Reference Mapping
 

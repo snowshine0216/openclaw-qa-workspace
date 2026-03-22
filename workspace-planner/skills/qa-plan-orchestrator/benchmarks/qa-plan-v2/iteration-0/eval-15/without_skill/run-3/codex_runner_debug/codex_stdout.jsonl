@@ -1,0 +1,10 @@
+{"type":"thread.started","thread_id":"019d151b-2cba-73d1-938b-cddd97c8b937"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"`OPENAI_BASE_URL` is deprecated. Set `openai_base_url` in config.toml instead."}}
+{"type":"turn.started"}
+{"type":"error","message":"Reconnecting... 1/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: e581cdab-fb35-44c5-9432-9e370301a222)"}
+{"type":"error","message":"Reconnecting... 2/5 (stream disconnected before completion: stream closed before response.completed)"}
+{"type":"error","message":"Reconnecting... 3/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: a31a07a1-2b65-439c-9014-f520e0146950)"}
+{"type":"error","message":"Reconnecting... 4/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: d7b188c6-a23b-414b-9e52-d85278c37f56)"}
+{"type":"error","message":"Reconnecting... 5/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: e69b2537-ec98-48aa-ab68-d9c139cdd203)"}
+{"type":"error","message":"unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: 3a247760-5845-4730-b606-bcda34a53d64"}
+{"type":"turn.failed","error":{"message":"unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: 3a247760-5845-4730-b606-bcda34a53d64"}}

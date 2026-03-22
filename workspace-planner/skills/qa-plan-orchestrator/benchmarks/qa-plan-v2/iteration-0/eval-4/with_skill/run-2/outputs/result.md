@@ -14,7 +14,7 @@ PASS for the current `qa-plan-orchestrator` skill snapshot on this `phase4a` ret
 - `BCIN-7289_SELF_TEST_GAP_ANALYSIS.md` identifies Root Cause D: `setWindowTitle` was treated as trivial instead of becoming a verifiable scenario, exposing BCIN-7674, BCIN-7719, and BCIN-7733.
 - `BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md` calls out Gap 5: `Window Title Correctness for All Creation Modes`, with the missing scenario explicitly tied to `setWindowTitle`.
 - `BCIN-7289_REPORT_FINAL.md` and `context/defect_index.json` show user-visible title defects in blank-create and Intelligent Cube flows, confirming this is a black-box outcome rather than implementation detail.
-- `docs/QA_PLAN_BENCHMARK_SPEC.md` lists `window title correctness` as a recommended retrospective replay target and `knowledge_pack_coverage` target.
+- `references/qa-plan-benchmark-spec.md` lists `window title correctness` as a recommended retrospective replay target and `knowledge_pack_coverage` target.
 
 ## Phase4a-Aligned Coverage Example
 

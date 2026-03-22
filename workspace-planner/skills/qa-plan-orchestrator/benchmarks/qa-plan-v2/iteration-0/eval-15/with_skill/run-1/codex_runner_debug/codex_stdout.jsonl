@@ -1,0 +1,10 @@
+{"type":"thread.started","thread_id":"019d14d5-1c47-79e3-bcda-9a3ffde894ad"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"`OPENAI_BASE_URL` is deprecated. Set `openai_base_url` in config.toml instead."}}
+{"type":"turn.started"}
+{"type":"error","message":"Reconnecting... 1/5 (unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091647793278564fT9HN2HD), url: https://api.code-relay.com/v1/responses)"}
+{"type":"error","message":"Reconnecting... 2/5 (unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091656420540309QGwxmi4f), url: https://api.code-relay.com/v1/responses)"}
+{"type":"error","message":"Reconnecting... 3/5 (unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091702621471882IkmjLUgu), url: https://api.code-relay.com/v1/responses)"}
+{"type":"error","message":"Reconnecting... 4/5 (unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091709362667347bC0SA2WK), url: https://api.code-relay.com/v1/responses)"}
+{"type":"error","message":"Reconnecting... 5/5 (unexpected status 401 Unauthorized: 无效的令牌 (request id: 202603220917145346348218LRNWs2P), url: https://api.code-relay.com/v1/responses)"}
+{"type":"error","message":"unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091723566268322wGIECcVr), url: https://api.code-relay.com/v1/responses"}
+{"type":"turn.failed","error":{"message":"unexpected status 401 Unauthorized: 无效的令牌 (request id: 20260322091723566268322wGIECcVr), url: https://api.code-relay.com/v1/responses"}}

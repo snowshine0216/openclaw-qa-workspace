@@ -67,16 +67,16 @@ Master does **not** have these files. Copy them from mini:
 git show mini:workspace-planner/skills/qa-plan-orchestrator/docs/SUBAGENT_QUICK_CHECKLIST.md \
   > workspace-planner/skills/qa-plan-orchestrator/docs/SUBAGENT_QUICK_CHECKLIST.md
 
-git show mini:workspace-planner/skills/qa-plan-orchestrator/docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md \
-  > workspace-planner/skills/qa-plan-orchestrator/docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md
+git show mini:workspace-planner/skills/qa-plan-orchestrator/references/validator-safe-authoring-and-dedup-guide.md \
+  > workspace-planner/skills/qa-plan-orchestrator/references/validator-safe-authoring-and-dedup-guide.md
 ```
 
 ### Step 5: Update docsContract.test.mjs — Add to REQUIRED_FILES
 
-In `workspace-planner/skills/qa-plan-orchestrator/tests/docsContract.test.mjs`, add these two entries to `REQUIRED_FILES` (after `docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md`):
+In `workspace-planner/skills/qa-plan-orchestrator/tests/docsContract.test.mjs`, add these two entries to `REQUIRED_FILES` (after `references/script-driven-phase0-phase1-design.md`):
 
 ```javascript
-  'docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md',
+  'references/validator-safe-authoring-and-dedup-guide.md',
   'docs/SUBAGENT_QUICK_CHECKLIST.md',
 ```
 

@@ -26,7 +26,7 @@ When the target skill is `qa-plan-orchestrator`, also read:
 - `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
 - `workspace-planner/skills/qa-plan-orchestrator/reference.md`
 - `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`
-- `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
 - `workspace-planner/skills/qa-plan-orchestrator/evals/evals.json`
 - `workspace-planner/skills/qa-plan-orchestrator/references/phase4a-contract.md`
 - `workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5a.md`

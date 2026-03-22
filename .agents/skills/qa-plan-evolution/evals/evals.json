@@ -26,7 +26,7 @@
         "contract_compliance_score",
         "regression_count"
       ],
-      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md"
     },
     {
       "id": "qa-plan-knowledge-pack-coverage",
@@ -52,7 +52,7 @@
         "contract_compliance_score",
         "regression_count"
       ],
-      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md"
     },
     {
       "id": "generic-skill-regression",

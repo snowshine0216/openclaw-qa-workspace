@@ -14,7 +14,7 @@
 - `./skill_snapshot/references/subagent-quick-checklist.md`
 - `./skill_snapshot/knowledge-packs/report-editor/pack.md`
 - `./skill_snapshot/knowledge-packs/report-editor/pack.json`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `./skill_snapshot/references/qa-plan-benchmark-spec.md`
 - `./skill_snapshot/scripts/lib/spawnManifestBuilders.mjs`
 - `./skill_snapshot/scripts/lib/qaPlanValidators.mjs`
 - `./skill_snapshot/scripts/test/phase4a.test.sh`

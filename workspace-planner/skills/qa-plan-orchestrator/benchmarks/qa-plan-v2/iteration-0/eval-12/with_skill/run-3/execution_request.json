@@ -1,6 +1,6 @@
 {
   "benchmark_version": "qa-plan-v2",
-  "iteration_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
+  "iteration_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
   "case_id": "DOC-SYNC-001",
   "eval_id": 12,
   "eval_name": "doc-sync-001",
@@ -35,14 +35,14 @@
   "run": {
     "configuration_dir": "with_skill",
     "run_number": 3,
-    "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3",
-    "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/outputs",
-    "transcript_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/execution_transcript.log",
-    "grading_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/grading.json",
-    "timing_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/timing.json",
-    "metrics_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/outputs/metrics.json"
+    "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3",
+    "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/outputs",
+    "transcript_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/execution_transcript.log",
+    "grading_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/grading.json",
+    "timing_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/timing.json",
+    "metrics_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/outputs/metrics.json"
   },
-  "skill_snapshot_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
+  "skill_snapshot_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
   "fixtures": [
     {
       "fixture_id": "DOCS-blind-pre-defect-bundle",
@@ -64,14 +64,14 @@
           "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/README.md",
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/README.md",
           "included_in_blind": true,
-          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/inputs/fixtures/DOCS-blind-pre-defect-bundle/materials/README.md"
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/inputs/fixtures/DOCS-blind-pre-defect-bundle/materials/README.md"
         },
         {
           "material_type": "other",
           "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
           "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
           "included_in_blind": true,
-          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/inputs/fixtures/DOCS-blind-pre-defect-bundle/materials/reference.md"
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-12/with_skill/run-3/inputs/fixtures/DOCS-blind-pre-defect-bundle/materials/reference.md"
         }
       ],
       "local_path": null

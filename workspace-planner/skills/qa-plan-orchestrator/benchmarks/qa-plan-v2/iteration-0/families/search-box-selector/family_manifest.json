@@ -1,0 +1,219 @@
+{
+  "family": {
+    "feature_family": "search-box-selector",
+    "label": "search-box-selector",
+    "goal": "feature-family focus: search-box-selector"
+  },
+  "summary": {
+    "task_count": 2,
+    "run_count": 12,
+    "completed_run_count": 12,
+    "pending_run_count": 0
+  },
+  "tasks": [
+    {
+      "eval_id": 18,
+      "eval_name": "selector-p4a-confirmation-001",
+      "case_id": "SELECTOR-P4A-CONFIRMATION-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": "BCDA-8653-blind-pre-defect-bundle",
+      "blind_policy": {
+        "cutoff_policy": "all_customer_issues_only",
+        "issue_scope": {
+          "include_issue_classes": [
+            "customer"
+          ],
+          "exclude_issue_classes": [
+            "non_customer"
+          ]
+        }
+      },
+      "prompt": "Benchmark case SELECTOR-P4A-CONFIRMATION-001 for qa-plan-orchestrator. Use feature BCDA-8653 as the primary benchmark feature. Feature family: search-box-selector. Knowledge pack: search-box-selector. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCDA-8653-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+        "[phase_contract][advisory] Output aligns with primary phase phase4a"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-18/with_skill/run-1/outputs",
+          "run_dir": "eval-18/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-18/with_skill/run-2/outputs",
+          "run_dir": "eval-18/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-18/with_skill/run-3/outputs",
+          "run_dir": "eval-18/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-18/without_skill/run-1/outputs",
+          "run_dir": "eval-18/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-18/without_skill/run-2/outputs",
+          "run_dir": "eval-18/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-18/without_skill/run-3/outputs",
+          "run_dir": "eval-18/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-18/with_skill/run-1/outputs",
+        "run_dir": "eval-18/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case SELECTOR-P4A-CONFIRMATION-001 with the current champion skill snapshot loaded. Save outputs under eval-18/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-18/without_skill/run-1/outputs",
+        "run_dir": "eval-18/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case SELECTOR-P4A-CONFIRMATION-001 without the skill as the baseline. Save outputs under eval-18/without_skill/run-1/outputs."
+      }
+    },
+    {
+      "eval_id": 32,
+      "eval_name": "selector-p5b-checkpoint-001",
+      "case_id": "SELECTOR-P5B-CHECKPOINT-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": "BCDA-8653-blind-pre-defect-bundle",
+      "blind_policy": {
+        "cutoff_policy": "all_customer_issues_only",
+        "issue_scope": {
+          "include_issue_classes": [
+            "customer"
+          ],
+          "exclude_issue_classes": [
+            "non_customer"
+          ]
+        }
+      },
+      "prompt": "Benchmark case SELECTOR-P5B-CHECKPOINT-001 for qa-plan-orchestrator. Use feature BCDA-8653 as the primary benchmark feature. Feature family: search-box-selector. Knowledge pack: search-box-selector. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCDA-8653-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+        "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-32/with_skill/run-1/outputs",
+          "run_dir": "eval-32/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-32/with_skill/run-2/outputs",
+          "run_dir": "eval-32/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-32/with_skill/run-3/outputs",
+          "run_dir": "eval-32/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-32/without_skill/run-1/outputs",
+          "run_dir": "eval-32/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-32/without_skill/run-2/outputs",
+          "run_dir": "eval-32/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-32/without_skill/run-3/outputs",
+          "run_dir": "eval-32/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-32/with_skill/run-1/outputs",
+        "run_dir": "eval-32/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case SELECTOR-P5B-CHECKPOINT-001 with the current champion skill snapshot loaded. Save outputs under eval-32/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-32/without_skill/run-1/outputs",
+        "run_dir": "eval-32/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case SELECTOR-P5B-CHECKPOINT-001 without the skill as the baseline. Save outputs under eval-32/without_skill/run-1/outputs."
+      }
+    }
+  ]
+}

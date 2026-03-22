@@ -1,0 +1,25 @@
+You are executing benchmark case GRID-P4A-HYPERLINK-STYLE-001 for qa-plan-orchestrator.
+Feature: BCIN-7547.
+Feature family: modern-grid.
+Primary phase/checkpoint under test: phase4a.
+Evidence mode: blind_pre_defect.
+Configuration: with_skill.
+
+Rules:
+- Work only inside this temporary workspace.
+- Use only copied benchmark evidence under ./inputs/fixtures/.
+- Do not use any external web access.
+- Save the main deliverable to ./outputs/result.md.
+- Save any supporting artifacts only under ./outputs/.
+- Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.
+
+Benchmark prompt: Benchmark case GRID-P4A-HYPERLINK-STYLE-001 for qa-plan-orchestrator. Use feature BCIN-7547 as the primary benchmark feature. Feature family: modern-grid. Knowledge pack: modern-grid. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7547-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.
+
+Benchmark expectations:
+- [phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering
+- [phase_contract][advisory] Output aligns with primary phase phase4a
+
+Use the qa-plan-orchestrator skill snapshot under ./skill_snapshot as the authoritative workflow package.
+Read ./skill_snapshot/SKILL.md and the minimum required companion references needed for this case before producing outputs.
+
+Reply with a brief execution summary after writing the files.

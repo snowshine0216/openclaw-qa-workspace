@@ -223,6 +223,6 @@ When evolving `qa-plan-orchestrator`:
 - **Acceptance gate:** a challenger is rejected if any case in `blocking_case_ids` from `benchmark_manifest.json` fails.
 - **Cross-family gate:** for active blind/holdout evidence modes, non-target feature families must be non-regressing.
 - **Evolution run root** (for `REPORT_STATE` / task state): `.agents/skills/qa-plan-evolution/runs/<run-key>/`
-- **Benchmark campaign root** (frozen, append-only): `benchmarks/qa-plan-v2/` — publish outputs there per `docs/QA_PLAN_BENCHMARK_SPEC.md`.
+- **Benchmark campaign root** (frozen, append-only): `benchmarks/qa-plan-v2/` — publish outputs there per `references/qa-plan-benchmark-spec.md`.
 
 The skill's own `evals/evals.json` remains the smoke gate. `qa-plan-v2` cases are the acceptance gate for challenger promotion.

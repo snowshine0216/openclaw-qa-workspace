@@ -8,6 +8,7 @@ import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_SKILL_ROOT,
   collectBenchmarkV2GradingStatus,
+  finalizeBenchmarkV2Baseline,
   getIterationDir,
   prepareBenchmarkV2Baseline,
 } from './lib/benchmarkV2.mjs';
@@ -90,8 +91,13 @@ async function main() {
     skillRoot: options.skillRoot,
     iterationDir,
   });
+  await finalizeBenchmarkV2Baseline({
+    benchmarkRoot: options.benchmarkRoot,
+    iteration: 0,
+  });
   console.log(`Benchmark JSON written to ${aggregated.benchmarkJsonPath}`);
   console.log(`Benchmark Markdown written to ${aggregated.benchmarkMarkdownPath}`);
+  console.log('qa-plan-v2 baseline status finalized.');
 }
 
 main().catch((error) => {

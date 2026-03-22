@@ -7,7 +7,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - Skill entrypoint: `SKILL.md`
 - Runtime and artifact contract: `reference.md`
 - Writer and reviewer rules: `references/*.md`
-- Active design/governance docs: `docs/`
+- Long-form design docs: `docs/` (non-contract material such as supporting-artifact design notes)
 - Historical design docs: `docs/archive/`
 
 ## What This Skill Produces
@@ -34,7 +34,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - `references/context-index-schema.md`
 - `references/e2e-coverage-rules.md`
 - `knowledge-packs/` when a feature family has a mandatory pack
-- `docs/DOCS_GOVERNANCE.md`
+- `references/docs-governance.md`
 
 ## Phase-to-Reference Mapping
 

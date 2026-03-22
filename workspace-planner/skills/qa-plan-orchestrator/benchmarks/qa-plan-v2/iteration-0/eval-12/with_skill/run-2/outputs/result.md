@@ -7,7 +7,7 @@ Verdict: does not satisfy the docs phase-contract benchmark in its current state
 - `skill_snapshot/SKILL.md`
 - `skill_snapshot/README.md`
 - `skill_snapshot/reference.md`
-- `skill_snapshot/docs/DOCS_GOVERNANCE.md`
+- `skill_snapshot/references/docs-governance.md`
 - `skill_snapshot/docs/SUPPORTING_ARTIFACT_SUMMARIZATION_AND_DEEP_RESEARCH_DESIGN.md`
 - `skill_snapshot/docs/QA_PLAN_EVOLUTION_DESIGN.md`
 - `skill_snapshot/tests/docsContract.test.mjs`
@@ -21,7 +21,7 @@ The fixture `README.md` and `reference.md` are byte-for-byte identical to `skill
    - The benchmark requires `SKILL.md`, `README.md`, `reference.md`, and AGENTS docs to stay aligned.
    - No `AGENTS.md` exists anywhere under `skill_snapshot/` (`find skill_snapshot -maxdepth 3 -iname 'AGENTS.md' -print` returned no paths).
    - Active design docs still treat AGENTS sync as required: `skill_snapshot/docs/SUPPORTING_ARTIFACT_SUMMARIZATION_AND_DEEP_RESEARCH_DESIGN.md:50-56`.
-   - `skill_snapshot/docs/DOCS_GOVERNANCE.md:5-11` and `:27-34` define freshness and ownership for `SKILL.md`, `reference.md`, `README.md`, and other docs, but not for any AGENTS artifact.
+   - `skill_snapshot/references/docs-governance.md:5-11` and `:27-34` define freshness and ownership for `SKILL.md`, `reference.md`, `README.md`, and other docs, but not for any AGENTS artifact.
    - Result: the case focus is not explicitly covered.
 
 2. Phase ownership for request/support artifacts is inconsistent across the primary docs.

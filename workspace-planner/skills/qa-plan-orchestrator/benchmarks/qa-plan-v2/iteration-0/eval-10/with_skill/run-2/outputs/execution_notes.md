@@ -20,8 +20,8 @@
 - `skill_snapshot/scripts/lib/qaPlanValidators.mjs`
 - `skill_snapshot/scripts/test/phase6.test.sh`
 - `skill_snapshot/scripts/test/phase6_build_spawn_manifest.test.mjs`
-- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
-- `skill_snapshot/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+- `skill_snapshot/references/qa-plan-benchmark-spec.md`
+- `skill_snapshot/references/qa-plan-benchmark-execution-batches.md`
 
 ## Files Produced
 - `outputs/result.md`

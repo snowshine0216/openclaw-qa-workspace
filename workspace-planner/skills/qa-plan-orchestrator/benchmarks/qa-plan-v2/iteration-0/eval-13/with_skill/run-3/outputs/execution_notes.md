@@ -14,8 +14,8 @@
 - `./skill_snapshot/references/e2e-coverage-rules.md`
 - `./skill_snapshot/references/subagent-quick-checklist.md`
 - `./skill_snapshot/knowledge-packs/report-editor/pack.md`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+- `./skill_snapshot/references/qa-plan-benchmark-spec.md`
+- `./skill_snapshot/references/qa-plan-benchmark-execution-batches.md`
 - `./skill_snapshot/README.md`
 
 ## Files Produced

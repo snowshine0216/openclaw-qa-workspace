@@ -25,14 +25,14 @@ Advisory gap: the snapshot does not fully satisfy this docs-phase case.
 
 ### 3. Active docs do not explicitly cover AGENTS sync
 
-- `skill_snapshot/docs/DOCS_GOVERNANCE.md` defines freshness and ownership for `SKILL.md`, `reference.md`, `README.md`, `references/*.md`, and `docs/*.md`, but not AGENTS docs.
+- `skill_snapshot/references/docs-governance.md` defines freshness and ownership for `SKILL.md`, `reference.md`, `README.md`, `references/*.md`, and `docs/*.md`, but not AGENTS docs.
 - `find -L skill_snapshot -iname 'AGENTS.md'` returned no files in the snapshot.
 - `skill_snapshot/tests/docsContract.test.mjs` enforces `SKILL.md`, `README.md`, `reference.md`, `references/*.md`, and active docs, but it contains no AGENTS-sync assertion.
 - AGENTS-sync requirements appear only in archived design material, not in the active docs contract. That means the benchmark focus is not explicitly covered by the active package.
 
 ### 4. The active governance doc is stale against the current contract split
 
-- `skill_snapshot/docs/DOCS_GOVERNANCE.md` still lists `references/qa-plan-contract.md` as a live contract owner.
+- `skill_snapshot/references/docs-governance.md` still lists `references/qa-plan-contract.md` as a live contract owner.
 - The snapshot has no `skill_snapshot/references/qa-plan-contract.md`.
 - The active contract is instead split across `phase4a-contract.md`, `phase4b-contract.md`, `review-rubric-phase5a.md`, `review-rubric-phase5b.md`, `review-rubric-phase6.md`, `context-coverage-contract.md`, `context-index-schema.md`, `e2e-coverage-rules.md`, and `subagent-quick-checklist.md`.
 
@@ -45,6 +45,6 @@ Advisory gap: the snapshot does not fully satisfy this docs-phase case.
 
 ## Minimal Remediation
 
-- Update `docs/DOCS_GOVERNANCE.md` to replace the stale `references/qa-plan-contract.md` pointer with the current phase-specific contract set.
+- Update `references/docs-governance.md` to replace the stale `references/qa-plan-contract.md` pointer with the current phase-specific contract set.
 - Add an explicit active-doc rule naming the AGENTS doc or docs that must stay aligned with `SKILL.md`, `README.md`, and `reference.md`.
 - Extend the docs contract test surface to assert that AGENTS-sync rule.

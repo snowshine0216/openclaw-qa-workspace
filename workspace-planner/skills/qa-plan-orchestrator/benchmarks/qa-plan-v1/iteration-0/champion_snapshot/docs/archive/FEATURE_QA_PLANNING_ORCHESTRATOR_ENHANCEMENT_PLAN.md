@@ -1684,7 +1684,7 @@ The implementation phase should create:
 4. `workspace-planner/skills/qa-plan-orchestrator/references/review-rubric.md`
 5. `workspace-planner/skills/qa-plan-orchestrator/references/context-index-schema.md`
 6. `workspace-planner/skills/qa-plan-orchestrator/references/e2e-coverage-rules.md`
-7. `workspace-planner/skills/qa-plan-orchestrator/docs/DOCS_GOVERNANCE.md`
+7. `workspace-planner/skills/qa-plan-orchestrator/references/docs-governance.md`
 
 ## 5.3 Files to remove, replace, or refactor
 

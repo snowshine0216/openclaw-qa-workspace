@@ -11,7 +11,7 @@ The snapshot satisfies this holdout case on the evidence reviewed. Its report-ed
 | Expectation | Status | Evidence |
 |---|---|---|
 | `[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow` | `PASS` | The copied fixture says the stronger answer for the embedding-dashboard-editor comparison is not a pure rewrite: keep the report-editor-heavy base plan, but also preserve migration-shell and regression-oriented strengths such as toggle/routing structure, regression grouping, performance framing, and native integration emphasis. The snapshot contract preserves exactly that kind of mixed evidence translation: `references/context-coverage-contract.md` forbids silent drops and requires every discovered capability/journey/risk to land in E2E, Functional, Error, Regression, Compatibility, Security, Performance, or OutOfScope; `references/phase4b-contract.md` requires canonical `Regression / Known Risks` and `Performance / Resilience` layers while forbidding anti-compression that would merge away distinct scenarios; `references/review-rubric-phase5a.md`, `references/review-rubric-phase5b.md`, and `references/review-rubric-phase6.md` all require coverage-preservation review before acceptance. That combination is consistent with the fixture's recommended outcome and does not indicate a regression toward a narrower, overfit report-editor-only flow. |
-| `[holdout_regression][blocking] Output aligns with primary phase holdout` | `PASS` | `docs/QA_PLAN_BENCHMARK_SPEC.md` defines `holdout_regression` as a separate non-regression evidence mode used to protect against overfitting on unrelated or holdout cases. This deliverable is therefore a holdout verdict artifact only. It intentionally does not emit phase0-phase7 runtime artifacts, which would be misaligned with the benchmark checkpoint under test. |
+| `[holdout_regression][blocking] Output aligns with primary phase holdout` | `PASS` | `references/qa-plan-benchmark-spec.md` defines `holdout_regression` as a separate non-regression evidence mode used to protect against overfitting on unrelated or holdout cases. This deliverable is therefore a holdout verdict artifact only. It intentionally does not emit phase0-phase7 runtime artifacts, which would be misaligned with the benchmark checkpoint under test. |
 
 ## Why This Holds Up
 
@@ -37,8 +37,8 @@ Those are the right non-regression guardrails for a holdout case whose purpose i
 - `./skill_snapshot/references/review-rubric-phase6.md`
 - `./skill_snapshot/references/e2e-coverage-rules.md`
 - `./skill_snapshot/references/subagent-quick-checklist.md`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+- `./skill_snapshot/references/qa-plan-benchmark-spec.md`
+- `./skill_snapshot/references/qa-plan-benchmark-execution-batches.md`
 - `./skill_snapshot/evals/README.md`
 - `./skill_snapshot/evals/evals.json`
 

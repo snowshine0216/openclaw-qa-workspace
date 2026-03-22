@@ -1,0 +1,10 @@
+{"type":"thread.started","thread_id":"019d151b-a7e8-7800-b038-8b7a46c071d6"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"`OPENAI_BASE_URL` is deprecated. Set `openai_base_url` in config.toml instead."}}
+{"type":"turn.started"}
+{"type":"error","message":"Reconnecting... 1/5 (stream disconnected before completion: error sending request for url (https://gmncode.cn/responses))"}
+{"type":"error","message":"Reconnecting... 2/5 (stream disconnected before completion: error sending request for url (https://gmncode.cn/responses))"}
+{"type":"error","message":"Reconnecting... 3/5 (stream disconnected before completion: error sending request for url (https://gmncode.cn/responses))"}
+{"type":"error","message":"Reconnecting... 4/5 (stream disconnected before completion: error sending request for url (https://gmncode.cn/responses))"}
+{"type":"error","message":"Reconnecting... 5/5 (stream disconnected before completion: error sending request for url (https://gmncode.cn/responses))"}
+{"type":"error","message":"stream disconnected before completion: error sending request for url (https://gmncode.cn/responses)"}
+{"type":"turn.failed","error":{"message":"stream disconnected before completion: error sending request for url (https://gmncode.cn/responses)"}}

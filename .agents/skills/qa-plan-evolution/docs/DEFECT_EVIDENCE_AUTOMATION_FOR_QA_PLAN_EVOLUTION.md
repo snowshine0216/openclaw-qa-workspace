@@ -72,7 +72,7 @@ This design is grounded in the following repository artifacts and should explici
    - `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
    - `workspace-planner/skills/qa-plan-orchestrator/reference.md`
    - `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`
-   - `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
+   - `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
    - `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/benchmark_manifest.json`
 
 ## Target End State
@@ -515,5 +515,5 @@ That is the smallest design that preserves the value of evolution while removing
 6. `workspace-reporter/skills/defects-analysis/reference.md`
 7. `workspace-planner/skills/qa-plan-orchestrator/reference.md`
 8. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`
-9. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
+9. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
 10. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/benchmark_manifest.json`

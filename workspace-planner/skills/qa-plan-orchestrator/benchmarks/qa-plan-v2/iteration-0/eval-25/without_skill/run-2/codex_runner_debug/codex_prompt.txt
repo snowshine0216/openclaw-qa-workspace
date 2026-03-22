@@ -1,0 +1,25 @@
+You are executing benchmark case NE-P5B-CHECKPOINT-001 for qa-plan-orchestrator.
+Feature: BCED-1719.
+Feature family: native-embedding.
+Primary phase/checkpoint under test: phase5b.
+Evidence mode: blind_pre_defect.
+Configuration: without_skill.
+
+Rules:
+- Work only inside this temporary workspace.
+- Use only copied benchmark evidence under ./inputs/fixtures/.
+- Do not use any external web access.
+- Save the main deliverable to ./outputs/result.md.
+- Save any supporting artifacts only under ./outputs/.
+- Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.
+
+Benchmark prompt: Benchmark case NE-P5B-CHECKPOINT-001 for qa-plan-orchestrator. Use feature BCED-1719 as the primary benchmark feature. Feature family: native-embedding. Knowledge pack: native-embedding. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-1719-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.
+
+Benchmark expectations:
+- [checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes
+- [checkpoint_enforcement][advisory] Output aligns with primary phase phase5b
+
+Do not read or use qa-plan-orchestrator skill files or any other skill package.
+Solve this baseline run from the benchmark prompt and copied fixtures only.
+
+Reply with a brief execution summary after writing the files.

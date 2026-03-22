@@ -38,7 +38,7 @@ function getPhaseReferenceInstructions(phaseId, skillRoot) {
     phase5a: `Required references (read before starting):
 - ${ref('references/review-rubric-phase5a.md')} — context-artifact audit, section review checklist, bounded research rule, and pass/return rules`,
     phase5b: `Required references (read before starting):
-- ${ref('references/review-rubric-phase5b.md')} — shipment-readiness checkpoints, bounded research rule, and pass/return rules derived from docs/checkpoints.md`,
+- ${ref('references/review-rubric-phase5b.md')} — shipment-readiness checkpoints, bounded research rule, and pass/return rules derived from references/checkpoints.md`,
     phase6: `Required references (read before starting):
 - ${ref('references/review-rubric-phase6.md')} — final layering, few-shot cleanup, and promotion-readiness checks
 - ${ref('references/e2e-coverage-rules.md')} — mandatory E2E journey, minimum journey types`,

@@ -17,11 +17,11 @@ const REQUIRED_FILES = [
   'references/review-rubric-phase6.md',
   'references/context-index-schema.md',
   'references/e2e-coverage-rules.md',
-  'docs/DOCS_GOVERNANCE.md',
-  'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_SPEC.md',
-  'docs/FEATURE_QA_PLANNING_ORCHESTRATOR_REMEDIATION_IMPLEMENTATION_SUMMARY.md',
-  'docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md',
-  'docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md',
+  'references/docs-governance.md',
+  'references/feature-qa-planning-orchestrator-remediation-spec.md',
+  'references/feature-qa-planning-orchestrator-remediation-implementation-summary.md',
+  'references/script-driven-phase0-phase1-design.md',
+  'references/validator-safe-authoring-and-dedup-guide.md',
   'references/subagent-quick-checklist.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md',
   'docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN_REVIEW.md',
@@ -139,7 +139,7 @@ test('active docs advertise script-driven artifacts and source routing', async (
 });
 
 test('validator-safe guide and subagent checklist advertise the correct operational rules', async () => {
-  const guide = await readFile(join(SKILL_ROOT, 'docs', 'VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md'), 'utf8');
+  const guide = await readFile(join(SKILL_ROOT, 'references', 'validator-safe-authoring-and-dedup-guide.md'), 'utf8');
   const checklist = await readFile(join(SKILL_ROOT, 'references', 'subagent-quick-checklist.md'), 'utf8');
 
   assert.match(guide, /validator-safe beats prose-pretty/i);
@@ -149,5 +149,5 @@ test('validator-safe guide and subagent checklist advertise the correct operatio
   assert.match(guide, /deduplicate by unique trigger.*risk.*outcome/i);
   assert.match(checklist, /Do only executable scenario bullets carry.*P1.*P2/i);
   assert.match(checklist, /Does.*Checkpoint Summary.*use exact labels/i);
-  assert.match(checklist, /VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE/i);
+  assert.match(checklist, /validator-safe-authoring-and-dedup-guide/i);
 });

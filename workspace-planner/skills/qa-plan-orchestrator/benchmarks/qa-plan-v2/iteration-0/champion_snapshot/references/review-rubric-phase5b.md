@@ -1,6 +1,6 @@
 # Phase 5b Review Rubric
 
-Derived from `docs/checkpoints.md`. Treat this file as the normalized runtime contract for shipment-readiness review.
+Derived from `references/checkpoints.md`. Treat this file as the normalized runtime contract for shipment-readiness review.
 
 ## Purpose
 

@@ -283,6 +283,7 @@ export async function executeSelectedRuns({
   failFast = true,
   reuseExecutorOutput = false,
   refreshArtifacts,
+  runFilter = null,
 }) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const fixturesDocument = await loadJson(join(benchmarkRoot, 'fixtures_manifest.json'));
@@ -295,6 +296,13 @@ export async function executeSelectedRuns({
   for (const task of selectedTasks) {
     for (const rawRunEntry of configurationRuns(task)) {
       const runEntry = normalizeRunEntry(iterationDir, rawRunEntry);
+      if (runFilter) {
+        const allow = await runFilter(runEntry);
+        if (!allow) {
+          skippedRuns += 1;
+          continue;
+        }
+      }
       if (!rerunCompleted && await runEntryCompleted(runEntry)) {
         skippedRuns += 1;
         continue;

@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/**
+ * DEV / UNIT-TEST ONLY — not for production qa-plan-v2 baselines.
+ *
+ * This grader uses deterministic token/phrase matching on output files. It does not
+ * validate that an agent actually executed the benchmark. For real baselines use
+ * benchmark-grader.mjs (LLM grader) after benchmark-runner.mjs or benchmark-runner-ide-wait.mjs.
+ */
+
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFile, writeFile } from 'node:fs/promises';

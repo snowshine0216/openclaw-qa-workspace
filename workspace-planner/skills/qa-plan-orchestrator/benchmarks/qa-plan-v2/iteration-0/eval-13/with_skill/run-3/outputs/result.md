@@ -28,7 +28,7 @@ This reasoning is consistent with the benchmark spec's definition of `holdout_re
 - `./skill_snapshot/references/e2e-coverage-rules.md`
 - `./skill_snapshot/references/subagent-quick-checklist.md`
 - `./skill_snapshot/knowledge-packs/report-editor/pack.md`
-- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `./skill_snapshot/references/qa-plan-benchmark-spec.md`
 
 ## Verdict
 Pass. Based on the copied holdout fixture and the authoritative snapshot contract, this case demonstrates cross-feature non-regression and is correctly handled as a holdout checkpoint artifact.

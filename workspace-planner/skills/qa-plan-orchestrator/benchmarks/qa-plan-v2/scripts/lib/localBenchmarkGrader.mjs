@@ -1,3 +1,8 @@
+/**
+ * DEV / UNIT-TEST ONLY — deterministic grading helpers for benchmark-grader-local.mjs.
+ * Do not use as the sole grader for production benchmark baselines (see repo docs).
+ */
+
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 

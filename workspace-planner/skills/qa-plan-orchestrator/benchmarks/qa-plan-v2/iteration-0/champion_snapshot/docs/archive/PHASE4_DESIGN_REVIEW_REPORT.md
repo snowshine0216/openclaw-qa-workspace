@@ -31,7 +31,7 @@ The design is **substantially complete and well-structured**. It addresses all 1
 - Canonical top-layer taxonomy (10 categories) is identical in Phase 4b, Phase 5a Section Review Checklist, and Phase 6.
 - Coverage ledger scope (Phase 4a/4b only) is stated once and repeated in Coverage Harness Change.
 - Loop rules (Phase 5a→5a, 5b→5a, 5b→5b, 6→5a|5b) are consistent across Draft Iteration Model and phase sections.
-- Checkpoint list (C1–C15) matches `docs/checkpoints.md` exactly.
+- Checkpoint list (C1–C15) matches `references/checkpoints.md` exactly.
 
 ---
 
@@ -52,7 +52,7 @@ The design provides:
 
 | Dependency | Status |
 |------------|--------|
-| `docs/checkpoints.md` | Exists; 15 checkpoints align with design |
+| `references/checkpoints.md` | Exists; 15 checkpoints align with design |
 | `references/top-layer-taxonomy.md` | **Does not exist** — design says "fold into" Phase 4b and Phase 6; taxonomy is embedded in phase4b-contract.md and review-rubric-phase6.md. No separate file needed. |
 | `references/qa-plan-few-shots.md` | **Does not exist** — design says "fold into" Phase 4a and Phase 6; few shots are embedded in phase4a-contract.md and review-rubric-phase6.md. No separate file needed. |
 
@@ -121,7 +121,7 @@ The design includes:
 ### 5.1 Strengths
 
 - Clear separation of Phase 5a (context-backed audit) vs Phase 5b (shipment checkpoints).
-- Explicit checkpoint list (C1–C15) with traceability to `docs/checkpoints.md`.
+- Explicit checkpoint list (C1–C15) with traceability to `references/checkpoints.md`.
 - Deterministic validators with explicit fail conditions.
 - Bounded supplemental research rule with approved skills (`confluence`, `jira-cli`, `tavily-search`).
 - Self-loop and round-tracking rules to avoid brittle one-pass behavior.

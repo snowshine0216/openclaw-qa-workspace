@@ -10,7 +10,7 @@
 - Trimmed `README.md` into a short package map instead of a second contract summary.
 - Sharpened `SKILL.md` so it owns workflow entry, reference load order, and high-level operating rules only.
 - Sharpened `reference.md` so it owns runtime state, artifact naming, phase gates, source-routing, spawn-history structure, and validator inventory.
-- Updated `docs/DOCS_GOVERNANCE.md` to distinguish active docs from archived docs.
+- Updated `references/docs-governance.md` to distinguish active docs from archived docs.
 - Moved superseded enhancement-era docs under `docs/archive/` and marked them `Superseded`.
 
 ### 2. Contract updates

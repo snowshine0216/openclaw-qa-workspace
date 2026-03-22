@@ -1,0 +1,86 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
+  "case_id": "GRID-P4A-HYPERLINK-STYLE-001",
+  "eval_id": 21,
+  "eval_name": "grid-p4a-hyperlink-style-001",
+  "feature_id": "BCIN-7547",
+  "feature_family": "modern-grid",
+  "knowledge_pack_key": "modern-grid",
+  "primary_phase": "phase4a",
+  "kind": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "benchmark_profile": "global-cross-feature-v1",
+  "fixture_refs": [
+    "BCIN-7547-blind-pre-defect-bundle"
+  ],
+  "blind_fixture_id": "BCIN-7547-blind-pre-defect-bundle",
+  "blind_policy": {
+    "cutoff_policy": "all_customer_issues_only",
+    "issue_scope": {
+      "include_issue_classes": [
+        "customer"
+      ],
+      "exclude_issue_classes": [
+        "non_customer"
+      ]
+    }
+  },
+  "prompt": "Benchmark case GRID-P4A-HYPERLINK-STYLE-001 for qa-plan-orchestrator. Use feature BCIN-7547 as the primary benchmark feature. Feature family: modern-grid. Knowledge pack: modern-grid. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7547-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "expectations": [
+    "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+    "[phase_contract][advisory] Output aligns with primary phase phase4a"
+  ],
+  "run": {
+    "configuration_dir": "without_skill",
+    "run_number": 1,
+    "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1",
+    "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/outputs",
+    "transcript_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/execution_transcript.log",
+    "grading_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/grading.json",
+    "timing_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/timing.json",
+    "metrics_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/outputs/metrics.json"
+  },
+  "skill_snapshot_path": null,
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-7547-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7547",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7547.issue.raw.json",
+          "included_in_blind": true,
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/inputs/fixtures/BCIN-7547-blind-pre-defect-bundle/materials/BCIN-7547.issue.raw.json"
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-7547 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7547.customer-scope.json",
+          "included_in_blind": true,
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-21/without_skill/run-1/inputs/fixtures/BCIN-7547-blind-pre-defect-bundle/materials/BCIN-7547.customer-scope.json"
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/~791537905/pages/5964857421/BCIN-7547+Allow+enabling+hyperlink+style+for+the+elements+with+contextual+link+in+Modern+Grid",
+          "included_in_blind": true,
+          "local_path": null
+        }
+      ],
+      "local_path": null
+    }
+  ]
+}

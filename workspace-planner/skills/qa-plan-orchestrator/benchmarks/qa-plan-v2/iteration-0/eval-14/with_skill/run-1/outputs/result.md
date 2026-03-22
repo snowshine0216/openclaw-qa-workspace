@@ -20,7 +20,7 @@ Evidence used:
 - `inputs/fixtures/BCIN-976-blind-pre-defect-bundle/materials/BCIN-976.customer-scope.json`
   - `customer_signal_present: true`
   - `customer_issue_policy: all_customer_issues_only`
-- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md:835-837`
+- `skill_snapshot/references/qa-plan-benchmark-spec.md:835-837`
   - holdout regression should use non-`BCIN-7289` features from the same skill family
 
 ## Promotion / Finalization Stability Review
@@ -72,7 +72,7 @@ Static regression coverage for this finalization path is present in the snapshot
 
 The benchmark layer also keeps holdout as its own no-regression gate:
 
-- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md:650-682`
+- `skill_snapshot/references/qa-plan-benchmark-spec.md:650-682`
   - holdout regression exists to protect unrelated flows from replay-driven overfitting
   - acceptance requires no regression for `holdout_regression`
 - `skill_snapshot/tests/benchmarkV2Scorer.test.mjs:34-60`

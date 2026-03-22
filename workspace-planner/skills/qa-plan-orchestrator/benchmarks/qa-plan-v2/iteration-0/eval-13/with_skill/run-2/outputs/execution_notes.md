@@ -3,7 +3,7 @@ Evidence used:
 - `./skill_snapshot/SKILL.md`
 - `./skill_snapshot/reference.md`
 - required snapshot references under `./skill_snapshot/references/`
-- benchmark docs: `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`, `./skill_snapshot/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+- benchmark docs: `./skill_snapshot/references/qa-plan-benchmark-spec.md`, `./skill_snapshot/references/qa-plan-benchmark-execution-batches.md`
 - fixture interpretation refs: `./skill_snapshot/evals/README.md`, `./skill_snapshot/evals/evals.json`
 
 Files produced:

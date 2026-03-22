@@ -15,7 +15,7 @@
   - `references/context-index-schema.md`
   - `references/e2e-coverage-rules.md`
 - Rewrote `SKILL.md`, `reference.md`, `README.md`, and `templates/qa-plan-template.md` to the 8-phase workflow and the new artifact/state contract.
-- Added `docs/DOCS_GOVERNANCE.md`.
+- Added `references/docs-governance.md`.
 - Expanded `evals/evals.json` to the new behavior-oriented eval groups.
 - Removed stale docs:
   - `references/qa-plan-contract-simple.md`

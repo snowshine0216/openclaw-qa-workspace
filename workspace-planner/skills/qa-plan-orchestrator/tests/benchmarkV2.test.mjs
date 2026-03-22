@@ -8,6 +8,7 @@ import {
   buildCaseAssertions,
   buildCaseEvalMetadata,
   buildCasePrompt,
+  finalizeBenchmarkV2Baseline,
   listPreparedEvalDirs,
   prepareBenchmarkV2Baseline,
   validateCaseMatrix,
@@ -395,6 +396,74 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     ));
     assert.equal(blindComparisonMetadata.blind_policy.cutoff_policy, 'all_customer_issues_only');
     assert.equal(JSON.stringify(spawnManifest).includes(tmp), false);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+});
+
+test('finalizeBenchmarkV2Baseline marks manifest, history, and context as executed', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'benchmark-v2-finalize-'));
+  const benchmarkRoot = join(tmp, 'benchmarks', 'qa-plan-v2');
+  const iterationDir = join(benchmarkRoot, 'iteration-0');
+
+  try {
+    await mkdir(iterationDir, { recursive: true });
+    await writeFile(join(benchmarkRoot, 'benchmark_manifest.json'), JSON.stringify({
+      benchmark_version: 'qa-plan-v2',
+      status: 'frozen_matrix_not_yet_executed',
+    }, null, 2), 'utf8');
+    await writeFile(join(benchmarkRoot, 'history.json'), JSON.stringify({
+      benchmark_version: 'qa-plan-v2',
+      started_at: '2026-03-21T00:00:00Z',
+      current_champion_iteration: 0,
+      iterations: [
+        {
+          iteration: 0,
+          label: 'baseline',
+          role: 'champion_seed',
+          skill_snapshot: 'iteration-0/champion_snapshot',
+          grading_result: 'pending_baseline_execution',
+          is_current_champion: true,
+        },
+        {
+          iteration: 1,
+          label: 'iteration-1',
+          role: 'candidate',
+          skill_snapshot: 'iteration-1/candidate_snapshot',
+          grading_result: 'accepted',
+          is_current_champion: true,
+        },
+      ],
+    }, null, 2), 'utf8');
+    await writeFile(join(iterationDir, 'benchmark_context.json'), JSON.stringify({
+      benchmark_version: 'qa-plan-v2',
+      iteration: 0,
+      status: 'prepared_pending_execution',
+    }, null, 2), 'utf8');
+    await writeFile(join(iterationDir, 'benchmark.json'), JSON.stringify({
+      metadata: { benchmark_version: 'qa-plan-v2' },
+      runs: [],
+    }, null, 2), 'utf8');
+    await writeFile(join(iterationDir, 'benchmark.md'), '# benchmark\n', 'utf8');
+
+    const result = await finalizeBenchmarkV2Baseline({ benchmarkRoot });
+
+    assert.equal(result.manifestStatus, 'frozen_matrix_executed');
+    assert.equal(result.historyStatus, 'baseline_executed');
+    assert.equal(result.contextStatus, 'executed_aggregated');
+
+    const manifest = JSON.parse(await readFile(join(benchmarkRoot, 'benchmark_manifest.json'), 'utf8'));
+    assert.equal(manifest.status, 'frozen_matrix_executed');
+    assert.ok(typeof manifest.executed_at === 'string');
+
+    const history = JSON.parse(await readFile(join(benchmarkRoot, 'history.json'), 'utf8'));
+    assert.equal(history.iterations[0].grading_result, 'baseline_executed');
+    assert.ok(typeof history.iterations[0].completed_at === 'string');
+    assert.equal(history.iterations[1].is_current_champion, false);
+
+    const context = JSON.parse(await readFile(join(iterationDir, 'benchmark_context.json'), 'utf8'));
+    assert.equal(context.status, 'executed_aggregated');
+    assert.ok(typeof context.aggregated_at === 'string');
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }

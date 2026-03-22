@@ -7,7 +7,7 @@
 - `skill_snapshot/README.md`
 - `skill_snapshot/references/review-rubric-phase5b.md`
 - `skill_snapshot/references/context-coverage-contract.md`
-- `skill_snapshot/docs/checkpoints.md`
+- `skill_snapshot/references/checkpoints.md`
 - `skill_snapshot/knowledge-packs/report-editor/pack.md`
 - `skill_snapshot/knowledge-packs/report-editor/pack.json`
 - `skill_snapshot/scripts/lib/runPhase.mjs`
