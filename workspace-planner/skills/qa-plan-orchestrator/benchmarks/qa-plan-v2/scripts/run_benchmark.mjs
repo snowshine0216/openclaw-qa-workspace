@@ -7,6 +7,7 @@
  *   npm run benchmark:v2:run
  *   npm run benchmark:v2:run -- --family report-editor
  *   npm run benchmark:v2:run -- --batch 2
+ *   npm run benchmark:v2:run -- --evals 15-24
  *   npm run benchmark:v2:run -- --dry-run
  *   npm run benchmark:v2:run -- --no-aggregate
  *
@@ -44,6 +45,7 @@ function parseArgs(argv) {
     iteration: DEFAULT_ITERATION,
     family: '',
     batch: 0,
+    evalsRange: '', // e.g. "15-24" (inclusive)
     dryRun: false,
     aggregate: true,
     failFast: false,
@@ -62,6 +64,9 @@ function parseArgs(argv) {
       i += 1;
     } else if (val === '--batch' && args[i + 1]) {
       options.batch = Number(args[i + 1]);
+      i += 1;
+    } else if (val === '--evals' && args[i + 1]) {
+      options.evalsRange = args[i + 1];
       i += 1;
     } else if (val === '--dry-run') {
       options.dryRun = true;
@@ -117,14 +122,24 @@ async function refreshArtifacts(benchmarkRoot, iteration) {
   }
 }
 
+function parseEvalsRange(range) {
+  if (!range) return null;
+  const m = /^(\d+)-(\d+)$/.exec(String(range).trim());
+  if (!m) return null;
+  const lo = Number(m[1]);
+  const hi = Number(m[2]);
+  return lo <= hi ? { lo, hi } : null;
+}
+
 async function main() {
   const options = parseArgs(process.argv);
-  const { benchmarkRoot, iteration, family, batch, dryRun, aggregate, failFast } = options;
+  const { benchmarkRoot, iteration, family, batch, evalsRange, dryRun, aggregate, failFast } = options;
 
   const spawnManifestPath = await ensurePrepared(benchmarkRoot, iteration);
   const spawnManifest = JSON.parse(await readFile(spawnManifestPath, 'utf8'));
 
   let tasks = spawnManifest.tasks || [];
+  let rerunCompleted = false;
 
   if (family) {
     tasks = tasks.filter((t) => t.feature_family === family);
@@ -137,6 +152,14 @@ async function main() {
     const start = (batch - 1) * batchSize;
     tasks = tasks.slice(start, start + batchSize);
     console.log(`Filtered to batch ${batch}: ${tasks.length} task(s).`);
+  }
+
+  const evalsParsed = parseEvalsRange(evalsRange);
+  if (evalsParsed) {
+    const { lo, hi } = evalsParsed;
+    tasks = tasks.filter((t) => t.eval_id >= lo && t.eval_id <= hi);
+    rerunCompleted = true;
+    console.log(`Filtered to evals ${lo}-${hi}: ${tasks.length} task(s). Will re-run completed runs.`);
   }
 
   const totalRuns = tasks.reduce(
@@ -160,7 +183,7 @@ async function main() {
     selectedTasks: tasks,
     executorScript: runner,
     graderScript: grader,
-    rerunCompleted: false,
+    rerunCompleted,
     failFast,
     refreshArtifacts: async () => {
       await refreshArtifacts(benchmarkRoot, iteration);
