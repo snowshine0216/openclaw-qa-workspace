@@ -15,6 +15,7 @@ export function parseExecuteFamilyArgs(argv) {
     graderScript: '',
     rerunCompleted: false,
     failFast: true,
+    reuseExecutorOutput: false,
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -38,6 +39,8 @@ export function parseExecuteFamilyArgs(argv) {
       options.rerunCompleted = true;
     } else if (value === '--no-fail-fast') {
       options.failFast = false;
+    } else if (value === '--reuse-executor-output') {
+      options.reuseExecutorOutput = true;
     }
   }
 
@@ -59,6 +62,7 @@ export async function executeFamilyRuns({
   graderScript = '',
   rerunCompleted = false,
   failFast = true,
+  reuseExecutorOutput = false,
 }) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const spawnManifest = await loadJson(join(iterationDir, 'spawn_manifest.json'));
@@ -73,6 +77,7 @@ export async function executeFamilyRuns({
     graderScript,
     rerunCompleted,
     failFast,
+    reuseExecutorOutput,
     refreshArtifacts: async () => {
       const refreshed = await writeFamilyArtifacts({
         benchmarkRoot,

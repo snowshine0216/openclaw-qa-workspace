@@ -261,6 +261,14 @@ async function runEntryCompleted(runEntry) {
   );
 }
 
+async function runEntryHasReusableExecutorOutput(runEntry) {
+  return (
+    await pathExists(runEntry.output_dir)
+    && await pathExists(join(runEntry.run_dir, 'timing.json'))
+    && await pathExists(join(runEntry.run_dir, 'execution_transcript.log'))
+  );
+}
+
 function countTaskRuns(tasks) {
   return tasks.reduce((sum, task) => sum + task.with_skill_runs.length + task.without_skill_runs.length, 0);
 }
@@ -273,6 +281,7 @@ export async function executeSelectedRuns({
   graderScript = '',
   rerunCompleted = false,
   failFast = true,
+  reuseExecutorOutput = false,
   refreshArtifacts,
 }) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
@@ -300,13 +309,16 @@ export async function executeSelectedRuns({
           fixtureIndex,
         });
 
-        const durationMs = await runScriptStage({
-          scriptPath: executorScript,
-          requestPath,
-          transcriptPath,
-          stageName: 'executor',
-        });
-        await writeTiming(runEntry.run_dir, durationMs, request.run.metrics_path);
+        const reuseExistingExecutor = reuseExecutorOutput && await runEntryHasReusableExecutorOutput(runEntry);
+        if (!reuseExistingExecutor) {
+          const durationMs = await runScriptStage({
+            scriptPath: executorScript,
+            requestPath,
+            transcriptPath,
+            stageName: 'executor',
+          });
+          await writeTiming(runEntry.run_dir, durationMs, request.run.metrics_path);
+        }
 
         if (graderScript) {
           await runScriptStage({

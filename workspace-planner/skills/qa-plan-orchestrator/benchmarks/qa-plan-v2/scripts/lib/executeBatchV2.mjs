@@ -14,6 +14,7 @@ export function parseExecuteBatchArgs(argv) {
     graderScript: '',
     rerunCompleted: false,
     failFast: true,
+    reuseExecutorOutput: false,
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -37,6 +38,8 @@ export function parseExecuteBatchArgs(argv) {
       options.rerunCompleted = true;
     } else if (value === '--no-fail-fast') {
       options.failFast = false;
+    } else if (value === '--reuse-executor-output') {
+      options.reuseExecutorOutput = true;
     }
   }
 
@@ -58,6 +61,7 @@ export async function executeBatchRuns({
   graderScript = '',
   rerunCompleted = false,
   failFast = true,
+  reuseExecutorOutput = false,
 }) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const batchDefinition = getBatchDefinition(batchNumber);
@@ -71,6 +75,7 @@ export async function executeBatchRuns({
     graderScript,
     rerunCompleted,
     failFast,
+    reuseExecutorOutput,
     refreshArtifacts: async () => {
       const refreshed = await writeBatchArtifacts({
         benchmarkRoot,

@@ -14,6 +14,7 @@
     "benchmark:v2:execute:codex": "node benchmarks/qa-plan-v2/scripts/run_execute_batch.mjs --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs",
     "benchmark:v2:execute:family": "node benchmarks/qa-plan-v2/scripts/run_execute_family.mjs",
     "benchmark:v2:execute:family:codex": "node benchmarks/qa-plan-v2/scripts/run_execute_family.mjs --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs",
+    "benchmark:v2:execute:family:local-grade": "node benchmarks/qa-plan-v2/scripts/run_execute_family.mjs --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader-local.mjs --reuse-executor-output",
     "benchmark:v2:aggregate": "node benchmarks/qa-plan-v2/scripts/run_baseline.mjs --aggregate-only",
     "benchmark:v2:score": "node benchmarks/qa-plan-v2/scripts/score_iteration.mjs"
   }

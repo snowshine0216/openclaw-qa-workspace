@@ -447,6 +447,29 @@ npm run benchmark:v2:execute:family -- \
   --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
 ```
 
+`benchmark:v2:execute:family:codex` is only a convenience wrapper. It pre-fills the standard Codex-backed runner and grader scripts.
+
+Use the plain non-`:codex` command when you want to swap the runner or grader explicitly.
+
+Example with the local fallback grader:
+
+```bash
+npm run benchmark:v2:execute:family -- \
+  --family report-editor \
+  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
+  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader-local.mjs \
+  --reuse-executor-output \
+  --no-fail-fast
+```
+
+Equivalent shortcut:
+
+```bash
+npm run benchmark:v2:execute:family:local-grade -- --family report-editor --no-fail-fast
+```
+
+This path reuses existing runner outputs when `outputs/`, `timing.json`, and `execution_transcript.log` already exist, and only fills in missing `grading.json` files with the local deterministic grader.
+
 Execution contract:
 
 - the executor script is invoked once per run with `--request <run-dir>/execution_request.json`
