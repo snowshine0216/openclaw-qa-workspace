@@ -1,0 +1,11 @@
+You are grading a qa-plan-orchestrator benchmark run.
+Read ./grader_guide.md for grading rules.
+Read ./benchmark_request.json and all files under ./outputs/.
+Evaluate every expectation using the output files.
+Return JSON only, matching the provided schema.
+
+Case: P4B-LAYERING-001
+Configuration: with_skill
+Expectations:
+- [phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios
+- [phase_contract][advisory] Output aligns with primary phase phase4b

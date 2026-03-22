@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-zabsqV/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-zabsqV/outputs/execution_notes.md).
+
+The main artifact stays at `phase4b`, explicitly covers canonical top-layer grouping without collapsing scenarios, and records the blind-policy boundary to customer-scoped fixture evidence only. The only blocker was that the fixtures did not include an explicit `phase4b` template, so I inferred a minimal phase-aligned grouping artifact directly from the benchmark prompt and bundled evidence.

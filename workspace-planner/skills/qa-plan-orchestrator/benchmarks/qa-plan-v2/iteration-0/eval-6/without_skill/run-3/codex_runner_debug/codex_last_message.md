@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-zBoein/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-zBoein/outputs/execution_notes.md).
+
+The phase4b deliverable uses only the copied customer-scope export and raw feature issue, excludes non-customer linked issues, and presents a canonical top-layer grouping without collapsing distinct scenarios. The only noted limitation is that the blind bundle contains customer references but no standalone customer-issue narratives, so the grouping stays at the feature-scenario layer.

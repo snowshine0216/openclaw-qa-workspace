@@ -1,4 +1,4 @@
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
@@ -8,6 +8,12 @@ import {
 } from './benchmarkV2.mjs';
 
 import { loadJson, writeJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
+import {
+  buildTaskStatus,
+  countCompletedRuns,
+  countRuns,
+  renderSelectionChecklist,
+} from './selectionArtifactsV2.mjs';
 
 const BATCH_DEFINITIONS = [
   { batch_number: 1, label: 'blocking-blind', goal: 'blocking blind signal first', eval_ids: [1, 2, 3, 23] },
@@ -39,99 +45,6 @@ function getBatchDir(iterationDir, batchDefinition) {
   return join(iterationDir, 'batches', `batch-${batchDefinition.batch_number}`);
 }
 
-async function pathExists(path) {
-  try {
-    await stat(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function resolveIterationPath(iterationDir, candidatePath) {
-  if (!candidatePath) {
-    return candidatePath;
-  }
-  return candidatePath.startsWith('/') ? candidatePath : join(iterationDir, candidatePath);
-}
-
-async function getRunStatus(iterationDir, runEntry) {
-  const resolvedOutputDir = resolveIterationPath(iterationDir, runEntry.output_dir);
-  const resolvedRunDir = resolveIterationPath(iterationDir, runEntry.run_dir);
-  const hasOutputs = await pathExists(resolvedOutputDir);
-  const hasGrading = await pathExists(join(resolvedRunDir, 'grading.json'));
-  const hasTiming = await pathExists(join(resolvedRunDir, 'timing.json'));
-  return {
-    ...runEntry,
-    has_outputs: hasOutputs,
-    has_grading: hasGrading,
-    has_timing: hasTiming,
-    status: hasOutputs && hasGrading && hasTiming ? 'completed' : 'pending',
-  };
-}
-
-async function buildTaskStatus(iterationDir, task) {
-  const withSkillRuns = await Promise.all(task.with_skill_runs.map((runEntry) => getRunStatus(iterationDir, runEntry)));
-  const withoutSkillRuns = await Promise.all(task.without_skill_runs.map((runEntry) => getRunStatus(iterationDir, runEntry)));
-  return {
-    ...task,
-    with_skill_runs: withSkillRuns,
-    without_skill_runs: withoutSkillRuns,
-  };
-}
-
-function countRuns(tasks) {
-  return tasks.reduce((sum, task) => sum + task.with_skill_runs.length + task.without_skill_runs.length, 0);
-}
-
-function countCompletedRuns(tasks) {
-  return tasks.reduce((sum, task) => {
-    const withSkill = task.with_skill_runs.filter((run) => run.status === 'completed').length;
-    const withoutSkill = task.without_skill_runs.filter((run) => run.status === 'completed').length;
-    return sum + withSkill + withoutSkill;
-  }, 0);
-}
-
-function renderRunLines(title, runs) {
-  const lines = [`### ${title}`, ''];
-  for (const run of runs) {
-    lines.push(`- [${run.status === 'completed' ? 'x' : ' '}] \`${title.includes('with_skill') ? 'with_skill' : 'without_skill'}\` \`run-${run.run_number}\``);
-    lines.push(`  Path: \`${run.run_dir}\``);
-  }
-  lines.push('');
-  return lines;
-}
-
-function renderTask(task) {
-  return [
-    `## Eval ${task.eval_id}`,
-    '',
-    `- case: \`${task.case_id}\``,
-    `- feature: \`${task.feature_id}\``,
-    `- status: \`${task.blocking ? 'blocking' : 'advisory'}\``,
-    '',
-    ...renderRunLines('with_skill runs', task.with_skill_runs),
-    ...renderRunLines('without_skill runs', task.without_skill_runs),
-  ];
-}
-
-function renderChecklist({ batchDefinition, tasks, runCount, completedRunCount }) {
-  const lines = [
-    `# QA Plan Benchmark Batch ${batchDefinition.batch_number} Checklist`,
-    '',
-    `**Goal:** ${batchDefinition.goal}`,
-    `**Cases:** \`${tasks.length}\``,
-    `**Runs:** \`${runCount}\``,
-    `**Completed runs:** \`${completedRunCount}\``,
-    `**Pending runs:** \`${runCount - completedRunCount}\``,
-    '',
-  ];
-  for (const task of tasks) {
-    lines.push(...renderTask(task));
-  }
-  return lines.join('\n');
-}
-
 export async function writeBatchArtifacts({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
   iteration = DEFAULT_ITERATION,
@@ -161,7 +74,13 @@ export async function writeBatchArtifacts({
     },
     tasks,
   });
-  await writeFile(batchChecklistPath, renderChecklist({ batchDefinition, tasks, runCount, completedRunCount }), 'utf8');
+  await writeFile(batchChecklistPath, renderSelectionChecklist({
+    title: `# QA Plan Benchmark Batch ${batchDefinition.batch_number} Checklist`,
+    goal: batchDefinition.goal,
+    tasks,
+    runCount,
+    completedRunCount,
+  }), 'utf8');
 
   return {
     batchDefinition,

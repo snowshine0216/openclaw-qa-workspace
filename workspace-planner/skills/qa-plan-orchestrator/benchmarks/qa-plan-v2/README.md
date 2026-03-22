@@ -383,6 +383,21 @@ Natural-language command example for an agent:
 Materialize benchmark batch 1 for qa-plan-v2 and show me the generated batch manifest and checklist paths.
 ```
 
+### Materialize a feature-family checklist
+
+To materialize one family-focused execution surface from the prepared manifest:
+
+```bash
+npm run benchmark:v2:family -- --family report-editor
+```
+
+This writes:
+
+- `iteration-0/families/report-editor/family_manifest.json`
+- `iteration-0/families/report-editor/family_checklist.md`
+
+Family materialization filters the prepared `spawn_manifest.json` by `feature_family` while keeping the shared iteration workspace intact.
+
 ### Execute the benchmark
 
 Use:
@@ -398,9 +413,9 @@ Each task contains:
 
 For `qa-plan-v2`, the prepared baseline currently expects:
 
-- `32` cases
+- `33` cases
 - `3` runs per configuration
-- `192` total runs
+- `198` total runs
 
 For one-click batch execution, use:
 
@@ -413,6 +428,21 @@ Equivalent explicit form:
 ```bash
 npm run benchmark:v2:execute -- \
   --batch 1 \
+  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
+  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
+```
+
+For a family-only run, use:
+
+```bash
+npm run benchmark:v2:execute:family:codex -- --family report-editor
+```
+
+Equivalent explicit form:
+
+```bash
+npm run benchmark:v2:execute:family -- \
+  --family report-editor \
   --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
   --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
 ```
