@@ -1,0 +1,25 @@
+You are executing benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator.
+Feature: BCIN-6709.
+Feature family: report-editor.
+Primary phase/checkpoint under test: phase6.
+Evidence mode: blind_pre_defect.
+Configuration: without_skill.
+
+Rules:
+- Work only inside this temporary workspace.
+- Use only copied benchmark evidence under ./inputs/fixtures/.
+- Do not use any external web access.
+- Save the main deliverable to ./outputs/result.md.
+- Save any supporting artifacts only under ./outputs/.
+- Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.
+
+Benchmark prompt: Benchmark case P6-QUALITY-POLISH-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase6. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-6709-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: final quality pass preserves layering and executable wording. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.
+
+Benchmark expectations:
+- [phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording
+- [phase_contract][advisory] Output aligns with primary phase phase6
+
+Do not read or use qa-plan-orchestrator skill files or any other skill package.
+Solve this baseline run from the benchmark prompt and copied fixtures only.
+
+Reply with a brief execution summary after writing the files.

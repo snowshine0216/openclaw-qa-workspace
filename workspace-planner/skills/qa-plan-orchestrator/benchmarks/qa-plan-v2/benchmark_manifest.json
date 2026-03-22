@@ -1,0 +1,79 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "status": "frozen_matrix_not_yet_executed",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_path": "workspace-planner/skills/qa-plan-orchestrator",
+  "benchmark_scope": "global",
+  "benchmark_profile": "global-cross-feature-v1",
+  "frozen_at": "2026-03-21T00:00:00Z",
+  "runs_per_configuration": 3,
+  "evidence_modes": [
+    "blind_pre_defect",
+    "retrospective_replay",
+    "holdout_regression"
+  ],
+  "supported_feature_families": [
+    "report-editor",
+    "docs",
+    "native-embedding",
+    "modern-grid",
+    "visualization",
+    "search-box-selector",
+    "export"
+  ],
+  "comparison_modes": [
+    "baseline_value",
+    "iteration_compare",
+    "model_compare"
+  ],
+  "blocking_case_ids": [
+    "P0-IDEMPOTENCY-001",
+    "P1-SUPPORT-CONTEXT-001",
+    "P3-RESEARCH-ORDER-001",
+    "P4A-SDK-CONTRACT-001",
+    "P5A-INTERACTION-AUDIT-001",
+    "P5B-ANALOG-GATE-001",
+    "P7-DEV-SMOKE-001",
+    "HOLDOUT-REGRESSION-001",
+    "HOLDOUT-REGRESSION-002",
+    "RE-P5B-SHIP-GATE-001",
+    "P4A-MISSING-SCENARIO-001"
+  ],
+  "advisory_case_ids": [
+    "P4B-LAYERING-001",
+    "P5A-COVERAGE-PRESERVATION-001",
+    "P6-QUALITY-POLISH-001",
+    "DOC-SYNC-001",
+    "NE-P4A-COMPONENT-STACK-001",
+    "GRID-P4A-BANDING-001",
+    "VIZ-P4A-DONUT-LABELS-001",
+    "SELECTOR-P4A-CONFIRMATION-001",
+    "VIZ-P4A-HEATMAP-HIGHLIGHT-001",
+    "EXPORT-P5B-GSHEETS-001",
+    "GRID-P4A-HYPERLINK-STYLE-001",
+    "RE-P4A-SCENARIO-DRAFT-001",
+    "NE-P1-CONTEXT-INTAKE-001",
+    "NE-P5B-CHECKPOINT-001",
+    "GRID-P1-CONTEXT-INTAKE-001",
+    "GRID-P5B-CHECKPOINT-001",
+    "VIZ-P1-CONTEXT-INTAKE-001",
+    "VIZ-P5B-CHECKPOINT-001",
+    "EXPORT-P1-CONTEXT-INTAKE-001",
+    "EXPORT-P4A-SCENARIO-DRAFT-001",
+    "SELECTOR-P5B-CHECKPOINT-001",
+    "RE-DEFECT-FEEDBACKLOOP-001"
+  ],
+  "score_groups": {
+    "blind_pre_defect": 0.25,
+    "defect_replay": 0.4,
+    "phase_contract": 0.25,
+    "checkpoint_enforcement": 0.2,
+    "holdout_regression": 0.15
+  },
+  "acceptance_policy": {
+    "require_blocking_cases_pass": true,
+    "require_no_holdout_regression": true,
+    "require_non_decreasing_blind_score": true,
+    "require_non_decreasing_replay_score": true
+  }
+}

@@ -1,0 +1,25 @@
+You are executing benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator.
+Feature: BCIN-7289.
+Feature family: report-editor.
+Primary phase/checkpoint under test: phase7.
+Evidence mode: retrospective_replay.
+Configuration: with_skill.
+
+Rules:
+- Work only inside this temporary workspace.
+- Use only copied benchmark evidence under ./inputs/fixtures/.
+- Do not use any external web access.
+- Save the main deliverable to ./outputs/result.md.
+- Save any supporting artifacts only under ./outputs/.
+- Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.
+
+Benchmark prompt: Benchmark case P7-DEV-SMOKE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase7. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: developer smoke checklist is derived from P1 and analog-gate scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.
+
+Benchmark expectations:
+- [checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios
+- [checkpoint_enforcement][blocking] Output aligns with primary phase phase7
+
+Use the qa-plan-orchestrator skill snapshot under ./skill_snapshot as the authoritative workflow package.
+Read ./skill_snapshot/SKILL.md and the minimum required companion references needed for this case before producing outputs.
+
+Reply with a brief execution summary after writing the files.

@@ -1,0 +1,26 @@
+{
+  "benchmark_version": "qa-plan-v1",
+  "iteration": 0,
+  "status": "prepared_pending_execution",
+  "comparison_mode": "baseline_value",
+  "primary_configuration": "with_skill",
+  "reference_configuration": "without_skill",
+  "skill_snapshot_role": "champion_seed",
+  "skill_snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/champion_snapshot",
+  "knowledge_pack_version": null,
+  "executor_model": "gpt-5.4",
+  "reasoning_effort": "high",
+  "runs_per_configuration": 3,
+  "active_eval_ids": [
+    1,
+    2,
+    3
+  ],
+  "active_fixture_ids": [
+    "embedding-dashboard-editor-compare-result"
+  ],
+  "known_fixture_gaps": [
+    "BCED-2416-qa-plan-draft-v1"
+  ],
+  "prepared_at": "2026-03-21T03:03:09.050Z"
+}

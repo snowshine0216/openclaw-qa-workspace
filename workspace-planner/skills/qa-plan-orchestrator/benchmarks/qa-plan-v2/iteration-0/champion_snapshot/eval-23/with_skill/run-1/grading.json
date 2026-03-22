@@ -1,0 +1,20 @@
+{
+  "expectations": [
+    {
+      "text": "phase5b focus is covered",
+      "passed": true,
+      "evidence": "graded by fake grader"
+    },
+    {
+      "text": "phase5b alignment exists",
+      "passed": true,
+      "evidence": "graded by fake grader"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

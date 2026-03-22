@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
+      "passed": false,
+      "evidence": "Baseline output inventories fixture inputs only; it does not demonstrate stable REPORT_STATE/resume semantics."
+    },
+    {
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
+      "passed": false,
+      "evidence": "Baseline output is a static note and does not materialize phase-0 runtime setup artifacts or phase gating."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 4,
+      "Write": 2,
+      "Bash": 1
+    },
+    "total_tool_calls": 7,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 1850,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 84
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Baseline run is a prompt-only blind assessment because the repo does not provide a local one-click no-skill executor."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Used frozen fixture review as the no-skill baseline."
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "skill_name": "qa-plan-orchestrator",
+  "skill_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator",
+  "workspace": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1",
+  "iteration": 0,
+  "iteration_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0",
+  "tasks": [
+    {
+      "eval_id": 1,
+      "eval_name": "eval-1",
+      "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce artifact lookup, coverage ledger, phase4a/phase4b drafts, phase5a review outputs, phase5b checkpoint outputs, and a phase6 final draft.",
+      "expectations": [
+        "artifact_lookup_<feature-id>.md exists",
+        "coverage_ledger_<feature-id>.md maps mandatory candidates",
+        "Latest phase6 draft passes markxmind validation",
+        "phase5a and phase5b outputs both exist",
+        "Evidence saved under context/ before influencing plan",
+        "phase-scoped reruns advance to the next real round"
+      ],
+      "with_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-1/with_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-1/with_skill/run-1"
+      },
+      "without_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-1/without_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-1/without_skill/run-1"
+      }
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "eval-2",
+      "prompt": "Review a QA plan draft for executable-step quality and final layering. Reject vague phrases like 'verify correct behavior' or 'ensure it works' and preserve canonical top-layer, subcategory, and scenario structure.",
+      "expectations": [
+        "No vague phrases (verify correct behavior, ensure it works) in manual steps",
+        "Action steps are user-visible and concrete",
+        "Review artifact records rewrite requests",
+        "Final layered draft preserves top category -> subcategory -> scenario structure"
+      ],
+      "with_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-2/with_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-2/with_skill/run-1"
+      },
+      "without_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-2/without_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-2/without_skill/run-1"
+      }
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "eval-3",
+      "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same split review model with Phase 4a, 4b, 5a, 5b, 6, and 7.",
+      "expectations": [
+        "Docs mention phase5a and phase5b",
+        "Docs point to phase-specific runtime reference files",
+        "AGENTS.md Core Workflow matches SKILL.md phase overview"
+      ],
+      "with_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-3/with_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-3/with_skill/run-1"
+      },
+      "without_skill": {
+        "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-3/without_skill/run-1/outputs",
+        "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v1/iteration-0/eval-3/without_skill/run-1"
+      }
+    }
+  ]
+}

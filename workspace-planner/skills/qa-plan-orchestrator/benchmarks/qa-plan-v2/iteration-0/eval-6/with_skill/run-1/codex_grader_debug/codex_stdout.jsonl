@@ -1,0 +1,9 @@
+{"type":"thread.started","thread_id":"019d0f66-99e6-7481-a52a-099227d6b3c1"}
+{"type":"turn.started"}
+{"type":"error","message":"Reconnecting... 1/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: cc3d0fba-42fe-4ebf-98be-0a44bec287c8)"}
+{"type":"error","message":"Reconnecting... 2/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 0b9f6f15-c62e-4d17-8dc9-c374c14468ff)"}
+{"type":"error","message":"Reconnecting... 3/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: a35c89a0-dc43-45db-9d4c-81cd290cf976)"}
+{"type":"error","message":"Reconnecting... 4/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: db682601-caa9-4f71-961d-28c79165ed7d)"}
+{"type":"error","message":"Reconnecting... 5/5 (unexpected status 503 Service Unavailable: 当前账号池负载较高或模型名称配置错误，系统正在全力修复中。建议暂时选择 gpt-5.2 以下版本模型继续使用，请及时关注群消息获取最新进展。, url: https://gmncode.cn/responses, request id: fcf75d71-3071-4ace-95e4-5ef51b39fe27)"}
+{"type":"error","message":"unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 9d6d4781-2c93-408d-ba0e-52134de05465"}
+{"type":"turn.failed","error":{"message":"unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 9d6d4781-2c93-408d-ba0e-52134de05465"}}

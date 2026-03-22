@@ -1,6 +1,6 @@
 ---
 name: openclaw-agent-design
-description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Produces a structured design doc following the canonical NLG template. Must invoke agent-idempotency for Phase 0, skill-creator for new skills, and openclaw-agent-design-review before finalizing. Use when designing new OpenClaw agents, workflows, or when creating/updating AGENTS.md, .agents/workflows/, or agent skills.
+description: Designs OpenClaw agents with state-machine-driven workflows, resume capability, user confirmation gates, and Feishu notification. Produces a structured design doc following the canonical NLG template. Must invoke agent-idempotency for Phase 0, skill-creator for new skills, and openclaw-agent-design-review before finalizing. Use when designing new OpenClaw agents, skills, or when creating/updating AGENTS.md or agent skills. Never creates .agents/workflows/ files — skills are the only canonical operator entry points.
 ---
 
 # OpenClaw Agent Design
@@ -14,9 +14,21 @@ Run these steps in order before finalizing any design doc:
 3. **For each new skill** — invoke **skill-creator** to produce the SKILL.md stub.
 4. **Invoke openclaw-agent-design-review** — resolve all P0/P1 findings before final output.
 
-Reference workflows (canonical Phase 0 examples):
-- `workspace-reporter/.agents/workflows/qa-summary.md`
-- `workspace-planner/.agents/workflows/feature-qa-planning.md`
+Reference designs (canonical Phase 0 examples — skills are the operator entry):
+- `.agents/skills/qa-plan-evolution/SKILL.md`
+- `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
+
+---
+
+## Never Create Workflow Files
+
+Do not create `.agents/workflows/<name>.md` for any agent or skill design task.
+
+Skills under `.agents/skills/<name>/SKILL.md` and workspace-local
+`workspace-*/skills/<name>/SKILL.md` are the only canonical operator entry points.
+
+`.agents/workflows/` is an abandoned pattern. Any design that proposes creating a
+workflow file must be revised before it can pass the design review gate.
 
 ---
 
@@ -47,9 +59,8 @@ Every design output **must** follow this structure. Omit sections only when expl
 
 | Action | Path | Notes |
 |--------|------|-------|
-| CREATE | `.agents/workflows/<name>.md` | NLG workflow |
 | CREATE | `skills/<name>/SKILL.md` | via skill-creator |
-| UPDATE | `AGENTS.md` | sync workflow + skill refs |
+| UPDATE | `AGENTS.md` | sync skill refs |
 | CREATE | `scripts/check_resume.sh` | idempotency |
 
 ---
@@ -58,7 +69,6 @@ Every design output **must** follow this structure. Omit sections only when expl
 
 Sections to update:
 - **Skills Reference**: add `<skill-name>` with path and purpose
-- **Workflow routing**: add `/<slash-command>` → workflow path mapping
 
 ---
 
@@ -78,12 +88,12 @@ Output:
 
 ---
 
-## 4. Workflow Design (NLG)
+## 4. Skill-Driven Execution Design
 
-> Default: NLG workflow. Phases are plain-language instructions.
+> Phases are plain-language instructions inside the skill file.
 > Use bash scripts only when the design explicitly requires automation.
 
-Workflow path: `.agents/workflows/<name>.md`
+Skill path: `skills/<name>/SKILL.md`
 
 ### Phase 0: Idempotency and Run Preparation
 
@@ -179,10 +189,9 @@ Must emit:
 
 > Explicit inventory. Cross-reference with Section 1 (Deliverables).
 
-1. `.agents/workflows/<name>.md` — create
-2. `skills/<skill-name>/SKILL.md` — create
-3. `scripts/check_resume.sh` — create/update
-4. `AGENTS.md` — update (sync to this design)
+1. `skills/<skill-name>/SKILL.md` — create
+2. `scripts/check_resume.sh` — create/update
+3. `AGENTS.md` — update (sync to this design)
 
 ---
 
@@ -203,35 +212,37 @@ User-facing README impact:
 - [ ] Feishu notification + `notification_pending` fallback defined
 - [ ] README impact explicitly addressed
 - [ ] Reviewer status (openclaw-agent-design-review): pass or pass_with_advisories
+- [ ] No `.agents/workflows/` file created or referenced as entry point
 
 ---
 
 ## 10. References
 
-- <related design docs, skills, workflows>
+- <related design docs, skills>
 ```
 
 ---
 
 ## 2. Key Rules
 
-### NLG Workflow Default
+### Skill-First Execution
 
-All workflow phases use **NLG (natural language instructions)** by default. This means:
+All agent execution logic lives inside the skill file (`SKILL.md`). Phases are plain-language instructions in the skill. There is no separate workflow file.
+
 - Phase blocks use: **Actions / User Interaction / State Updates / Verification**
 - No code execution in phase bodies unless the design explicitly calls for a script
 - Verification blocks use bash for spot-checking only, not execution logic
 
 ### Never Assume
 
-In every workflow phase:
+In every phase:
 - **Confirm requirements** with the user before external API calls, publishes, or overwrites
 - **Stop and ask** when context is ambiguous — never silently guess
 - **Document impact** — state AGENTS.md updates and README impact explicitly in every design
 
 ### Final Feishu Notification
 
-All workflows must include a completion notification phase:
+All agent designs must include a completion notification phase:
 1. Send Feishu message (use `feishu` skill template)
 2. On failure: persist full payload to `run.json.notification_pending`
 3. On next resume: retry notification before starting any phase
@@ -273,6 +284,7 @@ Before finalizing a design doc:
 - [ ] Status transition map present
 - [ ] Feishu + `notification_pending` fallback defined
 - [ ] README impact explicitly addressed
+- [ ] No `.agents/workflows/` file created or referenced as entry point
 
 ## Additional Resources
 

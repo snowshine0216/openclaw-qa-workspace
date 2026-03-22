@@ -1,0 +1,3 @@
+Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-6nw6qL/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-6nw6qL/outputs/execution_notes.md).
+
+`result.md` records a phase4a `FAIL` verdict for P4A-SDK-CONTRACT-001: the replay evidence shows `setWindowTitle` was not turned into explicit scenarios, despite defects BCIN-7674, BCIN-7719, and BCIN-7733 proving that user-visible title behavior needed standalone coverage. It also includes the minimal phase4a-aligned scenario delta required to satisfy the benchmark. `execution_notes.md` lists the local fixture evidence used, files produced, and notes that there were no blockers.

@@ -1,0 +1,16 @@
+{
+  "request_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-6/with_skill/run-1/execution_request.json",
+  "output_files": [
+    "execution_notes.md",
+    "metrics.json",
+    "qa_plan_phase4a_basis_BCED-2416.md",
+    "qa_plan_phase4b_BCED-2416.md",
+    "result.md"
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
+  "case_id": "P5B-ANALOG-GATE-001",
+  "eval_id": 9,
+  "eval_name": "p5b-analog-gate-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase5b",
+  "kind": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
+  "blocking": true,
+  "benchmark_profile": "global-cross-feature-v1",
+  "fixture_refs": [
+    "BCIN-7289-defect-analysis-run",
+    "BCED-2416-analog-issue-bundle"
+  ],
+  "blind_fixture_id": null,
+  "blind_policy": null,
+  "prompt": "Benchmark case P5B-ANALOG-GATE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run, BCED-2416-analog-issue-bundle. Focus: historical analogs become required-before-ship gates. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "expectations": [
+    "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+    "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b"
+  ],
+  "run": {
+    "configuration_dir": "without_skill",
+    "run_number": 1,
+    "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1",
+    "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/outputs",
+    "transcript_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/execution_transcript.log",
+    "grading_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/grading.json",
+    "timing_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/timing.json",
+    "metrics_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/outputs/metrics.json"
+  },
+  "skill_snapshot_path": null,
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-7289-defect-analysis-run",
+      "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
+      "type": "defect_replay_source",
+      "status": "active",
+      "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/inputs/fixtures/BCIN-7289-defect-analysis-run/source",
+      "materials": []
+    },
+    {
+      "fixture_id": "BCED-2416-analog-issue-bundle",
+      "type": "historical_issue_pattern_bundle",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "materials": [
+        {
+          "material_type": "jira_parent_issue",
+          "source_id_or_url": "https://strategyagile.atlassian.net/browse/BCED-2416",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.parented-issues.raw.json",
+          "included_in_blind": false,
+          "notes": "Use child issues under BCED-2416 as the supplemental analog issue set for BCIN-7289 replay analysis.",
+          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/inputs/fixtures/BCED-2416-analog-issue-bundle/materials/BCED-2416.parented-issues.raw.json"
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCED-2416 analog issue pattern summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.customer-pattern-summary.json",
+          "included_in_blind": false,
+          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/inputs/fixtures/BCED-2416-analog-issue-bundle/materials/BCED-2416.customer-pattern-summary.json"
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "snapshot_path": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "included_in_blind": false,
+          "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-9/without_skill/run-1/inputs/fixtures/BCED-2416-analog-issue-bundle/materials/BCED-2416-embedding-dashboard-editor-workstation.md"
+        }
+      ],
+      "local_path": null
+    }
+  ]
+}

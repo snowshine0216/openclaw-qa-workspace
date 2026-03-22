@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "No vague phrases (verify correct behavior, ensure it works) in manual steps",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "Action steps are user-visible and concrete",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "Review artifact records rewrite requests",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    },
+    {
+      "text": "Final layered draft preserves top category -> subcategory -> scenario structure",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for with_skill run 3"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 15,
+      "Write": 4,
+      "Bash": 5
+    },
+    "total_tool_calls": 24,
+    "total_steps": 7,
+    "errors_encountered": 0,
+    "output_chars": 14600,
+    "transcript_chars": 4300
+  },
+  "timing": {
+    "total_duration_seconds": 201
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": [
+      "Synthetic seed validation run for with_skill"
+    ]
+  }
+}

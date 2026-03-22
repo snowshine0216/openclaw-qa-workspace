@@ -1,0 +1,46 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0",
+  "case_id": "P4A-SDK-CONTRACT-001",
+  "eval_id": 4,
+  "eval_name": "p4a-sdk-contract-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase4a",
+  "kind": "defect_replay",
+  "evidence_mode": "retrospective_replay",
+  "blocking": true,
+  "benchmark_profile": "global-cross-feature-v1",
+  "fixture_refs": [
+    "BCIN-7289-defect-analysis-run"
+  ],
+  "blind_fixture_id": null,
+  "blind_policy": null,
+  "prompt": "Benchmark case P4A-SDK-CONTRACT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase4a. Case family: defect replay. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: SDK/API visible outcomes like window title become explicit scenarios. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "expectations": [
+    "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+    "[defect_replay][blocking] Output aligns with primary phase phase4a"
+  ],
+  "run": {
+    "configuration_dir": "without_skill",
+    "run_number": 3,
+    "run_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3",
+    "output_dir": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/outputs",
+    "transcript_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/execution_transcript.log",
+    "grading_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/grading.json",
+    "timing_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/timing.json",
+    "metrics_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/outputs/metrics.json"
+  },
+  "skill_snapshot_path": null,
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-7289-defect-analysis-run",
+      "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
+      "type": "defect_replay_source",
+      "status": "active",
+      "local_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-4/without_skill/run-3/inputs/fixtures/BCIN-7289-defect-analysis-run/source",
+      "materials": []
+    }
+  ]
+}

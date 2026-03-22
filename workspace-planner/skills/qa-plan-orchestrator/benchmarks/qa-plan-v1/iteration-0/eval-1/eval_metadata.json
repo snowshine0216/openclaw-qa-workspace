@@ -1,0 +1,14 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1",
+  "prompt": "Create a QA plan for feature BCED-2416 using Jira and Confluence evidence. Produce artifact lookup, coverage ledger, phase4a/phase4b drafts, phase5a review outputs, phase5b checkpoint outputs, and a phase6 final draft.",
+  "assertions": [
+    "artifact_lookup_<feature-id>.md exists",
+    "coverage_ledger_<feature-id>.md maps mandatory candidates",
+    "Latest phase6 draft passes markxmind validation",
+    "phase5a and phase5b outputs both exist",
+    "Evidence saved under context/ before influencing plan",
+    "phase-scoped reruns advance to the next real round"
+  ],
+  "eval_group": "core_regression"
+}

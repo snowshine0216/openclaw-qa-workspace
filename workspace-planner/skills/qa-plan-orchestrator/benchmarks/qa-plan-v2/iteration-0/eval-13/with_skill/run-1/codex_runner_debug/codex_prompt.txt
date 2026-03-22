@@ -1,0 +1,25 @@
+You are executing benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator.
+Feature: BCIN-6709.
+Feature family: report-editor.
+Primary phase/checkpoint under test: holdout.
+Evidence mode: holdout_regression.
+Configuration: with_skill.
+
+Rules:
+- Work only inside this temporary workspace.
+- Use only copied benchmark evidence under ./inputs/fixtures/.
+- Do not use any external web access.
+- Save the main deliverable to ./outputs/result.md.
+- Save any supporting artifacts only under ./outputs/.
+- Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.
+
+Benchmark prompt: Benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: skill improvements for report-editor do not regress a different feature planning flow. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.
+
+Benchmark expectations:
+- [holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow
+- [holdout_regression][blocking] Output aligns with primary phase holdout
+
+Use the qa-plan-orchestrator skill snapshot under ./skill_snapshot as the authoritative workflow package.
+Read ./skill_snapshot/SKILL.md and the minimum required companion references needed for this case before producing outputs.
+
+Reply with a brief execution summary after writing the files.

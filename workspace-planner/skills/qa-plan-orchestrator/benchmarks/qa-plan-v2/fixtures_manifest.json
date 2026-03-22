@@ -1,0 +1,502 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-976-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-976",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-976.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-976 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-976.customer-scope.json",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7289",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-7289 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCIN-7289 adjacent issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.adjacent-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/TPAC/pages/5949096102/BCIN-7289+Use+Embedding+report+in+Workstation+Plugin",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCED-2416-analog-issue-bundle",
+      "type": "historical_issue_pattern_bundle",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "materials": [
+        {
+          "material_type": "jira_parent_issue",
+          "source_id_or_url": "https://strategyagile.atlassian.net/browse/BCED-2416",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.parented-issues.raw.json",
+          "included_in_blind": false,
+          "notes": "Use child issues under BCED-2416 as the supplemental analog issue set for BCIN-7289 replay analysis."
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCED-2416 analog issue pattern summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.customer-pattern-summary.json",
+          "included_in_blind": false
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "snapshot_path": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "included_in_blind": false
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCED-2416-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCED-2416",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCED-2416 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-2416.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "snapshot_path": "workspace/docs/BCED-2416-embedding-dashboard-editor-workstation.md",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-6709-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-6709",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-6709.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-6709 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-6709.customer-scope.json",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCED-1719-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCED-1719",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-1719.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCED-1719 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-1719.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/BEC/pages/5591171262/BCED-1719+Embed+panel+stack+as+a+single+embedding+component+in+Native+Embedding",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/mojojs/pull/8857",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/embeded-bi-sdk/pull/920",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-7231-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7231",
+      "feature_family": "modern-grid",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7231",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7231.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-7231 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7231.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/TPAC/pages/5916819642/BCIN-7231+Modern+Grid+Banding",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/dossier-format-react/pull/1563",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCED-4860-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCED-4860",
+      "feature_family": "visualization",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCED-4860",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-4860.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCED-4860 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-4860.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCED-4860 parent feature summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCED-4860.parent-feature.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because BCED-4860 is a story and no explicit customer signal was found on the story or parent feature at freeze time."
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/BEC/pages/6012076298/BCED-4860+Supporting+Data+Labels+in+Donut+Chart",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/visualization-donut/pull/69",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/productstrings/pull/15121",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCDA-8653-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCDA-8653",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCDA-8653.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCDA-8653 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCDA-8653.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/~645481260/pages/5991497729/BCDA-8653+Add+OK+Cancel+Buttons+to+SearchBoxSelector+Dropdown",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "github_pr",
+          "source_id_or_url": "https://github.com/mstr-kiai/mojojs/pull/8915",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCVE-6797-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCVE-6797",
+      "feature_family": "visualization",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCVE-6797",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6797.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCVE-6797 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6797.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCVE-6797 linked issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6797.linked-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/EE/pages/5902402099/26.04+-+BCVE-6797+Highlighting+effect+for+HeatMap",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCVE-6678-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCVE-6678",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6678.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCVE-6678 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6678.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCVE-6678 adjacent issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCVE-6678.adjacent-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time."
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/EE/pages/5926518830/26.04-+BCVE-6678+Export+format+support+for+Google+Sheets+Export+on+Dashboard+level",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-7547-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7547",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7547.issue.raw.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-7547 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7547.customer-scope.json",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/~791537905/pages/5964857421/BCIN-7547+Allow+enabling+hyperlink+style+for+the+elements+with+contextual+link+in+Modern+Grid",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "DOCS-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "DOCS",
+      "feature_family": "docs",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/README.md",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/README.md",
+          "included_in_blind": true
+        },
+        {
+          "material_type": "other",
+          "source_id_or_url": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/reference.md",
+          "included_in_blind": true
+        }
+      ]
+    },
+    {
+      "fixture_id": "BCIN-7289-defect-analysis-run",
+      "path": "workspace-reporter/skills/defects-analysis/runs/BCIN-7289",
+      "type": "defect_replay_source",
+      "status": "active"
+    },
+    {
+      "fixture_id": "embedding-dashboard-editor-compare-result",
+      "path": "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md",
+      "type": "existing_eval_fixture",
+      "status": "active"
+    },
+    {
+      "fixture_id": "report-editor-knowledge-pack",
+      "path": "workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor",
+      "type": "knowledge_pack",
+      "status": "planned"
+    }
+  ]
+}

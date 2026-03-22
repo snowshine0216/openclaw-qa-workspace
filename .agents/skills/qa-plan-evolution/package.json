@@ -1,0 +1,8 @@
+{
+  "name": "qa-plan-evolution-skill",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test scripts/test/*.test.mjs && bash scripts/test/run-integration.sh"
+  }
+}

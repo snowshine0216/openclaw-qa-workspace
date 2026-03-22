@@ -1,0 +1,501 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "cases": [
+    {
+      "case_id": "P0-IDEMPOTENCY-001",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase0",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-976-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "REPORT_STATE and resume semantics remain stable"
+    },
+    {
+      "case_id": "P1-SUPPORT-CONTEXT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "supporting issues stay context_only_no_defect_analysis and produce summaries"
+    },
+    {
+      "case_id": "P3-RESEARCH-ORDER-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase3",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "Tavily-first then Confluence fallback ordering"
+    },
+    {
+      "case_id": "P4A-SDK-CONTRACT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "SDK/API visible outcomes like window title become explicit scenarios"
+    },
+    {
+      "case_id": "P4A-MISSING-SCENARIO-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "defect_replay",
+      "evidence_mode": "retrospective_replay",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "missing scenario generation for template-save and report-builder loading"
+    },
+    {
+      "case_id": "P4B-LAYERING-001",
+      "feature_id": "BCED-2416",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4b",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-2416-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "canonical top-layer grouping without collapsing scenarios"
+    },
+    {
+      "case_id": "P5A-INTERACTION-AUDIT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5a",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "cross-section interaction audit catches template x pause-mode and prompt-editor-open states"
+    },
+    {
+      "case_id": "P5A-COVERAGE-PRESERVATION-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5a",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "review loop does not silently drop evidence-backed nodes"
+    },
+    {
+      "case_id": "P5B-ANALOG-GATE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run",
+        "BCED-2416-analog-issue-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "historical analogs become required-before-ship gates"
+    },
+    {
+      "case_id": "P6-QUALITY-POLISH-001",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase6",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-6709-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "final quality pass preserves layering and executable wording"
+    },
+    {
+      "case_id": "P7-DEV-SMOKE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase7",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "retrospective_replay",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-defect-analysis-run"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "developer smoke checklist is derived from P1 and analog-gate scenarios"
+    },
+    {
+      "case_id": "DOC-SYNC-001",
+      "feature_id": "DOCS",
+      "feature_family": "docs",
+      "knowledge_pack_key": "docs",
+      "primary_phase": "docs",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "DOCS-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "SKILL.md, README.md, reference.md, and AGENTS docs stay aligned"
+    },
+    {
+      "case_id": "HOLDOUT-REGRESSION-001",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "embedding-dashboard-editor-compare-result"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "skill improvements for report-editor do not regress a different feature planning flow"
+    },
+    {
+      "case_id": "HOLDOUT-REGRESSION-002",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-976-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "promotion/finalization behavior remains stable on another feature"
+    },
+    {
+      "case_id": "NE-P4A-COMPONENT-STACK-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states"
+    },
+    {
+      "case_id": "GRID-P4A-BANDING-001",
+      "feature_id": "BCIN-7231",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7231-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes"
+    },
+    {
+      "case_id": "VIZ-P4A-DONUT-LABELS-001",
+      "feature_id": "BCED-4860",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-4860-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes"
+    },
+    {
+      "case_id": "SELECTOR-P4A-CONFIRMATION-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes"
+    },
+    {
+      "case_id": "VIZ-P4A-HEATMAP-HIGHLIGHT-001",
+      "feature_id": "BCVE-6797",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6797-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "heatmap highlighting effect scenarios cover activation, persistence, and reset behavior"
+    },
+    {
+      "case_id": "EXPORT-P5B-GSHEETS-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations"
+    },
+    {
+      "case_id": "GRID-P4A-HYPERLINK-STYLE-001",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7547-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering"
+    },
+    {
+      "case_id": "RE-P4A-SCENARIO-DRAFT-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes"
+    },
+    {
+      "case_id": "RE-P5B-SHIP-GATE-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety"
+    },
+    {
+      "case_id": "NE-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations"
+    },
+    {
+      "case_id": "NE-P5B-CHECKPOINT-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes"
+    },
+    {
+      "case_id": "GRID-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCIN-7231",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7231-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting"
+    },
+    {
+      "case_id": "GRID-P5B-CHECKPOINT-001",
+      "feature_id": "BCIN-7547",
+      "feature_family": "modern-grid",
+      "knowledge_pack_key": "modern-grid",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7547-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety"
+    },
+    {
+      "case_id": "VIZ-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCED-4860",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-4860-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation"
+    },
+    {
+      "case_id": "VIZ-P5B-CHECKPOINT-001",
+      "feature_id": "BCVE-6797",
+      "feature_family": "visualization",
+      "knowledge_pack_key": "visualization",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6797-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap"
+    },
+    {
+      "case_id": "EXPORT-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting"
+    },
+    {
+      "case_id": "EXPORT-P4A-SCENARIO-DRAFT-001",
+      "feature_id": "BCVE-6678",
+      "feature_family": "export",
+      "knowledge_pack_key": "export",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCVE-6678-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes"
+    },
+    {
+      "case_id": "SELECTOR-P5B-CHECKPOINT-001",
+      "feature_id": "BCDA-8653",
+      "feature_family": "search-box-selector",
+      "knowledge_pack_key": "search-box-selector",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCDA-8653-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows"
+    },
+    {
+      "case_id": "RE-DEFECT-FEEDBACKLOOP-001",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "phase8",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCIN-7289-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "focus": "defect feedback loop injects scenarios from prior defects into next feature QA plan"
+    }
+  ]
+}

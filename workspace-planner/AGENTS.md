@@ -15,6 +15,11 @@ _Operating instructions for test planning and strategy._
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all coding tasks.
 - use `skill-creator` for all skill creation and refactoring tasks.
+
+## QA plan skill evolution
+
+- To evolve the **qa-plan-orchestrator** skill (benchmark-driven improvements), follow the shared skill at `.agents/skills/qa-plan-evolution/` (`SKILL.md`, `reference.md`) and `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`.
+- When `knowledge-packs/` exists under `workspace-planner/skills/qa-plan-orchestrator/` for a feature family, treat it as mandatory coverage input for evolution runs that declare a `knowledge_pack_key` / matching benchmark profile.
 - never use web-fetch for below tasks.
    - use `jira-cli` for all Jira tasks. 
       - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`

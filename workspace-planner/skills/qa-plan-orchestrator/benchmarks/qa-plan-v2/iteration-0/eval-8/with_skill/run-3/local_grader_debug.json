@@ -1,0 +1,16 @@
+{
+  "request_path": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/eval-8/with_skill/run-3/execution_request.json",
+  "output_files": [
+    "execution_notes.md",
+    "metrics.json",
+    "result.md",
+    "review_delta_BCIN-7289.md",
+    "review_notes_BCIN-7289.md"
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

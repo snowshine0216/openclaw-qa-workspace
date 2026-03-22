@@ -1,0 +1,10 @@
+{
+  "configuration": "without_skill",
+  "fixture_local_paths": [
+    null
+  ],
+  "material_local_paths": [
+    "eval-1/without_skill/run-1/inputs/fixtures/BLIND-BCIN-976/materials/BCIN-976.customer-scope.json"
+  ],
+  "skill_snapshot_path": null
+}

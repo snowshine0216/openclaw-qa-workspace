@@ -49,6 +49,42 @@ generate_report() {
   node "$REPORTER_SCRIPT" "$RUN_DIR" "$RUN_KEY" "$JIRA_BASE_URL"
 }
 
+write_evolution_support_artifacts() {
+  local freshness_json="$CONTEXT_DIR/analysis_freshness_${RUN_KEY}.json"
+  local source_issue_timestamp=""
+  local pr_timestamp=""
+  local upstream_qa_plan_timestamp=""
+  local knowledge_pack_version=""
+
+  source_issue_timestamp="$(jq -r '[.issues[]?.fields.updated?, .issues[]?.fields.resolutiondate?, .issues[]?.fields.created?] | map(select(. != null and . != "")) | .[0] // empty' "$CONTEXT_DIR/jira_raw.json" 2>/dev/null || true)"
+  if [[ -f "$CONTEXT_DIR/pr_impact_summary.json" ]]; then
+    pr_timestamp="$(jq -r '.pr_timestamp // .latest_pr_timestamp // .generated_at // empty' "$CONTEXT_DIR/pr_impact_summary.json" 2>/dev/null || true)"
+  fi
+  if [[ -f "$CONTEXT_DIR/upstream_qa_plan_metadata.json" ]]; then
+    upstream_qa_plan_timestamp="$(jq -r '.updated_at // .qa_plan_timestamp // empty' "$CONTEXT_DIR/upstream_qa_plan_metadata.json" 2>/dev/null || true)"
+  fi
+  if [[ -f "$CONTEXT_DIR/knowledge_pack_metadata.json" ]]; then
+    knowledge_pack_version="$(jq -r '.version // empty' "$CONTEXT_DIR/knowledge_pack_metadata.json" 2>/dev/null || true)"
+  fi
+  if [[ -z "$knowledge_pack_version" ]]; then
+    knowledge_pack_version="${KNOWLEDGE_PACK_VERSION:-}"
+  fi
+
+  jq -n \
+    --arg generated_at "$TS" \
+    --arg source_issue_timestamp "$source_issue_timestamp" \
+    --arg pr_timestamp "$pr_timestamp" \
+    --arg upstream_qa_plan_timestamp "$upstream_qa_plan_timestamp" \
+    --arg knowledge_pack_version "$knowledge_pack_version" \
+    '{
+      generated_at: $generated_at,
+      source_issue_timestamp: ($source_issue_timestamp | select(length > 0) // null),
+      pr_timestamp: ($pr_timestamp | select(length > 0) // null),
+      upstream_qa_plan_timestamp: ($upstream_qa_plan_timestamp | select(length > 0) // null),
+      knowledge_pack_version_used: ($knowledge_pack_version | select(length > 0) // null)
+    }' >"$freshness_json"
+}
+
 attempt=1
 status="fail"
 while [[ "$attempt" -le 3 ]]; do
@@ -63,6 +99,7 @@ done
 [[ "$status" == "pass" ]] || { echo "Phase 5 review loop failed to converge" >&2; exit 1; }
 cp "$RUN_DIR/${RUN_KEY}_REPORT_DRAFT.md" "$RUN_DIR/${RUN_KEY}_REPORT_FINAL.md"
 node "$SCRIPT_DIR/lib/report_bundle_validator.mjs" "$RUN_KEY" "$RUN_DIR" >/dev/null
+write_evolution_support_artifacts
 
 if [[ -f "$RUN_DIR/task.json" ]]; then
   jq '.overall_status = "completed" | .current_phase = "phase5_finalize" | .updated_at = "'"$TS"'"' "$RUN_DIR/task.json" >"$RUN_DIR/task.json.tmp"

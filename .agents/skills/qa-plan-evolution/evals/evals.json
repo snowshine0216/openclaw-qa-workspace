@@ -1,0 +1,76 @@
+{
+  "schema_version": "1",
+  "benchmark_profiles": [
+    {
+      "id": "qa-plan-defect-recall",
+      "description": "QA plan skill evolution with defect replay, self-test gap analysis, and knowledge-pack hooks.",
+      "target_skill_hint": "qa-plan-orchestrator",
+      "gap_sources": [
+        "target_eval_failures",
+        "replay_eval_misses",
+        "defects_cross_analysis",
+        {
+          "id": "knowledge_pack_coverage",
+          "required": false
+        }
+      ],
+      "evidence_hooks": {
+        "inspect_target_artifacts": true,
+        "defects_analysis_refresh": "required_when_stale",
+        "knowledge_pack_version_check": true,
+        "defect_replay_evals": true,
+        "holdout_evals": true
+      },
+      "scoring_dimensions": [
+        "defect_recall_score",
+        "contract_compliance_score",
+        "regression_count"
+      ],
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+    },
+    {
+      "id": "qa-plan-knowledge-pack-coverage",
+      "description": "QA plan evolution emphasizing knowledge-pack mapping and coverage gates.",
+      "target_skill_hint": "qa-plan-orchestrator",
+      "gap_sources": [
+        "target_eval_failures",
+        {
+          "id": "knowledge_pack_coverage",
+          "required": false
+        },
+        "contract_drift"
+      ],
+      "evidence_hooks": {
+        "inspect_target_artifacts": true,
+        "defects_analysis_refresh": "optional",
+        "knowledge_pack_version_check": true,
+        "defect_replay_evals": false,
+        "holdout_evals": true
+      },
+      "scoring_dimensions": [
+        "knowledge_pack_coverage_score",
+        "contract_compliance_score",
+        "regression_count"
+      ],
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+    },
+    {
+      "id": "generic-skill-regression",
+      "description": "Minimal profile: target artifacts, smoke tests, contract evals, regression-only scoring.",
+      "target_skill_hint": null,
+      "gap_sources": [
+        "target_eval_failures",
+        "contract_drift",
+        "smoke_regressions"
+      ],
+      "evidence_hooks": {
+        "inspect_target_artifacts": true,
+        "defects_analysis_refresh": "none",
+        "knowledge_pack_version_check": false,
+        "defect_replay_evals": false,
+        "holdout_evals": false
+      },
+      "scoring_dimensions": ["regression_count", "contract_compliance_score"]
+    }
+  ]
+}

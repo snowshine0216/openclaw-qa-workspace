@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3",
+  "prompt": "Verify that SKILL.md, README.md, reference.md, and AGENTS workflow descriptions describe the same split review model with Phase 4a, 4b, 5a, 5b, 6, and 7.",
+  "assertions": [
+    "Docs mention phase5a and phase5b",
+    "Docs point to phase-specific runtime reference files",
+    "AGENTS.md Core Workflow matches SKILL.md phase overview"
+  ],
+  "eval_group": "core_regression"
+}

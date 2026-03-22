@@ -1,0 +1,38 @@
+{
+  "semantic_role": "no_skill_baseline",
+  "comparison_mode": "baseline_value",
+  "configuration_dir": "without_skill",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_snapshot_path": null,
+  "skill_snapshot_label": "no-skill-baseline",
+  "model_name": "gpt-5.4",
+  "reasoning_effort": "high",
+  "knowledge_pack_version": null,
+  "benchmark_version": "qa-plan-v2",
+  "eval_id": 32,
+  "run_number": 1,
+  "case_id": "SELECTOR-P5B-CHECKPOINT-001",
+  "feature_id": "BCDA-8653",
+  "feature_family": "search-box-selector",
+  "knowledge_pack_key": "search-box-selector",
+  "primary_phase": "phase5b",
+  "case_kind": "checkpoint_enforcement",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCDA-8653-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": "BCDA-8653-blind-pre-defect-bundle",
+  "blind_policy": {
+    "cutoff_policy": "all_customer_issues_only",
+    "issue_scope": {
+      "include_issue_classes": [
+        "customer"
+      ],
+      "exclude_issue_classes": [
+        "non_customer"
+      ]
+    }
+  }
+}

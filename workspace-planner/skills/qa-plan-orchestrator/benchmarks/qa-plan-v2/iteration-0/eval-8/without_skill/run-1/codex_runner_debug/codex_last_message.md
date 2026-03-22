@@ -1,0 +1,3 @@
+Wrote the deliverables to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-rC8FSl/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-rC8FSl/outputs/execution_notes.md).
+
+The replay verdict is `NOT SATISFIED` for phase5a checkpoint enforcement: the review summary contains at least two directly supported nodes (`BCIN-7669` no PR, `BCIN-7727` no PR) that are not preserved into the final report, and the draft/final reports are identical. I also recorded two reviewer claims that I did not count as failures because the copied fixture evidence only partially supported them.

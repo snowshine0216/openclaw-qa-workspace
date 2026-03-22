@@ -1,0 +1,8 @@
+{
+  "configuration": "with_skill",
+  "fixture_local_paths": [
+    "eval-23/with_skill/run-1/inputs/fixtures/REPLAY-BCIN-7289/source"
+  ],
+  "material_local_paths": [],
+  "skill_snapshot_path": "/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/benchmark-v2-execute-zytNlj/benchmarks/qa-plan-v2/iteration-0/champion_snapshot"
+}

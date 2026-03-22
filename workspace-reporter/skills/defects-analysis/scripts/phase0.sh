@@ -120,12 +120,14 @@ jq -n \
   --arg raw_input "$RAW_INPUT" \
   --arg route_kind "$route_kind" \
   --arg selected_mode "$selected_mode" \
+  --arg invoked_by "${INVOKED_BY:-}" \
   --arg updated_at "$ts" \
   '{
     run_key: $run_key,
     raw_input: $raw_input,
     route_kind: $route_kind,
     selected_mode: $selected_mode,
+    invoked_by: ($invoked_by | select(length > 0) // null),
     overall_status: "analysis_in_progress",
     current_phase: "phase0_prepare",
     feature_keys: [],

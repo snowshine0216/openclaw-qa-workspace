@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "Docs mention phase5a and phase5b",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for without_skill run 2"
+    },
+    {
+      "text": "Docs point to phase-specific runtime reference files",
+      "passed": false,
+      "evidence": "Synthetic seed validation miss for without_skill run 2"
+    },
+    {
+      "text": "AGENTS.md Core Workflow matches SKILL.md phase overview",
+      "passed": true,
+      "evidence": "Synthetic seed validation evidence for without_skill run 2"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 1,
+    "total": 3,
+    "pass_rate": 0.6667
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 8,
+      "Write": 2,
+      "Bash": 3
+    },
+    "total_tool_calls": 13,
+    "total_steps": 4,
+    "errors_encountered": 0,
+    "output_chars": 7300,
+    "transcript_chars": 2160
+  },
+  "timing": {
+    "total_duration_seconds": 105
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": [
+      "Synthetic seed validation run for without_skill"
+    ]
+  }
+}

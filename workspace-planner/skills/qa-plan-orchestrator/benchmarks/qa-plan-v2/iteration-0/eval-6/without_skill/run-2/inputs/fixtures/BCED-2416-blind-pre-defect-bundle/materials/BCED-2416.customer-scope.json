@@ -1,0 +1,49 @@
+{
+  "feature_id": "BCED-2416",
+  "exported_at": "2026-03-21T05:20:36Z",
+  "source_issue_key": "BCED-2416",
+  "issue_type": "Feature",
+  "created": "2025-07-20T23:39:05.489-0400",
+  "labels": [
+    "Library_and_Dashboards",
+    "Moved_DoneInEmbeddingCTC",
+    "bi-dashboards_team"
+  ],
+  "customer_fields": {
+    "customfield_10355": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "{ ABANCA - CS0724841 }; { Bank Of America - CS0868332 }; { Lowe's Companies Inc - CS0708896 }; { OBI Smart Technologies GmbH - CS0943992 }; { Schwarz IT KG - CS0799938 }; { Starbucks Coffee Company - CS0961172 }; { Yahoo Holdings Inc. - CS0780045 }"
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_10586": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "{ Bank Of America - CS0868332 }; { OBI Smart Technologies GmbH - CS0943992 }; { Starbucks Coffee Company - CS0961172 }; { Yahoo Holdings Inc. - CS0780045 }"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "customer_signal_present": true,
+  "linked_issue_count": 0,
+  "subtask_count": 0,
+  "customer_issue_policy": "all_customer_issues_only",
+  "notes": "Feature carries explicit customer references in Jira custom fields."
+}

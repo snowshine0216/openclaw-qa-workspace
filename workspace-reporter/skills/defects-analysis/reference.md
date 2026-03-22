@@ -73,6 +73,33 @@ Run-key derivation:
 - `phase4_spawn_manifest.json`
 - `<run-key>_REPORT_DRAFT.md`, `<run-key>_REVIEW_SUMMARY.md`, `<run-key>_REPORT_FINAL.md`
 
+## Evolution Support Artifacts
+
+When the shared `qa-plan-evolution` uses `defects-analysis` as an evidence source, these additive artifacts may exist under `runs/<run-key>/`:
+
+- `context/analysis_freshness_<run-key>.json`
+- `context/gap_bundle_<run-key>.json`
+- `<run-key>_SELF_TEST_GAP_ANALYSIS.md`
+- `<run-key>_QA_PLAN_CROSS_ANALYSIS.md`
+
+### `analysis_freshness_<run-key>.json`
+
+Fields emitted for freshness-aware reuse:
+
+- `generated_at`
+- `source_issue_timestamp`
+- `pr_timestamp`
+- `upstream_qa_plan_timestamp`
+- `knowledge_pack_version_used`
+
+These fields are additive only. Reporter-local flows remain valid when evolution does not consume them.
+
+### Refresh Rule For Evolution Runs
+
+- Evolution callers should prefer `smart_refresh` and regenerate only when the freshness artifact is stale relative to the target-skill evidence they compare against.
+- If freshness metadata is current, `use_existing`, `resume`, or `generate_from_cache` should be preferred over destructive refresh.
+- Gap-bundle generation is a separate additive phase. It is not part of the default reporter 0–5 loop and should run only when `invoked_by=qa-plan-evolution`.
+
 ## task.json Additive Schema
 
 Required fields:
