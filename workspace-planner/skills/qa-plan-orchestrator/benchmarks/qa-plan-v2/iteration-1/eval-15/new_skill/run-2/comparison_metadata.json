@@ -1,0 +1,27 @@
+{
+  "semantic_role": "candidate_skill",
+  "comparison_mode": "executed_benchmark_compare",
+  "configuration_dir": "new_skill",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_snapshot_path": "iteration-1/candidate_snapshot",
+  "skill_snapshot_label": "candidate",
+  "model_name": null,
+  "reasoning_effort": null,
+  "knowledge_pack_version": "report-editor-2026-03-21",
+  "benchmark_version": "qa-plan-v2",
+  "eval_id": 15,
+  "run_number": 2,
+  "case_id": "NE-P4A-COMPONENT-STACK-001",
+  "feature_id": "BCED-1719",
+  "feature_family": "native-embedding",
+  "knowledge_pack_key": "native-embedding",
+  "primary_phase": "phase4a",
+  "case_kind": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCED-1719-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "parent_champion_snapshot_path": "iteration-0/champion_snapshot"
+}

@@ -70,4 +70,6 @@ If current evidence is insufficient, do one bounded research pass with `confluen
 - Support-derived risks must remain visible in the Phase 4a scenario set.
 - Report-editor Workstation behavior and Library-vs-Workstation gap implications must be represented as evidence-backed scenarios or explicit exclusions.
 - When a knowledge pack applies, each required capability must map to a scenario, a release gate, or an explicit exclusion.
-- SDK/API visible outcomes must remain testable in scenario leaves, not hidden behind implementation wording.
+- SDK/API visible outcomes declared in the active knowledge pack (e.g. `setWindowTitle`, `errorHandler`) must each map to at least one scenario with a testable, observable verification leaf. Implicit mentions without explicit observable outcomes are insufficient.
+- State transitions declared in the active knowledge pack must each appear as a scenario chain (from-state → trigger → to-state → observable outcome). A transition that has no scenario chain is a coverage gap.
+- When the active knowledge pack declares `i18n dialogs` as a required capability, each dialog whose string keys are added or changed in the release must have locale-aware verification leaves in the scenario set.

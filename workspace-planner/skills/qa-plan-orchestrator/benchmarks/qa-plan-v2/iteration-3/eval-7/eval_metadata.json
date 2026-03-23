@@ -1,0 +1,23 @@
+{
+  "eval_id": 7,
+  "eval_name": "p5a-interaction-audit-001",
+  "prompt": "Benchmark case P5A-INTERACTION-AUDIT-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5a. Case family: checkpoint enforcement. Evidence mode: retrospective replay. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-defect-analysis-run. Focus: cross-section interaction audit catches template x pause-mode and prompt-editor-open states. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+    "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a"
+  ],
+  "case_id": "P5A-INTERACTION-AUDIT-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase5a",
+  "eval_group": "checkpoint_enforcement",
+  "evidence_mode": "retrospective_replay",
+  "blocking": true,
+  "fixture_refs": [
+    "BCIN-7289-defect-analysis-run"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

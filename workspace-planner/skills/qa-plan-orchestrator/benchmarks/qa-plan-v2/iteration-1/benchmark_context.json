@@ -1,0 +1,21 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration": 1,
+  "comparison_mode": "executed_benchmark_compare",
+  "scoring_fidelity": "executed",
+  "primary_configuration": "new_skill",
+  "reference_configuration": "old_skill",
+  "current_champion_iteration": 0,
+  "current_champion_snapshot": "iteration-0/champion_snapshot",
+  "candidate_snapshot": "iteration-1/candidate_snapshot",
+  "prepared_at": "2026-03-23T02:18:37.033Z",
+  "case_count": 33,
+  "active_evidence_modes": [
+    "blind_pre_defect",
+    "retrospective_replay",
+    "holdout_regression"
+  ],
+  "replay_source_identifier": "BCIN-7289",
+  "replay_enabled_by_operator": true,
+  "target_feature_family": "report-editor"
+}

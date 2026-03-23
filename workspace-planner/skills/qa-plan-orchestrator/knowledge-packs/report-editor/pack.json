@@ -1,13 +1,117 @@
 {
   "pack_key": "report-editor",
-  "version": "2026-03-21",
+  "version": "2026-03-23",
   "required_capabilities": [
     "template-based creation",
     "save override",
     "prompt execution",
     "report builder interaction",
     "window title correctness",
-    "i18n dialogs"
+    "i18n dialogs",
+    "save-as-overwrite",
+    "subset-report-save",
+    "intelligent-cube-conversion",
+    "session-timeout-handling"
+  ],
+  "required_outcomes": [
+    {
+      "id": "outcome-template-save-report-builder",
+      "keywords": [
+        "template-based creation",
+        "save override",
+        "report builder interaction"
+      ],
+      "observable_outcome": "report builder becomes interactive after template-based save"
+    },
+    {
+      "id": "outcome-window-title",
+      "keywords": [
+        "window title correctness",
+        "setWindowTitle"
+      ],
+      "observable_outcome": "window title reflects current report context"
+    },
+    {
+      "id": "outcome-i18n-dialog",
+      "keywords": [
+        "i18n dialogs",
+        "save dialog completeness and interactivity"
+      ],
+      "observable_outcome": "localized dialog actions remain complete and interactive"
+    },
+    {
+      "id": "outcome-report-builder-prompt-load",
+      "keywords": [
+        "report builder interaction",
+        "prompt execution",
+        "double-click"
+      ],
+      "observable_outcome": "report builder loads prompt elements correctly after double-click"
+    },
+    {
+      "id": "outcome-edit-report-title",
+      "keywords": [
+        "window title correctness",
+        "edit report",
+        "workstation"
+      ],
+      "observable_outcome": "edit report in workstation shows the correct title matching the current report"
+    },
+    {
+      "id": "outcome-save-as-overwrite-no-crash",
+      "keywords": [
+        "save-as-overwrite",
+        "save override",
+        "JS error"
+      ],
+      "observable_outcome": "save-as to overwrite existing report completes without JS error"
+    },
+    {
+      "id": "outcome-i18n-all-dialogs",
+      "keywords": [
+        "i18n dialogs",
+        "productstrings",
+        "locale"
+      ],
+      "observable_outcome": "all dialog string keys added or changed in the release are translated for all supported locales"
+    }
+  ],
+  "state_transitions": [
+    {
+      "id": "transition-template-draft-to-saved",
+      "from": "template-based creation",
+      "to": "save override",
+      "trigger": "save action",
+      "observable_outcome": "folder visibility refresh after save"
+    },
+    {
+      "id": "transition-prompt-editor-close-confirmation",
+      "from": "prompt editor open",
+      "to": "close-confirmation",
+      "trigger": "close action",
+      "observable_outcome": "pause-mode prompts and confirmation path are explicit"
+    },
+    {
+      "id": "transition-save-as-overwrite-conflict",
+      "from": "save-as initiated",
+      "to": "overwrite-confirmation",
+      "trigger": "target report already exists",
+      "observable_outcome": "overwrite confirmation shown without JS error; existing report replaced on confirm"
+    },
+    {
+      "id": "transition-prompt-pause-mode-template-run",
+      "from": "template-based creation with prompt pause mode",
+      "to": "report running",
+      "trigger": "template saved and opened",
+      "observable_outcome": "report with prompt pause mode runs correctly after template creation"
+    },
+    {
+      "id": "transition-double-click-edit-title",
+      "from": "report list view",
+      "to": "edit report open",
+      "trigger": "double-click on report in workstation",
+      "observable_outcome": "editor opens with the correct report title (not stale/wrong title)"
+    }
   ],
   "analog_gates": [
     {
@@ -18,6 +122,16 @@
     {
       "source_issue": "DE331555",
       "behavior": "save dialog completeness and interactivity",
+      "required_gate": true
+    },
+    {
+      "source_issue": "BCIN-7727",
+      "behavior": "report builder prompt element loading after interaction",
+      "required_gate": true
+    },
+    {
+      "source_issue": "BCIN-7730",
+      "behavior": "template with prompt pause mode running after creation",
       "required_gate": true
     }
   ],
@@ -33,6 +147,80 @@
     [
       "close-confirmation",
       "prompt editor open"
+    ],
+    [
+      "save-as-overwrite",
+      "template-save"
+    ],
+    [
+      "prompt-pause-mode",
+      "report-builder-loading"
     ]
+  ],
+  "interaction_matrices": [
+    {
+      "id": "matrix-prompt-editor-safety",
+      "pairs": [
+        [
+          "template-based creation",
+          "pause-mode prompts"
+        ],
+        [
+          "close-confirmation",
+          "prompt editor open"
+        ]
+      ]
+    },
+    {
+      "id": "matrix-save-and-template-risk",
+      "pairs": [
+        [
+          "save-as-overwrite",
+          "template-save"
+        ],
+        [
+          "prompt-pause-mode",
+          "report-builder-loading"
+        ]
+      ]
+    }
+  ],
+  "anti_patterns": [
+    "implicit sdk contract wording without observable verification leaves",
+    "silent drop of report-editor interaction coverage during review refactor",
+    "multiple confirm-close dialogs from repeated X-button clicks without deduplication guard",
+    "i18n string additions without coverage verification for all affected dialog locales"
+  ],
+  "evidence_refs": [
+    {
+      "type": "jira",
+      "id": "DE332260",
+      "topic": "folder visibility refresh after save"
+    },
+    {
+      "type": "jira",
+      "id": "DE331555",
+      "topic": "save dialog completeness and interactivity"
+    },
+    {
+      "type": "jira",
+      "id": "BCIN-7669",
+      "topic": "save-as override throws JS crash"
+    },
+    {
+      "type": "jira",
+      "id": "BCIN-7727",
+      "topic": "report builder fails to load prompt elements after double-click"
+    },
+    {
+      "type": "jira",
+      "id": "BCIN-7730",
+      "topic": "template with prompt pause mode won't run after creation"
+    },
+    {
+      "type": "jira",
+      "id": "BCIN-7733",
+      "topic": "double-click edit shows wrong title in workstation new editor"
+    }
   ]
 }

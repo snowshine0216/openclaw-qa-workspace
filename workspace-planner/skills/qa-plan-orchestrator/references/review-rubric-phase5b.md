@@ -62,6 +62,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - `Checkpoint 13` Chaos and Resilience
 - `Checkpoint 14` Shift-Right Monitoring
 - `Checkpoint 15` Final Release Gate
+- `Checkpoint 16` i18n Dialog Coverage
 - `supporting_context_and_gap_readiness`
 
 ## Required Sections

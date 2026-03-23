@@ -1,0 +1,46 @@
+{
+  "expectations": [
+    {
+      "text": "docs mention phase5a",
+      "passed": true,
+      "evidence": "PASS: docs mention phase5a"
+    },
+    {
+      "text": "docs mention phase5b",
+      "passed": true,
+      "evidence": "PASS: docs mention phase5b"
+    },
+    {
+      "text": "docs mention reference.md",
+      "passed": true,
+      "evidence": "PASS: docs mention reference.md"
+    },
+    {
+      "text": "README and reference stay aligned",
+      "passed": true,
+      "evidence": "PASS: README and reference stay aligned"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": 0,
+    "total_tool_calls": 0,
+    "total_steps": 4,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 1
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "expectations": [
+    {
+      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "passed": true,
+      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+    },
+    {
+      "text": "Release recommendation enumerates analog gates",
+      "passed": true,
+      "evidence": "PASS: Release recommendation enumerates analog gates"
+    },
+    {
+      "text": "analog gate save dialog completeness is enforced",
+      "passed": false,
+      "evidence": "FAIL: analog gate save dialog completeness is enforced"
+    },
+    {
+      "text": "report-editor knowledge pack exists",
+      "passed": true,
+      "evidence": "PASS: report-editor knowledge pack exists"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": {
+    "tool_calls": 0,
+    "total_tool_calls": 0,
+    "total_steps": 4,
+    "errors_encountered": 1,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 1
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [
+      "benchmark case requires remediation"
+    ],
+    "workarounds": []
+  }
+}

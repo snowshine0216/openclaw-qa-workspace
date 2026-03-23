@@ -1,0 +1,41 @@
+{
+  "expectations": [
+    {
+      "text": "Coverage Preservation Audit is present",
+      "passed": true,
+      "evidence": "PASS: Coverage Preservation Audit is present"
+    },
+    {
+      "text": "Cross-Section Interaction Audit is present",
+      "passed": true,
+      "evidence": "PASS: Cross-Section Interaction Audit is present"
+    },
+    {
+      "text": "report-editor knowledge pack exists",
+      "passed": true,
+      "evidence": "PASS: report-editor knowledge pack exists"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": 0,
+    "total_tool_calls": 0,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 1
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

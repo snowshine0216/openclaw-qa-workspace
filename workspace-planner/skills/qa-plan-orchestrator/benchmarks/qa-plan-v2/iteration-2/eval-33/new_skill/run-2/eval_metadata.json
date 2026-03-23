@@ -1,0 +1,23 @@
+{
+  "eval_id": 33,
+  "eval_name": "re-defect-feedbackloop-001",
+  "prompt": "Benchmark case RE-DEFECT-FEEDBACKLOOP-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase8. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-blind-pre-defect-bundle. Focus: defect feedback loop injects scenarios from prior defects into next feature QA plan. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+    "[phase_contract][advisory] Output aligns with primary phase phase8"
+  ],
+  "case_id": "RE-DEFECT-FEEDBACKLOOP-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase8",
+  "eval_group": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCIN-7289-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

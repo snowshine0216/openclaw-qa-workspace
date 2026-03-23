@@ -99,9 +99,31 @@ test('qa-plan knowledge pack observations include sdk and interaction coverage g
     await writeJson(join(qaPlanRoot, 'knowledge-packs', 'report-editor', 'pack.json'), {
       version: '2026-03-21',
       required_capabilities: ['template-based creation'],
+      required_outcomes: [
+        {
+          id: 'outcome-window-title',
+          keywords: ['window title correctness', 'setWindowTitle'],
+          observable_outcome: 'window title reflects report context',
+        },
+      ],
+      state_transitions: [
+        {
+          id: 'transition-template-save',
+          from: 'template-based creation',
+          to: 'save override',
+          trigger: 'save action',
+          observable_outcome: 'folder visibility refresh after save',
+        },
+      ],
       analog_gates: [],
       sdk_visible_contracts: ['setWindowTitle'],
       interaction_pairs: [['template-based creation', 'pause-mode prompts']],
+      interaction_matrices: [
+        {
+          id: 'matrix-1',
+          pairs: [['close-confirmation', 'prompt editor open']],
+        },
+      ],
     });
     await writeFile(join(qaPlanRoot, 'knowledge-packs', 'report-editor', 'pack.md'), '# pack\n', 'utf8');
 
@@ -126,6 +148,21 @@ test('qa-plan knowledge pack observations include sdk and interaction coverage g
     assert.ok(
       packSource.observations.some((observation) =>
         observation.summary.includes('Interaction pair "template-based creation + pause-mode prompts"'),
+      ),
+    );
+    assert.ok(
+      packSource.observations.some((observation) =>
+        observation.summary.includes('Required outcome "window title reflects report context"'),
+      ),
+    );
+    assert.ok(
+      packSource.observations.some((observation) =>
+        observation.summary.includes('State transition "transition-template-save"'),
+      ),
+    );
+    assert.ok(
+      packSource.observations.some((observation) =>
+        observation.summary.includes('Interaction pair "close-confirmation + prompt editor open"'),
       ),
     );
   } finally {

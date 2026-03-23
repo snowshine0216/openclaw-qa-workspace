@@ -1,0 +1,23 @@
+{
+  "eval_id": 17,
+  "eval_name": "viz-p4a-donut-labels-001",
+  "prompt": "Benchmark case VIZ-P4A-DONUT-LABELS-001 for qa-plan-orchestrator. Use feature BCED-4860 as the primary benchmark feature. Feature family: visualization. Knowledge pack: visualization. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-4860-blind-pre-defect-bundle. Focus: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+    "[phase_contract][advisory] Output aligns with primary phase phase4a"
+  ],
+  "case_id": "VIZ-P4A-DONUT-LABELS-001",
+  "feature_id": "BCED-4860",
+  "feature_family": "visualization",
+  "knowledge_pack_key": "visualization",
+  "primary_phase": "phase4a",
+  "eval_group": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCED-4860-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

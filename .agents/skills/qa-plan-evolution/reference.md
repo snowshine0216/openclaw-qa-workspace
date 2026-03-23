@@ -26,6 +26,8 @@ All per-run artifacts live under:
 
 ### `REPORT_STATE`
 
+> **Simple-path note:** When using the 3-phase model (`qa-plan-pack-only` profile), operators typically start with `CONTEXT_ONLY` state — freshness and backlog exist but no iteration has completed. This is the expected starting state for the manual path; continue without treating it as an error.
+
 | Value | Meaning | User interaction |
 |------|---------|------------------|
 | `FINAL_EXISTS` | `evolution_final.md` already exists | user chooses use_existing / smart_refresh / full_regenerate |

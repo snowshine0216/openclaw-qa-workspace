@@ -5,6 +5,22 @@ description: Evolves an existing skill through a bounded champion-vs-challenger 
 
 # QA Plan Evolution
 
+## Quick Start (Recommended for 1–2 Feature Families)
+
+If you only have one or two feature families and defect evidence is manually available:
+
+1. **Phase A** — Enrich the feature family knowledge pack with defect-derived gaps
+2. **Phase B** — Run `qa-plan-orchestrator` and verify planner output covers those gaps
+3. **Phase C** — Run `npm run benchmark:v2:run` against the benchmark; accept if non-regressing
+
+See `docs/SIMPLIFIED_EVOLUTION_MODEL.md` for a detailed walkthrough.
+
+Use the full 7-phase automated pipeline (detailed below) when:
+- You have 3+ feature families with real knowledge packs
+- Automated defect evidence refresh is required across multiple runs
+- Replay evidence must be gated automatically
+
+
 This skill is the canonical entrypoint for repeatable skill self-improvement in OpenClaw workspaces.
 
 The orchestrator has exactly three responsibilities:

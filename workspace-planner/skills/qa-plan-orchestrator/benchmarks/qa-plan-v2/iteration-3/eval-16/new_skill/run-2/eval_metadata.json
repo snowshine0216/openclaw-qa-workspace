@@ -1,0 +1,23 @@
+{
+  "eval_id": 16,
+  "eval_name": "grid-p4a-banding-001",
+  "prompt": "Benchmark case GRID-P4A-BANDING-001 for qa-plan-orchestrator. Use feature BCIN-7231 as the primary benchmark feature. Feature family: modern-grid. Knowledge pack: modern-grid. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7231-blind-pre-defect-bundle. Focus: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+    "[phase_contract][advisory] Output aligns with primary phase phase4a"
+  ],
+  "case_id": "GRID-P4A-BANDING-001",
+  "feature_id": "BCIN-7231",
+  "feature_family": "modern-grid",
+  "knowledge_pack_key": "modern-grid",
+  "primary_phase": "phase4a",
+  "eval_group": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCIN-7231-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

@@ -97,3 +97,5 @@ Each affected node must record:
 
 - `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.
 - `accept` is forbidden while any knowledge-pack capability or required interaction pair lacks a mapped scenario, gate, or explicit exclusion.
+- `accept` is forbidden while any `interaction_pairs` entry from the active knowledge pack lacks a cross-section scenario audit entry in `## Cross-Section Interaction Audit`.
+- `accept` is forbidden while any `state_transitions` entry from the active knowledge pack lacks a mapped scenario chain (from-state → trigger → to-state → observable outcome) in the plan.

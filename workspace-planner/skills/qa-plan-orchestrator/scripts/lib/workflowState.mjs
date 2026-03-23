@@ -25,10 +25,7 @@ const SKILL_ROOT = resolve(MODULE_DIR, '..', '..');
 const REPO_ROOT = resolve(SKILL_ROOT, '..', '..', '..');
 export const DEFAULT_SUPPORTING_ISSUE_POLICY = 'context_only_no_defect_analysis';
 export const DEFAULT_DEEP_RESEARCH_POLICY = 'tavily_first_confluence_second';
-export const DEFAULT_DEEP_RESEARCH_TOPICS = [
-  'report_editor_workstation_functionality',
-  'report_editor_library_vs_workstation_gap',
-];
+export const DEFAULT_DEEP_RESEARCH_TOPICS = [];
 const REQUEST_PHASES = new Set(['phase0', 'phase1', 'phase2', 'phase3', 'phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase6', 'phase7']);
 
 export function getSkillRoot() {
@@ -340,14 +337,7 @@ function parseRawRequestText(task = {}) {
   }
 
   if (!Array.isArray(task.deep_research_topics) || task.deep_research_topics.length === 0) {
-    const topics = [];
-    if (/report editor.*workstation|workstation.*report editor/i.test(text)) {
-      topics.push('report_editor_workstation_functionality');
-    }
-    if (/library\s+vs\s+workstation|library-vs-workstation/i.test(text)) {
-      topics.push('report_editor_library_vs_workstation_gap');
-    }
-    task.deep_research_topics = topics;
+    task.deep_research_topics = [];
   }
 
   if (/do not enter defect-analysis mode|support-only|context only/i.test(text)) {

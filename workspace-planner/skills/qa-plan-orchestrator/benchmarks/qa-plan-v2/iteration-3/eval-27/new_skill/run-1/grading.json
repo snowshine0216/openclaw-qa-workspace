@@ -1,0 +1,36 @@
+{
+  "expectations": [
+    {
+      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "passed": true,
+      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+    },
+    {
+      "text": "Release recommendation enumerates analog gates",
+      "passed": true,
+      "evidence": "PASS: Release recommendation enumerates analog gates"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": 0,
+    "total_tool_calls": 0,
+    "total_steps": 2,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 1
+  },
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}
