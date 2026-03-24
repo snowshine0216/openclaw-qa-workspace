@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": false,
+      "evidence": "No Phase 4a planning artifact (e.g., drafts/qa_plan_phase4a_r1.md) is present. The provided result.md explicitly states: \"Cannot confirm pass/fail of Phase 4a output...\" and \"Expectation ... → Not verifiable (no Phase 4a draft present).\" Therefore explicit coverage in the actual plan cannot be confirmed from outputs."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Outputs contain an assessment and notes, but not an actual Phase 4a subcategory-only draft. execution_notes.md notes: \"No Phase 4a run artifacts were provided...\" and result.md marks alignment as \"Not verifiable (no Phase 4a draft present).\" Without a Phase 4a artifact, alignment cannot be demonstrated."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

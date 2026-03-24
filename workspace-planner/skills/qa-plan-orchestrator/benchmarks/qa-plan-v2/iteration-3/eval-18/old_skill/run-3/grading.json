@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md, the “Case focus” section explicitly lists all required items: “OK confirmation”, “Cancel confirmation”, “Pending selection”, and “Dismissal outcomes”. It further maps evidence to OK/pending/dismissal and notes Cancel as a paired outcome: “Cancel confirmation: not explicitly stated... but is a standard paired outcome for an OK-confirm pattern; Phase 4a planning structure supports including it as a scenario...”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md repeatedly anchors to Phase 4a: “Primary phase under test: Phase 4a” and “Output alignment with Phase 4a contract” with constraints such as “Requires subcategory/scenario/atomic steps/observable leaves” and “Forbids canonical top-layer categories”. execution_notes.md also states: “Primary phase under test: Phase 4a” and “Evaluation anchored to: references/phase4a-contract.md”."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

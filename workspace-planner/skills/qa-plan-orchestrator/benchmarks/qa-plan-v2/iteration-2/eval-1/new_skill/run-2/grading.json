@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "result.md explicitly states the benchmark focus as “REPORT_STATE and resume semantics remain stable” and includes a detailed “What phase0 must do” contract excerpt covering REPORT_STATE classification and resume semantics (apply_user_choice.sh modes and routing). It also has a dedicated section: “Assessment: Can we demonstrate “REPORT_STATE and resume semantics remain stable” for phase0?”"
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md declares “Primary phase under test: phase0” and the content is scoped to phase0 responsibilities (REPORT_STATE classification, resume semantics, phase0 artifact list). It does not evaluate other phases; it concludes verification is blocked due to missing phase0 runtime artifacts/logs, but the output itself aligns to phase0."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

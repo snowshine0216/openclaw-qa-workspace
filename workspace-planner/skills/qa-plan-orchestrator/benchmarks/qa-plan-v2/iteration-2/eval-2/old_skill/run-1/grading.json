@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": false,
+      "evidence": "result.md states the required behavior cannot be verified: \"does not include any phase1 runtime artifacts (no spawn manifest, no support request/relation map, no support summaries), and the adjacency export explicitly reports no support signal issues.\" Also cites fixture: \"support_signal_issue_keys: []\" and concludes \"Case focus ... not demonstrated\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
-      "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "result.md notes missing phase1 artifacts required by contract: \"No runtime directory, no phase1_spawn_manifest.json, no context/ artifacts\" and concludes \"phase1 output alignment cannot be confirmed\" / \"FAIL (no phase1 artifacts in evidence)\"."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

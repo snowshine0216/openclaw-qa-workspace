@@ -105,3 +105,63 @@ exit 0
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('manifestRunner does not hide real openclaw task failures behind codex fallback', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'seo-manifest-openclaw-fail-'));
+  const manifestPath = join(root, 'manifest.json');
+  const openclawBin = join(root, 'fake-openclaw.sh');
+  const codexBin = join(root, 'fake-codex.sh');
+  const codexLog = join(root, 'codex.log');
+  try {
+    await writeFile(
+      openclawBin,
+      `#!/usr/bin/env bash
+set -euo pipefail
+printf "real task failure\\n" >&2
+exit 17
+`,
+      'utf8',
+    );
+    await writeFile(
+      codexBin,
+      `#!/usr/bin/env bash
+set -euo pipefail
+printf "codex should not run\\n" >> "${codexLog}"
+exit 0
+`,
+      'utf8',
+    );
+    await chmod(openclawBin, 0o755);
+    await chmod(codexBin, 0o755);
+    await writeFile(manifestPath, JSON.stringify({
+      requests: [
+        {
+          openclaw: {
+            args: {
+              task: 'Run task that should fail in openclaw',
+            },
+          },
+        },
+      ],
+    }), 'utf8');
+
+    const originalOpenclaw = process.env.OPENCLAW_BIN;
+    const originalCodex = process.env.CODEX_BIN;
+    process.env.OPENCLAW_BIN = openclawBin;
+    process.env.CODEX_BIN = codexBin;
+    try {
+      const outcome = await runManifest(manifestPath, { cwd: root });
+      assert.equal(outcome.failed, true);
+      assert.equal(outcome.results[0]?.kind, 'openclaw');
+      assert.equal(outcome.results[0]?.status, 'failed');
+      assert.match(outcome.results[0]?.stderr || '', /exit_status=17/);
+    } finally {
+      process.env.OPENCLAW_BIN = originalOpenclaw;
+      process.env.CODEX_BIN = originalCodex;
+    }
+
+    await assert.rejects(() => readFile(codexLog, 'utf8'));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

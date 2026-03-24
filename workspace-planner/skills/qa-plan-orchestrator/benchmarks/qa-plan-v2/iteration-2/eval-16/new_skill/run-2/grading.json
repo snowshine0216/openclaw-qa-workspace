@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "The output explicitly states the required case focus under “Benchmark intent” and reiterates it in the acceptance checklist: “Modern Grid banding scenarios that clearly distinguish: Styling variants…, Interactions…, Backward-compatible rendering outcomes…”. It further enumerates concrete scenario areas: “Banding colors / styling variants…”, “Apply banding by header scope…”, and “Backward-compatible rendering outcomes… verify parity with 'Report'…”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Both result.md and execution_notes.md state that the phase4a deliverable artifact is missing and compliance cannot be confirmed: “Determination: Cannot confirm phase4a deliverable exists / is compliant” and “no Phase 4a output artifact… is provided, so phase4a alignment… cannot be verified.” While it quotes phase4a structure requirements, it does not actually provide a phase4a subcategory-only draft, so alignment is not demonstrated."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

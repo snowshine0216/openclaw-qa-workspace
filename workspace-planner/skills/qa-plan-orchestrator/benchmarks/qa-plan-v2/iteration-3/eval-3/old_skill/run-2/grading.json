@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "tavily-search is recorded before confluence fallback",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
       "passed": true,
-      "evidence": "PASS: tavily-search is recorded before confluence fallback"
+      "evidence": "result.md cites explicit Phase 3 ordering requirements from the skill snapshot: SKILL.md Phase 3: “spawn Tavily-first deep-research requests …”; reference.md: deep_research_policy = “tavily_first_confluence_second”; SKILL.md Phase 3 --post validates “Tavily-first … optional Confluence fallback ordering”; README.md guardrail: “record the tavily-search pass before any confluence fallback …”."
     },
     {
-      "text": "deep research ordering is documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
       "passed": true,
-      "evidence": "PASS: deep research ordering is documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md frames the benchmark as Phase 3, references Phase 3 contract/gates/outputs (e.g., “Primary phase under test is Phase 3”, lists Phase 3 outputs like coverage ledger, deep_research_plan, phase3_spawn_manifest.json) and states “PASS (phase3 contract satisfied for the case focus)”. execution_notes.md likewise anchors evaluation to Phase 3 contract due to blind_pre_defect mode."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

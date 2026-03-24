@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "result.md explicitly targets the case focus: \"FAIL — ... blocking phase-contract risk for the benchmark focus: `REPORT_STATE` and resume semantics remain stable\" and the section \"Benchmark focus check: REPORT_STATE + resume semantics stability\" analyzes resume/reuse semantics under REPORT_STATE."
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is explicitly phase0-scoped: title \"— phase0 phase contract\", includes \"What phase0 must cover\" and a dedicated section \"Alignment with primary phase (phase0): This benchmark assessment is strictly phase0-scoped\"; execution_notes.md also states \"Assessment is limited to the provided workflow-contract snapshot text\" and treats the finding as \"blocking ... for phase0\"."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

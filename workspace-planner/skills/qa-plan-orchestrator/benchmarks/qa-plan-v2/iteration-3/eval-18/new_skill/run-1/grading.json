@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md, the verdict and alignment sections explicitly cover all three focus areas: “OK confirmation vs Cancel behavior”, “Pending selection/loading states”, and “Dismissal outcomes”. It further lists a checklist requiring scenarios for “Confirm with OK”, “Cancel”, and “Dismissal during pending load”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md is explicitly framed as “Verdict (phase_contract / advisory)” and repeatedly anchors expectations to Phase 4a (e.g., “Evidence-to-Phase4a Alignment” and “Phase 4a Contract Fit”), stating Phase 4a requires “subcategory-only draft” with “scenario + atomic action chain + observable verification leaves.” execution_notes.md also states: “this benchmark targets phase4a contract alignment only (advisory).”"
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

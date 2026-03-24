@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "The output explicitly states the benchmark focus and evaluates each required element prior to any scenario drafting: it lists the focus items and then assesses them under \"Phase 1 intake assessment against focus\" with sections for \"Google Sheets export entry points\", \"Scope boundaries\", and \"Format constraints\", noting what is present vs missing."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The result is framed as Phase 1 only (\"Phase 1 (Context Intake) Contract Check\"; \"Evidence mode: blind_pre_defect\") and does not draft scenarios or diagnose defects. It also references the Phase 1 contract expectation to produce a spawn manifest and flags absence of \"phase1_spawn_manifest.json\" as a blocker (\"Phase 1 should output a phase1_spawn_manifest.json...\")."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

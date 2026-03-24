@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly addresses the separation: it states two categories—“Cells/objects with contextual links → must render with hyperlink styling and indicator icon” vs “Ordinary grid elements without contextual links → … render as normal (non-hyperlink) content,” and proposes separate Phase 4a subcategories/scenarios for each (“contextual-link styling” vs “ordinary (non-link) styling” plus “Mixed-content … differentiation”)."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md frames the verdict as “phase_contract • advisory,” references “Alignment with Phase 4a contract (primary checkpoint),” and lists Phase 4a structure requirements (“subcategory → scenario → atomic action chain → observable verification leaves” and “forbids canonical top-layer categories”). It also includes a “Phase alignment check” noting the primary phase under test is phase4a and limits claims due to missing runtime artifacts."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

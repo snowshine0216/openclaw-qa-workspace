@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The outputs explicitly state the case focus cannot be verified due to missing Phase 5b artifacts: execution_notes.md: \"Could not verify the benchmark’s case focus (highlight activation/persistence/deselection/interaction safety for bar chart + heatmap) because no Phase 5b run artifacts were included in the evidence set.\" result.md: \"There is no Phase 5b output evidence ... to verify that Phase 5b actually enforced shipment checkpoints for the specified highlight behaviors on bar chart and heatmap.\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The produced result is explicitly framed as a Phase 5b checkpoint enforcement evaluation and references Phase 5b rubric/contract requirements and expected Phase 5b artifacts. execution_notes.md: \"Benchmark checkpoint: phase5b alignment - Verified contract requirements for Phase 5b outputs and dispositions from review-rubric-phase5b.md.\" result.md title: \"Phase 5b Checkpoint Enforcement\" and section \"What can be confirmed from evidence (contract alignment only)\" listing required Phase 5b outputs and dispositions."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

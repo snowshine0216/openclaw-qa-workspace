@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly frames the focus and separation: “modern-grid hyperlink-style coverage that separates contextual-link styling from ordinary element rendering” and further states the benchmark requires distinguishing “contextual links applied to grid cells … vs ordinary grid element rendering”. It also cites fixture language about “blue/underlined hyperlink styling with an indicator icon,” which directly targets contextual-link styling distinct from baseline rendering."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "execution_notes.md confirms “Primary phase under test: Phase 4a” and result.md section “Output alignment with Phase 4a deliverable” ties expected artifacts/validation to Phase 4a: “Phase 4a output: drafts/qa_plan_phase4a_r<round>.md” and references SKILL.md/reference.md for Phase 4a spawn+post-validate behavior."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

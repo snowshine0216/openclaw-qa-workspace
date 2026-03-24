@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md under “Case focus coverage (advisory)” it explicitly states the benchmark focus and then enumerates distinct coverage areas: “Label visibility outcomes”, “Label density outcomes”, and “Overlap-sensitive outcomes”, including collision/overlap handling examples and the requirement that “These distinctions must appear as separate scenarios with observable leaves.”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The output describes the phase4a contract but does not provide the required phase4a artifact. It concludes: “Fail (insufficient artifacts to evaluate phase4a requirements). Reason: … does not include any Phase 4a output artifact (e.g., `drafts/qa_plan_phase4a_r1.md`) … to verify that the orchestrator produced a Phase 4a subcategory plan…”. Without an actual phase4a draft, alignment cannot be demonstrated."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

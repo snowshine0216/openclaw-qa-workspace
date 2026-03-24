@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly states the focus as: \"heatmap highlighting effect scenarios covering activation, persistence, reset behavior\" and includes scenarios for activation (\"Tap a single heatmap cell activates highlight styling\", \"Tap a different cell moves highlight\"), persistence (\"Scroll ... does not unintentionally clear highlight\", \"Switch to another app and return; highlight persists\", \"Rotate device\"), and reset (\"Tap the currently highlighted cell again resets highlight\", \"Tap outside ... clears highlight\", \"Apply a filter ... highlight resets appropriately\")."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md is titled \"Phase 4a (Subcategory-only) QA draft coverage\" and includes a \"Phase 4a alignment (contract check)\" section stating the required structure and \"must not use canonical top-layer categories\". The plan uses a subcategory-only structure under \"Heatmap highlight effect (iOS)\" with scenario → action chain → observable verification leaves, and does not introduce top-layer groupings like Security/Compatibility/EndToEnd."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

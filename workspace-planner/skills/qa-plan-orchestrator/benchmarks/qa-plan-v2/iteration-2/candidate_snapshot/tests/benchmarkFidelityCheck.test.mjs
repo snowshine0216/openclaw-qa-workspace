@@ -73,3 +73,31 @@ test('check_benchmark_fidelity exits 0 when clean and BENCHMARK_REQUIRE_EXECUTED
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('check_benchmark_fidelity exits 1 for deterministic fallback markers written by phase4 recovery', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'fidelity-deterministic-'));
+  try {
+    const benchRoot = join(root, 'benchmarks', 'qa-plan-v2');
+    const outDir = join(benchRoot, 'iteration-0', 'eval-1', 'with_skill', 'run-1', 'outputs');
+    await mkdir(outDir, { recursive: true });
+    await writeFile(
+      join(outDir, 'execution_notes.md'),
+      '# Execution Notes\n\n- executor: deterministic fallback executor\n',
+      'utf8',
+    );
+    await writeFile(
+      join(outDir, 'metrics.json'),
+      JSON.stringify({ total_tokens: 0, duration_ms: 0, executor: 'deterministic-fallback', model: 'deterministic-fallback' }, null, 2),
+      'utf8',
+    );
+
+    const result = await runNode([CHECK, '--benchmark-root', benchRoot], {
+      BENCHMARK_REQUIRE_EXECUTED: '1',
+    });
+
+    assert.equal(result.code, 1, result.stderr + result.stdout);
+    assert.match(result.stderr + result.stdout, /deterministic|fallback|low-fidelity|Found/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

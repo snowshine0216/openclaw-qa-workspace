@@ -8,6 +8,7 @@ import {
   classifyReportState,
   DEFAULT_DEEP_RESEARCH_TOPICS,
   fileExists,
+  getSkillRoot,
   isActiveStatus,
   isPhasePast,
   getNextPhaseRound,
@@ -21,6 +22,10 @@ import {
   writeJson,
 } from './workflowState.mjs';
 import { buildRuntimeSetup } from './runtimeEnv.mjs';
+import { buildCoverageLedgerArtifacts, collectRequiredAnalogRowIds, collectUnresolvedBlockingAnalogRowIds, collectUnresolvedPackRows } from './coverageLedger.mjs';
+import { loadKnowledgePackRuntime } from './knowledgePackLoader.mjs';
+import { buildKnowledgePackSummaryArtifacts } from './knowledgePackSummarizer.mjs';
+import { buildKnowledgePackQueryInputs, retrieveKnowledgePackCoverage } from './knowledgePackRetrieval.mjs';
 import {
   evaluateEvidenceCompleteness,
   evaluateSourceArtifactCompleteness,
@@ -114,14 +119,28 @@ async function runPhase0(featureId, runDir) {
   const requestedSources = normalizeRequestedSourceFamilies(task.requested_source_families).length > 0
     ? normalizeRequestedSourceFamilies(task.requested_source_families)
     : ['jira'];
+  const knowledgePackRuntime = await resolveKnowledgePackForTask(task, featureId);
+  Object.assign(task, knowledgePackRuntime.taskPatch);
+  task.request_materials = [];
+  task.request_commands = [];
+  task.request_requirements = [];
+  applyRequestModel(task, featureId);
   const contextDir = join(runDir, 'context');
   const runtimeSetup = await buildRuntimeSetup(featureId, requestedSources, contextDir, {
     supportingIssuePolicy: task.supporting_issue_policy,
     deepResearchPolicy: task.deep_research_policy,
     supportingIssueKeys: task.supporting_issue_keys,
+    knowledgePackKey: task.knowledge_pack_key,
+    knowledgePackResolutionSource: task.knowledge_pack_resolution_source,
+    runtimeWarnings: knowledgePackRuntime.warnings,
   });
   task.has_supporting_artifacts = Boolean(runtimeSetup.has_supporting_artifacts);
   run.has_supporting_artifacts = Boolean(runtimeSetup.has_supporting_artifacts);
+  await writeKnowledgePackSummary(featureId, runDir, knowledgePackRuntime, run);
+  if (knowledgePackRuntime.mode === 'active_pack') {
+    run.knowledge_pack_loaded_at = new Date().toISOString();
+  }
+  run.knowledge_pack_summary_generated_at = new Date().toISOString();
 
   task.report_state = await classifyReportState(runDir);
   task.current_phase = 'phase_0_runtime_setup';
@@ -205,6 +224,10 @@ async function runSpawnPhase(featureId, runDir, phaseId, post) {
   if ((await fileExists(manifestPath)) && isPhasePast(state.task.current_phase, gate) && !rerunRequested) {
     console.log(`PHASE_ALREADY_COMPLETE: ${phaseId}`);
     return;
+  }
+  if (phaseId === 'phase3') {
+    await preparePhase3Artifacts(featureId, runDir, state);
+    await saveState(state);
   }
 
   const outputPath = await writePhaseManifest(phaseId, featureId, runDir, manifestPath);
@@ -372,9 +395,11 @@ async function postValidatePhase5a(featureId, runDir, state) {
   assertValidation(validateReviewDelta(reviewDeltaContent), 'phase5a review delta');
   assertValidation(roundProgression, 'phase5a round progression');
   const requestFulfillment = await loadRequestFulfillment(featureId, runDir);
+  const coverageLedger = await loadCoverageLedgerDocument(featureId, runDir);
   assertValidation(
     validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaContent, roundProgression.failures, {
       unsatisfiedBlockingRequirements: collectUnsatisfiedBlockingRequirements(requestFulfillment),
+      unresolvedPackRows: collectUnresolvedPackRows(coverageLedger?.candidates || []),
     }),
     'phase5a acceptance gate'
   );
@@ -406,7 +431,11 @@ async function postValidatePhase5b(featureId, runDir, state) {
   const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase5b');
   assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase5b', producedDraftPath: draftPath, expectedDraftPath }), 'phase5b round progression');
   assertValidation(validateDraftCoveragePreservation(beforeContent, afterContent), 'phase5b reviewed coverage preservation');
-  assertValidation(validateCheckpointAudit(checkpointAuditContent), 'phase5b checkpoint audit');
+  const coverageLedger = await loadCoverageLedgerDocument(featureId, runDir);
+  assertValidation(validateCheckpointAudit(checkpointAuditContent, {
+    requiredAnalogRowIds: collectRequiredAnalogRowIds(coverageLedger?.candidates || []),
+    unresolvedBlockingAnalogRowIds: collectUnresolvedBlockingAnalogRowIds(coverageLedger?.candidates || []),
+  }), 'phase5b checkpoint audit');
   assertValidation(validateCheckpointDelta(checkpointDeltaContent), 'phase5b checkpoint delta');
   const requestFulfillment = await loadRequestFulfillment(featureId, runDir);
   const unsatisfiedBlockingRequirements = collectUnsatisfiedBlockingRequirements(requestFulfillment);
@@ -430,6 +459,7 @@ async function postValidatePhase6(runDir, state) {
   const beforeContent = await readRequiredText(beforePath);
   const draftContent = await readRequiredText(draftPath);
   const qualityDeltaContent = await readRequiredText(qualityDeltaPath);
+  const coverageLedger = await loadCoverageLedgerDocument(state.task.feature_id, runDir);
 
   const expectedDraftPath = await readExpectedOutputDraftPath(runDir, 'phase6');
   assertValidation(validateRoundProgression({ task: state.task, phaseId: 'phase6', producedDraftPath: draftPath, expectedDraftPath }), 'phase6 round progression');
@@ -441,6 +471,7 @@ async function postValidatePhase6(runDir, state) {
   assertValidation(validateQualityDelta(qualityDeltaContent, {
     deep_research_topics: Array.isArray(state.task.deep_research_topics) ? state.task.deep_research_topics : [],
     hasSupportingContext: normalizeIssueKeys(state.task.supporting_issue_keys).length > 0,
+    requirePackBackedPreservation: Array.isArray(coverageLedger?.candidates) && coverageLedger.candidates.length > 0,
   }), 'phase6 quality delta');
 
   state.task.current_phase = 'phase_6_quality_refactor';
@@ -455,6 +486,155 @@ function assertValidation(result, label) {
   if (!result.ok) {
     throw new Error(`${label} validation failed: ${result.failures.join('; ')}`);
   }
+}
+
+async function resolveKnowledgePackForTask(task, featureId) {
+  const skillRoot = getSkillRoot();
+  return loadKnowledgePackRuntime({
+    featureId,
+    requestedKnowledgePackKey: task.requested_knowledge_pack_key || task.knowledge_pack_key,
+    featureFamily: task.feature_family,
+    packRootDir: join(skillRoot, 'knowledge-packs'),
+    repoRoot: join(skillRoot, '..', '..', '..'),
+    targetSkillPath: 'workspace-planner/skills/qa-plan-orchestrator',
+    targetSkillName: 'qa-plan-orchestrator',
+    benchmarkProfile: 'qa-plan-v2',
+  });
+}
+
+function buildNullPackSummaryArtifacts(featureId, resolution) {
+  const json = {
+    feature_id: featureId,
+    generated_at: new Date().toISOString(),
+    knowledge_pack_key: null,
+    knowledge_pack_version: null,
+    knowledge_pack_row_count: 0,
+    deep_research_topics: [],
+    retrieval_notes: [],
+    family_counts: {},
+    normalized_row_type_counts: {},
+    warnings: resolution.warnings,
+    mode: 'null_pack',
+  };
+
+  const markdown = `# Knowledge Pack Summary — ${featureId}
+
+- knowledge pack key: none
+- knowledge pack version: none
+- normalized retrieval rows: 0
+- deep research topics: none
+
+## Warnings
+
+${resolution.warnings.length > 0 ? resolution.warnings.map((warning) => `- ${warning}`).join('\n') : '- none'}
+`;
+
+  return { json, markdown };
+}
+
+async function writeKnowledgePackSummary(featureId, runDir, resolution, run) {
+  const contextDir = join(runDir, 'context');
+  const summaryPath = join(contextDir, `knowledge_pack_summary_${featureId}.md`);
+  const summaryJsonPath = join(contextDir, `knowledge_pack_summary_${featureId}.json`);
+  const artifacts = resolution.mode === 'active_pack'
+    ? buildKnowledgePackSummaryArtifacts({
+      featureId,
+      pack: resolution.pack,
+      normalizedRows: resolution.normalizedRows,
+      warnings: resolution.warnings,
+    })
+    : buildNullPackSummaryArtifacts(featureId, resolution);
+  await writeFile(summaryPath, artifacts.markdown, 'utf8');
+  await writeJson(summaryJsonPath, artifacts.json);
+  run.knowledge_pack_summary_artifact = `context/knowledge_pack_summary_${featureId}.md`;
+}
+
+async function preparePhase3Artifacts(featureId, runDir, state) {
+  const contextDir = join(runDir, 'context');
+  const retrievalPath = join(contextDir, `knowledge_pack_retrieval_${featureId}.md`);
+  const retrievalJsonPath = join(contextDir, `knowledge_pack_retrieval_${featureId}.json`);
+  const coverageLedgerPath = join(contextDir, `coverage_ledger_${featureId}.md`);
+  const coverageLedgerJsonPath = join(contextDir, `coverage_ledger_${featureId}.json`);
+  const semanticMode = normalizeSemanticMode(process.env.QA_PLAN_SEMANTIC_MODE);
+
+  const resolution = await resolveKnowledgePackForTask(state.task, featureId);
+  Object.assign(state.task, resolution.taskPatch);
+  state.task.request_materials = [];
+  state.task.request_commands = [];
+  state.task.request_requirements = [];
+  applyRequestModel(state.task, featureId);
+  await writeKnowledgePackSummary(featureId, runDir, resolution, state.run);
+
+  if (resolution.mode !== 'active_pack') {
+    const ledger = buildCoverageLedgerArtifacts({
+      featureId,
+      knowledgePackKey: null,
+      knowledgePackVersion: null,
+      candidates: [],
+    });
+    await writeFile(coverageLedgerPath, ledger.markdown, 'utf8');
+    await writeJson(coverageLedgerJsonPath, ledger.json);
+    state.run.knowledge_pack_retrieval_generated_at = new Date().toISOString();
+    state.run.knowledge_pack_retrieval_mode = 'disabled';
+    state.run.knowledge_pack_semantic_mode = 'disabled';
+    state.run.knowledge_pack_semantic_warning = null;
+    state.run.knowledge_pack_retrieval_artifact = null;
+    state.run.knowledge_pack_index_artifact = null;
+    return;
+  }
+
+  const queryInputs = await buildKnowledgePackQueryInputs({
+    featureId,
+    runDir,
+    task: state.task,
+  });
+
+  let retrievalResult;
+  try {
+    retrievalResult = await retrieveKnowledgePackCoverage({
+      featureId,
+      runDir,
+      pack: resolution.pack,
+      normalizedRows: resolution.normalizedRows,
+      queryInputs,
+      semanticMode,
+    });
+  } catch (error) {
+    throw new Error(`PHASE_3_BLOCKED: qmd BM25 retrieval failed: ${error.message}`);
+  }
+
+  const ledger = buildCoverageLedgerArtifacts({
+    featureId,
+    knowledgePackKey: resolution.pack.pack_key,
+    knowledgePackVersion: resolution.pack.version,
+    candidates: retrievalResult.candidates,
+  });
+  await writeFile(retrievalPath, retrievalResult.retrievalArtifacts.markdown, 'utf8');
+  await writeJson(retrievalJsonPath, retrievalResult.retrievalArtifacts.json);
+  await writeFile(coverageLedgerPath, ledger.markdown, 'utf8');
+  await writeJson(coverageLedgerJsonPath, ledger.json);
+  state.run.knowledge_pack_retrieval_generated_at = new Date().toISOString();
+  state.run.knowledge_pack_retrieval_mode = retrievalResult.retrievalMode;
+  state.run.knowledge_pack_semantic_mode = semanticMode;
+  state.run.knowledge_pack_semantic_warning = retrievalResult.semanticWarning;
+  state.run.knowledge_pack_retrieval_artifact = `context/knowledge_pack_retrieval_${featureId}.md`;
+  state.run.knowledge_pack_index_artifact = 'context/knowledge_pack_qmd.sqlite';
+}
+
+function normalizeSemanticMode(value) {
+  const normalized = String(value || 'disabled').trim().toLowerCase();
+  if (['disabled', 'qmd', 'openclaw_memory'].includes(normalized)) {
+    return normalized;
+  }
+  return 'disabled';
+}
+
+async function loadCoverageLedgerDocument(featureId, runDir) {
+  const jsonPath = join(runDir, 'context', `coverage_ledger_${featureId}.json`);
+  if (!(await fileExists(jsonPath))) {
+    return null;
+  }
+  return JSON.parse(await readFile(jsonPath, 'utf8'));
 }
 
 async function readRequiredText(path) {

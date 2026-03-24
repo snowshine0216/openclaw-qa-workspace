@@ -56,3 +56,23 @@ test('writeArtifactLookup fails when a phase1 required support artifact is missi
 
   await rm(root, { recursive: true, force: true });
 });
+
+test('writeArtifactLookup classifies knowledge-pack summary and retrieval artifacts as workflow context', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'artifact-lookup-'));
+  const projectDir = join(root, 'workspace-planner', 'skills', 'qa-plan-orchestrator', 'runs', 'BCIN-PACK');
+  const contextDir = join(projectDir, 'context');
+  await mkdir(contextDir, { recursive: true });
+  await writeFile(join(contextDir, 'jira_issue_BCIN-PACK.md'), '# Jira\n');
+  await writeFile(join(contextDir, 'knowledge_pack_summary_BCIN-PACK.md'), '# Summary\n');
+  await writeFile(join(contextDir, 'knowledge_pack_retrieval_BCIN-PACK.json'), '{}\n');
+  await writeFile(join(contextDir, 'coverage_ledger_BCIN-PACK.json'), '{}\n');
+
+  await writeArtifactLookup('BCIN-PACK', projectDir);
+  const content = await readFile(join(contextDir, 'artifact_lookup_BCIN-PACK.md'), 'utf8');
+
+  assert.match(content, /knowledge_pack_summary/);
+  assert.match(content, /knowledge_pack_retrieval/);
+  assert.match(content, /coverage_ledger_json/);
+
+  await rm(root, { recursive: true, force: true });
+});

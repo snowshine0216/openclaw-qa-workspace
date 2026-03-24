@@ -29,9 +29,11 @@ grep -q '"current_phase": null' "$run_dir/task.json" || { echo "task should have
 # Test smart_refresh
 echo 'evidence' > "$run_dir/context/jira_issue_BCIN-TEST.md"
 echo 'lookup' > "$run_dir/context/artifact_lookup_BCIN-TEST.md"
+echo 'summary' > "$run_dir/context/knowledge_pack_summary_BCIN-TEST.md"
+echo '{}' > "$run_dir/context/knowledge_pack_summary_BCIN-TEST.json"
 echo 'draft' > "$run_dir/drafts/qa_plan_v1.md"
 echo '{"feature_id":"BCIN-TEST","run_key":"run-2","current_phase":"phase_5_review_refactor","requested_source_families":["jira"]}' > "$run_dir/task.json"
-echo '{"run_key":"run-2","spawn_history":[{"source_family":"jira","artifact_paths":["context/jira_issue_BCIN-TEST.md"]}]}' > "$run_dir/run.json"
+echo '{"run_key":"run-2","spawn_history":[{"source_family":"jira","artifact_paths":["context/jira_issue_BCIN-TEST.md"]}],"knowledge_pack_summary_generated_at":"2026-03-23T00:00:00.000Z","knowledge_pack_summary_artifact":"context/knowledge_pack_summary_BCIN-TEST.md"}' > "$run_dir/run.json"
 
 "$APPLY_SCRIPT" smart_refresh BCIN-TEST "$run_dir" 2>&1 | grep -q 'USER_CHOICE_APPLIED: smart_refresh'
 "$APPLY_SCRIPT" smart_refresh BCIN-TEST "$run_dir" 2>&1 | grep -q 'NEXT_PHASE: phase2'
@@ -39,8 +41,11 @@ echo '{"run_key":"run-2","spawn_history":[{"source_family":"jira","artifact_path
 # Context evidence preserved, artifact_lookup removed
 [ -f "$run_dir/context/jira_issue_BCIN-TEST.md" ] || { echo "jira evidence should be preserved"; exit 1; }
 [ ! -f "$run_dir/context/artifact_lookup_BCIN-TEST.md" ] || { echo "artifact_lookup should be removed"; exit 1; }
+[ -f "$run_dir/context/knowledge_pack_summary_BCIN-TEST.md" ] || { echo "knowledge_pack_summary markdown should be preserved"; exit 1; }
+[ -f "$run_dir/context/knowledge_pack_summary_BCIN-TEST.json" ] || { echo "knowledge_pack_summary json should be preserved"; exit 1; }
 [ "$(ls -A "$run_dir/drafts" 2>/dev/null | wc -l)" -eq 0 ] || { echo "drafts should be empty"; exit 1; }
 grep -q '"current_phase": "phase_1_evidence_gathering"' "$run_dir/task.json" || { echo "task should have current_phase phase_1_evidence_gathering"; exit 1; }
+grep -q '"knowledge_pack_summary_artifact": "context/knowledge_pack_summary_BCIN-TEST.md"' "$run_dir/run.json" || { echo "run should preserve knowledge pack summary artifact"; exit 1; }
 
 # Test invalid mode exits non-zero
 output="$("$APPLY_SCRIPT" invalid_mode BCIN-TEST "$run_dir" 2>&1)" || true

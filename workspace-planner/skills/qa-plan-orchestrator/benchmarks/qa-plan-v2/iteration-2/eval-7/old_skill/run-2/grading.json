@@ -1,48 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "In result.md, the case focus is explicitly named and mapped to concrete defects: \"Cross-section interaction audit catches template × pause-mode and prompt-editor-open states\" and then \"Template × Pause Mode\" (BCIN-7730) plus \"Prompt editor open\" issues (BCIN-7708, BCIN-7709)."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "interaction pair coverage is represented",
-      "passed": false,
-      "evidence": "FAIL: interaction pair coverage is represented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md explicitly frame the work as Phase 5a and reference Phase 5a rubric requirements (including the required \"## Cross-Section Interaction Audit\" section and Phase 5a acceptance/return rule): result.md header \"Phase 5a — Cross-Section Interaction Audit\" and \"Primary phase under test: phase5a\"."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 1,
-    "total": 4,
-    "pass_rate": 0.75
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 1,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
   }
 }

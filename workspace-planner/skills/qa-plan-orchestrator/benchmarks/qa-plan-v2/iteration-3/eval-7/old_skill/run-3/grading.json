@@ -1,48 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "result.md explicitly covers both required interaction pairs under “Benchmark focus (blocking)” and details evidence for each: “template × pause-mode” and “prompt-editor-open state × close/confirm flows”. It further ties them to BCIN-7730, BCIN-7708, and BCIN-7709, showing the cross-section interaction audit topic is explicitly addressed (even though the verdict is FAIL)."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "interaction pair coverage is represented",
-      "passed": false,
-      "evidence": "FAIL: interaction pair coverage is represented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md anchors the evaluation to Phase 5a: “Primary checkpoint under test: Phase 5a … must include ## Cross-Section Interaction Audit … Phase 5a acceptance gate …”. execution_notes.md also states “Key checks performed (phase5a alignment)” and references “review-rubric-phase5a.md”, indicating the output is framed and evaluated against phase5a requirements."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 1,
-    "total": 4,
-    "pass_rate": 0.75
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 1,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
   }
 }

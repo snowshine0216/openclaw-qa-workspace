@@ -10,9 +10,11 @@
     "benchmark:v2:batch": "node benchmarks/qa-plan-v2/scripts/run_batch.mjs",
     "benchmark:v2:family": "node benchmarks/qa-plan-v2/scripts/run_family.mjs",
     "benchmark:v2:run": "node benchmarks/qa-plan-v2/scripts/run_benchmark.mjs",
-    "benchmark:v2:reexecute-offline": "node benchmarks/qa-plan-v2/scripts/run_offline_fallback_ide.mjs",
     "benchmark:v2:aggregate": "node benchmarks/qa-plan-v2/scripts/run_baseline.mjs --aggregate-only",
     "benchmark:v2:verify-fidelity": "node benchmarks/qa-plan-v2/scripts/check_benchmark_fidelity.mjs",
     "benchmark:v2:score": "node benchmarks/qa-plan-v2/scripts/score_iteration.mjs"
+  },
+  "dependencies": {
+    "@tobilu/qmd": "2.0.1"
   }
 }

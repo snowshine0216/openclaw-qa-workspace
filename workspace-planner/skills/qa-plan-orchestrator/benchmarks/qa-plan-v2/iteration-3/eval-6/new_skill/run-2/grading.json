@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4b contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
       "passed": true,
-      "evidence": "PASS: phase4b contract exists"
+      "evidence": "result.md explicitly calls out the case focus and details both requirements: \"Case focus (must be explicitly covered) - **Canonical top-layer grouping without collapsing scenarios**\" and includes an explicit section \"2) “No scenario collapse” (anti-compression) must be preserved\" describing not merging scenarios and preserving subcategory/scenario granularity."
     },
     {
-      "text": "canonical top-layer grouping remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
       "passed": true,
-      "evidence": "PASS: canonical top-layer grouping remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both outputs are centered on Phase 4b and its contract: execution_notes.md states \"Primary phase under test: **phase4b**\" and result.md is titled \"Phase 4b Phase-Contract Check\" and lists the Phase 4b canonical top-layer taxonomy per `phase4b-contract.md`. Although the run is marked BLOCKED for missing artifacts, the produced write-up is aligned to Phase 4b requirements."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

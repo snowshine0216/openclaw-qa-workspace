@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": false,
+      "evidence": "The output explicitly states the focus cannot be shown as covered: “Result: NOT SATISFIED (advisory) — The benchmark focus cannot be shown to be explicitly covered using only the provided blind pre-defect evidence.” It also notes missing evidence for “label visibility rules”, “label density behavior”, and “overlap/collision handling”, and no Phase 4a draft artifact is available to confirm coverage."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The run does not provide a Phase 4a subcategory-first scenario draft; instead it reports an inability to verify alignment: “No Phase 4a draft artifact … is provided in evidence, so Phase 4a alignment cannot be directly verified.” The produced result.md is an evaluation narrative rather than a Phase 4a contract-conforming artifact (no subcategory-first scenarios with atomic steps/observable leaves)."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

@@ -2,14 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   applyRequestModel,
+  defaultRun,
+  defaultTask,
   getNextPhaseRound,
   loadState,
   resolveDefaultRunDir,
   resolveLegacyRunDir,
 } from '../scripts/lib/workflowState.mjs';
+
+const THIS_DIR = fileURLToPath(new URL('.', import.meta.url));
 
 test('resolveDefaultRunDir is repo-root stable regardless of caller cwd', () => {
   const featureId = 'BCIN-ROOT-STABLE';
@@ -18,6 +23,29 @@ test('resolveDefaultRunDir is repo-root stable regardless of caller cwd', () => 
 
   assert.equal(alternatePath, defaultPath);
   assert.match(defaultPath, /workspace-planner\/skills\/qa-plan-orchestrator\/runs\/BCIN-ROOT-STABLE$/);
+});
+
+test('resolveDefaultRunDir ignores canonical skill root override outside snapshots', () => {
+  const previous = process.env.FQPO_CANONICAL_SKILL_ROOT;
+  process.env.FQPO_CANONICAL_SKILL_ROOT = '/tmp/canonical-skill-root';
+
+  try {
+    const runDir = resolveDefaultRunDir('BCIN-OVERRIDE');
+    if (THIS_DIR.includes('/candidate_snapshot/') || THIS_DIR.includes('/champion_snapshot/')) {
+      assert.equal(runDir, '/tmp/canonical-skill-root/runs/BCIN-OVERRIDE');
+    } else {
+      assert.match(
+        runDir,
+        /workspace-planner\/skills\/qa-plan-orchestrator\/runs\/BCIN-OVERRIDE$/,
+      );
+    }
+  } finally {
+    if (previous == null) {
+      delete process.env.FQPO_CANONICAL_SKILL_ROOT;
+    } else {
+      process.env.FQPO_CANONICAL_SKILL_ROOT = previous;
+    }
+  }
 });
 
 test('loadState migrates legacy feature-plan runs into qa-plan-orchestrator runs', async () => {
@@ -149,6 +177,8 @@ test('applyRequestModel parses raw user request text into support issues, conflu
   ]);
   assert.equal(task.supporting_issue_policy, 'context_only_no_defect_analysis');
   assert.ok(task.request_requirements.some((requirement) => requirement.user_text.includes('BCED-2416')));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-report-editor-workstation'));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-library-vs-workstation-gap'));
   assert.ok(task.request_commands.some((command) => command.command_text.includes('tavily-search before confluence')));
 });
 
@@ -163,4 +193,113 @@ test('applyRequestModel preserves same-project supporting issues and does not ad
   assert.deepEqual(task.supporting_issue_keys, ['BCIN-199']);
   assert.deepEqual(task.deep_research_topics, []);
   assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-tool-order'));
+});
+
+test('defaultTask and defaultRun include canonical knowledge-pack runtime fields', () => {
+  const task = defaultTask('BCIN-7000', 'run-7000');
+  const run = defaultRun('run-7000');
+
+  assert.equal(task.feature_family, null);
+  assert.equal(task.knowledge_pack_key, null);
+  assert.equal(task.requested_knowledge_pack_key, null);
+  assert.equal(task.resolved_knowledge_pack_key, null);
+  assert.equal(task.knowledge_pack_resolution_source, null);
+  assert.equal(task.knowledge_pack_version, null);
+  assert.equal(task.knowledge_pack_path, null);
+  assert.equal(task.knowledge_pack_row_count, 0);
+  assert.deepEqual(task.knowledge_pack_deep_research_topics, []);
+
+  assert.equal(run.knowledge_pack_loaded_at, null);
+  assert.equal(run.knowledge_pack_summary_generated_at, null);
+  assert.equal(run.knowledge_pack_retrieval_generated_at, null);
+  assert.equal(run.knowledge_pack_retrieval_mode, null);
+  assert.equal(run.knowledge_pack_semantic_mode, 'disabled');
+  assert.equal(run.knowledge_pack_semantic_warning, null);
+  assert.equal(run.knowledge_pack_summary_artifact, null);
+  assert.equal(run.knowledge_pack_retrieval_artifact, null);
+  assert.equal(run.knowledge_pack_index_artifact, null);
+});
+
+test('applyRequestModel merges explicit and pack-declared deep research topics without duplicates', () => {
+  const task = {
+    feature_id: 'BCIN-7001',
+    deep_research_topics: ['report_editor_library_vs_workstation_gap'],
+    knowledge_pack_deep_research_topics: [
+      'report_editor_workstation_functionality',
+      'report_editor_library_vs_workstation_gap',
+    ],
+  };
+
+  applyRequestModel(task, 'BCIN-7001');
+
+  assert.deepEqual(task.deep_research_topics, [
+    'report_editor_library_vs_workstation_gap',
+    'report_editor_workstation_functionality',
+  ]);
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-report-editor-workstation'));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-library-vs-workstation-gap'));
+});
+
+test('applyRequestModel drops generated pack research requirements when the pack is removed', () => {
+  const task = {
+    feature_id: 'BCIN-7002',
+    deep_research_topics: [],
+    knowledge_pack_deep_research_topics: ['report_editor_workstation_functionality'],
+  };
+
+  applyRequestModel(task, 'BCIN-7002');
+  assert.deepEqual(task.deep_research_topics, ['report_editor_workstation_functionality']);
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-report-editor-workstation'));
+
+  task.knowledge_pack_deep_research_topics = [];
+  task.deep_research_topics = [];
+
+  applyRequestModel(task, 'BCIN-7002');
+
+  assert.deepEqual(task.deep_research_topics, []);
+  assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-report-editor-workstation'));
+  assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-research-tool-order'));
+});
+
+test('applyRequestModel replaces generated supporting-issue materials and requirements while preserving custom entries', () => {
+  const task = {
+    feature_id: 'BCIN-7003',
+    supporting_issue_keys: ['BCIN-10'],
+    request_materials: [
+      {
+        material_id: 'material-custom-note',
+        material_type: 'inline_note',
+        source_value: 'keep me',
+        role: 'operator_override',
+        must_read: true,
+        must_summarize: false,
+      },
+    ],
+    request_requirements: [
+      {
+        requirement_id: 'req-custom-note',
+        kind: 'read_material',
+        user_text: 'keep me',
+        required_phase: 'phase1',
+        required_artifacts: ['context/custom.md'],
+        success_predicate: 'custom requirement remains tracked',
+        blocking_on_missing: true,
+      },
+    ],
+  };
+
+  applyRequestModel(task, 'BCIN-7003');
+  assert.ok(task.request_materials.some((material) => material.material_id === 'material-support-BCIN-10'));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-read-support-issue-BCIN-10'));
+
+  task.supporting_issue_keys = ['BCIN-11'];
+
+  applyRequestModel(task, 'BCIN-7003');
+
+  assert.ok(task.request_materials.some((material) => material.material_id === 'material-custom-note'));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-custom-note'));
+  assert.ok(task.request_materials.some((material) => material.material_id === 'material-support-BCIN-11'));
+  assert.ok(!task.request_materials.some((material) => material.material_id === 'material-support-BCIN-10'));
+  assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-read-support-issue-BCIN-11'));
+  assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-read-support-issue-BCIN-10'));
 });

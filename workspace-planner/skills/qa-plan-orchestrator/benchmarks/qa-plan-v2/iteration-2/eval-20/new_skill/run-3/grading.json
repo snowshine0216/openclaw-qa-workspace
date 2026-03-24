@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "The output states the focus cannot be demonstrated as covered because required Phase 5b artifacts are missing: \"cannot be demonstrated as covered at Phase 5b, because the required Phase 5b artifacts (checkpoint audit/delta + Phase 5b draft) are not present\" and \"no Phase 5b checkpoint artifacts or QA plan drafts are included\". It lists what should be covered, but does not show actual plan content covering formats/entry points/output expectations."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "Both execution_notes.md and result.md are explicitly Phase 5b-oriented and check Phase 5b required artifacts per the rubric: \"Phase alignment check (phase5b)\" and \"What Phase 5b must show (per skill contract)\". The evaluation is framed as a Phase 5b checkpoint enforcement assessment, concluding Phase 5b cannot be evidenced due to missing artifacts."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

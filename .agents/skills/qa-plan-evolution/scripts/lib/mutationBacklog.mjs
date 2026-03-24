@@ -12,17 +12,36 @@ function normalizedSorted(items) {
 
 function bucketRank(bucket) {
   const order = [
-    'developer_artifact_missing',
-    'sdk_or_api_visible_contract_dropped',
-    'interaction_gap',
+    'knowledge_pack_gap',
     'analog_risk_not_gated',
+    'interaction_gap',
     'missing_scenario',
     'scenario_too_shallow',
-    'knowledge_pack_gap',
+    'sdk_or_api_visible_contract_dropped',
+    'developer_artifact_missing',
     'traceability_gap',
   ];
   const index = order.indexOf(bucket);
   return index >= 0 ? index + 1 : order.length + 1;
+}
+
+const MUTATION_CATEGORY_LABELS = [
+  'knowledge_pack_enrichment',
+  'rubric_update',
+  'template_update',
+  'collection_stage',
+];
+
+export function categoryRank(targetFiles) {
+  const files = (targetFiles ?? []).map((f) => String(f).toLowerCase());
+  if (files.some((f) => f.includes('knowledge-pack') || (f.includes('/pack.') && !f.includes('package')))) return 1;
+  if (files.some((f) => f.includes('rubric') || f.includes('phase4a-contract') || f.includes('phase5a') || f.includes('phase5b'))) return 2;
+  if (files.some((f) => f.includes('skill.md') || f.includes('reference.md') || f.includes('template'))) return 3;
+  return 4;
+}
+
+export function categoryLabel(rank) {
+  return MUTATION_CATEGORY_LABELS[rank - 1] ?? 'collection_stage';
 }
 
 function severityRank(severity) {
@@ -134,14 +153,17 @@ export function buildMutationBacklog({ taxonomy, sourceResults }) {
     const evidencePaths = normalizedSorted(
       observations.map((observation) => observation.source_path),
     );
+    const catRank = categoryRank(targetFiles);
     const priority = {
       severity_rank: Math.min(...severities.map((severity) => severityRank(severity))),
+      category_rank: catRank,
       bucket_rank: bucketRank(gap.bucket),
       phase_rank: Math.min(99, ...affectedPhases.map((phase) => phaseRank(phase))),
     };
     return {
       mutation_id: `mut-${index + 1}`,
       root_cause_bucket: gap.bucket,
+      mutation_category: categoryLabel(catRank),
       source_observation_ids: gap.source_observation_ids ?? [],
       target_files: targetFiles,
       expected_gain: gap.summary,

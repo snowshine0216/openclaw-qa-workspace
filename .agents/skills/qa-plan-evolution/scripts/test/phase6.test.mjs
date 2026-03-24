@@ -328,6 +328,85 @@ test('phase6 finalizes rejected run after stop condition is reached', async () =
   }
 });
 
+test('phase6 persists a machine-readable rejected mutation signature for future iterations', async () => {
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-rejected-sig-'));
+  const runKey = 'phase6-rejected-sig';
+
+  try {
+    await mkdir(join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot'), { recursive: true });
+    await mkdir(join(runRoot, 'context'), { recursive: true });
+    await writeFile(
+      join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot', 'reference.md'),
+      '# snapshot\n',
+      'utf8',
+    );
+    await writeJson(join(runRoot, 'task.json'), {
+      run_key: runKey,
+      target_skill_path: FIXTURE,
+      benchmark_profile: 'generic-skill-regression',
+      current_iteration: 1,
+      max_iterations: 10,
+    });
+    await writeJson(join(runRoot, 'run.json'), {
+      consecutive_rejections: 0,
+      rejected_iterations: [],
+      iteration_history: [],
+      champion_archive_history: [],
+      finalized_at: null,
+      notification_pending: null,
+    });
+    await writeJson(join(runRoot, 'context', `mutation_backlog_${runKey}.json`), {
+      mutations: [],
+    });
+    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'candidate_scope.json'), {
+      iteration: 1,
+      candidate_snapshot_path: 'candidates/iteration-1/candidate_snapshot',
+      changed_files: ['reference.md'],
+      mutation: {
+        mutation_id: 'mut-repeat',
+        root_cause_bucket: 'knowledge_pack_gap',
+        source_observation_ids: ['gap-repeat'],
+        evals_affected: ['knowledge_pack_coverage'],
+        target_files: ['fixture/evals/evals.json'],
+      },
+    });
+    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'score.json'), {
+      outcome: {
+        accept: false,
+        scores: {
+          regression_count: 1,
+        },
+      },
+    });
+
+    const result = spawnSync('bash', [
+      PHASE6,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', REPO_ROOT,
+      '--iteration', '1',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 0, result.stderr);
+    const rejected = JSON.parse(
+      await readFile(join(runRoot, 'context', `rejected_mutation_signatures_${runKey}.json`), 'utf8'),
+    );
+    assert.deepEqual(rejected.signatures, [
+      JSON.stringify({
+        root_cause_bucket: 'knowledge_pack_gap',
+        source_observation_ids: ['gap-repeat'],
+        target_files: ['fixture/evals/evals.json'],
+        evals_affected: ['knowledge_pack_coverage'],
+      }),
+    ]);
+    assert.equal(rejected.mutations[0].mutation_id, 'mut-repeat');
+  } finally {
+    await rm(runRoot, { recursive: true, force: true });
+  }
+});
+
 test('phase6 refuses promotion when the accepted scorecard is synthetic', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-synthetic-'));
   const runKey = 'phase6-synthetic';

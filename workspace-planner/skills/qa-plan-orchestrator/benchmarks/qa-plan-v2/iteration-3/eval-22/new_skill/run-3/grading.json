@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": false,
+      "evidence": "The output explicitly lists the case-focus items, but concludes Phase 4a scenario drafting did not demonstrate capturing them: \"Not demonstrated (insufficient evidence in fixture to prove Phase 4a compliance).\" and \"does not include any Phase 4a outputs (e.g., `drafts/qa_plan_phase4a_r1.md`) ... needed to assess whether the orchestrator satisfied the Phase 4a contract.\" It only shows adjacent-issue summaries indicating the topics exist, not that blind scenario drafting captured them."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The result is explicitly framed as Phase 4a and evaluates against the Phase 4a contract: \"RE-P4A-SCENARIO-DRAFT-001 — Phase 4a (Scenario Draft)\" and \"Primary phase under test: **phase4a**\" plus a dedicated \"Phase 4a contract alignment checks\" section describing required Phase 4a artifacts and structure."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

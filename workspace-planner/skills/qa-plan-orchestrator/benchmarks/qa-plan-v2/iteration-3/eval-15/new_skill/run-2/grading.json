@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "The provided outputs explicitly state the Phase 4a planning artifact is missing and therefore coverage cannot be verified: execution_notes.md: \"Missing Phase 4a draft artifact: `drafts/qa_plan_phase4a_r<round>.md`\" and \"These absences prevent verifying that Phase 4a planning explicitly covers: panel-stack composition; embedding lifecycle; regression-sensitive integration states.\" result.md: \"case focus coverage cannot be verified\"."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No Phase 4a output exists in the evidence to evaluate alignment; the result explicitly says alignment cannot be demonstrated: result.md: \"Not satisfied (phase4a contract alignment cannot be demonstrated with provided evidence...)\" and \"No Phase 4a artifact to evaluate\"; also notes missing prerequisites and draft, preventing verification of Phase 4a contract requirements (e.g., subcategory-only)."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

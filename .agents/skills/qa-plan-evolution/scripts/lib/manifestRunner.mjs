@@ -31,6 +31,10 @@ function spawnAndCapture(bin, argv, cwd) {
   };
 }
 
+function shouldFallbackToCodex(run) {
+  return run.status == null && Boolean(run.errorCode);
+}
+
 async function runViaCodex(args, manifestPath, cwd) {
   const codexBin = process.env.CODEX_BIN ?? 'codex';
   const argv = ['exec', '--full-auto', '--sandbox', 'workspace-write'];
@@ -102,21 +106,29 @@ export async function runManifest(manifestPath, options = {}) {
         results.push({ kind: 'openclaw', status: 'completed', stderr: '' });
         continue;
       }
-      const codexResult = await runViaCodex(args, manifestPath, cwd);
-      if (codexResult.status === 'completed') {
+      if (shouldFallbackToCodex(openclawRun)) {
+        const codexResult = await runViaCodex(args, manifestPath, cwd);
+        if (codexResult.status === 'completed') {
+          results.push({
+            kind: 'openclaw_fallback_codex',
+            status: 'completed',
+            stderr: openclawRun.stderr,
+          });
+          continue;
+        }
         results.push({
           kind: 'openclaw_fallback_codex',
-          status: 'completed',
-          stderr: openclawRun.stderr,
+          status: 'failed',
+          stderr:
+            `openclaw failed (error_code=${openclawRun.errorCode ?? 'none'}): ${openclawRun.stderr}\n` +
+            `codex fallback failed: ${codexResult.stderr}`,
         });
         continue;
       }
       results.push({
-        kind: 'openclaw_fallback_codex',
+        kind: 'openclaw',
         status: 'failed',
-        stderr:
-          `openclaw failed (error_code=${openclawRun.errorCode ?? 'none'}): ${openclawRun.stderr}\n` +
-          `codex fallback failed: ${codexResult.stderr}`,
+        stderr: `openclaw failed (exit_status=${openclawRun.status ?? 'none'}): ${openclawRun.stderr}`,
       });
     }
   }

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "The output explicitly enumerates the case focus and assesses each element: \"Case focus to be explicitly covered during Phase 1... Component-stack constraints ... Embedding lifecycle assumptions ... Integration-sensitive customer expectations\" and later provides per-item results: \"Component-stack constraints: Advisory PASS ... Embedding lifecycle assumptions: Advisory PARTIAL ... Integration-sensitive customer expectations: Advisory PARTIAL\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output is framed as a Phase 1 contract check and evaluates Phase 1 responsibilities and deliverables: \"Primary checkpoint under test: phase1\"; \"Phase 1... is responsible for: Generating one spawn request per requested source family...\"; and it references the Phase 1 required artifact: \"Phase 1’s required deliverable is: phase1_spawn_manifest.json\" while noting it is missing and thus cannot be directly verified. This is still aligned with Phase 1 scope/contract."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

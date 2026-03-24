@@ -10,8 +10,8 @@ This case requires `SKILL.md`, `README.md`, `reference.md`, and AGENTS docs to s
 
 Evidence:
 - `skill_snapshot/tests/docsContract.test.mjs:11-29` defines the required docs set and does not include any AGENTS document.
-- `skill_snapshot/references/docs-governance.md:7-11` tracks `SKILL.md`, `reference.md`, `templates/qa-plan-template.md`, `references/qa-plan-contract.md`, and `evals/evals.json`, but no AGENTS doc.
-- `skill_snapshot/references/script-driven-phase0-phase1-design.md:1-7` is only a placeholder; the explicit AGENTS sync rule appears only in the archived design at `skill_snapshot/docs/archive/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md:88-90`.
+- `skill_snapshot/docs/DOCS_GOVERNANCE.md:7-11` tracks `SKILL.md`, `reference.md`, `templates/qa-plan-template.md`, `references/qa-plan-contract.md`, and `evals/evals.json`, but no AGENTS doc.
+- `skill_snapshot/docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md:1-7` is only a placeholder; the explicit AGENTS sync rule appears only in the archived design at `skill_snapshot/docs/archive/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md:88-90`.
 
 Impact:
 - The benchmark expectation "SKILL.md, README.md, reference.md, and AGENTS docs stay aligned" is not explicitly covered by the active documentation package.
@@ -54,11 +54,11 @@ Impact:
 The governance doc still names a contract file that is no longer part of the active docs model.
 
 Evidence:
-- `skill_snapshot/references/docs-governance.md:7-11` says `references/qa-plan-contract.md` is the hard planning contract.
+- `skill_snapshot/docs/DOCS_GOVERNANCE.md:7-11` says `references/qa-plan-contract.md` is the hard planning contract.
 - The active docs/test contract instead centers on phase-scoped references plus `references/context-index-schema.md`; see `skill_snapshot/README.md:27-37` and `skill_snapshot/tests/docsContract.test.mjs:11-29`.
 
 Impact:
-- The stated freshness/update rule in `skill_snapshot/references/docs-governance.md:23-25` is under-specified for the current package.
+- The stated freshness/update rule in `skill_snapshot/docs/DOCS_GOVERNANCE.md:23-25` is under-specified for the current package.
 - This weakens the package’s ability to keep docs synchronized as the phase model evolves.
 
 ## Expectation Assessment
@@ -76,6 +76,6 @@ Impact:
 
 ## Minimal Remediation
 
-- Add the authoritative AGENTS document(s) to the package, or add an active doc that names the canonical AGENTS paths, then extend `references/docs-governance.md` and `tests/docsContract.test.mjs` to enforce AGENTS sync.
+- Add the authoritative AGENTS document(s) to the package, or add an active doc that names the canonical AGENTS paths, then extend `docs/DOCS_GOVERNANCE.md` and `tests/docsContract.test.mjs` to enforce AGENTS sync.
 - Reconcile Phase 0 artifact ownership across `SKILL.md`, `README.md`, and `reference.md` with `scripts/lib/runPhase.mjs` and `scripts/lib/workflowState.mjs`.
 - Reconcile Phase 7 outputs and archive-path behavior across `README.md`, `SKILL.md`, `reference.md`, and `scripts/lib/finalPlanSummary.mjs`.

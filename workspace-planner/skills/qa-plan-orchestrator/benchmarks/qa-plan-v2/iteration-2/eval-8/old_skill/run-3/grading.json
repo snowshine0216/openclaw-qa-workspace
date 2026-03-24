@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "The output explicitly states the benchmark focus and evaluates it: “Benchmark focus: **Review loop does not silently drop evidence-backed nodes**” and later directly answers: “**Does the phase5a review loop prevent silently dropping evidence-backed nodes?** Verdict: **NOT DEMONSTRATED / INCONCLUSIVE** …” It also cites specific evidence-backed nodes (e.g., “Multiple Confirmation Dialogs”) and explains missing artifacts prevent verification."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The result is structured around Phase 5a contract requirements and artifacts: “Primary phase under test: **Phase 5a**”, “Phase 5a checkpoint expectation (contract-derived)”, and it references Phase 5a-specific outputs and gates (“`## Coverage Preservation Audit`”, “`context/review_delta_<feature-id>.md` ending with disposition `accept` or `return phase5a`”, “Phase 5a Acceptance Gate”)."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

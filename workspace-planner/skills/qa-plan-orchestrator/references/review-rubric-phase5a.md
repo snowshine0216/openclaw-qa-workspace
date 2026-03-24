@@ -42,6 +42,7 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 - `accept` means the round passes and clears any pending Phase 5a rerun.
 - `return phase5a` means the round needs another bounded Phase 5a review/refactor pass before handing off to Phase 5b.
 - Phase 5a Acceptance Gate: `accept` is forbidden while any round-integrity or coverage-preservation item remains `rewrite_required` or otherwise unresolved.
+- `accept` is forbidden while any required pack-backed row in `coverage_ledger_<feature-id>.json` remains `unmapped`.
 
 ## Required Sections
 
@@ -97,5 +98,6 @@ Each affected node must record:
 
 - `accept` is forbidden while `request_fulfillment_<feature-id>.json` still contains unsatisfied blocking requirements.
 - `accept` is forbidden while any knowledge-pack capability or required interaction pair lacks a mapped scenario, gate, or explicit exclusion.
+- `Knowledge Pack Coverage Audit` rows must cite the concrete `knowledge_pack_row_id` values that were preserved, mapped, gated, or explicitly excluded.
 - `accept` is forbidden while any `interaction_pairs` entry from the active knowledge pack lacks a cross-section scenario audit entry in `## Cross-Section Interaction Audit`.
 - `accept` is forbidden while any `state_transitions` entry from the active knowledge pack lacks a mapped scenario chain (from-state → trigger → to-state → observable outcome) in the plan.

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "execution_notes.md explicitly states: \"Case focus explicitly covered via fixture adjacency signals: prompt handling; template save; report builder loading; visible report title outcomes\". result.md further enumerates the four focus areas and maps adjacent issues to each (e.g., \"This benchmark checks that Phase 4a scenario drafting ... can capture, at minimum: 1) Prompt handling 2) Template save 3) Report builder loading 4) Visible report title outcomes\")."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both files anchor to phase4a: execution_notes.md says \"Primary phase under test: phase4a\" and result.md labels \"Verdict (phase4a / advisory)\" and includes a dedicated \"Phase 4a alignment\" section referencing `references/phase4a-contract.md` requirements and phase4a workflow (calling scripts/phase4a.sh, producing drafts/qa_plan_phase4a...)."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

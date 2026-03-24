@@ -12,7 +12,7 @@
   - `skill_snapshot/scripts/lib/finalPlanSummary.mjs`
   - `skill_snapshot/scripts/test/phase7.test.sh`
   - `skill_snapshot/tests/benchmarkV2Scorer.test.mjs`
-  - `skill_snapshot/references/qa-plan-benchmark-spec.md`
+  - `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
 - Files produced:
   - `outputs/result.md`
   - `outputs/execution_notes.md`

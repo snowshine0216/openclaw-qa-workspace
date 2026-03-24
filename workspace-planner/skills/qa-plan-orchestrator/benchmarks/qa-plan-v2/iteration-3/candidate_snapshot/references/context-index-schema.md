@@ -91,6 +91,8 @@ Capability families are grouping aids only. Distinct user-visible flows with dif
 - capability or journey
 - recommended coverage type
 - source artifacts
+- `knowledge_pack_row_id` when the candidate originated from a knowledge pack retrieval row
+- retrieval metadata when the candidate originated from `knowledge_pack_retrieval_<feature-id>.json` (`row_type`, `match_method`, `query_source`)
 
 Scenario units and mandatory coverage candidates may overlap, but they are not interchangeable:
 
@@ -98,6 +100,7 @@ Scenario units and mandatory coverage candidates may overlap, but they are not i
 - scenario units preserve testcase granularity
 - priority behavior is unchanged in this pass
 - support issue summaries and deep research artifacts become mandatory coverage candidates when the request requires them
+- knowledge-pack retrieval rows become mandatory coverage candidates when a pack is active, even when they later end as explicit exclusions or release gates
 
 ## Traceability Map
 

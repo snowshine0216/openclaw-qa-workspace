@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
       "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "evidence": "The output explicitly targets the case focus and discusses all named doc categories: \"Case focus: ensure SKILL.md, README.md, reference.md, and AGENTS docs stay aligned.\" It also states AGENTS evidence status: \"No AGENTS documentation was provided in the evidence bundle.\" and includes a dedicated section \"AGENTS docs alignment cannot be verified from evidence\"."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "The result stays within the docs/phase-contract scope and grounds findings in the provided docs evidence: \"Primary phase/checkpoint under test: docs.\" It then bases conclusions on comparisons among SKILL.md/README.md/reference.md across snapshot vs fixture, and does not introduce non-docs-phase claims."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

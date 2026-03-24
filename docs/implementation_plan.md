@@ -2,7 +2,13 @@
 
 ## Overview
 
-Fix ~90% of BCIN-7289 qa-plan gaps by enriching the knowledge pack and strengthening phase rubrics, then document a simplified 3-phase evolution model. Derived from the [review analysis](file:///Users/xuyin/.gemini/antigravity/brain/6622c49b-cac2-4b84-8ed2-f5fde2bde17f/qa_plan_evolution_review.md).
+Fix ~90% of BCIN-7289 qa-plan gaps by enriching the knowledge pack and strengthening phase rubrics, then document a simplified 3-phase evolution model.
+
+Supporting scope on this branch also includes:
+
+- request-driven `qa-plan-v2` benchmark runner/grader changes
+- qmd-backed knowledge-pack retrieval and coverage-ledger runtime plumbing
+- the benchmark manifest/history updates needed to exercise the new validation path
 
 ---
 
@@ -10,7 +16,7 @@ Fix ~90% of BCIN-7289 qa-plan gaps by enriching the knowledge pack and strengthe
 
 ### Knowledge Pack
 
-#### [MODIFY] [pack.json](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json)
+#### [MODIFY] [pack.json](../workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json)
 
 Add the following items derived from the 26 BCIN-7289 defects:
 
@@ -47,7 +53,7 @@ Add the following items derived from the 26 BCIN-7289 defects:
 **New evidence_refs** (4 additions):
 - BCIN-7669, BCIN-7727, BCIN-7730, BCIN-7733
 
-#### [MODIFY] [pack.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.md)
+#### [MODIFY] [pack.md](../workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.md)
 
 Mirror all changes from pack.json in human-readable markdown format.
 
@@ -57,7 +63,7 @@ Mirror all changes from pack.json in human-readable markdown format.
 
 ### Phase 4a Contract
 
-#### [MODIFY] [phase4a-contract.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/references/phase4a-contract.md)
+#### [MODIFY] [phase4a-contract.md](../workspace-planner/skills/qa-plan-orchestrator/references/phase4a-contract.md)
 
 Add to `## Support And Gap Coverage`:
 
@@ -69,7 +75,7 @@ Add to `## Support And Gap Coverage`:
 
 ### Phase 5a Rubric
 
-#### [MODIFY] [review-rubric-phase5a.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5a.md)
+#### [MODIFY] [review-rubric-phase5a.md](../workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5a.md)
 
 Add to `## Request Fulfillment Gate`:
 
@@ -80,7 +86,7 @@ Add to `## Request Fulfillment Gate`:
 
 ### Phase 5b Rubric
 
-#### [MODIFY] [review-rubric-phase5b.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5b.md)
+#### [MODIFY] [review-rubric-phase5b.md](../workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5b.md)
 
 Add new checkpoint after Checkpoint 15:
 
@@ -96,7 +102,7 @@ Add new checkpoint after Checkpoint 15:
 
 ### 3a. Design Doc
 
-#### [NEW] [SIMPLIFIED_EVOLUTION_MODEL.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/docs/SIMPLIFIED_EVOLUTION_MODEL.md)
+#### [NEW] [SIMPLIFIED_EVOLUTION_MODEL.md](../.agents/skills/qa-plan-evolution/docs/SIMPLIFIED_EVOLUTION_MODEL.md)
 
 - **Phase A: Collect Evidence** — read defect report, map to knowledge pack gaps
 - **Phase B: Apply Mutation** — update knowledge pack or phase rubric, verify planner output
@@ -105,9 +111,9 @@ Add new checkpoint after Checkpoint 15:
 
 ---
 
-### 3b. Update [SKILL.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/SKILL.md)
+### 3b. Update [SKILL.md](../.agents/skills/qa-plan-evolution/SKILL.md)
 
-#### [MODIFY] [SKILL.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/SKILL.md)
+#### [MODIFY] [SKILL.md](../.agents/skills/qa-plan-evolution/SKILL.md)
 
 Add a **Quick Start** block at the very top (before `## Required References`), routing new operators to the 3-phase path:
 
@@ -132,9 +138,9 @@ The existing full 7-phase body stays intact underneath — no deletion.
 
 ---
 
-### 3c. Add New [evals.json](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/evals/evals.json) Profile
+### 3c. Add New [evals.json](../.agents/skills/qa-plan-evolution/evals/evals.json) Profile
 
-#### [MODIFY] [evals.json](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/evals/evals.json)
+#### [MODIFY] [evals.json](../.agents/skills/qa-plan-evolution/evals/evals.json)
 
 Add a new `qa-plan-pack-only` profile for simple-path runs (no defect refresh, no replay evals):
 
@@ -169,14 +175,14 @@ Add a new `qa-plan-pack-only` profile for simple-path runs (no defect refresh, n
 
 The two BCIN-7289 stubs are currently `# self` and `# cross` — they are referenced as primary evidence sources in the automation design doc but contain no content.
 
-#### [MODIFY] [BCIN-7289_SELF_TEST_GAP_ANALYSIS.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_SELF_TEST_GAP_ANALYSIS.md)
+#### [MODIFY] [BCIN-7289_SELF_TEST_GAP_ANALYSIS.md](../workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_SELF_TEST_GAP_ANALYSIS.md)
 
 Populate from the existing BCIN-7289 defect report with:
 - Gap taxonomy table (8 buckets)
 - Per-defect gap classification for the 13 open defects
 - Summary of root-cause bucket distribution
 
-#### [MODIFY] [BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md)
+#### [MODIFY] [BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md](../workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md)
 
 Populate with:
 - For each defect: which QA-plan phase should have caught it, and why it didn't
@@ -185,9 +191,9 @@ Populate with:
 
 ---
 
-### 3e. Update [reference.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/reference.md) Operator Note
+### 3e. Update [reference.md](../.agents/skills/qa-plan-evolution/reference.md) Operator Note
 
-#### [MODIFY] [reference.md](file:///Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution/reference.md)
+#### [MODIFY] [reference.md](../.agents/skills/qa-plan-evolution/reference.md)
 
 Add a note under `## Runtime State` → `REPORT_STATE` table:
 
@@ -206,7 +212,7 @@ Add a note under `## Runtime State` → `REPORT_STATE` table:
 
 **qa-plan-evolution tests** (existing, 13 test files):
 ```bash
-cd /Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/qa-plan-evolution && npm test
+cd .agents/skills/qa-plan-evolution && npm test
 ```
 
 These tests validate that phase0 knowledge-pack resolution, gap taxonomy, and scoring still work after our knowledge pack changes. The enriched pack.json must remain valid JSON with the same schema.
@@ -218,6 +224,6 @@ These tests validate that phase0 knowledge-pack resolution, gap taxonomy, and sc
    node -e "JSON.parse(require('fs').readFileSync('workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json'))"
    ```
 
-2. **Rubric review** — The rubric changes are purely additive text (new rules in existing sections). No code references these files programmatically — they are consumed as LLM context during qa-plan planning runs. Review that wording is clear and non-breaking.
+2. **Rubric review** — The rubric changes are additive text (new rules in existing sections). They are consumed as LLM context during qa-plan planning runs, so wording must stay explicit and deterministic.
 
-3. **Benchmark baseline stability** — The knowledge pack and rubric changes do not modify any benchmark infrastructure code. The `iteration-0` baseline in `qa-plan-v2/` remains unchanged. No re-execution needed.
+3. **Benchmark validation** — This branch does modify benchmark infrastructure code. Re-run the targeted benchmark/test slices that exercise the new runner, grader, retrieval, and coverage-ledger paths before relying on updated `qa-plan-v2` outputs.

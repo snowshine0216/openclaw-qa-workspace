@@ -267,6 +267,76 @@ test('phase3 skips mutations whose gap ids were already accepted', async () => {
   }
 });
 
+test('phase3 skips mutations whose signature was already rejected in the same run', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase3-rejected-repo-'));
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase3-rejected-'));
+  const runKey = 'phase3-rejected';
+
+  try {
+    const targetSkillPath = await createTargetSkill(repoRoot);
+    await mkdir(join(runRoot, 'context'), { recursive: true });
+    await writeJson(join(runRoot, 'task.json'), {
+      run_key: runKey,
+      current_iteration: 3,
+      target_skill_path: targetSkillPath,
+    });
+    await writeJson(join(runRoot, 'context', `rejected_mutation_signatures_${runKey}.json`), {
+      signatures: [
+        JSON.stringify({
+          root_cause_bucket: 'knowledge_pack_gap',
+          source_observation_ids: ['gap-repeat'],
+          target_files: [`${targetSkillPath}/evals/evals.json`],
+          evals_affected: ['knowledge_pack_coverage'],
+        }),
+      ],
+      mutations: [],
+    });
+    await writeJson(join(runRoot, 'context', `mutation_backlog_${runKey}.json`), {
+      mutations: [
+        {
+          mutation_id: 'mut-repeat',
+          root_cause_bucket: 'knowledge_pack_gap',
+          source_observation_ids: ['gap-repeat'],
+          evals_affected: ['knowledge_pack_coverage'],
+          priority: { severity_rank: 0, bucket_rank: 1, phase_rank: 4 },
+          target_files: [`${targetSkillPath}/evals/evals.json`],
+          knowledge_pack_delta: 'none',
+          status: 'pending',
+        },
+        {
+          mutation_id: 'mut-fresh',
+          root_cause_bucket: 'interaction_gap',
+          source_observation_ids: ['gap-fresh'],
+          evals_affected: ['interaction_matrix_coverage'],
+          priority: { severity_rank: 1, bucket_rank: 3, phase_rank: 5 },
+          target_files: [`${targetSkillPath}/references/review-rubric-phase5a.md`],
+          knowledge_pack_delta: 'none',
+          status: 'pending',
+        },
+      ],
+    });
+
+    const result = spawnSync('bash', [
+      PHASE3,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '3',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 0);
+    const candidateScope = JSON.parse(
+      await readFile(join(runRoot, 'candidates', 'iteration-3', 'candidate_scope.json'), 'utf8'),
+    );
+    assert.equal(candidateScope.mutation.mutation_id, 'mut-fresh');
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
+    await rm(runRoot, { recursive: true, force: true });
+  }
+});
+
 test('phase3 post writes candidate patch summary after the candidate snapshot is mutated', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase3-post-repo-'));
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase3-post-'));

@@ -1,53 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly states the benchmark focus and addresses both items: \"Benchmark focus: missing scenario generation for template-save and report-builder loading\" and then provides sections \"Template-save / Save-As overwrite...\" and \"Report-builder loading...\" with concrete missing scenarios (Save As→overwrite conflict/confirmation; loading indicators; prompt elements after double-click)."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "template-based creation is captured",
-      "passed": false,
-      "evidence": "FAIL: template-based creation is captured"
-    },
-    {
-      "text": "report builder interaction is captured",
-      "passed": false,
-      "evidence": "FAIL: report builder interaction is captured"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md anchor the evaluation to Phase 4a: execution_notes.md: \"Phase alignment check (phase4a) - The determination is anchored to Phase 4a per references/phase4a-contract.md...\"; result.md: \"Primary phase under test: Phase 4a\" and \"Pass/Fail determination (Phase 4a-aligned)\" with rationale tied to Phase 4a contract requirements (\"atomic action chain\" + \"observable verification leaves\")."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 2,
-    "total": 5,
-    "pass_rate": 0.6
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 5,
-    "errors_encountered": 2,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
   }
 }

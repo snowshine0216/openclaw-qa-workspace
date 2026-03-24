@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
       "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "evidence": "result.md explicitly scopes the required docs: \"Verify that these docs stay aligned: - `SKILL.md` - `README.md` - `reference.md` - AGENTS docs (not present in provided evidence; cannot be evaluated)\" and includes a dedicated section: \"## Scope (required by benchmark)\" plus \"### 4) AGENTS docs: **Cannot be verified from provided evidence**\"."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "The output is framed as a docs-phase contract check and uses the primary phase explicitly: \"Primary phase under test: **docs**.\" It then evaluates cross-document contract alignment (SKILL.md/README.md/reference.md) and reports contract drift and artifact mismatches (e.g., \"`README.md` promises `developer_smoke_test_<feature-id>.md`, but snapshot `reference.md` does not contract it\"), which is consistent with producing a phase-contract alignment assessment rather than unrelated content."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

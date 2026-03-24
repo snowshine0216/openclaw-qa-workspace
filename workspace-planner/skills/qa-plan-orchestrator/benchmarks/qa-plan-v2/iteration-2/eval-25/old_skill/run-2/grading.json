@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
       "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "evidence": "In result.md under “Checkpoint focus coverage (panel-stack, lifecycle boundaries, failure/recovery)”, the output explicitly maps each focus area to Phase 5b rubric checkpoints: (A) panel-stack composition via “Checkpoint 1 Requirements Traceability”, “Checkpoint 3 Integration Validation”, “Checkpoint 12 Contract Testing”; (B) embedding lifecycle boundaries via “Checkpoint 2 Black-Box Behavior Validation”, plus “Checkpoint 12 Contract Testing” and “Checkpoint 3 Integration Validation”; (C) visible failure/recovery outcomes via “Checkpoint 13 Chaos and Resilience”, “Checkpoint 14 Shift-Right Monitoring”, “Checkpoint 15 Final Release Gate”. It also states Phase 5b is a “shipment-checkpoint review + refactor pass.”"
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "result.md is titled “Checkpoint Enforcement (Phase 5b)” and includes an “Evidence-based alignment to Phase 5b” section citing Phase 5b contract requirements (shipment-checkpoint review + refactor pass, required artifacts like checkpoint_audit/checkpoint_delta and drafts/qa_plan_phase5b_r<round>.md, and validators). execution_notes.md also scopes the evaluation to Phase 5b checkpoint enforcement due to blind_pre_defect evidence limits."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

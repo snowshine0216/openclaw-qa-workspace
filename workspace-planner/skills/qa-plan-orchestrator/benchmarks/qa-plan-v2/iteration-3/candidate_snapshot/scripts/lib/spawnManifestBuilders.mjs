@@ -87,7 +87,7 @@ async function buildPhaseRequests(phaseId, featureId, runDir, task, run) {
     if (requestedSources.length === 0) {
       throw new Error('requested_source_families must contain at least one source.');
     }
-    const sourceRequests = requestedSources.map((sourceFamily) => buildPhase1Request(sourceFamily, featureId, runDir, run));
+    const sourceRequests = requestedSources.map((sourceFamily) => buildPhase1Request(sourceFamily, featureId, runDir, run, task));
     const supportingRequests = normalizeIssueKeys(task.supporting_issue_keys).map((supportingIssueKey) => {
       return buildSupportingIssueSpawnRequest({
         featureId,
@@ -125,6 +125,13 @@ async function buildPhaseRequests(phaseId, featureId, runDir, task, run) {
     request.source.topic_requests = topicRequests;
     request.source.output_artifact_paths = [
       `context/coverage_ledger_${featureId}.md`,
+      `context/coverage_ledger_${featureId}.json`,
+      ...(task.knowledge_pack_key
+        ? [
+            `context/knowledge_pack_retrieval_${featureId}.md`,
+            `context/knowledge_pack_retrieval_${featureId}.json`,
+          ]
+        : []),
       ...(topicRequests.length > 0
         ? [
             `context/deep_research_plan_${featureId}.md`,
@@ -142,19 +149,31 @@ async function buildPhaseRequests(phaseId, featureId, runDir, task, run) {
   return [request];
 }
 
-function buildPhase1Request(sourceFamily, featureId, runDir, run) {
+function buildKnowledgePackSource(task = {}, featureId) {
+  const active = Boolean(task.knowledge_pack_key);
+  return {
+    knowledge_pack_key: task.knowledge_pack_key || null,
+    knowledge_pack_version: task.knowledge_pack_version || null,
+    knowledge_pack_summary_path: active ? `context/knowledge_pack_summary_${featureId}.md` : null,
+    knowledge_pack_retrieval_path: active ? `context/knowledge_pack_retrieval_${featureId}.md` : null,
+    knowledge_pack_active: active,
+  };
+}
+
+function buildPhase1Request(sourceFamily, featureId, runDir, run, task) {
   const request = normalizeSpawnInput({
     agent_id: DEFAULT_AGENT_ID,
     mode: DEFAULT_MODE,
     runtime: DEFAULT_RUNTIME,
     label: `${sourceFamily}-${featureId}`,
-    task: buildPhase1Task(sourceFamily, featureId, runDir, Boolean(run.has_supporting_artifacts)),
+    task: buildPhase1Task(sourceFamily, featureId, runDir, Boolean(run.has_supporting_artifacts), task),
     attachments: [],
     source_kind: 'feature-qa-planning',
     source: {
       kind: 'feature-qa-planning',
       source_family: sourceFamily,
       feature_id: featureId,
+      ...buildKnowledgePackSource(task, featureId),
     },
   });
   return request.requests[0];
@@ -178,6 +197,7 @@ function buildSingleRequest(phaseId, featureId, runDir, task) {
       feature_id: featureId,
       input_draft_path: paths.inputDraftPath || '',
       output_draft_path: paths.outputDraftPath || '',
+      ...buildKnowledgePackSource(task, featureId),
     },
   });
   return request.requests[0];
@@ -211,15 +231,21 @@ function buildPhase1ArtifactRequirements(sourceFamily, featureId, runDir, hasSup
   return 'Save required artifacts under context/ per the context-coverage-contract.';
 }
 
-function buildPhase1Task(sourceFamily, featureId, runDir, hasSupportingArtifacts) {
+function buildPhase1Task(sourceFamily, featureId, runDir, hasSupportingArtifacts, task = {}) {
   const refBlock = getPhaseReferenceInstructions('phase1', SKILL_ROOT);
   const artifactReqs = buildPhase1ArtifactRequirements(sourceFamily, featureId, runDir, hasSupportingArtifacts);
+  const knowledgePackNote = task.knowledge_pack_key
+    ? `Knowledge pack is active: ${task.knowledge_pack_key}@${task.knowledge_pack_version || 'unknown'}.
+- Read ${runDir}/context/knowledge_pack_summary_${featureId}.md for pack-aware coverage obligations.
+- Do not read raw knowledge-packs/${task.knowledge_pack_key}/pack.json directly in Phase 1.`
+    : 'No active knowledge pack is resolved for this run.';
   return `Role: ${sourceFamily} evidence sub-agent for feature QA planning.
 
 Feature ID: ${featureId}
 Run directory: ${runDir}
 Requested source family: ${sourceFamily}
 Supporting artifacts declared: ${hasSupportingArtifacts ? 'yes' : 'no'}
+${knowledgePackNote}
 
 ${refBlock}
 
@@ -474,9 +500,12 @@ function buildPhase3Description(featureId, runDir, task) {
   const topics = Array.isArray(task.deep_research_topics) && task.deep_research_topics.length > 0
     ? task.deep_research_topics
     : [];
+  const packPrelude = task.knowledge_pack_key
+    ? `Read ${runDir}/context/knowledge_pack_summary_${featureId}.md, ${runDir}/context/knowledge_pack_retrieval_${featureId}.md, and keep ${runDir}/context/coverage_ledger_${featureId}.json aligned with any pack-backed mapping changes. `
+    : '';
   if (topics.length === 0) {
-    return `Read ${runDir}/context/artifact_lookup_${featureId}.md and write ${runDir}/context/coverage_ledger_${featureId}.md. Do not invent deep research unless the user request explicitly required it.`;
+    return `${packPrelude}Read ${runDir}/context/artifact_lookup_${featureId}.md and write ${runDir}/context/coverage_ledger_${featureId}.md. Do not invent deep research unless the user request explicitly required it.`;
   }
   const topicList = topics.join(' and ');
-  return `Read ${runDir}/context/artifact_lookup_${featureId}.md, write ${runDir}/context/deep_research_plan_${featureId}.md, perform Tavily-first deep research for ${topicList}, record the actual execution order in ${runDir}/context/deep_research_execution_${featureId}.json, use Confluence fallback only when the Tavily artifact records insufficiency, write ${runDir}/context/deep_research_synthesis_report_editor_${featureId}.md, and then write ${runDir}/context/coverage_ledger_${featureId}.md.`;
+  return `${packPrelude}Read ${runDir}/context/artifact_lookup_${featureId}.md, write ${runDir}/context/deep_research_plan_${featureId}.md, perform Tavily-first deep research for ${topicList}, record the actual execution order in ${runDir}/context/deep_research_execution_${featureId}.json, use Confluence fallback only when the Tavily artifact records insufficiency, write ${runDir}/context/deep_research_synthesis_report_editor_${featureId}.md, and then write ${runDir}/context/coverage_ledger_${featureId}.md and ${runDir}/context/coverage_ledger_${featureId}.json.`;
 }

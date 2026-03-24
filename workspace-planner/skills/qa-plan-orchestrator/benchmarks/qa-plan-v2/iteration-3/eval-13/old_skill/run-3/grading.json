@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly states the blocking focus and evaluates cross-feature non-regression: \"Improvements for the `report-editor` feature family must not regress a different feature planning flow.\" It then argues compatibility with the other planning flow (embedding/migration-shell) and lists preserved elements: \"Concrete cross-feature elements preserved (non-regression signals) ... toggle/routing structure ... performance section framing ... native integration / menu parity emphasis.\""
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md constrain themselves to holdout-phase evaluation and provided evidence only: execution_notes.md: \"Provided an evidence-based verdict only; did not claim to run phase scripts or generate run artifacts.\" result.md: \"This output is a holdout-phase regression verdict based strictly on provided evidence. It does not attempt to execute phases, spawn subagents, or produce runtime artifacts.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

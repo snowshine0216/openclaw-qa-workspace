@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "developer smoke artifact generation is implemented",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
       "passed": true,
-      "evidence": "PASS: developer smoke artifact generation is implemented"
+      "evidence": "result.md explicitly covers this focus: it states the checklist is \"derived from P1 and `[ANALOG-GATE]` scenarios\" and cites code-level enforcement in `skill_snapshot/scripts/lib/finalPlanSummary.mjs`: \"extractDeveloperSmokeRows() filters to scenarios that are `<P1>` or contain `[ANALOG-GATE]`\" and \"writes `context/developer_smoke_test_<feature-id>.md`\"."
     },
     {
-      "text": "final summary generation exists",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
       "passed": true,
-      "evidence": "PASS: final summary generation exists"
-    },
-    {
-      "text": "developer smoke output derives from analog gates or P1",
-      "passed": true,
-      "evidence": "PASS: developer smoke output derives from analog gates or P1"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md and execution_notes.md both tie the checkpoint to Phase 7: execution_notes.md says it verified \"Phase 7 contract alignment\" and the \"developer smoke checklist ... during Phase 7\"; result.md says the smoke output \"is produced as part of Phase 7 finalization tooling (`finalPlanSummary.mjs`), consistent with the Phase 7 contract\" and cites `skill_snapshot/SKILL.md` and `skill_snapshot/reference.md` for Phase 7 outputs/gating."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

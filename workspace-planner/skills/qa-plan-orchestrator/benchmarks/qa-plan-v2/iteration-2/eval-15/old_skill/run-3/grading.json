@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "The run output does not include an actual Phase 4a draft (explicitly noted in execution_notes.md: \"No Phase 4a run outputs were provided ... Therefore, assessment is limited to contract/workflow sufficiency rather than verifying the actual drafted scenario content for panel-stack composition, embedding lifecycle, and regression-sensitive integration states.\"). result.md similarly concedes it is \"not provable from provided evidence\" that scenarios enumerate panel-stack composition, lifecycle events, and integration/regression states. Therefore the case focus is not explicitly demonstrated in produced planning content; only contract-level capability is asserted."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md evaluates alignment specifically to Phase 4a artifacts and contract: it references Phase 4a contract requirements (subcategory-only QA draft, atomic steps, validators like \"validate_phase4a_subcategory_draft\"), and describes the intended orchestration flow around phase4a.sh. execution_notes.md states the review was of the Phase 4a contract and orchestrator workflow rules and confirms \"contract alignment to Phase 4a\" (while noting missing concrete Phase 4a outputs). This aligns the provided outputs (execution_notes.md/result.md) to the Phase 4a phase-contract context."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

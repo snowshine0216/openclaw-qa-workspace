@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "In result.md, the case focus is explicitly stated under “Case focus (must be preserved before scenario drafting)” listing “1) Banding requirements 2) Style constraints (format/colors) 3) Rendering assumptions…”. It further reiterates Phase 1 must preserve context by routing evidence to capture “row vs column banding”, “color/formatting controls”, “header-based banding application behavior”, and “rendering behavior/assumptions”, and notes scenarios are not drafted in Phase 1."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output frames itself as Phase 1 only: title “Phase 1 Context Intake Contract Check”, scope “Primary phase under test: Phase 1”, and “Phase 1 contract alignment (what Phase 1 must ensure)” describing spawn/evidence intake rather than scenario drafting. It also states “Output is intentionally limited to Phase 1 contract verification… and does not draft scenarios”."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

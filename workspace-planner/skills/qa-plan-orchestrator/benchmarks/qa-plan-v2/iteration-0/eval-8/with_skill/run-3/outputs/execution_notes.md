@@ -10,7 +10,7 @@
 - `skill_snapshot/references/review-rubric-phase5a.md`
 - `skill_snapshot/references/subagent-quick-checklist.md`
 - `skill_snapshot/tests/planValidators.test.mjs`
-- `skill_snapshot/references/qa-plan-benchmark-spec.md`
+- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
 - `inputs/fixtures/BCIN-7289-defect-analysis-run/source/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
 - `inputs/fixtures/BCIN-7289-defect-analysis-run/source/BCIN-7289_SELF_TEST_GAP_ANALYSIS.md`
 - `inputs/fixtures/BCIN-7289-defect-analysis-run/source/BCIN-7289_REVIEW_SUMMARY.md`

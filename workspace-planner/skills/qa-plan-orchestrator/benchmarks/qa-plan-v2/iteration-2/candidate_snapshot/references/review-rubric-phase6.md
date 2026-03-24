@@ -30,6 +30,7 @@ Produce the final layered QA plan after Phase 5b and enforce final-quality struc
 
 - preserve reviewed coverage scope from Phase 5b unless an explicit exclusion is carried with evidence
 - preserve support-derived scenarios, Workstation functionality scenarios, and Library-vs-Workstation gap scenarios through the final cleanup pass
+- preserve pack-backed scenarios through the final cleanup pass and record that preservation explicitly in `quality_delta_<feature-id>.md`
 
 ## Required `quality_delta_<feature-id>.md` Sections
 
@@ -39,3 +40,4 @@ Produce the final layered QA plan after Phase 5b and enforce final-quality struc
 - `## Verdict`
 
 The final layer audit must explicitly note that support-derived coverage and deep-research-backed coverage were preserved.
+When `coverage_ledger_<feature-id>.json` contains pack-backed candidates, `quality_delta_<feature-id>.md` must explicitly state that pack-backed scenarios were preserved.

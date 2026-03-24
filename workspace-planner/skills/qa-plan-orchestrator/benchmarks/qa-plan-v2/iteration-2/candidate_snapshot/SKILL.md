@@ -93,6 +93,7 @@ See `README.md` for the phase-to-reference mapping table.
 - Entry: `scripts/phase1.sh`
 - Work: generate one spawn request per requested source family plus support-only Jira digestion requests when provided
 - Output: `phase1_spawn_manifest.json`
+- Contract note: supporting issue summaries must explicitly state the issues remain `context_only_no_defect_analysis` context evidence and are never defect-analysis triggers.
 - `--post`: validate spawn policy, evidence completeness, support relation map, support summaries, and non-defect routing. If validation fails, the script exits `2` and prints `REMEDIATION_REQUIRED: <source_family>`
 
 ### Phase 2
@@ -104,8 +105,9 @@ See `README.md` for the phase-to-reference mapping table.
 ### Phase 3
 
 - Entry: `scripts/phase3.sh`
-- Work: spawn Tavily-first deep-research requests for required topics and use the resulting artifacts to drive coverage mapping
+- Work: spawn Tavily-first deep-research requests for required topics and use the resulting artifacts to drive coverage mapping; when a knowledge pack is active, index pack rows via `@tobilu/qmd` BM25 (collection created at runtime, no manual `qmd collection add` required)
 - Output: `phase3_spawn_manifest.json`
+- Contract note: the written research artifacts must explicitly record Tavily-first ordering, and any Confluence usage must be framed as fallback-only with a recorded insufficiency reason.
 - `--post`: validate `context/coverage_ledger_<feature-id>.md`, Tavily-first research artifacts, optional Confluence fallback ordering, synthesis output, and sync the artifact lookup
 
 ### Phase 4a

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "In result.md under “1) Focus explicitly covered: REPORT_STATE and resume semantics remain stable (BLOCKING)”, the run states: “REPORT_STATE taxonomy and meaning is defined (FINAL_EXISTS / DRAFT_EXISTS / CONTEXT_ONLY / FRESH) …” and “Resume semantics for drafts are explicitly part of the contract via selected_mode including resume (for DRAFT_EXISTS) and the rule ‘Continue from current state. No reset.’” Execution_notes.md also says Phase 0 was verified to include “REPORT_STATE classification” and “deterministic routing semantics for full_regenerate / smart_refresh / reuse / resume”."
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md: “./outputs/result.md (contract-focused benchmark result for phase0)” and “Checks performed (phase0 only)”. result.md section “2) Output aligns with primary phase: phase0 (BLOCKING)” states “Phase 0 responsibilities and required artifacts are explicitly enumerated” and concludes “This benchmark deliverable stays at phase0 contract verification … which matches the benchmark requirement.”"
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

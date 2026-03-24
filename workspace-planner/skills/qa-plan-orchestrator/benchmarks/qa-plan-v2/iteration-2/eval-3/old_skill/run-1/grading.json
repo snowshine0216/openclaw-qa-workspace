@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "tavily-search is recorded before confluence fallback",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
       "passed": true,
-      "evidence": "PASS: tavily-search is recorded before confluence fallback"
+      "evidence": "In result.md, the output explicitly addresses the case focus and cites the contract: it states Phase 3 work is to “spawn Tavily-first deep-research requests” and that post validations include “optional Confluence fallback ordering.” It also asserts the ordering rule: “run tavily-search first” and “use Confluence only as a recorded fallback” with “record the fallback reason.”"
     },
     {
-      "text": "deep research ordering is documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
       "passed": true,
-      "evidence": "PASS: deep research ordering is documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The output is organized around Phase 3 as primary phase under test and explains Phase 3 entry/work/output and validations. It lists Phase 3 artifacts/outputs (e.g., “phase3_spawn_manifest.json”, coverage ledger, deep research plan, synthesis report) and ties the Tavily-first/Confluence-fallback rule to Phase 3 responsibilities and Phase 3 --post validation scope."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

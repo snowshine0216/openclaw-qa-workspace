@@ -1,0 +1,49 @@
+{
+  "feature_id": "BCIN-976",
+  "exported_at": "2026-03-21T05:20:34Z",
+  "source_issue_key": "BCIN-976",
+  "issue_type": "Feature",
+  "created": "2025-08-29T01:51:13.116-0400",
+  "labels": [
+    "InternalUXReviewed_PendoEmbeddingReviewed",
+    "Library_and_Dashboards",
+    "Report"
+  ],
+  "customer_fields": {
+    "customfield_10355": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "{ Amica Mutual Insurance - CS0975004 }; { Printemps - CS0852360 }; { Stuller, Inc. - CS0845181 }; { twinformatics GmbH - CS0952585 }"
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_10586": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "{ Printemps - CS0852360 }"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "customer_signal_present": true,
+  "linked_issue_count": 0,
+  "subtask_count": 0,
+  "customer_issue_policy": "all_customer_issues_only",
+  "notes": "Feature carries explicit customer references in Jira custom fields."
+}

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase6 quality rubric exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
       "passed": true,
-      "evidence": "PASS: phase6 quality rubric exists"
+      "evidence": "result.md explicitly states the Phase 6 focus and enumerates what must be demonstrated: “This benchmark’s Phase 6 focus is: **‘final quality pass preserves layering and executable wording.’**” and later “And Phase 6’s quality pass must demonstrably: 1. **Preserve final layering** … 3. **Preserve executable wording quality** …”. Although it cannot verify due to missing artifacts, the focus is explicitly covered in the output."
     },
     {
-      "text": "executable wording/quality pass remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
       "passed": true,
-      "evidence": "PASS: executable wording/quality pass remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md and result.md are centered on Phase 6 contract outputs and rubric: “Checked the Phase 6 contract… Phase 6 entry/outputs: `phase6_spawn_manifest.json` … requiring `drafts/qa_plan_phase6_r<round>.md` + `context/quality_delta_<feature-id>.md`.” and “Primary phase targeted: **Phase 6** (quality polish).” The verdict and evidence-gap analysis are framed specifically around missing Phase 6 artifacts."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

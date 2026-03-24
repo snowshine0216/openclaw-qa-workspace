@@ -56,6 +56,8 @@ test('buildSupportingIssueSpawnRequest emits requirement trace ids and output ar
     'context/supporting_issue_summary_BCIN-7289.md',
   ]);
   assert.match(request.openclaw.args.task, /context_only_no_defect_analysis/);
+  assert.match(request.openclaw.args.task, /never become defect-analysis triggers/i);
+  assert.match(request.openclaw.args.task, /aggregate support summary/i);
 });
 
 test('buildDeepResearchSpawnRequest emits tavily-first ordering and output artifacts', () => {
@@ -76,6 +78,8 @@ test('buildDeepResearchSpawnRequest emits tavily-first ordering and output artif
     'context/deep_research_tavily_report_editor_workstation_BCIN-7289.md',
     'context/deep_research_confluence_report_editor_workstation_BCIN-7289.md',
   ]);
+  assert.match(request.openclaw.args.task, /explicitly record Tavily-first ordering/i);
+  assert.match(request.openclaw.args.task, /fallback reason/i);
 });
 
 test('phase4b manifest task includes SUBAGENT_QUICK_CHECKLIST preflight block', async () => {

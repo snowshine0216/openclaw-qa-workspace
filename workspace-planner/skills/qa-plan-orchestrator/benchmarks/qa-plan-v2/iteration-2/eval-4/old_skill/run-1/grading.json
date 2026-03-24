@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "result.md explicitly reports this focus as not met in the replayed Phase 4a lineage: “Therefore: the Phase 4a output … did *not* satisfy the Phase 4a contract requirement to make SDK/UI-visible outcomes explicit.” and under the expectation: “FAIL (blocking) … the plan lacked the verification leaf asserting correct window title.”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "SDK/API visible outcomes are called out",
-      "passed": true,
-      "evidence": "PASS: SDK/API visible outcomes are called out"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is explicitly scoped to phase4a (“Primary phase under test - phase4a”) and evaluates compliance against Phase 4a contract duties (“Phase 4a alignment check (contract compliance)”). It also states: “PASS (scope alignment) … evidence and failure attribution are explicitly centered on Phase 4a responsibilities.”"
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

@@ -21,11 +21,40 @@
  */
 
 const DEFAULT_MAX_TOKENS = 16384;
+const DEFAULT_RETRY_ATTEMPTS = 3;
+const DEFAULT_RETRY_BASE_DELAY_MS = 1000;
+const DEFAULT_REQUEST_TIMEOUT_MS = 45000;
+const RETRYABLE_STATUS_CODES = new Set([408, 429, 500, 502, 503, 504]);
 
 function getMaxTokens() {
   const raw = process.env.BENCHMARK_LLM_MAX_TOKENS;
   const n = Number(raw);
   return Number.isFinite(n) && n > 0 ? n : DEFAULT_MAX_TOKENS;
+}
+
+function getRetryAttempts() {
+  const raw = Number(process.env.BENCHMARK_LLM_RETRY_ATTEMPTS);
+  return Number.isFinite(raw) && raw >= 1
+    ? Math.floor(raw)
+    : DEFAULT_RETRY_ATTEMPTS;
+}
+
+function getRetryBaseDelayMs() {
+  const raw = Number(process.env.BENCHMARK_LLM_RETRY_BASE_DELAY_MS);
+  return Number.isFinite(raw) && raw >= 0
+    ? raw
+    : DEFAULT_RETRY_BASE_DELAY_MS;
+}
+
+function getRequestTimeoutMs() {
+  const raw = Number(process.env.BENCHMARK_LLM_REQUEST_TIMEOUT_MS);
+  return Number.isFinite(raw) && raw > 0
+    ? raw
+    : DEFAULT_REQUEST_TIMEOUT_MS;
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function detectProvider() {
@@ -47,17 +76,84 @@ export function resolveModel(defaultModel) {
   return process.env.BENCHMARK_LLM_MODEL || defaultModel;
 }
 
-async function postJson(url, headers, body) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...headers },
-    body: JSON.stringify(body),
-  });
-  const text = await response.text();
-  if (!response.ok) {
-    throw new Error(`LLM API ${response.status}: ${text.slice(0, 500)}`);
+function buildHttpError(status, text) {
+  const error = new Error(`LLM API ${status}: ${text.slice(0, 500)}`);
+  error.status = status;
+  error.responseText = text;
+  return error;
+}
+
+function isRetryableLlmError(error) {
+  if (RETRYABLE_STATUS_CODES.has(Number(error?.status))) {
+    return true;
   }
-  return JSON.parse(text);
+  const message = String(error?.message || '').toLowerCase();
+  return (
+    message.includes('fetch failed')
+    || message.includes('network error')
+    || message.includes('timed out')
+    || message.includes('upstream request failed')
+    || message.includes('upstream stream ended')
+    || message.includes('econnreset')
+    || error?.name === 'AbortError'
+  );
+}
+
+async function withRetry(operation) {
+  const attempts = getRetryAttempts();
+  const baseDelayMs = getRetryBaseDelayMs();
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts || !isRetryableLlmError(error)) {
+        throw error;
+      }
+      const sleepMs = baseDelayMs * (2 ** (attempt - 1));
+      if (sleepMs > 0) {
+        await delay(sleepMs);
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+async function postJson(url, headers, body) {
+  return withRetry(async () => {
+    let response;
+    const controller = new AbortController();
+    const timeoutMs = getRequestTimeoutMs();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+    } catch (error) {
+      const wrapped = new Error(
+        error?.name === 'AbortError'
+          ? `LLM request timed out after ${timeoutMs}ms`
+          : `LLM fetch failed: ${error.message}`,
+      );
+      wrapped.name = error?.name || 'Error';
+      wrapped.cause = error;
+      throw wrapped;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw buildHttpError(response.status, text);
+    }
+    return JSON.parse(text);
+  });
 }
 
 /**

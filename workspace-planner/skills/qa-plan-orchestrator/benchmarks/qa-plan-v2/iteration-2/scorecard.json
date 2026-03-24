@@ -15,7 +15,7 @@
     "blind_pre_defect_non_regression": true,
     "retrospective_replay_improved": false,
     "holdout_regression_non_regression": true,
-    "non_target_family_non_regression": true,
+    "non_target_family_non_regression": false,
     "policy": {
       "require_blocking_cases_pass": true,
       "require_non_decreasing_blind_score": true,
@@ -30,12 +30,12 @@
       "blind_pre_defect": {
         "eval_count": 25,
         "run_count": 75,
-        "mean_pass_rate": 1
+        "mean_pass_rate": 0.6867
       },
       "retrospective_replay": {
         "eval_count": 6,
         "run_count": 18,
-        "mean_pass_rate": 0.85
+        "mean_pass_rate": 0.6944
       },
       "holdout_regression": {
         "eval_count": 2,
@@ -47,12 +47,12 @@
       "blind_pre_defect": {
         "eval_count": 25,
         "run_count": 75,
-        "mean_pass_rate": 1
+        "mean_pass_rate": 0.58
       },
       "retrospective_replay": {
         "eval_count": 6,
         "run_count": 18,
-        "mean_pass_rate": 0.85
+        "mean_pass_rate": 0.8611
       },
       "holdout_regression": {
         "eval_count": 2,
@@ -64,12 +64,12 @@
       "blind_pre_defect": {
         "eval_count_delta": 0,
         "run_count_delta": 0,
-        "mean_pass_rate": 0
+        "mean_pass_rate": 0.1067
       },
       "retrospective_replay": {
         "eval_count_delta": 0,
         "run_count_delta": 0,
-        "mean_pass_rate": 0
+        "mean_pass_rate": -0.1667
       },
       "holdout_regression": {
         "eval_count_delta": 0,
@@ -83,37 +83,37 @@
       "blind_pre_defect": {
         "docs": {
           "run_count": 3,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.3333
         },
         "export": {
           "run_count": 9,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.7222
         },
         "modern-grid": {
           "run_count": 12,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.875
         },
         "native-embedding": {
           "run_count": 9,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.5
         },
         "report-editor": {
           "run_count": 24,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6458
         },
         "search-box-selector": {
           "run_count": 6,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6667
         },
         "visualization": {
           "run_count": 12,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.7917
         }
       },
       "retrospective_replay": {
         "report-editor": {
           "run_count": 18,
-          "mean_pass_rate": 0.85
+          "mean_pass_rate": 0.6944
         }
       },
       "holdout_regression": {
@@ -127,37 +127,37 @@
       "blind_pre_defect": {
         "docs": {
           "run_count": 3,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6667
         },
         "export": {
           "run_count": 9,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.9444
         },
         "modern-grid": {
           "run_count": 12,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6667
         },
         "native-embedding": {
           "run_count": 9,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6111
         },
         "report-editor": {
           "run_count": 24,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.6042
         },
         "search-box-selector": {
           "run_count": 6,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.1667
         },
         "visualization": {
           "run_count": 12,
-          "mean_pass_rate": 1
+          "mean_pass_rate": 0.3333
         }
       },
       "retrospective_replay": {
         "report-editor": {
           "run_count": 18,
-          "mean_pass_rate": 0.85
+          "mean_pass_rate": 0.8611
         }
       },
       "holdout_regression": {
@@ -171,37 +171,37 @@
       "blind_pre_defect": {
         "docs": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": -0.3334
         },
         "export": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": -0.2222
         },
         "modern-grid": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": 0.2083
         },
         "native-embedding": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": -0.1111
         },
         "report-editor": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": 0.0416
         },
         "search-box-selector": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": 0.5
         },
         "visualization": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": 0.4584
         }
       },
       "retrospective_replay": {
         "report-editor": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": -0.1667
         }
       },
       "holdout_regression": {
@@ -214,6 +214,6 @@
   },
   "decision": {
     "result": "reject",
-    "reason": "One or more acceptance checks failed. Non-target family regressions: none."
+    "reason": "One or more acceptance checks failed. Non-target family regressions: blind_pre_defect:docs(-0.3334), blind_pre_defect:export(-0.2222), blind_pre_defect:native-embedding(-0.1111)."
   }
 }

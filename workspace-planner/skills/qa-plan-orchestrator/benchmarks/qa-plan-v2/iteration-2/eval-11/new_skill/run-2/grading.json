@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "developer smoke artifact generation is implemented",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
       "passed": true,
-      "evidence": "PASS: developer smoke artifact generation is implemented"
+      "evidence": "result.md explicitly verifies this: it states Phase 7 produces `developer_smoke_test_<feature-id>.md` “derived from P1 and `[ANALOG-GATE]` scenarios” and cites `skill_snapshot/scripts/lib/finalPlanSummary.mjs` which “extracts rows where scenario lines are either `<P1>` or contain `[ANALOG-GATE]`” and writes `developer_smoke_test_<featureId>.md`."
     },
     {
-      "text": "final summary generation exists",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
       "passed": true,
-      "evidence": "PASS: final summary generation exists"
-    },
-    {
-      "text": "developer smoke output derives from analog gates or P1",
-      "passed": true,
-      "evidence": "PASS: developer smoke output derives from analog gates or P1"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md sets “Primary phase under test: Phase 7”. result.md section “Alignment with primary phase: Phase 7” ties developer smoke checklist generation to Phase 7 responsibilities and to `finalPlanSummary.mjs` invoked in Phase 7, generating `context/final_plan_summary_<feature-id>.md` and `context/developer_smoke_test_<feature-id>.md` as Phase 7 artifacts."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

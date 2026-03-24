@@ -1,53 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "execution_notes.md: \"Case focus explicitly covered: **missing scenario generation for template-save and report-builder loading**.\" result.md: \"This benchmark’s focus is explicitly: **missing scenario generation for template-save and report-builder loading**.\" It then details template-save gaps (BCIN-7669/7667/7688) and builder-loading gaps (BCIN-7727/7668)."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "template-based creation is captured",
-      "passed": false,
-      "evidence": "FAIL: template-based creation is captured"
-    },
-    {
-      "text": "report builder interaction is captured",
-      "passed": false,
-      "evidence": "FAIL: report builder interaction is captured"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md states: \"**Primary phase under test:** phase4a\" and frames checks \"Per the Phase 4a contract (report-editor replay anchor), Phase 4a must generate...\" It also includes a \"Phase4a alignment check\" section and explains inability to verify actual Phase 4a artifacts while still anchoring analysis to Phase 4a contract requirements."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 2,
-    "total": 5,
-    "pass_rate": 0.6
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 5,
-    "errors_encountered": 2,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
   }
 }

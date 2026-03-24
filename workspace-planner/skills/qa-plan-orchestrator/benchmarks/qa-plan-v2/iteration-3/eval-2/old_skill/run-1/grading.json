@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": false,
+      "evidence": "The run does restate the case focus and contract, but concludes it cannot be demonstrated: result.md says \"there are no support signal issue keys (support_signal_issue_keys: [])\" and therefore \"no supporting-issue set to which the policy can be applied\" and summary production is \"not applicable / not verifiable\". execution_notes.md likewise: \"support-only phase1 path ... cannot be demonstrated from provided evidence, making the result inconclusive.\" This does not satisfy the expectation that the behavior is explicitly covered/verified for supporting issues."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md explicitly scopes to phase1: \"Primary phase/checkpoint: phase1 (phase contract)\" and evaluates phase1 requirements (spawn requests, phase1 artifacts, phase1 --post validations). execution_notes.md also frames the benchmark focus as \"in phase1\" and discusses phase1 evidence limits. The output is aligned to phase1 even though the case is inconclusive."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

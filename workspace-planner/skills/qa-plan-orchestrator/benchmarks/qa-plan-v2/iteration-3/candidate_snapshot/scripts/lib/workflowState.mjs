@@ -25,13 +25,22 @@ const SKILL_ROOT = resolve(MODULE_DIR, '..', '..');
 const REPO_ROOT = resolve(SKILL_ROOT, '..', '..', '..');
 export const DEFAULT_SUPPORTING_ISSUE_POLICY = 'context_only_no_defect_analysis';
 export const DEFAULT_DEEP_RESEARCH_POLICY = 'tavily_first_confluence_second';
-export const DEFAULT_DEEP_RESEARCH_TOPICS = [
-  'report_editor_workstation_functionality',
-  'report_editor_library_vs_workstation_gap',
-];
+export const DEFAULT_DEEP_RESEARCH_TOPICS = [];
 const REQUEST_PHASES = new Set(['phase0', 'phase1', 'phase2', 'phase3', 'phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase6', 'phase7']);
 
 export function getSkillRoot() {
+  return resolveCanonicalSkillRoot();
+}
+
+function resolveCanonicalSkillRoot() {
+  const overridden = String(process.env.FQPO_CANONICAL_SKILL_ROOT || '').trim();
+  if (!overridden) {
+    return SKILL_ROOT;
+  }
+  const snapshotRootName = basename(SKILL_ROOT);
+  if (snapshotRootName === 'candidate_snapshot' || snapshotRootName === 'champion_snapshot') {
+    return overridden;
+  }
   return SKILL_ROOT;
 }
 
@@ -96,7 +105,16 @@ export function defaultTask(featureId, runKey) {
   return {
     feature_id: featureId,
     primary_feature_id: featureId,
+    feature_family: null,
     seed_confluence_url: null,
+    knowledge_pack_key: null,
+    requested_knowledge_pack_key: null,
+    resolved_knowledge_pack_key: null,
+    knowledge_pack_resolution_source: null,
+    knowledge_pack_version: null,
+    knowledge_pack_path: null,
+    knowledge_pack_row_count: 0,
+    knowledge_pack_deep_research_topics: [],
     supporting_issue_keys: [],
     supporting_issue_policy: DEFAULT_SUPPORTING_ISSUE_POLICY,
     deep_research_policy: DEFAULT_DEEP_RESEARCH_POLICY,
@@ -150,6 +168,15 @@ export function defaultRun(runKey) {
     supporting_context_generated_at: null,
     deep_research_generated_at: null,
     deep_research_fallback_used: false,
+    knowledge_pack_loaded_at: null,
+    knowledge_pack_summary_generated_at: null,
+    knowledge_pack_retrieval_generated_at: null,
+    knowledge_pack_retrieval_mode: null,
+    knowledge_pack_semantic_mode: 'disabled',
+    knowledge_pack_semantic_warning: null,
+    knowledge_pack_summary_artifact: null,
+    knowledge_pack_retrieval_artifact: null,
+    knowledge_pack_index_artifact: null,
     request_fulfillment_generated_at: null,
     has_supporting_artifacts: false,
     spawn_history: [],
@@ -304,7 +331,7 @@ export function resolveRunPaths(runDir, featureId) {
 
 export function resolveDefaultRunDir(featureId, cwd = process.cwd()) {
   void cwd;
-  return resolve(SKILL_ROOT, 'runs', featureId);
+  return resolve(resolveCanonicalSkillRoot(), 'runs', featureId);
 }
 
 export function normalizeIssueKeys(value) {
@@ -340,14 +367,7 @@ function parseRawRequestText(task = {}) {
   }
 
   if (!Array.isArray(task.deep_research_topics) || task.deep_research_topics.length === 0) {
-    const topics = [];
-    if (/report editor.*workstation|workstation.*report editor/i.test(text)) {
-      topics.push('report_editor_workstation_functionality');
-    }
-    if (/library\s+vs\s+workstation|library-vs-workstation/i.test(text)) {
-      topics.push('report_editor_library_vs_workstation_gap');
-    }
-    task.deep_research_topics = topics;
+    task.deep_research_topics = [];
   }
 
   if (/do not enter defect-analysis mode|support-only|context only/i.test(text)) {
@@ -594,10 +614,26 @@ export function applyRequestModel(task, featureId = task?.feature_id || '') {
   parseRawRequestText(task);
   task.seed_confluence_url = String(task.seed_confluence_url || '').trim() || null;
   ensureRequestedSourceFamilies(task);
+  task.feature_family = String(task.feature_family || '').trim() || null;
+  task.knowledge_pack_key = String(task.knowledge_pack_key || '').trim() || null;
+  task.requested_knowledge_pack_key = String(
+    task.requested_knowledge_pack_key
+    || (!task.resolved_knowledge_pack_key ? task.knowledge_pack_key : '')
+    || '',
+  ).trim() || null;
+  task.resolved_knowledge_pack_key = String(task.resolved_knowledge_pack_key || '').trim() || null;
+  task.knowledge_pack_resolution_source = String(task.knowledge_pack_resolution_source || '').trim() || null;
+  task.knowledge_pack_version = String(task.knowledge_pack_version || '').trim() || null;
+  task.knowledge_pack_path = String(task.knowledge_pack_path || '').trim() || null;
+  task.knowledge_pack_row_count = Number(task.knowledge_pack_row_count || 0);
+  task.knowledge_pack_deep_research_topics = normalizeTopics(task.knowledge_pack_deep_research_topics);
   task.supporting_issue_keys = normalizeIssueKeys(task.supporting_issue_keys);
   task.supporting_issue_policy = String(task.supporting_issue_policy || DEFAULT_SUPPORTING_ISSUE_POLICY).trim();
   task.deep_research_policy = String(task.deep_research_policy || DEFAULT_DEEP_RESEARCH_POLICY).trim();
-  task.deep_research_topics = normalizeTopics(task.deep_research_topics);
+  task.deep_research_topics = normalizeTopics([
+    ...normalizeTopics(task.deep_research_topics),
+    ...task.knowledge_pack_deep_research_topics,
+  ]);
   task.supporting_summary_required = task.supporting_issue_keys.length > 0;
   task.request_fulfillment_required = task.request_fulfillment_required !== false;
   task.request_materials = Array.isArray(task.request_materials) && task.request_materials.length > 0

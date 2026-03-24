@@ -24,8 +24,8 @@ Baseline markers are finalized for campaign state management.
 Execution-fidelity note:
 
 - some **historical** runs may still carry the offline-placeholder marker in `outputs/execution_notes.md` (see `references/qa-plan-benchmark-execution-batches.md`). Those are not claimed as full executor fidelity.
-- **Policy:** new baselines must use real execution (`benchmark-runner.mjs` or `benchmark-runner-ide-wait.mjs` after you actually run the case) and **`benchmark-grader.mjs`**. Use `npm run benchmark:v2:verify-fidelity` with `BENCHMARK_REQUIRE_EXECUTED=1` before merging baseline changes.
-- `benchmark-grader-local.mjs` is **unit-test / dev smoke only** (deterministic token match); do not use it as the default for production baseline scoring.
+- **Policy:** new baselines must use real execution through **`benchmark-runner.mjs`** and **`benchmark-grader.mjs`**. These are the only supported executed entrypoints. Use `npm run benchmark:v2:verify-fidelity` with `BENCHMARK_REQUIRE_EXECUTED=1` before merging baseline changes.
+- `benchmark-runner-llm.mjs` and `benchmark-grader-llm.mjs` remain internal implementation details behind the wrapper entrypoints.
 
 ## Strategy
 
@@ -399,7 +399,7 @@ This is the single command. It will:
 
 1. Detect and load `.env`
 2. Prepare `iteration-0/spawn_manifest.json` if not already present
-3. Execute all runs via `benchmark-runner-llm.mjs` + `benchmark-grader-llm.mjs` (direct LLM API — no Codex CLI, no human input)
+3. Execute all runs via `benchmark-runner.mjs` + `benchmark-grader.mjs` (public wrappers over the LLM-backed benchmark backend)
 4. Aggregate results into `iteration-0/benchmark.md`
 
 Optional filters:

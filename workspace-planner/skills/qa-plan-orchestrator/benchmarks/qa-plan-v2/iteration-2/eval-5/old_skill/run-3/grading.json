@@ -1,53 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
-    },
-    {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "template-based creation is captured",
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
       "passed": false,
-      "evidence": "FAIL: template-based creation is captured"
+      "evidence": "The provided outputs only include execution metadata (executor, duration, tokens, configuration). No content mentions “missing scenario generation”, “template-save”, or “report-builder loading”. result.md only references the path “./outputs/execution_notes.md”."
     },
     {
-      "text": "report builder interaction is captured",
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
       "passed": false,
-      "evidence": "FAIL: report builder interaction is captured"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "No phase information is present in execution_notes.md, metrics.json, or result.md. There is no mention of “phase4a” or any alignment details beyond configuration: old_skill."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 0,
     "failed": 2,
-    "total": 5,
-    "pass_rate": 0.6
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 5,
-    "errors_encountered": 2,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "total": 2,
+    "pass_rate": 0
   }
 }

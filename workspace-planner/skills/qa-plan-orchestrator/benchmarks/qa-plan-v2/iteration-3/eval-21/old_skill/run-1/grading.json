@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly states the case focus and builds required Phase 4a coverage around separating linked vs non-linked styling: \"Case focus: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering\" and \"This implies Phase 4a scenario coverage must explicitly test: 1) Contextual-link styling... and 2) Non-contextual/ordinary rendering... ensuring the styling does not leak.\" It further includes separate subcategories for \"contextual link affordance\" vs \"ordinary (non-contextual) styling\" and a \"Mixed state\" check."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md is framed as a Phase 4a advisory contract coverage check and constrains the output to Phase 4a structure: \"Primary phase under test: phase4a (subcategory-only draft writer)\" and \"The Phase 4a draft must remain subcategory-first (no top-level canonical groupings like 'EndToEnd', 'Compatibility', etc.).\" It also states: \"The required coverage can be expressed entirely as Phase 4a subcategories and scenarios.\""
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

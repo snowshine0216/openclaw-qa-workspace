@@ -58,6 +58,16 @@ EmptyKey=
     rmSync(emptyTempDir, { recursive: true, force: true });
   });
 
+  test('does not override already-defined environment variables', () => {
+    process.env.KEY1 = 'from-env';
+    writeFileSync(join(tempDir, '.env'), 'KEY1=from-file\n', 'utf8');
+
+    loadEnv(tempDir);
+
+    assert.strictEqual(process.env.KEY1, 'from-env');
+    delete process.env.KEY1;
+  });
+
   test('handles malformed lines safely', () => {
     const malformedContent = `
 NO_EQUALS_SIGN

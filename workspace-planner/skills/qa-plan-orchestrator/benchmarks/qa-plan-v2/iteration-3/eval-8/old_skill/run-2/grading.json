@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "result.md explicitly addresses the focus and cites enforcement: it states Phase 5a “explicitly enforces that the review loop must not silently drop evidence-backed nodes, by requiring a Coverage Preservation Audit … and by gating accept on resolving any coverage-preservation issues.” It further details node-level accounting requirements (“each affected node must record… evidence source… disposition”) and that “accept is forbidden while any… coverage-preservation item remains rewrite_required,” which directly covers ‘does not silently drop’."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The outputs are consistently Phase 5a-scoped: execution_notes.md lists “Skill snapshot … (Phase 5a responsibilities + --post required audits/validators)” and “review-rubric-phase5a.md,” and result.md is titled “phase5a” and repeatedly evaluates “Phase 5a contract/rubric,” including Phase 5a Acceptance Gate and Phase 5a --post validators. No other phase is treated as primary."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

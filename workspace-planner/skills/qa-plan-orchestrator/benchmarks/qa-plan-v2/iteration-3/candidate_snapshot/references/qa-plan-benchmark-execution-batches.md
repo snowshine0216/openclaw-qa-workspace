@@ -188,26 +188,32 @@ Update these lines manually as execution progresses.
 
 ## Executed baseline policy (no placeholder aggregation)
 
-**Do not** create placeholder `outputs/` or use token-only grading to “finish” a baseline that is claimed as executed. A baseline that is intended to be **executed** must use `benchmark-runner.mjs` (or `benchmark-runner-ide-wait.mjs` after you actually perform the case in the IDE) and **`benchmark-grader.mjs`**.
+**Do not** create placeholder `outputs/` or use token-only grading to “finish” a baseline that is claimed as executed. A baseline that is intended to be **executed** must use `benchmark-runner.mjs` and `benchmark-grader.mjs`.
 
-If `codex exec` fails (for example `401` or stream disconnect), **fix endpoint auth or use the IDE wait runner** — do not substitute placeholder outputs for a production-quality baseline.
+If executed benchmark invocation fails, fix the primary runner/grader path and rerun it. Do not switch to a degraded local or manual fallback.
 
 ### Legacy placeholder-tagged runs (audit only)
 
 Some historical runs may still contain this marker in `outputs/execution_notes.md`:
 
 - `offline fallback executor: generated deterministic placeholder output for local grading.`
+- `- executor: deterministic fallback executor`
+
+And/or this marker in `outputs/metrics.json`:
+
+- `"model": "deterministic-fallback"`
+- `"executor": "deterministic-fallback"`
 
 Those runs are **not** equivalent to full executor fidelity. List them for auditing:
 
 ```bash
 cd workspace-planner/skills/qa-plan-orchestrator
-node -e 'const fs=require("fs");const path=require("path");const root="benchmarks/qa-plan-v2/iteration-0";const rows=[];for(const evalDir of fs.readdirSync(root).filter(n=>n.startsWith("eval-"))){for(const cfg of ["with_skill","without_skill"]){const cfgDir=path.join(root,evalDir,cfg);if(!fs.existsSync(cfgDir)) continue;for(const run of fs.readdirSync(cfgDir).filter(n=>n.startsWith("run-"))){const runDir=path.join(cfgDir,run);const notes=path.join(runDir,"outputs","execution_notes.md");if(fs.existsSync(notes)&&fs.readFileSync(notes,"utf8").includes("offline fallback executor")) rows.push(runDir);}}}console.log(rows.join("\n"));'
+node -e 'const fs=require("fs");const path=require("path");const root="benchmarks/qa-plan-v2/iteration-0";const rows=[];for(const evalDir of fs.readdirSync(root).filter(n=>n.startsWith("eval-"))){for(const cfg of ["with_skill","without_skill"]){const cfgDir=path.join(root,evalDir,cfg);if(!fs.existsSync(cfgDir)) continue;for(const run of fs.readdirSync(cfgDir).filter(n=>n.startsWith("run-"))){const runDir=path.join(cfgDir,run);const notes=path.join(runDir,"outputs","execution_notes.md");const metrics=path.join(runDir,"outputs","metrics.json");const noteText=fs.existsSync(notes)?fs.readFileSync(notes,"utf8"):"";const metricsText=fs.existsSync(metrics)?fs.readFileSync(metrics,"utf8"):"";if(noteText.includes("offline fallback executor")||noteText.includes("deterministic fallback executor")||metricsText.includes("deterministic-fallback")) rows.push(runDir);}}}console.log(rows.join("\n"));'
 ```
 
 ### CI fidelity gate
 
-To fail CI when placeholder-tagged or `offline-fallback` metrics remain under `iteration-0`:
+To fail CI when placeholder-tagged, deterministic-fallback, or `offline-fallback` markers remain under `iteration-0`:
 
 ```bash
 BENCHMARK_REQUIRE_EXECUTED=1 node benchmarks/qa-plan-v2/scripts/check_benchmark_fidelity.mjs
@@ -217,4 +223,4 @@ See `benchmarks/qa-plan-v2/README.md` for the canonical executed workflow.
 
 ### Operator data hygiene (legacy matrix)
 
-If `iteration-0` still contains placeholder-tagged runs from an older workflow, replace them by re-executing those evals (for example `node benchmarks/qa-plan-v2/scripts/run_offline_fallback_ide.mjs` after you can run the IDE wait + LLM grader stack), then re-aggregate. Purging large committed artifacts is a separate git/ops decision; the policy above prevents new placeholder baselines from being treated as executed.
+If `iteration-0` still contains placeholder-tagged runs from an older workflow, replace them by re-executing those evals through the canonical `benchmark-runner.mjs` + `benchmark-grader.mjs` path, then re-aggregate. Purging large committed artifacts is a separate git/ops decision; the policy above prevents new placeholder baselines from being treated as executed.

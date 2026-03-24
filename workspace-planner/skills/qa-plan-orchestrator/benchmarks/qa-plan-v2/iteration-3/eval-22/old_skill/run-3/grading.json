@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": false,
+      "evidence": "The output states the focus areas only as signals from adjacent issues and explicitly says the Phase 4a draft scenarios are not present, so coverage cannot be verified: \"However, adjacent issue summaries are not the Phase 4a draft itself... That draft is not present, so coverage cannot be verified.\" Therefore the case focus is not explicitly covered in drafted scenarios."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The output does not demonstrate Phase 4a execution/artifacts and highlights missing required Phase 4a items: \"Missing required Phase 4a demonstration artifacts... phase4a_spawn_manifest.json... drafts/qa_plan_phase4a_r1.md... Any Phase 4a --post validation results\" and concludes \"we cannot confirm that the orchestrator... produced or validated the required Phase 4a draft artifact\". This is not aligned with successfully producing Phase 4a outputs."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

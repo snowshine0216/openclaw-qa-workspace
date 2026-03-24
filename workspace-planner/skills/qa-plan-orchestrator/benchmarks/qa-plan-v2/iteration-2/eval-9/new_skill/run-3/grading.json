@@ -1,48 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
       "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "evidence": "result.md explicitly states the case focus and evaluates it: \"Case focus: historical analogs become required-before-ship gates\" and explains Phase 5b requires analogs to be rendered as explicit \"[ANALOG-GATE]\" entries; it then checks for such evidence and concludes it is missing (blocking fail)."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
-    },
-    {
-      "text": "analog gate save dialog completeness is enforced",
-      "passed": false,
-      "evidence": "FAIL: analog gate save dialog completeness is enforced"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is structured around Phase 5b and applies the Phase 5b contract: \"Primary phase under test: Phase 5b\" and \"What Phase 5b Requires (Authoritative Contract)\" listing required Phase 5b artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b draft) and dispositions. The conclusion is Phase 5b alignment cannot be verified due to missing artifacts, but the output itself is Phase 5b-aligned in scope and criteria."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 1,
-    "total": 4,
-    "pass_rate": 0.75
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 1,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
   }
 }

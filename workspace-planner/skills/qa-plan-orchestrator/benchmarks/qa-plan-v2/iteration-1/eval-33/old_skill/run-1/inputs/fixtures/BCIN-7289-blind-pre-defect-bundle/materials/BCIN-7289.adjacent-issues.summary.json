@@ -1,0 +1,156 @@
+{
+  "feature_id": "BCIN-7289",
+  "exported_at": "2026-03-21T05:33:46Z",
+  "adjacency_type": "parented_issues",
+  "total_adjacent_issues": 29,
+  "support_signal_issue_keys": [],
+  "issues": [
+    {
+      "key": "BCIN-7733",
+      "issue_type": "Defect",
+      "summary": "Double click to edit report in workstation by new report editor will show empty native top menu"
+    },
+    {
+      "key": "BCIN-7730",
+      "issue_type": "Defect",
+      "summary": "When create report by template with prompt using pause mode, it will not prompt user"
+    },
+    {
+      "key": "BCIN-7727",
+      "issue_type": "Defect",
+      "summary": "Report Builder｜ Fails to load elements in prompt  after double clicking on the folder"
+    },
+    {
+      "key": "BCIN-7724",
+      "issue_type": "Defect",
+      "summary": "It throws 400 error when replacing report "
+    },
+    {
+      "key": "BCIN-7722",
+      "issue_type": "Defect",
+      "summary": "i18n | New Intelligent Cube Report / Blank Report / Report Builder in title is not correctly translated"
+    },
+    {
+      "key": "BCIN-7721",
+      "issue_type": "Defect",
+      "summary": "i18n | New Intelligent Cube Report | When user's language is Chinses, attributes and metrics in Object Browser is not tranlsated"
+    },
+    {
+      "key": "BCIN-7720",
+      "issue_type": "Defect",
+      "summary": "i18n | Confirm / Cancel button is not tranlsated in converting to intellegent cube/ datamart confirmation window"
+    },
+    {
+      "key": "BCIN-7719",
+      "issue_type": "Defect",
+      "summary": "New Intelligent Cube Report ｜ The window's title should be `New Intelligent Cube Report` and title should be updated after saving report"
+    },
+    {
+      "key": "BCIN-7709",
+      "issue_type": "Defect",
+      "summary": "Click X button multiple time will open multiple confirm to close popup"
+    },
+    {
+      "key": "BCIN-7708",
+      "issue_type": "Defect",
+      "summary": "Confirm to close report editor popup is not shown when prompt editor is open"
+    },
+    {
+      "key": "BCIN-7707",
+      "issue_type": "Defect",
+      "summary": "After save as report with prompt, then choose discard current answer, prompt answers still keeps"
+    },
+    {
+      "key": "BCIN-7695",
+      "issue_type": "Defect",
+      "summary": "Tooltip of copy sql button doesn't show in workstation new report editor and library web"
+    },
+    {
+      "key": "BCIN-7693",
+      "issue_type": "Defect",
+      "summary": "When session out in new report editor, it will show unknow error and dismiss the dialog will show loading forever"
+    },
+    {
+      "key": "BCIN-7691",
+      "issue_type": "Defect",
+      "summary": "After create a report by choosing data retrieval mode and save it to folder, click X to close window will still prompt confirm to save dialog"
+    },
+    {
+      "key": "BCIN-7688",
+      "issue_type": "Defect",
+      "summary": "Set as template check box is disabled when save a newly create report on workstation"
+    },
+    {
+      "key": "BCIN-7687",
+      "issue_type": "Defect",
+      "summary": "When save as newly created subset report, it will throw error instance does not belong to this report/cube"
+    },
+    {
+      "key": "BCIN-7685",
+      "issue_type": "Defect",
+      "summary": "Cannot pass prompt answer in workstation new report editor"
+    },
+    {
+      "key": "BCIN-7680",
+      "issue_type": "Defect",
+      "summary": "After linking to target report, the target report is not in running mode"
+    },
+    {
+      "key": "BCIN-7677",
+      "issue_type": "Defect",
+      "summary": "When save as report with prompt as do not prompt, the report will still prompt"
+    },
+    {
+      "key": "BCIN-7675",
+      "issue_type": "Defect",
+      "summary": "Performance | Creating a blank report in 26.04 takes 80% longer than in 26.03 (9s vs. 5s for Platform Analytics Project)"
+    },
+    {
+      "key": "BCIN-7674",
+      "issue_type": "Defect",
+      "summary": "The window title is \"newReportWithApplication\" when create blank report from workstation new report editor"
+    },
+    {
+      "key": "BCIN-7673",
+      "issue_type": "Defect",
+      "summary": "Workstation | Report Editor | `\\n` shows up when converting report into Intelligent Cube  / Datamart"
+    },
+    {
+      "key": "BCIN-7704",
+      "issue_type": "Defect",
+      "summary": "Workstation |  Report Editor | View menu And Format menu in native toolbar should be removed"
+    },
+    {
+      "key": "BCIN-7669",
+      "issue_type": "Defect",
+      "summary": "When create report and trying to save it by override existing report, it will throw error \"Cannot read properties of null (reading saveAs)\""
+    },
+    {
+      "key": "BCIN-7668",
+      "issue_type": "Defect",
+      "summary": "Two loading icons when create/edit report"
+    },
+    {
+      "key": "BCIN-7667",
+      "issue_type": "Defect",
+      "summary": "When create report by template, save the report will directly save to report rather than create new one"
+    },
+    {
+      "key": "BCIN-7625",
+      "issue_type": "Story",
+      "summary": "Stop DevOps Observers on Report Workstation Plugin"
+    },
+    {
+      "key": "BCIN-7618",
+      "issue_type": "Story",
+      "summary": "Delivery Work"
+    },
+    {
+      "key": "BCIN-7603",
+      "issue_type": "Story",
+      "summary": "Enhancements in Workstation "
+    }
+  ],
+  "customer_signal_present": false,
+  "notes": "Frozen adjacent issue set under BCIN-7289. No support/customer signal found in current parented issues export."
+}

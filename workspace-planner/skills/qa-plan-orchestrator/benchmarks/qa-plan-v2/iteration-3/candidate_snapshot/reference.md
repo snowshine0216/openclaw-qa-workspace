@@ -89,6 +89,15 @@ Required fields:
 Additive request and support fields:
 
 - `primary_feature_id`
+- `feature_family`
+- `knowledge_pack_key`
+- `requested_knowledge_pack_key`
+- `resolved_knowledge_pack_key`
+- `knowledge_pack_resolution_source` (`provided` | `feature_family` | `cases_lookup` | `default_general` | `null_pack`)
+- `knowledge_pack_version`
+- `knowledge_pack_path`
+- `knowledge_pack_row_count`
+- `knowledge_pack_deep_research_topics`
 - `supporting_issue_keys`
 - `supporting_issue_policy` (`context_only_no_defect_analysis`)
 - `deep_research_policy` (`tavily_first_confluence_second`)
@@ -133,6 +142,15 @@ Additive request and research fields:
 - `supporting_context_generated_at`
 - `deep_research_generated_at`
 - `deep_research_fallback_used`
+- `knowledge_pack_loaded_at`
+- `knowledge_pack_summary_generated_at`
+- `knowledge_pack_retrieval_generated_at`
+- `knowledge_pack_retrieval_mode` (`disabled` | `bm25_only` | `bm25_plus_semantic`)
+- `knowledge_pack_semantic_mode` (`disabled` | `qmd` | `openclaw_memory`)
+- `knowledge_pack_semantic_warning`
+- `knowledge_pack_summary_artifact`
+- `knowledge_pack_retrieval_artifact`
+- `knowledge_pack_index_artifact`
 - `request_fulfillment_generated_at`
 - `request_execution_log`
 - `unsatisfied_request_requirements`
@@ -143,6 +161,8 @@ Additive request and research fields:
 
 - `context/runtime_setup_<feature-id>.md`
 - `context/runtime_setup_<feature-id>.json`
+- `context/knowledge_pack_summary_<feature-id>.md`
+- `context/knowledge_pack_summary_<feature-id>.json`
 
 ### Phase 1
 
@@ -159,7 +179,11 @@ Additive request and research fields:
 
 ### Phase 3
 
+- `context/knowledge_pack_retrieval_<feature-id>.md`
+- `context/knowledge_pack_retrieval_<feature-id>.json`
 - `context/coverage_ledger_<feature-id>.md`
+- `context/coverage_ledger_<feature-id>.json`
+- `context/knowledge_pack_qmd.sqlite`
 - `context/deep_research_plan_<feature-id>.md`
 - `context/deep_research_tavily_report_editor_workstation_<feature-id>.md`
 - `context/deep_research_tavily_library_vs_workstation_gap_<feature-id>.md`
@@ -208,6 +232,24 @@ Additive request and research fields:
 - `qa_plan_final.md`
 
 ## Spawn Manifest Contract
+
+Every `source` block may additionally expose pack-aware runtime metadata:
+
+```json
+{
+  "knowledge_pack_key": "report-editor",
+  "knowledge_pack_version": "2026-03-23",
+  "knowledge_pack_summary_path": "context/knowledge_pack_summary_BCIN-7289.md",
+  "knowledge_pack_retrieval_path": "context/knowledge_pack_retrieval_BCIN-7289.md",
+  "knowledge_pack_active": true
+}
+```
+
+Rules:
+
+- Phase 1 gets pack identity plus `knowledge_pack_summary_path`.
+- Phase 3 gets pack identity, `knowledge_pack_summary_path`, and `knowledge_pack_retrieval_path`.
+- Phases 4a through 6 get `knowledge_pack_retrieval_path` and `knowledge_pack_active`.
 
 Every manifest uses this shape:
 

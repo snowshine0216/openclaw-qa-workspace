@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "In result.md, the case-focus check is explicitly graded as not fully evidenced: \"Partially Pass (advisory, with gaps)\" and states there is \"no explicit textual requirement calling out: panel-stack composition, embedding lifecycle, regression-sensitive integration states\" and that missing artifacts (e.g., \"drafts/qa_plan_phase4a_r1.md\") block an 'explicitly covered' claim. Therefore the expectation that the case focus is explicitly covered is not met by the provided outputs."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md: \"Phase alignment check (primary phase: phase4a) **Pass (advisory)**\" with evidence citing phase4a-contract.md defining phase4a as \"subcategory-only drafting\" and forbidding canonical top-layer grouping, and noting orchestrator runs/validates phase4a artifacts via scripts/phase4a.sh and --post validation."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

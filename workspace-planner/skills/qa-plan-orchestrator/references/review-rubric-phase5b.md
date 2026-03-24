@@ -76,6 +76,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 
 The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
 The release recommendation must enumerate all `[ANALOG-GATE]` items that remain blocking before ship.
+When a knowledge pack is active, analog-gate evidence and release recommendation bullets must cite the concrete `analog:<source_issue>` row ids from `coverage_ledger_<feature-id>.json`.
 
 ### `checkpoint_delta_<feature-id>.md`
 

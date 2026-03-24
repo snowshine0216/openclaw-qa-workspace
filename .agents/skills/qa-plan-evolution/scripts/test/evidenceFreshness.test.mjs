@@ -39,8 +39,8 @@ test('evidenceFreshness blocks when a required knowledge pack is missing', async
   }
 });
 
-test('evidenceFreshness keeps optional defects-analysis missing state non-blocking', async () => {
-  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-freshness-optional-'));
+test('evidenceFreshness blocks when qa-plan-knowledge-pack-coverage requires defects but no run key', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-freshness-required-defects-'));
   const skillRoot = join(repoRoot, 'workspace-planner', 'skills', 'qa-plan-orchestrator');
 
   try {
@@ -60,8 +60,11 @@ test('evidenceFreshness keeps optional defects-analysis missing state non-blocki
       profileId: 'qa-plan-knowledge-pack-coverage',
     });
 
-    assert.equal(freshness.blocking, false);
-    assert.equal(freshness.defects_analysis.status, 'optional');
+    assert.equal(freshness.blocking, true);
+    assert.equal(freshness.defects_analysis.status, 'missing_source');
+    assert.ok(
+      freshness.blocking_issues.some((issue) => issue.source === 'defects_analysis'),
+    );
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }

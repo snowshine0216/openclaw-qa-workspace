@@ -1,0 +1,14 @@
+{
+  "request_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/eval-22/old_skill/run-2/execution_request.json",
+  "output_files": [
+    "execution_notes.md",
+    "metrics.json",
+    "result.md"
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

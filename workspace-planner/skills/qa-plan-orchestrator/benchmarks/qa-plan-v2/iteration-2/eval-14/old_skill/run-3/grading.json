@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly states the holdout focus: \"Promotion/finalization behavior remains stable on another feature\" and further defines it as Phase 7 promotion/finalization contract (approval gating, archive existing final, promote best draft, write finalization record/summary)."
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md declares \"Primary phase under test: holdout\" and scopes evidence to \"Holdout bundle only\" (only the two fixture JSONs). execution_notes.md also says: \"The output is intentionally scoped to the holdout checkpoint\" and the produced artifact is \"holdout-phase aligned regression assessment\"."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

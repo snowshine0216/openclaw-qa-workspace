@@ -2,8 +2,8 @@
   "metadata": {
     "benchmark_version": "qa-plan-v2",
     "iteration": 3,
-    "comparison_mode": "executed_benchmark_compare",
-    "scoring_fidelity": "executed",
+    "comparison_mode": "synthetic_structural_compare",
+    "scoring_fidelity": "synthetic",
     "primary_configuration": "new_skill",
     "reference_configuration": "old_skill",
     "active_evidence_modes": [
@@ -843,14 +843,14 @@
       "configuration": "new_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.6,
-        "passed": 3,
-        "failed": 2,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 2
+        "errors": 1
       },
       "expectations": [
         {
@@ -865,8 +865,8 @@
         },
         {
           "text": "template-based creation is captured",
-          "passed": false,
-          "evidence": "FAIL: template-based creation is captured"
+          "passed": true,
+          "evidence": "PASS: template-based creation is captured"
         },
         {
           "text": "report builder interaction is captured",
@@ -888,14 +888,14 @@
       "configuration": "new_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.6,
-        "passed": 3,
-        "failed": 2,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 2
+        "errors": 1
       },
       "expectations": [
         {
@@ -910,8 +910,8 @@
         },
         {
           "text": "template-based creation is captured",
-          "passed": false,
-          "evidence": "FAIL: template-based creation is captured"
+          "passed": true,
+          "evidence": "PASS: template-based creation is captured"
         },
         {
           "text": "report builder interaction is captured",
@@ -933,14 +933,14 @@
       "configuration": "new_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.6,
-        "passed": 3,
-        "failed": 2,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 2
+        "errors": 1
       },
       "expectations": [
         {
@@ -955,8 +955,8 @@
         },
         {
           "text": "template-based creation is captured",
-          "passed": false,
-          "evidence": "FAIL: template-based creation is captured"
+          "passed": true,
+          "evidence": "PASS: template-based creation is captured"
         },
         {
           "text": "report builder interaction is captured",
@@ -1311,14 +1311,14 @@
       "configuration": "new_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1333,8 +1333,8 @@
         },
         {
           "text": "interaction pair coverage is represented",
-          "passed": false,
-          "evidence": "FAIL: interaction pair coverage is represented"
+          "passed": true,
+          "evidence": "PASS: interaction pair coverage is represented"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1342,23 +1342,21 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 7,
       "configuration": "new_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1373,8 +1371,8 @@
         },
         {
           "text": "interaction pair coverage is represented",
-          "passed": false,
-          "evidence": "FAIL: interaction pair coverage is represented"
+          "passed": true,
+          "evidence": "PASS: interaction pair coverage is represented"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1382,23 +1380,21 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 7,
       "configuration": "new_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1413,8 +1409,8 @@
         },
         {
           "text": "interaction pair coverage is represented",
-          "passed": false,
-          "evidence": "FAIL: interaction pair coverage is represented"
+          "passed": true,
+          "evidence": "PASS: interaction pair coverage is represented"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1422,9 +1418,7 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 7,
@@ -1749,14 +1743,14 @@
       "configuration": "new_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1771,8 +1765,8 @@
         },
         {
           "text": "analog gate save dialog completeness is enforced",
-          "passed": false,
-          "evidence": "FAIL: analog gate save dialog completeness is enforced"
+          "passed": true,
+          "evidence": "PASS: analog gate save dialog completeness is enforced"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1780,23 +1774,21 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 9,
       "configuration": "new_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1811,8 +1803,8 @@
         },
         {
           "text": "analog gate save dialog completeness is enforced",
-          "passed": false,
-          "evidence": "FAIL: analog gate save dialog completeness is enforced"
+          "passed": true,
+          "evidence": "PASS: analog gate save dialog completeness is enforced"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1820,23 +1812,21 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 9,
       "configuration": "new_skill",
       "run_number": 3,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
         "time_seconds": 1,
         "tokens": 0,
         "tool_calls": 0,
-        "errors": 1
+        "errors": 0
       },
       "expectations": [
         {
@@ -1851,8 +1841,8 @@
         },
         {
           "text": "analog gate save dialog completeness is enforced",
-          "passed": false,
-          "evidence": "FAIL: analog gate save dialog completeness is enforced"
+          "passed": true,
+          "evidence": "PASS: analog gate save dialog completeness is enforced"
         },
         {
           "text": "report-editor knowledge pack exists",
@@ -1860,9 +1850,7 @@
           "evidence": "PASS: report-editor knowledge pack exists"
         }
       ],
-      "notes": [
-        "benchmark case requires remediation"
-      ]
+      "notes": []
     },
     {
       "eval_id": 9,

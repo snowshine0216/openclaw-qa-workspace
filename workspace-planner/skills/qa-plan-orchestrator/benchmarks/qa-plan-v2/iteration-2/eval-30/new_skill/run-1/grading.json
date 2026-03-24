@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": false,
+      "evidence": "The output restates the benchmark intent, but does not actually demonstrate preservation via Phase 1 artifacts. It explicitly says it is not demonstrable: \"Not demonstrable from the provided evidence.\" and cites the missing deliverable: \"Missing Phase 1 runtime deliverable `phase1_spawn_manifest.json` ... so we cannot verify that Phase 1 context intake preserved: Google Sheets export entry points; scope boundaries; format constraints.\""
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output keeps to Phase 1 contract checking and avoids scenario drafting/defect analysis: \"This benchmark is blind_pre_defect and phase1 only ... Phase 1 should not draft scenarios.\" and \"Kept analysis limited to Phase 1 contract verification (no scenario drafting; no defect analysis).\" It also evaluates required Phase 1 deliverable: \"Phase 1 output must be a `phase1_spawn_manifest.json`.\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

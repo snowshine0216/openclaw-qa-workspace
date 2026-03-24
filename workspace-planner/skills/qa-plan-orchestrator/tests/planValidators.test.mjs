@@ -708,6 +708,45 @@ test('validateCheckpointAudit requires supporting context and gap readiness chec
   assert.match(result.failures.join('\n'), /supporting_context_and_gap_readiness/i);
 });
 
+test('validateCheckpointAudit requires analog row ids in evidence and release recommendation', () => {
+  const checkpointAudit = `# Checkpoint Audit
+
+## Checkpoint Summary
+- Requirements Traceability | Checkpoint 1 | pass | jira_issue_BCIN-1.md | none
+- Black-Box Behavior Validation | Checkpoint 2 | pass | qa_plan_phase5a_r1.md | none
+- Integration Validation | Checkpoint 3 | pass | qa_plan_phase5a_r1.md | none
+- Environment Fidelity | Checkpoint 4 | pass | qa_plan_phase5a_r1.md | none
+- Regression Impact | Checkpoint 5 | pass | qa_plan_phase5a_r1.md | none
+- Non-Functional Quality | Checkpoint 6 | pass | qa_plan_phase5a_r1.md | none
+- Test Data Quality | Checkpoint 7 | pass | qa_plan_phase5a_r1.md | none
+- Exploratory Testing | Checkpoint 8 | pass | qa_plan_phase5a_r1.md | none
+- Auditability | Checkpoint 9 | pass | qa_plan_phase5a_r1.md | none
+- AI Hallucination Check | Checkpoint 10 | pass | qa_plan_phase5a_r1.md | none
+- Mutation Testing | Checkpoint 11 | pass | qa_plan_phase5a_r1.md | none
+- Contract Testing | Checkpoint 12 | pass | qa_plan_phase5a_r1.md | none
+- Chaos and Resilience | Checkpoint 13 | pass | qa_plan_phase5a_r1.md | none
+- Shift-Right Monitoring | Checkpoint 14 | pass | qa_plan_phase5a_r1.md | none
+- Final Release Gate | Checkpoint 15 | pass | qa_plan_phase5a_r1.md | none
+- Shipment readiness | supporting_context_and_gap_readiness | pass | qa_plan_phase5a_r1.md | none
+
+## Blocking Checkpoints
+- none
+
+## Advisory Checkpoints
+- none
+
+## Release Recommendation
+- accept
+`;
+
+  const result = validateCheckpointAudit(checkpointAudit, {
+    requiredAnalogRowIds: ['analog:BCIN-7730'],
+    unresolvedBlockingAnalogRowIds: ['analog:BCIN-7730'],
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /analog:BCIN-7730/i);
+});
+
 test('validateCheckpointDelta rejects resolved blockers without a recorded change', () => {
   const checkpointDelta = `# Checkpoint Delta
 
@@ -838,6 +877,25 @@ test('validateQualityDelta scopes preservation checks to requested inputs only',
   });
   assert.equal(resultMissingWorkstation.ok, false);
   assert.match(resultMissingWorkstation.failures.join('\n'), /workstation/i);
+});
+
+test('validateQualityDelta requires explicit pack-backed preservation notes when pack-backed scenarios are involved', () => {
+  const result = validateQualityDelta(`# Quality Delta
+
+## Final Layer Audit
+- EndToEnd > Report Editor > Workstation | canonical layering retained | pass | none
+
+## Few-Shot Rewrite Applications
+- FS1 | EndToEnd > Report Editor | vague wording | concrete wording | applied
+
+## Verdict
+- accept
+`, {
+    requirePackBackedPreservation: true,
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /pack-backed/i);
 });
 
 test('validateDraftCoveragePreservation rejects phase6 drafts that silently shrink reviewed coverage', () => {
@@ -1041,6 +1099,33 @@ test('validatePhase5aAcceptanceGate rejects accept when blocking request require
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /request requirements/i);
   assert.match(result.failures.join('\n'), /req-tool-order-research/i);
+});
+
+test('validatePhase5aAcceptanceGate rejects accept when required pack-backed rows remain unmapped', () => {
+  const reviewNotes = `# Review Notes
+
+## Coverage Preservation Audit
+- Core Functional Flows > Save > Save report | present_in_prior_round | preserved | jira_issue_BCIN-80.md | pass | retained
+`;
+  const reviewDelta = `# Review Delta
+
+## Verdict After Refactor
+- accept
+`;
+
+  const result = validatePhase5aAcceptanceGate(reviewNotes, reviewDelta, [], {
+    unresolvedPackRows: [
+      { knowledge_pack_row_id: 'capability:template-based-creation', row_type: 'required_capability' },
+      { knowledge_pack_row_id: 'interaction:prompt-pause-mode__report-builder-loading', row_type: 'interaction_pair' },
+      { knowledge_pack_row_id: 'outcome:window-title', row_type: 'required_outcome' },
+      { knowledge_pack_row_id: 'sdk:setwindowtitle', row_type: 'sdk_visible_contract' },
+    ],
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /pack-backed rows remain unmapped/i);
+  assert.match(result.failures.join('\n'), /capability:template-based-creation/i);
+  assert.match(result.failures.join('\n'), /outcome:window-title/i);
+  assert.match(result.failures.join('\n'), /sdk:setwindowtitle/i);
 });
 
 test('validateRoundProgression rejects reruns that reuse the current round instead of advancing', () => {

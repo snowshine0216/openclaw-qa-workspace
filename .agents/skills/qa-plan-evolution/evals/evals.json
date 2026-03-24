@@ -42,7 +42,7 @@
       ],
       "evidence_hooks": {
         "inspect_target_artifacts": true,
-        "defects_analysis_refresh": "optional",
+        "defects_analysis_refresh": "required_when_stale",
         "knowledge_pack_version_check": true,
         "defect_replay_evals": false,
         "holdout_evals": true

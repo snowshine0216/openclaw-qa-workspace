@@ -12,6 +12,7 @@ test_success_full_run() {
   run_dir="$(feature_run_dir "$temp_dir" BCIN-20)"
   write_task_json "$run_dir/task.json" '{
     "feature_id":"BCIN-20",
+    "requested_knowledge_pack_key":"report-editor",
     "requested_source_families":["jira","confluence"],
     "seed_confluence_url":"https://example.atlassian.net/wiki/spaces/BCIN/pages/20",
     "supporting_issue_keys":["BCED-2416"],
@@ -32,10 +33,20 @@ test_success_full_run() {
   assert_file_exists "$run_dir/context/supporting_issue_request_BCIN-20.md"
   assert_file_exists "$run_dir/context/request_fulfillment_BCIN-20.md"
   assert_file_exists "$run_dir/context/request_fulfillment_BCIN-20.json"
+  assert_file_exists "$run_dir/context/knowledge_pack_summary_BCIN-20.md"
+  assert_file_exists "$run_dir/context/knowledge_pack_summary_BCIN-20.json"
   assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_0_runtime_setup"'
+  assert_contains "$(cat "$run_dir/task.json")" '"knowledge_pack_key": "report-editor"'
+  assert_contains "$(cat "$run_dir/task.json")" '"resolved_knowledge_pack_key": "report-editor"'
+  assert_contains "$(cat "$run_dir/task.json")" '"knowledge_pack_resolution_source": "provided"'
   assert_contains "$(cat "$run_dir/task.json")" '"supporting_issue_policy": "context_only_no_defect_analysis"'
   assert_contains "$(cat "$run_dir/task.json")" '"deep_research_policy": "tavily_first_confluence_second"'
+  assert_contains "$(cat "$run_dir/task.json")" '"report_editor_workstation_functionality"'
   assert_contains "$(cat "$run_dir/context/runtime_setup_BCIN-20.md")" "support issue policy"
+  assert_contains "$(cat "$run_dir/context/knowledge_pack_summary_BCIN-20.md")" "report-editor"
+  assert_contains "$(cat "$run_dir/context/knowledge_pack_summary_BCIN-20.json")" '"knowledge_pack_row_count"'
+  assert_contains "$(cat "$run_dir/run.json")" '"knowledge_pack_loaded_at"'
+  assert_contains "$(cat "$run_dir/run.json")" '"knowledge_pack_summary_generated_at"'
   assert_contains "$(cat "$run_dir/context/request_fulfillment_BCIN-20.json")" '"requirement_id": "req-support-only-mode"'
   assert_contains "$(cat "$run_dir/context/request_fulfillment_BCIN-20.json")" '"status": "satisfied"'
 }

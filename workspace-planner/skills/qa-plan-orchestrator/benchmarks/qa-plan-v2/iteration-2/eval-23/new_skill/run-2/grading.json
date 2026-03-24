@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": false,
+      "evidence": "result.md states: \"no Phase 5b runtime artifacts (checkpoint audit/delta, Phase 5b draft, Phase 5b spawn manifest, or any run directory outputs) are present\" and therefore \"does not demonstrate Phase 5b checkpoint enforcement outputs...\". While it lists the focus areas as expected coverage, it also says it cannot verify explicit coverage without the checkpoint artifacts."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md explicitly frames the evaluation as Phase 5b: \"Primary phase under test: Phase 5b (shipment checkpoint enforcement)\" and enumerates Phase 5b required artifacts (checkpoint_audit, checkpoint_delta with disposition, qa_plan_phase5b draft) and Phase 5b gating expectations. The verdict is a Phase 5b-aligned blocking FAIL due to missing Phase 5b artifacts."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "In result.md, the benchmark focus is explicitly stated as “REPORT_STATE and resume semantics remain stable” and the Phase 0 contract section explicitly enumerates REPORT_STATE values and resume-mode mapping: “Classify `REPORT_STATE`…”, and “required resume semantics mapping: full_regenerate… smart_refresh… reuse/resume…”. It concludes: “PASS (contract-level). The output and behavior expectations are aligned with phase0 and explicitly cover `REPORT_STATE` and resume semantics.”"
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md identifies “Primary phase under test: phase0” and evaluates “Phase Contract Check — Phase 0 Alignment (Blocking)” describing required Phase 0 outputs and gates (runtime_setup files, REPORT_STATE classification, apply_user_choice flow). It concludes: “Conclusion (Phase 0 contract alignment): PASS (contract-level).” and later: “Output aligns with primary phase phase0: YES.”"
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

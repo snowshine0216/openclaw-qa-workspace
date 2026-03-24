@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "The output only lists the focus as an advisory benchmark statement, but explicitly states it cannot confirm coverage: \"Given only Jira metadata and customer-scope signal (without requirements text or any draft plan), we cannot confirm these focus areas were planned in Phase 4a output.\" No Phase 4a plan content is provided that covers panel-stack composition, embedding lifecycle, or regression-sensitive integration states."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The result asserts Phase 4a is the primary phase but concludes alignment cannot be verified due to missing required Phase 4a deliverables/inputs: \"no Phase 4a draft was provided\" and \"Contract compliance: cannot be demonstrated\"; outcome is \"Status: Blocked (insufficient benchmark artifacts to evaluate Phase 4a output).\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

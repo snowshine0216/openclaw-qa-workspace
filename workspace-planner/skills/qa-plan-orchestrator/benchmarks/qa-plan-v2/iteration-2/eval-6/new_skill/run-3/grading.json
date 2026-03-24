@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4b contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
       "passed": true,
-      "evidence": "PASS: phase4b contract exists"
+      "evidence": "In result.md the case focus is explicitly stated and demonstrated: \"Case focus: canonical top-layer grouping without collapsing scenarios\" and a section titled \"Canonical top-layer grouping proposal... (without collapsing scenarios)\" plus an explicit \"Scenario granularity preservation (anti-compression demonstration)\" with concrete examples (e.g., \"Cancel button stops execution vs X button cancels running execution are separate scenarios\")."
     },
     {
-      "text": "canonical top-layer grouping remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
       "passed": true,
-      "evidence": "PASS: canonical top-layer grouping remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md frames itself as \"Phase 4b\" and focuses on Phase 4b contract requirements: grouping into \"canonical top-layer categories\" using the listed taxonomy, preserving granularity, and explicitly states \"Do not perform Phase 6-style few-shot cleanup in Phase 4b.\" No Phase 6 cleanup or other phase-specific artifacts are attempted beyond the Phase 4b grouping behavior."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

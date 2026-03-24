@@ -30,13 +30,13 @@ import {
   getIterationDir,
 } from './lib/benchmarkV2.mjs';
 
-loadEnv(DEFAULT_SKILL_ROOT);
 import { executeSelectedRuns } from './lib/executeSelectionV2.mjs';
 import { writeBatchArtifacts } from './lib/batchRunnerV2.mjs';
 import {
   getAvailableFeatureFamilies,
   writeFamilyArtifacts,
 } from './lib/familyRunnerV2.mjs';
+import { selectBenchmarkTasks } from './lib/runBenchmarkSelection.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -99,16 +99,31 @@ async function runNodeScript(scriptPath, extraArgs = []) {
   });
 }
 
-async function ensurePrepared(benchmarkRoot, iteration) {
+export function resolveSkillRootForBenchmarkRoot(benchmarkRoot) {
+  const root = String(benchmarkRoot || '').trim();
+  return root ? resolve(root, '..', '..') : DEFAULT_SKILL_ROOT;
+}
+
+export function buildBaselineScriptArgs({ mode, benchmarkRoot, skillRoot }) {
+  const action = mode === 'aggregate' ? '--aggregate-only' : '--prepare-only';
+  const resolvedSkillRoot = String(skillRoot || '').trim() || resolveSkillRootForBenchmarkRoot(benchmarkRoot);
+  return [
+    action,
+    '--benchmark-root',
+    benchmarkRoot,
+    '--skill-root',
+    resolvedSkillRoot,
+  ];
+}
+
+export async function ensurePrepared(benchmarkRoot, iteration, runScript = runNodeScript) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const spawnManifestPath = join(iterationDir, 'spawn_manifest.json');
   if (!existsSync(spawnManifestPath)) {
     console.log('spawn_manifest.json not found — running prepare step…');
-    await runNodeScript(join(SCRIPTS_DIR, '..', '..', '..', '..', '..', 'node_modules', '.bin', 'node'), [
+    await runScript(
       join(SCRIPTS_DIR, 'run_baseline.mjs'),
-      '--prepare-only',
-    ]).catch(() =>
-      runNodeScript(join(SCRIPTS_DIR, 'run_baseline.mjs'), ['--prepare-only']),
+      buildBaselineScriptArgs({ mode: 'prepare', benchmarkRoot }),
     );
   }
   return join(iterationDir, 'spawn_manifest.json');
@@ -126,44 +141,35 @@ async function refreshArtifacts(benchmarkRoot, iteration) {
   }
 }
 
-function parseEvalsRange(range) {
-  if (!range) return null;
-  const m = /^(\d+)-(\d+)$/.exec(String(range).trim());
-  if (!m) return null;
-  const lo = Number(m[1]);
-  const hi = Number(m[2]);
-  return lo <= hi ? { lo, hi } : null;
-}
-
 async function main() {
   const options = parseArgs(process.argv);
   const { benchmarkRoot, iteration, family, batch, evalsRange, dryRun, aggregate, failFast } = options;
+  loadEnv(resolveSkillRootForBenchmarkRoot(benchmarkRoot));
 
   const spawnManifestPath = await ensurePrepared(benchmarkRoot, iteration);
   const spawnManifest = JSON.parse(await readFile(spawnManifestPath, 'utf8'));
 
-  let tasks = spawnManifest.tasks || [];
-  let rerunCompleted = false;
+  const selection = selectBenchmarkTasks({
+    tasks: spawnManifest.tasks || [],
+    family,
+    batch,
+    evalsRange,
+  });
+  const tasks = selection.tasks;
+  const rerunCompleted = selection.rerunCompleted;
 
   if (family) {
-    tasks = tasks.filter((t) => t.feature_family === family);
     console.log(`Filtered to family "${family}": ${tasks.length} task(s).`);
   }
-
-  if (batch > 0) {
-    // Batch: tasks are grouped in spawn_manifest in order; select batch-N window (6 tasks each)
-    const batchSize = 6;
-    const start = (batch - 1) * batchSize;
-    tasks = tasks.slice(start, start + batchSize);
-    console.log(`Filtered to batch ${batch}: ${tasks.length} task(s).`);
+  if (selection.batchDefinition) {
+    console.log(
+      `Filtered to batch ${selection.batchDefinition.batch_number} (${selection.batchDefinition.label}): ${tasks.length} task(s).`,
+    );
   }
-
-  const evalsParsed = parseEvalsRange(evalsRange);
-  if (evalsParsed) {
-    const { lo, hi } = evalsParsed;
-    tasks = tasks.filter((t) => t.eval_id >= lo && t.eval_id <= hi);
-    rerunCompleted = true;
-    console.log(`Filtered to evals ${lo}-${hi}: ${tasks.length} task(s). Will re-run completed runs.`);
+  if (selection.evalsRange) {
+    console.log(
+      `Filtered to evals ${selection.evalsRange.lo}-${selection.evalsRange.hi}: ${tasks.length} task(s). Will re-run completed runs.`,
+    );
   }
 
   const totalRuns = tasks.reduce(
@@ -178,8 +184,8 @@ async function main() {
     return;
   }
 
-  const runner = join(SCRIPTS_DIR, 'benchmark-runner-llm.mjs');
-  const grader = join(SCRIPTS_DIR, 'benchmark-grader-llm.mjs');
+  const runner = join(SCRIPTS_DIR, 'benchmark-runner.mjs');
+  const grader = join(SCRIPTS_DIR, 'benchmark-grader.mjs');
 
   const result = await executeSelectedRuns({
     benchmarkRoot,
@@ -206,13 +212,19 @@ async function main() {
 
   if (aggregate && result.failures.length === 0) {
     console.log('\nRunning aggregate…');
-    await runNodeScript(join(SCRIPTS_DIR, 'run_baseline.mjs'), ['--aggregate-only']).catch(
+    await runNodeScript(
+      join(SCRIPTS_DIR, 'run_baseline.mjs'),
+      buildBaselineScriptArgs({ mode: 'aggregate', benchmarkRoot }),
+    ).catch(
       (err) => console.error(`Aggregate failed: ${err.message}`),
     );
   }
 }
 
-main().catch((error) => {
-  console.error(`[run_benchmark.mjs] ${error.message}`);
-  process.exitCode = 1;
-});
+const executedPath = process.argv[1] ? resolve(process.argv[1]) : '';
+if (executedPath && __filename === executedPath) {
+  main().catch((error) => {
+    console.error(`[run_benchmark.mjs] ${error.message}`);
+    process.exitCode = 1;
+  });
+}

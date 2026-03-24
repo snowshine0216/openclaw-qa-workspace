@@ -8,7 +8,7 @@
   "current_champion_iteration": 0,
   "current_champion_snapshot": "iteration-0/champion_snapshot",
   "candidate_snapshot": "iteration-3/candidate_snapshot",
-  "prepared_at": "2026-03-23T01:59:05.675Z",
+  "prepared_at": "2026-03-24T09:45:16.207Z",
   "case_count": 33,
   "active_evidence_modes": [
     "blind_pre_defect",

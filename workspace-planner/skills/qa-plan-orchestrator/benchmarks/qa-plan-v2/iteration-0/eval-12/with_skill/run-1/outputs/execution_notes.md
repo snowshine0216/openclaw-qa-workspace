@@ -6,7 +6,7 @@
 - `skill_snapshot/SKILL.md`
 - `skill_snapshot/README.md`
 - `skill_snapshot/reference.md`
-- `skill_snapshot/references/docs-governance.md`
+- `skill_snapshot/docs/DOCS_GOVERNANCE.md`
 - `skill_snapshot/tests/docsContract.test.mjs`
 - `skill_snapshot/docs/archive/FEATURE_QA_PLANNING_ORCHESTRATOR_ENHANCEMENT_PLAN.md`
 - `skill_snapshot/docs/archive/PHASE4_LAYERING_AND_COVERAGE_HARNESS_REMEDIATION_DESIGN.md`

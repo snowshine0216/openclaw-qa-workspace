@@ -1,0 +1,10 @@
+{
+  "key": "BCIN-7721",
+  "summary": "i18n | New Intelligent Cube Report | When user's language is Chinses, attributes and metrics in Object Browser is not tranlsated",
+  "status": "To Do",
+  "priority": "Low",
+  "assignee": "Haocan Xu",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"7cc7d88c0b3d\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"249f945a2e46\"},\"content\":[{\"attrs\":{\"localId\":\"1d1553b276d8\"},\"content\":[{\"text\":\"in worksation  connecting to \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" login as mstr1 / 123456 (make sure the user’s preference language is Chinese)\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"249f945a2e46\"},\"content\":[{\"attrs\":{\"localId\":\"a4ee78dd0745\"},\"content\":[{\"text\":\"Navigates to Datatsets blade → rmc on one dataset → new intelligent cube\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"localId\":\"766aa2134b8d\"},\"content\":[{\"text\":\"issue here:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"07f02c82416f\",\"width\":708,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"36a1c80b-8cfc-4bff-9e53-158841c25160-20260320-024027.png\",\"collection\":\"\",\"height\":873,\"id\":\"87ef96b9-2d11-4196-8ce3-dbbc5e635f82\",\"localId\":\"8d798f44bc52\",\"type\":\"file\",\"width\":1383},\"type\":\"media\"}],\"type\":\"mediaSingle\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": []
+}

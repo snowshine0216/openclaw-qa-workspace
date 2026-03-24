@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "result.md explicitly marks this expectation as not met: “Retrospective verdict for Expectation A: NOT SATISFIED (blocking)… Phase 4a output did not consistently render window-title and other observable outcomes as explicit scenarios with concrete verification leaves, leading directly to defects such as BCIN-7733.”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "SDK/API visible outcomes are called out",
-      "passed": true,
-      "evidence": "PASS: SDK/API visible outcomes are called out"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md states it cannot verify phase4a alignment due to missing required phase4a draft artifact: “Retrospective verdict for Expectation B: INDETERMINATE FROM PROVIDED ARTIFACTS… cannot directly validate that an actual phase4a draft artifact was produced and conforms to the structure rules because the required draft file is not present.” Since the expectation requires alignment, and the provided outputs do not demonstrate it, this expectation is not met."
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

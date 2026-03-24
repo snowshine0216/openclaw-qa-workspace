@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md includes multiple explicit scenarios with observable verification leaves for window title, e.g. “Workstation window title is correct when creating a blank report” with checks “Workstation window title is human-readable (not an internal key such as `newReportWithApplication`)” and “Workstation window title matches the opened report’s name/context…”. execution_notes.md also states it “ensure[s] SDK/API-visible outcomes (e.g., window title) are explicit observable verification leaves.”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "SDK/API visible outcomes are called out",
-      "passed": true,
-      "evidence": "PASS: SDK/API visible outcomes are called out"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md declares the primary phase under test as “Phase 4a” and describes the produced result as “A Phase 4a-aligned scenario set (subcategory-first; no canonical top-layer categories)”. result.md is titled “Phase 4a … Defect Replay Anchor Scenarios” and is structured as subcategory → scenario → steps → observable leaves, consistent with the stated Phase 4a contract focus."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

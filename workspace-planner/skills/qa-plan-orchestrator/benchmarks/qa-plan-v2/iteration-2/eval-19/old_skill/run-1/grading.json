@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": false,
+      "evidence": "The produced output does not include a Phase 4a QA draft with scenarios; it explicitly states it cannot verify focus coverage: “Can we verify the case focus is explicitly covered? **No.** … there is **no Phase 4a draft** to confirm explicit scenario coverage for: - highlight activation - highlight persistence - highlight reset behavior.” Therefore the case focus is not explicitly covered in the available outputs."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No Phase 4a deliverable artifact is present (e.g., `drafts/qa_plan_phase4a_r<round>.md`); outputs are only `outputs/result.md` and `outputs/execution_notes.md`. The output itself says: “The benchmark evidence does **not** include any Phase 4a runtime artifacts… Because Phase 4a is the primary checkpoint under test, the key artifact to assess… is not present.” Without the required Phase 4a draft, alignment to phase4a cannot be demonstrated."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

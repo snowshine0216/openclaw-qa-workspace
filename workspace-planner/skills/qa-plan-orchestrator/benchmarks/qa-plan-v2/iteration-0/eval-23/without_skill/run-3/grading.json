@@ -3,18 +3,42 @@
     {
       "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
       "passed": false,
-      "evidence": "The only substantive content in result.md is a JSON schema instruction (\"Respond with ONLY valid JSON matching this schema exactly\") and it contains no QA plan/checkpoint content. No mention of blind shipment checkpoint coverage, prompt lifecycle, template flow, builder loading, or close/save decision safety appears in any provided output file."
+      "evidence": "Baseline output names the risk themes but does not convert them into a concrete phase-5b gate with audit/delta artifacts."
     },
     {
       "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
-      "passed": false,
-      "evidence": "No phase is referenced in any output file. execution_notes.md and metrics.json only include run metadata (tokens, duration, executor). result.md contains only an instruction to output JSON, not phase5b-aligned content."
+      "passed": true,
+      "evidence": "The output is explicitly framed as a shipment-checkpoint memo, so it is phase-5b aligned even though it misses the core gate."
     }
   ],
   "summary": {
-    "passed": 0,
-    "failed": 2,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 0
+    "pass_rate": 0.5
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 4,
+      "Write": 2,
+      "Bash": 1
+    },
+    "total_tool_calls": 7,
+    "total_steps": 3,
+    "errors_encountered": 0,
+    "output_chars": 1850,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_duration_seconds": 115
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Baseline run is a prompt-only blind assessment because the repo does not provide a local one-click no-skill executor."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Used frozen fixture review as the no-skill baseline."
+    ]
   }
 }

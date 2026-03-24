@@ -27,8 +27,40 @@ export const DEFAULT_SUPPORTING_ISSUE_POLICY = 'context_only_no_defect_analysis'
 export const DEFAULT_DEEP_RESEARCH_POLICY = 'tavily_first_confluence_second';
 export const DEFAULT_DEEP_RESEARCH_TOPICS = [];
 const REQUEST_PHASES = new Set(['phase0', 'phase1', 'phase2', 'phase3', 'phase4a', 'phase4b', 'phase5a', 'phase5b', 'phase6', 'phase7']);
+const GENERATED_REQUEST_COMMAND_IDS = new Set([
+  'cmd-research-tool-order',
+  'cmd-support-mode-guardrail',
+  'cmd-support-relation-expansion',
+]);
+const GENERATED_REQUEST_MATERIAL_PREFIXES = [
+  'material-feature-',
+  'material-confluence-',
+  'material-support-',
+  'material-research-',
+];
+const GENERATED_REQUEST_REQUIREMENT_PREFIXES = [
+  'req-read-primary-confluence',
+  'req-read-support-',
+  'req-summarize-support-',
+  'req-save-support-summary',
+  'req-support-only-mode',
+  'req-no-defect-analysis',
+  'req-research-',
+];
 
 export function getSkillRoot() {
+  return resolveCanonicalSkillRoot();
+}
+
+function resolveCanonicalSkillRoot() {
+  const overridden = String(process.env.FQPO_CANONICAL_SKILL_ROOT || '').trim();
+  if (!overridden) {
+    return SKILL_ROOT;
+  }
+  const snapshotRootName = basename(SKILL_ROOT);
+  if (snapshotRootName === 'candidate_snapshot' || snapshotRootName === 'champion_snapshot') {
+    return overridden;
+  }
   return SKILL_ROOT;
 }
 
@@ -93,7 +125,16 @@ export function defaultTask(featureId, runKey) {
   return {
     feature_id: featureId,
     primary_feature_id: featureId,
+    feature_family: null,
     seed_confluence_url: null,
+    knowledge_pack_key: null,
+    requested_knowledge_pack_key: null,
+    resolved_knowledge_pack_key: null,
+    knowledge_pack_resolution_source: null,
+    knowledge_pack_version: null,
+    knowledge_pack_path: null,
+    knowledge_pack_row_count: 0,
+    knowledge_pack_deep_research_topics: [],
     supporting_issue_keys: [],
     supporting_issue_policy: DEFAULT_SUPPORTING_ISSUE_POLICY,
     deep_research_policy: DEFAULT_DEEP_RESEARCH_POLICY,
@@ -147,6 +188,15 @@ export function defaultRun(runKey) {
     supporting_context_generated_at: null,
     deep_research_generated_at: null,
     deep_research_fallback_used: false,
+    knowledge_pack_loaded_at: null,
+    knowledge_pack_summary_generated_at: null,
+    knowledge_pack_retrieval_generated_at: null,
+    knowledge_pack_retrieval_mode: null,
+    knowledge_pack_semantic_mode: 'disabled',
+    knowledge_pack_semantic_warning: null,
+    knowledge_pack_summary_artifact: null,
+    knowledge_pack_retrieval_artifact: null,
+    knowledge_pack_index_artifact: null,
     request_fulfillment_generated_at: null,
     has_supporting_artifacts: false,
     spawn_history: [],
@@ -301,7 +351,7 @@ export function resolveRunPaths(runDir, featureId) {
 
 export function resolveDefaultRunDir(featureId, cwd = process.cwd()) {
   void cwd;
-  return resolve(SKILL_ROOT, 'runs', featureId);
+  return resolve(resolveCanonicalSkillRoot(), 'runs', featureId);
 }
 
 export function normalizeIssueKeys(value) {
@@ -317,6 +367,29 @@ export function normalizeIssueKeys(value) {
 function normalizeTopics(value) {
   const topics = Array.isArray(value) ? value : [];
   return [...new Set(topics.map((item) => String(item || '').trim()).filter(Boolean))];
+}
+
+function mergeRecordsById(existing, generated, idKey) {
+  const merged = Array.isArray(existing) ? [...existing] : [];
+  const seen = new Set(merged.map((entry) => String(entry?.[idKey] || '').trim()).filter(Boolean));
+  for (const entry of Array.isArray(generated) ? generated : []) {
+    const id = String(entry?.[idKey] || '').trim();
+    if (id && seen.has(id)) continue;
+    if (id) seen.add(id);
+    merged.push(entry);
+  }
+  return merged;
+}
+
+function replaceGeneratedRecords(existing, generated, idKey, isGeneratedId) {
+  const preserved = Array.isArray(existing)
+    ? existing.filter((entry) => !isGeneratedId(String(entry?.[idKey] || '').trim()))
+    : [];
+  return mergeRecordsById(preserved, generated, idKey);
+}
+
+function hasGeneratedPrefix(id, prefixes) {
+  return prefixes.some((prefix) => id.startsWith(prefix));
 }
 
 function parseRawRequestText(task = {}) {
@@ -336,9 +409,17 @@ function parseRawRequestText(task = {}) {
     task.supporting_issue_keys = normalizeIssueKeys(supportKeys);
   }
 
-  if (!Array.isArray(task.deep_research_topics) || task.deep_research_topics.length === 0) {
-    task.deep_research_topics = [];
+  const topics = [];
+  if (/report editor.*workstation|workstation.*report editor/i.test(text)) {
+    topics.push('report_editor_workstation_functionality');
   }
+  if (/library\s+vs\s+workstation|library-vs-workstation/i.test(text)) {
+    topics.push('report_editor_library_vs_workstation_gap');
+  }
+  task.deep_research_topics = normalizeTopics([
+    ...normalizeTopics(task.deep_research_topics),
+    ...topics,
+  ]);
 
   if (/do not enter defect-analysis mode|support-only|context only/i.test(text)) {
     task.supporting_issue_policy = DEFAULT_SUPPORTING_ISSUE_POLICY;
@@ -584,21 +665,46 @@ export function applyRequestModel(task, featureId = task?.feature_id || '') {
   parseRawRequestText(task);
   task.seed_confluence_url = String(task.seed_confluence_url || '').trim() || null;
   ensureRequestedSourceFamilies(task);
+  task.feature_family = String(task.feature_family || '').trim() || null;
+  task.knowledge_pack_key = String(task.knowledge_pack_key || '').trim() || null;
+  task.requested_knowledge_pack_key = String(
+    task.requested_knowledge_pack_key
+    || (!task.resolved_knowledge_pack_key ? task.knowledge_pack_key : '')
+    || '',
+  ).trim() || null;
+  task.resolved_knowledge_pack_key = String(task.resolved_knowledge_pack_key || '').trim() || null;
+  task.knowledge_pack_resolution_source = String(task.knowledge_pack_resolution_source || '').trim() || null;
+  task.knowledge_pack_version = String(task.knowledge_pack_version || '').trim() || null;
+  task.knowledge_pack_path = String(task.knowledge_pack_path || '').trim() || null;
+  task.knowledge_pack_row_count = Number(task.knowledge_pack_row_count || 0);
+  task.knowledge_pack_deep_research_topics = normalizeTopics(task.knowledge_pack_deep_research_topics);
   task.supporting_issue_keys = normalizeIssueKeys(task.supporting_issue_keys);
   task.supporting_issue_policy = String(task.supporting_issue_policy || DEFAULT_SUPPORTING_ISSUE_POLICY).trim();
   task.deep_research_policy = String(task.deep_research_policy || DEFAULT_DEEP_RESEARCH_POLICY).trim();
-  task.deep_research_topics = normalizeTopics(task.deep_research_topics);
+  task.deep_research_topics = normalizeTopics([
+    ...normalizeTopics(task.deep_research_topics),
+    ...task.knowledge_pack_deep_research_topics,
+  ]);
   task.supporting_summary_required = task.supporting_issue_keys.length > 0;
   task.request_fulfillment_required = task.request_fulfillment_required !== false;
-  task.request_materials = Array.isArray(task.request_materials) && task.request_materials.length > 0
-    ? task.request_materials
-    : buildRequestMaterials(task, normalizedFeatureId);
-  task.request_commands = Array.isArray(task.request_commands) && task.request_commands.length > 0
-    ? task.request_commands
-    : buildRequestCommands();
-  task.request_requirements = Array.isArray(task.request_requirements) && task.request_requirements.length > 0
-    ? task.request_requirements
-    : buildRequestRequirements(task, normalizedFeatureId);
+  task.request_materials = replaceGeneratedRecords(
+    task.request_materials,
+    buildRequestMaterials(task, normalizedFeatureId),
+    'material_id',
+    (id) => hasGeneratedPrefix(id, GENERATED_REQUEST_MATERIAL_PREFIXES),
+  );
+  task.request_commands = replaceGeneratedRecords(
+    task.request_commands,
+    buildRequestCommands(),
+    'command_id',
+    (id) => GENERATED_REQUEST_COMMAND_IDS.has(id),
+  );
+  task.request_requirements = replaceGeneratedRecords(
+    task.request_requirements,
+    buildRequestRequirements(task, normalizedFeatureId),
+    'requirement_id',
+    (id) => hasGeneratedPrefix(id, GENERATED_REQUEST_REQUIREMENT_PREFIXES),
+  );
   return task;
 }
 

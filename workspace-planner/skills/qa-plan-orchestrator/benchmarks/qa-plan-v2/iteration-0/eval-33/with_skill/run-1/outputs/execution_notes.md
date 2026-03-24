@@ -18,8 +18,8 @@
 - `./skill_snapshot/knowledge-packs/report-editor/pack.json`
 - `./skill_snapshot/knowledge-packs/report-editor/pack.md`
 - `./skill_snapshot/scripts/lib/finalPlanSummary.mjs`
-- `./skill_snapshot/references/qa-plan-benchmark-spec.md`
-- `./skill_snapshot/references/qa-plan-benchmark-progress-summary.md`
+- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `./skill_snapshot/docs/QA_PLAN_BENCHMARK_PROGRESS_SUMMARY.md`
 - `./skill_snapshot/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md`
 
 ## Files Produced

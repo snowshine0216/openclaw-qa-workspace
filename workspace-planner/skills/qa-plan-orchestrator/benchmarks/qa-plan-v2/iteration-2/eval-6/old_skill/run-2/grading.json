@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4b contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
       "passed": true,
-      "evidence": "PASS: phase4b contract exists"
+      "evidence": "In result.md under “Evidence-based Phase 4b contract coverage”, it states Phase 4b’s purpose is to group into the “canonical top-layer taxonomy” “without merging away scenario granularity”, and explicitly calls out an “Anti-compression rule” (e.g., “Do not merge distinct Workstation-only vs Library-gap scenarios when outcomes/risks differ.”)."
     },
     {
-      "text": "canonical top-layer grouping remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
       "passed": true,
-      "evidence": "PASS: canonical top-layer grouping remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is titled “P4B-LAYERING-001 — Phase 4b … Contract Check” and includes a section “Alignment to primary phase under test: Phase 4b” asserting Phase 4b is the “canonical top-layer grouper” and defers few-shot cleanup to Phase 6, matching the Phase 4b focus."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

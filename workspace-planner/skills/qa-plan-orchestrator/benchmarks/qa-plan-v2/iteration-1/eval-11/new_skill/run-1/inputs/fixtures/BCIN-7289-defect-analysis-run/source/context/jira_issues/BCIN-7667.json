@@ -1,0 +1,13 @@
+{
+  "key": "BCIN-7667",
+  "summary": "When create report by template, save the report will directly save to report rather than create new one",
+  "status": "Done",
+  "priority": "High",
+  "assignee": "Bin (Jason) Xu",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"b3297a6fbb1a\"},\"content\":[{\"text\":\"When create report by template, save the report will directly save to report rather than create new one.\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"16c26ec3f7c6\",\"width\":779,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"Kapture 2026-03-17 at 18.07.21-20260317-101010.gif\",\"collection\":\"\",\"height\":1148,\"id\":\"e868ec20-710f-4cbd-80ae-e2e97f103ddb\",\"localId\":\"ecef33970a4d\",\"type\":\"file\",\"width\":2046},\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"localId\":\"755c9d72cc33\"},\"content\":[{\"text\":\"Steps to reproduce:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"e38a95e9bdea\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"cf3559420b04\"},\"content\":[{\"attrs\":{\"localId\":\"ffa9e30cccd7\"},\"content\":[{\"text\":\"Login \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" by bxu with empty password, enable new report editor\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"cf3559420b04\"},\"content\":[{\"attrs\":{\"localId\":\"c303c2521f5f\"},\"content\":[{\"text\":\"Create a report and choose a template, e.g. Product sales template\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"cf3559420b04\"},\"content\":[{\"attrs\":{\"localId\":\"dd96c3cd9a7c\"},\"content\":[{\"text\":\"Click save >> issue here: it will save to the template rather than create new one\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/web-dossier/pull/22559\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/web-dossier/pull/22559",
+    "https://github.com/mstr-kiai/workstation-report-editor/pull/685\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/workstation-report-editor/pull/685"
+  ]
+}

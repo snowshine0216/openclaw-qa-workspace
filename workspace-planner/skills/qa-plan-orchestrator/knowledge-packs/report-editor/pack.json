@@ -222,5 +222,13 @@
       "id": "BCIN-7733",
       "topic": "double-click edit shows wrong title in workstation new editor"
     }
+  ],
+  "deep_research_topics": [
+    "report_editor_workstation_functionality",
+    "report_editor_library_vs_workstation_gap"
+  ],
+  "retrieval_notes": [
+    "Use exact Jira issue ids and SDK contract names as BM25 query anchors.",
+    "Treat interaction-pair wording as first-class retrieval evidence during coverage mapping."
   ]
 }

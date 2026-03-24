@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": false,
+      "evidence": "result.md explicitly states the case focus coverage is \"NOT DEMONSTRATED (no Phase 4a draft to inspect)\" and notes that demonstrating the expectation would require inspecting a Phase 4a draft to confirm scenarios for label visibility, density, and overlap-sensitive outcomes; no such draft is provided."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md reports Phase alignment check (primary phase: phase4a) as \"Status: NOT DEMONSTRATED (insufficient evidence in provided bundle)\" and execution_notes.md lists missing Phase 4a runtime artifacts (phase4a_spawn_manifest.json, drafts/qa_plan_phase4a_r1.md, and --post validation output), preventing verification of phase4a alignment."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

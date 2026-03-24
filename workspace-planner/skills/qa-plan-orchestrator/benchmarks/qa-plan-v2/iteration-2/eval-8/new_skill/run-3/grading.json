@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "result.md explicitly states the benchmark focus and evaluates it: \"Benchmark focus: review loop does not silently drop evidence-backed nodes\" and includes a dedicated section \"Does the provided evidence demonstrate Phase 5a prevents silent dropping?\" plus it enumerates \"Evidence-backed nodes that were previously missed (should not be 'dropped' in review)\"."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is structured around Phase 5a requirements and artifacts: \"Primary phase under test: Phase 5a\" and \"What Phase 5a must enforce\" with required outputs (review_notes, review_delta, drafts/qa_plan_phase5a_r<round>.md) and the acceptance gate (\"End review_delta with... accept or return phase5a\" / \"Block accept if...\"). It also states: \"this result is framed around Phase 5a’s required artifacts and acceptance gate as defined by references/review-rubric-phase5a.md...\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

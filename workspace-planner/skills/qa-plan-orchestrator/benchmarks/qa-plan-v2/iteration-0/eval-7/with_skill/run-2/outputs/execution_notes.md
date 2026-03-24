@@ -15,8 +15,8 @@
 - `skill_snapshot/references/subagent-quick-checklist.md`
 - `skill_snapshot/knowledge-packs/report-editor/pack.md`
 - `skill_snapshot/knowledge-packs/report-editor/pack.json`
-- `skill_snapshot/references/qa-plan-benchmark-spec.md`
-- `skill_snapshot/references/qa-plan-benchmark-execution-batches.md`
+- `skill_snapshot/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `skill_snapshot/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
 - `skill_snapshot/docs/SKILL_EVOLUTION_ORCHESTRATOR_DESIGN.md`
 - `skill_snapshot/docs/SUPPORTING_ARTIFACT_SUMMARIZATION_AND_DEEP_RESEARCH_DESIGN.md`
 - `inputs/fixtures/BCIN-7289-defect-analysis-run/source/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`

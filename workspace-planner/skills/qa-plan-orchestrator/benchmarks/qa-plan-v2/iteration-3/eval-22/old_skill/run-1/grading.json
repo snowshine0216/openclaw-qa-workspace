@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md under “Phase focus” it states the benchmark checks explicit coverage of “prompt handling”, “template save”, “report builder loading”, and “visible report title outcomes”. The scenario set then includes dedicated subcategories and scenarios: “Prompt handling — prompting modes and answer lifecycle”, “Save / Save As / Template save”, “Report Builder loading & object browser”, and “Visible report title outcomes (including post-save update)”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md explicitly declares “Primary phase under test: Phase 4a (subcategory-only scenario drafting)” and includes a “Phase 4a contract alignment” section citing “subcategory-only” structure and “no canonical top-layer grouping”. The produced outline is subcategory-first (e.g., “Prompt handling — …”, “Save / Save As / …”) with nested atomic steps and observable verification leaves (e.g., “Prompt dialog appears”, “Save completes successfully”, “Title updates to the saved report name”). execution_notes.md also notes the absence of runtime artifacts but asserts contract-aligned scenario drafting was produced."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

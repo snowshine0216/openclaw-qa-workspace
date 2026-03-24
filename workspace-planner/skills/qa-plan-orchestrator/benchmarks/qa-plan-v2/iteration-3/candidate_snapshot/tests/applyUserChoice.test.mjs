@@ -91,6 +91,56 @@ test('applyUserChoice rejects invalid mode', async () => {
   await rm(root, { recursive: true, force: true });
 });
 
+test('smart_refresh removes derived knowledge-pack artifacts and keeps evidence', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'apply-choice-'));
+  const runDir = join(root, 'BCIN-889');
+  await mkdir(join(runDir, 'context', 'knowledge_pack_projection'), { recursive: true });
+  await mkdir(join(runDir, 'drafts'), { recursive: true });
+  await writeFile(join(runDir, 'context', 'jira_issue_BCIN-889.md'), 'evidence');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_summary_BCIN-889.md'), 'summary');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_summary_BCIN-889.json'), '{}');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_retrieval_BCIN-889.md'), 'retrieval');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_retrieval_BCIN-889.json'), '{}');
+  await writeFile(join(runDir, 'context', 'coverage_ledger_BCIN-889.md'), 'ledger');
+  await writeFile(join(runDir, 'context', 'coverage_ledger_BCIN-889.json'), '{}');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_qmd.sqlite'), 'sqlite');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_qmd.sqlite-wal'), 'wal');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_qmd.sqlite-shm'), 'shm');
+  await writeFile(join(runDir, 'context', 'knowledge_pack_projection', 'row.md'), '# row');
+  await writeFile(join(runDir, 'task.json'), JSON.stringify({
+    feature_id: 'BCIN-889',
+    run_key: 'run-3',
+    current_phase: 'phase_5_review_refactor',
+    overall_status: 'in_progress',
+    requested_source_families: ['jira'],
+  }, null, 2));
+  await writeFile(join(runDir, 'run.json'), JSON.stringify({
+    run_key: 'run-3',
+    spawn_history: [{ source_family: 'jira', artifact_paths: ['context/jira_issue_BCIN-889.md'] }],
+    knowledge_pack_summary_generated_at: '2026-03-23T00:00:00.000Z',
+    knowledge_pack_summary_artifact: 'context/knowledge_pack_summary_BCIN-889.md',
+    knowledge_pack_retrieval_generated_at: '2026-03-23T00:05:00.000Z',
+    knowledge_pack_retrieval_artifact: 'context/knowledge_pack_retrieval_BCIN-889.md',
+  }, null, 2));
+
+  await applyUserChoice('BCIN-889', runDir, 'smart_refresh');
+
+  const jiraContent = await readFile(join(runDir, 'context', 'jira_issue_BCIN-889.md'), 'utf8');
+  assert.equal(jiraContent, 'evidence');
+  assert.equal(
+    await readFile(join(runDir, 'context', 'knowledge_pack_summary_BCIN-889.md'), 'utf8'),
+    'summary',
+  );
+  await assert.rejects(async () => access(join(runDir, 'context', 'knowledge_pack_qmd.sqlite')));
+  await assert.rejects(async () => access(join(runDir, 'context', 'knowledge_pack_projection')));
+  const run = JSON.parse(await readFile(join(runDir, 'run.json'), 'utf8'));
+  assert.equal(run.knowledge_pack_summary_generated_at, '2026-03-23T00:00:00.000Z');
+  assert.equal(run.knowledge_pack_summary_artifact, 'context/knowledge_pack_summary_BCIN-889.md');
+  assert.equal(run.knowledge_pack_retrieval_generated_at, null);
+  assert.equal(run.knowledge_pack_retrieval_artifact, null);
+  await rm(root, { recursive: true, force: true });
+});
+
 test('applyUserChoice CLI uses run-dir terminology in usage output', async () => {
   const module = await import('../scripts/lib/applyUserChoice.mjs');
   const originalExit = process.exit;

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "The result explicitly states the case focus and maps it into Phase 1 intake requirements across all three areas: “Focus: context intake preserves (1) component-stack constraints, (2) embedding lifecycle assumptions, (3) integration-sensitive customer expectations.” It then has dedicated sections “1) Component-stack constraints”, “2) Embedding lifecycle assumptions”, and “3) Integration-sensitive customer expectations” describing what Phase 1 must preserve."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output is framed as a Phase 1 contract check and discusses Phase 1-specific artifacts/validation: “Primary phase under test: Phase 1 (context intake via spawn-manifest generation)”, “Output `phase1_spawn_manifest.json`”, and Phase 1 “--post” validation requirements. It concludes Phase 1 compliance is “Not directly verifiable… (artifact missing)”, which is still Phase 1-aligned evaluation."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

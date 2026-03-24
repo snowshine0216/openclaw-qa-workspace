@@ -6,6 +6,8 @@ import { tmpdir } from 'node:os';
 
 import {
   buildMutationBacklog,
+  categoryLabel,
+  categoryRank,
   seedGapTaxonomyAndBacklog,
 } from '../lib/mutationBacklog.mjs';
 
@@ -317,6 +319,19 @@ test('phase2 clusters related observations into one bounded mutation candidate',
 
   assert.equal(result.length, 1);
   assert.deepEqual(result[0].source_observation_ids, ['obs-pack-1', 'obs-pack-2']);
+  assert.equal(result[0].mutation_category, 'rubric_update');
+  assert.equal(result[0].priority.category_rank, 2);
+});
+
+test('categoryRank and categoryLabel map target files to mutation categories', () => {
+  assert.equal(categoryRank(['skill/knowledge-packs/report-editor/pack.json']), 1);
+  assert.equal(categoryRank(['skill/references/review-rubric-phase5a.md']), 2);
+  assert.equal(categoryRank(['skill/SKILL.md']), 3);
+  assert.equal(categoryRank(['skill/scripts/phase1.sh']), 4);
+  assert.equal(categoryLabel(1), 'knowledge_pack_enrichment');
+  assert.equal(categoryLabel(2), 'rubric_update');
+  assert.equal(categoryLabel(3), 'template_update');
+  assert.equal(categoryLabel(4), 'collection_stage');
 });
 
 test('phase2 rejects mutation candidates that mix hypotheses under one root-cause bucket', () => {

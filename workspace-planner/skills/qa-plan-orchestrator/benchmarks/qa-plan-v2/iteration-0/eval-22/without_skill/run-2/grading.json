@@ -3,12 +3,12 @@
     {
       "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
       "passed": true,
-      "evidence": "Result.md explicitly scopes to blind phase4a scenario drafts and includes three scenarios covering the required focus. It states: \"Phase 4a Deliverable: Blind Scenario Drafts (Template Save / Builder Load / Visible Title)\" and scenario coverage notes include \"Covers: prompt handling, report builder loading, visible report title outcomes\" (Scenario 4a-1) and \"Covers: template save, report builder loading, visible report title outcomes\" (Scenario 4a-2). It also reiterates in the alignment statement that it covers \"prompt handling\", \"template save\", \"report builder loading\", and \"visible report title outcomes\"."
+      "evidence": "Matched focus tokens in outputs: blind, scenario, drafting, prompt, handling, template, save, report, builder, loading, visible, title, outcomes"
     },
     {
       "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "Result.md declares \"Primary phase under test: phase4a (scenario drafting checkpoint)\" and delivers \"Phase 4a Deliverable: Blind Scenario Drafts\". It also includes an explicit \"Phase 4a Alignment Statement\" saying the output is limited to phase4a scenario drafting and that no later-phase work is included."
+      "evidence": "Primary phase token found in output content: phase4a"
     }
   ],
   "summary": {
@@ -16,5 +16,26 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Read": 0,
+      "Write": 0,
+      "Bash": 0
+    },
+    "total_tool_calls": 0,
+    "total_steps": 1,
+    "errors_encountered": 0,
+    "output_chars": 6703,
+    "transcript_chars": 0
+  },
+  "user_notes_summary": {
+    "uncertainties": [
+      "Local heuristic grader used instead of Codex-backed grading due external grader instability."
+    ],
+    "needs_review": [],
+    "workarounds": [
+      "Expectation scoring is based on deterministic token and phrase matching over output artifacts."
+    ]
   }
 }

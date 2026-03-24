@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
-      "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The run explicitly covers SKILL.md/README.md/reference.md, but cannot validate AGENTS alignment: result.md states “No AGENTS documentation content was included in the evidence bundle, so AGENTS alignment cannot be verified” and execution_notes.md repeats “No AGENTS documentation content included… cannot assess ‘AGENTS docs stay aligned.’” Therefore the full case focus (including AGENTS docs) is not covered."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "The output is a docs-phase contract alignment review grounded in the provided phase-contract documents and stays within their scope. It summarizes SKILL.md as authoritative for orchestrator behavior (“SKILL.md defines orchestrator behavior; reference.md defines runtime/artifacts/manifests/phase gates”) and compares against README.md/reference.md, noting specific drift (knowledge-pack/qmd additions) without inventing non-evidenced requirements. It also flags evidence limitations (AGENTS missing; reference.md possibly truncated) rather than asserting unsupported conclusions."
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

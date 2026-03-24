@@ -7,7 +7,7 @@
 - `skill_snapshot/SKILL.md`
 - `skill_snapshot/reference.md`
 - `skill_snapshot/README.md`
-- `skill_snapshot/references/docs-governance.md`
+- `skill_snapshot/docs/DOCS_GOVERNANCE.md`
 - `skill_snapshot/knowledge-packs/report-editor/pack.md`
 - `skill_snapshot/scripts/lib/runPhase.mjs`
 - `skill_snapshot/scripts/lib/workflowState.mjs`

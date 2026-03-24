@@ -214,7 +214,7 @@ When evolving `qa-plan-orchestrator`:
   - Activates `retrospective_replay` cases: `P4A-SDK-CONTRACT-001`, `P5A-INTERACTION-AUDIT-001`, `P5A-COVERAGE-PRESERVATION-001`, `P5B-ANALOG-GATE-001`, `P7-DEV-SMOKE-001`.
   - Do not enable automatically — newly logged defects must not contaminate the mutation decision.
 - **Iteration comparison:** use executed comparison for promotion decisions. The synthetic structural comparator is fallback-only and cannot promote a challenger.
-  - Executed compare: `scripts/run_iteration_compare.mjs`
+  - Executed compare: `scripts/run_iteration_compare.mjs` (uses `benchmark-runner-llm.mjs` via grading harness; local fallback disabled so behavior aligns with `npm run benchmark:v2:run`)
   - Synthetic fallback: `scripts/lib/publishIterationComparison.mjs`
 - **Iteration scoring:** run `scripts/score_iteration.mjs` after each Phase 5 decision:
   ```bash

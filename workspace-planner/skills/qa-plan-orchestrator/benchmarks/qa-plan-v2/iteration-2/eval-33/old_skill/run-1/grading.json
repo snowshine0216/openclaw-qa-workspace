@@ -1,31 +1,22 @@
 {
   "expectations": [
     {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "result.md explicitly states the opposite: \"The snapshot evidence also does not specify a mechanism where a defect feedback loop injects scenarios from prior defects into the next feature QA plan\" and \"What is missing in evidence: Any contract text that says defects ... are mined to create new scenarios and automatically carried into subsequent plans.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "execution_notes.md and result.md both report phase8 is not present: \"Observed only phases 0–7; no phase8 present.\" and \"does not define any Phase 8 (only Phases 0–7 exist in the contract).\" Therefore the output cannot align to phase8."
     }
   ],
   "summary": {
-    "passed": 1,
-    "failed": 0,
-    "total": 1,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 1,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

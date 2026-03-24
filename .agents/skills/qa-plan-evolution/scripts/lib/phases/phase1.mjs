@@ -261,6 +261,34 @@ export async function main(argv = process.argv.slice(2)) {
     'utf8',
   );
 
+  const proactiveDefectsRunKey = task.defect_analysis_run_key ?? task.feature_id ?? null;
+  const defectEvidencePath = join(runRoot, 'context', `defect_evidence_${runKey}.json`);
+  const supportsDefectsRefresh = profile.evidence_hooks?.defects_analysis_refresh !== 'none';
+  const proactiveDefectsDone = existsSync(defectEvidencePath);
+  const defectsAlreadyPresent =
+    fresh.defects_analysis?.status === 'present';
+
+  if (
+    !args.post &&
+    supportsDefectsRefresh &&
+    proactiveDefectsRunKey &&
+    !proactiveDefectsDone &&
+    !defectsAlreadyPresent
+  ) {
+    const manifest = buildDefectsRefreshManifest(repoRoot, task, runKey);
+    const manifestPath = join(runRoot, 'phase1_spawn_manifest.json');
+    writeJson(manifestPath, manifest);
+    if (manifest.requests.length > 0) {
+      console.log(`SPAWN_MANIFEST: ${manifestPath}`);
+    } else {
+      console.error(
+        'phase1: proactive defects-analysis skipped — no defect_analysis_run_key or feature_id available to build refresh request',
+      );
+    }
+    process.exitCode = 2;
+    return;
+  }
+
   const adapter = loadQaPlanAdapter();
   const packBootstrap = ensureKnowledgePackBootstrap({
     repoRoot,

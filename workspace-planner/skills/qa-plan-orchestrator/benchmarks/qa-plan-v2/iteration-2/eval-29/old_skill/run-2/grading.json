@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The output states the case focus requirements but cannot confirm shipment checkpoint coverage because required Phase 5b artifacts are missing: \"it does not include any Phase 5a/5b run artifacts (no `checkpoint_audit`, `checkpoint_delta`, or `qa_plan_phase5b` draft), so we cannot verify... that checkpoints were applied to the highlight interaction concerns\". Therefore explicit coverage is not demonstrated."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "result.md is explicitly framed as a Phase 5b checkpoint enforcement assessment and references the Phase 5b contract/artifacts/disposition: \"# ... Phase5b Checkpoint Enforcement Assessment\" and \"Per the skill snapshot, Phase 5b requires producing and validating shipment checkpoint artifacts...\". It evaluates Phase 5b alignment and concludes BLOCKED due to missing Phase 5b artifacts, which is consistent with Phase 5b checkpoint-enforcement review."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

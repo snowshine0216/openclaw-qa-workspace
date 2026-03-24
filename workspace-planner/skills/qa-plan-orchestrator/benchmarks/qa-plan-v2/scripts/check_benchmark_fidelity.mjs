@@ -19,7 +19,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const OFFLINE_PLACEHOLDER_SNIPPET = 'offline fallback executor';
+const DETERMINISTIC_FALLBACK_SNIPPET = 'deterministic fallback executor';
 const OFFLINE_FALLBACK_MODEL = 'offline-fallback';
+const DETERMINISTIC_FALLBACK_MODEL = 'deterministic-fallback';
 
 function parseArgs(argv) {
   const args = argv.slice(2);
@@ -83,9 +85,11 @@ async function collectViolations(iterationDir) {
 
         if (await pathReadable(notesPath)) {
           const text = await readFile(notesPath, 'utf8');
-          if (text.includes(OFFLINE_PLACEHOLDER_SNIPPET)) {
+          if (text.includes(OFFLINE_PLACEHOLDER_SNIPPET) || text.includes(DETERMINISTIC_FALLBACK_SNIPPET)) {
             violations.push({
-              kind: 'offline_placeholder_notes',
+              kind: text.includes(DETERMINISTIC_FALLBACK_SNIPPET)
+                ? 'deterministic_fallback_notes'
+                : 'offline_placeholder_notes',
               path: notesPath,
             });
           }
@@ -95,9 +99,15 @@ async function collectViolations(iterationDir) {
           try {
             const raw = await readFile(metricsPath, 'utf8');
             const parsed = JSON.parse(raw);
-            if (parsed && parsed.model === OFFLINE_FALLBACK_MODEL) {
+            if (parsed && (
+              parsed.model === OFFLINE_FALLBACK_MODEL
+              || parsed.model === DETERMINISTIC_FALLBACK_MODEL
+              || parsed.executor === DETERMINISTIC_FALLBACK_MODEL
+            )) {
               violations.push({
-                kind: 'offline_fallback_metrics',
+                kind: parsed.model === OFFLINE_FALLBACK_MODEL
+                  ? 'offline_fallback_metrics'
+                  : 'deterministic_fallback_metrics',
                 path: metricsPath,
               });
             }
@@ -140,7 +150,7 @@ async function main() {
     console.error(`  - ${v.kind}: ${v.path}`);
   }
   console.error(
-    '[check_benchmark_fidelity] Re-execute affected runs with benchmark-runner.mjs or benchmark-runner-ide-wait.mjs and benchmark-grader.mjs, then re-aggregate.',
+    '[check_benchmark_fidelity] Re-execute affected runs with a real executor/grader path, then re-aggregate.',
   );
 
   if (strict) {

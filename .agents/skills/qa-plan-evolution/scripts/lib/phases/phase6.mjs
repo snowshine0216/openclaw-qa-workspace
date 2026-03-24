@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { copyChampionSnapshot, copySnapshotDir, diffSnapshotDirs } from '../snapshot.mjs';
+import { mutationSignature } from '../mutationPlanner.mjs';
 import {
   parsePhaseArgs,
   resolveRunContext,
@@ -37,6 +38,36 @@ function updateAcceptedGapIds(runRoot, runKey, selectedGapIds) {
   writeFileSync(
     acceptedGapIdsPath,
     `${JSON.stringify({ gap_ids: gapIds }, null, 2)}\n`,
+    'utf8',
+  );
+}
+
+function updateRejectedMutationSignatures(runRoot, runKey, mutation) {
+  if (!mutation) {
+    return;
+  }
+
+  const rejectedMutationPath = join(runRoot, 'context', `rejected_mutation_signatures_${runKey}.json`);
+  const current = existsSync(rejectedMutationPath)
+    ? readJson(rejectedMutationPath)
+    : { signatures: [], mutations: [] };
+
+  const signature = mutationSignature(mutation);
+  const signatures = [...new Set([...(current.signatures ?? []), signature])];
+  const mutations = Array.isArray(current.mutations) ? [...current.mutations] : [];
+  if (!mutations.some((entry) => entry.signature === signature)) {
+    mutations.push({
+      signature,
+      mutation_id: mutation.mutation_id ?? null,
+      root_cause_bucket: mutation.root_cause_bucket ?? null,
+      target_files: mutation.target_files ?? [],
+      source_observation_ids: mutation.source_observation_ids ?? [],
+    });
+  }
+
+  writeFileSync(
+    rejectedMutationPath,
+    `${JSON.stringify({ signatures, mutations }, null, 2)}\n`,
     'utf8',
   );
 }
@@ -365,11 +396,23 @@ export async function main(argv = process.argv.slice(2)) {
   const acceptedGapIds = existsSync(candidateScopePath)
     ? readJson(candidateScopePath).mutation?.source_observation_ids ?? []
     : [];
+  const selectedMutation = existsSync(candidateScopePath)
+    ? readJson(candidateScopePath).mutation ?? null
+    : null;
 
   if (accept) {
-    writeMutationSummary(acceptedMutationsPath, 'Accepted Mutations', selectedMutations);
+    writeMutationSummary(
+      acceptedMutationsPath,
+      'Accepted Mutations',
+      selectedMutation ? [selectedMutation] : selectedMutations,
+    );
   } else {
-    writeMutationSummary(rejectedMutationsPath, 'Rejected Mutations', selectedMutations);
+    writeMutationSummary(
+      rejectedMutationsPath,
+      'Rejected Mutations',
+      selectedMutation ? [selectedMutation] : selectedMutations,
+    );
+    updateRejectedMutationSignatures(runRoot, runKey, selectedMutation);
   }
 
   let rejectionRestore = null;

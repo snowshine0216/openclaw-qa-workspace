@@ -27,6 +27,8 @@ export function loadEnv(skillRoot) {
     } else {
       val = val.trim();
     }
-    process.env[key] = val;
+    if (!(key in process.env)) {
+      process.env[key] = val;
+    }
   }
 }

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": false,
+      "evidence": "The output discusses the policy and then states it cannot be demonstrated: \"BLOCKING / FAIL (cannot be demonstrated from provided evidence)\" and \"The provided fixture evidence contains no supporting issues... therefore we cannot validate that Phase 1: (1) creates support-only digestion spawn requests, and (2) produces context/supporting_issue_summary_* artifacts...\" This does not explicitly cover (i.e., demonstrate) the required behavior; it asserts lack of evidence instead."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
-      "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "The output explicitly indicates missing phase1 artifacts and marks fail: \"The benchmark evidence bundle does not include: a phase1_spawn_manifest.json, or any context/supporting_issue_* artifacts.\" and \"BLOCKING / FAIL (phase1 alignment cannot be evidenced)\". Therefore the provided outputs are not phase1-aligned artifacts."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

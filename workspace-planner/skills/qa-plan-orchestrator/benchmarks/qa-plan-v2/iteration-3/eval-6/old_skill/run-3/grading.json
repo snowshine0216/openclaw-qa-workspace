@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4b contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
       "passed": true,
-      "evidence": "PASS: phase4b contract exists"
+      "evidence": "In result.md under “Evidence-based confirmation (Phase 4b contract coverage) → 1) Case focus is explicitly covered”: it states the Phase 4b Contract purpose is to “Group the Phase 4a draft into the canonical top-layer taxonomy without merging away scenario granularity” and calls out an “Anti-Compression Rule” that “Do not merge distinct ... scenarios” and “forbids silently shrinking coverage.”"
     },
     {
-      "text": "canonical top-layer grouping remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
       "passed": true,
-      "evidence": "PASS: canonical top-layer grouping remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "In result.md under “2) Output aligns with primary phase (phase4b)”: it lists Phase 4b entry/work/output artifacts and gates (e.g., “Entry: scripts/phase4b.sh”, “Output: phase4b_spawn_manifest.json”, “Required output artifact: drafts/qa_plan_phase4b_r<round>.md”, and post-gate validators including “coverage preservation against Phase 4a input” and “canonical layering”), asserting alignment to Phase 4b."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

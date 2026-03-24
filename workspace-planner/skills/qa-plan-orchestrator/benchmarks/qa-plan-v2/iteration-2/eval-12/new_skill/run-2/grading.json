@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
-      "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The output explicitly acknowledges the case focus but cannot cover the full set because AGENTS docs are missing from evidence: execution_notes.md: \"AGENTS docs not present in provided evidence, so alignment with AGENTS documentation cannot be verified\" and result.md: \"AGENTS docs (not included in provided evidence)\" / \"alignment with AGENTS docs cannot be demonstrated from evidence.\" Therefore the expectation that the case focus is explicitly covered (including AGENTS alignment) is not met."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "The output is consistent with the primary phase (docs) by evaluating cross-document phase-contract alignment and stating it is limited to provided evidence. result.md: \"Primary phase under test: docs.\" It performs a docs alignment check across SKILL.md/README.md/reference.md and reports a coherent verdict with an advisory mismatch: \"Status: Aligned on core orchestrator contract (no contradictions found in provided evidence).\" It also flags a potential drift point rather than contradicting phase docs: \"README claims an output that is not described in SKILL.md / reference.md.\""
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

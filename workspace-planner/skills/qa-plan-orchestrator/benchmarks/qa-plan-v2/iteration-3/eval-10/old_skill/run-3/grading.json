@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase6 quality rubric exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
       "passed": true,
-      "evidence": "PASS: phase6 quality rubric exists"
+      "evidence": "result.md explicitly maps the benchmark focus to Phase 6 requirements: “This benchmark’s focus is explicitly covered… ‘Final quality pass preserves layering’ … required by the Phase 6 rubric’s Final Layering model… ‘Final quality pass preserves executable wording’ … required by… atomic action chain + observable verification leaves… and by the Phase 6 gate requiring executable-step checks.”"
     },
     {
-      "text": "executable wording/quality pass remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
       "passed": true,
-      "evidence": "PASS: executable wording/quality pass remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is framed as “# Phase 6 (Final Quality Pass) — Contract Coverage Check” and details Phase 6 entry/work/required outputs (“drafts/qa_plan_phase6_r<round>.md”, “context/quality_delta_<feature-id>.md”), plus Phase 6-specific rubric sections and coverage preservation rules; execution_notes.md likewise states it “can validate phase6 contract alignment”."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

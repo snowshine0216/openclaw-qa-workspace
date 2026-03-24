@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly enumerates all three focus areas under “Heatmap highlighting scenarios that must appear in Phase 4a”: activation (e.g., “Highlight activation via single tap on a cell”, “...tapping a different cell switches highlight target”), persistence (e.g., “Highlight persistence when interacting outside the heatmap”, “Highlight persistence through scroll/resize/viewport changes”), and reset (e.g., “Highlight reset by explicit clear action”, “...when switching visualizations / navigating away”, “...when filters or selectors change the underlying heatmap data”)."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md targets “Phase 4a (Subcategory-only) coverage check” and states Phase 4a requirements: “subcategory-only QA draft... central topic → subcategory → scenario → atomic action chain → observable verification leaves”. The provided plan is structured accordingly (e.g., “Heatmap highlight effect (iOS)” subcategory with scenario bullets, step chains like “Open... → Tap... → [observable verifications]”), and it avoids top-layer canonical categories (also reinforced by the note: “do not use top-layer buckets like ‘EndToEnd’ or ‘Compatibility’ in Phase 4a”)."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

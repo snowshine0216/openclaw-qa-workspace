@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly addresses the case focus, stating the blocking requirement and evaluating it: “supporting issues must stay `context_only_no_defect_analysis` and Phase 1 must produce supporting-issue summaries” and then checks for those artifacts (spawn manifest, supporting summaries, relation map), concluding they are “Not demonstrable (FAIL given blind_pre_defect evidence).”"
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is explicitly Phase 1 aligned: title includes “Phase 1 Contract”; it enumerates “Phase 1 required behavior” and “What was checked (phase1-aligned)”, and evaluates alignment via Phase 1 artifacts (e.g., “Phase 1’s defining output is `phase1_spawn_manifest.json`”), concluding alignment is not demonstrable due to missing Phase 1 outputs."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

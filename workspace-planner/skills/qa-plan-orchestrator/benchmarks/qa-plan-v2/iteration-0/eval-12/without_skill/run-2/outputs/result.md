@@ -22,7 +22,7 @@ Does not satisfy the docs-phase contract on the copied evidence. The fixture bun
 
 2. `README.md` and `reference.md` disagree on which documents are part of the active contract.
 
-- `README.md` lists these as active contract files: `reference.md`, `references/phase4a-contract.md`, `references/phase4b-contract.md`, `references/context-coverage-contract.md`, `references/review-rubric-phase5a.md`, `references/review-rubric-phase5b.md`, `references/review-rubric-phase6.md`, `references/context-index-schema.md`, `references/e2e-coverage-rules.md`, `knowledge-packs/`, and `references/docs-governance.md` (`README.md`, lines 25-37).
+- `README.md` lists these as active contract files: `reference.md`, `references/phase4a-contract.md`, `references/phase4b-contract.md`, `references/context-coverage-contract.md`, `references/review-rubric-phase5a.md`, `references/review-rubric-phase5b.md`, `references/review-rubric-phase6.md`, `references/context-index-schema.md`, `references/e2e-coverage-rules.md`, `knowledge-packs/`, and `docs/DOCS_GOVERNANCE.md` (`README.md`, lines 25-37).
 - `reference.md` narrows "Active Runtime References" to only `references/phase4a-contract.md`, `references/phase4b-contract.md`, `references/review-rubric-phase5a.md`, `references/review-rubric-phase5b.md`, and `references/review-rubric-phase6.md` (`reference.md`, lines 36-42).
 - The omission is not harmless: `README.md` still says Phase 1 depends on `references/context-coverage-contract.md`, Phase 3 depends on `references/context-coverage-contract.md` and `references/context-index-schema.md`, and Phase 6 depends on `references/e2e-coverage-rules.md` (`README.md`, lines 45-51).
 - Impact: the docs do not present one stable, phase-aligned contract for which references are mandatory.

@@ -1,0 +1,1726 @@
+[
+  {
+    "key": "BCIN-1263",
+    "fields": {
+      "summary": "Custom font is not supported in Workstation.",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Description:",
+                "type": "text"
+              },
+              {
+                "text": "   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Ability to add custom font to Workstation  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Expected Behavior:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "null   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Steps to Reproduce:",
+                "type": "text"
+              },
+              {
+                "text": "   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "null   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Business Impact:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Corporate fonts have to be used across all interfaces   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Troubleshooting Steps:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "F38110 - PA-Applications HQ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "labels": [
+        "Title_Reviewed_Backfill",
+        "moved_from_Integrations_HQ_team"
+      ],
+      "resolution": {
+        "name": ""
+      },
+      "issueType": {
+        "id": "10007",
+        "name": "Story",
+        "subtask": false
+      },
+      "parent": {
+        "key": "BCED-2416"
+      },
+      "assignee": {
+        "displayName": "Wei (Irene) Jiang"
+      },
+      "priority": {
+        "name": ""
+      },
+      "reporter": {
+        "displayName": "Yan Zhang"
+      },
+      "watches": {
+        "isWatching": false,
+        "watchCount": 1
+      },
+      "status": {
+        "name": "Done"
+      },
+      "components": [],
+      "fixVersions": [
+        {
+          "name": "26-H1"
+        }
+      ],
+      "versions": [],
+      "comment": {
+        "comments": [
+          {
+            "id": "569078",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2023-07-12T20:36:56 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "This artifact [ US505795 ](",
+                      "type": "text"
+                    },
+                    {
+                      "marks": [
+                        {
+                          "attrs": {
+                            "href": "https://rally1.rallydev.com/#/detail/userstory/707975083049"
+                          },
+                          "type": "link"
+                        }
+                      ],
+                      "text": "https://rally1.rallydev.com/#/detail/userstory/707975083049",
+                      "type": "text"
+                    },
+                    {
+                      "text": ") changed its Component to [990 Tech Support Work Item] because its Module is set to [990.000 Tech Support Work Item].",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:31.228-0400"
+          },
+          {
+            "id": "569079",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2023-07-12T20:24:58 - Support ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Account: ABANCA, Owner: Cristina Mendizabal-Tome (RSM), Creator: servicecloud@MicroStrategy.com    ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Subject:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Application Appearance: Support customer provided typeface  ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Business Impact:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Corporate fonts have to be used across all interfaces   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Description:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Ability to add custom font to Workstation",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:31.473-0400"
+          },
+          {
+            "id": "569080",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2023-08-21T03:10:57 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@rdeleon @aolvera @rdeleon The Production Release of this customer enhancement request [US505795] was updated to 24.03 be the same as that of its parent Feature [F38110] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:31.698-0400"
+          },
+          {
+            "id": "569081",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2024-01-24T06:18:57 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@rdeleon @aolvera @rdeleon The Production Release of this customer enhancement request [US505795] was updated to 24.09 be the same as that of its parent Feature [F38110] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:31.952-0400"
+          },
+          {
+            "id": "569083",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2024-01-25T06:18:59 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@rdeleon @aolvera @rdeleon The Production Release of this customer enhancement request [US505795] was updated to 12M Roadmap be the same as that of its parent Feature [F38110] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:32.198-0400"
+          },
+          {
+            "id": "569084",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-05-23T12:19:50 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@rdeleon @ @wjiang The Production Release of this customer enhancement request [US505795] was updated to 26-H1 be the same as that of its parent Feature [F43767] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:32.441-0400"
+          },
+          {
+            "id": "569085",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "Rally item (",
+                      "type": "text"
+                    },
+                    {
+                      "marks": [
+                        {
+                          "attrs": {
+                            "href": "https://rally1.rallydev.com/#/search/?keywords=US505795"
+                          },
+                          "type": "link"
+                        }
+                      ],
+                      "text": "US505795",
+                      "type": "text"
+                    },
+                    {
+                      "text": ") was successfully migrated to Jira.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "Migration Exceptions:",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-09-12 01:56:29: Owner email rdeleon@microstrategy.com not found in Jira. Skipping setting owner.",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-09-12 01:56:29: Iteration not found for Rally item US505795. Skipping setting iteration.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-12T01:56:32.740-0400"
+          }
+        ],
+        "total": 7
+      },
+      "Subtasks": [],
+      "issueLinks": [],
+      "created": "2025-09-12T01:56:28.194-0400",
+      "updated": "2025-12-09T06:33:37.122-0500"
+    }
+  },
+  {
+    "key": "BCIN-1190",
+    "fields": {
+      "summary": "The ability for custom fonts to be available in the font picker list within Workstation",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Description:",
+                "type": "text"
+              },
+              {
+                "text": "   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Yahoo have a set of custom Yahoo fonts that they use on Dossiers in Web and Library, and the goal is to do the same from within Workstation. Text using these custom fonts does render properly within Workstation if they've already been chosen in Library, but the request is for the fonts to be available in the font picker list within Workstation.  ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Expected Behavior:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "For the custom fonts to appear in the custom font picker within Workstation   ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Steps to Reproduce:",
+                "type": "text"
+              },
+              {
+                "text": "   ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "[NOT APPLICABLE]  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "[-]Custom fonts cannot be added to the font picker within Workstation   ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Business Impact:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Reports and dossiers that are created via Workstation are not able to use the Yahoo custom font since this font does not appear as part of the font picker. Objects have be created via Web or Library for the font to be used.   ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "Troubleshooting Steps:",
+                "type": "text"
+              },
+              {
+                "text": "  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "12/18/2023  ",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "[-]This is already on the roadmap to be implemented via US481058",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "labels": [],
+      "resolution": {
+        "name": ""
+      },
+      "issueType": {
+        "id": "10007",
+        "name": "Story",
+        "subtask": false
+      },
+      "parent": {
+        "key": "BCED-2416"
+      },
+      "assignee": {
+        "displayName": "Wei (Irene) Jiang"
+      },
+      "priority": {
+        "name": ""
+      },
+      "reporter": {
+        "displayName": "Yan Zhang"
+      },
+      "watches": {
+        "isWatching": false,
+        "watchCount": 1
+      },
+      "status": {
+        "name": "Done"
+      },
+      "components": [],
+      "fixVersions": [
+        {
+          "name": "26-H1"
+        }
+      ],
+      "versions": [],
+      "comment": {
+        "comments": [
+          {
+            "id": "547106",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2023-12-27T14:51:38 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "This artifact [ US534876 ](",
+                      "type": "text"
+                    },
+                    {
+                      "marks": [
+                        {
+                          "attrs": {
+                            "href": "https://rally1.rallydev.com/#/detail/userstory/733516812183"
+                          },
+                          "type": "link"
+                        }
+                      ],
+                      "text": "https://rally1.rallydev.com/#/detail/userstory/733516812183",
+                      "type": "text"
+                    },
+                    {
+                      "text": ") changed its Component to [990 Tech Support Work Item] because its Module is set to [990.000 Tech Support Work Item].",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:21.671-0400"
+          },
+          {
+            "id": "547107",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2023-12-27T14:45:24 - Support ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Account: Yahoo Holdings Inc., Owner: Alvaro Mendoza (RSS), Creator: endicott@yahoo-inc.com    ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Subject:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "The ability for custom fonts to be available in the font picker list within Workstation  ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Business Impact:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Reports and dossiers that are created via Workstation are not able to use the Yahoo custom font since this font does not appear as part of the font picker. Objects have be created via Web or Library for the font to be used.   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Description:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Yahoo have a set of custom Yahoo fonts that they use on Dossiers in Web and Library, and the goal is to do the same from within Workstation. Text using these custom fonts does render properly within Workstation if they've already been chosen in Library, but the request is for the fonts to be available in the font picker list within Workstation.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:22.017-0400"
+          },
+          {
+            "id": "547108",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2024-08-01T10:48:56 - Agnieszka Pergol ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@Shruthi Mulagada please reassign the ER to correct Feature - custom fond in Dashboard editor.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:22.357-0400"
+          },
+          {
+            "id": "547109",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2024-10-14T17:15:15 - Support ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Associated to ServiceNow Case: CS0868332, Account: Bank Of America, Owner: Carlos Rodriguez (RSS), Creator: pawel.halicki@bofa.com    ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Subject:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Add custom fonts to Workstation font picker  ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Business Impact:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Web, Library, and Workstation showing the same font picker while being connected to UAT environment. Web and Library have a customization (based on instructions from KB37127) that adds Calibri font to the list and it works. Workstation is not showing this font while we’re connected to the same Library instance – The customer is looking for a way to add this in Workstation as well.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "The Calibri font is widely used in our environment (65k users) and users are complaining about lack of parity between Web/Library and Workstation. The users have recently introduced Workstation as a client tool and replacement of Developer, and missing elements like a single font are stopping users from transitioning from Developer and Web to Workstation (because they cannot apply correct font, and have to switch between clients and interfaces).",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "Description:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "The user would like to open an Enhancement Request to add the ability to add custom fonts to the font picker in Workstation. The user can customize the Web and Library with fontNamesPicker.xml, but they do not see any options that would let them do the same in Workstation (and the user needs it to maintain parity between all client interfaces).",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "The customer is running MicroStrategy One September 2024.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:22.742-0400"
+          },
+          {
+            "id": "547110",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-04-01T10:27:31 - Peng Peng(PO of BI) ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@Wei Jiang (PO)  Can you please follow up ?",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:23.077-0400"
+          },
+          {
+            "id": "547111",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-04-09T06:18:13 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@wjiang @aolvera @wjiang The Production Release of this customer enhancement request [US534876] was updated to 25.06 be the same as that of its parent Feature [F38110] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:23.481-0400"
+          },
+          {
+            "id": "547112",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-05-23T12:19:40 - Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@wjiang @ @wjiang The Production Release of this customer enhancement request [US534876] was updated to 26-H1 be the same as that of its parent Feature [F43767] so it matches when it will be delivered along with the Feature.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:23.784-0400"
+          },
+          {
+            "id": "547113",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-07-08T20:40:09 - Support ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Associated to ServiceNow Case: CS0943992, Account: OBI Smart Technologies GmbH, Owner: Dhanush Genupudi (CSE), Creator: servicecloud@microstrategy.com    ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Subject:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Ability to have custom font in workstation   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Business Impact:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Customer is unable to use custom fonts in workstation that affects group of developers   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Description:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "The customer has reported that the font picker in Strategy Workstation does not display any custom fonts. While users can customize the web and library interfaces using the fontNamespicker.xml file, they do not see any options to do the same in the Workstation. The customer would like to ensure consistency across all interfaces.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "Strategy One March 2024",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:24.068-0400"
+          },
+          {
+            "id": "547114",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-09-10T23:52:17 - Support ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Associated to ServiceNow Case: CS0961172, Account: Starbucks Coffee Company, Owner: Mohit Kumar (CSE), Creator: mokumar@microstrategy.com    ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Subject:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Ability to add custom font in Workstation  ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Business Impact:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Customer can't ensure consistent interface look between different client tools.   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Description:   ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "The customer has reported that the font picker in Strategy Workstation does not display any custom fonts. While users can customize the Web and Library interfaces using the fontNamespicker.xml file, they do not see any options to do the same in the Workstation. The customer would like to ensure consistency across all interfaces.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:24.330-0400"
+          },
+          {
+            "id": "547115",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "Rally item (",
+                      "type": "text"
+                    },
+                    {
+                      "marks": [
+                        {
+                          "attrs": {
+                            "href": "https://rally1.rallydev.com/#/search/?keywords=US534876"
+                          },
+                          "type": "link"
+                        }
+                      ],
+                      "text": "US534876",
+                      "type": "text"
+                    },
+                    {
+                      "text": ") was successfully migrated to Jira.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "Migration Exceptions:",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-09-11 09:36:16: Jira issue None not found. Will create a new issue.",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-09-11 09:36:19: Iteration not found for Rally item US534876. Skipping setting iteration.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-09-11T09:36:24.630-0400"
+          }
+        ],
+        "total": 10
+      },
+      "Subtasks": [],
+      "issueLinks": [],
+      "created": "2025-09-11T09:36:17.849-0400",
+      "updated": "2026-02-06T09:00:15.287-0500"
+    }
+  },
+  {
+    "key": "BCIN-3965",
+    "fields": {
+      "summary": "[Dashboard AG grid] Some of the grid cell will not show when connecting to 25.0304 server by 25.06 workstation",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "DESCRIPTION:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "[Dashboard AG grid] Some of the grid cell will not show when connecting to 25.0304 server by 25.06 workstation.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "workstation dashboard editor",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "layout": "center"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "collection": "",
+                  "height": 183,
+                  "id": "4ed734ca-e096-45d2-9f70-14eb96bd8868",
+                  "type": "file",
+                  "width": 200
+                },
+                "type": "media"
+              }
+            ],
+            "type": "mediaSingle"
+          },
+          {
+            "content": [
+              {
+                "text": "workstation report editor",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "layout": "center"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "collection": "",
+                  "height": 183,
+                  "id": "4ed734ca-e096-45d2-9f70-14eb96bd8868",
+                  "type": "file",
+                  "width": 200
+                },
+                "type": "media"
+              }
+            ],
+            "type": "mediaSingle"
+          },
+          {
+            "content": [
+              {
+                "text": "EXPECTED BEHAVIOR:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "ENVIRONMENT (Browser, OS, Secure Cloud info, URL, Intelligence Server info, metadata/warehouse info, etc):",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "STEPS TO REPRODUCE:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "Login ",
+                        "type": "text"
+                      },
+                      {
+                        "marks": [
+                          {
+                            "attrs": {
+                              "href": "https://stg-env-54450.cloud.microstrategy.com/MicroStrategyLibrary/"
+                            },
+                            "type": "link"
+                          }
+                        ],
+                        "text": "https://stg-env-54450.cloud.microstrategy.com/MicroStrategyLibrary/",
+                        "type": "text"
+                      },
+                      {
+                        "text": "(",
+                        "type": "text"
+                      },
+                      {
+                        "marks": [
+                          {
+                            "attrs": {
+                              "href": "https://stg-env-54450.cloud.microstrategy.com/MicroStrategyLibrary/"
+                            },
+                            "type": "link"
+                          }
+                        ],
+                        "text": "https://stg-env-54450.cloud.microstrategy.com/MicroStrategyLibrary/",
+                        "type": "text"
+                      },
+                      {
+                        "text": ") by administrator / oIb1bt2bC2S",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "content": [
+                  {
+                    "content": [
+                      {
+                        "text": "Run dashboard \"Dashboard, AG Grid\", scroll up/down in the grid \u003e\u003e issue here: some of the grid cell border will not show",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              }
+            ],
+            "type": "bulletList"
+          },
+          {
+            "content": [
+              {
+                "text": "SUPPORTING DOCUMENTATION (Screenshot, video/gif, .mstr file, logs, etc):",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Please click[here](",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "attrs": {
+                      "href": "https://microstrategy.atlassian.net/wiki/spaces/TECAGILEWORKS/pages/162727022/Defect+Logging+Guidelines)to"
+                    },
+                    "type": "link"
+                  }
+                ],
+                "text": "https://microstrategy.atlassian.net/wiki/spaces/TECAGILEWORKS/pages/162727022/Defect+Logging+Guidelines)to",
+                "type": "text"
+              },
+              {
+                "text": " read the full guidelines of logging defects.",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "labels": [
+        "BCIN",
+        "MovedFromEmbeddingCTC"
+      ],
+      "resolution": {
+        "name": "Not Reproducible"
+      },
+      "issueType": {
+        "id": "10010",
+        "name": "Defect",
+        "subtask": false
+      },
+      "parent": {
+        "key": "BCED-2416"
+      },
+      "assignee": {
+        "displayName": "Raswitha Vaddepally"
+      },
+      "priority": {
+        "name": "Low"
+      },
+      "reporter": {
+        "displayName": "Yan Zhang"
+      },
+      "watches": {
+        "isWatching": false,
+        "watchCount": 1
+      },
+      "status": {
+        "name": "Done"
+      },
+      "components": [],
+      "fixVersions": [
+        {
+          "name": "Never"
+        }
+      ],
+      "versions": [],
+      "comment": {
+        "comments": [
+          {
+            "id": "45389",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-06-13T06:51:10 - Yanping Tong ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@Yang Du Please review this issue. cc @Shuai Xiong",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-07-31T22:00:50.968-0400"
+          },
+          {
+            "id": "45390",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-06-13T06:58:35 - Bin (Jason) Xu ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@Yang Du Log this issue to track grid cell border not show when connecting to 25.0304 server by 25.06 workstation. It doesn't happen  when connecting to 25.06 server. Even though we might redirect user to library web when edit dashboard in workstation in feature, report might still have the issue. cc @Wei Jiang (PO) @En Li @Yin Xue",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-07-31T22:00:51.287-0400"
+          },
+          {
+            "id": "45391",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-07-29T02:39:10 - Yang Du ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "@Bin (Jason) Xu can you verify it in the latest workstation workstation-windows-11.5.0800.00823?",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-07-31T22:00:51.588-0400"
+          },
+          {
+            "id": "45392",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "2025-07-29T07:05:43 - Bin (Jason) Xu ",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "Confirmed with @Yang Du This issue is not fixed yet on latest workstation build.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-07-31T22:00:51.915-0400"
+          },
+          {
+            "id": "45393",
+            "author": {
+              "accountId": "557058:a58b5d39-c60d-4741-bd3f-04873b3c24bf",
+              "emailAddress": "zhangyan@microstrategy.com",
+              "displayName": "Yan Zhang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "Successfully migrated from Rally ",
+                      "type": "text"
+                    },
+                    {
+                      "marks": [
+                        {
+                          "attrs": {
+                            "href": "https://rally1.rallydev.com/#/search/?keywords=DE327710"
+                          },
+                          "type": "link"
+                        }
+                      ],
+                      "text": "DE327710",
+                      "type": "text"
+                    },
+                    {
+                      "text": ": [Dashboard AG grid] Some of the grid cell will not show when connecting to 25.0304 server by 25.06 workstation",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                },
+                {
+                  "content": [
+                    {
+                      "text": "Migration Exceptions:",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-07-31 22:00:46: Owner email yadu@microstrategy.com not found in Jira. Skipping setting owner.",
+                      "type": "text"
+                    },
+                    {
+                      "type": "hardBreak"
+                    },
+                    {
+                      "text": "2025-07-31 22:00:46: Iteration not found for Rally item DE327710. Skipping setting iteration.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-07-31T22:00:52.238-0400"
+          },
+          {
+            "id": "729881",
+            "author": {
+              "accountId": "557058:1bb6163b-b0ba-4dfc-8892-544386c08519",
+              "emailAddress": "wjiang@microstrategy.com",
+              "displayName": "Wei (Irene) Jiang",
+              "active": true
+            },
+            "body": {
+              "content": [
+                {
+                  "content": [
+                    {
+                      "text": "Not reproducible and may be fixed earlier.",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "paragraph"
+                }
+              ],
+              "type": "doc",
+              "version": 1
+            },
+            "created": "2025-11-06T04:01:54.868-0500"
+          }
+        ],
+        "total": 6
+      },
+      "Subtasks": [],
+      "issueLinks": [],
+      "created": "2025-07-22T00:23:05.187-0400",
+      "updated": "2025-11-06T04:01:59.478-0500"
+    }
+  }
+]

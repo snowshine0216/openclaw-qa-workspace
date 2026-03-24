@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the benchmark intent: \"Verify that Phase 1 context intake ... is capable of preserving Google Sheets export entry points, scope boundaries, and format constraints ... before any scenario drafting begins.\" It also reiterates preservation needs and that assessment is before drafting: \"These artifacts ... imply the need to preserve: Entry points ... Scope boundaries ... Format constraints\" and notes \"no scenario drafting\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "execution_notes.md: \"Primary phase under test: Phase 1\" and \"Artifact produced here is a phase-contract evaluation writeup (no scenario drafting, no Phase 4+ content).\" result.md is titled \"Phase 1 Contract Check (Advisory)\" and discusses Phase 1 responsibilities (spawn manifest generation, context intake) without drafting scenarios."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

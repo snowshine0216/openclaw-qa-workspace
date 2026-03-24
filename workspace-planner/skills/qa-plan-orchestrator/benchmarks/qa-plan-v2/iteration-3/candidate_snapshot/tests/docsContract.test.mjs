@@ -138,6 +138,38 @@ test('active docs advertise script-driven artifacts and source routing', async (
   assert.match(evals, /"request_fulfillment"/);
 });
 
+test('report-editor replay and shipment anchors stay scoped to report-editor contracts', async () => {
+  const phase4aContract = await readFile(join(SKILL_ROOT, 'references', 'phase4a-contract.md'), 'utf8');
+  const phase5aRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5a.md'), 'utf8');
+  const phase5bRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md'), 'utf8');
+
+  assert.match(phase4aContract, /Report-Editor Replay Anchor/i);
+  assert.match(phase4aContract, /active knowledge pack is `report-editor`/i);
+  assert.match(phase4aContract, /setWindowTitle.*visible scenario leaves/is);
+  assert.match(phase4aContract, /prompt-editor.*report-builder/is);
+  assert.match(phase4aContract, /template-save.*prompt-pause.*builder-loading/is);
+  assert.match(phase4aContract, /workstation title correctness on edit/i);
+  assert.match(phase4aContract, /must not become generic obligations for unrelated families such as `docs`, `export`, or `native-embedding`/i);
+
+  assert.match(phase5aRubric, /Report-Editor Interaction Audit Anchor/i);
+  assert.match(phase5aRubric, /active knowledge pack is `report-editor`/i);
+  assert.match(phase5aRubric, /template-based creation.*pause-mode prompts/is);
+  assert.match(phase5aRubric, /close-confirmation.*prompt editor open/is);
+  assert.match(phase5aRubric, /save-as-overwrite.*template-save/is);
+  assert.match(phase5aRubric, /prompt-pause-mode.*report-builder-loading/is);
+  assert.match(phase5aRubric, /knowledge_pack_row_id.*interaction-pair identity/is);
+  assert.match(phase5aRubric, /must not be applied as a generic rewrite requirement/i);
+
+  assert.match(phase5bRubric, /Report-Editor Shipment Gate/i);
+  assert.match(phase5bRubric, /active knowledge pack is `report-editor`/i);
+  assert.match(phase5bRubric, /save dialog completeness and interactivity/i);
+  assert.match(phase5bRubric, /prompt element loading after interaction/i);
+  assert.match(phase5bRubric, /template with prompt pause mode running after creation/i);
+  assert.match(phase5bRubric, /blind shipment checkpoint.*prompt lifecycle.*template flow.*builder loading.*close-or-save decision safety/is);
+  assert.match(phase5bRubric, /`analog:<source_issue>`.*visible user outcome/is);
+  assert.match(phase5bRubric, /must not broaden checkpoint expectations for unrelated families/i);
+});
+
 test('validator-safe guide and subagent checklist advertise the correct operational rules', async () => {
   const guide = await readFile(join(SKILL_ROOT, 'references', 'validator-safe-authoring-and-dedup-guide.md'), 'utf8');
   const checklist = await readFile(join(SKILL_ROOT, 'references', 'subagent-quick-checklist.md'), 'utf8');

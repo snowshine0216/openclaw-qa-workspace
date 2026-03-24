@@ -15,6 +15,8 @@ Human-facing guide for the skill package. This file is intentionally short.
 - source evidence saved under `context/`
 - support-only Jira relation maps and summaries saved under `context/`
 - Tavily-first report-editor deep research artifacts, optional Confluence fallback artifacts, and a synthesis artifact saved under `context/`
+- knowledge-pack summary and retrieval artifacts saved under `context/`
+- machine-readable `coverage_ledger_<feature-id>.json` plus the migration-safe markdown ledger
 - `request_fulfillment_<feature-id>.md` and `.json` under `context/`
 - `artifact_lookup_<feature-id>.md` under `context/`
 - versioned phase-scoped draft QA plans under `drafts/` (`qa_plan_phase4a_r<round>.md`, `qa_plan_phase4b_r<round>.md`, `qa_plan_phase5a_r<round>.md`, `qa_plan_phase5b_r<round>.md`, `qa_plan_phase6_r<round>.md`)
@@ -56,3 +58,14 @@ Each spawned subagent receives explicit instructions in its task text to read th
 - Report-editor deep research must record the `tavily-search` pass before any `confluence` fallback for the same topic.
 - Every support or deep-research artifact that influences drafting must live under `context/` and appear in `artifact_lookup_<feature-id>.md`.
 - When `knowledge-packs/report-editor/` is in scope, required capabilities, analog gates, SDK-visible contracts, and interaction pairs must map to scenarios, review gates, or explicit exclusions.
+
+## qmd Runtime
+
+- Knowledge-pack retrieval uses `@tobilu/qmd` as the BM25-first runtime index (in-process SDK; no qmd CLI required).
+- Tested pinned version: `2.0.1`
+- **No `qmd collection add` step** — the collection is created programmatically during Phase 3 from `context/knowledge_pack_projection/`. Run `npm install` in this package; the index is built automatically when a pack is active.
+- Semantic augmentation is optional and controlled by `QA_PLAN_SEMANTIC_MODE`:
+  - `disabled`
+  - `qmd`
+  - `openclaw_memory`
+- Semantic failure never blocks the run. BM25 failure blocks Phase 3 when a pack is active.

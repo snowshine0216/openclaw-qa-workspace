@@ -1,0 +1,82 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "case_id": "RE-P5B-SHIP-GATE-001",
+  "eval_id": 23,
+  "eval_name": "re-p5b-ship-gate-001",
+  "feature_id": "BCIN-7289",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "phase5b",
+  "kind": "checkpoint_enforcement",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": true,
+  "benchmark_profile": "global-cross-feature-v1",
+  "fixture_refs": [
+    "BCIN-7289-blind-pre-defect-bundle"
+  ],
+  "prompt": "Benchmark case RE-P5B-SHIP-GATE-001 for qa-plan-orchestrator. Use feature BCIN-7289 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: blind pre defect. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-7289-blind-pre-defect-bundle. Focus: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "expectations": [
+    "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+    "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b"
+  ],
+  "run": {
+    "configuration_dir": "old_skill",
+    "uses_skill_snapshot": true,
+    "run_number": 1,
+    "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1",
+    "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/outputs",
+    "transcript_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/execution_transcript.log",
+    "grading_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/grading.json",
+    "timing_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/timing.json",
+    "metrics_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/outputs/metrics.json"
+  },
+  "skill_snapshot_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
+  "fixtures": [
+    {
+      "fixture_id": "BCIN-7289-blind-pre-defect-bundle",
+      "type": "blind_pre_defect_bundle",
+      "feature_id": "BCIN-7289",
+      "feature_family": "report-editor",
+      "cutoff_policy": "all_customer_issues_only",
+      "issue_scope": {
+        "include_issue_classes": [
+          "customer"
+        ],
+        "exclude_issue_classes": [
+          "non_customer"
+        ]
+      },
+      "materials": [
+        {
+          "material_type": "jira_feature",
+          "source_id_or_url": "BCIN-7289",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.issue.raw.json",
+          "included_in_blind": true,
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.issue.raw.json"
+        },
+        {
+          "material_type": "jira_customer_issue_export",
+          "source_id_or_url": "BCIN-7289 customer scope export",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.customer-scope.json",
+          "included_in_blind": true,
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.customer-scope.json"
+        },
+        {
+          "material_type": "jira_adjacent_issue_export",
+          "source_id_or_url": "BCIN-7289 adjacent issue summary",
+          "snapshot_path": "workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.adjacent-issues.summary.json",
+          "included_in_blind": true,
+          "notes": "Used because the feature itself has no explicit customer fields in Jira at freeze time.",
+          "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-23/old_skill/run-1/inputs/fixtures/BCIN-7289-blind-pre-defect-bundle/materials/BCIN-7289.adjacent-issues.summary.json"
+        },
+        {
+          "material_type": "confluence_design_doc",
+          "source_id_or_url": "https://microstrategy.atlassian.net/wiki/spaces/TPAC/pages/5949096102/BCIN-7289+Use+Embedding+report+in+Workstation+Plugin",
+          "included_in_blind": true,
+          "local_path": null
+        }
+      ],
+      "local_path": null
+    }
+  ]
+}

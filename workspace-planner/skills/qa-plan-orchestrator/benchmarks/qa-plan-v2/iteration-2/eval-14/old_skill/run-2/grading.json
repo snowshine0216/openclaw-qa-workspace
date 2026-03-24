@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly states the holdout regression focus and discusses promotion/finalization: \"focusing on whether promotion/finalization behavior remains stable on another feature\" and explains Phase 7 promotion/finalization contract details (archive existing final, promote draft, write finalization record). It concludes the case cannot be validated due to missing Phase 7 artifacts, but the focus is explicitly covered."
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md declares \"Phase alignment: Holdout\" and frames the assessment as a holdout checkpoint evaluation. Both result.md and execution_notes.md treat missing holdout execution artifacts as a blocking condition: \"BLOCKED — insufficient holdout evidence to verify...\" This aligns the output with holdout-phase expectations (i.e., evaluating/confirming holdout evidence, and blocking when absent)."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

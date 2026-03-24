@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "The outputs state the focus areas but do not provide Phase 5b checkpoint artifacts demonstrating coverage as shipment checkpoints. execution_notes.md: \"No Phase 5b artifacts (checkpoint_audit/checkpoint_delta/phase5b draft) are included... so checkpoint enforcement cannot be verified.\" result.md: \"No Phase 5b run artifacts are included, so the benchmark cannot confirm... those outputs explicitly cover the focus behaviors (OK/Cancel semantics, pending selection state, dismissal correctness).\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The outputs explicitly indicate missing required Phase 5b artifacts and therefore cannot demonstrate alignment with phase5b. execution_notes.md: \"Missing Phase 5b outputs required to demonstrate alignment with `phase5b`...\" result.md: \"Because the benchmark case is checkpoint enforcement and must align to phase5b, the absence of Phase 5b checkpoint artifacts means compliance cannot be demonstrated.\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

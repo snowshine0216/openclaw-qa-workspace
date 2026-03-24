@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly states the case focus and the needed separation: “Case focus: ‘modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering.’” It further requires distinct scenario coverage: “Validate contextual-link visual styling… Distinguish that from ordinary/non-linked cell rendering… negative/contrast coverage,” and reiterates scenario clusters for “Contextual link styling scenarios” vs “Ordinary rendering scenarios.”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md names the primary phase and evaluates against it: “Primary phase under test: Phase 4a” and “This result is explicitly evaluated against Phase 4a requirements (writer phase), not later grouping/review phases.” It also ties the separation requirement to Phase 4a contract elements (“subcategory → scenario → atomic action chain → observable verification leaves”)."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

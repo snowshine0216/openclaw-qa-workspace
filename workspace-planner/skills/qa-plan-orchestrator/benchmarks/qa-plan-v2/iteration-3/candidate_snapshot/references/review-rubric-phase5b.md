@@ -62,6 +62,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - `Checkpoint 13` Chaos and Resilience
 - `Checkpoint 14` Shift-Right Monitoring
 - `Checkpoint 15` Final Release Gate
+- `Checkpoint 16` i18n Dialog Coverage
 - `supporting_context_and_gap_readiness`
 
 ## Required Sections
@@ -75,6 +76,18 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 
 The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
 The release recommendation must enumerate all `[ANALOG-GATE]` items that remain blocking before ship.
+When a knowledge pack is active, analog-gate evidence and release recommendation bullets must cite the concrete `analog:<source_issue>` row ids from `coverage_ledger_<feature-id>.json`.
+
+## Report-Editor Shipment Gate
+
+- When the active knowledge pack is `report-editor`, `Checkpoint 15`, `supporting_context_and_gap_readiness`, and `## Release Recommendation` must explicitly gate:
+  - save dialog completeness and interactivity
+  - prompt element loading after interaction
+  - template with prompt pause mode running after creation
+  - blind shipment checkpoint coverage for prompt lifecycle, template flow, builder loading, and close-or-save decision safety
+- Each report-editor `[ANALOG-GATE]` entry must cite the concrete `analog:<source_issue>` row id and the visible user outcome from `coverage_ledger_<feature-id>.json`; generic release text is insufficient.
+- Report-editor shipment gating must route back for rewrite when the plan mentions report-editor release readiness without an explicit gate, analog row id, or visible outcome.
+- These shipment-gate rules are report-editor-specific and must not broaden checkpoint expectations for unrelated families.
 
 ### `checkpoint_delta_<feature-id>.md`
 

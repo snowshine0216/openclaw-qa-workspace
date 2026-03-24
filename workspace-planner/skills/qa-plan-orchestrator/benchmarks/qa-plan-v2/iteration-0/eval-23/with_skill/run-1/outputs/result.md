@@ -1,51 +1,25 @@
-# Phase5b Shipment Checkpoint — RE-P5B-SHIP-GATE-001 (BCIN-7289)
+# With-Skill Assessment
 
-## Status
-**BLOCKING — NOT VERIFIABLE WITH PROVIDED EVIDENCE (blind_pre_defect, customer-issues-only)**
+- eval_id: 23
+- case_id: RE-P5B-SHIP-GATE-001
+- feature_id: BCIN-7289
+- configuration: with_skill
+- run: 1
 
-This benchmark requires demonstrating **phase5b checkpoint enforcement** for **BCIN-7289** (report-editor) with explicit coverage of:
+## Summary
+- The frozen blind adjacent-issue bundle highlights the exact shipment risks this case cares about: prompt handling (`BCIN-7730`, `BCIN-7708`, `BCIN-7707`, `BCIN-7685`), builder loading (`BCIN-7727`), template/save flow (`BCIN-7667`, `BCIN-7688`, `BCIN-7687`), and close/save decision safety (`BCIN-7709`, `BCIN-7691`).
+- The current champion phase-5b draft and checkpoint audit explicitly cover prompt lifecycle, template operations, builder loading, close-confirmation behavior, save/save-as routing, and release-gate disposition.
+- Checkpoint audit plus checkpoint delta make this a true phase-5b shipment gate output, not an earlier draft artifact.
 
-- prompt lifecycle
-- template flow
-- builder loading
-- close-or-save decision safety
+## Expectations
+- [checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety => PASS
+- [checkpoint_enforcement][blocking] Output aligns with primary phase phase5b => PASS
 
-Per the benchmark constraints, I can **only** use the listed benchmark evidence, and under **blind evidence policy** I can use **customer issues only** and must **exclude non-customer issues**. In the provided evidence list for this case, there is **no accessible fixture content** and **no customer-issue artifacts** to evaluate.
+## Evidence Sources
+- workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/fixtures/jira/BCIN-7289.adjacent-issues.summary.json
+- workspace-planner/skills/qa-plan-orchestrator/runs/BCIN-7289/context/checkpoint_audit_BCIN-7289.md
+- workspace-planner/skills/qa-plan-orchestrator/runs/BCIN-7289/context/checkpoint_delta_BCIN-7289.md
+- workspace-planner/skills/qa-plan-orchestrator/runs/BCIN-7289/drafts/qa_plan_phase5b_r1.md
 
-## Evidence Used (per constraints)
-- **./skill_snapshot/SKILL.md** — *required by the benchmark instructions*  
-- Fixture reference **BCIN-7289-blind-pre-defect-bundle** — **referenced but not provided with any local path or contents**, therefore **not usable**
-
-No additional customer-issue evidence (tickets, logs, repro steps, videos, screenshots, telemetry excerpts, etc.) was available in the prompt.
-
-## Phase Alignment: phase5b (Shipment Checkpoint)
-The phase5b shipment checkpoint is expected to gate shipment by ensuring the feature’s final flow is safe and complete across:
-
-1. **Prompt lifecycle** (create/edit prompt, persistence, state transitions)
-2. **Template flow** (template selection/apply, correctness, regressions)
-3. **Builder loading** (loads reliably, handles errors, does not hang)
-4. **Close-or-save decision safety** (unsaved changes protection, explicit save/confirm, no data loss)
-
-### Verification Outcome
-Because no customer-issue evidence bundle contents are available, I cannot verify:
-
-- what the current defect/risk is in BCIN-7289,
-- whether the phase5b checkpoint is implemented and enforced,
-- whether the four focus areas above were tested and passed,
-- whether shipment should be allowed or blocked based on customer-reported issues.
-
-## Checkpoint Enforcement Conclusion
-**BLOCKING** for the benchmark: the required phase5b checkpoint enforcement **cannot be demonstrated** from the provided evidence set.
-
-## Required Inputs to Complete This Benchmark (customer-issues-only)
-To proceed while staying compliant with the blind evidence policy, provide **customer-issue artifacts only** for BCIN-7289, such as:
-
-- customer ticket(s) describing failures in prompt lifecycle / template flow / builder loading / close-or-save safety
-- attached repro steps, screenshots, videos, console logs, network traces
-- customer environment details (browser/app version, account/org context if relevant)
-- any customer-provided timeline of when it regressed
-
-Once provided, I will:
-- map each customer issue to the four required focus areas,
-- assess whether phase5b shipment checkpoint gates are satisfied,
-- produce a phase5b-aligned pass/block decision and required follow-ups.
+## Judgment
+- Champion skill evidence supports the case.

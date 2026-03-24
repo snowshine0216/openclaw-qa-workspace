@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly targets the blocking requirement: \"Skill improvements for report-editor do not regress a different feature planning flow\" and concludes: \"PASS — ... shows no workflow changes that would regress a different feature planning flow ...\" It also discusses cross-feature coupling risk and references the fixture on embedding/dashboard-editor drift."
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md explicitly align to holdout: execution_notes.md section \"What was done (holdout phase alignment)\" and result.md header \"Verdict (primary phase: holdout)\" plus \"Given evidence mode is holdout_regression, we limit to...\" confirming the evaluation is constrained to holdout-regression evidence rather than full run artifacts."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

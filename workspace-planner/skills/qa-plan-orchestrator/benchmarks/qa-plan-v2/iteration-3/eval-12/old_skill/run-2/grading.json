@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
-      "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The output explicitly covers SKILL.md/README.md/reference.md alignment, but cannot cover AGENTS docs alignment: result.md states “AGENTS docs (not present in provided evidence)” and “Status: Cannot verify (BLOCKER) … no AGENTS* files … included in the provided evidence.” Therefore the full case focus (including AGENTS) is not explicitly covered/verified."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "The primary phase/checkpoint under test is “docs” and the deliverable is a docs sync review. result.md states “Primary phase/checkpoint under test: docs.” and provides an evidence-based alignment review across the specified docs, which is consistent with a docs-phase output."
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

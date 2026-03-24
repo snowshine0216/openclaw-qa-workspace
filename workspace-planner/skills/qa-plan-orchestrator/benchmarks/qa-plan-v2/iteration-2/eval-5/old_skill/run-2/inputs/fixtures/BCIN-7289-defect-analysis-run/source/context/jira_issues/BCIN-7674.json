@@ -1,0 +1,10 @@
+{
+  "key": "BCIN-7674",
+  "summary": "The window title is \"newReportWithApplication\" when create blank report from workstation new report editor",
+  "status": "Done",
+  "priority": "Low",
+  "assignee": "Bin (Jason) Xu",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"34bdb5b07b4f\"},\"content\":[{\"text\":\"The window title is \\\"newReportWithApplication\\\" when create blank report from workstation new report editor.\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"e8b8f7e37d03\",\"width\":671,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"image-20260318-021352.png\",\"collection\":\"\",\"height\":868,\"id\":\"c0d4de58-da22-4e4e-8dac-46e40e1f46c7\",\"localId\":\"8d1f01d8f66f\",\"type\":\"file\",\"width\":1380},\"marks\":[{\"attrs\":{\"color\":\"#091e4224\",\"size\":2},\"type\":\"border\"}],\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"localId\":\"f9f06d00cc99\"},\"content\":[{\"text\":\"Steps to reproduce:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"afc3250f99a2\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"453e04c454ea\"},\"content\":[{\"attrs\":{\"localId\":\"e42639c67856\"},\"content\":[{\"text\":\"Login \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/\",\"type\":\"text\"},{\"text\":\" by bxu with empty password on workstation\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"453e04c454ea\"},\"content\":[{\"attrs\":{\"localId\":\"c334aaca6f6a\"},\"content\":[{\"text\":\"Enable new report editor\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"453e04c454ea\"},\"content\":[{\"attrs\":{\"localId\":\"2513691954f4\"},\"content\":[{\"text\":\"Create a blank report\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": []
+}

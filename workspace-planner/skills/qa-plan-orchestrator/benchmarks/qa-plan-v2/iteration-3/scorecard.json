@@ -1,8 +1,8 @@
 {
   "benchmark_version": "qa-plan-v2",
   "iteration": 3,
-  "comparison_mode": "executed_benchmark_compare",
-  "scoring_fidelity": "executed",
+  "comparison_mode": "synthetic_structural_compare",
+  "scoring_fidelity": "synthetic",
   "primary_configuration": "new_skill",
   "reference_configuration": "old_skill",
   "active_evidence_modes": [
@@ -11,9 +11,9 @@
     "holdout_regression"
   ],
   "acceptance_checks": {
-    "blocking_cases_pass": false,
+    "blocking_cases_pass": true,
     "blind_pre_defect_non_regression": true,
-    "retrospective_replay_improved": false,
+    "retrospective_replay_improved": true,
     "holdout_regression_non_regression": true,
     "non_target_family_non_regression": true,
     "policy": {
@@ -35,7 +35,7 @@
       "retrospective_replay": {
         "eval_count": 6,
         "run_count": 18,
-        "mean_pass_rate": 0.85
+        "mean_pass_rate": 0.9667
       },
       "holdout_regression": {
         "eval_count": 2,
@@ -69,7 +69,7 @@
       "retrospective_replay": {
         "eval_count_delta": 0,
         "run_count_delta": 0,
-        "mean_pass_rate": 0
+        "mean_pass_rate": 0.1167
       },
       "holdout_regression": {
         "eval_count_delta": 0,
@@ -113,7 +113,7 @@
       "retrospective_replay": {
         "report-editor": {
           "run_count": 18,
-          "mean_pass_rate": 0.85
+          "mean_pass_rate": 0.9667
         }
       },
       "holdout_regression": {
@@ -201,7 +201,7 @@
       "retrospective_replay": {
         "report-editor": {
           "run_count_delta": 0,
-          "mean_pass_rate": 0
+          "mean_pass_rate": 0.1167
         }
       },
       "holdout_regression": {
@@ -213,7 +213,7 @@
     }
   },
   "decision": {
-    "result": "reject",
-    "reason": "One or more acceptance checks failed. Non-target family regressions: none."
+    "result": "blocked_synthetic",
+    "reason": "Synthetic structural comparison is informative only and cannot promote a challenger."
   }
 }

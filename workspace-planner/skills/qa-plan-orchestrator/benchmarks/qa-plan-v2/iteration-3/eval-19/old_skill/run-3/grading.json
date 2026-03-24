@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
-      "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": false,
+      "evidence": "result.md states: \"there is no Phase 4a artifact ... or any draft content demonstrating those scenarios\" and concludes it \"cannot confirm\" activation/persistence/reset coverage. execution_notes.md similarly: \"Looked for explicit scenario coverage for heatmap highlighting activation, persistence, reset. None present in provided evidence.\""
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
-      "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "execution_notes.md: \"Phase alignment check (phase4a): Looked for Phase 4a artifact evidence ... None present\" and notes a \"Missing Phase 4a deliverable artifact\". result.md reiterates: \"there is no Phase 4a artifact ...\", so alignment with phase4a cannot be demonstrated from the provided outputs."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

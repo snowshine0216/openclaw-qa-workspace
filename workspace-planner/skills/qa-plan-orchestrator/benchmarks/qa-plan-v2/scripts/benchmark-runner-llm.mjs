@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * Autonomous LLM-backed benchmark executor for qa-plan-v2.
- * Replaces benchmark-runner.mjs (Codex-only) and benchmark-runner-ide-wait.mjs (human-in-loop).
+ * Internal LLM-backed benchmark executor for qa-plan-v2.
+ * Public callers should invoke benchmark-runner.mjs.
  *
- * Usage:
- *   node benchmark-runner-llm.mjs --request <execution_request.json>
+ * Direct usage:
+ *   node benchmark-runner-llm.mjs --request <execution_request.json> [--model <name>]
  *
  * Reads LLM config from .env (skill root) via loadEnv:
  *   OPENAI_API_KEY or ANTHROPIC_API_KEY or GEMINI_API_KEY
@@ -14,11 +14,12 @@
  */
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadEnv } from './lib/loadEnv.mjs';
-import { materializeRequestWorkspace, finalizeOutputs, writeJson } from './lib/codexBenchmarkRuntime.mjs';
+import { buildBenchmarkRunnerPrompt } from './lib/benchmarkRunnerPrompt.mjs';
+import { writeJson } from './lib/codexBenchmarkRuntime.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,10 +28,16 @@ import { callLlm } from './lib/llmApiClient.mjs';
 
 function parseArgs(argv) {
   const args = argv.slice(2);
-  const options = { requestPath: '' };
+  const options = {
+    requestPath: '',
+    model: '',
+  };
   for (let i = 0; i < args.length; i += 1) {
     if (args[i] === '--request' && args[i + 1]) {
       options.requestPath = args[i + 1];
+      i += 1;
+    } else if (args[i] === '--model' && args[i + 1]) {
+      options.model = args[i + 1];
       i += 1;
     }
   }
@@ -44,96 +51,124 @@ function buildSystemPrompt() {
   return [
     'You are executing a QA plan benchmark case for the qa-plan-orchestrator skill.',
     'Work only with the provided benchmark evidence.',
-    'Save the main deliverable to ./outputs/result.md.',
-    'Save a concise ./outputs/execution_notes.md with evidence used, files produced, and blockers.',
-    'Reply with the full content of result.md followed by a brief execution summary.',
+    'Produce both benchmark artifacts as strings.',
+    'Return ONLY valid JSON with this exact shape:',
+    '{"result_md":"<markdown for ./outputs/result.md>","execution_notes_md":"<markdown for ./outputs/execution_notes.md, including evidence used, files produced, and blockers>"}',
+    'Do not wrap the JSON in markdown fences.',
   ].join('\n');
 }
 
-function buildPrompt(request) {
-  const lines = [
-    `Benchmark case: ${request.case_id}`,
-    `Feature: ${request.feature_id}`,
-    `Feature family: ${request.feature_family}`,
-    `Primary phase under test: ${request.primary_phase}`,
-    `Evidence mode: ${request.evidence_mode}`,
-    `Configuration: ${request.run.configuration_dir}`,
-    '',
-    'Rules:',
-    '- Use only the benchmark evidence listed below.',
-    '- Save the main deliverable to ./outputs/result.md.',
-    '- Save ./outputs/execution_notes.md with: evidence used, files produced, blockers.',
-    '',
-    `Benchmark prompt:\n${request.prompt}`,
-    '',
-    'Expectations:',
-    ...request.expectations.map((e) => `- ${e}`),
-    '',
-  ];
-
-  if (request.run.configuration_dir === 'with_skill') {
-    lines.push(
-      'Use the qa-plan-orchestrator skill snapshot (./skill_snapshot/SKILL.md) as the authoritative workflow package.',
-      'Read SKILL.md and minimum required companion references before producing outputs.',
-    );
-  } else {
-    lines.push(
-      'Do not use any qa-plan-orchestrator skill files.',
-      'Produce the baseline output from the benchmark prompt and fixtures only.',
-    );
-  }
-
-  if (request.fixtures && request.fixtures.length > 0) {
-    lines.push('', 'Available fixtures:');
-    for (const fixture of request.fixtures) {
-      lines.push(`- ${fixture.fixture_id}: ${fixture.local_path || '(no local path)'}`);
+function tryParseStructuredResponse(content) {
+  try {
+    const parsed = JSON.parse(content);
+    if (typeof parsed?.result_md !== 'string') {
+      return null;
     }
+    return {
+      resultMd: parsed.result_md.trim(),
+      executionNotesMd: typeof parsed.execution_notes_md === 'string'
+        ? parsed.execution_notes_md.trim()
+        : '',
+    };
+  } catch {
+    return null;
   }
-
-  lines.push('', 'Write result.md first, then a short execution summary.');
-  return lines.join('\n');
 }
 
-function extractResultMd(content) {
-  // If the response contains a markdown code block, extract that
+function extractFirstMarkdownFence(content) {
   const fenceMatch = content.match(/```(?:markdown)?\n([\s\S]+?)```/);
-  if (fenceMatch) {
-    return fenceMatch[1].trim();
-  }
-  // Otherwise treat whole response as result
-  return content.trim();
+  return fenceMatch
+    ? {
+      fencedContent: fenceMatch[1].trim(),
+      fullMatch: fenceMatch[0],
+    }
+    : null;
 }
 
-async function main() {
-  const options = parseArgs(process.argv);
+function parseRunnerArtifacts(content) {
+  const structured = tryParseStructuredResponse(content);
+  if (structured) {
+    return structured;
+  }
+
+  const fenced = extractFirstMarkdownFence(content);
+  if (fenced) {
+    return {
+      resultMd: fenced.fencedContent,
+      executionNotesMd: content.replace(fenced.fullMatch, '').trim(),
+    };
+  }
+
+  return {
+    resultMd: content.trim(),
+    executionNotesMd: '',
+  };
+}
+
+function normalizeExecutionNotes(executionNotesMd) {
+  const trimmed = String(executionNotesMd || '').trim();
+  if (!trimmed) {
+    return '# Execution Notes';
+  }
+  if (/^#\s+execution notes\b/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `# Execution Notes\n\n${trimmed}`;
+}
+
+function buildRuntimeMetadataSection({ durationMs, usage, configurationDir }) {
+  return [
+    '## Runtime Metadata',
+    '',
+    `- executor: benchmark-runner-llm`,
+    `- duration_ms: ${durationMs}`,
+    `- total_tokens: ${usage.total_tokens}`,
+    `- configuration: ${configurationDir}`,
+  ].join('\n');
+}
+
+function buildExecutionNotesDocument({ executionNotesMd, durationMs, usage, configurationDir }) {
+  return [
+    normalizeExecutionNotes(executionNotesMd),
+    '',
+    buildRuntimeMetadataSection({ durationMs, usage, configurationDir }),
+  ].join('\n').trim();
+}
+
+export async function runBenchmarkRunnerCli(argv = process.argv) {
+  const options = parseArgs(argv);
   const request = JSON.parse(await readFile(options.requestPath, 'utf8'));
 
   const outputDir = request.run.output_dir;
   await mkdir(outputDir, { recursive: true });
 
-  const prompt = buildPrompt(request);
+  const prompt = await buildBenchmarkRunnerPrompt(request);
   const systemPrompt = buildSystemPrompt();
 
   const startedAt = Date.now();
-  const { content, usage } = await callLlm({ prompt, systemPrompt });
+  const { content, usage } = await callLlm({
+    prompt,
+    systemPrompt,
+    model: options.model,
+    jsonMode: true,
+  });
   const durationMs = Date.now() - startedAt;
+  const artifacts = parseRunnerArtifacts(content);
 
   // Write result.md
   const resultPath = join(outputDir, 'result.md');
-  await writeFile(resultPath, extractResultMd(content), 'utf8');
+  await writeFile(resultPath, artifacts.resultMd, 'utf8');
 
   // Write execution_notes.md
   const notesPath = join(outputDir, 'execution_notes.md');
   await writeFile(
     notesPath,
-    [
-      '# Execution Notes',
-      '',
-      `- executor: benchmark-runner-llm`,
-      `- duration_ms: ${durationMs}`,
-      `- total_tokens: ${usage.total_tokens}`,
-      `- configuration: ${request.run.configuration_dir}`,
-    ].join('\n'),
+    buildExecutionNotesDocument({
+      executionNotesMd: artifacts.executionNotesMd,
+      durationMs,
+      usage,
+      configurationDir: request.run.configuration_dir,
+    }),
     'utf8',
   );
 
@@ -150,7 +185,11 @@ async function main() {
   console.log(`RUNNER_COMPLETE: ${outputDir}`);
 }
 
-main().catch((error) => {
-  console.error(`[benchmark-runner-llm.mjs] ${error.message}`);
-  process.exitCode = 1;
-});
+const currentPath = fileURLToPath(import.meta.url);
+const executedPath = process.argv[1] ? resolve(process.argv[1]) : '';
+if (executedPath && currentPath === executedPath) {
+  runBenchmarkRunnerCli(process.argv).catch((error) => {
+    console.error(`[benchmark-runner-llm.mjs] ${error.message}`);
+    process.exitCode = 1;
+  });
+}

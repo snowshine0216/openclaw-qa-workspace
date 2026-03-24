@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "result.md explicitly targets the case focus: “Benchmark focus: Review loop does not silently drop evidence-backed nodes” and argues Phase 5a prevents silent dropping via: “Explicit coverage-preservation requirement…”, a mandatory “Coverage Preservation Audit” with per-node traceability, and an “Acceptance gate [that] blocks completion if preservation issues remain.”"
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md consistently anchor to Phase 5a: execution_notes.md says “Verified Phase 5a contract…” and “Confirmed Phase 5a requires an explicit ## Coverage Preservation Audit…”. result.md states “Primary phase under test: Phase 5a” and the section “Why this meets the checkpoint (Phase 5a alignment)” cites Phase 5a-specific artifacts (review_notes, review_delta) and Phase 5a validators/acceptance gate."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

@@ -9,8 +9,8 @@
   - `SKILL.md`
   - `README.md`
   - `reference.md`
-  - `references/docs-governance.md`
-  - `references/script-driven-phase0-phase1-design.md`
+  - `docs/DOCS_GOVERNANCE.md`
+  - `docs/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md`
   - `docs/archive/SCRIPT_DRIVEN_PHASE0_PHASE1_DESIGN.md`
   - `tests/docsContract.test.mjs`
   - `scripts/lib/runPhase.mjs`

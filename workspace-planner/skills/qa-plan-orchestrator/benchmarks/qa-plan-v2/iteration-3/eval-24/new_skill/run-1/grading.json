@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "In result.md, the section \"Scope of this benchmark artifact\" explicitly lists the case focus as preserving: \"1) component-stack constraints\", \"2) embedding lifecycle assumptions\", and \"3) integration-sensitive customer expectations\". It then has a dedicated \"Benchmark focus coverage\" section with subsections for each: \"1) Component-stack constraints are preserved\", \"2) Embedding lifecycle assumptions are preserved\", \"3) Integration-sensitive customer expectations are preserved\" (even though #2 is marked PARTIAL due to missing run artifacts, the focus is still explicitly addressed)."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output is explicitly framed as Phase 1: title \"NE-P1-CONTEXT-INTAKE-001 — Phase 1 Context Intake Contract Check\" and sections \"Phase 1 contract alignment (what Phase 1 must do)\" referencing Phase 1 entry/output: \"Phase 1 entry: scripts/phase1.sh\", \"Phase 1 output: phase1_spawn_manifest.json\", and Phase 1 responsibilities \"generate one spawn request per requested source family\" plus \"--post\" validations. The content stays focused on Phase 1 intake/spawn planning rather than downstream phases."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

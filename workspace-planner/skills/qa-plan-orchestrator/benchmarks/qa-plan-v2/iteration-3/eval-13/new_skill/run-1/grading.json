@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "In result.md, the case focus is explicitly stated and then evaluated: \"Case focus (blocking) Skill improvements for `report-editor` do not regress a different feature planning flow.\" It further argues cross-feature non-regression via a feature-family-agnostic orchestrator contract and cites the specific regression hazard: \"Pass `openclaw.args` to `sessions_spawn` exactly as-is. Do **not** add `streamTo`…\" and concludes that these global rules prevent regressions in other feature planning flows."
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The output identifies and stays within the holdout phase scope: result.md states \"Primary phase under test: Holdout\" and focuses on \"orchestrator behavior\" (script-driven phases, spawn manifests, `--post`, stop on non-zero) rather than generating a QA plan. execution_notes.md also confirms: \"The output evaluates the orchestrator at the holdout level (contract adherence / regression risk), not by generating a QA plan.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

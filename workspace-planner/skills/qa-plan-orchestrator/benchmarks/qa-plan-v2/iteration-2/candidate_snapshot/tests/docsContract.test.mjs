@@ -91,6 +91,8 @@ test('active docs advertise script-driven artifacts and source routing', async (
   const phase5bRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md'), 'utf8');
   const phase6Rubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase6.md'), 'utf8');
   const contextIndexSchema = await readFile(join(SKILL_ROOT, 'references', 'context-index-schema.md'), 'utf8');
+  const benchmarkBatches = await readFile(join(SKILL_ROOT, 'references', 'qa-plan-benchmark-execution-batches.md'), 'utf8');
+  const benchmarkSummary = await readFile(join(SKILL_ROOT, 'references', 'qa-plan-benchmark-progress-summary.md'), 'utf8');
   const evals = await readFile(join(SKILL_ROOT, 'evals', 'evals.json'), 'utf8');
 
   assert.match(reference, /runtime_setup_<feature-id>/);
@@ -130,6 +132,10 @@ test('active docs advertise script-driven artifacts and source routing', async (
   assert.match(phase6Rubric, /preserve reviewed coverage scope/i);
   assert.match(phase6Rubric, /support-derived scenarios/i);
   assert.match(contextIndexSchema, /priority behavior is unchanged in this pass/i);
+  assert.match(benchmarkBatches, /npm run benchmark:v2:run/);
+  assert.match(benchmarkSummary, /npm run benchmark:v2:run/);
+  assert.doesNotMatch(benchmarkBatches, /benchmark:v2:execute/);
+  assert.doesNotMatch(benchmarkSummary, /benchmark:v2:execute/);
   assert.match(evals, /"round_progression"/);
   assert.match(evals, /"coverage_preservation"/);
   assert.match(evals, /"phase5a_acceptance_gate"/);

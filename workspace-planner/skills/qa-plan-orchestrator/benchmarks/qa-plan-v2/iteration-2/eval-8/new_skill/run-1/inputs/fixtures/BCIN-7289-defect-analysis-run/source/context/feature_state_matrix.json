@@ -1,0 +1,9 @@
+{
+  "features": [
+    {
+      "feature_key": "BCIN-7289",
+      "report_state": "FRESH",
+      "default_action": "proceed"
+    }
+  ]
+}

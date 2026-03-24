@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly addresses the cross-feature/non-regression focus: \"This holdout-regression case is specifically verifying that skill improvements made for the report-editor feature family do not regress a different feature planning flow\" and further: \"Cross-feature regression focus (explicit coverage) ... The orchestration model and spawn contract are generic and do not encode report-editor-only assumptions into the orchestrator loop.\""
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md stays within a holdout regression determination and explicitly asserts holdout alignment: \"What was checked (primary phase: holdout)\" and \"This output is intentionally limited to a holdout regression determination and does not attempt to generate multi-phase QA plan artifacts (Phase 4+ drafts, reviews, final), consistent with 'primary phase under test: holdout'.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

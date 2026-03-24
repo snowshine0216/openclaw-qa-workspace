@@ -41,7 +41,7 @@ Impact: the output contract is incomplete across the two docs. A reader cannot t
 
 ### 4. `README.md` points to additional active contract docs that are absent from the supplied docs set
 
-- `README.md:27-37` lists active contract material under `references/`, `knowledge-packs/`, and `references/docs-governance.md`.
+- `README.md:27-37` lists active contract material under `references/`, `knowledge-packs/`, and `docs/DOCS_GOVERNANCE.md`.
 - `README.md:45-51` maps phases to `references/context-coverage-contract.md`, `references/context-index-schema.md`, `references/e2e-coverage-rules.md`, and `references/subagent-quick-checklist.md`.
 - None of those files are present in the blind fixture bundle.
 

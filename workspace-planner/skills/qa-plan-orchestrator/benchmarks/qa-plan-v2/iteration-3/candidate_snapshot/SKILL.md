@@ -104,7 +104,7 @@ See `README.md` for the phase-to-reference mapping table.
 ### Phase 3
 
 - Entry: `scripts/phase3.sh`
-- Work: spawn Tavily-first deep-research requests for required topics and use the resulting artifacts to drive coverage mapping
+- Work: spawn Tavily-first deep-research requests for required topics and use the resulting artifacts to drive coverage mapping; when a knowledge pack is active, index pack rows via `@tobilu/qmd` BM25 (collection created at runtime, no manual `qmd collection add` required)
 - Output: `phase3_spawn_manifest.json`
 - `--post`: validate `context/coverage_ledger_<feature-id>.md`, Tavily-first research artifacts, optional Confluence fallback ordering, synthesis output, and sync the artifact lookup
 

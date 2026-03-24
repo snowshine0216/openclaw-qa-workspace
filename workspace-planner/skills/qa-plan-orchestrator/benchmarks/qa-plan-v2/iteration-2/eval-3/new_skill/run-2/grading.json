@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "tavily-search is recorded before confluence fallback",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
       "passed": true,
-      "evidence": "PASS: tavily-search is recorded before confluence fallback"
+      "evidence": "result.md explicitly covers the case focus in multiple places, e.g., in Scope: \"Case focus (blocking): Tavily-first then Confluence fallback ordering\" and in the Pass/Fail table: \"PASS (contract explicitly states requirement)\" with described contract note: \"written research artifacts must explicitly record Tavily-first ordering, and any Confluence usage must be framed as fallback-only with a recorded insufficiency reason.\""
     },
     {
-      "text": "deep research ordering is documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
       "passed": true,
-      "evidence": "PASS: deep research ordering is documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is explicitly framed as a Phase 3 contract check (title: \"phase3\"; section: \"Phase 3 Contract Check\"; and \"Alignment with Phase 3 Outputs\"). It asserts Phase 3 outputs/validation only (e.g., \"Manifest output: phase3_spawn_manifest.json\" and \"phase3.sh --post validates...\") and states it is not drifting into \"Phase 4+ drafting/review responsibilities.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

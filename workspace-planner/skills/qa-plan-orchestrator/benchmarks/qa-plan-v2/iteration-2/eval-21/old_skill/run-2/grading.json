@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly covers the separation: it states the focus requires separating “contextual-link-styled cells vs ordinary cells,” and proposes scenarios that contrast “Cells/values with contextual links (must render with hyperlink styling + indicator icon)” vs “Ordinary cells/values without contextual links (must not inherit hyperlink styling; render as standard text).”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md and execution_notes.md both anchor to phase4a: “Phase alignment (primary: phase4a)” and “Meets phase4a contract intent… subcategory-only… scenarios and atomic nested steps,” and they note the phase4a contract constraints (subcategory-only, atomic steps, observable verification leaves; forbids canonical top-layer categories)."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

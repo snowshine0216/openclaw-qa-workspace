@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md, the scenario draft explicitly includes dedicated sections and scenarios for all four focus areas: \"Prompt handling (prompt-editor ↔ report-builder interaction)\", \"Report Builder loading\", \"Template save\", and \"Visible report title outcomes (window title correctness on edit + after save)\". The opening also states: \"Demonstrate that Phase 4a scenario drafting ... explicitly captures ... prompt handling, template save, report builder loading, visible report title outcomes.\""
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md states Phase 4a constraints were enforced (\"Used to enforce Phase 4a constraints (subcategory-only, atomic nested steps, replay-anchor requirements for report-editor)\") and confirms \"Subcategory-first structure preserved\". result.md is explicitly labeled \"Phase 4a scenario drafting\" and uses a subcategory-only nested structure under \"Report Editor\" without introducing canonical top-level categories, matching the stated Phase 4a alignment."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

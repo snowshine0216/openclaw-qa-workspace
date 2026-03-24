@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md under “Explicit coverage of benchmark focus…”, the plan includes scenarios: “Confirm selection with OK button”, “Cancel does not commit changes”, “Dismissal via outside click matches Cancel semantics”, and “Pending selection (debounce/loading) does not cause unexpected popover dismissal” (plus “OK is gated correctly when pending selection is not yet stable”). These explicitly cover OK/Cancel confirmation, pending selection, and dismissal outcomes."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md explicitly states “Phase alignment: Phase 4a (subcategory-only draft)” and structures content as “subcategory → scenario → atomic steps → observable verifications,” noting Phase 4a constraints (e.g., “forbids canonical top-layer grouping”). The listed items are written as subcategory scenarios with nested steps and verification leaves, consistent with phase4a."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the benchmark focus and extracts/frames the needed constraints: \"Benchmark focus: *context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting*\" and lists the preserved requirements under \"Context intake requirements extracted...\": \"Cannot format banding colors (style constraint)\", \"Cannot enable banding in columns (banding requirement)\", and \"Modern Grid in dashboards vs legacy Report (rendering / product-surface assumption)\". It also reiterates Phase 1 should avoid scenario drafting: \"No scenario drafting is performed in Phase 1\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "Both execution_notes.md and result.md keep scope to Phase 1 contract: execution_notes.md says \"output is kept strictly Phase 1-focused (spawn planning + preservation intent), without drafting scenarios\". result.md defines Phase 1 responsibilities (spawn requests + producing phase1_spawn_manifest.json) and gives a Phase 1-only verdict due to missing Phase 1 artifacts: \"Verdict: INDETERMINATE (insufficient Phase 1 runtime artifacts provided)\" and \"Without it, cannot validate... before scenario drafting.\""
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

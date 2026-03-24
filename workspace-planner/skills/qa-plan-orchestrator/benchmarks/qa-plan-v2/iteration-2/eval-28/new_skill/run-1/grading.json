@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "In result.md, the benchmark focus is explicitly enumerated as: \"context intake preserves donut-label assumptions ... specifically assumptions about: 1. Label visibility ... 2. Density limits ... 3. Overlap-sensitive presentation\" and later assessed under \"Coverage of donut-label assumptions in intake context\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output is framed as Phase 1 throughout: title \"VIZ-P1-CONTEXT-INTAKE-001 — Phase 1 (Context Intake) Contract Check\", it states \"Primary phase under test: Phase 1\", and evaluates Phase 1 contractual artifacts (e.g., \"Phase 1’s contractual artifact is `phase1_spawn_manifest.json`\") and their absence."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

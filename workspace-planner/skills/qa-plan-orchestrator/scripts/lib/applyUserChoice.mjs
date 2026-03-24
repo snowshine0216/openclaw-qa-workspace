@@ -40,13 +40,19 @@ async function clearPhase2PlusContextArtifacts(runDir, featureId) {
   const contextDir = join(runDir, 'context');
   const toDelete = [
     `artifact_lookup_${featureId}.md`,
+    `knowledge_pack_retrieval_${featureId}.md`,
+    `knowledge_pack_retrieval_${featureId}.json`,
     `coverage_ledger_${featureId}.md`,
+    `coverage_ledger_${featureId}.json`,
     `review_notes_${featureId}.md`,
     `review_delta_${featureId}.md`,
     `checkpoint_audit_${featureId}.md`,
     `checkpoint_delta_${featureId}.md`,
     `quality_delta_${featureId}.md`,
     `finalization_record_${featureId}.md`,
+    'knowledge_pack_qmd.sqlite',
+    'knowledge_pack_qmd.sqlite-shm',
+    'knowledge_pack_qmd.sqlite-wal',
   ];
   for (const name of toDelete) {
     try {
@@ -55,6 +61,7 @@ async function clearPhase2PlusContextArtifacts(runDir, featureId) {
       if (e.code !== 'ENOENT') throw e;
     }
   }
+  await clearDirectory(join(contextDir, 'knowledge_pack_projection'));
 }
 
 export async function applyUserChoice(featureId, runDir, mode) {
@@ -107,6 +114,12 @@ export async function applyUserChoice(featureId, runDir, mode) {
     run.review_completed_at = null;
     run.refactor_completed_at = null;
     run.finalized_at = null;
+    run.knowledge_pack_retrieval_generated_at = null;
+    run.knowledge_pack_retrieval_mode = null;
+    run.knowledge_pack_semantic_mode = 'disabled';
+    run.knowledge_pack_semantic_warning = null;
+    run.knowledge_pack_retrieval_artifact = null;
+    run.knowledge_pack_index_artifact = null;
   }
 
   await saveState(state);

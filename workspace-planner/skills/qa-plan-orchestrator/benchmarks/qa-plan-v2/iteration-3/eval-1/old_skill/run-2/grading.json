@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "In result.md: “Phase 0 explicitly defines stable `REPORT_STATE` classification” with enumerated states (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH) and “Phase 0 defines stable resume semantics” describing required user options (full_regenerate, smart_refresh, reuse/resume) and deterministic follow-on actions (apply_user_choice.sh and subsequent phase routing). execution_notes.md also states this was “Verified directly from reference.md `REPORT_STATE` + `selected_mode` tables”."
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md section “Phase 0 outputs are clearly specified and phase-aligned” lists Phase 0 artifacts under context/ (runtime_setup_*.md/.json, supporting_issue_request_*.md, request_fulfillment_*.md/.json) and ties them to “skill_snapshot/SKILL.md → Phase Contract / Phase 0 / Output”. execution_notes.md likewise says: “Output aligns with primary phase phase0: Verified Phase 0 output artifact list is explicitly defined in SKILL.md.”"
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

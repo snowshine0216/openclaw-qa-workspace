@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": false,
+      "evidence": "The outputs explicitly state the focus areas are required but cannot be demonstrated as covered due to missing Phase 5b artifacts: “we cannot demonstrate that the Phase 5b shipment checkpoint is executed and enforced… nor that it explicitly covers the required focus areas” and “No Phase 5b run artifacts were included… Without these, it is not possible to demonstrate… explicit coverage of the benchmark focus areas.”"
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The result is framed as a Phase 5b checkpoint enforcement assessment and evaluates Phase 5b contract artifacts (checkpoint audit/delta, phase5b manifest, phase5b draft), concluding a Phase 5b blocking failure due to their absence: “RE-P5B-SHIP-GATE-001 — Phase 5b Checkpoint Enforcement Assessment” and “absence of Phase 5b outputs is itself a blocking failure for this benchmark.”"
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

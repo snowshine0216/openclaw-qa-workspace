@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly states the case focus: \"Confirm that skill improvements for the report-editor feature family do not regress a different feature planning flow\" and reiterates it as \"a cross-feature regression guard\". execution_notes.md also scopes the run to verifying that \"report-editor-focused improvements do not change the orchestrator’s behavior in a way that would regress a different feature planning flow.\""
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md declares: \"Primary checkpoint under test ... explicitly scoped to the holdout phase/checkpoint\" and provides a \"Holdout regression assessment\" plus \"Pass/Fail determination (holdout)\". execution_notes.md confirms scope: \"limited to verifying holdout regression properties...\" and explicitly avoids non-holdout claims (no phase execution artifacts)."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

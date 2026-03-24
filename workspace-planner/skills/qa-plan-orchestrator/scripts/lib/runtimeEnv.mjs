@@ -86,6 +86,9 @@ export async function buildRuntimeSetup(featureId, requestedSources, outputDir, 
     feature_id: featureId,
     setup_entries: setupEntries,
     has_supporting_artifacts: evaluation.hasSupportingArtifacts,
+    knowledge_pack_key: options.knowledgePackKey || null,
+    knowledge_pack_resolution_source: options.knowledgePackResolutionSource || null,
+    warnings: Array.isArray(options.runtimeWarnings) ? options.runtimeWarnings : [],
     failures: evaluation.failures,
   };
 
@@ -207,6 +210,9 @@ function buildRuntimeSetupMarkdown(featureId, requestedSources, setupEntries, ha
   const failureSection = failures.length > 0
     ? `\n## Failures\n\n${failures.map((failure) => `- ${failure}`).join('\n')}\n`
     : '';
+  const warningSection = Array.isArray(options.runtimeWarnings) && options.runtimeWarnings.length > 0
+    ? `\n## Runtime Warnings\n\n${options.runtimeWarnings.map((warning) => `- ${warning}`).join('\n')}\n`
+    : '';
 
   return `# Runtime Setup — ${featureId}
 
@@ -230,6 +236,13 @@ ${options.deepResearchPolicy || 'none'}
 
 ## supporting issue keys
 ${(options.supportingIssueKeys || []).join(', ') || 'none'}
+
+## knowledge pack
+${options.knowledgePackKey || 'none'}
+
+## knowledge pack resolution source
+${options.knowledgePackResolutionSource || 'none'}
+${warningSection}
 ${failureSection}`;
 }
 

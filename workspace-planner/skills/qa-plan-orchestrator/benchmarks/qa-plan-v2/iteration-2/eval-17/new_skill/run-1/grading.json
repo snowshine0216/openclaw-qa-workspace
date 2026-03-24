@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly includes: \"Data label visibility — default\" and \"Data label visibility — toggle off/on\" (visibility), \"Label density boundary — threshold characterization\" (density), and multiple \"Overlap-sensitive outcome\" sections (dense slices, very small slices, responsive resize, long label text) that call out overlap/legibility and hide/skip behavior."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "result.md is titled \"Phase 4a — Subcategory Draft Coverage\" and is structured as subcategory-first draft scenarios with stepwise action chains and observable verification leaves (e.g., \"Observe...\" -> assertions), matching the stated intent in execution_notes.md: \"Output is a Phase 4a subcategory-only draft... with atomic action chains and observable verification leaves per phase4a-contract.\""
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
       "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "evidence": "result.md explicitly breaks out the case focus into the required distinctions: \"Google Sheets dashboard export coverage distinguishes: Supported formats; Entry points; Output expectations\" and then provides separate sections \"A) Supported formats\", \"B) Entry points\", and \"C) Output expectations\"."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The produced artifact is explicitly framed and structured as Phase 5b checkpoint review: title \"Phase 5b Checkpoint Enforcement Review\" and includes \"Phase 5b checkpoint mapping (rubric-aligned)\" with checkpoints (e.g., \"Checkpoint 1 — Requirements Traceability\", \"Checkpoint 2 — Black-Box Behavior Validation\", etc.) and Phase 5b acceptance criteria for checkpoint_audit/checkpoint_delta/Phase 5b draft."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

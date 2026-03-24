@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "Explicitly addressed in both execution notes and the QA plan. execution_notes.md: \"Case focus explicitly covered: • Styling variants... • Interactions... • Backward-compatible rendering outcomes...\" result.md contains dedicated sections: \"Banding — styling variants (colors)\", \"Banding — interactions & rendering outcomes\", and a scenario \"Backward-compatible rendering outcome vs existing Modern Grid row-only banding behavior\"."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "execution_notes.md states: \"Primary phase under test: phase4a\" and \"Draft is subcategory-only\". result.md is structured as subcategory-only groupings (e.g., \"Banding — enablement & placement\", \"Banding — styling variants (colors)\") with nested action steps and observable verification leaves, consistent with the described phase4a contract."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

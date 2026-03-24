@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "tavily-search is recorded before confluence fallback",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
       "passed": true,
-      "evidence": "PASS: tavily-search is recorded before confluence fallback"
+      "evidence": "result.md states: \"Phase 3 contract explicitly requires Tavily-first deep research and allows Confluence only as a recorded fallback\" and cites `reference.md` policy `tavily_first_confluence_second` plus: \"tavily-search must run before any confluence fallback and the fallback reason must be recorded.\" execution_notes.md also says: \"Confirmed Phase 3 requires Tavily-first and allows Confluence only as recorded fallback.\""
     },
     {
-      "text": "deep research ordering is documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
       "passed": true,
-      "evidence": "PASS: deep research ordering is documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "execution_notes.md: \"Confirmed ordering requirement is defined and gated in Phase 3 (not another phase).\" result.md: \"This benchmark checks Phase 3 contract compliance\" and \"The requirement under test is implemented and validated in Phase 3 per the snapshot’s Phase 3 entry and `--post` validation gate.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

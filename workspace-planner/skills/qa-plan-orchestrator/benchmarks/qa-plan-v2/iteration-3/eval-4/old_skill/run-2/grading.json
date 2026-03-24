@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly targets SDK/API-visible outcomes and turns them into Phase 4a scenario shapes with observable verification leaves, e.g. “Window Title — edit via double-click … Observe the Workstation window title … Title matches the clicked report’s context/name” and “Loading Indicator — single loader … Only one loading indicator is shown.” It also cites fixture evidence that these outcomes were missed in Phase 4a (BCIN-7733, BCIN-7668)."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "SDK/API visible outcomes are called out",
-      "passed": true,
-      "evidence": "PASS: SDK/API visible outcomes are called out"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md anchors to the Phase 4a contract (“subcategory → scenario → atomic steps → observable verification leaves”) and provides examples in that structure. It also claims Phase 4a alignment explicitly: “Met: The required remedy is expressed as Phase 4a subcategory-only scenarios with atomic steps and observable verification leaves.” execution_notes.md likewise states it verified the Phase 4a contract and produced Phase 4a-aligned scenario shapes."
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

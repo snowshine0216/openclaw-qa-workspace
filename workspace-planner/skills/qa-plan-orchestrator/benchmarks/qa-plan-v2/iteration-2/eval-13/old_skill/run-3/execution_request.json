@@ -1,0 +1,44 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "case_id": "HOLDOUT-REGRESSION-001",
+  "eval_id": 13,
+  "eval_name": "holdout-regression-001",
+  "feature_id": "BCIN-6709",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "holdout",
+  "kind": "holdout_regression",
+  "evidence_mode": "holdout_regression",
+  "blocking": true,
+  "benchmark_profile": "global-cross-feature-v1",
+  "fixture_refs": [
+    "embedding-dashboard-editor-compare-result"
+  ],
+  "prompt": "Benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: skill improvements for report-editor do not regress a different feature planning flow. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "expectations": [
+    "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+    "[holdout_regression][blocking] Output aligns with primary phase holdout"
+  ],
+  "run": {
+    "configuration_dir": "old_skill",
+    "uses_skill_snapshot": true,
+    "run_number": 3,
+    "run_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3",
+    "output_dir": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/outputs",
+    "transcript_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/execution_transcript.log",
+    "grading_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/grading.json",
+    "timing_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/timing.json",
+    "metrics_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/outputs/metrics.json"
+  },
+  "skill_snapshot_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-0/champion_snapshot",
+  "fixtures": [
+    {
+      "fixture_id": "embedding-dashboard-editor-compare-result",
+      "path": "workspace/projects/embedding-dashboard-editor-workstation/compare-result.md",
+      "type": "existing_eval_fixture",
+      "status": "active",
+      "local_path": "/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-2/eval-13/old_skill/run-3/inputs/fixtures/embedding-dashboard-editor-compare-result/source",
+      "materials": []
+    }
+  ]
+}

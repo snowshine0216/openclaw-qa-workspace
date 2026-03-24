@@ -9,6 +9,7 @@ import { DEFAULT_BENCHMARK_ROOT } from './lib/benchmarkV2.mjs';
 import {
   buildBenchmarkRunFromArtifacts,
   executeGradingHarness,
+  hasRequiredRunArtifacts,
   readRequiredRunArtifacts,
 } from './lib/gradingHarness.mjs';
 import {
@@ -93,7 +94,15 @@ export async function runIterationCompare({
   const benchmarkRuns = [];
 
   for (const runDefinition of prepared.runDefinitions) {
-    await executeGradingHarness(runDefinition, gradingHarness);
+    const alreadyComplete = await hasRequiredRunArtifacts(runDefinition.runDir, {
+      strict: typeof gradingHarness !== 'function',
+    });
+    if (!alreadyComplete) {
+      await executeGradingHarness(runDefinition, {
+        gradingHarness,
+        benchmarkRoot,
+      });
+    }
     const { grading, timing } = await readRequiredRunArtifacts(runDefinition.runDir);
     benchmarkRuns.push(
       buildBenchmarkRunFromArtifacts({

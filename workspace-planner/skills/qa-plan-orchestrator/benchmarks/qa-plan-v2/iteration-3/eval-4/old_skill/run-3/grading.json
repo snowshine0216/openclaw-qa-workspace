@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly targets the focus and provides explicit phase4a scenario leaves for SDK/API-visible outcomes: “Expectation: SDK/API visible outcomes like window title become explicit scenarios.” and examples such as “Verify the opened window title equals the selected report’s name/context (exact match)” plus “Verify the title is human-readable (not an internal token like `newReportWithApplication`).”"
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "SDK/API visible outcomes are called out",
-      "passed": true,
-      "evidence": "PASS: SDK/API visible outcomes are called out"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "Both execution_notes.md and result.md assert and demonstrate phase4a alignment: execution_notes.md: “Primary phase under test: phase4a.” result.md: “Primary checkpoint under test — Phase: phase4a (subcategory-only draft)” and “These examples adhere to `references/phase4a-contract.md` requirements: Subcategory-only… Atomic nested steps… Observable verification leaves.”"
     }
   ],
   "summary": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
-    "total": 4,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

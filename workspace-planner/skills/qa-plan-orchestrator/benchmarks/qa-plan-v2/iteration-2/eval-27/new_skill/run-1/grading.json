@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": false,
+      "evidence": "result.md states the focus areas are not demonstrated via shipment checkpoint artifacts: \"Because Phase 5b checkpoint artifacts are absent, explicit checkpoint coverage of the focus areas is not demonstrated\" and lists hyperlink styling/contextual navigation as \"not checkpoint-audited\" and fallback rendering safety as \"Not evidenced\"."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "result.md indicates Phase 5b execution/alignment cannot be verified due to missing required Phase 5b deliverables: \"there is no run output showing Phase 5b execution\" and \"alignment to Phase 5b deliverables and gates cannot be verified.\" execution_notes.md similarly lists missing Phase 5b artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b, spawn manifest)."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

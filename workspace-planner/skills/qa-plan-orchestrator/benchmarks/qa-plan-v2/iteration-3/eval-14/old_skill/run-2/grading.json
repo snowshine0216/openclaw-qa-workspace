@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase model remains documented",
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
       "passed": true,
-      "evidence": "PASS: phase model remains documented"
+      "evidence": "result.md explicitly states the benchmark focus and ties it to another feature: “Promotion/finalization behavior remains stable on another feature (feature family: report-editor; feature: BCIN-976).” It further details the stable contract behaviors (Phase 7 only, explicit approval, archive-on-overwrite) and anchors the check to BCIN-976 via fixture evidence."
     },
     {
-      "text": "core eval surface still exists",
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
       "passed": true,
-      "evidence": "PASS: core eval surface still exists"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md declares “Primary phase/checkpoint under test: Holdout” and includes holdout-appropriate constraints: “Holdout-phase alignment: do not perform Phase 7 actions… must not write or overwrite qa_plan_final.md… create finalization_record… archive prior finals… send notifications.” execution_notes.md also states: “Primary phase under test is holdout; output is limited to validating that promotion/finalization behavior is stable…” and notes lack of runtime artifacts, indicating no Phase 7 execution was attempted."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

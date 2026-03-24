@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly covers all three: (1) dashboard-level paths and distinction: \"Dashboard — Google Sheets export paths\" and scenario \"Distinguish dashboard-level Google Sheets export from report-level export entry points\" with checks that \"Dashboard-level and report-level export paths are distinguishable\"; (2) option combinations: scenarios \"Export option combinations — baseline set applied consistently\" and \"Export option combinations — invalid/unsupported combinations are blocked clearly\"; (3) visible completion outcomes: multiple steps verify \"Export job starts (progress / in-app status becomes visible)\" and \"A completion outcome is visible\" plus success/failure, reruns, and sequential runs under \"Dashboard — Completion outcomes and post-export visibility\"."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "The produced artifact is titled \"Phase 4a — Scenario Draft (Subcategory-only)\" and follows the Phase 4a style described in execution_notes.md: \"Draft is subcategory-first\" and uses nested atomic steps with observable verification leaves (e.g., action chain leading to checks like \"Confirm action is disabled or a clear inline validation message is shown\"). It also avoids canonical top-layer categories as noted: \"Phase 4a intentionally avoids canonical top-layer categories\"."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

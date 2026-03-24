@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase6 quality rubric exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
       "passed": true,
-      "evidence": "PASS: phase6 quality rubric exists"
+      "evidence": "The result explicitly addresses the case focus by stating what Phase 6 must show regarding layering and executable wording: it lists “Layering is preserved (final layered structure)” and “Executable wording / few-shot cleanup is applied,” including required `quality_delta` sections. It also reiterates in “Benchmark expectation coverage” that the focus is explicitly covered but cannot be demonstrated due to missing artifacts."
     },
     {
-      "text": "executable wording/quality pass remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
       "passed": true,
-      "evidence": "PASS: executable wording/quality pass remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The output is framed around Phase 6 contract alignment: “What Phase 6 must show (contract expectations)” and “Evidence missing to validate Phase 6,” and it concludes “Cannot demonstrate Phase 6 compliance from provided evidence.” This aligns the evaluation with primary phase phase6 even though it reports non-verifiability due to missing Phase 6 artifacts."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "tavily-search is recorded before confluence fallback",
-      "passed": true,
-      "evidence": "PASS: tavily-search is recorded before confluence fallback"
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
+      "passed": false,
+      "evidence": "The output states the focus is not satisfied/covered: “FAIL (blocking) — The benchmark focus “Tavily-first then Confluence fallback ordering” is not demonstrably satisfied…” and “So the benchmark focus is not explicitly covered in the provided evidence.”"
     },
     {
-      "text": "deep research ordering is documented",
-      "passed": true,
-      "evidence": "PASS: deep research ordering is documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
+      "passed": false,
+      "evidence": "The output explicitly says Phase 3 alignment is not demonstrated: “Phase 3 alignment check… Therefore: - Alignment to Phase 3: Not demonstrated (blocking for this benchmark).” It also notes missing Phase 3 artifacts/manifests needed to prove Phase 3 compliance."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 0,
-    "total": 3,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

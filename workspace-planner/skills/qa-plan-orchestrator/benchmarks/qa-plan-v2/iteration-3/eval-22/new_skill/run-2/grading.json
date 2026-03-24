@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly lists and drafts scenarios for all four focus areas: \"prompt handling\" (Pause mode and Do not prompt), \"Template save: set-as-template\", \"Report Builder loading: loading prompt elements via folder double-click\", and \"Visible title outcome\" (new blank report title, title updates after saving, and i18n title translation). It also states: \"Validate that Phase 4a scenario drafting ... can explicitly cover ... prompt handling, template save, report builder loading, visible report title outcomes\"."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The deliverable is explicitly framed as a Phase 4a artifact: title \"Phase 4a scenario-draft contract check\" and section \"Evidence-backed Phase 4a scenario set (subcategory-first)\". It follows subcategory-first structure with nested action chains and verification leaves, and includes an explicit alignment note: \"Subcategory-first structure is preserved ... Each scenario is an atomic, nested action chain with observable verification leaves.\" execution_notes.md also says it \"Produced a minimal Phase 4a-style scenario draft\" and avoided \"Phase 4a forbidden structures.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

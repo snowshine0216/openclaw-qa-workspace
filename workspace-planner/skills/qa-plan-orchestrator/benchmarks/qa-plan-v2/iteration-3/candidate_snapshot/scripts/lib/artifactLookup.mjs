@@ -80,6 +80,11 @@ function detectArtifactMetadata(filename, task = {}) {
     [/^deep_research_tavily_/, { artifactKey: 'deep_research_tavily', artifactKind: 'deep_research_tavily', sourceFamily: 'tavily-search', policyTag: 'deep_research' }],
     [/^deep_research_confluence_/, { artifactKey: 'deep_research_confluence', artifactKind: 'deep_research_confluence', sourceFamily: 'confluence', policyTag: 'deep_research_fallback' }],
     [/^deep_research_synthesis_/, { artifactKey: 'deep_research_synthesis', artifactKind: 'deep_research_synthesis', sourceFamily: 'tavily-search', policyTag: 'deep_research' }],
+    [/^knowledge_pack_summary_.*\.json$/, { artifactKey: 'knowledge_pack_summary_json', artifactKind: 'knowledge_pack_summary_json', sourceFamily: 'workflow', policyTag: 'context' }],
+    [/^knowledge_pack_summary_/, { artifactKey: 'knowledge_pack_summary', artifactKind: 'knowledge_pack_summary', sourceFamily: 'workflow', policyTag: 'context' }],
+    [/^knowledge_pack_retrieval_.*\.json$/, { artifactKey: 'knowledge_pack_retrieval_json', artifactKind: 'knowledge_pack_retrieval_json', sourceFamily: 'workflow', policyTag: 'coverage' }],
+    [/^knowledge_pack_retrieval_/, { artifactKey: 'knowledge_pack_retrieval', artifactKind: 'knowledge_pack_retrieval', sourceFamily: 'workflow', policyTag: 'coverage' }],
+    [/^coverage_ledger_.*\.json$/, { artifactKey: 'coverage_ledger_json', artifactKind: 'coverage_ledger_json', sourceFamily: 'workflow', policyTag: 'coverage' }],
     [/^request_fulfillment_/, { artifactKey: 'request_fulfillment', artifactKind: 'request_fulfillment', sourceFamily: 'workflow', policyTag: 'request_audit' }],
     [/^coverage_ledger_/, { artifactKey: 'coverage_ledger', artifactKind: 'coverage_ledger', sourceFamily: 'workflow', policyTag: 'coverage' }],
     [/^review_notes_/, { artifactKey: 'review_notes', artifactKind: 'review_notes', sourceFamily: 'workflow', policyTag: 'review' }],
@@ -119,7 +124,9 @@ function detectArtifactMetadata(filename, task = {}) {
 }
 
 function inferSourcePhase(filename) {
+  if (filename.startsWith('knowledge_pack_summary_')) return 'Phase 0';
   if (filename.startsWith('coverage_ledger_')) return 'Phase 3';
+  if (filename.startsWith('knowledge_pack_retrieval_')) return 'Phase 3';
   if (filename.startsWith('review_')) return 'Phase 5a';
   if (filename.startsWith('checkpoint_')) return 'Phase 5b';
   if (filename.startsWith('quality_')) return 'Phase 6';

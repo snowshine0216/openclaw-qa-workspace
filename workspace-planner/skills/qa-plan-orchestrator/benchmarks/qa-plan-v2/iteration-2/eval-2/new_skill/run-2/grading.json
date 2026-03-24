@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the benchmark focus and evaluates it under “Phase 1 Contract Check”: “Benchmark focus: Supporting issues remain `context_only_no_defect_analysis` and produce summaries; no defect-analysis triggering.” It then checks this and concludes it is “NOT DEMONSTRABLE from provided evidence (blocking evidence gap)” due to missing Phase 1 artifacts, showing the case focus is explicitly covered."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is explicitly Phase-1 oriented: “Primary phase under test: Phase 1” and includes “What Phase 1 Must Do (per skill snapshot contract)” plus a “Phase 1 Contract Check…”. The verdict is framed as a Phase 1 evidence gap (“Missing Phase 1 runtime artifact: `phase1_spawn_manifest.json`”), which is aligned with assessing Phase 1 rather than performing later-phase work."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

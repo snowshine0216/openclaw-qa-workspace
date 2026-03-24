@@ -1126,6 +1126,11 @@ export function validatePhase5aAcceptanceGate(reviewNotesContent, reviewDeltaCon
       `Phase 5a cannot return accept while blocking request requirements remain unsatisfied: ${options.unsatisfiedBlockingRequirements.join(', ')}`
     );
   }
+  if (verdict === 'accept' && Array.isArray(options.unresolvedPackRows) && options.unresolvedPackRows.length > 0) {
+    failures.push(
+      `Phase 5a cannot return accept while required pack-backed rows remain unmapped: ${options.unresolvedPackRows.map((row) => row.knowledge_pack_row_id || row.row_id).join(', ')}`
+    );
+  }
 
   return { ok: failures.length === 0, failures };
 }
@@ -1168,6 +1173,7 @@ export function validateSectionReviewChecklist(content) {
 }
 
 export function validateCheckpointAudit(content) {
+  const options = arguments[1] || {};
   const failures = [];
   const rows = extractRowsForSection(content, '## Checkpoint Summary', 5).map((cells) => ({
     checkpointGroup: cells[0],
@@ -1196,6 +1202,17 @@ export function validateCheckpointAudit(content) {
   const releaseRecommendation = getSection(content, '## Release Recommendation');
   if (!hasNonEmptyBullet(releaseRecommendation)) {
     failures.push('Release Recommendation is required.');
+  }
+  const text = normalizeContent(content);
+  for (const analogRowId of options.requiredAnalogRowIds || []) {
+    if (!text.includes(analogRowId)) {
+      failures.push(`Checkpoint audit must trace required analog gate row id: ${analogRowId}`);
+    }
+  }
+  for (const analogRowId of options.unresolvedBlockingAnalogRowIds || []) {
+    if (!releaseRecommendation.includes(analogRowId)) {
+      failures.push(`Release Recommendation must enumerate unresolved blocking analog row ids before ship: ${analogRowId}`);
+    }
   }
   return { ok: failures.length === 0, failures };
 }
@@ -1295,6 +1312,9 @@ export function validateQualityDelta(content) {
     if (requireLibraryVsWorkstation && !text.includes('library-vs-workstation') && !text.includes('library vs workstation')) {
       failures.push('Quality delta must explicitly record preservation of Library-vs-Workstation gap scenarios.');
     }
+  }
+  if (options.requirePackBackedPreservation && !normalizeContent(content).toLowerCase().includes('pack-backed')) {
+    failures.push('Quality delta must explicitly record preservation of pack-backed scenarios.');
   }
   return { ok: failures.length === 0, failures };
 }

@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "phase4b contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
       "passed": true,
-      "evidence": "PASS: phase4b contract exists"
+      "evidence": "In result.md, the case focus is stated explicitly (\"Case focus: canonical top-layer grouping without collapsing scenarios\") and the Phase 4b contract requirements quoted explicitly cover both: (1) canonical top-layer taxonomy list and (2) \"Preserve scenario granularity (anti-compression)\" with notes like \"do not merge distinct Workstation-only vs Library-gap scenarios\"."
     },
     {
-      "text": "canonical top-layer grouping remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
       "passed": true,
-      "evidence": "PASS: canonical top-layer grouping remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md explicitly identifies \"Primary phase/checkpoint under test: phase4b\" and frames the evaluation around Phase 4b by quoting \"From skill_snapshot/references/phase4b-contract.md, Phase 4b must:\" followed by Phase 4b-specific requirements and artifacts (e.g., required output `drafts/qa_plan_phase4b_r<round>.md`)."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

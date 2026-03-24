@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states: “supporting issues must remain `context_only_no_defect_analysis` and must produce summaries” and cites contract clauses: “Support-only issues must remain in `context_only_no_defect_analysis` mode.” It also lists required Phase 1 support artifacts including “context/supporting_issue_summary_<issue-key>_<feature-id>.md” and “context/supporting_issue_summary_<feature-id>.md”, plus `--post` validates “support summaries, and non-defect routing.”"
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md frames the evaluation as Phase 1: “Verdict (phase_contract · blocking) PASS … for Phase 1.” It lists “What was validated (Phase 1 alignment)”, details Phase 1 work/output (“Output: `phase1_spawn_manifest.json`”), and ends with “Primary phase under test: Phase 1”. execution_notes.md likewise focuses on Phase 1 responsibilities and Phase 1 `--post` validation scope."
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

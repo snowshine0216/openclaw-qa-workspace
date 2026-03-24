@@ -212,7 +212,7 @@ The benchmark schema now supports `knowledge_pack_key`, but feature-family knowl
 Run the real `qa-plan-v2` baseline against the current champion skill:
 
 1. use `benchmarks/qa-plan-v2/iteration-0/spawn_manifest.json`
-2. follow `references/qa-plan-benchmark-execution-batches.md` and execute batch by batch with `npm run benchmark:v2:execute -- --batch <N> --executor-script <path> --grader-script <path>`
+2. follow `references/qa-plan-benchmark-execution-batches.md` and execute batch by batch with `npm run benchmark:v2:run -- --batch <N>`
 3. save `grading.json` and `timing.json` for each run
 4. run:
 

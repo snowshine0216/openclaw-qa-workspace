@@ -1,7 +1,7 @@
 {
   "benchmark_version": "qa-plan-v2",
   "iteration": 0,
-  "status": "executed_aggregated",
+  "status": "prepared_pending_execution",
   "comparison_mode": "baseline_value",
   "primary_configuration": "with_skill",
   "reference_configuration": "without_skill",
@@ -53,6 +53,5 @@
     "EXPORT-P4A-SCENARIO-DRAFT-001",
     "SELECTOR-P5B-CHECKPOINT-001",
     "RE-DEFECT-FEEDBACKLOOP-001"
-  ],
-  "aggregated_at": "2026-03-22T10:00:23.238Z"
+  ]
 }

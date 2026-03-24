@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "The produced outputs do not include a Phase 5b QA plan (or checkpoint audit/delta) demonstrating the required distinctions. result.md states: \"Because there is no Phase 5b checkpoint audit/delta and no Phase 5b draft QA plan artifact, we cannot verify whether the plan coverage: enumerates Google Sheets export supported formats... entry points... output expectations.\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Phase 5b alignment requires checkpoint audit, checkpoint delta, and a Phase 5b draft plan; execution_notes.md lists these as missing: \"Missing required Phase 5b outputs in evidence: context/checkpoint_audit... context/checkpoint_delta... drafts/qa_plan_phase5b...\" The outputs provided are only result.md and execution_notes.md, so the run does not produce Phase 5b artifacts."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

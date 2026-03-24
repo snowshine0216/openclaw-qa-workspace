@@ -1,6 +1,5 @@
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { existsSync, readFileSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getProfileById } from './loadProfile.mjs';
@@ -204,7 +203,10 @@ function createValidationResult() {
 }
 
 function sliceErrorOutput(error, { tail = false } = {}) {
-  const text = String(error.stdout || error.stderr || error.message);
+  const stdout = String(error?.stdout || '');
+  const stderr = String(error?.stderr || '');
+  const combined = [stdout, stderr].filter(Boolean).join('\n').trim();
+  const text = combined || String(error?.message || error);
   return tail ? text.slice(-8000) : text.slice(0, 8000);
 }
 
@@ -212,158 +214,59 @@ function isSnapshotPath(rootPath) {
   return String(rootPath || '').includes('/candidate_snapshot');
 }
 
-function shouldBypassSnapshotSmokeFailure(logText, validationRoot) {
-  if (!isSnapshotPath(validationRoot)) return false;
-  const log = String(logText || '');
-  const hasMarkxmindFailure = log.includes('MARKXMIND_VALIDATOR_MISSING');
-  const hasRepoRootStabilityFailure = log.includes('resolveDefaultRunDir is repo-root stable regardless of caller cwd');
-  return hasMarkxmindFailure && hasRepoRootStabilityFailure;
-}
-
-function isMissingRunArtifactError(error) {
-  const message = String(error?.message || error || '');
+function isIgnorableSnapshotSmokeLine(line) {
+  const normalized = line.toLowerCase();
   return (
-    message.includes('Missing required grading.json')
-    || message.includes('Missing required timing.json')
-    || message.includes('Missing required outputs directory')
+    line.startsWith('> ')
+    || normalized.startsWith('npm ')
+    || /^code \d+$/i.test(line)
+    || normalized.startsWith('a complete log of this run can be found')
   );
 }
 
-async function loadJsonFile(path, fallback = null) {
-  try {
-    const text = await readFile(path, 'utf8');
-    return JSON.parse(text);
-  } catch {
-    return fallback;
+function shouldBypassSnapshotSmokeFailure(logText, validationRoot) {
+  if (!isSnapshotPath(validationRoot)) return false;
+  const requiredLines = new Set([
+    'MARKXMIND_VALIDATOR_MISSING',
+    'resolveDefaultRunDir is repo-root stable regardless of caller cwd',
+  ]);
+  const remainingRequired = new Set(requiredLines);
+  const lines = String(logText || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    if (remainingRequired.has(line)) {
+      remainingRequired.delete(line);
+      continue;
+    }
+    if (isIgnorableSnapshotSmokeLine(line)) {
+      continue;
+    }
+    return false;
   }
+
+  return remainingRequired.size === 0;
 }
 
-async function listRunDirectories(iterationDir) {
-  const runDirs = [];
-  let evalEntries = [];
-  try {
-    evalEntries = await readdir(iterationDir, { withFileTypes: true });
-  } catch {
-    return runDirs;
-  }
-  for (const evalEntry of evalEntries) {
-    if (!evalEntry.isDirectory() || !evalEntry.name.startsWith('eval-')) continue;
-    const evalDir = join(iterationDir, evalEntry.name);
-    for (const configName of ['new_skill', 'old_skill']) {
-      const configDir = join(evalDir, configName);
-      let runEntries = [];
-      try {
-        runEntries = await readdir(configDir, { withFileTypes: true });
-      } catch {
-        continue;
-      }
-      for (const runEntry of runEntries) {
-        if (runEntry.isDirectory() && runEntry.name.startsWith('run-')) {
-          runDirs.push(join(configDir, runEntry.name));
-        }
-      }
-    }
-  }
-  return runDirs;
+function isSyntheticPublisherAvailable(path) {
+  return existsSync(path);
 }
 
-function buildDeterministicGrading({ expectations = [], runDir, comparisonMetadata = null }) {
-  const configurationDir = String(comparisonMetadata?.configuration_dir || '');
-  const total = expectations.length;
-  const baselinePassRate = 0.85;
-  const passed = configurationDir === 'old_skill'
-    ? Math.max(0, Math.min(total, Math.floor(total * baselinePassRate)))
-    : total;
-  const failed = Math.max(0, total - passed);
-  const passRate = total > 0 ? Number((passed / total).toFixed(4)) : 1;
-  return {
-    case_id: comparisonMetadata?.case_id ?? null,
-    eval_id: comparisonMetadata?.eval_id ?? null,
-    configuration_dir: configurationDir || null,
-    summary: {
-      passed,
-      failed,
-      total,
-      pass_rate: passRate,
-    },
-    expectations: expectations.map((expectation, index) => {
-      const isPass = index < passed;
-      return {
-      id: `exp-${index + 1}`,
-      text: expectation,
-      status: isPass ? 'pass' : 'fail',
-      rationale: 'deterministic executed fallback',
-      };
-    }),
-    execution_metrics: {
-      total_tool_calls: 0,
-      errors_encountered: 0,
-    },
-    user_notes_summary: {
-      needs_review: [],
-    },
-    metadata: {
-      generated_by: 'qa-plan-evolution-phase4-fallback',
-      run_dir: runDir,
-    },
-  };
-}
-
-async function materializeExecutedArtifactsFallback(benchmarkRoot, iteration) {
-  const iterationDir = join(benchmarkRoot, `iteration-${iteration}`);
-  const runDirs = await listRunDirectories(iterationDir);
-  for (const runDir of runDirs) {
-    const outputsDir = join(runDir, 'outputs');
-    await mkdir(outputsDir, { recursive: true });
-    const evalMetadata = await loadJsonFile(join(runDir, 'eval_metadata.json'), {});
-    const comparisonMetadata = await loadJsonFile(join(runDir, 'comparison_metadata.json'), {});
-    const expectations = Array.isArray(evalMetadata?.expectations) ? evalMetadata.expectations : [];
-
-    if (!existsSync(join(outputsDir, 'result.md'))) {
-      await writeFile(
-        join(outputsDir, 'result.md'),
-        [
-          `# Deterministic Benchmark Output`,
-          '',
-          `- case_id: ${comparisonMetadata?.case_id ?? 'unknown'}`,
-          `- feature_id: ${comparisonMetadata?.feature_id ?? 'unknown'}`,
-          `- configuration: ${comparisonMetadata?.configuration_dir ?? 'unknown'}`,
-          '',
-          'This output was materialized as a deterministic executed fallback to unblock grading harness artifacts.',
-        ].join('\n'),
-        'utf8',
-      );
-    }
-    if (!existsSync(join(outputsDir, 'execution_notes.md'))) {
-      await writeFile(
-        join(outputsDir, 'execution_notes.md'),
-        [
-          '# Execution Notes',
-          '',
-          '- executor: qa-plan-evolution deterministic fallback',
-          '- blockers: none',
-          '- evidence: benchmark fixture metadata only',
-        ].join('\n'),
-        'utf8',
-      );
-    }
-    if (!existsSync(join(outputsDir, 'metrics.json'))) {
-      await writeFile(
-        join(outputsDir, 'metrics.json'),
-        `${JSON.stringify({ total_tokens: 0, duration_ms: 0, executor: 'fallback' }, null, 2)}\n`,
-        'utf8',
-      );
-    }
-    if (!existsSync(join(runDir, 'timing.json'))) {
-      await writeFile(
-        join(runDir, 'timing.json'),
-        `${JSON.stringify({ total_tokens: 0, duration_ms: 0, total_duration_seconds: 0 }, null, 2)}\n`,
-        'utf8',
-      );
-    }
-    const grading = buildDeterministicGrading({ expectations, runDir, comparisonMetadata });
-    await writeFile(join(runDir, 'grading.json'), `${JSON.stringify(grading, null, 2)}\n`, 'utf8');
+function ensureSnapshotNodeModules(validationRoot, canonicalSkillRoot) {
+  if (!isSnapshotPath(validationRoot)) {
+    return;
   }
+  const snapshotNodeModules = join(validationRoot, 'node_modules');
+  if (existsSync(snapshotNodeModules)) {
+    return;
+  }
+  const canonicalNodeModules = join(canonicalSkillRoot, 'node_modules');
+  if (!existsSync(canonicalNodeModules)) {
+    return;
+  }
+  symlinkSync(canonicalNodeModules, snapshotNodeModules, 'dir');
 }
 
 async function runSmoke(abs, result, options = {}) {
@@ -387,13 +290,23 @@ async function runSmoke(abs, result, options = {}) {
   }
 
   try {
+    const smokeEnv = { ...process.env, CI: '1' };
+    const canonicalSkillRoot = String(options.canonicalSkillRoot || '').trim();
+    if (canonicalSkillRoot) {
+      smokeEnv.FQPO_CANONICAL_SKILL_ROOT = canonicalSkillRoot;
+      ensureSnapshotNodeModules(abs, canonicalSkillRoot);
+    }
+    const markxmindValidator = String(options.markxmindValidator || '').trim();
+    if (markxmindValidator) {
+      smokeEnv.MARKXMIND_VALIDATOR = markxmindValidator;
+    }
     const log = await withRetry(
       () =>
         execSync('npm test', {
           cwd: abs,
           encoding: 'utf8',
           stdio: 'pipe',
-          env: { ...process.env, CI: '1' },
+          env: smokeEnv,
         }),
       { retries: 1, delayMs: 200 },
     );
@@ -463,11 +376,13 @@ async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options
     'publishIterationComparison.mjs',
   );
   const hasExecutedRunner = existsSync(executedRunnerPath);
-  if (!hasExecutedRunner && !existsSync(syntheticPublisherPath)) {
+  if (!hasExecutedRunner && !isSyntheticPublisherAvailable(syntheticPublisherPath)) {
     return;
   }
 
   result.execution_order.push('defect_replay_evals');
+  // Use benchmark-runner-llm.mjs (no fallback to local) — aligns with npm run benchmark:v2:run
+  process.env.QA_PLAN_BENCHMARK_DISABLE_LOCAL_FALLBACK = '1';
   const compareArgs = {
     benchmarkRoot,
     skillRoot: abs,
@@ -483,20 +398,7 @@ async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options
       const executedModule = await import(executedModuleUrl);
       published = await executedModule.runIterationCompare(compareArgs);
     } catch (error) {
-      if (isMissingRunArtifactError(error)) {
-        await materializeExecutedArtifactsFallback(benchmarkRoot, options.iteration ?? 1);
-        const executedModuleUrl = pathToFileURL(executedRunnerPath).href;
-        const executedModule = await import(executedModuleUrl);
-        published = await executedModule.runIterationCompare(compareArgs);
-      } else if (!existsSync(syntheticPublisherPath)) {
-        throw error;
-      }
-      if (published) {
-        result.benchmark_artifacts = published;
-        result.scorecard = JSON.parse(readFileSync(published.scorecardPath, 'utf8'));
-        return;
-      }
-      if (!existsSync(syntheticPublisherPath)) {
+      if (!isSyntheticPublisherAvailable(syntheticPublisherPath)) {
         throw error;
       }
       const fallbackModuleUrl = pathToFileURL(syntheticPublisherPath).href;
@@ -516,8 +418,21 @@ export async function runTargetValidation(repoRoot, targetSkillPath, options = {
   const abs = options.candidateRoot ?? join(repoRoot, targetSkillPath);
   const result = createValidationResult();
   result.validated_target_root = abs;
+  const canonicalSkillRoot = join(repoRoot, targetSkillPath);
+  const markxmindValidator = join(
+    repoRoot,
+    '.agents',
+    'skills',
+    'markxmind',
+    'scripts',
+    'validate_xmindmark.mjs',
+  );
 
-  await runSmoke(abs, result, { validationRoot: abs });
+  await runSmoke(abs, result, {
+    validationRoot: abs,
+    canonicalSkillRoot,
+    markxmindValidator: existsSync(markxmindValidator) ? markxmindValidator : null,
+  });
   if (!result.smoke_ok) {
     return result;
   }

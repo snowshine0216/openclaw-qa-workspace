@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "In result.md, the output explicitly states the benchmark focus and then enumerates coverage sections for all three areas: “explicitly covers modern grid banding scenarios—distinguishing styling variants, interactions, and backward-compatible rendering outcomes” and provides dedicated subsections “1) Styling variants”, “2) Interactions”, and “3) Backward-compatible rendering outcomes”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "The output repeatedly anchors to Phase 4a and its constraints: result.md says “Primary phase/checkpoint under test: Phase 4a (subcategory-only draft writer)” and lists Phase 4a rules (subcategory-first, scenario→atomic chain→observable leaves, avoid Phase 4b canonical groupings). execution_notes.md also states “Output kept explicitly aligned to Phase 4a ... avoided Phase 4b canonical top-layer categories.”"
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

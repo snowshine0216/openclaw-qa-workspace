@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "Although the output restates the benchmark focus and lists the three required dimensions, it explicitly says it cannot demonstrate them from evidence: \"The bundle does not provide product requirements detailing: Supported export formats... Entry points... Output expectations\" and concludes \"Not satisfied... the focus area cannot be demonstrated as covered.\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The deliverable is explicitly framed as Phase 5b checkpoint enforcement and references Phase 5b contract artifacts and rubric: title \"Phase5b Checkpoint Enforcement (Advisory)\", section \"What Phase 5b must produce (contract alignment)\" listing `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b`, and summary \"Primary phase assessed: Phase 5b\"."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

@@ -42,6 +42,8 @@ EOF
   printf 'github\n' > "$run_dir/context/github_diff_BCIN-40.md"
   printf 'support\n' > "$run_dir/context/supporting_issue_summary_BCIN-40.md"
   printf 'synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-40.md"
+  printf 'pack summary\n' > "$run_dir/context/knowledge_pack_summary_BCIN-40.md"
+  printf '{}\n' > "$run_dir/context/knowledge_pack_summary_BCIN-40.json"
 
   bash "$SKILL_ROOT/scripts/phase2.sh" BCIN-40 "$run_dir" >/dev/null
   assert_file_exists "$run_dir/context/artifact_lookup_BCIN-40.md"
@@ -49,6 +51,7 @@ EOF
   assert_contains "$(cat "$run_dir/context/artifact_lookup_BCIN-40.md")" "Artifact Kind"
   assert_contains "$(cat "$run_dir/context/artifact_lookup_BCIN-40.md")" "Requirement IDs"
   assert_contains "$(cat "$run_dir/context/artifact_lookup_BCIN-40.md")" "supporting_issue_summary"
+  assert_contains "$(cat "$run_dir/context/artifact_lookup_BCIN-40.md")" "knowledge_pack_summary"
   assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_2_artifact_index"'
   assert_contains "$(cat "$run_dir/context/request_fulfillment_BCIN-40.json")" '"status": "satisfied"'
 }

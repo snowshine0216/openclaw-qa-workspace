@@ -1,46 +1,22 @@
 {
   "expectations": [
     {
-      "text": "docs mention phase5a",
-      "passed": true,
-      "evidence": "PASS: docs mention phase5a"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The run explicitly notes the intended focus, but cannot actually cover/verify AGENTS alignment because AGENTS docs are missing from evidence: execution_notes.md: \"AGENTS docs not present in provided evidence, so alignment with AGENTS documentation cannot be verified\" and result.md: \"AGENTS docs (not present in provided evidence)\" / \"Status: cannot be verified from provided evidence.\" Therefore the case focus (including AGENTS docs) is not fully covered."
     },
     {
-      "text": "docs mention phase5b",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
       "passed": true,
-      "evidence": "PASS: docs mention phase5b"
-    },
-    {
-      "text": "docs mention reference.md",
-      "passed": true,
-      "evidence": "PASS: docs mention reference.md"
-    },
-    {
-      "text": "README and reference stay aligned",
-      "passed": true,
-      "evidence": "PASS: README and reference stay aligned"
+      "evidence": "result.md’s conclusions are consistent with the primary docs-phase artifacts it had (SKILL.md/README.md/reference.md): it reports \"Status: aligned\" for SKILL.md ↔ reference.md and \"Status: aligned\" for README.md ↔ SKILL.md/reference.md, while correctly qualifying limits: \"reference.md is truncated\" and \"AGENTS alignment is unassessable.\" The output does not claim unsupported alignment beyond the evidence."
     }
   ],
   "summary": {
-    "passed": 4,
-    "failed": 0,
-    "total": 4,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
   }
 }

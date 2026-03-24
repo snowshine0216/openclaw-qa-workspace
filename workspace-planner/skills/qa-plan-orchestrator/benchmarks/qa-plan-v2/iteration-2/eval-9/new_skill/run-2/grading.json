@@ -1,48 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
-    },
-    {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
-    },
-    {
-      "text": "analog gate save dialog completeness is enforced",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
       "passed": false,
-      "evidence": "FAIL: analog gate save dialog completeness is enforced"
+      "evidence": "result.md states the contract requires relevant historical analogs to be rendered as explicit “[ANALOG-GATE]” required-before-ship items in the Phase 5b release recommendation, but also states: “The benchmark evidence does not include any Phase 5b artifacts showing these required gates.” It further notes missing required Phase 5b outputs (checkpoint_audit, checkpoint_delta, qa_plan_phase5b) and therefore cannot demonstrate analog-gate enforcement."
     },
     {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "execution_notes.md and result.md both report missing Phase 5b checkpoint artifacts required by the phase5b rubric: “Missing context/checkpoint_audit_BCIN-7289.md”, “Missing context/checkpoint_delta_BCIN-7289.md”, and “Missing drafts/qa_plan_phase5b_r<round>.md”. The benchmark verdict is “FAIL (blocking)” because Phase 5b alignment cannot be verified without these outputs."
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 1,
-    "total": 4,
-    "pass_rate": 0.75
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 4,
-    "errors_encountered": 1,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [
-      "benchmark case requires remediation"
-    ],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

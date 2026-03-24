@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "Coverage Preservation Audit is present",
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
       "passed": true,
-      "evidence": "PASS: Coverage Preservation Audit is present"
+      "evidence": "The result explicitly addresses the case focus and evaluates it against available artifacts: \"The benchmark focus is: **Phase 5a review loop does not silently drop evidence-backed nodes**.\" and later \"## Benchmark focus coverage: “review loop does not silently drop evidence-backed nodes” **Not satisfied by evidence.**\" It also explains what would be needed (Coverage Preservation Audit mapping, review_delta, Phase 5a draft) to demonstrate non-dropping."
     },
     {
-      "text": "Cross-Section Interaction Audit is present",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
       "passed": true,
-      "evidence": "PASS: Cross-Section Interaction Audit is present"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "The output is scoped to Phase 5a contract requirements and states phase alignment: \"What Phase 5a is required to enforce (contract)\" and \"## Alignment to primary phase (phase5a) This result is scoped to Phase 5a contract enforcement. It does **not** assess Phase 5b/6/7.\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

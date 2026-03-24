@@ -1,41 +1,22 @@
 {
   "expectations": [
     {
-      "text": "REPORT_STATE semantics remain documented",
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
       "passed": true,
-      "evidence": "PASS: REPORT_STATE semantics remain documented"
+      "evidence": "result.md explicitly covers the case focus: it includes a dedicated section \"REPORT_STATE definition and expected user interaction (core benchmark focus)\" describing REPORT_STATE values (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH) and \"After user choice\" semantics including the required call to `scripts/apply_user_choice.sh` and routing (full_regenerate → next phase0; smart_refresh → next phase2; reuse/resume → continue). It then states: \"Focus explicitly covered: REPORT_STATE and resume semantics remain stable — Pass.\""
     },
     {
-      "text": "Phase 0 runtime setup remains documented",
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
       "passed": true,
-      "evidence": "PASS: Phase 0 runtime setup remains documented"
-    },
-    {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "evidence": "result.md is organized as a \"Phase 0 Contract Check (Alignment to phase0)\" and lists phase0 required behaviors and artifacts (runtime setup, report_state classification, normalization, policies) plus required output artifacts under \"What phase0 is required to do\". It then asserts \"Output aligns with primary phase phase0 — Pass (phase0 contract alignment is explicit).\""
     }
   ],
   "summary": {
-    "passed": 3,
+    "passed": 2,
     "failed": 0,
-    "total": 3,
+    "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 3,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

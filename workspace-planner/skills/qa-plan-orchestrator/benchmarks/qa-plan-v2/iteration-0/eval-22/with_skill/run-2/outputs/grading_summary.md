@@ -1,4 +1,6 @@
-pass_rate: 1
-passed: 2
-failed: 0
-total: 2
+{
+  "passed": 2,
+  "failed": 0,
+  "total": 2,
+  "pass_rate": 1
+}
