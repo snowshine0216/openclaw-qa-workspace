@@ -73,6 +73,20 @@ Run-key derivation:
 - `phase4_spawn_manifest.json`
 - `<run-key>_REPORT_DRAFT.md`, `<run-key>_REVIEW_SUMMARY.md`, `<run-key>_REPORT_FINAL.md`
 
+Additional feature-run artifacts:
+
+- `context/feature_metadata.json`
+- `context/feature_summary.json`
+
+Additional release-run artifacts:
+
+- `context/feature_state_matrix.json`
+- `context/feature_runs.json`
+- `context/release_summary_inputs.json`
+- `features/<feature-key>/packet_manifest.json`
+- `features/<feature-key>/<feature-key>_REPORT_FINAL.md`
+- `features/<feature-key>/feature_summary.json`
+
 ## Evolution Support Artifacts
 
 When the shared `qa-plan-evolution` uses `defects-analysis` as an evidence source, these additive artifacts may exist under `runs/<run-key>/`:
@@ -159,7 +173,7 @@ Fallback path for non-agent execution:
 
 ## Report Format (12 Sections)
 
-The orchestrator generates draft reports with these required sections. The report-quality-reviewer validates their presence:
+The orchestrator generates draft reports with these required sections. The report-quality-reviewer validates both their presence and minimum content quality:
 
 1. Report Header — title, feature key, date, total defects
 2. Executive Summary — defect distribution table, risk rating
@@ -174,6 +188,46 @@ The orchestrator generates draft reports with these required sections. The repor
 11. Conclusion
 12. Appendix: Defect Reference List — Jira URLs
 
+### Feature Summary Contract
+
+Feature runs persist `context/feature_summary.json` with these minimum fields:
+
+- `feature_key`
+- `feature_title`
+- `report_final_path`
+- `risk_level`
+- `total_defects`
+- `open_defects`
+- `open_high_defects`
+- `pr_count`
+- `repos_changed`
+- `top_risk_areas`
+- `blocking_defects`
+- `generated_at`
+
+This contract intentionally aligns with the normalized summary concepts already used by `workspace-reporter/skills/qa-summary/scripts/lib/buildDefectSummary.mjs`. Any additional release-only fields must be additive.
+
+### Release Coordination Contract
+
+Release runs are parent coordinators, not monolithic defect aggregators.
+
+- Phase 1 computes per-feature state for canonical child runs under `runs/<feature-key>/`
+- Phase 3 executes or reuses those child runs with the mapped selected action
+- Phase 4 collects `feature_summary.json` outputs and materializes release packets under `runs/release_<version>/features/<feature-key>/`
+- Phase 5 generates the overall release report from `release_summary_inputs.json`
+
+### Reviewer Fail Conditions
+
+The reviewer must fail when any of these are true:
+
+1. Generic filler or placeholder text remains in core sections.
+2. Feature reports omit the feature-title callout.
+3. Functional-area analysis is empty even though defects exist.
+4. Open high-priority defects exist with no explicit blocking-defect callout.
+5. PRs exist but Code Change Analysis only points to `context/prs/`.
+6. Release reports are missing feature packet evidence or packet references.
+
 ## Validation Commands
 
 - `node --test workspace-reporter/skills/defects-analysis/scripts/test/*.test.js`
+- `node --test workspace-reporter/skills/report-quality-reviewer/scripts/test/*.test.js`

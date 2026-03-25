@@ -121,6 +121,7 @@ jq -n \
   --arg route_kind "$route_kind" \
   --arg selected_mode "$selected_mode" \
   --arg invoked_by "${INVOKED_BY:-}" \
+  --arg release_version_context "${RELEASE_VERSION_CONTEXT:-}" \
   --arg updated_at "$ts" \
   '{
     run_key: $run_key,
@@ -128,6 +129,7 @@ jq -n \
     route_kind: $route_kind,
     selected_mode: $selected_mode,
     invoked_by: ($invoked_by | select(length > 0) // null),
+    release_version_context: ($release_version_context | select(length > 0) // null),
     overall_status: "analysis_in_progress",
     current_phase: "phase0_prepare",
     feature_keys: [],

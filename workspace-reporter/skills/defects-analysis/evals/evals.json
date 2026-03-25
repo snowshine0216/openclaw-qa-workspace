@@ -58,15 +58,63 @@
     },
     {
       "id": 5,
-      "prompt": "Verify self-review + finalize loop: when report-quality-reviewer returns fail (missing section), auto-fix applies, draft regenerated, re-review until pass. Loop exits with pass before finalization and Feishu.",
-      "expected_output": "Phase 5 loop: generate draft -> review -> if fail, auto-fix and retry (max 3). Exit gate: review result pass. Only then promote to final and send Feishu.",
+      "prompt": "Run a rich feature report fixture equivalent to BCIN-7289. Verify the final report includes a feature title, functional-area analysis, explicit blocking defects, repo-aware PR synthesis, and a release recommendation.",
+      "expected_output": "Feature report is decision-ready rather than a generic shell. Reviewer returns pass. Final report and feature_summary.json are both written.",
       "files": [],
       "expectations": [
-        "Phase 5 orchestrator directly generates draft report",
-        "Phase 5 invokes report-quality-reviewer for review",
-        "Loop exits when review result is pass",
-        "No finalization before pass",
-        "FEISHU_NOTIFY or notification_pending only after pass"
+        "Feature title appears in the report header",
+        "Risk Analysis by Functional Area contains populated table rows",
+        "Defect Analysis by Priority names blocking defects explicitly",
+        "Code Change Analysis includes repository names, not just context/prs references",
+        "context/feature_summary.json exists after finalization"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Generate a report that contains all 12 required headings but only generic filler text. Verify report-quality-reviewer rejects it and no final report is promoted.",
+      "expected_output": "Reviewer returns fail with actionable content-quality findings. The workflow does not treat heading-only output as complete.",
+      "files": [],
+      "expectations": [
+        "report-quality-reviewer returns fail",
+        "review summary mentions generic filler or shallow analytical output",
+        "No final report is promoted from a shallow draft"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Run defect analysis for release version 26.04 with three discovered features. Verify the release parent run reuses or runs canonical child feature runs, materializes release packets, and writes one overall release report.",
+      "expected_output": "Release run behaves as a coordinator. It writes feature packet folders under features/ and one overall release report built from collected feature summaries.",
+      "files": [],
+      "expectations": [
+        "context/feature_runs.json exists for the release parent",
+        "context/release_summary_inputs.json exists",
+        "features/<feature_key>/packet_manifest.json exists for each feature",
+        "features/<feature_key>/<feature_key>_REPORT_FINAL.md exists for each feature",
+        "runs/release_<version>/release_<version>_REPORT_FINAL.md exists"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Run defect analysis for release version 26.03 where prior canonical feature runs are mixed across FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, and FRESH. Verify each feature gets the expected selected action without manual approval.",
+      "expected_output": "Phase 1 persists a mixed feature state matrix and the release parent respects those defaults during child-run coordination.",
+      "files": [],
+      "expectations": [
+        "context/feature_state_matrix.json includes selected_action for each feature",
+        "FINAL_EXISTS -> use_existing",
+        "DRAFT_EXISTS -> resume",
+        "CONTEXT_ONLY -> generate_from_cache",
+        "FRESH -> proceed"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Verify reviewer regression guard on release output: create a release report without any feature packet directories or packet references. The headings exist, but packet evidence is missing.",
+      "expected_output": "report-quality-reviewer returns fail because release reports without packet evidence are incomplete.",
+      "files": [],
+      "expectations": [
+        "Reviewer checks for feature packet directories under features/",
+        "Reviewer checks for feature packet references in the release report body",
+        "Heading-only structural completeness is not enough for release mode"
       ]
     }
   ]

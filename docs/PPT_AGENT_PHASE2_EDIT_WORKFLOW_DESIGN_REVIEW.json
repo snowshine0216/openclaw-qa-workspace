@@ -1,0 +1,27 @@
+{
+  "design_id": "ppt-agent-phase2-edit-workflow-2026-03-25",
+  "reviewed_artifacts": [
+    "docs/PPT_AGENT_PHASE2_EDIT_WORKFLOW_DESIGN.md"
+  ],
+  "status": "pass_with_advisories",
+  "findings": [
+    {
+      "id": "A1",
+      "severity": "advisory",
+      "title": "Skills Content spec is section-scoped rather than full-file",
+      "evidence": [
+        "The design includes exact replacement sections for SKILL.md, reference.md, roles/research.md, and roles/design.md, but not the full contents of those files."
+      ],
+      "recommended_fix": "Convert section-scoped content specs into full-file edits when implementation starts."
+    },
+    {
+      "id": "A2",
+      "severity": "advisory",
+      "title": "caption-image.js model invocation path is contractually defined but not mechanically fixed",
+      "evidence": [
+        "The design defines purpose, schema, and workflow placement for caption-image.js without locking the exact built-in-model invocation mechanism."
+      ],
+      "recommended_fix": "Resolve the concrete multimodal invocation path in the implementation plan before coding Phase 2 helpers."
+    }
+  ]
+}

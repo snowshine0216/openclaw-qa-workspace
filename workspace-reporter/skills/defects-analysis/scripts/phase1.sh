@@ -8,6 +8,7 @@ CONTEXT_DIR="$RUN_DIR/context"
 RUN_KEY="$(basename "$RUN_DIR")"
 REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
 REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
+RUNS_ROOT="$REPO_ROOT/workspace-reporter/skills/defects-analysis/runs"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase1.sh <input> <run-dir>" >&2; exit 1; }
 [[ -f "$CONTEXT_DIR/route_decision.json" ]] || { echo "Missing route_decision.json" >&2; exit 1; }
@@ -97,7 +98,22 @@ printf '%s\n' "$(jq -n \
     raw_input: $raw_input,
     feature_keys: $feature_keys
   } + (if $query_mode == "" then {} else {query_mode: $query_mode} end)')" >"$CONTEXT_DIR/scope.json"
-printf '%s\n' "$(printf '%s\n' "$feature_json" | jq '{features: [.feature_keys[] | {feature_key: ., report_state: "FRESH", default_action: "proceed"}]}')" >"$CONTEXT_DIR/feature_state_matrix.json"
+
+if [[ "$route_kind" == "reporter_scope_release" ]]; then
+  feature_plan_json="$(node "$SCRIPT_DIR/lib/compute_feature_run_plan.mjs" "$(printf '%s\n' "$feature_json" | jq -c '.feature_keys')" "$RUNS_ROOT" "$RUN_DIR")"
+  printf '%s\n' "$feature_plan_json" >"$CONTEXT_DIR/feature_state_matrix.json"
+  printf '%s\n' "$feature_plan_json" >"$CONTEXT_DIR/feature_runs.json"
+else
+  default_plan_json="$(printf '%s\n' "$feature_json" | jq '{features: [.feature_keys[] | {
+    feature_key: .,
+    report_state: "FRESH",
+    default_action: "proceed",
+    selected_action: "proceed",
+    canonical_run_dir: null,
+    release_packet_dir: null
+  }]}')"
+  printf '%s\n' "$default_plan_json" >"$CONTEXT_DIR/feature_state_matrix.json"
+fi
 
 if [[ -f "$RUN_DIR/task.json" ]]; then
   jq \

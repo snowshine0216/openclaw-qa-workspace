@@ -9,12 +9,21 @@ TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase5.sh <input> <run-dir>" >&2; exit 1; }
-[[ -f "$CONTEXT_DIR/jira_raw.json" ]] || { echo "Missing jira_raw.json" >&2; exit 1; }
-
 if [[ -f "$RUN_DIR/task.json" ]] && command -v jq >/dev/null 2>&1; then
   RUN_KEY="$(jq -r '.run_key // empty' "$RUN_DIR/task.json")"
+  ROUTE_KIND="$(jq -r '.route_kind // empty' "$RUN_DIR/task.json")"
 fi
 RUN_KEY="${RUN_KEY:-$(basename "$RUN_DIR")}"
+ROUTE_KIND="${ROUTE_KIND:-$(jq -r '.route_kind // empty' "$CONTEXT_DIR/route_decision.json" 2>/dev/null || true)}"
+
+if [[ "$ROUTE_KIND" == "reporter_scope_release" ]]; then
+  [[ -f "$CONTEXT_DIR/release_summary_inputs.json" ]] || { echo "Missing release_summary_inputs.json" >&2; exit 1; }
+else
+  [[ -f "$CONTEXT_DIR/jira_raw.json" ]] || { echo "Missing jira_raw.json" >&2; exit 1; }
+  if [[ ! -f "$CONTEXT_DIR/feature_metadata.json" ]]; then
+    node "$SCRIPT_DIR/lib/extract_feature_metadata.mjs" "$RUN_DIR" "$RUN_KEY" >/dev/null
+  fi
+fi
 
 load_jira_server() {
   if [[ -n "${JIRA_SERVER:-}" ]]; then
@@ -42,14 +51,16 @@ load_jira_server() {
 
 JIRA_BASE_URL="$(load_jira_server)"
 
-REPORTER_SCRIPT="$SCRIPT_DIR/lib/generate_report.mjs"
-REVIEWER_SCRIPT="$SCRIPT_DIR/../../report-quality-reviewer/scripts/review.mjs"
+REPORTER_SCRIPT="${REPORTER_SCRIPT:-$SCRIPT_DIR/lib/generate_report.mjs}"
+REVIEWER_SCRIPT="${REVIEWER_SCRIPT:-$SCRIPT_DIR/../../report-quality-reviewer/scripts/review.mjs}"
+AUTO_FIX_SCRIPT="${AUTO_FIX_SCRIPT:-$SCRIPT_DIR/lib/auto_fix_report_format.mjs}"
 
 generate_report() {
   node "$REPORTER_SCRIPT" "$RUN_DIR" "$RUN_KEY" "$JIRA_BASE_URL"
 }
 
 write_evolution_support_artifacts() {
+  [[ -f "$CONTEXT_DIR/jira_raw.json" ]] || return 0
   local freshness_json="$CONTEXT_DIR/analysis_freshness_${RUN_KEY}.json"
   local source_issue_timestamp=""
   local pr_timestamp=""
@@ -85,19 +96,27 @@ write_evolution_support_artifacts() {
     }' >"$freshness_json"
 }
 
+generate_report
+
 attempt=1
 status="fail"
 while [[ "$attempt" -le 3 ]]; do
-  generate_report
   status="$(node "$REVIEWER_SCRIPT" "$RUN_DIR" "$RUN_KEY" 2>/dev/null)" || status="fail"
-  if [[ "$status" == "pass" ]]; then
+  if [[ "$status" == "pass" || "$status" == "pass_with_advisories" ]]; then
+    break
+  fi
+  fix_result="$(node "$AUTO_FIX_SCRIPT" "$RUN_DIR" "$RUN_KEY" 2>/dev/null)" || fix_result="unchanged"
+  if [[ "$fix_result" != "changed" ]]; then
     break
   fi
   attempt=$((attempt + 1))
 done
 
-[[ "$status" == "pass" ]] || { echo "Phase 5 review loop failed to converge" >&2; exit 1; }
+[[ "$status" == "pass" || "$status" == "pass_with_advisories" ]] || { echo "Phase 5 review loop failed to converge" >&2; exit 1; }
 cp "$RUN_DIR/${RUN_KEY}_REPORT_DRAFT.md" "$RUN_DIR/${RUN_KEY}_REPORT_FINAL.md"
+if [[ "$ROUTE_KIND" != "reporter_scope_release" ]]; then
+  node "$SCRIPT_DIR/lib/build_feature_summary.mjs" "$RUN_DIR" "$RUN_KEY" >/dev/null
+fi
 node "$SCRIPT_DIR/lib/report_bundle_validator.mjs" "$RUN_KEY" "$RUN_DIR" >/dev/null
 write_evolution_support_artifacts
 
@@ -110,7 +129,13 @@ if [[ -f "$RUN_DIR/run.json" ]]; then
   mv "$RUN_DIR/run.json.tmp" "$RUN_DIR/run.json"
 fi
 
-if [[ -n "${FEISHU_CHAT_ID:-}" ]]; then
+if [[ "${SUPPRESS_NOTIFICATION:-0}" == "1" ]]; then
+  if [[ -f "$RUN_DIR/task.json" ]]; then
+    jq '.notification_status = "suppressed" | .updated_at = "'"$TS"'"' "$RUN_DIR/task.json" >"$RUN_DIR/task.json.tmp"
+    mv "$RUN_DIR/task.json.tmp" "$RUN_DIR/task.json"
+  fi
+  echo "NOTIFY_SUPPRESSED: run_key=${RUN_KEY}"
+elif [[ -n "${FEISHU_CHAT_ID:-}" ]]; then
   if [[ -f "$RUN_DIR/task.json" ]]; then
     jq '.notification_status = "sent" | .updated_at = "'"$TS"'"' "$RUN_DIR/task.json" >"$RUN_DIR/task.json.tmp"
     mv "$RUN_DIR/task.json.tmp" "$RUN_DIR/task.json"

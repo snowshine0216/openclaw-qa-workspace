@@ -75,6 +75,8 @@ feature_count="$(jq '.feature_keys | length' "$CONTEXT_DIR/feature_keys.json")"
 if [[ "$selected_mode" == "generate_from_cache" ]] && [[ ! -f "$CONTEXT_DIR/jira_raw.json" ]]; then
   echo "CACHE_REQUIRED_MISSING: jira_raw.json is required for generate_from_cache" >&2
   exit 2
+elif [[ "$route_kind" == "reporter_scope_release" ]]; then
+  printf '{"issues":[]}\n' >"$CONTEXT_DIR/jira_raw.json"
 elif [[ "$route_kind" == "reporter_scope_jql" ]]; then
   if [[ -f "$CONTEXT_DIR/jira_raw.json" ]] && [[ "$selected_mode" == "generate_from_cache" || "$selected_mode" == "resume" || "$selected_mode" == "smart_refresh" ]]; then
     :
