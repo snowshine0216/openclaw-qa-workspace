@@ -123,6 +123,12 @@ Both `check_resume.sh` and `progress.sh` render the same canonical summary paylo
 - `jobs[].post_applied_at`
 - `jobs[].failure_reason`
 
+`check_resume.sh` may prepend operator hints derived from that payload:
+
+- `last completed phase`
+- `pending async jobs`
+- `next required command`
+
 ## Evidence Freshness Rules
 
 Evidence is stale when any required input changed after the evidence artifact timestamp:
@@ -190,6 +196,18 @@ Promotion-grade structured observations must expose:
 - `target_surface`
 - `source_examples`
 - `allowed_mutation_scope`
+
+Terminology:
+
+- `evidence source`: the artifact that supplied the observation
+- `generalized rule`: the reusable statement extracted from the observation
+- `target mutation surface`: the scope that is allowed to change, such as `knowledge_pack_enrichment`, `rubric_update`, or `template_update`
+
+Blocked example:
+
+- Evidence source may mention `BCIN-7289`.
+- The promoted rule may not say `Fix BCIN-7289`.
+- Global rubric text may not be changed when the evidence only supports one feature family.
 
 ## Mutation Hypothesis Contract
 

@@ -31,6 +31,12 @@ When a QA plan ships with gaps, or a feature family has a cluster of missed defe
 
 Translate the findings from Phase A into structural rules that the `qa-plan-orchestrator` will obey in future runs.
 
+Before editing, keep these terms separate:
+
+- `evidence source`: the defect report or gap-analysis artifact you read
+- `generalized rule`: the reusable rule you extracted from that evidence
+- `target mutation surface`: the narrowest place that should change
+
 **Option 1: Enrich the Knowledge Pack (Most Common)**
 - Edit `workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/<family>/pack.json`
 - Edit the corresponding `pack.md`
@@ -42,6 +48,22 @@ Translate the findings from Phase A into structural rules that the `qa-plan-orch
 - Phase 4a: `phase4a-contract.md` (Scenario Generation)
 - Phase 5a: `review-rubric-phase5a.md` (Coverage Audit)
 - Phase 5b: `review-rubric-phase5b.md` (Release Checkpoints)
+
+### Generalization Guard
+
+Good mutation:
+
+- Evidence source: `BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
+- Generalized rule: `Audit interaction-pair completeness for save dialog flows.`
+- Target mutation surface: `workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/`
+
+Blocked mutation:
+
+- Evidence source: `BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
+- Generalized rule: `Fix BCIN-7289`
+- Target mutation surface: shared rubric text
+
+Do not write defect keys into rubric text. If the evidence only supports one feature family, default to a feature-family knowledge-pack change instead of a shared rubric update.
 
 ### Phase C: Benchmark Gate (Automated)
 

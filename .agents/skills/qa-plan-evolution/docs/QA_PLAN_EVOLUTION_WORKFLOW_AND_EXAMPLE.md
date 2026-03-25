@@ -349,6 +349,8 @@ Canonical operator inspection:
 ./.agents/skills/qa-plan-evolution/scripts/progress.sh --run-key "qa-plan-orchestrator__report-editor__<timestamp>"
 ```
 
+`check_resume.sh` prints the last completed phase, pending async-job count, and the next required command before the canonical JSON summary.
+
 The authoritative run home is:
 
 ```text
@@ -376,6 +378,28 @@ For each iteration (orchestrated automatically):
 - Phase 5 inspects `iteration-<n>/scorecard.json`
 - Phase 5 rejects on any blocking or non-regression failure
 - promote only after Phase 6 manual approval
+
+## Generalization Boundary
+
+When defect evidence is used, translate it in this order:
+
+1. `evidence source`: where the miss came from
+2. `generalized rule`: the reusable behavior that future plans must cover
+3. `target mutation surface`: the narrowest file scope that can safely absorb the rule
+
+Acceptable mutation:
+
+- Evidence source: `context/gap_bundle_<run-key>.json`
+- Generalized rule: `Require interaction-pair coverage for save dialog flows.`
+- Target mutation surface: `knowledge_pack_enrichment` for `report-editor`
+
+Blocked mutation:
+
+- Evidence source: `BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
+- Generalized rule: `Fix BCIN-7289 save dialog bug`
+- Target mutation surface: shared rubric text
+
+Do not write defect keys into rubric text. Use defect keys as evidence references only, then rewrite the promoted rule in generalized language.
 
 ## Key Files
 

@@ -12,6 +12,7 @@ import {
   categoryRank,
   seedGapTaxonomyAndBacklog,
 } from '../lib/mutationBacklog.mjs';
+import { buildGapTaxonomy } from '../lib/gapTaxonomy.mjs';
 import {
   normalizeObservationForPromotion,
   normalizeSourceResultsForPromotion,
@@ -598,6 +599,55 @@ test('structured defects observations preserve generalized promotion metadata', 
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
+});
+
+test('generalized-rule clustering unions target files and evals across observations', () => {
+  const taxonomy = buildGapTaxonomy({
+    sourceResults: [
+      {
+        observations: [
+          {
+            id: 'obs-1',
+            source_path: 'gap-one.json',
+            summary: 'Generalized gap one',
+            taxonomy_candidates: ['interaction_gap'],
+            target_files: ['workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5a.md'],
+            evals_affected: ['defect_recall_replay'],
+            generalized_rule: 'Require save dialog completeness gates.',
+            target_surface: 'review_rubric_phase5a',
+          },
+          {
+            id: 'obs-2',
+            source_path: 'gap-two.json',
+            summary: 'Generalized gap two',
+            taxonomy_candidates: ['interaction_gap'],
+            target_files: ['workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5b.md'],
+            evals_affected: ['knowledge_pack_coverage'],
+            generalized_rule: 'Require save dialog completeness gates.',
+            target_surface: 'review_rubric_phase5a',
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.deepEqual(taxonomy.gaps, [
+    {
+      bucket: 'interaction_gap',
+      hypothesis_key: 'interaction_gap|rule:require save dialog completeness gates.|surface:review_rubric_phase5a|pack:',
+      summary: '2 observations indicate interaction_gap',
+      evidence: ['gap-one.json', 'gap-two.json'],
+      source_observation_ids: ['obs-1', 'obs-2'],
+      target_files: [
+        'workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5a.md',
+        'workspace-planner/skills/qa-plan-orchestrator/references/review-rubric-phase5b.md',
+      ],
+      evals_affected: ['defect_recall_replay', 'knowledge_pack_coverage'],
+      knowledge_pack_key: null,
+      generalized_rule: 'Require save dialog completeness gates.',
+      target_surface: 'review_rubric_phase5a',
+    },
+  ]);
 });
 
 test('phase2 reuses prior backlog receipt when inputs are unchanged', async () => {
