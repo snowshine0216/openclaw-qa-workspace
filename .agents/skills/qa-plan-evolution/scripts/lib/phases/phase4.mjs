@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readlinkSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -27,6 +27,11 @@ function fingerprintDir(root) {
     for (const entry of readdirSync(dir, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
       const path = join(dir, entry.name);
       hash.update(entry.name);
+      if (entry.isSymbolicLink()) {
+        hash.update('symlink');
+        hash.update(readlinkSync(path));
+        continue;
+      }
       if (entry.isDirectory()) {
         visit(path);
         continue;
