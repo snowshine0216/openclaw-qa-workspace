@@ -86,6 +86,7 @@ test('skill entry docs point at script-driven contracts', async () => {
 test('active docs advertise script-driven artifacts and source routing', async () => {
   const reference = await readFile(join(SKILL_ROOT, 'reference.md'), 'utf8');
   const coverageContract = await readFile(join(SKILL_ROOT, 'references', 'context-coverage-contract.md'), 'utf8');
+  const phase4aContract = await readFile(join(SKILL_ROOT, 'references', 'phase4a-contract.md'), 'utf8');
   const phase4bContract = await readFile(join(SKILL_ROOT, 'references', 'phase4b-contract.md'), 'utf8');
   const phase5aRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5a.md'), 'utf8');
   const phase5bRubric = await readFile(join(SKILL_ROOT, 'references', 'review-rubric-phase5b.md'), 'utf8');
@@ -124,6 +125,17 @@ test('active docs advertise script-driven artifacts and source routing', async (
   assert.match(phase5aRubric, /Deep Research Coverage Audit/i);
   assert.match(phase5aRubric, /Do not remove, defer, or move a concern to Out of Scope/i);
   assert.match(phase5aRubric, /return phase5a/i);
+  assert.match(phase4aContract, /transition-template-draft-to-saved/i);
+  assert.match(phase4aContract, /transition-prompt-editor-close-confirmation/i);
+  assert.match(phase4aContract, /transition-save-as-overwrite-conflict/i);
+  assert.match(phase4aContract, /transition-prompt-pause-mode-template-run/i);
+  assert.match(phase4aContract, /transition-double-click-edit-title/i);
+  assert.match(phase4aContract, /folder visibility refresh after save/i);
+  assert.match(phase4aContract, /overwrite confirmation shown without JS error/i);
+  assert.match(phase5aRubric, /template-based creation.*pause-mode prompts/is);
+  assert.match(phase5aRubric, /close-confirmation.*prompt editor open/is);
+  assert.match(phase5aRubric, /save-as-overwrite.*template-save/is);
+  assert.match(phase5aRubric, /prompt-pause-mode.*report-builder-loading/is);
   assert.match(phase5bRubric, /Bounded Research Rule/i);
   assert.match(phase5bRubric, /Do not remove, defer, or move a concern to Out of Scope/i);
   assert.match(phase5bRubric, /supporting_context_and_gap_readiness/i);

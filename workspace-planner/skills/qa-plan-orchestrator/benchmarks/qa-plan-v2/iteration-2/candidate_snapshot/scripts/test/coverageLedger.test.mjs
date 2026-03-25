@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCoverageLedgerArtifacts, collectUnresolvedPackRows } from '../lib/coverageLedger.mjs';
+import {
+  buildCoverageLedgerArtifacts,
+  collectRequiredAnalogRowIds,
+  collectUnresolvedBlockingAnalogRowIds,
+  collectUnresolvedPackRows,
+} from '../lib/coverageLedger.mjs';
 
 test('buildCoverageLedgerArtifacts renders schema-compliant json and markdown', () => {
   const artifacts = buildCoverageLedgerArtifacts({
@@ -22,6 +27,7 @@ test('buildCoverageLedgerArtifacts renders schema-compliant json and markdown', 
   assert.equal(artifacts.json.feature_id, 'BCIN-7289');
   assert.equal(artifacts.json.knowledge_pack_key, 'report-editor');
   assert.equal(artifacts.json.candidates[0].knowledge_pack_row_id, 'outcome:outcome-window-title');
+  assert.equal(artifacts.json.candidates[0].required_gate, false);
   assert.match(artifacts.markdown, /## Scenario Mapping Table/);
   assert.match(artifacts.markdown, /outcome:outcome-window-title \| required_outcome \| window title correctness \| bm25 \| unmapped/);
 });
@@ -70,4 +76,26 @@ test('collectUnresolvedPackRows blocks Phase 5a on required outcomes and sdk-vis
     unresolved.map((candidate) => candidate.knowledge_pack_row_id),
     ['outcome:window-title', 'sdk:setwindowtitle'],
   );
+});
+
+test('analog gate collectors only return required blocking rows', () => {
+  const candidates = [
+    {
+      knowledge_pack_row_id: 'analog:BCIN-7730',
+      row_type: 'analog_gate',
+      title: 'blocking analog gate',
+      required_gate: true,
+      status: 'unmapped',
+    },
+    {
+      knowledge_pack_row_id: 'analog:BCIN-9999',
+      row_type: 'analog_gate',
+      title: 'advisory analog gate',
+      required_gate: false,
+      status: 'unmapped',
+    },
+  ];
+
+  assert.deepEqual(collectRequiredAnalogRowIds(candidates), ['analog:BCIN-7730']);
+  assert.deepEqual(collectUnresolvedBlockingAnalogRowIds(candidates), ['analog:BCIN-7730']);
 });

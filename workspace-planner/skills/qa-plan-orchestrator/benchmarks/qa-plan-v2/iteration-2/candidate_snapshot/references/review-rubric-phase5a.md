@@ -59,6 +59,13 @@ Review the draft against the real `context/` artifact set, prove no coverage lea
 - `## Advisory Findings`
 - `## Rewrite Requests`
 
+For report-editor planning, `## Cross-Section Interaction Audit` must include explicit audit rows for the active knowledge-pack interaction pairs when present:
+
+- `template-based creation` + `pause-mode prompts`
+- `close-confirmation` + `prompt editor open`
+- `save-as-overwrite` + `template-save`
+- `prompt-pause-mode` + `report-builder-loading`
+
 ### `review_delta_<feature-id>.md`
 
 - `## Source Review`

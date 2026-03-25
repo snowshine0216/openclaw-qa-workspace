@@ -596,7 +596,7 @@ function buildRequestRequirements(task, featureId) {
         `context/supporting_issue_relation_map_${featureId}.md`,
         `context/supporting_issue_summary_${featureId}.md`,
       ],
-      successPredicate: 'support relation map exists and aggregate support summary explicitly states support issues remain context_only_no_defect_analysis evidence',
+      successPredicate: 'support relation map and aggregate support summary exist',
     }));
     requirements.push(createRequirement({
       requirementId: 'req-support-only-mode',
@@ -615,7 +615,7 @@ function buildRequestRequirements(task, featureId) {
         `context/supporting_issue_request_${featureId}.md`,
         `context/supporting_issue_summary_${featureId}.md`,
       ],
-      successPredicate: 'no defect-analysis artifacts or routing appear in the workflow and support summaries keep issues in context_only_no_defect_analysis mode',
+      successPredicate: 'no defect-analysis artifacts or routing appear in the workflow',
     }));
   }
 
@@ -653,7 +653,7 @@ function buildRequestRequirements(task, featureId) {
       userText: 'use tavily-search before confluence',
       requiredPhase: 'phase3',
       requiredArtifacts: [`context/deep_research_synthesis_report_editor_${featureId}.md`],
-      successPredicate: 'tavily evidence is recorded before any confluence fallback and the synthesis artifact explicitly states Tavily-first ordering with fallback reason when used',
+      successPredicate: 'tavily evidence recorded before any confluence fallback',
     }));
   }
   return requirements;

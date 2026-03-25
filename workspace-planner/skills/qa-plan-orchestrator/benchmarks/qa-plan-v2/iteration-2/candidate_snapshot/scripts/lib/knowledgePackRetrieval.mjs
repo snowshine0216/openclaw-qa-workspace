@@ -60,18 +60,15 @@ function normalizeSearchHits(hits = []) {
 }
 
 function buildCandidateFromRow(row, matchedCandidate = null) {
-  if (matchedCandidate) {
-    return matchedCandidate;
-  }
-
   return {
     knowledge_pack_row_id: row.row_id,
     row_type: row.row_type,
     title: row.title,
+    required_gate: Boolean(row.required_gate),
     status: String(row.status || 'unmapped').trim(),
-    match_method: 'none',
-    query_source: '',
-    score: 0,
+    match_method: String(matchedCandidate?.match_method || 'none').trim(),
+    query_source: String(matchedCandidate?.query_source || '').trim(),
+    score: Number(matchedCandidate?.score || 0),
   };
 }
 

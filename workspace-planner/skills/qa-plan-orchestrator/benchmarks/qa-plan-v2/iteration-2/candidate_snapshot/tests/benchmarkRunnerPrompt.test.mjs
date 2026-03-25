@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
@@ -146,6 +146,136 @@ test('runBenchmarkRunnerCli sends embedded evidence in the provider payload', as
     assert.match(userMessage.content, /REPORT_STATE/);
     assert.match(userMessage.content, /observable verification leaf/);
     assert.match(userMessage.content, /Double-click title bug/);
+  } finally {
+    if (originalApiKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = originalApiKey;
+    global.fetch = originalFetch;
+    await rm(rootDir, { recursive: true, force: true });
+  }
+});
+
+test('runBenchmarkRunnerCli preserves model-provided execution notes from structured output', async () => {
+  const rootDir = await mkdtemp(join(tmpdir(), 'benchmark-runner-structured-'));
+  const originalFetch = global.fetch;
+  const originalApiKey = process.env.OPENAI_API_KEY;
+
+  try {
+    const outputDir = join(rootDir, 'outputs');
+    const requestPath = join(rootDir, 'execution_request.json');
+    await mkdir(outputDir, { recursive: true });
+
+    await writeFile(
+      requestPath,
+      JSON.stringify({
+        case_id: 'CASE-STRUCTURED-1',
+        feature_id: 'BCIN-3',
+        feature_family: 'report-editor',
+        primary_phase: 'phase5a',
+        evidence_mode: 'blind_pre_defect',
+        prompt: 'Structured response path.',
+        expectations: ['Preserves execution notes'],
+        fixtures: [],
+        run: {
+          configuration_dir: 'with_skill',
+          uses_skill_snapshot: true,
+          output_dir: outputDir,
+          metrics_path: join(outputDir, 'metrics.json'),
+        },
+      }, null, 2),
+      'utf8',
+    );
+
+    process.env.OPENAI_API_KEY = 'test-key';
+    global.fetch = async () => ({
+      ok: true,
+      async text() {
+        return JSON.stringify({
+          choices: [{
+            message: {
+              content: JSON.stringify({
+                result_md: '# Result\n\nStructured deliverable.\n',
+                execution_notes_md: '# Execution Notes\n\n- evidence used: Jira bundle\n- files produced: result.md\n- blockers: none\n',
+              }),
+            },
+          }],
+          usage: { prompt_tokens: 9, completion_tokens: 6, total_tokens: 15 },
+        });
+      },
+    });
+
+    await runBenchmarkRunnerCli(['node', 'benchmark-runner-llm.mjs', '--request', requestPath]);
+
+    const notes = await readFile(join(outputDir, 'execution_notes.md'), 'utf8');
+    const result = await readFile(join(outputDir, 'result.md'), 'utf8');
+    assert.match(result, /Structured deliverable/);
+    assert.match(notes, /evidence used: Jira bundle/);
+    assert.match(notes, /files produced: result\.md/);
+    assert.match(notes, /blockers: none/);
+    assert.match(notes, /## Runtime Metadata/);
+    assert.match(notes, /configuration: with_skill/);
+  } finally {
+    if (originalApiKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = originalApiKey;
+    global.fetch = originalFetch;
+    await rm(rootDir, { recursive: true, force: true });
+  }
+});
+
+test('runBenchmarkRunnerCli preserves freeform execution summary as fallback notes', async () => {
+  const rootDir = await mkdtemp(join(tmpdir(), 'benchmark-runner-freeform-'));
+  const originalFetch = global.fetch;
+  const originalApiKey = process.env.OPENAI_API_KEY;
+
+  try {
+    const outputDir = join(rootDir, 'outputs');
+    const requestPath = join(rootDir, 'execution_request.json');
+    await mkdir(outputDir, { recursive: true });
+
+    await writeFile(
+      requestPath,
+      JSON.stringify({
+        case_id: 'CASE-FREEFORM-1',
+        feature_id: 'BCIN-4',
+        feature_family: 'report-editor',
+        primary_phase: 'phase5b',
+        evidence_mode: 'blind_pre_defect',
+        prompt: 'Fallback response path.',
+        expectations: ['Falls back cleanly'],
+        fixtures: [],
+        run: {
+          configuration_dir: 'without_skill',
+          uses_skill_snapshot: false,
+          output_dir: outputDir,
+          metrics_path: join(outputDir, 'metrics.json'),
+        },
+      }, null, 2),
+      'utf8',
+    );
+
+    process.env.OPENAI_API_KEY = 'test-key';
+    global.fetch = async () => ({
+      ok: true,
+      async text() {
+        return JSON.stringify({
+          choices: [{
+            message: {
+              content: '```markdown\n# Result\n\nFreeform deliverable.\n```\nEvidence used: fixture corpus\nFiles produced: result.md\nBlockers: none',
+            },
+          }],
+          usage: { prompt_tokens: 8, completion_tokens: 4, total_tokens: 12 },
+        });
+      },
+    });
+
+    await runBenchmarkRunnerCli(['node', 'benchmark-runner-llm.mjs', '--request', requestPath]);
+
+    const notes = await readFile(join(outputDir, 'execution_notes.md'), 'utf8');
+    const result = await readFile(join(outputDir, 'result.md'), 'utf8');
+    assert.match(result, /Freeform deliverable/);
+    assert.match(notes, /Evidence used: fixture corpus/);
+    assert.match(notes, /Files produced: result\.md/);
+    assert.match(notes, /Blockers: none/);
+    assert.match(notes, /configuration: without_skill/);
   } finally {
     if (originalApiKey === undefined) delete process.env.OPENAI_API_KEY;
     else process.env.OPENAI_API_KEY = originalApiKey;

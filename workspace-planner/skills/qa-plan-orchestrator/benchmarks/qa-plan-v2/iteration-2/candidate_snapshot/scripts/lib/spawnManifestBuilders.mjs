@@ -288,8 +288,6 @@ Requirements:
 - Read the issue description, parent chain, linked inward issues, and linked outward issues.
 - Save the relation map and both summary artifacts under ${runDir}/context.
 - Do not create defect-analysis artifacts or route this work into defect-analysis behavior.
-- The aggregate support summary must explicitly say the supporting issues remain context evidence only in ${'context_only_no_defect_analysis'} mode and never become defect-analysis triggers.
-- The returned write-up must stay phase-1 scoped: supporting context digestion, relation mapping, and summary output only.
 - Return the written artifact paths in the session result.`,
     attachments: [],
     source_kind: 'feature-qa-planning',
@@ -335,8 +333,6 @@ Requirements:
 - Run Tavily first and persist the Tavily artifact under ${runDir}/${outputArtifactPaths[0]}.
 - Use Confluence fallback only when Tavily evidence is insufficient, and record that insufficiency in the Tavily artifact before writing ${runDir}/${outputArtifactPaths[1]}.
 - Do not skip the Tavily pass or swap the tool order.
-- Explicitly record Tavily-first ordering and any Confluence fallback reason in the written research artifacts, not only in execution metadata.
-- The returned synthesis must stay phase-3 scoped: Tavily-first research, optional fallback reasoning, and evidence saved under context/.
 - Return the written artifact paths in the session result.`,
     attachments: [],
     source_kind: 'feature-qa-planning',

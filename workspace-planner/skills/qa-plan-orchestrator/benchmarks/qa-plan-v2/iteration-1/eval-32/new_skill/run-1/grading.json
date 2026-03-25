@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "The run output asserts coverage only at a contract/rubric level and explicitly concedes it cannot verify the concrete focus items in any produced checkpoint artifacts: execution_notes.md says, \"cannot verify plan-instance content for OK/Cancel semantics, pending selection state, or dismissal correctness\" and result.md states, \"While the rubric does not name 'OK/Cancel semantics' verbatim\" and notes there is \"no run output ... to verify\" dedicated scenarios. Therefore the case focus is not \"explicitly covered\" in the provided outputs beyond general mapping."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md consistently frame checks as \"phase5b / checkpoint enforcement\" and describe Phase 5b artifacts and gate semantics (checkpoint_audit, checkpoint_delta, phase5b draft, accept/return dispositions). result.md explicitly says \"Primary phase under test: phase5b\" and \"Output aligns with phase5b: Yes\" with Phase 5b entry/work/outputs described."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "result.md concludes the opposite: \"Verdict: FAIL (phase8 mismatch + missing defect-feedback-loop injection)\" and \"there is no described mechanism ... that converts those defect keys/summaries into injected QA plan scenarios.\" execution_notes.md also states: \"Defect feedback loop not evidenced\" and \"Case focus ... not demonstrated.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "Both result.md and execution_notes.md state the skill snapshot only defines phases 0–7 and has no phase8: execution_notes.md: \"Phase mismatch: ... phases 0–7 only; benchmark demands phase8.\" result.md: \"There is no phase8 described... Therefore ... cannot be shown to comply with a phase8 checkpoint.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

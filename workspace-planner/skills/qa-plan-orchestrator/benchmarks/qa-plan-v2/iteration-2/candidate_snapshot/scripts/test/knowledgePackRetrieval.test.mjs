@@ -83,6 +83,7 @@ test('retrieveKnowledgePackCoverage produces stable BM25 candidates and projecti
       result.candidates.map((candidate) => candidate.knowledge_pack_row_id),
       ['analog:BCIN-7730', 'sdk:setwindowtitle'],
     );
+    assert.equal(result.candidates[0].required_gate, true);
     assert.equal(result.candidates[0].match_method, 'bm25');
     assert.match(await readFile(join(runDir, 'context', 'knowledge_pack_projection', 'analog--BCIN-7730.md'), 'utf8'), /BCIN-7730/);
   } finally {

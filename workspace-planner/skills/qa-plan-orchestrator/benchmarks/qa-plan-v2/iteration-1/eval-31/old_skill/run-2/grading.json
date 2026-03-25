@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly covers (a) distinct dashboard-level export paths/entry points: “verify distinct entry points are available…” with entry point A vs B; (b) option combinations: “option combination A…” and “option combination B…” plus toggling options affecting button state; (c) visible completion outcomes: “visible ‘export completed / success’ outcome”, explicit error outcomes for auth denied and network/service failure, and “success outcome includes an actionable affordance (open/copy link)”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states: “Produced a Phase 4a subcategory-only scenario draft…” and “Aligned to Phase 4a: subcategory-first structure, atomic nested steps, observable verification leaves, no canonical top-layer categories.” result.md matches this: subcategory headings (e.g., “Google Sheets export options…”, “completion outcomes…”) with nested atomic steps and observable outcomes, and includes a note: “intentionally avoids canonical top-layer grouping”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

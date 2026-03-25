@@ -76,4 +76,10 @@ If current evidence is insufficient, do one bounded research pass with `confluen
 - Pack-backed mappings must preserve the source `knowledge_pack_row_id` from `coverage_ledger_<feature-id>.json` whenever a draft scenario, explicit exclusion, or release gate is seeded from a retrieved row.
 - SDK/API visible outcomes declared in the active knowledge pack (e.g. `setWindowTitle`, `errorHandler`) must each map to at least one scenario with a testable, observable verification leaf. Implicit mentions without explicit observable outcomes are insufficient.
 - State transitions declared in the active knowledge pack must each appear as a scenario chain (from-state → trigger → to-state → observable outcome). A transition that has no scenario chain is a coverage gap.
+- For report-editor planning, the Phase 4a draft must preserve explicit scenario chains for these transition ids when they are present in the active knowledge pack:
+  - `transition-template-draft-to-saved`: `template-based creation` -> `save action` -> `save override` -> `folder visibility refresh after save`
+  - `transition-prompt-editor-close-confirmation`: `prompt editor open` -> `close action` -> `close-confirmation` -> `pause-mode prompts and confirmation path are explicit`
+  - `transition-save-as-overwrite-conflict`: `save-as initiated` -> `target report already exists` -> `overwrite-confirmation` -> `overwrite confirmation shown without JS error; existing report replaced on confirm`
+  - `transition-prompt-pause-mode-template-run`: `template-based creation with prompt pause mode` -> `template saved and opened` -> `report running` -> `report with prompt pause mode runs correctly after template creation`
+  - `transition-double-click-edit-title`: `report list view` -> `double-click on report in workstation` -> `edit report open` -> `editor opens with the correct report title (not stale/wrong title)`
 - When the active knowledge pack declares `i18n dialogs` as a required capability, each dialog whose string keys are added or changed in the release must have locale-aware verification leaves in the scenario set.

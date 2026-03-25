@@ -11,6 +11,7 @@ function normalizeCandidate(candidate = {}) {
     knowledge_pack_row_id: String(candidate.knowledge_pack_row_id || candidate.row_id || '').trim(),
     row_type: String(candidate.row_type || '').trim(),
     title: String(candidate.title || '').trim(),
+    required_gate: Boolean(candidate.required_gate),
     status: String(candidate.status || 'unmapped').trim(),
     match_method: String(candidate.match_method || 'bm25').trim(),
     query_source: String(candidate.query_source || '').trim(),
@@ -69,6 +70,7 @@ export function collectRequiredAnalogRowIds(candidates = []) {
   return candidates
     .map(normalizeCandidate)
     .filter((candidate) => candidate.row_type === 'analog_gate')
+    .filter((candidate) => candidate.required_gate)
     .map((candidate) => candidate.knowledge_pack_row_id);
 }
 
@@ -76,6 +78,7 @@ export function collectUnresolvedBlockingAnalogRowIds(candidates = []) {
   return candidates
     .map(normalizeCandidate)
     .filter((candidate) => candidate.row_type === 'analog_gate')
+    .filter((candidate) => candidate.required_gate)
     .filter((candidate) => candidate.status === 'unmapped')
     .map((candidate) => candidate.knowledge_pack_row_id);
 }

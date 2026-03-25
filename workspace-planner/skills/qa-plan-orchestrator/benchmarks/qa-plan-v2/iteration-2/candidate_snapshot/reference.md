@@ -299,13 +299,7 @@ Do not substitute browser fetch or generic web fetch for Jira, Confluence, or Gi
 
 - Supporting Jira issues are context evidence only.
 - Support-only issues must remain in `context_only_no_defect_analysis` mode.
-- Supporting summaries must say this explicitly so downstream review artifacts do not infer defect-analysis routing.
 - Promotion and finalization are blocked if blocking `request_requirements` remain unsatisfied.
-
-## Tavily-First Research Policy
-
-- Phase 3 research artifacts must record the Tavily-first ordering explicitly.
-- Any Confluence use must be described as fallback-only and paired with a recorded insufficiency reason from the Tavily pass.
 
 ## Round Progression
 
