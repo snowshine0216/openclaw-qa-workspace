@@ -101,7 +101,7 @@ else
   tmp_dir="$(mktemp -d)"
   while IFS= read -r feature_key; do
     [[ -n "$feature_key" ]] || continue
-    /bin/bash "$jira_runner" issue list --jql "project in (${project_keys}) AND issuetype = Defect AND (parent=\"${feature_key}\" OR text ~ \"${feature_key}\")" --raw --paginate 50 >"$tmp_dir/${feature_key}.json"
+    /bin/bash "$jira_runner" issue list --jql "project in (${project_keys}) AND issuetype = Defect AND (parent=\"${feature_key}\" OR text ~ \"${feature_key}\")" --raw --paginate 50 >"$tmp_dir/${feature_key}.json" 2>/dev/null || printf '{"issues":[]}\n' >"$tmp_dir/${feature_key}.json"
   done < <(jq -r '.feature_keys[]' "$CONTEXT_DIR/feature_keys.json")
   if compgen -G "$tmp_dir/*.json" >/dev/null; then
     jq -s '{issues: ([ .[] | if type == "array" then .[] else (.issues // [])[] end ] | unique_by(.key))}' "$tmp_dir"/*.json >"$CONTEXT_DIR/jira_raw.json"
