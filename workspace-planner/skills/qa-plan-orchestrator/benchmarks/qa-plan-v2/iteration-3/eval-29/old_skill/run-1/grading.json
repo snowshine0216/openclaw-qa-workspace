@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "result.md states the case focus is only listed as an expectation, not demonstrated in produced checkpoint artifacts: \"does not include any phase5b run artifacts ... showing that the orchestrator actually enforced shipment checkpoints for the specific focus area\" and concludes \"focus explicitly covered: Not demonstrated\"."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The outputs are explicitly framed as phase5b checkpoint-enforcement evaluation throughout (e.g., result.md: \"Verdict (phase5b checkpoint enforcement)\"; execution_notes.md: \"Checked Phase 5b contract requirements\"), and the report assesses missing phase5b artifacts per the phase5b rubric."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

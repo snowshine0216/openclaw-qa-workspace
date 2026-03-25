@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": true,
+      "evidence": "result.md explicitly addresses both parts of the case focus under “Evidence-based contract checks”: it states “Supporting issues stay `context_only_no_defect_analysis`” and “Supporting issues produce summaries (and relation map)”, citing the skill snapshot contracts (SKILL.md/reference.md) that require supporting issues be “context evidence only” and that `context/supporting_issue_summary_...md` artifacts exist and are validated in Phase 1."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md concludes “Verdict (phase1 / blocking) PASS” and includes a dedicated section “3) Output aligns to primary phase `phase1`” stating Phase 1 outputs `phase1_spawn_manifest.json` and Phase 1 `--post` validations cover support summaries + non-defect routing. execution_notes.md likewise says it “Verified output alignment to primary phase: phase1”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

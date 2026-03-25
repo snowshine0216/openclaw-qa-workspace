@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The output explicitly notes AGENTS docs were not available and therefore alignment cannot be validated: result.md: \"AGENTS documentation was **not provided in the benchmark evidence**, so alignment involving AGENTS docs **cannot be verified**\"; execution_notes.md: \"Looked for any AGENTS docs in evidence; none were provided, so no validation possible.\" While SKILL/README/reference are discussed, the case focus includes AGENTS docs staying aligned, which is not explicitly covered with evidence."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The primary phase under test is identified as docs/phase_contract, and the output’s conclusions are grounded in the provided phase docs (snapshot vs fixture) without inventing unsupported details. It reports a documented divergence and explicitly states limitations: result.md: \"Primary phase under test: **docs**\" and \"Evidence used\" lists the docs compared; it also flags the constraint: \"AGENTS documentation ... cannot be verified\" and \"Evidence-only constraint prevents inspecting repository\" (execution_notes.md)."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

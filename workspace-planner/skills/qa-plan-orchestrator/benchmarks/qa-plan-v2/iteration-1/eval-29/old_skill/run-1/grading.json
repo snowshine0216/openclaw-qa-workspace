@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The output identifies the required focus items, but explicitly states enforcement/coverage cannot be verified due to missing Phase 5b checkpoint artifacts: “No — Not verifiable from provided evidence.” and “the evidence set does not include any Phase 5b run artifacts; therefore checkpoint enforcement success cannot be demonstrated or verified.” It only lists what Phase 5b *should* audit, not that shipment checkpoint *does* cover it."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md is explicitly framed as “Phase 5b Checkpoint Enforcement,” cites the Phase 5b rubric/contract, and discusses Phase 5b-required artifacts and disposition: “Per `references/review-rubric-phase5b.md`, Phase 5b must: produce shipment-readiness checkpoint artifacts (`checkpoint_audit`, `checkpoint_delta`, phase5b draft) ... end `checkpoint_delta` with an explicit disposition.”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

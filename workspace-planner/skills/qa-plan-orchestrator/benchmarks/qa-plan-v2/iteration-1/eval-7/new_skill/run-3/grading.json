@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": true,
+      "evidence": "result.md explicitly includes a section “Case focus to be explicitly covered” listing “template × pause-mode” and “prompt-editor-open states”, and then provides retrospective evidence for both: “1) Template × Pause Mode interaction was missed” (BCIN-7730) and “2) Prompt-editor-open state interaction was missed” (BCIN-7708/7709)."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md is titled “# Phase 5a Checkpoint Enforcement Audit” and states “Primary phase under test: Phase 5a”, grounding requirements in the “Phase 5a Review Rubric” and focusing on Phase 5a artifacts/sections (e.g., required “## Cross-Section Interaction Audit” and accept/return gating)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

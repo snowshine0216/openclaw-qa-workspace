@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and argues Phase 5a prevents silent dropping via: (a) rule against removing/defering/moving concerns without evidence/user direction, (b) mandatory per-node `## Coverage Preservation Audit` with evidence source and dispositions, and (c) an acceptance gate/validators blocking `accept` while preservation items remain unresolved. Quotes: “Case focus (must be explicitly covered) ‘Review loop does not silently drop evidence-backed nodes.’” and “Phase 5a rubric: ‘Do not remove, defer, or move a concern… Only do so when source evidence or explicit user direction requires it.’” plus “requires `## Coverage Preservation Audit`… each affected node records… evidence source… disposition… reason.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "execution_notes.md and result.md both frame the evaluation as Phase 5a. Quotes: execution_notes.md: “## What was checked (Phase 5a alignment) - Verified Phase 5a rubric explicitly…” and result.md: “Checkpoint under test — Primary phase: Phase 5a (review loop)” and it cites Phase 5a artifacts/validators such as `review-rubric-phase5a.md` and `validate_coverage_preservation_audit` and Phase 5a `--post` requirements."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly enumerates the required focus: \"Context intake preserves donut-label assumptions for: - Label visibility ... - Density limits ... - Overlap-sensitive presentation\" and then assesses whether these are present/preserved, concluding they are \"Not demonstrated / Advisory gap\" due to missing Phase 1 artifacts. This still counts as explicitly covering the case focus."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "result.md is explicitly Phase 1 scoped: title \"Phase 1 (Context Intake) Contract Check\" and sections \"What Phase 1 is expected to do\" (spawn requests, phase1_spawn_manifest.json, --post validations) and \"Primary phase checked: Phase 1\". execution_notes.md also notes the run is \"phase-contract scoped to Phase 1\" and discusses missing Phase 1 artifacts."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

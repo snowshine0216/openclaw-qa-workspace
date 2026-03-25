@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "In result.md, the run states the focus but concludes it is \"NOT DEMONSTRATED with provided evidence (blocker: missing phase1 outputs)\" and notes \"There is no provided `phase1_spawn_manifest.json` ... showing that context intake would ... capture label-visibility rules, density limits, and overlap resolution.\" Therefore the case focus is not explicitly covered/verified by produced artifacts."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The produced evaluation output is explicitly framed as Phase 1: execution_notes.md and result.md repeatedly reference Phase 1 responsibilities and artifacts (e.g., \"Primary phase under test: phase1\"; \"Producing: `phase1_spawn_manifest.json`\"; \"Phase 1 does not author test coverage content ...\"). Although it cannot verify compliance due to missing Phase 1 artifacts, the output itself aligns to the phase1 evaluation scope."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

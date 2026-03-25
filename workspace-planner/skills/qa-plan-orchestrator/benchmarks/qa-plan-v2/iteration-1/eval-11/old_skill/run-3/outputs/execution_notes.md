@@ -1,7 +1,8 @@
 # Execution Notes
 
-- executor: benchmark-runner-local
+## Runtime Metadata
+
+- executor: benchmark-runner-llm
+- duration_ms: 24250
+- total_tokens: 32655
 - configuration: old_skill
-- used_skill_snapshot: true
-- snapshot_sections: 6
-- fixture_count: 1

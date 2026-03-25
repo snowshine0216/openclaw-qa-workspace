@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "The result.md explicitly states the case focus and evaluates the three required elements under Phase 1: it includes sections \"Preserving Google Sheets export entry points\", \"Preserving scope boundaries\", and \"Preserving format constraints (Google Sheets export)\" and reiterates the benchmark requirement: \"during context intake (Phase 1), the workflow must preserve and route evidence needed to later capture Google Sheets export entry points, scope boundaries, and format constraints, without drafting scenarios yet.\" Although it concludes verification is not possible due to missing manifest, the focus is explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output frames itself as Phase 1 and follows a Phase 1 (spawn-only) contract description: \"Phase 1 is spawn-only\" and \"Output: phase1_spawn_manifest.json\" and avoids scenario drafting, instead discussing what Phase 1 must do and noting missing Phase 1 artifacts. This is consistent with phase1 alignment even though it cannot verify the manifest was produced."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

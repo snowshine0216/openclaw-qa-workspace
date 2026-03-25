@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "result.md explicitly says the focus is not demonstrably covered in Phase 1: \"Using only the provided evidence, this focus is *not demonstrably covered* at Phase 1\" and notes missing artifacts: \"does **not** include the Phase 1 artifact `phase1_spawn_manifest.json`\". execution_notes.md similarly: \"Phase 1 context intake coverage ... cannot be verified.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md is structured around Phase 1 and states: \"Primary phase under test: Phase 1 (context intake / spawn-manifest generation)\" and evaluates Phase 1 contract adherence and missing Phase 1 artifacts. execution_notes.md also frames assessment as Phase 1: \"Assessed Phase 1 expectations...\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

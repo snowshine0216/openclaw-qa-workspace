@@ -1,0 +1,314 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/helpers.sh"
+
+prepare_phase3_project() {
+  local temp_dir="$1"
+  local run_dir
+  run_dir="$(feature_run_dir "$temp_dir" BCIN-50)"
+  write_task_json "$run_dir/task.json" '{
+    "feature_id":"BCIN-50",
+    "current_phase":"phase_2_artifact_index",
+    "knowledge_pack_key":"report-editor",
+    "resolved_knowledge_pack_key":"report-editor",
+    "knowledge_pack_version":"2026-03-23",
+    "knowledge_pack_path":"workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json",
+    "deep_research_topics":[
+      "report_editor_workstation_functionality",
+      "report_editor_library_vs_workstation_gap"
+    ],
+    "request_requirements":[
+      {
+        "requirement_id":"req-research-workstation",
+        "required_phase":"phase3",
+        "required_artifacts":["context/deep_research_tavily_report_editor_workstation_BCIN-50.md"],
+        "blocking_on_missing":true
+      },
+      {
+        "requirement_id":"req-research-gap",
+        "required_phase":"phase3",
+        "required_artifacts":["context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"],
+        "blocking_on_missing":true
+      }
+    ],
+    "updated_at":"2026-03-10T00:00:00.000Z"
+  }'
+  write_run_json "$run_dir/run.json" '{"run_key":"run-50","spawn_history":[],"request_execution_log":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf '# Artifact Lookup\n\n| # | Artifact Key | File Path | Artifact Kind | Source Family | Policy Tag | Source Phase | Phase Required By | Requirement IDs | Satisfies User Request | Phase 4a | Phase 4b | Phase 5a | Phase 5b | Phase 6 |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 1 | `jira_context` | `context/jira_issue_BCIN-50.md` | jira_issue | jira | primary | Phase 1 | phase3 | `req-research-workstation` | yes | ❌ | ❌ | ❌ | ❌ | ❌ |\n' > "$run_dir/context/artifact_lookup_BCIN-50.md"
+  printf '# Jira issue\nBCIN-7730 prompt pause mode\nsetWindowTitle\n' > "$run_dir/context/jira_issue_BCIN-50.md"
+  printf '# Pack summary\n' > "$run_dir/context/knowledge_pack_summary_BCIN-50.md"
+  printf '{"knowledge_pack_key":"report-editor"}\n' > "$run_dir/context/knowledge_pack_summary_BCIN-50.json"
+  cat > "$run_dir/context/request_fulfillment_BCIN-50.json" <<'EOF'
+{
+  "feature_id":"BCIN-50",
+  "requirements":[
+    {
+      "requirement_id":"req-research-workstation",
+      "required_phase":"phase3",
+      "blocking_on_missing":true,
+      "required_artifacts":["context/deep_research_tavily_report_editor_workstation_BCIN-50.md"],
+      "status":"pending",
+      "evidence_artifacts":[]
+    },
+    {
+      "requirement_id":"req-research-gap",
+      "required_phase":"phase3",
+      "blocking_on_missing":true,
+      "required_artifacts":["context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"],
+      "status":"pending",
+      "evidence_artifacts":[]
+    }
+  ]
+}
+EOF
+  printf '%s\n' "$run_dir"
+}
+
+test_success_manifest_output() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase3_project "$temp_dir")"
+
+  local output
+  output="$(bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir")"
+
+  assert_contains "$output" "SPAWN_MANIFEST:"
+  assert_file_exists "$run_dir/phase3_spawn_manifest.json"
+  assert_file_exists "$run_dir/context/knowledge_pack_retrieval_BCIN-50.md"
+  assert_file_exists "$run_dir/context/knowledge_pack_retrieval_BCIN-50.json"
+  assert_file_exists "$run_dir/context/coverage_ledger_BCIN-50.md"
+  assert_file_exists "$run_dir/context/coverage_ledger_BCIN-50.json"
+  assert_file_exists "$run_dir/context/knowledge_pack_qmd.sqlite"
+}
+
+test_post_validation_pass() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase3_project "$temp_dir")"
+  cat > "$run_dir/context/coverage_ledger_BCIN-50.md" <<'EOF'
+# Coverage Ledger
+
+## Scenario Mapping Table
+- C1 | EndToEnd | Main flow | standalone | covered
+EOF
+  printf '# Research plan\n' > "$run_dir/context/deep_research_plan_BCIN-50.md"
+  cat > "$run_dir/context/deep_research_execution_BCIN-50.json" <<'EOF'
+{"steps":[
+  {"step":1,"topic_slug":"report_editor_workstation_functionality","tool":"tavily-search","status":"satisfied","artifacts":["context/deep_research_tavily_report_editor_workstation_BCIN-50.md"]},
+  {"step":2,"topic_slug":"report_editor_library_vs_workstation_gap","tool":"tavily-search","status":"satisfied","artifacts":["context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"]}
+]}
+EOF
+  printf 'Tavily evidence\n' > "$run_dir/context/deep_research_tavily_report_editor_workstation_BCIN-50.md"
+  printf 'Tavily evidence\n' > "$run_dir/context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"
+  printf '# Synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-50.md"
+
+  bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir" --post >/dev/null
+  assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_3_coverage_mapping"'
+  assert_contains "$(cat "$run_dir/context/request_fulfillment_BCIN-50.json")" '"status": "satisfied"'
+}
+
+test_post_validation_requires_tavily_first() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase3_project "$temp_dir")"
+  cat > "$run_dir/context/coverage_ledger_BCIN-50.md" <<'EOF'
+# Coverage Ledger
+
+## Scenario Mapping Table
+- C1 | EndToEnd | Main flow | standalone | covered
+EOF
+  printf '# Research plan\n' > "$run_dir/context/deep_research_plan_BCIN-50.md"
+  cat > "$run_dir/context/deep_research_execution_BCIN-50.json" <<'EOF'
+{"steps":[
+  {"step":1,"topic_slug":"report_editor_workstation_functionality","tool":"confluence","status":"satisfied","artifacts":["context/deep_research_confluence_report_editor_workstation_BCIN-50.md"]},
+  {"step":2,"topic_slug":"report_editor_workstation_functionality","tool":"tavily-search","status":"satisfied","artifacts":["context/deep_research_tavily_report_editor_workstation_BCIN-50.md"]}
+]}
+EOF
+  printf 'Fallback confluence evidence\n' > "$run_dir/context/deep_research_confluence_report_editor_workstation_BCIN-50.md"
+  printf '# Synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-50.md"
+
+  set +e
+  local output
+  output="$(bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir" --post 2>&1)"
+  local code=$?
+  set -e
+
+  assert_exit_code 1 "$code"
+  assert_contains "$output" "Tavily"
+}
+
+test_post_validation_requires_deep_research_plan() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase3_project "$temp_dir")"
+  cat > "$run_dir/context/coverage_ledger_BCIN-50.md" <<'EOF'
+# Coverage Ledger
+
+## Scenario Mapping Table
+- C1 | EndToEnd | Main flow | standalone | covered
+EOF
+  cat > "$run_dir/context/deep_research_execution_BCIN-50.json" <<'EOF'
+{"steps":[
+  {"step":1,"topic_slug":"report_editor_workstation_functionality","tool":"tavily-search","status":"satisfied","artifacts":["context/deep_research_tavily_report_editor_workstation_BCIN-50.md"]},
+  {"step":2,"topic_slug":"report_editor_library_vs_workstation_gap","tool":"tavily-search","status":"satisfied","artifacts":["context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"]}
+]}
+EOF
+  printf 'Tavily evidence\n' > "$run_dir/context/deep_research_tavily_report_editor_workstation_BCIN-50.md"
+  printf 'Tavily evidence\n' > "$run_dir/context/deep_research_tavily_library_vs_workstation_gap_BCIN-50.md"
+  printf '# Synthesis\n' > "$run_dir/context/deep_research_synthesis_report_editor_BCIN-50.md"
+
+  set +e
+  local output
+  output="$(bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir" --post 2>&1)"
+  local code=$?
+  set -e
+
+  assert_exit_code 1 "$code"
+  assert_contains "$output" "deep_research_plan"
+}
+
+test_post_validation_skips_research_validation_when_not_requested() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(feature_run_dir "$temp_dir" BCIN-51)"
+  write_task_json "$run_dir/task.json" '{"feature_id":"BCIN-51","current_phase":"phase_2_artifact_index","updated_at":"2026-03-10T00:00:00.000Z"}'
+  write_run_json "$run_dir/run.json" '{"run_key":"run-51","spawn_history":[],"request_execution_log":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf '# Artifact Lookup\n' > "$run_dir/context/artifact_lookup_BCIN-51.md"
+  cat > "$run_dir/context/coverage_ledger_BCIN-51.md" <<'EOF'
+# Coverage Ledger
+
+## Scenario Mapping Table
+- C1 | EndToEnd | Main flow | standalone | covered
+EOF
+
+  bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-51 "$run_dir" --post >/dev/null
+  assert_contains "$(cat "$run_dir/task.json")" '"current_phase": "phase_3_coverage_mapping"'
+}
+
+test_completed_phase3_short_circuits_before_pack_preparation() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(feature_run_dir "$temp_dir" BCIN-52)"
+  write_task_json "$run_dir/task.json" '{
+    "feature_id":"BCIN-52",
+    "current_phase":"phase_4a_subcategory_draft",
+    "knowledge_pack_key":"missing-pack",
+    "updated_at":"2026-03-10T00:00:00.000Z"
+  }'
+  write_run_json "$run_dir/run.json" '{"run_key":"run-52","spawn_history":[],"request_execution_log":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf '{"version":1,"requests":[]}\n' > "$run_dir/phase3_spawn_manifest.json"
+
+  local output
+  output="$(bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-52 "$run_dir")"
+
+  assert_contains "$output" "PHASE_ALREADY_COMPLETE: phase3"
+}
+
+test_phase3_preserves_preseeded_request_contracts() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(feature_run_dir "$temp_dir" BCIN-53)"
+  write_task_json "$run_dir/task.json" '{
+    "feature_id":"BCIN-53",
+    "current_phase":"phase_2_artifact_index",
+    "knowledge_pack_key":"report-editor",
+    "resolved_knowledge_pack_key":"report-editor",
+    "knowledge_pack_version":"2026-03-23",
+    "knowledge_pack_path":"workspace-planner/skills/qa-plan-orchestrator/knowledge-packs/report-editor/pack.json",
+    "request_materials":[
+      {
+        "material_id":"material-inline-spec",
+        "material_type":"inline_note",
+        "source_value":"custom operator note",
+        "role":"operator_override",
+        "must_read":true,
+        "must_summarize":false
+      }
+    ],
+    "request_commands":[
+      {
+        "command_id":"cmd-custom-preserve-me",
+        "policy_type":"operator_guardrail",
+        "command_text":"preserve this custom command",
+        "enforced_by_phase":"phase3",
+        "failure_message":"custom command missing"
+      }
+    ],
+    "request_requirements":[
+      {
+        "requirement_id":"req-custom-preserve-me",
+        "kind":"read_material",
+        "user_text":"preserve this custom requirement",
+        "required_phase":"phase3",
+        "required_artifacts":["context/custom_requirement_BCIN-53.md"],
+        "success_predicate":"custom requirement remains tracked",
+        "blocking_on_missing":true
+      }
+    ],
+    "updated_at":"2026-03-10T00:00:00.000Z"
+  }'
+  write_run_json "$run_dir/run.json" '{"run_key":"run-53","spawn_history":[],"request_execution_log":[],"updated_at":"2026-03-10T00:00:00.000Z"}'
+  printf '# Artifact Lookup\n' > "$run_dir/context/artifact_lookup_BCIN-53.md"
+  printf '# Jira issue\nBCIN-7730 prompt pause mode\nsetWindowTitle\n' > "$run_dir/context/jira_issue_BCIN-53.md"
+  printf '# Pack summary\n' > "$run_dir/context/knowledge_pack_summary_BCIN-53.md"
+  printf '{"knowledge_pack_key":"report-editor"}\n' > "$run_dir/context/knowledge_pack_summary_BCIN-53.json"
+
+  bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-53 "$run_dir" >/dev/null
+
+  assert_contains "$(cat "$run_dir/task.json")" '"material-inline-spec"'
+  assert_contains "$(cat "$run_dir/task.json")" '"cmd-custom-preserve-me"'
+  assert_contains "$(cat "$run_dir/task.json")" '"req-custom-preserve-me"'
+}
+
+test_phase3_null_pack_rerun_cleans_stale_retrieval_artifacts() {
+  local temp_dir
+  temp_dir="$(new_temp_dir)"
+  local run_dir
+  run_dir="$(prepare_phase3_project "$temp_dir")"
+
+  bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir" >/dev/null
+  assert_file_exists "$run_dir/context/knowledge_pack_retrieval_BCIN-50.md"
+  assert_file_exists "$run_dir/context/knowledge_pack_qmd.sqlite"
+
+  write_task_json "$run_dir/task.json" '{
+    "feature_id":"BCIN-50",
+    "current_phase":"phase_2_artifact_index",
+    "feature_family":"missing-pack",
+    "knowledge_pack_key":null,
+    "requested_knowledge_pack_key":null,
+    "resolved_knowledge_pack_key":null,
+    "knowledge_pack_version":null,
+    "knowledge_pack_path":null,
+    "knowledge_pack_deep_research_topics":[],
+    "deep_research_topics":[],
+    "request_requirements":[],
+    "request_materials":[],
+    "request_commands":[],
+    "updated_at":"2026-03-10T00:00:00.000Z"
+  }'
+
+  bash "$SKILL_ROOT/scripts/phase3.sh" BCIN-50 "$run_dir" >/dev/null
+
+  [ ! -f "$run_dir/context/knowledge_pack_retrieval_BCIN-50.md" ] || { echo "stale retrieval markdown should be removed"; exit 1; }
+  [ ! -f "$run_dir/context/knowledge_pack_retrieval_BCIN-50.json" ] || { echo "stale retrieval json should be removed"; exit 1; }
+  [ ! -f "$run_dir/context/knowledge_pack_qmd.sqlite" ] || { echo "stale qmd sqlite should be removed"; exit 1; }
+  [ ! -d "$run_dir/context/knowledge_pack_projection" ] || { echo "stale projection directory should be removed"; exit 1; }
+}
+
+test_success_manifest_output
+test_post_validation_pass
+test_post_validation_requires_tavily_first
+test_post_validation_requires_deep_research_plan
+test_post_validation_skips_research_validation_when_not_requested
+test_completed_phase3_short_circuits_before_pack_preparation
+test_phase3_preserves_preseeded_request_contracts
+test_phase3_null_pack_rerun_cleans_stale_retrieval_artifacts

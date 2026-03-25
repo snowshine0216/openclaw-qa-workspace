@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus: \"This holdout regression case checks that skill improvements for the report-editor feature family do not regress a different feature planning flow\" and argues preservation of a distinct non-report flow via the embedding-migration/regression comparison (Plan 1 vs Plan 2), concluding \"no regression is evidenced\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md declares \"Primary phase under test: holdout\" and \"This output is intentionally limited to a holdout checkpoint: it does not attempt to generate a QA plan or run phases; it only evaluates whether the available evidence indicates a cross-feature planning-flow regression.\" execution_notes.md also notes: \"No phase scripts/manifests were executed... only the provided evidence may be used.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

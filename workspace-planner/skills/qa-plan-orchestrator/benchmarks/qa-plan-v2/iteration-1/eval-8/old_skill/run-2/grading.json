@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "The output explicitly covers the case focus and explains what would be required to demonstrate it: result.md states the focus is “review loop does not silently drop evidence-backed nodes,” describes the Phase 5a mechanisms (“Coverage Preservation Audit” + review_delta disposition + validators/acceptance gate), and notes the absence of Phase 5a artifacts prevents verification (e.g., “Without those, we cannot verify: that evidence-backed nodes … were preserved in Phase 5a …”)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "The produced outputs are organized around Phase 5a and its contract: execution_notes.md and result.md repeatedly frame the evaluation as Phase 5a, list Phase 5a required artifacts (review_notes with “## Coverage Preservation Audit”, review_delta ending with accept/return phase5a, drafts/qa_plan_phase5a_r<round>.md), and cite Phase 5a validators (“validate_coverage_preservation_audit”, “validate_phase5a_acceptance_gate”). Although the fixture lacks actual Phase 5a run artifacts, the evaluator’s output itself is phase5a-aligned in structure and criteria."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

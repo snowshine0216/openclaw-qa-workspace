@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": false,
+      "evidence": "The output does not provide a Phase 4a QA plan with scenarios covering the case focus. Instead it states it cannot validate coverage due to missing artifacts: \"Blocker: cannot demonstrate Phase 4a alignment with provided evidence.\" and \"we cannot verify whether the orchestrator satisfied Phase 4a requirements, nor can we review a Phase 4a draft for the required banding coverage focus.\" It only lists what would be checked if present, not actual coverage."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Phase 4a contract expects an actual generated artifact `drafts/qa_plan_phase4a_r<round>.md`, but the output indicates it is missing: \"No `drafts/qa_plan_phase4a_r<round>.md` is included\" and \"Result: Blocked\". Therefore the run output is not phase4a-aligned in terms of producing the required Phase 4a deliverable; it is a blockage report rather than a Phase 4a draft."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly covers (1) dashboard-level export path: \"Dashboard export → Google Sheets\" with steps like \"Open a dashboard\" → \"Open the dashboard-level export menu\" → \"Choose Google Sheets\"; (2) option combinations: section \"Dashboard export → Google Sheets — Options & combinations\" including default options, toggles, valid minimal/maximal combinations, and invalid combination validation; (3) visible completion outcomes: sections for \"Export completion produces a visible success outcome\" and \"Export failure produces a visible failure outcome\" plus \"in progress/started\" indication."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "Output is titled \"Phase 4a — Scenario Draft (Subcategory-only)\" and is written as a scenario draft checklist. execution_notes.md states: \"Produced a Phase 4a subcategory-only scenario draft\" and \"Avoided forbidden Phase 4a canonical top-layer categories.\" The structure remains subcategory-only and focuses on scenario drafting rather than later-phase artifacts."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

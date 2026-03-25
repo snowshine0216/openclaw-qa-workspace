@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the benchmark focus and details what must be preserved in Phase 1 context intake: \"Benchmark focus: **context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting**\" and \"It must set up downstream context intake so that: - Evidence collection can cover **Google Sheets export entry points** ... - **scope boundaries** ... - **format constraints** (Google Sheets as a target...)\". It further identifies concrete entry points/surfaces from adjacent issue titles (\"Application Editor → Report Export Settings dialog\")."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output is framed as a Phase 1 contract check and stays within Phase 1 responsibilities (spawn planning + required artifact), repeatedly emphasizing Phase 1 constraints and the missing Phase 1 artifact rather than drafting scenarios: \"# ... Phase 1 Contract Check\"; \"Phase 1 is limited to ... producing **`phase1_spawn_manifest.json`**\"; and the assessment centers on absence of Phase 1 artifacts (\"Blocker: Phase 1 output artifact is not present\")."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

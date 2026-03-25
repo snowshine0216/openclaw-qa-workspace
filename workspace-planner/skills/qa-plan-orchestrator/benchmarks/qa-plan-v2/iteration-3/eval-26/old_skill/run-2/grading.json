@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": false,
+      "evidence": "In result.md the run concludes this is only partially covered: \"Case focus coverage: banding/style/rendering assumptions preserved pre-scenarios — PARTIAL (advisory).\" It further states: \"The Phase 1 contract does not explicitly name 'banding requirements, style constraints, rendering assumptions' as first-class fields to be extracted and persisted during Phase 1\" and \"does not guarantee\" preservation beyond raw Jira evidence."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "result.md explicitly determines alignment: \"Phase-contract alignment (Phase 1) — PASS\" and summarizes: \"[phase_contract][advisory] Output aligns with phase1: Yes (Phase 1 is correctly defined as spawn-manifest generation + post validation).\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

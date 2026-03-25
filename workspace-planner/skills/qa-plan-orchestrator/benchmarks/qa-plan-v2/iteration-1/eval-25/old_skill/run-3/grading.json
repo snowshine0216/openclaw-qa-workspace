@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "No Phase 5b checkpoint artifacts are present to demonstrate explicit coverage of the required focus areas. result.md states: \"the provided evidence does not include any generated Phase 5b artifacts for BCED-1719\" and \"there is no artifact-level proof that Phase 5b output ... explicitly addresses: panel-stack composition, embedding lifecycle boundaries, visible failure or recovery outcomes.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Outputs do not include the Phase 5b required artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b). execution_notes.md notes: \"No Phase 5b run outputs are included...\" and result.md concludes: \"No Phase 5b outputs for BCED-1719 are present... so alignment cannot be demonstrated.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

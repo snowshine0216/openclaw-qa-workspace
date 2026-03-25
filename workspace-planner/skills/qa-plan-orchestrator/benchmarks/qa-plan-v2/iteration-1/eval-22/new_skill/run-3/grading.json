@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": false,
+      "evidence": "The output states the required focus areas but also explicitly says they are not captured/verified in a Phase 4a draft: “The benchmark requires demonstrating Phase 4a blind scenario drafting… [but] contains no Phase 4a run artifacts… Under the orchestrator contract… without those artifacts we cannot demonstrate alignment to phase4a.” Therefore the case focus is not explicitly covered as completed blind scenario drafting; it is only listed as what would be needed."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The result concludes non-compliance with Phase 4a due to missing required Phase 4a artifacts: “Does not meet phase4a benchmark expectations with the provided evidence… no Phase 4a run artifacts… Phase 4a compliance cannot be demonstrated without the Phase 4a draft + validation lineage.” Since the expected Phase 4a outputs (draft, spawn manifest, context artifacts) are absent, alignment to phase4a is not demonstrated."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

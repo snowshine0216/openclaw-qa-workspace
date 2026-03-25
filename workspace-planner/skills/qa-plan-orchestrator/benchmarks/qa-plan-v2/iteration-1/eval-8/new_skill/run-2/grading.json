@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "result.md explicitly evaluates the benchmark focus under Phase 5a: \"Benchmark focus (checkpoint enforcement, advisory): Review loop does not silently drop evidence-backed nodes\" and includes a dedicated section \"Evaluation against benchmark focus: 'review loop does not silently drop evidence-backed nodes'\". It further explains verification limits due to missing Phase 5a artifacts, but the focus itself is explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md anchors the evaluation to Phase 5a: \"Primary phase: Phase 5a\" and enumerates Phase 5a contract outputs/gates (review_notes with \"## Coverage Preservation Audit\", review_delta acceptance gate, phase5a drafts). execution_notes.md likewise states \"Checkpoint coverage (phase5a)\" and lists Phase 5a requirements checked. The verdict is \"INCONCLUSIVE / NOT DEMONSTRATED\" due to missing Phase 5a artifacts, but the structure and criteria used are Phase 5a-aligned."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

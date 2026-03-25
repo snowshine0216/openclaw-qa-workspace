@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": false,
+      "evidence": "result.md states the required focus items but concludes they are not demonstrably covered due to missing phase5b artifacts: \"There is no phase5b output artifact evidence ... to verify that the orchestrator/skill produced a Phase 5b checkpoint review that distinguishes these behaviors\" and \"The other required focus items (contextual navigation behavior, fallback rendering safety) cannot be confirmed without the Phase 5b audit/delta and updated draft.\" Therefore explicit coverage is not evidenced in outputs."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Both execution_notes.md and result.md indicate phase5b alignment cannot be confirmed because required phase5b deliverables are absent: \"No Phase 5b run artifacts were provided\" and \"None are present in the benchmark evidence, so phase5b alignment cannot be confirmed.\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

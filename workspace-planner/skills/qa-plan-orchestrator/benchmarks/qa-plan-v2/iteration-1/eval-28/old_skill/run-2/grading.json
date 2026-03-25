@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "In result.md the run states the focus is \"Not demonstrated / cannot be verified from provided evidence\" and that the available requirement text \"does not explicitly encode label visibility rules, density limits, [or] overlap-sensitive behavior\". It also notes missing Phase 1 artifacts (e.g., \"no Phase 1 artifacts are provided\"), so explicit coverage of these assumptions is not shown."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "result.md explicitly marks Expectation 2 as \"Not demonstrated\" because \"The benchmark expects Phase 1-aligned output (typically: phase1_spawn_manifest.json and context evidence stubs). Those artifacts are not included,\" and execution_notes.md repeats \"No Phase 1 artifacts were provided\"."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

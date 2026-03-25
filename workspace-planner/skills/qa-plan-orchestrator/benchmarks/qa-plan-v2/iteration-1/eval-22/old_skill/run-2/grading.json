@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": false,
+      "evidence": "The output explicitly states the required focus areas but does not provide a scenario draft that captures them. It says: \"no Phase 4a scenario-draft artifact is provided\" and \"a compliant Phase 4a draft cannot be generated or reviewed\" due to missing Phase 4a inputs. Therefore the case focus is not explicitly covered in an actual blind scenario draft deliverable."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The result is framed as a Phase 4a contract check and uses Phase 4a requirements to justify the verdict: \"This benchmark requires a Phase 4a-aligned, blind scenario draft\" and lists Phase 4a required inputs from `references/phase4a-contract.md`, concluding it is \"Not demonstrated / blocked by missing Phase 4a required inputs\". This aligns with phase4a as the primary phase."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

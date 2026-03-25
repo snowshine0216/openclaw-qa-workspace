@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "phase4a contract exists",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
       "passed": true,
-      "evidence": "PASS: phase4a contract exists"
+      "evidence": "result.md explicitly structures scenarios into: (1) entry points & path selection (“Dashboard export to Google Sheets — entry points & path selection” including shown on dashboards and not shown where not applicable), (2) “export options combinations” (default controls, toggle combinations, option persistence), and (3) “completion outcomes & user-visible feedback” (success with completion signal and open-sheet action, long-running progress). Execution notes also state: “focusing on dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes”."
     },
     {
-      "text": "knowledge-pack mapping is required in phase4a",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
       "passed": true,
-      "evidence": "PASS: knowledge-pack mapping is required in phase4a"
+      "evidence": "The output is titled “# Phase 4a — Scenario Draft (Subcategory-only)” and follows phase4a contract traits: subcategory-only organization and atomic nested steps with observable verification leaves (e.g., step chains ending in verifiable UI outcomes like “Completion message/toast appears when finished”, “Google Sheets appears as an export destination”). execution_notes.md claims: “Contract alignment (phase4a) - Draft is subcategory-first… Each scenario uses atomic nested steps with observable verification leaves.”"
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

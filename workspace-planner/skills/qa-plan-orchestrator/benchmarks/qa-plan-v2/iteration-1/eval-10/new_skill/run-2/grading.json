@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "result.md explicitly centers the case focus: it states the benchmark evaluates “Phase 6 contract emphasis: a final quality pass that preserves canonical layering and executable wording” and lists the rubric’s canonical 6-layer model plus executable wording checks; it also notes the focus “cannot be demonstrated” due to missing artifacts, but the focus itself is explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md are organized around Phase 6: they enumerate Phase 6 responsibilities (spawn manifest handling, running phase6.sh then --post, stopping on non-zero), required Phase 6 artifacts (phase6_spawn_manifest.json, drafts/qa_plan_phase6_r<round>.md, context/quality_delta_<feature-id>.md), and Phase 6 rubric requirements (layering audit, preservation statements). The conclusion is framed as “Blocked / Insufficient evidence to demonstrate Phase 6 compliance,” which is still Phase-6-aligned."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The output explicitly covers visible failure/recovery outcomes and lifecycle boundaries, but does not explicitly cover the case-specific focus of “panel-stack composition” for this shipment checkpoint. Evidence present: visible outcomes — “`checkpoint_delta_<feature-id>.md` must end with one of: `accept` / `return phase5a` / `return phase5b`”; lifecycle boundary — “Phase 5b required inputs explicitly include the latest Phase 5a draft and Phase 5a review artifacts… This demonstrates a defined boundary”. Missing: any explicit checkpoint content tying the shipment checkpoint to “panel-stack composition” (it only cites generic rubric items like “Integration Validation” and infers they ‘naturally cover composition’)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The result and execution notes are explicitly anchored on Phase 5b shipment checkpoint contract and artifacts: “Confirmed Phase 5b contract… required artifacts: `checkpoint_audit`, `checkpoint_delta`, `qa_plan_phase5b_r<round>`” and “Phase 5b acceptance/return routing: `accept`, `return phase5a`, `return phase5b`.”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

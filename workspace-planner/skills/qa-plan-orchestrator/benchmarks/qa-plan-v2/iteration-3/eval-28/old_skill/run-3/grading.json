@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "The output restates the case focus but does not show that context intake preserves the assumptions; it explicitly says this cannot be demonstrated: “No — not demonstrable with provided evidence.” and “the evidence set contains no stated assumptions or requirements about: when labels are visible vs hidden, limits/thresholds… how overlap/collisions are handled… Phase 1 artifacts… are not included.”"
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "Both files frame the work as phase1 and describe the phase1 contract correctly: result.md: “Phase under test **phase1 (context intake / spawn planning)**” and “Phase 1 is limited to… Producing **`phase1_spawn_manifest.json`**… running `--post` validation… The orchestrator **must not perform phase logic inline**.” execution_notes.md similarly: “Phase1 per snapshot: spawn-manifest generation + post-validation; orchestrator should not inline logic.”"
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

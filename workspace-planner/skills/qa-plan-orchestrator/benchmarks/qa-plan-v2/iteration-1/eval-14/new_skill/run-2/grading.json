@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly targets the case focus: \"Benchmark focus (blocking): promotion/finalization behavior remains stable on another feature.\" It then verifies Phase 7 promotion/finalization contract items (explicit approval gate, archiving existing qa_plan_final.md, promotion, and required artifacts) and ties applicability to the \"other feature\" BCIN-976: \"This is sufficient to use BCIN-976 as a regression target... rules are feature-agnostic and remain stable.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md states \"Method / checks performed (holdout phase)\" and focuses on Phase 7 finalization mechanics (approval gate, archiving, required outputs). result.md frames the work as \"Primary checkpoint under test: Holdout\" and performs \"Holdout regression verification: Promotion / Finalization stability (Phase 7)\". No other phases are evaluated; it is explicitly scoped to holdout/promotion-finalization."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

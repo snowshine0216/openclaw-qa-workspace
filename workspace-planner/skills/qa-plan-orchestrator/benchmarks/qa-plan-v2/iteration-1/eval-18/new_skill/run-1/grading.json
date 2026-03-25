@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": true,
+      "evidence": "In result.md, the required Phase 4a planning coverage is explicitly enumerated: \"OK confirmation\", \"Cancel confirmation\", \"Pending selection / loading\", and \"Dismissal outcomes\". It further lists scenario bullets: \"2) OK confirms selection\", \"3) Cancel does not commit pending changes\", \"1) Pending selection state (loading/debounce) is safe\", and \"4) Dismissal outcomes are deterministic\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md frames the check as Phase 4a and enforces Phase 4a constraints: \"This benchmark case checks that Phase 4a planning (subcategory-only draft)...\" and \"This benchmark is specifically Phase 4a (subcategory-only draft).\" It also states Phase 4a structure requirements: \"No canonical top-layer categories... Scenarios written as subcategory → scenario → atomic action chain → observable leaves.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

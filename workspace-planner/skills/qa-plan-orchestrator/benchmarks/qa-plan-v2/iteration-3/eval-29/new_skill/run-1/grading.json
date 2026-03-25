@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "result.md states the scope and describes that Phase 5b checkpoints 'can (and should) explicitly cover' activation/persistence/deselection/interaction safety for bar chart and heatmap, but also admits it cannot verify explicit coverage in produced artifacts: 'we cannot verify that a concrete run actually included the explicit highlight scenarios—only that the Phase 5b checkpoint gate and required outputs are designed to enforce such coverage.' No concrete Phase 5b plan/audit/delta files are present to prove explicit coverage."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The output is explicitly framed as Phase 5b: title 'Phase 5b Checkpoint Enforcement Assessment', section 'Phase 5b Alignment (Orchestrator Contract Check)', and it lists Phase 5b required outputs and disposition gate ('checkpoint_delta must end with accept/return...'), matching phase5b rubric/contract alignment."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

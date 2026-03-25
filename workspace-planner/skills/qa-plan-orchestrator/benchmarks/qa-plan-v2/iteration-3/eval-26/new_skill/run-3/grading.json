@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the benchmark focus and enumerates banding/styling/rendering context to be preserved: “Context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting.” It then lists: “Banding scope expansion… need banding in columns”, “Banding styling controls… need color formatting support”, “Header-driven banding application… by row/column header”, and “Rendering / readability intent… enhance grid readability”, and reiterates “We do not draft scenarios here.”"
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The output frames itself as Phase 1 only and avoids scenario drafting: “Because this benchmark is phase1… We do not draft scenarios here.” It describes Phase 1 responsibilities (spawn manifest, context/ evidence routing) and notes: “Output intentionally stays at Phase 1 (context intake / evidence routing). No scenarios were drafted, consistent with the orchestrator contract.”"
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

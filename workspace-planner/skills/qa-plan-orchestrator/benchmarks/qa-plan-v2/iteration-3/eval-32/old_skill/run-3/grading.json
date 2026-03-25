@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "In result.md the run concludes: \"Does Phase 5b enforce 'OK or Cancel semantics, pending state, dismissal correctness' explicitly? - **Partially (implicit, not explicit).**\" and maps the expectation as \"Case focus explicitly covered: **Not fully satisfied** ... rubric does **not explicitly name** 'OK vs Cancel semantics', 'pending selection state', or 'popover dismissal correctness' as enumerated checklist items.\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "result.md explicitly states: \"[checkpoint_enforcement][advisory] Output aligns with phase5b: **Satisfied**\" and provides Phase 5b contract details (required artifacts/sections and disposition ending with accept/return phase5a/return phase5b). execution_notes.md also notes: \"Findings were intentionally scoped to **Phase 5b** per benchmark instruction.\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

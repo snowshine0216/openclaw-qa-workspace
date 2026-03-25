@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
+      "passed": true,
+      "evidence": "result.md states the contract explicitly enforces ordering: “Tavily-first deep research, with Confluence only as a recorded fallback” and notes Phase 3 “--post” validates “Tavily-first research artifacts” and “optional Confluence fallback ordering”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
+      "passed": true,
+      "evidence": "result.md is explicitly scoped to “phase3” (title: “... / report-editor / phase3”) and the validated items are all Phase 3 contract elements (Phase 3 Work definition + Phase 3 “--post” validation checks). execution_notes.md also says: “Result focuses exclusively on Phase 3 responsibilities and `--post` validation items.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

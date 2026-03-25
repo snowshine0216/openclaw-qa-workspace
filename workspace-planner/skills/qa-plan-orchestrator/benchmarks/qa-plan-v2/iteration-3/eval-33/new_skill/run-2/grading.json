@@ -1,31 +1,22 @@
 {
   "expectations": [
     {
-      "text": "report-editor knowledge pack exists",
-      "passed": true,
-      "evidence": "PASS: report-editor knowledge pack exists"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "The output explicitly says the behavior is not demonstrated: \"Not demonstrated by the provided evidence.\" It notes adjacent defects exist but \"there is no phase output artifact... showing these defect summaries being converted into explicit QA scenarios\" and concludes it \"cannot confirm\" defect→scenario injection."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "The output states phase8 alignment is blocked: \"Not demonstrated / blocked by missing phase8 definition and missing phase8 artifacts.\" It further cites: \"The orchestrator defines phases 0–7 only. There is no Phase 8\" and \"No run artifacts exist\" to evidence phase8 alignment."
     }
   ],
   "summary": {
-    "passed": 1,
-    "failed": 0,
-    "total": 1,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 1,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
   }
 }

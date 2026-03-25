@@ -1,6 +1,7 @@
 {
-  "total_tokens": 0,
-  "duration_ms": 0,
-  "executor": "deterministic-fallback",
-  "model": "deterministic-fallback"
+  "total_tokens": 12078,
+  "input_tokens": 10896,
+  "output_tokens": 1182,
+  "duration_ms": 23838,
+  "executor": "benchmark-runner-llm"
 }

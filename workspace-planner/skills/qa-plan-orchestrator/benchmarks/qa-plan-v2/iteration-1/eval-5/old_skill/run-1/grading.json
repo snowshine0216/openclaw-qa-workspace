@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "result.md explicitly states the required focus and provides missing scenarios for both areas: \"the required focus is: - missing scenario generation for template-save - missing scenario generation for report-builder loading\" and includes sections \"A) Template-save — missing state transition coverage\" and \"B) Report-builder loading — missing observable outcomes\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md: \"Output aligns with phase4a: subcategory-only guidance and scenario stubs consistent with `references/phase4a-contract.md`.\" result.md includes a \"Phase alignment check (phase4a)\" and provides \"Minimal phase4a-ready scenario stubs (subcategory-only)\" with atomic steps and observable outcome leaves."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

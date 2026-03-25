@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The provided outputs state the case-focus areas must be covered, but also state this cannot be validated due to missing Phase 5b artifacts: “However, none of the required Phase 5b artifacts are present in the provided evidence bundle, so this cannot be validated.” Therefore explicit coverage is not demonstrated in outputs."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Outputs indicate Phase 5b alignment cannot be evidenced because required Phase 5b deliverables are missing: “there are no Phase 5b artifacts (e.g., `context/checkpoint_audit_*.md`, `context/checkpoint_delta_*.md`, `drafts/qa_plan_phase5b_r*.md`) to verify that the skill actually executed…” Hence the run does not demonstrate phase5b-aligned outputs."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the case focus: \"verifies that, before any scenario drafting, the workflow preserves the key context for Google Sheets export: entry points, scope boundaries, and format constraints.\" It also reiterates the three items under \"Implication for this benchmark’s focus\"."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The outputs are framed as a Phase 1 contract check and do not draft scenarios. result.md is titled and scoped to \"Phase 1 (context intake spawn planning)\" and evaluates Phase 1 required artifact(s) (notably \"phase1_spawn_manifest.json\"), concluding \"Blocked / Not Demonstrable\" due to the missing Phase 1 primary artifact rather than proceeding to later-phase content."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

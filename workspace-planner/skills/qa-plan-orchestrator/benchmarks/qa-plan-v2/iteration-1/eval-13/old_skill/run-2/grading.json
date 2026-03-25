@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "execution_notes.md explicitly states the focus: \"Focus: **skill improvements for report-editor do not regress a different feature planning flow**\" and result.md reiterates: \"requirement is that **report-editor** skill improvements **do not regress a different feature planning flow**\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "Both files align to holdout as the primary phase: execution_notes.md: \"Primary phase under test: **holdout**\" and result.md: \"## Primary phase under test: **holdout**\"; the determination is framed as a \"Holdout Regression Check\" and the verdict is specifically about missing \"holdout execution trace\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

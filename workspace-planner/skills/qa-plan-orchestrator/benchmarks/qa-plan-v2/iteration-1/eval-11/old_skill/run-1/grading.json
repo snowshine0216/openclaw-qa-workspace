@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
+      "passed": false,
+      "evidence": "result.md: “Cannot demonstrate Phase 7 compliance… the fixture evidence… does not include any Phase 7 outputs… Missing… qa_plan_final.md… context/developer_smoke_test_BCIN-7289.md… Verdict… Focus explicitly covered? FAIL (not evidenced)”. The output explains the requirement from the skill snapshot but does not provide the Phase 7 artifact(s) demonstrating the derived checklist for this case."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
+      "passed": false,
+      "evidence": "result.md: “Primary phase under test: Phase 7” but also “Output aligns with primary phase phase7? FAIL (not evidenced)… No Phase 7 deliverables… are available in the evidence.” The run output does not include Phase 7 outputs and explicitly marks this expectation as failing due to missing Phase 7 artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
+      "passed": true,
+      "evidence": "In result.md, the run explicitly covers both parts of the case focus: (a) REPORT_STATE ownership: \"Phase 0 work includes: **“classify `REPORT_STATE`”**.\" and enumerates REPORT_STATE values (\"`FINAL_EXISTS`, `DRAFT_EXISTS`, `CONTEXT_ONLY`, `FRESH`\"). (b) stable resume semantics: it describes the required user-choice flow and fixed semantics via apply script: \"After user chooses, orchestrator must run: `scripts/apply_user_choice.sh <mode> <feature-id> <run-dir>`\" and \"`reuse` / `resume`: “Continue from current state. No reset.”\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
+      "passed": true,
+      "evidence": "result.md frames the verdict as \"PASS (contract-covered by workflow spec evidence)\" for \"phase0 / phase contract\" and includes a dedicated section \"## Phase0 alignment (outputs and gate)\" listing Phase 0 outputs (runtime_setup/context artifacts) and the Phase 0 gate: \"Phase 0 gate: runtime setup files exist and `runtime_setup_<feature-id>.json` has `ok: true`.\" execution_notes.md also states evaluation is limited to phase0 contract validation: \"this benchmark evaluation is limited to verifying that the **phase0 contract explicitly covers** `REPORT_STATE` and stable resume semantics.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

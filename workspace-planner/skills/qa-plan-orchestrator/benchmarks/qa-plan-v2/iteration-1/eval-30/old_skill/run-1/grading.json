@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the case focus and the pre-scenario-drafting requirement: \"Because this benchmark case is explicitly about Phase 1 context intake (before scenario drafting)...\" and states the specific preservation targets: \"we cannot verify that Phase 1 would preserve: - Google Sheets export entry points - scope boundaries - format constraints\". It further enumerates what Phase 1 must ensure prior to drafting (items 1-3 under \"What Phase 1 must show for this benchmark focus\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is framed and evaluated against Phase 1 contract artifacts and gates, repeatedly referencing Phase 1 requirements: execution_notes.md: \"Missing required Phase 1 deliverable evidence: phase1_spawn_manifest.json\"; result.md: \"Verdict (Phase 1 contract / advisory)\" and \"Per the skill snapshot, Phase 1’s work/output is... Output: phase1_spawn_manifest.json; Post-step: validate spawn policy...\". The verdict is based on absence of Phase 1 evidence, which is consistent with Phase 1 alignment."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

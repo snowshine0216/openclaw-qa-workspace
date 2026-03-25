@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "In result.md under “Evidence-backed scenario focus for Phase 4a (subcategory-only)”, it explicitly lists scenario coverage sections “Activation (highlight turns on)”, “Persistence (highlight remains as expected)”, and “Reset behavior (highlight clears)” with bullet scenarios under each."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states “Primary phase required by benchmark: Phase 4a” and explains the Phase 4a contract requirements; result.md includes a dedicated “Phase 4a alignment (contract compliance)” section asserting subcategory → scenario → atomic steps → observable leaves and explicitly notes it “does not require Phase 4b canonical grouping.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": false,
+      "evidence": "In result.md, the benchmark focus is restated, but the assessment concludes it is \"Partially / not provably satisfied\" and that Phase 1 \"does not explicitly enumerate preservation of: component-stack constraints ... embedding lifecycle assumptions ... integration-sensitive customer expectations\" and that missing artifacts prevent confirmation (\"no Phase 1 spawn manifest ... demonstrating that Phase 1 actually routes collection to capture...\"). Therefore the output does not show the case focus being explicitly covered as an achieved obligation."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md is explicitly framed as \"Phase 1 (Context Intake) Contract Check\", identifies \"Primary phase under test: phase1\", and evaluates Phase 1 responsibilities per the skill snapshot (spawn requests, manifest requirement, post checks). It notes missing Phase 1 artifacts but still keeps the content aligned to Phase 1 contract obligations (\"Aligned in principle\")."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

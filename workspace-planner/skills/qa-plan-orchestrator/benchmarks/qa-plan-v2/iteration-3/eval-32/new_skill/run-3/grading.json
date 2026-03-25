@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "result.md: \"Without these Phase 5b outputs, we cannot demonstrate that the orchestrator/skill: executed Phase 5b shipment checkpoints, nor that it explicitly covered the required case focus items\" and \"case focus ... is not met\". No checkpoint audit/delta artifacts are present."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "execution_notes.md: \"Primary phase under test: phase5b — could not be demonstrated due to missing Phase 5b artifacts.\" result.md: \"there are no Phase 5b run artifacts ... Without these Phase 5b outputs, we cannot demonstrate ... produced the required Phase 5b disposition\"."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

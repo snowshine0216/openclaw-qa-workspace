@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": true,
+      "evidence": "result.md explicitly states scope/focus includes “SKILL.md”, “README.md”, “reference.md”, and “(and any AGENTS docs — not provided in evidence)”. It also includes a dedicated section: “### 3) AGENTS docs alignment cannot be verified from provided evidence”, showing AGENTS alignment was part of the explicit focus even though it could not be assessed."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The output stays within the docs-phase contract-check scope and bases conclusions on provided docs evidence. result.md: “Primary phase under test: **docs** (documentation consistency / contract sync).” It then provides evidence-based comparisons across the docs artifacts and an advisory verdict, without introducing non-docs-phase requirements."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The output explicitly states the focus is not demonstrably enforced/covered: \"The Phase 5b rubric is generic and does not mention: panel stack composition (explicitly) embedding lifecycle boundaries (explicitly) ...\" and summarizes \"Case focus explicitly covered ...: NOT DEMONSTRATED\"."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The result is framed as a \"Phase 5b Checkpoint Enforcement Assessment\" and includes a dedicated section \"Alignment with primary phase (phase5b)\" stating: \"This assessment is aligned to Phase 5b only...\" It also marks: \"Output aligns with primary phase phase5b: PASS (contract alignment demonstrated)\"."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

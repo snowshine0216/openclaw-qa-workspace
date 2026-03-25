@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": false,
+      "evidence": "In result.md the run states: \"Status: BLOCKED / NOT DEMONSTRABLE WITH PROVIDED EVIDENCE\" and explains: \"The provided evidence does not include any Phase 7 execution outputs or state for BCIN-976.\" Therefore the case focus (promotion/finalization stability on another feature) is not actually demonstrated/covered with holdout evidence."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md explicitly scopes to holdout regression and states: \"Primary phase under test: holdout\" and under evaluation: \"Status: PASS (format/phase alignment)\" plus: \"This result is scoped to holdout regression validation... and does not generate unrelated phase artifacts.\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

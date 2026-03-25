@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "result.md explicitly states the Phase 1 context-intake focus that must be preserved \"before any scenario drafting\" and enumerates: \"Banding requirements (rows + columns, header-based application, formatting/colors)\", \"Style constraints\", and \"Rendering assumptions\". It also reiterates preservation via Phase 1 spawn/evidence collection without drafting scenarios."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "result.md section \"Output aligns with primary phase phase1\" says Phase 1 output is strictly \"phase1_spawn_manifest.json\" and Phase 1 responsibilities are \"spawn orchestration only (no inline logic, no drafting).\" execution_notes.md similarly notes Phase 1 \"outputs only phase1_spawn_manifest.json\"."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

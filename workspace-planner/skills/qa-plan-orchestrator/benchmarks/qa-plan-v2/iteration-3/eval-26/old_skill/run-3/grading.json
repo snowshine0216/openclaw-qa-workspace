@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": false,
+      "evidence": "The output explicitly covers banding requirements and the idea of preserving them before scenario drafting (e.g., “Ensure context intake preserves banding requirements... before any scenario drafting.” and the listed banding limitations). However, it does not explicitly cover preserving *style constraints and rendering assumptions* as requirements; it states they are not present in the evidence: “The provided evidence excerpt does not enumerate explicit UI style constraints... or rendering assumptions...” and “cannot assert their presence without additional approved evidence sources.” Since the expectation requires explicit coverage that intake preserves all three (banding, style, rendering), this is not met."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The result is framed as Phase 1 context intake and describes Phase 1 responsibilities per the skill snapshot: “Phase 1 is limited to evidence-intake spawning... generate phase1_spawn_manifest.json... Phase 1 --post must validate...” It also avoids scenario drafting and treats missing details as evidence-scope rather than inventing them, consistent with phase1."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

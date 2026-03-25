@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
       "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "evidence": "In result.md, the output explicitly enumerates and distinguishes all three focus items under “Explicit coverage of the case focus”: “A) Hyperlink styling discoverability (focus item 1)”, “B) Contextual navigation behavior (focus item 2)”, and “C) Fallback rendering safety (focus item 3)”, and also repeats the focus list in “Benchmark scope”."
     },
     {
-      "text": "Release recommendation enumerates analog gates",
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
       "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "evidence": "The output repeatedly anchors to Phase 5b and its contract, e.g., title “Phase 5b Checkpoint Enforcement (Advisory)”, “Primary phase under test: Phase 5b”, and evaluates against Phase 5b required artifacts: “Phase 5b requires, at minimum… checkpoint_audit… checkpoint_delta… qa_plan_phase5b”. It concludes “Status: BLOCKED (evidence missing)” specifically due to missing “Phase 5b run artifacts”."
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "In result.md under “Case focus coverage (advisory)”, the output explicitly lists the required focus: “Modern grid banding scenarios that distinguish: 1) Styling variants … 2) Interactions … 3) Backward-compatible rendering outcomes …”. It also extracts evidence from the Jira fixture supporting those dimensions (row/column banding, color formatting, apply by header, parity with legacy Report)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The output states it “cannot demonstrate Phase 4a output compliance because the required Phase 4a deliverable (`drafts/qa_plan_phase4a_r<round>.md`) is not present” and concludes “Status: Blocked / Not Demonstrable.” Therefore, alignment with Phase 4a deliverable structure is not shown by the provided outputs."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

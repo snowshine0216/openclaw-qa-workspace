@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "The outputs explicitly state the case-focus items are not verifiable and not demonstrated. result.md: \"Not demonstrated / insufficient evidence to confirm...\" and \"Supported formats: Not verifiable... Entry points... Not verifiable... Output expectations... Not verifiable\". No phase5b artifacts or plan content showing those distinctions are present."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The produced result is explicitly framed as Phase 5b checkpoint enforcement and references Phase 5b rubric/artifacts. result.md title: \"Phase5b Checkpoint Enforcement\"; section: \"What this benchmark expects (phase5b-aligned)\"; execution_notes.md: \"The benchmark output is framed explicitly around Phase 5b checkpoints and required artifacts\"."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

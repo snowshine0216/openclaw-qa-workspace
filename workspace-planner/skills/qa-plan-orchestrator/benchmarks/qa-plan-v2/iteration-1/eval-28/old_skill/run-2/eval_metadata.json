@@ -1,0 +1,23 @@
+{
+  "eval_id": 28,
+  "eval_name": "viz-p1-context-intake-001",
+  "prompt": "Benchmark case VIZ-P1-CONTEXT-INTAKE-001 for qa-plan-orchestrator. Use feature BCED-4860 as the primary benchmark feature. Feature family: visualization. Knowledge pack: visualization. Primary phase/checkpoint under test: phase1. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-4860-blind-pre-defect-bundle. Focus: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+    "[phase_contract][advisory] Output aligns with primary phase phase1"
+  ],
+  "case_id": "VIZ-P1-CONTEXT-INTAKE-001",
+  "feature_id": "BCED-4860",
+  "feature_family": "visualization",
+  "knowledge_pack_key": "visualization",
+  "primary_phase": "phase1",
+  "eval_group": "phase_contract",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCED-4860-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

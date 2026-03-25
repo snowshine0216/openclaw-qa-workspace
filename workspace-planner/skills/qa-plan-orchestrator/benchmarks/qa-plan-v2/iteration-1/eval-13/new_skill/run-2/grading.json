@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "The output explicitly states the case focus in both Scope and assessment. result.md: \"Case focus (blocking): skill improvements for report-editor do not regress a different feature planning flow.\" It also discusses inability to validate it due to missing artifacts, but the focus itself is explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md explicitly aligns to holdout: \"Phase alignment (primary phase: holdout)\" and \"limited to a holdout regression gate determination using only provided evidence.\" result.md likewise frames the work as \"Holdout Regression Gate\" and \"Evidence evaluated (holdout_regression mode) Only the provided fixture evidence was used.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
-      "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "The output does restate the benchmark focus, but it does not show Phase 1 context intake actually preserving those assumptions. It explicitly says this cannot be verified: \"Therefore, the benchmark requirement ... cannot be verified as explicitly covered in Phase 1 outputs.\" and concludes \"Not demonstrably satisfied with the provided blind pre-defect evidence.\""
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The result is framed as a Phase 1 contract check and discusses Phase 1 artifacts and responsibilities: \"Phase 1 work/output is limited to generating a spawn manifest... Required artifact: `phase1_spawn_manifest.json`\" and evaluates inability to verify due to missing Phase 1 artifacts."
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 1,
+    "failed": 1,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0.5
   }
 }

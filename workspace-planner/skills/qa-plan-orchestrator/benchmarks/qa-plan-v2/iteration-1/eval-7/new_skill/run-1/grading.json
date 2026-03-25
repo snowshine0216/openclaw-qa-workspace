@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": false,
+      "evidence": "The output does mention the focus interactions, but does not conclusively demonstrate the audit \"catches\" them; it explicitly flags an evidence blocker: \"we cannot prove that the exact pairs (template×pause-mode; prompt-editor-open) are present as `interaction_pairs` in the pack\" and later \"Specific pair coverage proof: BLOCKED by missing evidence\" / \"Overall benchmark verdict (retrospective replay): CONDITIONAL PASS with evidence blocker\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "The result is explicitly framed as Phase 5a and uses Phase 5a rubric/acceptance gate evidence: title \"Phase 5a Checkpoint Enforcement Audit\"; \"Verify that the Phase 5a rubric/contract explicitly enforces...\"; and cites `review-rubric-phase5a.md` requirements and the Phase 5a acceptance rule: \"accept is forbidden while any `interaction_pairs` entry... lacks a cross-section scenario audit entry\"."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,14 +1,16 @@
 {
   "expectations": [
     {
-      "text": "supporting issues remain context_only_no_defect_analysis",
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
       "passed": true,
-      "evidence": "PASS: supporting issues remain context_only_no_defect_analysis"
+      "evidence": "The output explicitly states the benchmark focus and enumerates the three items to be preserved before scenario drafting: \"This benchmark checks that context intake captures and preserves, before any scenario drafting, the requirements/assumptions for: 1) Banding requirements ... 2) Style constraints ... 3) Rendering assumptions ...\" It also restates the specific Modern Grid limitations/requirements from the Jira evidence (rows only, cannot format colors, cannot do columns, header-based banding, dashboards/readability/parity with Report)."
     },
     {
-      "text": "support summaries are part of the runtime artifacts",
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
       "passed": true,
-      "evidence": "PASS: support summaries are part of the runtime artifacts"
+      "evidence": "The result is framed as \"Phase 1 (Context intake) Contract Check\" and \"Primary phase under test: phase1\". It describes Phase 1 responsibilities (spawn-only orchestration, spawn manifest, spawn/--post loop) and explicitly avoids later phases: execution_notes.md says \"Kept assessment aligned to phase1 only; did not draft scenarios or invoke later-phase expectations.\""
     }
   ],
   "summary": {
@@ -16,21 +18,5 @@
     "failed": 0,
     "total": 2,
     "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
   }
 }

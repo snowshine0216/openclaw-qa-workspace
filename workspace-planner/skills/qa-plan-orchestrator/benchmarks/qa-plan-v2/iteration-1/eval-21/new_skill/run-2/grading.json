@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+      "passed": false,
+      "evidence": "result.md notes the requirement exists in the Jira description, but also states there is “no Phase 4a output draft artifact … to demonstrate compliance” and concludes “Not satisfied with provided evidence.” The output does not actually provide Phase 4a scenario content explicitly separating contextual-link styling vs ordinary rendering; it only describes that such coverage would be needed."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "execution_notes.md: “No Phase 4a run artifacts were provided… Without Phase 4a draft content, the benchmark expectation ‘Output aligns with primary phase phase4a’ … cannot be demonstrated.” result.md similarly says there is “no Phase 4a output draft … to evaluate,” so alignment cannot be shown."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

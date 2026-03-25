@@ -1,36 +1,22 @@
 {
   "expectations": [
     {
-      "text": "[ANALOG-GATE] appears in release checkpoint flow",
-      "passed": true,
-      "evidence": "PASS: [ANALOG-GATE] appears in release checkpoint flow"
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The run output explicitly states the required case-focus coverage is not demonstrated because Phase 5b artifacts are missing: \"there are no Phase 5b artifacts ... and no plan content demonstrating those concerns\" and marks this expectation as \"FAIL (no Phase 5b plan/checkpoint artifacts to inspect).\""
     },
     {
-      "text": "Release recommendation enumerates analog gates",
-      "passed": true,
-      "evidence": "PASS: Release recommendation enumerates analog gates"
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The output notes Phase 5b contract outputs are not present and therefore alignment cannot be demonstrated: \"These are not available in the provided evidence; therefore, alignment with the phase5b model cannot be demonstrated\" and marks it \"FAIL (no Phase 5b outputs provided).\""
     }
   ],
   "summary": {
-    "passed": 2,
-    "failed": 0,
+    "passed": 0,
+    "failed": 2,
     "total": 2,
-    "pass_rate": 1
-  },
-  "execution_metrics": {
-    "tool_calls": 0,
-    "total_tool_calls": 0,
-    "total_steps": 2,
-    "errors_encountered": 0,
-    "output_chars": 0,
-    "transcript_chars": 0
-  },
-  "timing": {
-    "total_duration_seconds": 1
-  },
-  "user_notes_summary": {
-    "uncertainties": [],
-    "needs_review": [],
-    "workarounds": []
+    "pass_rate": 0
   }
 }

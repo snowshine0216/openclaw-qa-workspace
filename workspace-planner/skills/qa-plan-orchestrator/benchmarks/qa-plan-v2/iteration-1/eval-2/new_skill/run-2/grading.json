@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and policy: \"Focus (blocking): supporting issues stay `context_only_no_defect_analysis` and produce summaries\" and \"Support-only Jira policy: supporting Jira issues are context evidence only and must remain `context_only_no_defect_analysis`.\" It also enumerates the required supporting-issue summary and relation-map artifacts under context/."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md frame the artifact as Phase 1: execution_notes.md: \"./outputs/result.md (phase1-focused benchmark artifact)\" and result.md: \"Primary phase under test: phase1\" plus \"Benchmark artifact: Phase 1 contract check\" and a Phase 1 outputs/--post validation discussion."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}
