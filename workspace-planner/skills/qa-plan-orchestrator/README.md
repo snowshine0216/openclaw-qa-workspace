@@ -7,7 +7,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - Skill entrypoint: `SKILL.md`
 - Runtime and artifact contract: `reference.md`
 - Writer and reviewer rules: `references/*.md`
-- Long-form design docs: `docs/` (non-contract material such as supporting-artifact design notes)
+- Long-form design docs: `docs/` (`docs/KNOWLEDGE_PACK_RUNTIME.md` is the canonical knowledge-pack runtime doc)
 - Historical design docs: `docs/archive/`
 
 ## What This Skill Produces

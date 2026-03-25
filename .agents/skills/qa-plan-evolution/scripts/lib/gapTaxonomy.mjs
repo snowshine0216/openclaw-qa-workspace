@@ -50,6 +50,14 @@ export function buildGapTaxonomy({ sourceResults }) {
         current.evidence.add(observation.source_path);
         current.source_observation_ids.push(observation.id);
         current.summaries.push(observation.summary);
+        current.target_files = uniqueSorted([
+          ...(current.target_files ?? []),
+          ...(observation.target_files ?? []),
+        ]);
+        current.evals_affected = uniqueSorted([
+          ...(current.evals_affected ?? []),
+          ...(observation.evals_affected ?? []),
+        ]);
         grouped.set(clusterKey, current);
       }
     }

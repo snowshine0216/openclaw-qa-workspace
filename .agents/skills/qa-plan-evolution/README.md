@@ -94,6 +94,42 @@ Resume and status commands:
 - `scripts/check_resume.sh --run-key <key>` — canonical operator summary
 - `scripts/progress.sh --run-key <key>` — read-only async-job status with expected artifact paths
 
+`check_resume.sh` now prints:
+
+- the last completed phase
+- the pending async-job count
+- the next required command for the operator
+
+## Canonical Operator Loop
+
+1. Start a run with `scripts/orchestrate.sh --with-phase0 ...`.
+2. Inspect the canonical state with `scripts/check_resume.sh --run-key <key>`.
+3. Inspect async-job details with `scripts/progress.sh --run-key <key>`.
+4. Resume work with `scripts/orchestrate.sh --run-key <key>`.
+5. Finalize an accepted challenger with `scripts/phase6.sh --run-key <key> --finalize`.
+
+## Generalization Contract
+
+Keep these three terms separate:
+
+- `evidence source`: the raw input artifact, such as `gap_bundle_<run-key>.json`, a benchmark comparison, or a reporter output
+- `generalized rule`: the reusable statement extracted from that evidence
+- `target mutation surface`: the shared or local file family that may be edited, such as a knowledge pack, rubric, or template
+
+Allowed example:
+
+- Evidence source: `context/gap_bundle_<run-key>.json`
+- Generalized rule: `Audit interaction-pair completeness for save dialog flows.`
+- Target mutation surface: `knowledge_pack_enrichment` for the affected feature family
+
+Blocked example:
+
+- Evidence source: `BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
+- Generalized rule: `Fix BCIN-7289 save dialog miss`
+- Target mutation surface: global rubric text
+
+Do not write defect keys into rubric text. Raw defect ids may remain in evidence references, but promoted mutation text must be generalized.
+
 ## Related docs
 
 - `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`
