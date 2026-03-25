@@ -531,7 +531,7 @@ It must include:
 5. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-contract.md`
 6. `workspace-planner/skills/qa-plan-orchestrator/references/review-rubric.md`
 7. `workspace-planner/skills/qa-plan-orchestrator/templates/qa-plan-template.md`
-8. `workspace-planner/skills/qa-plan-orchestrator/docs/DOCS_GOVERNANCE.md`
+8. `workspace-planner/skills/qa-plan-orchestrator/references/docs-governance.md`
 9. `workspace-planner/skills/qa-plan-orchestrator/README.md`
 
 ### Runtime scripts and validators

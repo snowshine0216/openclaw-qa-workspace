@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "The output explicitly covers the case focus in contract terms: it states Phase 6 requires correct layering and executable wording and names the enforcing validators. From result.md: \"Final layering must match...\" and \"Executable wording is enforced by validators (notably `validate_executable_steps`, plus `validate_final_layering`...)\" and also notes preservation requirements via `quality_delta` (\"Final Layer Audit explicitly noting...coverage were preserved\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "The produced artifacts are framed and structured as a Phase 6 evaluation: result.md begins with \"Primary phase under test: Phase 6\" and then lists Phase 6 outputs, Phase 6 rubric sections, and Phase 6 validators/gates. execution_notes.md likewise states the goal is to assess Phase 6 contract emphasis and documents missing Phase 6 deliverables. Even though runtime Phase 6 artifacts are absent, the orchestrator output itself is Phase 6-aligned."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

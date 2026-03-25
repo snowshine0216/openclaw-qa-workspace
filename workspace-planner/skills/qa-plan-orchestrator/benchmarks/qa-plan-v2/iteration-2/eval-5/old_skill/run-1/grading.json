@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and covers both areas: \"Case focus required by benchmark: missing scenario generation for `template-save` and `report-builder loading`\" and then provides dedicated sections \"A) Template-save\" and \"B) Report-builder loading\" detailing the missing scenarios/leaves."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md repeatedly anchors to phase4a scope: header \"(phase4a)\", \"Primary phase under test: Phase 4a\", and \"This deliverable is limited to Phase 4a expectations\"; it frames gaps/remediation as \"Phase 4a-required scenario(s)\" and concludes \"Output aligns with primary phase (phase4a): YES\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

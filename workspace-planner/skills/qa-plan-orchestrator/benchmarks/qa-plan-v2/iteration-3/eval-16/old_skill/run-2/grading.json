@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly states the benchmark focus and enumerates the three required distinctions: “Modern grid banding scenarios that distinguish: - Styling variants … - Interactions … - Backward-compatible rendering outcomes …”. It also reiterates it cannot verify the plan due to missing Phase 4a artifacts, but the case focus itself is explicitly covered in the output text."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md explicitly target Phase 4a and check Phase 4a contract artifacts: execution_notes.md: “Primary phase under test: Phase 4a (subcategory-only draft)” and “Checks performed vs phase4a contract…”. result.md: “output must be aligned to Phase 4a: a subcategory-only QA draft…” and it evaluates compliance against required Phase 4a artifacts (draft + spawn manifest)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

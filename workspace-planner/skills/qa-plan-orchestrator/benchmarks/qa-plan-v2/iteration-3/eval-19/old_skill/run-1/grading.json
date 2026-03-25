@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": false,
+      "evidence": "The output describes what Phase 4a \"would require\" and how the focus \"can be represented,\" but it does not provide or quote any actual Phase 4a scenario draft content that explicitly covers activation/persistence/reset. It explicitly notes: \"No Phase 4a produced artifact ... was provided ... so scenario text could not be directly inspected.\" Therefore explicit coverage is not evidenced in the produced artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md repeatedly frames the evaluation in terms of Phase 4a contract compliance and subcategory-only scenario drafting (Phase 4a structure and constraints), e.g., \"Primary phase under test: Phase 4a (subcategory-only draft)\" and \"Aligns with phase4a: Yes (subcategory-only drafting; scenario-level concerns).\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

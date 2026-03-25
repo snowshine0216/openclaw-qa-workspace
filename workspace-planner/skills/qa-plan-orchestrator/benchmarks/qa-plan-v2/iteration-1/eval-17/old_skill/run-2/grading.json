@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": false,
+      "evidence": "The provided output does not contain a Phase 4a QA plan with explicit scenario coverage; it states: \"We cannot verify whether the skill’s Phase 4a artifact explicitly covers the required focus distinctions (visibility vs density vs overlap-sensitive outcomes) because the benchmark evidence does not include any Phase 4a draft content to inspect.\" Since explicit coverage is not demonstrated, this expectation is not met."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No Phase 4a artifact is provided to assess alignment; the output explicitly says: \"We also cannot verify Phase 4a alignment ... without the Phase 4a draft.\" The result.md is a benchmark evaluation narrative rather than a Phase 4a subcategory-only draft, so alignment is not shown."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and evaluates cross-feature non-regression: \"This case verifies that skill improvements for the `report-editor` feature family do not regress a different feature planning flow\" and under \"Cross-feature non-regression focus: Covered\" it explains the fixture compares a report-editor-focused plan vs an embedding/migration-shell/regression-focused plan and that the orchestrator should support both without collapsing the other flow."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md declares \"Primary phase under test: holdout\" and confirms holdout behavior: \"This output intentionally stays at a holdout checkpoint level: It does not attempt to run phases, generate drafts, or produce `qa_plan_final.md`. It limits itself to evaluating ... using only the provided evidence.\" execution_notes.md also confirms: \"No attempt was made to generate or validate runtime artifacts ... since this benchmark is a holdout checkpoint.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

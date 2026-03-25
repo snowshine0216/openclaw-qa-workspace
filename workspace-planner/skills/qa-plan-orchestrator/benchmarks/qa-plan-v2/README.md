@@ -11,6 +11,22 @@ Why `v2`:
 
 Do not run evolution comparisons against `qa-plan-v1`.
 
+## Current Readiness
+
+Repository state on `2026-03-22`:
+
+1. `benchmark_manifest.json` is frozen and marked `frozen_matrix_executed`
+2. `history.json` shows `iteration-0` as `baseline_executed`
+3. `iteration-0/benchmark_context.json` is `executed_aggregated`
+
+Baseline markers are finalized for campaign state management.
+
+Execution-fidelity note:
+
+- some **historical** runs may still carry the offline-placeholder marker in `outputs/execution_notes.md` (see `references/qa-plan-benchmark-execution-batches.md`). Those are not claimed as full executor fidelity.
+- **Policy:** new baselines must use real execution through **`benchmark-runner.mjs`** and **`benchmark-grader.mjs`**. These are the only supported executed entrypoints. Use `npm run benchmark:v2:verify-fidelity` with `BENCHMARK_REQUIRE_EXECUTED=1` before merging baseline changes.
+- `benchmark-runner-llm.mjs` and `benchmark-grader-llm.mjs` remain internal implementation details behind the wrapper entrypoints.
+
 ## Strategy
 
 `qa-plan-v2` is a global benchmark, not a single-feature benchmark.
@@ -28,6 +44,8 @@ Why:
 3. holdout and cross-family protection matter more than per-family local wins
 
 This does not mean every feature family must have the same number of cases. It means they live under one benchmark version and one acceptance policy.
+
+For operator usage, this allows a mutation to focus on one family such as `report-editor` while still preserving cross-family blind/holdout protection. The benchmark remains global unless a new benchmark version is created with different scope rules.
 
 ## Why Evidence Mode Matters
 
@@ -342,160 +360,107 @@ Use `holdout_regression` when:
 
 ## How To Run
 
-### Prepare the baseline workspace
+### 1. Configure your LLM credentials
+
+Copy `.env.example` to `.env` in `workspace-planner/skills/qa-plan-orchestrator/` and fill in your key:
+
+```bash
+cp .env.example .env
+# then edit .env
+```
+
+For GMNCODE/OpenAI-compatible gateways, use the commented `LLM_API_BASE_URL` and `BENCHMARK_LLM_MODEL` examples in `.env.example`.
+
+`.env` is gitignored. Set exactly one of:
+
+| Variable | Provider |
+|---|---|
+| `OPENAI_API_KEY` | OpenAI (default model: `gpt-4o`) |
+| `ANTHROPIC_API_KEY` | Anthropic (default model: `claude-opus-4-5`) |
+| `GEMINI_API_KEY` | Gemini (default model: `gemini-2.5-pro`) |
+
+Optional:
+
+| Variable | Purpose |
+|---|---|
+| `LLM_API_BASE_URL` | Redirect all calls to any OpenAI-compatible endpoint (Azure, Ollama, LiteLLM). When set, all providers use `/v1/chat/completions` format against this URL. |
+| `BENCHMARK_LLM_MODEL` | Override the default model name |
+| `BENCHMARK_LLM_MAX_TOKENS` | Max output tokens per run (default: 16384) |
+
+### 2. Run the benchmark
 
 From `workspace-planner/skills/qa-plan-orchestrator/`:
+
+```bash
+npm run benchmark:v2:run
+```
+
+This is the single command. It will:
+
+1. Detect and load `.env`
+2. Prepare `iteration-0/spawn_manifest.json` if not already present
+3. Execute all runs via `benchmark-runner.mjs` + `benchmark-grader.mjs` (public wrappers over the LLM-backed benchmark backend)
+4. Aggregate results into `iteration-0/benchmark.md`
+
+Optional filters:
+
+```bash
+# Run only one feature family
+npm run benchmark:v2:run -- --family report-editor
+
+# Run only batch 1 (first 6 tasks)
+npm run benchmark:v2:run -- --batch 1
+
+# Dry-run: print what would run without calling the LLM
+npm run benchmark:v2:run -- --dry-run
+```
+
+### 3. Re-run offline-fallback runs
+
+If prior runs used the offline placeholder (e.g. Codex fallback), re-run them with the LLM runner:
+
+```bash
+npm run benchmark:v2:reexecute-offline
+```
+
+### Prepare the baseline workspace (manual)
+
+Only needed if you want to inspect the spawn manifest before running:
 
 ```bash
 npm run benchmark:v2:prepare
 ```
 
-This will:
+This writes `iteration-0/spawn_manifest.json`, `eval-N/` directories, and `champion_snapshot/`. `benchmark:v2:run` calls this automatically if the manifest is missing.
 
-1. refresh `iteration-0/champion_snapshot/`
-2. materialize one `eval-N/` directory per case
-3. create `with_skill/run-1..run-3`
-4. create `without_skill/run-1..run-3`
-5. write `iteration-0/spawn_manifest.json`
+### Materialize batch or family checklists
 
-### Materialize a batch checklist
-
-`benchmark:v2:batch` requires a completed `benchmark:v2:prepare` run first.
-
-To materialize one baseline-execution batch from the prepared manifest:
+For browsing the prepared manifest in structured form:
 
 ```bash
 npm run benchmark:v2:batch -- --batch 1
-```
-
-This writes:
-
-- `iteration-0/batches/batch-1/batch_manifest.json`
-- `iteration-0/batches/batch-1/batch_checklist.md`
-
-Use this when you want a concrete per-batch execution surface without re-reading the full `spawn_manifest.json`.
-
-Batches are for the `iteration-0` baseline workflow. Iteration comparison for challenger scoring is separate and uses `run_iteration_compare.mjs`.
-
-Natural-language command example for an agent:
-
-```text
-Materialize benchmark batch 1 for qa-plan-v2 and show me the generated batch manifest and checklist paths.
-```
-
-### Materialize a feature-family checklist
-
-To materialize one family-focused execution surface from the prepared manifest:
-
-```bash
 npm run benchmark:v2:family -- --family report-editor
 ```
 
-This writes:
+### Execution contract
 
-- `iteration-0/families/report-editor/family_manifest.json`
-- `iteration-0/families/report-editor/family_checklist.md`
-
-Family materialization filters the prepared `spawn_manifest.json` by `feature_family` while keeping the shared iteration workspace intact.
-
-### Execute the benchmark
-
-Use:
-
-- `iteration-0/spawn_manifest.json`
-
-Each task contains:
-
-- case metadata
-- the benchmark prompt
-- `with_skill_runs`
-- `without_skill_runs`
-
-For `qa-plan-v2`, the prepared baseline currently expects:
-
-- `33` cases
-- `3` runs per configuration
-- `198` total runs
-
-For one-click batch execution, use:
-
-```bash
-npm run benchmark:v2:execute:codex -- --batch 1
-```
-
-Equivalent explicit form:
-
-```bash
-npm run benchmark:v2:execute -- \
-  --batch 1 \
-  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
-  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
-```
-
-For a family-only run, use:
-
-```bash
-npm run benchmark:v2:execute:family:codex -- --family report-editor
-```
-
-Equivalent explicit form:
-
-```bash
-npm run benchmark:v2:execute:family -- \
-  --family report-editor \
-  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
-  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader.mjs
-```
-
-`benchmark:v2:execute:family:codex` is only a convenience wrapper. It pre-fills the standard Codex-backed runner and grader scripts.
-
-Use the plain non-`:codex` command when you want to swap the runner or grader explicitly.
-
-Example with the local fallback grader:
-
-```bash
-npm run benchmark:v2:execute:family -- \
-  --family report-editor \
-  --executor-script benchmarks/qa-plan-v2/scripts/benchmark-runner.mjs \
-  --grader-script benchmarks/qa-plan-v2/scripts/benchmark-grader-local.mjs \
-  --reuse-executor-output \
-  --no-fail-fast
-```
-
-Equivalent shortcut:
-
-```bash
-npm run benchmark:v2:execute:family:local-grade -- --family report-editor --no-fail-fast
-```
-
-This path reuses existing runner outputs when `outputs/`, `timing.json`, and `execution_transcript.log` already exist, and only fills in missing `grading.json` files with the local deterministic grader.
-
-Execution contract:
-
-- the executor script is invoked once per run with `--request <run-dir>/execution_request.json`
-- it must write outputs under `run.output_dir`
-- it may write `outputs/metrics.json` with `total_tokens`
-- the grader script is optional only if the executor itself writes `grading.json`
-- the harness writes `timing.json` and refreshes the batch manifest/checklist after execution
-- set `CODEX_BIN=/path/to/codex` only when you need to override the installed Codex CLI
-- set `CODEX_BENCHMARK_MODEL=<model>` to pin a non-default model for runner/grader calls
-
-Each `execution_request.json` includes:
+Each run receives `execution_request.json` with:
 
 - case metadata, prompt, expectations, and fixture refs
-- isolated copied fixture inputs under `run-dir/inputs/fixtures/`
+- isolated fixture inputs under `run-dir/inputs/fixtures/`
 - `skill_snapshot_path` for `with_skill` runs and `null` for `without_skill`
-- canonical paths for `output_dir`, `grading.json`, `timing.json`, and transcript log
+- canonical paths for `output_dir`, `grading.json`, `timing.json`
 
-### Grade the runs
+The runner writes `outputs/result.md`, `outputs/execution_notes.md`, `outputs/metrics.json`.
+The grader reads those files and writes `grading.json`.
+The harness writes `timing.json`.
 
-Each run directory must receive:
+### Fidelity verification
 
-- `grading.json`
-- `timing.json`
-- outputs under `outputs/`
+```bash
+npm run benchmark:v2:verify-fidelity
+```
 
-### Aggregate the results
 
 After all runs are graded:
 
@@ -525,7 +490,7 @@ The scorer evaluates acceptance by `evidence_mode`:
 ### Executed vs synthetic iteration comparison
 
 - `scripts/run_iteration_compare.mjs` is the promotion path. It assembles `benchmark.json` from real per-run `outputs/`, `grading.json`, and `timing.json`.
-- `scripts/lib/publishIterationComparison.mjs` is a synthetic structural fallback. It does not execute the benchmark and cannot promote a challenger.
+- `scripts/lib/publishIterationComparison.mjs` is a synthetic structural fallback. It does not execute the benchmark; scorecards use `scoring_fidelity: synthetic` and `decision.result: blocked_synthetic`, so challenger promotion is blocked. Kept for tests and emergency tooling only — not equivalent to executed evidence.
 - Replay cases are opt-in. Without `defect_analysis_run_key`, iteration comparison includes only `blind_pre_defect` and `holdout_regression`.
 
 ## Practical Workflow

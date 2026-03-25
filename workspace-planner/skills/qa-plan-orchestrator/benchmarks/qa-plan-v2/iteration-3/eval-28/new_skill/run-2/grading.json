@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": true,
+      "evidence": "result.md explicitly enumerates the required focus: \"Context intake preserves donut-label assumptions for: - Label visibility ... - Density limits ... - Overlap-sensitive presentation\" and then assesses whether these are present/preserved, concluding they are \"Not demonstrated / Advisory gap\" due to missing Phase 1 artifacts. This still counts as explicitly covering the case focus."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md is explicitly Phase 1 scoped: title \"Phase 1 (Context Intake) Contract Check\" and sections \"What Phase 1 is expected to do\" (spawn requests, phase1_spawn_manifest.json, --post validations) and \"Primary phase checked: Phase 1\". execution_notes.md also notes the run is \"phase-contract scoped to Phase 1\" and discusses missing Phase 1 artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

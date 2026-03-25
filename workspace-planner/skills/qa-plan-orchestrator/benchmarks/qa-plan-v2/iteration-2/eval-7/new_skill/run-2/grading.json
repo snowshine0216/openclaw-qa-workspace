@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": true,
+      "evidence": "result.md explicitly covers both required interaction foci under “Evidence-based finding”: “Template × Pause-mode interaction (prompt pause mode)” and “Prompt-editor-open state interaction with close/confirm dialogs”, and ties them to missed enforcement/catch in Phase 5a (“cross-section interaction audit did not catch the target interactions”)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md frame the evaluation as “phase5a checkpoint enforcement” and include a dedicated “Primary phase alignment” section stating “Primary phase under test: phase5a” plus Phase 5a rubric requirements (Cross-Section Interaction Audit and acceptance gate)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

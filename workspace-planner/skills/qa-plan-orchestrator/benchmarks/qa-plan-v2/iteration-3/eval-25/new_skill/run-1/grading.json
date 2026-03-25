@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "result.md states: \"Not demonstrable\" and explains that no Phase 5b run outputs (checkpoint_audit/checkpoint_delta/phase5b draft) were provided, so it cannot verify coverage of \"panel-stack composition\", \"embedding lifecycle boundaries\", and \"visible failure/recovery outcomes\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "result.md states: \"Not demonstrable\" and lists missing required phase5b artifacts: \"context/checkpoint_audit_<feature-id>.md\", \"context/checkpoint_delta_<feature-id>.md\", and \"drafts/qa_plan_phase5b_r<round>.md\". execution_notes.md corroborates the same missing files."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

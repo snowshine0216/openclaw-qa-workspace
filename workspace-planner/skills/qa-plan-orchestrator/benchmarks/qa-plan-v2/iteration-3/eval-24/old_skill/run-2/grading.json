@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The result explicitly names the case focus in Scope and then covers each element under “Case Focus Coverage (context intake fidelity)”: (1) “Integration-sensitive customer expectations are preserved” citing customer-scope evidence; (2) “Component-stack constraints are preserved” citing labels like “Embedding_SDK” and “Library_and_Dashboards”; (3) “Embedding lifecycle assumptions are preserved” noting it is “Not directly verifiable” due to missing runtime artifacts, but it is still explicitly addressed in the output."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output repeatedly anchors to Phase 1: “Primary phase under test: Phase 1 (context intake / spawn planning)” and provides a “Phase-Contract Alignment Check (Phase 1)” describing Phase 1’s contract (spawn requests, `phase1_spawn_manifest.json`, `--post` validations) and concludes “Result: Phase 1 output/behavior is contractually aligned with the orchestrator phase model.” It also notes limitations due to missing Phase 1 runtime artifacts without drifting into later-phase claims."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

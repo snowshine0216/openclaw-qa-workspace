@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "The produced plan in result.md explicitly includes sections for all three requested behavior groups: “Heatmap highlight effect” with multiple “Activation” scenarios, “Heatmap highlight persistence” with “Persistence” scenarios, and “Heatmap highlight reset behavior” with multiple “Reset” scenarios (outside tap dismissal, switching cell clears prior, refresh/re-render clears). Execution notes also state: “Case focus explicitly covered: Activation… Persistence… Reset…”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md includes a “Phase/contract alignment check (phase4a)” stating: “Subcategory-only structure used… Scenarios are written with atomic nested action chains and observable verification leaves.” result.md matches this format (bullet subcategories and nested action/verification leaves) and is labeled “Phase 4a deliverable (advisory)”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

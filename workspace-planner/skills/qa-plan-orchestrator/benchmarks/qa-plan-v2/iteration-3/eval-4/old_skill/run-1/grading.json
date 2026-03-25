@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": true,
+      "evidence": "In result.md the output makes SDK/UI-visible outcomes explicit at leaf level, especially window title: e.g., “Observe the Workstation window title → Window title is a user-friendly product string (not `newReportWithApplication`)”, “Window title matches the clicked report’s name/context”, “Window title equals ‘New Intelligent Cube Report’”, plus zh-CN localization and “Exactly one loading indicator is visible”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is explicitly framed as “Primary checkpoint under test: phase4a”, and structures content as “Phase 4a … subcategory → scenario → atomic actions → observable leaves”, stating it “avoided Phase 4b canonical top-layer categories” (execution_notes.md) while deriving requirements from the phase4a contract and defect replay artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

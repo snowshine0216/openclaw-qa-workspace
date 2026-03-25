@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and Phase 7 promotion/finalization contract: \"This holdout-regression case requires demonstrating that promotion/finalization behavior remains stable on another feature (BCIN-976), i.e., the orchestrator’s Phase 7 contract behavior\" and lists archive/promote, finalization_record, final_plan_summary, and approval gating."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "The output is framed as a holdout assessment and aligns to holdout expectations by marking the run as unverifiable due to missing holdout execution artifacts: result.md says \"Primary phase under test: holdout\" and the decision is \"BLOCKED (cannot verify holdout regression expectation with provided evidence)\" with missing run artifacts/logs enumerated."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

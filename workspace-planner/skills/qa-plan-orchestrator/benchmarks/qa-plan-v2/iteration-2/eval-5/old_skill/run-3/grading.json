@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": false,
+      "evidence": "The provided outputs only include execution metadata (executor, duration, tokens, configuration). No content mentions “missing scenario generation”, “template-save”, or “report-builder loading”. result.md only references the path “./outputs/execution_notes.md”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No phase information is present in execution_notes.md, metrics.json, or result.md. There is no mention of “phase4a” or any alignment details beyond configuration: old_skill."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

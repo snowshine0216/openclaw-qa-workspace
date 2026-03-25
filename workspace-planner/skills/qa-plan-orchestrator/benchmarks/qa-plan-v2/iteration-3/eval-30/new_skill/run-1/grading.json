@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": false,
+      "evidence": "result.md states the benchmark focus explicitly, but also concludes it is not verifiable from the run outputs: “we cannot directly confirm that Phase 1’s context-intake output (the spawn requests) explicitly preserves Google Sheets export entry points, scope boundaries, and format constraints prior to drafting” and notes the missing Phase 1 artifact: “does not include… an actual Phase 1 spawn manifest (phase1_spawn_manifest.json).” Therefore the run does not demonstrate the required explicit preservation in produced Phase 1 output."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "Phase 1 contract expects a produced spawn manifest artifact, but execution_notes.md flags: “Primary blocker: The evidence bundle does not include the Phase 1 output artifact phase1_spawn_manifest.json,” and result.md similarly: “does not include… an actual Phase 1 spawn manifest.” The provided output files are narrative checks (result.md/execution_notes.md) rather than the Phase 1 required artifact, so the output is not aligned with Phase 1 deliverables."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

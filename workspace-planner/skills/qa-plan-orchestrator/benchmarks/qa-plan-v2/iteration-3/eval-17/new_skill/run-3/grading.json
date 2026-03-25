@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": true,
+      "evidence": "In result.md under “What Phase 4a must demonstrate for this benchmark focus,” it explicitly lists: “1) Label visibility outcomes… 2) Label density outcomes… 3) Overlap-sensitive outcomes…” and reiterates the need to distinguish these areas."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is structured around Phase 4a contract alignment: it states “Primary phase under test: Phase 4a,” evaluates whether Phase 4a can be demonstrated from evidence, and concludes “Phase 4a alignment: cannot be verified here (no Phase 4a draft artifact provided).” This is consistent with a phase4a-oriented evaluation in blind_pre_defect mode."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

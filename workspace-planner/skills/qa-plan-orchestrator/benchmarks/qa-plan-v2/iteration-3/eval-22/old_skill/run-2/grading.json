@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly states the benchmark focus and required scenario areas: \"Benchmark focus: **blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes**\" and later: \"Must reflect scenario drafting for the case focus: - prompt handling - template save - report builder loading - visible report title outcomes\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is explicitly Phase 4a aligned: \"Primary phase under test: **Phase 4a**\" and \"What this benchmark expects (Phase 4a aligned)\" with Phase 4a contract artifacts (e.g., \"drafts/qa_plan_phase4a_r<round>.md\", \"phase4a_spawn_manifest.json\", \"--post\" gate validation). The verdict rationale is framed as Phase 4a contract non-demonstrability due to missing Phase 4a artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

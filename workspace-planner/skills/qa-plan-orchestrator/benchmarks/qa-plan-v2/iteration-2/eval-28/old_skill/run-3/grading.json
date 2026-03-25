@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "result.md states the available evidence only captures a high-level requirement (“Support data label for each slice in Donut chart”) and explicitly notes missing assumptions about “label visibility”, “density limits”, and “overlap handling”. It concludes: “Not demonstrated / insufficient evidence that Phase 1 context intake preserves the donut-label assumptions…”. No Phase 1 intake artifacts were provided to show these were preserved."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "result.md and execution_notes.md both note that key Phase 1 artifacts (e.g., “phase1_spawn_manifest.json” and any “context/” intake artifacts) are not present. result.md concludes: “Cannot verify Phase 1-aligned output for this run from provided evidence.”"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

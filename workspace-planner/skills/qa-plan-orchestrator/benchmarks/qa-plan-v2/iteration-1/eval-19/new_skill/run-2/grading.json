@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "result.md includes scenarios for activation (e.g., \"Activate highlight on tap of a single heatmap cell\"), persistence (e.g., \"Highlight persistence while interacting with the page (no reset on scroll)\", \"after device rotation\", \"after background/foreground app cycle\"), and reset (e.g., \"Reset highlight by tapping outside\", \"tapping the same cell again\", \"selecting a different cell\", \"on data refresh / re-render\", \"navigating away and back\"). execution_notes.md also states: \"Case focus explicitly covered: Heatmap highlighting scenarios include activation, persistence, and reset behavior.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is titled \"Phase 4a — Subcategory-only QA draft (advisory)\" and is subcategory-first with atomic action chains and observable verification leaves. execution_notes.md confirms alignment: \"Output is subcategory-first and avoids forbidden canonical top-layer groupings (per phase4a contract). Scenarios include atomic action chains with observable verification leaves.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

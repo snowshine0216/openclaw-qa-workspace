@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": true,
+      "evidence": "The output explicitly addresses the case focus and evaluates it: result.md states Phase 5b “requires that relevant historical analogs be converted into explicit required-before-ship gates (`[ANALOG-GATE]`)” and concludes “This fails the benchmark focus: ‘historical analogs become required-before-ship gates.’” It further ties this to missing i18n guardrails as an analog-derived gate that was not enforced."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is anchored to Phase 5b artifacts and explicitly checks phase alignment: it cites `skill_snapshot/references/review-rubric-phase5b.md` as the governing contract, and quotes retrospective evidence labeling the miss as “Phase 5b” (e.g., “i18n String Coverage | Phase 5b | The Phase 5b shipment checkpoints lacked an explicit guard…”). It also includes a section titled “Phase alignment check (primary phase: Phase 5b)”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

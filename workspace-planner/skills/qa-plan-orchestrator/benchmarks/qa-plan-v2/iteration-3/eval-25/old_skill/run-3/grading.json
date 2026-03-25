@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "In result.md the run concludes: \"Result: PARTIAL (advisory)\" and states \"Panel-stack composition and embedding lifecycle boundaries: Covered implicitly ... but not explicitly named in the Phase 5b rubric evidence provided.\" Because the expectation requires explicit coverage of all three focus items, this is not met."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md explicitly asserts alignment: \"Expectation B ... Result: PASS\" and documents Phase 5b outputs/validators/disposition routing (checkpoint_audit, checkpoint_delta, qa_plan_phase5b) as the primary shipment-checkpoint phase."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

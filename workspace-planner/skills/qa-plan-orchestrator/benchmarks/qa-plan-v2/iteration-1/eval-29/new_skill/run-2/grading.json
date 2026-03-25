@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The run output explicitly states it cannot verify artifact-level explicit coverage due to missing Phase 5b artifacts: \"No Phase 5b runtime artifacts were provided... we cannot verify execution... that the generated checkpoint audit/delta actually includes explicit bar chart + heatmap highlight activation/persistence/deselection/interaction safety coverage.\" It provides only a mapping showing how it could be covered, not confirmation that it is covered in checkpoint outputs."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md contains an explicit Phase 5b alignment section and references Phase 5b required outputs and rubric: \"Primary phase alignment: Phase 5b\" and lists required artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b draft) and disposition gating. The content is structured as a Phase 5b checkpoint enforcement evaluation."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

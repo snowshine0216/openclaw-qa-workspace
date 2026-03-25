@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": true,
+      "evidence": "In result.md, the output explicitly enumerates the required distinctions: \"This benchmark checks whether the Phase 5b shipment-checkpoint layer explicitly distinguishes: 1) Supported formats for Google Sheets export 2) Entry points (where the export can be initiated) 3) Output expectations (what the exported result should look/contain)\". It further states the evidence lacks these details, but the case focus itself is explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The deliverable is explicitly framed as Phase 5b and references Phase 5b gates/artifacts: title \"Phase 5b Checkpoint Enforcement\" and the section \"Phase 5b alignment requirement (what would be needed)\" listing required Phase 5b artifacts (checkpoint_audit, checkpoint_delta with disposition, and qa_plan_phase5b draft). execution_notes.md also states it verified the \"Phase 5b contract\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

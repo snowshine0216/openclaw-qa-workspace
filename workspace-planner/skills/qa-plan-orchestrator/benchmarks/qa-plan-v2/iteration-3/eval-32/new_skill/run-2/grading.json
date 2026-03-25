@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "The output explicitly states the checkpoint coverage is not demonstrated: \"Because this is a checkpoint enforcement benchmark targeting phase5b, the absence of Phase 5b checkpoint artifacts means compliance cannot be demonstrated.\" It further marks each focus item as not audited/demonstrated (e.g., \"OK vs Cancel semantics: Not demonstrated\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is explicitly framed as a Phase 5b checkpoint-enforcement evaluation and checks Phase 5b required artifacts: \"Verdict: FAIL (checkpoint-enforcement not demonstrably satisfied in Phase 5b)\" and \"Phase alignment check (phase5b) Expected Phase 5b outputs per skill contract... Observed... none\". Execution notes also confirm: \"Result focuses on Phase 5b checkpoint enforcement only.\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
+      "passed": true,
+      "evidence": "The result explicitly covers REPORT_STATE definitions and deterministic resume semantics: it cites REPORT_STATE values (FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, FRESH) and their meanings, and describes user-choice-driven routing via scripts/apply_user_choice.sh with modes full_regenerate/smart_refresh/reuse (\"Phase 0 enforces deterministic resume/reuse semantics through an explicit script gate\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
+      "passed": true,
+      "evidence": "The output is framed as a Phase 0 contract check and focuses on Phase 0 responsibilities: \"Verdict (phase0 / blocking)\", \"Evidence-based checks (Phase 0 contract)\", and lists Phase 0 outputs (context/runtime_setup_*.md/.json, supporting_issue_request_*.md, request_fulfillment_*.md/.json). It also notes limitations due to missing run artifacts, reinforcing it stayed within phase0 contract evaluation."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

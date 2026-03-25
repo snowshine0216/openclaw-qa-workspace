@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus and ties it to another feature: “Holdout regression focus (blocking): Promotion/finalization behavior remains stable on another feature… running against a different feature… BCIN-976”. It then enumerates Phase 7 stability assertions (approval gating, archive-then-promote, outputs) and confirms fixture evidence introduces no exceptions."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md declares “Primary phase: Holdout” and frames the work as a “holdout regression checkpoint (not a full plan generation)” with “Evidence-based contract assertions”. execution_notes.md also states this is “contract/evidence-based rather than an executed runtime verification” and “without generating a full QA plan,” aligning with holdout expectations."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

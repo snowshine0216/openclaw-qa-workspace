@@ -100,7 +100,7 @@ User request
 
 ### Workflow extension (qa-plan-orchestrator only)
 
-When the target is `qa-plan-orchestrator` and the profile is one of `qa-plan-defect-recall`, `qa-plan-knowledge-pack-coverage`, or similar, the **same phase numbers** apply but the orchestrator uses a **qa-plan evidence adapter** (implemented in phase scripts + `benchmark_profile` config): Phase 1 may refresh `defects-analysis` runs and check knowledge-pack versions; Phase 2 may pull gap taxonomy from self-test QA cross-analysis and knowledge-pack omissions; Phase 4 runs defect replay and holdout evals as defined in [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md); Phase 5 includes defect-replay and coverage dimensions when the profile lists them.
+When the target is `qa-plan-orchestrator` and the profile is one of `qa-plan-defect-recall`, `qa-plan-knowledge-pack-coverage`, or similar, the **same phase numbers** apply but the orchestrator uses a **qa-plan evidence adapter** (implemented in phase scripts + `benchmark_profile` config): Phase 1 may refresh `defects-analysis` runs and check knowledge-pack versions; Phase 2 may pull gap taxonomy from self-test QA cross-analysis and knowledge-pack omissions; Phase 4 runs defect replay and holdout evals as defined in [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md); Phase 5 includes defect-replay and coverage dimensions when the profile lists them.
 
 ```text
 (Extends generic chart — same Phase 0–6 shell)
@@ -128,12 +128,12 @@ Phase 5 additions:
 
 **Purpose:** Keep the shared skill generic while documenting how planners evolve `qa-plan-orchestrator`.
 
-**Canonical entry:** `.agents/skills/qa-plan-evolution/SKILL.md` and `reference.md`, plus this file and [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md). There is no separate planner workflow file under `workspace-planner/.agents/workflows/`.
+**Canonical entry:** `.agents/skills/qa-plan-evolution/SKILL.md` and `reference.md`, plus this file and [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md). There is no separate planner workflow file under `workspace-planner/.agents/workflows/`.
 
 **Operator outline:**
 
 1. Preconditions: feature id / family, `benchmark_version`, knowledge-pack key when applicable.
-2. Set inputs: `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`, `benchmark_profile` → `qa-plan-defect-recall` (or documented variant), `fixtures_manifest` alignment with [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md).
+2. Set inputs: `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`, `benchmark_profile` → `qa-plan-defect-recall` (or documented variant), `fixtures_manifest` alignment with [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md).
 3. Invoke `qa-plan-evolution` scripts only (`scripts/orchestrate.sh`); no parallel NLG playbook.
 4. Point to canonical benchmark output under `qa-plan-orchestrator/benchmarks/<benchmark-version>/` (for example `qa-plan-v2/`).
 5. User approval and Feishu steps consistent with Phase 6 in this design.
@@ -229,7 +229,7 @@ Design placement:
 
 ### Benchmark layout: canonical vs evolution run
 
-- **Canonical frozen campaign (`qa-plan-orchestrator`):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — manifests, `iteration-*`, scorecards, and `skill-creator` aggregates per [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md). This is the **authoritative** record for champion versus candidate comparisons and reporting.
+- **Canonical frozen campaign (`qa-plan-orchestrator`):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — manifests, `iteration-*`, scorecards, and `skill-creator` aggregates per [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md). This is the **authoritative** record for champion versus candidate comparisons and reporting.
 - **Per-run operational tree:** `.agents/skills/qa-plan-evolution/runs/<run-key>/benchmarks/` — working artifacts (`scoreboard_<run-key>.json`, `benchmark_catalog_<run-key>.json`, and related files) for idempotency and resume.
 - **Consistency rule:** For target `qa-plan-orchestrator`, Phases 4–6 **must** publish iteration results into the canonical `benchmarks/<benchmark-version>/iteration-<n>/` tree so `aggregate_benchmark.py` and the eval viewer consume the same layout as the benchmark spec. The evolution run directory remains the workflow root for `REPORT_STATE` and task state; the qa-plan benchmark tree is the frozen campaign record.
 
@@ -1249,7 +1249,7 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 ### README impact
 
 - New operator-facing content lives in `.agents/skills/qa-plan-evolution/README.md` (how to run phases, run root layout, link to benchmark spec for qa-plan).
-- `qa-plan-orchestrator/README.md` must cross-link to `docs/QA_PLAN_BENCHMARK_SPEC.md` and `benchmarks/<version>/` for frozen campaigns.
+- `qa-plan-orchestrator/README.md` must cross-link to `references/qa-plan-benchmark-spec.md` and `benchmarks/<version>/` for frozen campaigns.
 
 ## MVP and release phasing
 
@@ -1261,7 +1261,7 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 
 ## Quality gates (design review)
 
-- [ ] Paths in this doc and [QA_PLAN_BENCHMARK_SPEC.md](./QA_PLAN_BENCHMARK_SPEC.md) are repo-relative where applicable.
+- [ ] Paths in this doc and [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md) are repo-relative where applicable.
 - [ ] Canonical benchmark tree and evolution run `benchmarks/` roles are consistent with implementation.
 - [ ] Phase scripts exist for each phase; tests stubbed or implemented per Tests section.
 - [ ] Feishu notification and `notification_pending` behavior match workspace conventions.

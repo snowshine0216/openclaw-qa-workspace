@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the case focus: it states Phase 5b \"requires that historical analogs that remain relevant become required-before-ship gates via explicit [ANALOG-GATE] entries\" and includes a section \"Benchmark expectation coverage\" noting \"historical analogs become required-before-ship gates: Not demonstrated (no Phase 5b release recommendation w/ [ANALOG-GATE]).\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is explicitly Phase 5b-scoped: result.md is titled \"Determination (phase5b checkpoint enforcement)\" and references \"What the Phase 5b contract requires\" from the Phase 5b rubric, and the \"Benchmark expectation coverage\" section states \"Output aligns with primary phase phase5b: This result is Phase 5b-scoped and evaluates Phase 5b required outputs and gating behavior.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

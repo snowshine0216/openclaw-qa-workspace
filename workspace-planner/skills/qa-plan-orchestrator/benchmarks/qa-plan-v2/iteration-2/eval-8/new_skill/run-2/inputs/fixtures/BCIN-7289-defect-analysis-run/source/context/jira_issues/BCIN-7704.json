@@ -1,0 +1,13 @@
+{
+  "key": "BCIN-7704",
+  "summary": "Workstation |  Report Editor | View menu And Format menu in native toolbar should be removed",
+  "status": "Done",
+  "priority": "High",
+  "assignee": "Xue Yin",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"76c9efeb2313\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"4a7ab78d8cb4\"},\"content\":[{\"attrs\":{\"localId\":\"3c1cb057eef8\"},\"content\":[{\"text\":\"Download latest workstation\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4a7ab78d8cb4\"},\"content\":[{\"attrs\":{\"localId\":\"fe609223f349\"},\"content\":[{\"text\":\" connect to 26.04 library e.g, \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary/app\",\"type\":\"text\"},{\"text\":\" login as bxu\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"4a7ab78d8cb4\"},\"content\":[{\"attrs\":{\"localId\":\"56b7dfa164ca\"},\"content\":[{\"text\":\"create a new report\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"},{\"attrs\":{\"localId\":\"e6ea6e6effdf\"},\"content\":[{\"text\":\"issue here:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"c59138baa64f\",\"width\":732,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"a3cacbfd53479b8c5333b86cc13c7028-20260318-011306.png\",\"collection\":\"\",\"height\":906,\"id\":\"9fbd928f-6451-41c7-9ece-e41646877ba9\",\"localId\":\"4fe77308a6aa\",\"type\":\"file\",\"width\":1351},\"type\":\"media\"}],\"type\":\"mediaSingle\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/workstation-report-editor/pull/686\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/workstation-report-editor/pull/686",
+    "https://github.com/mstr-kiai/productstrings/pull/15114\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/productstrings/pull/15114"
+  ]
+}

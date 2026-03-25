@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The output explicitly states the focus items are NOT explicitly covered in the available evidence: \"No explicit mention of: 'panel-stack composition' 'embedding lifecycle boundaries' 'visible failure or recovery outcomes'\" and concludes \"INCONCLUSIVE / NOT MET AT CONTRACT LEVEL.\" Therefore the case focus is not explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The result centers on Phase 5b checkpoint enforcement requirements and artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b, validators, dispositions) and explicitly concludes: \"Phase alignment: PASS (contract-level). The workflow clearly defines Phase 5b...\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -26,6 +26,8 @@ All per-run artifacts live under:
 
 ### `REPORT_STATE`
 
+> **Simple-path note:** When using the 3-phase model (`qa-plan-pack-only` profile), operators typically start with `CONTEXT_ONLY` state — freshness and backlog exist but no iteration has completed. This is the expected starting state for the manual path; continue without treating it as an error.
+
 | Value | Meaning | User interaction |
 |------|---------|------------------|
 | `FINAL_EXISTS` | `evolution_final.md` already exists | user chooses use_existing / smart_refresh / full_regenerate |
@@ -212,7 +214,7 @@ When evolving `qa-plan-orchestrator`:
   - Activates `retrospective_replay` cases: `P4A-SDK-CONTRACT-001`, `P5A-INTERACTION-AUDIT-001`, `P5A-COVERAGE-PRESERVATION-001`, `P5B-ANALOG-GATE-001`, `P7-DEV-SMOKE-001`.
   - Do not enable automatically — newly logged defects must not contaminate the mutation decision.
 - **Iteration comparison:** use executed comparison for promotion decisions. The synthetic structural comparator is fallback-only and cannot promote a challenger.
-  - Executed compare: `scripts/run_iteration_compare.mjs`
+  - Executed compare: `scripts/run_iteration_compare.mjs` (uses `benchmark-runner-llm.mjs` via grading harness; local fallback disabled so behavior aligns with `npm run benchmark:v2:run`)
   - Synthetic fallback: `scripts/lib/publishIterationComparison.mjs`
 - **Iteration scoring:** run `scripts/score_iteration.mjs` after each Phase 5 decision:
   ```bash
@@ -223,6 +225,6 @@ When evolving `qa-plan-orchestrator`:
 - **Acceptance gate:** a challenger is rejected if any case in `blocking_case_ids` from `benchmark_manifest.json` fails.
 - **Cross-family gate:** for active blind/holdout evidence modes, non-target feature families must be non-regressing.
 - **Evolution run root** (for `REPORT_STATE` / task state): `.agents/skills/qa-plan-evolution/runs/<run-key>/`
-- **Benchmark campaign root** (frozen, append-only): `benchmarks/qa-plan-v2/` — publish outputs there per `docs/QA_PLAN_BENCHMARK_SPEC.md`.
+- **Benchmark campaign root** (frozen, append-only): `benchmarks/qa-plan-v2/` — publish outputs there per `references/qa-plan-benchmark-spec.md`.
 
 The skill's own `evals/evals.json` remains the smoke gate. `qa-plan-v2` cases are the acceptance gate for challenger promotion.

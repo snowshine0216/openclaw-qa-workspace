@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "result.md states: \"The case focus requires that the Phase 4a planning ... explicitly covers: 1) panel-stack composition 2) embedding lifecycle 3) regression-sensitive integration states\" but concludes: \"Not verifiable from provided evidence (no Phase 4a draft content to inspect).\" No Phase 4a plan/draft artifact is present to show explicit coverage."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md states the package \"does not include any Phase 4a runtime outputs (no ... drafts/qa_plan_phase4a_r1.md ...)\" and concludes: \"Not verifiable\" for alignment with Phase 4a. With no Phase 4a deliverable present, alignment cannot be demonstrated."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

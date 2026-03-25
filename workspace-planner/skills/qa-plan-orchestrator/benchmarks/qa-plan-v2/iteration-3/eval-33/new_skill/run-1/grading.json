@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "In result.md the run concludes the focus is not demonstrated: \"Advisory result: NOT DEMONSTRATED / GAP.\" and \"No explicit phase8 mechanism/contract that converts prior defects into injected QA-plan scenarios.\" It also states: \"the snapshot evidence does not demonstrate a phase8 step that takes these and injects them into the next QA plan artifact.\" Therefore the case focus is not explicitly covered by the produced outputs."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "Both execution_notes.md and result.md state phase8 cannot be verified because it is absent from the skill snapshot: \"Skill snapshot defines phases 0–7 only; no phase8 contract is present\" and \"The skill snapshot defines phases 0–7 only and contains no phase8 definition.\" Thus the output does not align with (or at least cannot demonstrate alignment to) primary phase8."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

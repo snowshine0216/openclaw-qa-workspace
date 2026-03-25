@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "The result explicitly frames the benchmark focus as preserving \"Google Sheets export entry points\", \"Scope boundaries\", and \"Format constraints\" \"before any scenario drafting\" and provides a dedicated intake checklist: \"A) Google Sheets export entry points\", \"B) Scope boundaries\", and \"C) Format constraints\". It also reiterates Phase 1 should not draft scenarios: \"Therefore... the “pass” condition is whether Phase 1 intake would carry forward the critical context items... *not* by drafting scenarios.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is explicitly scoped to Phase 1 and describes the Phase 1 contract as \"spawn-only\" with expected output \"phase1_spawn_manifest.json\", and states it stayed within phase 1: execution_notes.md says \"Stayed within Phase 1 scope (spawn/evidence routing; no scenario drafting).\" result.md also avoids scenario drafting and evaluates Phase 1 via spawn/manifest acceptance criteria."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

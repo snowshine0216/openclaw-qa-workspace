@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": false,
+      "evidence": "result.md: \"Using only the provided retrospective fixture evidence, there is no Phase 5a run output ... to confirm that the Phase 5a rubric’s Cross-Section Interaction Audit anchor rules were executed and enforced.\" Although it lists the required rows (template-based creation + pause-mode prompts; close-confirmation + prompt editor open), it explicitly states coverage/enforcement is not demonstrated due to missing Phase 5a artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": false,
+      "evidence": "result.md: \"FAIL — checkpoint enforcement not demonstrated for Phase 5a cross-section interaction audit.\" and \"Output aligns with primary phase phase5a: Not demonstrated (no Phase 5a outputs available).\" execution_notes.md also states: \"The benchmark evidence does not include any Phase 5a artifacts... needed to confirm... acceptance-gate enforcement.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

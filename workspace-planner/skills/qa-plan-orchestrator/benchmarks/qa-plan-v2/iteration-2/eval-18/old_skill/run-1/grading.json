@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": false,
+      "evidence": "The provided outputs do not include any Phase 4a QA plan/draft demonstrating coverage of OK/Cancel confirmation, pending selection/loading, and dismissal outcomes. execution_notes.md states: \"No Phase 4a runtime artifacts were provided in the evidence (missing `phase4a_spawn_manifest.json` and `drafts/qa_plan_phase4a_r*.md`).\" result.md similarly concludes it \"cannot confirm\" the plan explicitly covers these scenarios."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No Phase 4a-aligned output artifact (e.g., `drafts/qa_plan_phase4a_r<round>.md`) is present to verify alignment. result.md notes: \"no Phase 4a run artifacts were included\" and therefore it cannot verify Phase 4a output alignment beyond the written contract."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

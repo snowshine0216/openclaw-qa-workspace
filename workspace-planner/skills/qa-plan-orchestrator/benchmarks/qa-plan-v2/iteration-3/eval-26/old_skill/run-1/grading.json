@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": false,
+      "evidence": "The run output explicitly states the opposite: “Phase 1 is limited to generating spawn requests… The benchmark focus requires that the context-intake step explicitly preserve key domain constraints… With only the provided evidence, Phase 1 does not define an explicit mechanism/artifact to capture and preserve those constraints at intake time.” It also notes: “None of the Phase 1 contract language explicitly states that Phase 1 must: extract/record banding functional requirements, capture style constraints…, or lock rendering assumptions… into a dedicated ‘context-intake’ artifact used downstream.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The result.md is explicitly framed as a Phase 1 contract check (“Primary phase under test: phase1”) and discusses Phase 1 contract outputs/validation (spawn manifest, evidence routing). It concludes: “Phase 1 alignment is present (it is Phase 1 content)…”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

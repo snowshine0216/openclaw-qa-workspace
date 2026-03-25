@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and enumerates the required distinctions: “distinguishes Google Sheets dashboard export: - supported formats - entry points - output expectations” and further details in the advisory checklist: “Supported export formats… Entry points… Output expectations…”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Both execution_notes.md and result.md state Phase 5b required artifacts are missing and therefore alignment cannot be demonstrated: execution_notes.md: “None of these artifacts were present… so… phase5b alignment and checkpoint enforcement cannot be demonstrated.” result.md: “Not demonstrated / Blocked by missing Phase 5b artifacts and draft lineage.”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

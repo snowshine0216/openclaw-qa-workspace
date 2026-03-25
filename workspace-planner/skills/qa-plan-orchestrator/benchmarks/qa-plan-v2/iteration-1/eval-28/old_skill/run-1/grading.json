@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus under “Benchmark intent (Phase 1 / context intake)”: “preserves critical donut chart data-label assumptions, specifically: Label visibility… Density limits… Overlap-sensitive presentation…” and later evaluates it: “Does Phase 1 context intake preserve donut-label assumptions? Not demonstrable with provided evidence.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md frames itself as “Phase 1 Contract Check” and assesses Phase 1 scope per snapshot: “Phase 1… is limited to: generating spawn requests… and validating spawn policy/evidence completeness…”. execution_notes.md similarly notes “Contract alignment notes (Phase 1)” and focuses on missing Phase 1 artifacts; no Phase 2+ actions are attempted."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

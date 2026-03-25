@@ -8,8 +8,9 @@
       "label": "baseline",
       "role": "champion_seed",
       "skill_snapshot": "iteration-0/champion_snapshot",
-      "grading_result": "pending_baseline_execution",
-      "is_current_champion": true
+      "grading_result": "baseline_executed",
+      "is_current_champion": true,
+      "completed_at": "2026-03-22T10:00:23.238Z"
     }
   ]
 }

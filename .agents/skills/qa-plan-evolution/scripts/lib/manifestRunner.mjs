@@ -18,6 +18,41 @@ async function materializeOutputs(manifestPath, requests) {
   return results;
 }
 
+function spawnAndCapture(bin, argv, cwd) {
+  const child = spawnSync(bin, argv, {
+    cwd,
+    encoding: 'utf8',
+    env: process.env,
+  });
+  return {
+    status: child.status,
+    stderr: child.stderr || '',
+    errorCode: child.error?.code || null,
+  };
+}
+
+function shouldFallbackToCodex(run) {
+  return run.status == null && Boolean(run.errorCode);
+}
+
+async function runViaCodex(args, manifestPath, cwd) {
+  const codexBin = process.env.CODEX_BIN ?? 'codex';
+  const argv = ['exec', '--full-auto', '--sandbox', 'workspace-write'];
+  const outputFile = args?.output_file;
+  if (outputFile) {
+    const absPath = resolve(dirname(manifestPath), outputFile);
+    await mkdir(dirname(absPath), { recursive: true });
+    argv.push('-o', absPath);
+  }
+  argv.push(args?.task ?? 'Run manifest task');
+  const run = spawnAndCapture(codexBin, argv, cwd);
+  return {
+    kind: 'codex',
+    status: run.status === 0 ? 'completed' : 'failed',
+    stderr: run.stderr,
+  };
+}
+
 export async function runManifest(manifestPath, options = {}) {
   const payload = JSON.parse(await readFile(manifestPath, 'utf8'));
   const requests = Array.isArray(payload.requests) ? payload.requests : [];
@@ -48,7 +83,7 @@ export async function runManifest(manifestPath, options = {}) {
         continue;
       }
       const task = args.task ?? 'Run manifest task';
-      const child = spawnSync(
+      const openclawRun = spawnAndCapture(
         openclawBin,
         [
           'sessions',
@@ -65,16 +100,35 @@ export async function runManifest(manifestPath, options = {}) {
           cwd,
           '--wait',
         ],
-        {
-          cwd,
-          encoding: 'utf8',
-          env: process.env,
-        },
+        cwd,
       );
+      if (openclawRun.status === 0) {
+        results.push({ kind: 'openclaw', status: 'completed', stderr: '' });
+        continue;
+      }
+      if (shouldFallbackToCodex(openclawRun)) {
+        const codexResult = await runViaCodex(args, manifestPath, cwd);
+        if (codexResult.status === 'completed') {
+          results.push({
+            kind: 'openclaw_fallback_codex',
+            status: 'completed',
+            stderr: openclawRun.stderr,
+          });
+          continue;
+        }
+        results.push({
+          kind: 'openclaw_fallback_codex',
+          status: 'failed',
+          stderr:
+            `openclaw failed (error_code=${openclawRun.errorCode ?? 'none'}): ${openclawRun.stderr}\n` +
+            `codex fallback failed: ${codexResult.stderr}`,
+        });
+        continue;
+      }
       results.push({
         kind: 'openclaw',
-        status: child.status === 0 ? 'completed' : 'failed',
-        stderr: child.stderr || '',
+        status: 'failed',
+        stderr: `openclaw failed (exit_status=${openclawRun.status ?? 'none'}): ${openclawRun.stderr}`,
       });
     }
   }

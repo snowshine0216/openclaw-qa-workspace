@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": false,
+      "evidence": "The output explicitly states the required focus areas but also states there is no Phase 5b checkpoint evidence showing enforcement/coverage: “there is no Phase 5b checkpoint audit/delta showing that the orchestrator enforced these checkpoints” and “No such Phase 5b run artifacts are present in the provided evidence bundle.” It only cites adjacent issues as showing the risks exist, not that the checkpoint was enforced/covered in a Phase 5b audit/delta/draft."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The result is explicitly framed as Phase 5b and evaluates Phase 5b contract outputs and gates: title “Phase 5b Checkpoint Enforcement Result,” section “What Phase 5b must produce (contract)” listing `context/checkpoint_audit_<feature-id>.md`, `context/checkpoint_delta_<feature-id>.md`, and `drafts/qa_plan_phase5b_r<round>.md`, and concludes failure due to missing Phase 5b artifacts. Execution notes likewise focus on “Phase 5b contract-required outputs and disposition rules.”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

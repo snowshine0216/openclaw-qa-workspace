@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": false,
+      "evidence": "result.md states: \"no Phase 5b runtime artifacts (checkpoint audit/delta, Phase 5b draft, Phase 5b spawn manifest, or any run directory outputs) are present\" and therefore \"does not demonstrate Phase 5b checkpoint enforcement outputs...\". While it lists the focus areas as expected coverage, it also says it cannot verify explicit coverage without the checkpoint artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md explicitly frames the evaluation as Phase 5b: \"Primary phase under test: Phase 5b (shipment checkpoint enforcement)\" and enumerates Phase 5b required artifacts (checkpoint_audit, checkpoint_delta with disposition, qa_plan_phase5b draft) and Phase 5b gating expectations. The verdict is a Phase 5b-aligned blocking FAIL due to missing Phase 5b artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

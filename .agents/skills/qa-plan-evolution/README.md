@@ -16,14 +16,35 @@ Shared skill for **champion vs challenger** skill improvement with a hard iterat
   --benchmark-profile generic-skill-regression
 ```
 
-**Evolving `qa-plan-orchestrator`:** use a `qa-plan-*` profile (typically `qa-plan-defect-recall`) so Phase 4 runs the `qa-plan-v2` iteration comparison workflow; see `evals/evals.json` and `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`.
+**Evolving `qa-plan-orchestrator`:** use a `qa-plan-*` profile so Phase 4 runs the `qa-plan-v2` iteration comparison workflow; see `evals/evals.json` and `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`.
+
+Default profile guidance:
+
+1. use `qa-plan-knowledge-pack-coverage` for blind/holdout-only iterations and knowledge-pack-driven mutation work
+2. use `qa-plan-defect-recall` only when replay evidence is intentionally enabled and `defect_analysis_run_key` is available
 
 ```bash
 ./.agents/skills/qa-plan-evolution/scripts/orchestrate.sh --with-phase0 \
   --run-key "qa-plan-orchestrator__<FEATURE>__$(date -u +%Y%m%dT%H%M%SZ)" \
   --target-skill-path workspace-planner/skills/qa-plan-orchestrator \
   --target-skill-name qa-plan-orchestrator \
-  --benchmark-profile qa-plan-defect-recall
+  --benchmark-profile qa-plan-knowledge-pack-coverage \
+  --feature-family report-editor \
+  --feature-id BCIN-7289
+```
+
+Replay-enabled `report-editor` run:
+
+```bash
+./.agents/skills/qa-plan-evolution/scripts/orchestrate.sh --with-phase0 \
+  --run-key "qa-plan-orchestrator__report-editor__replay__$(date -u +%Y%m%dT%H%M%SZ)" \
+  --target-skill-path workspace-planner/skills/qa-plan-orchestrator \
+  --target-skill-name qa-plan-orchestrator \
+  --benchmark-profile qa-plan-defect-recall \
+  --feature-family report-editor \
+  --feature-id BCIN-7289 \
+  --knowledge-pack-key report-editor \
+  --defect-analysis-run-key BCIN-7289
 ```
 
 Use `--run-root` and `--repo-root` when keeping runs outside the default `runs/<run-key>/` tree (for example CI temp dirs).
@@ -45,6 +66,7 @@ For `qa-plan-v2`, Phase 4 now prefers executed benchmark comparison through `ben
 ## Cross-Feature Gate
 
 - Replay remains feature-specific and opt-in.
+- `--feature-family` scopes mutation focus and non-target-family scoring semantics, but does not prune the global `qa-plan-v2` case catalog.
 - Blind/holdout checks enforce non-regression for non-target feature families in `qa-plan-v2` scorecards.
 
 ## Tests
@@ -69,6 +91,6 @@ Profiles now declare `gap_sources` so Phase 2 can remain shared while target-spe
 ## Related docs
 
 - `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_EVOLUTION_DESIGN.md`
-- `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
 - `docs/QA_PLAN_EVOLUTION_WORKFLOW_AND_EXAMPLE.md`
 - `docs/QA_PLAN_V2_BENCHMARK_INTEGRATION_REMEDIATION_PLAN.md`

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "In result.md the run concludes: \"Does Phase 5b enforce 'OK or Cancel semantics, pending state, dismissal correctness' explicitly? - **Partially (implicit, not explicit).**\" and maps the expectation as \"Case focus explicitly covered: **Not fully satisfied** ... rubric does **not explicitly name** 'OK vs Cancel semantics', 'pending selection state', or 'popover dismissal correctness' as enumerated checklist items.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md explicitly states: \"[checkpoint_enforcement][advisory] Output aligns with phase5b: **Satisfied**\" and provides Phase 5b contract details (required artifacts/sections and disposition ending with accept/return phase5a/return phase5b). execution_notes.md also notes: \"Findings were intentionally scoped to **Phase 5b** per benchmark instruction.\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

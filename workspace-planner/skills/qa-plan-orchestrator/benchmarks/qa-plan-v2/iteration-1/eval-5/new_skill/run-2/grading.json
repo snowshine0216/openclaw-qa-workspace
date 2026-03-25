@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus: \"missing scenario generation for template-save and report-builder loading\" and includes scenarios under \"Template save / Template-derived report creation\" and \"Report Builder / Prompt element loading\" (e.g., \"Prompt editor: double-clicking a prompt element loads its builder elements and is interactive <P1>\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is titled \"# Phase 4a (BCIN-7289) — Missing Scenario Replay Coverage (Advisory)\" and notes \"Primary phase under test: phase4a (subcategory-only scenario drafting)\". execution_notes.md further claims adherence to the phase4a contract: \"subcategory → scenario → atomic nested steps → observable verification leaves\" and the output structure matches (subcategory headers with scenario bullets, nested step bullets, and observable verification bullets)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

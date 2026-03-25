@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus and reiterates non-collapsing: \"Primary phase/checkpoint: **Phase 4b** — *canonical top-layer grouping without collapsing scenarios*.\" and \"Scenario granularity is preserved (anti-compression; no silent merging).\" It also includes an \"Anti-compression reminders\" section (e.g., \"Keep distinct scenarios separate...\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "result.md is framed as Phase 4b: title \"Phase 4b Contract Check (Advisory)\", and \"Primary phase/checkpoint: **Phase 4b**\". execution_notes.md also says: \"The result intentionally focuses on **Phase 4b**\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

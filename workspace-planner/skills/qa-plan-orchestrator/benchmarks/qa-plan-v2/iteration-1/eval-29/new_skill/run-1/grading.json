@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": true,
+      "evidence": "In result.md, the output explicitly enumerates the required focus: “This benchmark case requires Phase 5b shipment checkpoint enforcement to explicitly cover… highlight activation… persistence… deselection… interaction safety… for bar chart and heatmap” and repeats it under “Explicit coverage statement (required by benchmark)” with separate bullet lists for Bar chart and Heatmap including activation/persistence/deselection/interaction safety."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "execution_notes.md states “Benchmark primary phase: phase5b” and frames the work as shipment checkpoint enforcement. result.md centers on “Phase 5b shipment checkpoint enforcement,” cites the Phase 5b artifact contract (checkpoint_audit, checkpoint_delta, qa_plan_phase5b) and Phase 5b disposition rules, and maps focus items to Phase 5b rubric checkpoints."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

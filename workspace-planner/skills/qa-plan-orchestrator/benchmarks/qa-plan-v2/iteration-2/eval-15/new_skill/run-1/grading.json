@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "The output lists the required focus areas but does not provide Phase 4a planning that covers them. It explicitly states missing Phase 4a artifacts prevent verification: \"No Phase 4a runtime artifacts were provided... preventing any check that the Phase 4a draft covers the benchmark focus areas (panel-stack composition, embedding lifecycle, regression-sensitive integration states).\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The result is explicitly framed as a Phase 4a advisory check and evaluates against the Phase 4a contract/required artifacts: \"NE-P4A-COMPONENT-STACK-001 — Phase4a advisory check\" and \"the benchmark’s primary phase under test is Phase 4a... must produce and validate a Phase 4a subcategory-only QA draft\"."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

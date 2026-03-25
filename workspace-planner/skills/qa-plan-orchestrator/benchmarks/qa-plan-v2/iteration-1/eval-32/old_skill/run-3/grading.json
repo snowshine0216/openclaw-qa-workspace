@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "result.md states: \"Not demonstrated (insufficient evidence).\" and \"there is no Phase 5b run output ... to assess whether the skill, in execution, covers the case focus: OK / Cancel semantics ... pending selection state handling ... popover dismissal correctness\". The outputs do not explicitly demonstrate coverage; they only describe what would be required."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md explicitly frames the evaluation as phase5b: \"Primary phase under test: phase5b\" and lists phase5b-specific required artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b) and disposition routing. execution_notes.md likewise says it evaluated \"Phase 5b contract requirements\" and notes missing \"Phase 5b run artifacts\"."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "In result.md, the case focus is explicitly stated and evaluated: \"Case focus: **final quality pass preserves layering and executable wording**\" and the output explains it cannot be verified due to missing artifacts: \"we cannot verify Phase 6 compliance with the benchmark focus ('final quality pass preserves layering and executable wording'), because the evidence set does not include any Phase 6 artifacts.\" It also enumerates what would be checked for layering/executable wording under \"Phase 6-focused checklist.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "The output is structured as a Phase 6 contract check and repeatedly anchors to Phase 6 requirements: \"Primary phase under test: **Phase 6** (final quality pass)\", \"What Phase 6 must demonstrate\", \"Required Phase 6 outputs\", and concludes with a Phase 6 compliance verdict: \"**Blocked** — Phase 6 contract compliance... cannot be demonstrated... because the required Phase 6 deliverables... are not included.\" execution_notes.md also frames gaps \"vs Phase 6 contract\" and lists missing Phase 6 outputs."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

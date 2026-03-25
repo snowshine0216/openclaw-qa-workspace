@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": false,
+      "evidence": "The run does not provide the Phase 4a draft/artifacts that would need to contain the explicit scenario coverage. execution_notes.md: \"No run directory artifacts were provided (none of the required Phase 4a outputs exist in evidence)\" and \"we cannot verify that the plan explicitly covers the benchmark focus\". result.md also states the expected focus but only as a benchmark expectation, not as demonstrated plan content."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Missing required Phase 4a deliverables prevents demonstrating alignment. execution_notes.md lists missing artifacts: \"Missing phase4a_spawn_manifest.json\" and \"Missing drafts/qa_plan_phase4a_r<round>.md\". result.md: \"Not demonstrated for Phase 4a\" and notes that without these artifacts it cannot confirm Phase 4a structure/validation."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

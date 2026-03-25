@@ -14,6 +14,51 @@ function fileText(repoRoot, relativePath) {
   return readFileSync(fullPath, 'utf8');
 }
 
+function normalizeText(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function normalizeTerms(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((term) => normalizeText(term))
+    .filter(Boolean);
+}
+
+function containsAllTerms(text, terms) {
+  if (!terms.length) return false;
+  const haystack = normalizeText(text);
+  return terms.every((term) => haystack.includes(term));
+}
+
+function extractRequiredOutcomeTerms(outcome) {
+  if (typeof outcome === 'string') {
+    const text = normalizeText(outcome);
+    return {
+      id: text.replace(/[^a-z0-9]+/g, '-'),
+      label: outcome,
+      terms: text ? [text] : [],
+    };
+  }
+  const label = outcome?.observable_outcome || outcome?.name || outcome?.id || 'required outcome';
+  const terms = [
+    ...normalizeTerms(outcome?.keywords),
+    ...normalizeTerms([outcome?.observable_outcome]),
+  ];
+  return {
+    id: normalizeText(outcome?.id || label).replace(/[^a-z0-9]+/g, '-'),
+    label,
+    terms: [...new Set(terms)],
+  };
+}
+
+function extractInteractionPairs(packJson) {
+  const directPairs = Array.isArray(packJson.interaction_pairs) ? packJson.interaction_pairs : [];
+  const matrixPairs = (packJson.interaction_matrices || [])
+    .flatMap((matrix) => (Array.isArray(matrix?.pairs) ? matrix.pairs : []));
+  return [...directPairs, ...matrixPairs];
+}
+
 export async function collectKnowledgePackCoverageObservations({ repoRoot, task }) {
   if (!task.knowledge_pack_key) {
     return {
@@ -75,6 +120,58 @@ export async function collectKnowledgePackCoverageObservations({ repoRoot, task 
     }
   }
 
+  for (const rawOutcome of packJson.required_outcomes || []) {
+    const outcome = extractRequiredOutcomeTerms(rawOutcome);
+    const covered = corpus.some((entry) => containsAllTerms(entry.text, outcome.terms));
+    if (!covered) {
+      observations.push({
+        id: `obs-pack-outcome-${outcome.id || 'missing'}`,
+        source_type: 'knowledge_pack_coverage',
+        source_path: packJsonPath,
+        summary: `Required outcome "${outcome.label}" is not mapped in target contracts or evals.`,
+        details: 'Required outcomes should map to scenario leaves, gates, or explicit exclusions.',
+        taxonomy_candidates: ['missing_scenario', 'knowledge_pack_gap'],
+        target_files: [
+          `${task.target_skill_path}/references/phase4a-contract.md`,
+          `${task.target_skill_path}/evals/evals.json`,
+        ],
+        evals_affected: ['knowledge_pack_coverage'],
+        knowledge_pack_key: task.knowledge_pack_key,
+        confidence: 'high',
+        blocking: true,
+      });
+    }
+  }
+
+  for (const transition of packJson.state_transitions || []) {
+    const transitionLabel = transition.id || `${transition.from} -> ${transition.to}`;
+    const terms = normalizeTerms([
+      transition.from,
+      transition.to,
+      transition.trigger,
+      transition.observable_outcome,
+    ]);
+    const covered = corpus.some((entry) => containsAllTerms(entry.text, terms));
+    if (!covered) {
+      observations.push({
+        id: `obs-pack-transition-${normalizeText(transitionLabel).replace(/[^a-z0-9]+/g, '-')}`,
+        source_type: 'knowledge_pack_coverage',
+        source_path: packJsonPath,
+        summary: `State transition "${transitionLabel}" is not mapped in target scenarios, review gates, or exclusions.`,
+        details: 'State transitions should be represented by explicit scenario steps and observable outcomes.',
+        taxonomy_candidates: ['interaction_gap', 'knowledge_pack_gap'],
+        target_files: [
+          `${task.target_skill_path}/references/phase4a-contract.md`,
+          `${task.target_skill_path}/references/review-rubric-phase5a.md`,
+        ],
+        evals_affected: ['interaction_matrix_coverage', 'knowledge_pack_coverage'],
+        knowledge_pack_key: task.knowledge_pack_key,
+        confidence: 'high',
+        blocking: true,
+      });
+    }
+  }
+
   for (const analogGate of packJson.analog_gates || []) {
     const gateLabel = analogGate.behavior || analogGate.required_gate;
     const covered = corpus.some((entry) =>
@@ -125,7 +222,7 @@ export async function collectKnowledgePackCoverageObservations({ repoRoot, task 
     }
   }
 
-  for (const pair of packJson.interaction_pairs || []) {
+  for (const pair of extractInteractionPairs(packJson)) {
     const labels = Array.isArray(pair) ? pair.map((term) => String(term)) : [];
     const covered = labels.length > 0 && corpus.some((entry) =>
       labels.every((term) => entry.text.toLowerCase().includes(term.toLowerCase())),

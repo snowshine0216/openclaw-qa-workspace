@@ -1,0 +1,12 @@
+{
+  "key": "BCIN-7688",
+  "summary": "Set as template check box is disabled when save a newly create report on workstation",
+  "status": "To Do",
+  "priority": "Low",
+  "assignee": "Kai Wang",
+  "resolutiondate": null,
+  "description": "{\"content\":[{\"attrs\":{\"localId\":\"1e99283c69ce\"},\"content\":[{\"text\":\"Set as template check box is disabled when save a newly create report on workstation\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"layout\":\"align-start\",\"localId\":\"b3794fb99ba9\",\"width\":671,\"widthType\":\"pixel\"},\"content\":[{\"attrs\":{\"alt\":\"Kapture 2026-03-18 at 15.31.11-20260318-073141.gif\",\"collection\":\"\",\"height\":1139,\"id\":\"30c950b0-3013-4b35-8479-d5c4fa7d0ea8\",\"localId\":\"9485634878e4\",\"type\":\"file\",\"width\":2036},\"type\":\"media\"}],\"type\":\"mediaSingle\"},{\"attrs\":{\"localId\":\"dc7f4ca988b4\"},\"content\":[{\"text\":\"Steps to reproduce:\",\"type\":\"text\"}],\"type\":\"paragraph\"},{\"attrs\":{\"localId\":\"8fabe7fd6f5e\",\"order\":1},\"content\":[{\"attrs\":{\"localId\":\"16f70d1a6e89\"},\"content\":[{\"attrs\":{\"localId\":\"c8c8ec4a129d\"},\"content\":[{\"text\":\"Login \",\"type\":\"text\"},{\"marks\":[{\"attrs\":{\"href\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary\"},\"type\":\"link\"}],\"text\":\"https://tec-l-1183620.labs.microstrategy.com/MicroStrategyLibrary\",\"type\":\"text\"},{\"text\":\" by bxu with empty password on workstation, enable new report editor\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"},{\"attrs\":{\"localId\":\"16f70d1a6e89\"},\"content\":[{\"attrs\":{\"localId\":\"20b6060ea4da\"},\"content\":[{\"text\":\"Create a new blank report, save it >> issue here: set a template is disabled\",\"type\":\"text\"}],\"type\":\"paragraph\"}],\"type\":\"listItem\"}],\"type\":\"orderedList\"}],\"type\":\"doc\",\"version\":1}",
+  "pr_links": [
+    "https://github.com/mstr-kiai/workstation-report-editor/pull/688\"},\"type\":\"link\"}],\"text\":\"https://github.com/mstr-kiai/workstation-report-editor/pull/688"
+  ]
+}

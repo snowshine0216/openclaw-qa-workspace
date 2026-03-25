@@ -82,21 +82,21 @@ This design sharpens the inputs and gates while preserving the current script-or
 
 This design adds a dedicated Phase 5b checkpoint audit based on:
 
-- [checkpoints.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/docs/checkpoints.md)
+- [checkpoints.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/workspace-planner/skills/qa-plan-orchestrator/references/checkpoints.md)
 - Medium: “AI Builds Code Faster Than Ever. Here’s What QA Must Do Before It Ships.”, published February 24, 2026
 
 Design rule:
 
-- `docs/checkpoints.md` is a design/reference artifact, not the runtime-consumed phase reference
+- `references/checkpoints.md` is a design/reference artifact, not the runtime-consumed phase reference
 - real runtime usage should consume a normalized reference file under `references/`
 - recommended runtime file: `references/review-rubric-phase5b.md`
-- `references/review-rubric-phase5b.md` must be derived from `docs/checkpoints.md` and must not drift from it
+- `references/review-rubric-phase5b.md` must be derived from `references/checkpoints.md` and must not drift from it
 
 Recommended refactor:
 
-- keep `docs/checkpoints.md` as the long-form design/source document
+- keep `references/checkpoints.md` as the long-form design/source document
 - add `references/review-rubric-phase5b.md` as the execution-oriented contract for Phase 5b
-- optional cleanup: rename `docs/checkpoints.md` to `docs/CHECKPOINTS_DESIGN_REFERENCE.md` in a later documentation pass if clearer naming is desired
+- optional cleanup: rename `references/checkpoints.md` to `docs/CHECKPOINTS_DESIGN_REFERENCE.md` in a later documentation pass if clearer naming is desired
 
 Design decision:
 
@@ -515,7 +515,7 @@ Primary rubric:
 
 - `references/review-rubric-phase5b.md`
 
-Phase 5b must align its checkpoint rows to `references/review-rubric-phase5b.md`, and that runtime reference must stay derived from `docs/checkpoints.md`.
+Phase 5b must align its checkpoint rows to `references/review-rubric-phase5b.md`, and that runtime reference must stay derived from `references/checkpoints.md`.
 
 Minimum required checkpoints:
 
@@ -940,7 +940,7 @@ Run a shipment-readiness checkpoint audit after Phase 5a review/refactor.
 
 ## Source Of Truth
 
-This file is the runtime-normalized version of `docs/checkpoints.md`.
+This file is the runtime-normalized version of `references/checkpoints.md`.
 It must not drift from that document.
 
 ## Required Inputs
@@ -1253,7 +1253,7 @@ Design rule for tests:
 
 #### Docs and contracts
 
-- `docs/checkpoints.md`
+- `references/checkpoints.md`
   Treat this file as the Phase 5b checkpoint source-of-truth. The implementation must not invent a different checkpoint set.
 - `README.md`
   Add a Phase 5b row that points to `references/review-rubric-phase5b.md` and describes shipment-checkpoint review, targeted refactor, and release recommendation.
@@ -1262,11 +1262,11 @@ Design rule for tests:
 - `reference.md`
   Add Phase 5b artifacts, manifest name, and gate details.
 - `references/review-rubric-phase5b.md`
-  Create this as the single runtime source of truth for Phase 5b. It must normalize and integrate the checkpoints from `docs/checkpoints.md` into a runtime checkpoint-review rubric.
+  Create this as the single runtime source of truth for Phase 5b. It must normalize and integrate the checkpoints from `references/checkpoints.md` into a runtime checkpoint-review rubric.
 - `workspace-planner/AGENTS.md`
   Update the workflow summary to show `Phase 5a` and `Phase 5b` separately and forbid collapsing them.
 
-The implementation must treat `references/review-rubric-phase5b.md` as a normalized derivative of `docs/checkpoints.md`, not as an independent checklist.
+The implementation must treat `references/review-rubric-phase5b.md` as a normalized derivative of `references/checkpoints.md`, not as an independent checklist.
 
 #### Script/runtime changes
 
@@ -1410,7 +1410,7 @@ These changes are shared across multiple phases and should be implemented once.
 - `references/review-rubric-phase5a.md`
   Phase 5a-specific review rubric for context-backed audit and refactor.
 - `references/review-rubric-phase5b.md`
-  Phase 5b-specific checkpoint audit rubric derived from `docs/checkpoints.md`.
+  Phase 5b-specific checkpoint audit rubric derived from `references/checkpoints.md`.
 - `references/review-rubric-phase6.md`
   Phase 6-specific final quality rubric.
 
@@ -1431,7 +1431,7 @@ These changes are shared across multiple phases and should be implemented once.
 ## Recommended Implementation Order
 
 1. Create the single-source phase runtime files: `references/phase4a-contract.md`, `references/phase4b-contract.md`, `references/review-rubric-phase5a.md`, `references/review-rubric-phase5b.md`, and `references/review-rubric-phase6.md`.
-2. Align `references/review-rubric-phase5b.md` to `docs/checkpoints.md`.
+2. Align `references/review-rubric-phase5b.md` to `references/checkpoints.md`.
 3. Update `README.md`, `SKILL.md`, `reference.md`, and `workspace-planner/AGENTS.md` to point to the new per-phase files and the new phase-scoped draft progression (`qa_plan_phase4a_r<round>.md` through `qa_plan_phase6_r<round>.md`).
 4. Add the new runtime scripts and manifest builders for `phase5a` and `phase5b`.
 5. Update spawn-task text in `spawnManifestBuilders.mjs`.

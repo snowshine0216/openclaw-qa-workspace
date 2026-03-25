@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly states the benchmark focus and covers both requirements: \"Canonical top-layer grouping\" and \"Without collapsing scenario granularity (\\\"anti-compression\\\": do not merge distinct scenarios away)\". It also reiterates preservation: \"the orchestrator must ensure the canonical grouper preserves each of these as distinct scenario nodes... rather than compressing them\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "The deliverable is explicitly framed as Phase 4b and centers Phase 4b contract requirements: title \"P4B-LAYERING-001 — Phase 4b\", section \"Phase 4b contract alignment\", and it lists Phase 4b-specific inputs/outputs (\"use the latest Phase 4a draft...\" and \"produce drafts/qa_plan_phase4b_r<round>.md\"), canonical taxonomy, layering rules, and Phase 4b constraints (\"No few-shot cleanup in Phase 4b\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

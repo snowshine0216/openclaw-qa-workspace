@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": false,
+      "evidence": "The produced outputs do not include any Phase 4a draft plan demonstrating explicit coverage. execution_notes.md notes: \"No Phase 4a runtime outputs were provided (missing `phase4a_spawn_manifest.json`, missing `drafts/qa_plan_phase4a_r*.md`, missing any validator results).\" result.md states it \"cannot verify that Phase 4a planning actually covers: Confirmation via OK, Cancel/revert, Pending selection, Dismissal outcomes\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Phase 4a contract expects a subcategory-only draft output `drafts/qa_plan_phase4a_r<round>.md`, but the only produced files are `./outputs/result.md` and `./outputs/execution_notes.md`. execution_notes.md: \"No Phase 4a runtime outputs were provided...\" and result.md: \"FAIL (no Phase 4a output present)\"."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

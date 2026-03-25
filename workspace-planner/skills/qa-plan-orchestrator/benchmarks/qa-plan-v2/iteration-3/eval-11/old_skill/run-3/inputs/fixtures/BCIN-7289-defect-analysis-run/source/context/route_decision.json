@@ -1,0 +1,9 @@
+{
+  "run_key": "BCIN-7289",
+  "raw_input": "BCIN-7289",
+  "route_kind": "reporter_scope_single_key",
+  "jira_issue_type": "Feature",
+  "issue_key": "BCIN-7289",
+  "delegates_to": null,
+  "reason": "Feature inputs remain in reporter-local defect analysis scope"
+}

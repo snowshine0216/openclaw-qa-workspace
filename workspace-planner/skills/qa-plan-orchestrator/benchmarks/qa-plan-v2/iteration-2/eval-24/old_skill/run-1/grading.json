@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "result.md explicitly states the Phase 1 context-intake preservation goals: \"Validate that Phase 1 context intake... preserves: 1) Component-stack constraints ... 2) Embedding lifecycle assumptions ... 3) Integration-sensitive customer expectations\" and reiterates Phase 1 must ensure the spawn manifest plans evidence collection for \"embedding SDK + library/dashboard\" and \"customer-driven expectations (CVS referenced)\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The produced artifact is framed as Phase 1 and discusses Phase 1 responsibilities and required outputs: title \"NE-P1-CONTEXT-INTAKE-001 — Phase 1 (Advisory) Contract Check\", and \"Output: `phase1_spawn_manifest.json`\" plus Phase 1 gating (\"--post\") and an advisory Phase 1 verdict (\"Status: NOT DEMONSTRABLE\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

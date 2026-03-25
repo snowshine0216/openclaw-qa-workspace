@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": false,
+      "evidence": "The outputs state the Phase 5b contract/rubric requires analog gating, but do not show any Phase 5b artifact where it is actually enforced for this case: “Could not verify execution because no Phase 5b artifacts (checkpoint_audit, checkpoint_delta, Phase 5b draft) are present in the retrospective evidence.” Therefore the case focus is not demonstrably covered in produced Phase 5b outputs."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The run output acknowledges Phase 5b alignment cannot be demonstrated because required Phase 5b outputs are missing: “Phase 5b required outputs are missing from the provided evidence; therefore alignment cannot be demonstrated.” The provided fixtures are described as a defect-analysis run, not a Phase 5b checkpoint run."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

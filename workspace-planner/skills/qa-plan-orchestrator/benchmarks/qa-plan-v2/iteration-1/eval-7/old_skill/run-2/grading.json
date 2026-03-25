@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": true,
+      "evidence": "result.md explicitly covers both required interaction/state focuses: (1) “Template × pause-mode interaction was missed...” citing BCIN-7730 and describing it as something Phase 5a cross-section interaction audit should catch; and (2) “Prompt-editor-open state was missed...” citing BCIN-7708/7709 and relating them to missing cross-section interaction/state coverage. It also states the benchmark focus verbatim: “Focus: Cross-section interaction audit catches template × pause-mode and prompt-editor-open states.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md is framed as a Phase 5a checkpoint enforcement evaluation throughout: title “Phase 5a Checkpoint Enforcement...”; metadata “Primary phase under test: phase5a”; contract reference “Per skill_snapshot/references/review-rubric-phase5a.md, Phase 5a must produce review notes that include ## Cross-Section Interaction Audit...”; and it includes an explicit verdict line “Output aligns with primary phase phase5a — PASS (assessment framing).”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

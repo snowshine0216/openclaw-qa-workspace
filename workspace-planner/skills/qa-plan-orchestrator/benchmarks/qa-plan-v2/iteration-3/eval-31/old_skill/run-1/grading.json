@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "In result.md, scenarios explicitly cover (a) dashboard-level export paths: “Open the dashboard-level Export menu” and “Dashboard-level export path is distinct from other export contexts”; (b) option combinations: “with defaults”, “after changing export options” (single option), and “with multiple option changes”; and (c) visible completion outcomes: success, error, and cancel/no misleading completion (“A visible completion outcome appears (success)”, “A visible completion outcome appears (error)”, “No “export completed” success indication is shown”)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The produced artifact is labeled and structured as a Phase 4a subcategory draft: title “Phase 4a Subcategory Draft” and a single subcategory “Dashboard → Export → Google Sheets (GWS)”. It avoids Phase 4b top-layer categories (“It avoids Phase 4b canonical top-layer categories”) and uses nested atomic steps with observable verification leaves (e.g., leaves like “A visible completion outcome appears (success/error)”, “Google Sheets option is visible”). Execution notes also state: “Produced a subcategory-only scenario draft… Scenarios are written with atomic nested steps and observable verification leaves.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

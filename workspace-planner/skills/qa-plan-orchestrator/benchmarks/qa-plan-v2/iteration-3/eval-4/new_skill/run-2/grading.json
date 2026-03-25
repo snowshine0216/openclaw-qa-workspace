@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": true,
+      "evidence": "result.md includes explicit scenarios with observable verification leaves for window title, e.g. “Workstation window title is correct on edit (double-click entry)” with checks: “Window title equals the clicked report’s name …” and “Window title is not a generic placeholder…”, plus “Workstation window title is correct when creating a new blank report” verifying it is “not `newReportWithApplication`.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states Phase 4a anchors were used and claims “Subcategory-first structure; atomic nested steps; observable verification leaves.” result.md is titled “Phase 4a — Defect Replay Scenario Addendum” and presents replay-anchor subcategory bullets with nested steps and explicit verification leaves, and includes explicit state-transition chains (e.g., Save-As overwrite and pause-mode run)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

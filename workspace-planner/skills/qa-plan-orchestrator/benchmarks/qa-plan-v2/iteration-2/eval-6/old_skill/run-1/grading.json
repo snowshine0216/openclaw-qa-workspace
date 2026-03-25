@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "The output explicitly states the case focus and discusses it: result.md includes \"Case focus: Canonical top-layer grouping without collapsing scenarios\" and reiterates contract rules: \"Group the Phase 4a draft into canonical top-layer taxonomy without merging away scenario granularity\" plus \"Anti-compression\" / \"Preserve scenario nodes\". It also assesses that this focus is \"Not verifiable with current evidence.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "The output is framed as a Phase 4b phase-contract check and aligns to Phase 4b requirements: it states \"Primary phase under test: Phase 4b\" and quotes Phase 4b contract inputs/outputs and canonical categories. It evaluates Phase 4b compliance and concludes it cannot be demonstrated due to missing Phase 4a/4b artifacts (e.g., \"Cannot be demonstrated from provided evidence\" because \"No Phase 4a/4b plan drafts are present\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

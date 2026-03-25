@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "result.md explicitly scopes the case focus as Phase 1 context intake preserving: \"1) component-stack constraints 2) embedding lifecycle assumptions 3) integration-sensitive customer expectations\" and then covers each in dedicated sections: \"A) Component-stack constraints\", \"B) Embedding lifecycle assumptions\", and \"C) Integration-sensitive customer expectations\", including customer signal \"CVS Pharmacy, Inc. – CS0928640\" and integration/stack signals like labels \"Embedding_SDK\" and \"Library_and_Dashboards\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md is framed as \"Phase 1 Contract Check\" and stays within Phase 1 contract language: \"Phase 1 is limited to: generating one spawn request per requested source family... producing phase1_spawn_manifest.json... (post) validating... enforcing support-only = context_only_no_defect_analysis\". It also avoids defect analysis, stating: \"without doing defect analysis\" and noting verification limits due to missing manifest/artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

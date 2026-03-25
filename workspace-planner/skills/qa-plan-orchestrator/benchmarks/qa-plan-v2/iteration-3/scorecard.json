@@ -1,0 +1,219 @@
+{
+  "benchmark_version": "qa-plan-v2",
+  "iteration": 3,
+  "comparison_mode": "executed_benchmark_compare",
+  "scoring_fidelity": "executed",
+  "primary_configuration": "new_skill",
+  "reference_configuration": "old_skill",
+  "active_evidence_modes": [
+    "blind_pre_defect",
+    "retrospective_replay",
+    "holdout_regression"
+  ],
+  "acceptance_checks": {
+    "blocking_cases_pass": false,
+    "blind_pre_defect_non_regression": true,
+    "retrospective_replay_improved": false,
+    "holdout_regression_non_regression": false,
+    "non_target_family_non_regression": false,
+    "policy": {
+      "require_blocking_cases_pass": true,
+      "require_non_decreasing_blind_score": true,
+      "require_non_decreasing_replay_score": true,
+      "require_no_holdout_regression": true,
+      "require_non_target_family_non_regression": true,
+      "null_score_policy": "reject"
+    }
+  },
+  "mode_scores": {
+    "primary": {
+      "blind_pre_defect": {
+        "eval_count": 25,
+        "run_count": 75,
+        "mean_pass_rate": 0.6533
+      },
+      "retrospective_replay": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.8333
+      },
+      "holdout_regression": {
+        "eval_count": 2,
+        "run_count": 6,
+        "mean_pass_rate": 0.9167
+      }
+    },
+    "reference": {
+      "blind_pre_defect": {
+        "eval_count": 25,
+        "run_count": 75,
+        "mean_pass_rate": 0.6
+      },
+      "retrospective_replay": {
+        "eval_count": 6,
+        "run_count": 18,
+        "mean_pass_rate": 0.8611
+      },
+      "holdout_regression": {
+        "eval_count": 2,
+        "run_count": 6,
+        "mean_pass_rate": 1
+      }
+    },
+    "delta": {
+      "blind_pre_defect": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": 0.0533
+      },
+      "retrospective_replay": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": -0.0278
+      },
+      "holdout_regression": {
+        "eval_count_delta": 0,
+        "run_count_delta": 0,
+        "mean_pass_rate": -0.0833
+      }
+    }
+  },
+  "family_mode_scores": {
+    "primary": {
+      "blind_pre_defect": {
+        "docs": {
+          "run_count": 3,
+          "mean_pass_rate": 0.5
+        },
+        "export": {
+          "run_count": 9,
+          "mean_pass_rate": 0.7778
+        },
+        "modern-grid": {
+          "run_count": 12,
+          "mean_pass_rate": 0.75
+        },
+        "native-embedding": {
+          "run_count": 9,
+          "mean_pass_rate": 0.3889
+        },
+        "report-editor": {
+          "run_count": 24,
+          "mean_pass_rate": 0.75
+        },
+        "search-box-selector": {
+          "run_count": 6,
+          "mean_pass_rate": 0.5
+        },
+        "visualization": {
+          "run_count": 12,
+          "mean_pass_rate": 0.5833
+        }
+      },
+      "retrospective_replay": {
+        "report-editor": {
+          "run_count": 18,
+          "mean_pass_rate": 0.8333
+        }
+      },
+      "holdout_regression": {
+        "report-editor": {
+          "run_count": 6,
+          "mean_pass_rate": 0.9167
+        }
+      }
+    },
+    "reference": {
+      "blind_pre_defect": {
+        "docs": {
+          "run_count": 3,
+          "mean_pass_rate": 0.6667
+        },
+        "export": {
+          "run_count": 9,
+          "mean_pass_rate": 0.8333
+        },
+        "modern-grid": {
+          "run_count": 12,
+          "mean_pass_rate": 0.6667
+        },
+        "native-embedding": {
+          "run_count": 9,
+          "mean_pass_rate": 0.5
+        },
+        "report-editor": {
+          "run_count": 24,
+          "mean_pass_rate": 0.6667
+        },
+        "search-box-selector": {
+          "run_count": 6,
+          "mean_pass_rate": 0.5
+        },
+        "visualization": {
+          "run_count": 12,
+          "mean_pass_rate": 0.3333
+        }
+      },
+      "retrospective_replay": {
+        "report-editor": {
+          "run_count": 18,
+          "mean_pass_rate": 0.8611
+        }
+      },
+      "holdout_regression": {
+        "report-editor": {
+          "run_count": 6,
+          "mean_pass_rate": 1
+        }
+      }
+    },
+    "delta": {
+      "blind_pre_defect": {
+        "docs": {
+          "run_count_delta": 0,
+          "mean_pass_rate": -0.1667
+        },
+        "export": {
+          "run_count_delta": 0,
+          "mean_pass_rate": -0.0555
+        },
+        "modern-grid": {
+          "run_count_delta": 0,
+          "mean_pass_rate": 0.0833
+        },
+        "native-embedding": {
+          "run_count_delta": 0,
+          "mean_pass_rate": -0.1111
+        },
+        "report-editor": {
+          "run_count_delta": 0,
+          "mean_pass_rate": 0.0833
+        },
+        "search-box-selector": {
+          "run_count_delta": 0,
+          "mean_pass_rate": 0
+        },
+        "visualization": {
+          "run_count_delta": 0,
+          "mean_pass_rate": 0.25
+        }
+      },
+      "retrospective_replay": {
+        "report-editor": {
+          "run_count_delta": 0,
+          "mean_pass_rate": -0.0278
+        }
+      },
+      "holdout_regression": {
+        "report-editor": {
+          "run_count_delta": 0,
+          "mean_pass_rate": -0.0833
+        }
+      }
+    }
+  },
+  "decision": {
+    "result": "reject",
+    "reason": "One or more acceptance checks failed. Non-target family regressions: blind_pre_defect:docs(-0.1667), blind_pre_defect:export(-0.0555), blind_pre_defect:native-embedding(-0.1111)."
+  }
+}

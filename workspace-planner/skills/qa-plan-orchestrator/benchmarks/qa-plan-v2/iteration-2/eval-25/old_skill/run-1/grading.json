@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The outputs state that Phase 5b checkpoint artifacts are missing and therefore the benchmark focus cannot be validated: “there are no Phase 5b runtime artifacts (e.g., `checkpoint_audit`, `checkpoint_delta`, `qa_plan_phase5b` draft) to validate whether the orchestrator/phase5b checkpoint output actually covers the case focus (panel-stack composition, embedding lifecycle boundaries, visible failure/recovery outcomes)” and later “This establishes the feature is relevant to embedding, but it does not provide … any scenario list showing coverage of panel-stack/lifecycle/failure-recovery.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The result.md is explicitly framed as a Phase 5b checkpoint enforcement evaluation and uses Phase 5b contract/rubric references, listing required Phase 5b outputs and validators (checkpoint_audit, checkpoint_delta, qa_plan_phase5b draft) and concluding it cannot be demonstrated due to missing Phase 5b artifacts. This aligns the output to the Phase 5b primary phase scope, even though artifacts are absent."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

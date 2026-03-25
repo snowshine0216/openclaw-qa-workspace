@@ -3,7 +3,7 @@
 Use this checklist before returning any phase artifact.
 
 This is intentionally short and operational. For detailed reasoning, read:
-- `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md`
+- `references/validator-safe-authoring-and-dedup-guide.md`
 - relevant phase contract / rubric in `references/`
 
 ---

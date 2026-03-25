@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "result.md explicitly targets the focus: \"aligns with the Phase 6 contract and explicitly targets a final quality pass focused on layering and executable wording.\" It cites Phase 6 evidence for layering (\"review-rubric-phase6.md → Final Layering defines the required layering stack\") and executable wording (\"reference.md → Validators includes: validate_executable_steps\" and Phase 6 gate requires \"executable-step checks\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "result.md states \"Phase alignment: Phase 6 (Final Quality Pass)\" and concludes \"does align with the Phase 6 contract.\" execution_notes.md also notes it \"Verified primary phase = phase6 alignment via SKILL.md Phase 6 section and reference.md Phase 6 phase gate.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "result.md: \"Not demonstrably satisfied with provided evidence.\" and \"There is no phase5b output artifact ... to verify that shipment checkpoints actually cover the specific focus areas (highlight activation/persistence/deselection/interaction safety) for bar chart and heatmap.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "result.md: \"Not demonstrably satisfied with provided evidence.\" and \"No phase5b outputs are present in the evidence bundle, so alignment cannot be checked against the phase5b contract (required files, required sections, and final disposition routing).\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

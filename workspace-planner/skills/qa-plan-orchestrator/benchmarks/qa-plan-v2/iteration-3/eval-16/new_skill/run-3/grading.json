@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": false,
+      "evidence": "The output does not provide Phase 4a scenarios that cover the case focus; it states it cannot verify coverage due to missing artifacts: \"Therefore, we cannot verify that the orchestrator/phase4a writer produced an artifact that meets the Phase 4a contract or covers the case focus.\" It only lists what *should* be covered (\"styling variants\", \"interactions\", \"backward-compatible rendering outcomes\") without actually covering them in a produced QA plan."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The output explicitly states alignment cannot be demonstrated because required Phase 4a runtime artifacts are missing: \"Cannot be demonstrated / Blocked by missing Phase 4a runtime artifacts.\" and \"does not include any Phase 4a run outputs (e.g., `drafts/qa_plan_phase4a_r1.md`) ... Therefore, we cannot verify ... meets the Phase 4a contract\"."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

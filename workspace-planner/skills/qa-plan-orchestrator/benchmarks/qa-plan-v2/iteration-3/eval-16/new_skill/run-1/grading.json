@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "Explicitly addressed in both execution notes and the QA plan. execution_notes.md: \"Case focus explicitly covered: • Styling variants... • Interactions... • Backward-compatible rendering outcomes...\" result.md contains dedicated sections: \"Banding — styling variants (colors)\", \"Banding — interactions & rendering outcomes\", and a scenario \"Backward-compatible rendering outcome vs existing Modern Grid row-only banding behavior\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states: \"Primary phase under test: phase4a\" and \"Draft is subcategory-only\". result.md is structured as subcategory-only groupings (e.g., \"Banding — enablement & placement\", \"Banding — styling variants (colors)\") with nested action steps and observable verification leaves, consistent with the described phase4a contract."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

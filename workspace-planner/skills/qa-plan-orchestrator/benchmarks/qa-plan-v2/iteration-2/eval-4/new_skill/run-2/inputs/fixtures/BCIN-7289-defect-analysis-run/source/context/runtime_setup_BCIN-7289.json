@@ -1,0 +1,18 @@
+{
+  "run_key": "BCIN-7289",
+  "blocked": false,
+  "setup_entries": [
+    {
+      "source": "jira",
+      "status": "ok",
+      "command": "/Users/vizcitest/Documents/Repository/openclaw-qa-workspace/.agents/skills/jira-cli/scripts/jira-run.sh me",
+      "message": "Jira auth available"
+    },
+    {
+      "source": "github",
+      "status": "ok",
+      "command": "gh auth status",
+      "message": "GitHub auth available"
+    }
+  ]
+}

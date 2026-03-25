@@ -1,0 +1,19 @@
+{
+  "run_key": "BCIN-7289",
+  "raw_input": "BCIN-7289",
+  "route_kind": "reporter_scope_single_key",
+  "selected_mode": "proceed",
+  "overall_status": "complete",
+  "current_phase": 5,
+  "feature_keys": [
+    "BCIN-7289"
+  ],
+  "processed_features": 1,
+  "processed_defects": 26,
+  "processed_prs": 15,
+  "delegated_skill": null,
+  "delegated_run_dir": null,
+  "notification_status": "pending",
+  "report_final_at": "2026-03-21T01:11:33.230391Z",
+  "updated_at": "2026-03-21T01:11:33.230391Z"
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The run explicitly targets the focus (\"Focus: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned\") and checks those docs, but it cannot evaluate AGENTS alignment because \"AGENTS docs content not present in provided evidence\" and reports misalignment among provided docs (e.g., \"Status: Misaligned\" for SKILL.md ↔ reference.md and README.md ↔ reference.md). Therefore the expectation that the case focus is covered as an assessable aligned set is not met in evidence."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The primary phase under test is \"docs\" and the output produced is a docs-phase alignment audit: result.md is titled \"DOCS phase contract (advisory)\" and contains an alignment check plus remediation. It also states: \"Output aligns with primary phase docs: Yes (this deliverable is a docs-phase alignment check).\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

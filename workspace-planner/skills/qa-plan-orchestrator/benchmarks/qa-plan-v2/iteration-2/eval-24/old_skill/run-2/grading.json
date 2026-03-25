@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "In result.md under “Determination (Phase 1 contract, advisory)” it explicitly claims Phase 1 context intake preserves: “component-stack constraints… embedding lifecycle assumptions… integration-sensitive customer expectations”. It further expands each in “Case focus coverage” sections 1/2/3, including: “Context intake preserves component-stack constraints”, “Context intake preserves embedding lifecycle assumptions”, and “Context intake preserves integration-sensitive customer expectations”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md contains a dedicated “Phase 1 alignment (what Phase 1 must do)” section describing Phase 1 work/output/post-gate, and states: “This is aligned with the benchmark’s requirement that output aligns with primary phase `phase1` (i.e., it is about spawn manifest generation and intake constraints, not later coverage mapping or drafting).” execution_notes.md also says “Checks performed (phase1-focused)”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

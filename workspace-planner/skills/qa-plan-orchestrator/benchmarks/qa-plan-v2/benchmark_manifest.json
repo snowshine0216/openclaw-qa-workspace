@@ -1,6 +1,6 @@
 {
   "benchmark_version": "qa-plan-v2",
-  "status": "frozen_matrix_not_yet_executed",
+  "status": "frozen_matrix_executed",
   "skill_name": "qa-plan-orchestrator",
   "skill_path": "workspace-planner/skills/qa-plan-orchestrator",
   "benchmark_scope": "global",
@@ -75,5 +75,6 @@
     "require_no_holdout_regression": true,
     "require_non_decreasing_blind_score": true,
     "require_non_decreasing_replay_score": true
-  }
+  },
+  "executed_at": "2026-03-22T10:00:23.238Z"
 }

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly states the case focus and ties it to Phase 7: \"Case focus: Promotion/finalization behavior remains stable on another feature.\" It then explains Phase 7 semantics and applies them to the holdout feature BCIN-976: \"ensure the orchestrator contract does not drift ... when run against an unrelated feature (BCIN-976)\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md and result.md both align to the holdout checkpoint: \"Benchmark primary phase/checkpoint: holdout.\" and \"Primary phase under test: Holdout\". The output frames the work as a \"phase-model alignment check\" rather than executing other phases, matching the stated holdout evidence mode."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

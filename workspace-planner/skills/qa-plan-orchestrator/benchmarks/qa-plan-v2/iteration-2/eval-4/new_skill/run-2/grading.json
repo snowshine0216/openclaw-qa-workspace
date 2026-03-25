@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "result.md explicitly marks this expectation as not met: “Retrospective verdict for Expectation A: NOT SATISFIED (blocking)… Phase 4a output did not consistently render window-title and other observable outcomes as explicit scenarios with concrete verification leaves, leading directly to defects such as BCIN-7733.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md states it cannot verify phase4a alignment due to missing required phase4a draft artifact: “Retrospective verdict for Expectation B: INDETERMINATE FROM PROVIDED ARTIFACTS… cannot directly validate that an actual phase4a draft artifact was produced and conforms to the structure rules because the required draft file is not present.” Since the expectation requires alignment, and the provided outputs do not demonstrate it, this expectation is not met."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

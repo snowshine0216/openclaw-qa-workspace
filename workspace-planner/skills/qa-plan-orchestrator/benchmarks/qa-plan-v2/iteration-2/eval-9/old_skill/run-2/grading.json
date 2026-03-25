@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": true,
+      "evidence": "execution_notes.md and result.md explicitly cover the case focus and evaluate it: result.md states, \"This benchmark checks phase5b checkpoint enforcement, specifically that historical analogs become required-before-ship gates\" and cites the Phase 5b contract: \"Historical analogs that remain relevant must be rendered as explicit [ANALOG-GATE] entries...\" The output then assesses retrospective evidence that enforcement was missed (i18n/locale gate), concluding FAIL (blocking), which still demonstrates explicit case-focus coverage."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is centered on Phase 5b requirements and evidence: it quotes `review-rubric-phase5b.md` for required artifacts and `[ANALOG-GATE]` enforcement, and ties the failure to retrospective evidence explicitly labeled \"Missed in Phase 5b\" (BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md). result.md includes a dedicated section \"Phase alignment check (phase5b)\" confirming Phase 5b alignment."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

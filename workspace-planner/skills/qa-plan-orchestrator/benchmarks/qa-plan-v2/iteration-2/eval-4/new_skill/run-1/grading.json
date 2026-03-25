@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "The provided outputs contain only an evaluation narrative (result.md) and do not include any Phase 4a generated plan/scenario artifact (e.g., drafts/qa_plan_phase4a_r*.md) showing that SDK/API-visible outcomes (like window title) were turned into explicit scenarios with observable verification leaves. result.md itself notes this limitation: \"No Phase 4a output artifact (`drafts/qa_plan_phase4a_r*.md`) is included... cannot confirm an actual generated draft contains the required explicit scenarios\". Therefore the expectation is not evidenced by the output files."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is explicitly framed as a Phase 4a evaluation: title \"P4A-SDK-CONTRACT-001 — Phase 4a Benchmark Evaluation\" and it states \"Primary phase under test: phase4a\". The content focuses on Phase 4a contract requirements and phase alignment, so the output aligns to phase4a (even though it does not include the actual Phase 4a draft artifact)."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

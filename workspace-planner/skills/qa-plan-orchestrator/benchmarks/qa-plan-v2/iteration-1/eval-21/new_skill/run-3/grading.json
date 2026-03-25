@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+      "passed": true,
+      "evidence": "In result.md under “1) … Case focus is explicitly covered”, the output explicitly separates “Contextual-link styling/affordance …” from “Ordinary/non-link grid cell rendering …” and ties this to the feature evidence (“blue/underlined hyperlink styling + indicator icon” vs non-link cells should not appear like a hyperlink)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md declares “Primary phase under test - phase4a” and then lists phase4a alignment requirements (“Subcategory-only… Scenario-driven… Atomic nested action chain… Observable verification leaves”) and assesses alignment, emphasizing no Phase 4b canonical/top-category grouping."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

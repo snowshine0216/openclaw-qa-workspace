@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
+      "passed": true,
+      "evidence": "result.md cites Phase 3 requirements explicitly: from skill_snapshot/SKILL.md policy statement “report-editor deep research must run `tavily-search` first and use `confluence` only as a recorded fallback”, and reference.md encodes `task.json.deep_research_policy = tavily_first_confluence_second` plus a rule that “`tavily-search` must run before any `confluence` fallback and the fallback reason must be recorded.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
+      "passed": true,
+      "evidence": "result.md asserts and supports that the ordering requirement is embedded in Phase 3 work and Phase 3 --post validation gate (quotes: Phase 3 “spawn Tavily-first deep-research requests …” and Phase 3 --post “validate … Tavily-first research artifacts, optional Confluence fallback ordering …”), and references Phase 3 artifacts/gates from reference.md."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

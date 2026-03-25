@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": false,
+      "evidence": "The run output states the rubric specifies the analog gate requirement but that enforcement is not demonstrably satisfied due to missing Phase 5b artifacts: result.md: \"FAIL — checkpoint enforcement is not demonstrably satisfied for 'historical analogs become required-before-ship gates' at Phase 5b\" and \"we cannot confirm the orchestrator produced the Phase 5b artifacts that actually apply/enforce it\"; also notes missing checkpoint_audit/checkpoint_delta/qa_plan_phase5b draft/coverage ledger needed to show [ANALOG-GATE] items."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The output explicitly concludes phase5b alignment is not met because required phase5b deliverables are absent: result.md: \"NO. No Phase 5b deliverables (`checkpoint_audit`, `checkpoint_delta`, `qa_plan_phase5b` draft) are present in the benchmark evidence.\" Execution notes similarly: \"Confirmed these Phase 5b artifacts are not present in the evidence.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

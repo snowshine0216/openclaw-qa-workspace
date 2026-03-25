@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The output explicitly notes AGENTS docs were not provided and cannot be validated: \"AGENTS docs (not provided in evidence bundle)\" and \"alignment including AGENTS docs cannot be validated\" / \"AGENTS alignment is unverified\". While SKILL.md/README.md/reference.md alignment is covered, the full case focus (including AGENTS docs) is not fully covered/verified."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The result asserts consistency among the primary docs under test and provides doc-to-doc alignment checks (responsibilities, phase model 0–7, artifacts, spawn manifest contract). E.g., \"Status: aligned across `SKILL.md` / `reference.md` / `README.md`\" and detailed sections 1–5 showing alignment with SKILL.md/reference.md/README.md."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

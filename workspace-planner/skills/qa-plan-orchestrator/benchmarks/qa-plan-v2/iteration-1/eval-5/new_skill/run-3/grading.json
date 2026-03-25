@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "In result.md under “Case focus (must be explicitly covered)”: “Missing scenario generation for: 1) template-save 2) report-builder loading”. It then explicitly covers both with sections “A) Template-save...” and “B) Report-builder loading...”, plus “Minimal scenario coverage...” entries for each."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md repeatedly anchors to Phase 4a and its contract: “Primary phase: Phase 4a (subcategory-only scenario draft generation)” and “Per the Phase 4a contract, Phase 4a must produce a subcategory-first draft with: scenario chains... observable verification leaves... no top-layer canonical categories”. The provided “Minimal scenario coverage...” is written in a subcategory-first style and calls out required scenario chains and observable verification leaves, consistent with phase4a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

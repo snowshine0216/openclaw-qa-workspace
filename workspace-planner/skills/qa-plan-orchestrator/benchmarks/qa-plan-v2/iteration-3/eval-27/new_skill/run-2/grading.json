@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": true,
+      "evidence": "The output explicitly enumerates the case-focus items under “Case-focus coverage expected to appear explicitly in Phase 5b artifacts (advisory checkpoints)”, listing “Hyperlink styling distinguishability”, “Contextual navigation behavior”, and “Fallback rendering safety” with sub-bullets."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md repeatedly anchors to Phase 5b (e.g., “Primary phase under test: Phase 5b”, and “What would be required... (Phase 5b-aligned)” listing Phase 5b required artifacts like `context/checkpoint_audit_BCIN-7547.md`, `context/checkpoint_delta_BCIN-7547.md`, `drafts/qa_plan_phase5b_r<round>.md`, plus the Phase 5b disposition requirement). execution_notes.md also lists the Phase 5b required outputs and notes inability to verify them due to missing artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

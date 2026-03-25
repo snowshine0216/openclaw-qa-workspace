@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "The provided outputs do not include any shipment-checkpoint artifact content demonstrating explicit coverage of the three focus areas. execution_notes.md states: \"No run directory artifacts were provided (no `context/checkpoint_audit_BCED-1719.md`, no `context/checkpoint_delta_BCED-1719.md`, no Phase 5b draft...)\" and result.md concludes there is \"no artifact where such coverage would be explicitly enumerated\" for panel-stack composition, embedding lifecycle boundaries, or visible failure/recovery outcomes."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Phase 5b alignment requires producing Phase 5b outputs (checkpoint_audit, checkpoint_delta with final disposition, and phase5b QA plan draft). result.md states: \"None of the required Phase 5b artifacts are present\" and execution_notes.md reiterates missing `context/checkpoint_audit_BCED-1719.md`, `context/checkpoint_delta_BCED-1719.md`, and Phase 5b draft; therefore the outputs cannot be considered aligned with phase5b requirements."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

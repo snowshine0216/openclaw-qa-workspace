@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: blind shipment checkpoint covers prompt lifecycle, template flow, builder loading, and close or save decision safety",
+      "passed": false,
+      "evidence": "The provided outputs do not contain Phase 5b checkpoint artifacts demonstrating coverage of the focus areas. result.md explicitly states: \"Not demonstrated. No Phase 5b checkpoint audit/delta/draft artifacts are provided for BCIN-7289, so we cannot confirm those areas were checkpoint-audited or gated.\" Execution notes also list missing artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b, spawn manifest), preventing verification of explicit checkpoint coverage for prompt lifecycle, template flow, builder loading, and close/save safety."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Outputs do not align with Phase 5b required deliverables; they only describe what would be required and note missing Phase 5b artifacts. result.md states: \"Not demonstrated. The Phase 5b-required output artifacts do not exist in the evidence bundle.\" execution_notes.md similarly reports missing Phase 5b run artifacts and marks FAIL due to inability to confirm Phase 5b checkpoint enforcement."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": false,
+      "evidence": "The produced result states it cannot verify explicit coverage because required Phase 4a artifacts are missing: \"we do not have the Phase 4a required inputs/outputs (e.g., coverage ledger, artifact lookup, or a `drafts/qa_plan_phase4a_r1.md`). Therefore, we cannot verify whether the orchestrator workflow produced a Phase 4a draft that covers banding scenarios as required\". It only anchors scope from Jira (columns, colors, row/column header, report parity) but does not provide scenario coverage distinguishing variants/interactions/rendering outcomes."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "No Phase 4a draft artifact is present and the output explicitly says Phase 4a alignment cannot be demonstrated: \"we do not have the Phase 4a required inputs/outputs... Therefore, we cannot verify... whether it adheres to the Phase 4a contract constraints\" and lists missing required artifacts (artifact lookup, coverage ledger, drafts/qa_plan_phase4a_r1.md)."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

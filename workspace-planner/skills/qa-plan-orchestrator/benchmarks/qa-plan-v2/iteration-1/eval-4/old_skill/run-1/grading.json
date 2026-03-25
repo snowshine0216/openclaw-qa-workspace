@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": true,
+      "evidence": "In result.md, the run explicitly covers the case focus by citing the Phase 4a contract requirement and tying it to the defect replay: it quotes “SDK/API visible outcomes must remain testable in scenario leaves, not hidden behind implementation wording.” It also explicitly calls out window title as the concrete missing observable outcome from fixture evidence (e.g., “lacks the verification leaf ensuring the window title exactly matches…”), and enumerates window-title scenarios under “Explicit Phase 4a scenario set required…”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The output asserts only “PASS at contract level” and repeatedly notes the Phase 4a draft artifact is missing: execution_notes.md says “No Phase 4a generated draft artifact… Therefore… only demonstrate contract-level compliance,” and result.md says “No `drafts/qa_plan_phase4a_r<round>.md` is present… so we cannot assert a specific draft’s compliance.” Because alignment to phase4a requires the produced artifact to match the phase4a contract, and no phase4a draft is provided/validated, this expectation is not met by the available outputs."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

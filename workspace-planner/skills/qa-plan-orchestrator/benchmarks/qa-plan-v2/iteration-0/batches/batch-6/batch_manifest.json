@@ -1,0 +1,203 @@
+{
+  "batch": {
+    "batch_number": 6,
+    "label": "holdout-regression",
+    "goal": "holdout regression guardrail",
+    "eval_ids": [
+      13,
+      14
+    ]
+  },
+  "summary": {
+    "task_count": 2,
+    "run_count": 12,
+    "completed_run_count": 12,
+    "pending_run_count": 0
+  },
+  "tasks": [
+    {
+      "eval_id": 13,
+      "eval_name": "holdout-regression-001",
+      "case_id": "HOLDOUT-REGRESSION-001",
+      "feature_id": "BCIN-6709",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "embedding-dashboard-editor-compare-result"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": null,
+      "blind_policy": null,
+      "prompt": "Benchmark case HOLDOUT-REGRESSION-001 for qa-plan-orchestrator. Use feature BCIN-6709 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: embedding-dashboard-editor-compare-result. Focus: skill improvements for report-editor do not regress a different feature planning flow. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+        "[holdout_regression][blocking] Output aligns with primary phase holdout"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-13/with_skill/run-1/outputs",
+          "run_dir": "eval-13/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-13/with_skill/run-2/outputs",
+          "run_dir": "eval-13/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-13/with_skill/run-3/outputs",
+          "run_dir": "eval-13/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-13/without_skill/run-1/outputs",
+          "run_dir": "eval-13/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-13/without_skill/run-2/outputs",
+          "run_dir": "eval-13/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-13/without_skill/run-3/outputs",
+          "run_dir": "eval-13/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-13/with_skill/run-1/outputs",
+        "run_dir": "eval-13/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case HOLDOUT-REGRESSION-001 with the current champion skill snapshot loaded. Save outputs under eval-13/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-13/without_skill/run-1/outputs",
+        "run_dir": "eval-13/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case HOLDOUT-REGRESSION-001 without the skill as the baseline. Save outputs under eval-13/without_skill/run-1/outputs."
+      }
+    },
+    {
+      "eval_id": 14,
+      "eval_name": "holdout-regression-002",
+      "case_id": "HOLDOUT-REGRESSION-002",
+      "feature_id": "BCIN-976",
+      "feature_family": "report-editor",
+      "knowledge_pack_key": "report-editor",
+      "primary_phase": "holdout",
+      "kind": "holdout_regression",
+      "evidence_mode": "holdout_regression",
+      "blocking": true,
+      "fixture_refs": [
+        "BCIN-976-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": null,
+      "blind_policy": null,
+      "prompt": "Benchmark case HOLDOUT-REGRESSION-002 for qa-plan-orchestrator. Use feature BCIN-976 as the primary benchmark feature. Feature family: report-editor. Knowledge pack: report-editor. Primary phase/checkpoint under test: holdout. Case family: holdout regression. Evidence mode: holdout regression. Priority: blocking. Benchmark profile: global-cross-feature-v1. Fixture references: BCIN-976-blind-pre-defect-bundle. Focus: promotion/finalization behavior remains stable on another feature. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+        "[holdout_regression][blocking] Output aligns with primary phase holdout"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-14/with_skill/run-1/outputs",
+          "run_dir": "eval-14/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-14/with_skill/run-2/outputs",
+          "run_dir": "eval-14/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-14/with_skill/run-3/outputs",
+          "run_dir": "eval-14/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-14/without_skill/run-1/outputs",
+          "run_dir": "eval-14/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-14/without_skill/run-2/outputs",
+          "run_dir": "eval-14/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-14/without_skill/run-3/outputs",
+          "run_dir": "eval-14/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-14/with_skill/run-1/outputs",
+        "run_dir": "eval-14/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case HOLDOUT-REGRESSION-002 with the current champion skill snapshot loaded. Save outputs under eval-14/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-14/without_skill/run-1/outputs",
+        "run_dir": "eval-14/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case HOLDOUT-REGRESSION-002 without the skill as the baseline. Save outputs under eval-14/without_skill/run-1/outputs."
+      }
+    }
+  ]
+}

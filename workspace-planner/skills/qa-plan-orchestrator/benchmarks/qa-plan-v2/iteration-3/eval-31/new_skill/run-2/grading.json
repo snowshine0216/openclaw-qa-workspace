@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "In result.md, scenarios explicitly distinguish dashboard-level export path: “Dashboard-level Google Sheets export uses the dashboard path (not the library/document export path)”. It covers option combinations under “Google Sheets export (Dashboards) — Option combinations” including default, non-default, and invalid/unsupported validation. It covers visible completion outcomes under “Completion outcomes & error handling” including success, cancel (“does not show success”), failure (“visible failure outcome and does not show success”), and retry."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is titled “Phase 4a — Scenario Draft” and follows a subcategory-first structure (e.g., “Google Sheets export (Dashboards)”, “— Option combinations”, “— Completion outcomes & error handling”) with nested, stepwise scenarios ending in observable verification leaves (e.g., “A visible completion outcome appears”, “The export action is blocked/disabled”). It avoids canonical top-layer groupings and includes a phase4a-focused execution summary confirming contract style."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

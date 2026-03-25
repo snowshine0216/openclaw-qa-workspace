@@ -143,9 +143,18 @@ export async function main(argv = process.argv.slice(2)) {
   const acceptedGapIds = existsSync(acceptedGapIdsPath)
     ? JSON.parse(readFileSync(acceptedGapIdsPath, 'utf8')).gap_ids ?? []
     : [];
+  const rejectedMutationSignaturesPath = join(
+    runRoot,
+    'context',
+    `rejected_mutation_signatures_${runKey}.json`,
+  );
+  const rejectedMutationSignatures = existsSync(rejectedMutationSignaturesPath)
+    ? JSON.parse(readFileSync(rejectedMutationSignaturesPath, 'utf8')).signatures ?? []
+    : [];
   const selected = selectNextMutation({
     mutations,
     addressedGapIds: acceptedGapIds,
+    rejectedMutationSignatures,
   }) ?? mutations[0] ?? null;
 
   if (!selected) {

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the case focus and explains the anti-silent-drop mechanism: “Phase 5a contract/rubric explicitly enforces coverage preservation and requires a Coverage Preservation Audit that enumerates affected nodes with plan path + evidence source + disposition… These Phase 5a requirements mean evidence-backed nodes cannot be removed without being surfaced in the audit trail; if they were removed or weakened, the Coverage Preservation Audit + acceptance gate would force an explicit accounting and block acceptance.” It also quotes the policy: “Do not remove, defer, or move a concern to Out of Scope … unless source evidence or explicit user direction requires it.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md is Phase 5a-specific throughout: it states “Primary phase under test: Phase 5a” and ties controls to Phase 5a artifacts and validators (e.g., required “context/review_notes_<feature-id>.md” with “## Coverage Preservation Audit”, “Phase 5a --post requirements”, and “Phase 5a Acceptance Gate”). execution_notes.md also frames the evaluation as verifying “Phase 5a responsibilities and --post validators” and “explicit Coverage Preservation Audit requirements + acceptance gate.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

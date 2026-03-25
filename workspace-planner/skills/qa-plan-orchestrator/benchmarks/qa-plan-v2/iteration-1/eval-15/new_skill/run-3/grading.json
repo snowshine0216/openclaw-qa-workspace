@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": false,
+      "evidence": "The output explicitly states the required Phase 4a plan artifacts are missing and therefore coverage of the case focus cannot be verified: \"Not demonstrable from provided evidence (blocked).\" and \"Without those artifacts, we cannot verify... that the plan content explicitly covers the benchmark focus: panel-stack composition, embedding lifecycle, regression-sensitive integration states.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The result is framed as a Phase 4a contract check and consistently references Phase 4a requirements and artifacts: title \"Phase 4a Advisory Contract Check\", \"Primary phase under test: phase4a\", and it cites Phase 4a contract expectations (e.g., \"subcategory-only QA draft\" and required Phase 4a files like \"phase4a_spawn_manifest.json\" and \"drafts/qa_plan_phase4a_r1.md\")."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "result.md states the required Phase 5b artifacts are missing, so explicit checkpoint coverage cannot be verified: \"there is no Phase 5b run output (no `checkpoint_audit`, `checkpoint_delta`, or `qa_plan_phase5b` draft) to verify that the shipment checkpoint review/refactor actually audited and enforced those behaviors.\" It further maps exp-1 as \"Not verifiable\" due to missing Phase 5b artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "result.md explicitly marks this as not satisfied: \"Output aligns with primary phase phase5b: Not satisfied (no Phase 5b outputs available to review).\" execution_notes.md also notes: \"Missing Phase 5b outputs in the evidence bundle\" and therefore alignment cannot be confirmed."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

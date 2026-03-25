@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": false,
+      "evidence": "In result.md the run concludes these interactions were missed rather than explicitly covered/enforced: “Therefore, the Phase 5a cross-section interaction audit did not catch … the *template × pause-mode* scenario chain.” and “the plan missed coverage around the **prompt-editor-open** state… Verdict: **FAIL (blocking).**” Execution notes also state: “Blocking expectation not met… misses in cross-section interactions involving template × pause mode … and prompt-editor-open … behavior.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md is explicitly framed as Phase 5a and evaluates Phase 5a rubric requirements: “Primary phase under test: **Phase 5a**” and “Per `references/review-rubric-phase5a.md`, Phase 5a review notes must include `## Cross-Section Interaction Audit`…”. It also records: “Verdict: **PASS (alignment confirmed)**” for Expectation 2."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "In result.md the subcategory and scenarios explicitly cover (a) dashboard-level export paths/entrypoints: “Dashboard: export to Google Sheets from dashboard toolbar vs overflow menu…”, (b) option combinations: “Dashboard: export option combinations — toggling options…” and “invalid/unsupported combination…”, and (c) visible completion outcomes: success, cancel, failure, retry, long-running progress, and navigate-away discoverability (“A visible completion outcome appears…”, “user cancels…”, “visible failure outcome…”, “retry…success…”, “long-running export shows progress…”, “completion outcome is still discoverable”). Execution notes also state this focus was “Explicitly covered”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The produced artifact is titled “Phase 4a — Scenario Draft (Subcategory-only)” and uses the required phase4a structure: subcategory → scenarios → nested atomic steps → observable verification leaves (e.g., indicators/toasts/links). It avoids forbidden top-level groupings, as noted in execution_notes.md: “Produced a subcategory-only scenario draft…” and “Avoided forbidden Phase 4a structures (no canonical top-layer groupings like Security/Compatibility/E2E).”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "family": {
+    "feature_family": "native-embedding",
+    "label": "native-embedding",
+    "goal": "feature-family focus: native-embedding"
+  },
+  "summary": {
+    "task_count": 3,
+    "run_count": 18,
+    "completed_run_count": 18,
+    "pending_run_count": 0
+  },
+  "tasks": [
+    {
+      "eval_id": 15,
+      "eval_name": "ne-p4a-component-stack-001",
+      "case_id": "NE-P4A-COMPONENT-STACK-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase4a",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": "BCED-1719-blind-pre-defect-bundle",
+      "blind_policy": {
+        "cutoff_policy": "all_customer_issues_only",
+        "issue_scope": {
+          "include_issue_classes": [
+            "customer"
+          ],
+          "exclude_issue_classes": [
+            "non_customer"
+          ]
+        }
+      },
+      "prompt": "Benchmark case NE-P4A-COMPONENT-STACK-001 for qa-plan-orchestrator. Use feature BCED-1719 as the primary benchmark feature. Feature family: native-embedding. Knowledge pack: native-embedding. Primary phase/checkpoint under test: phase4a. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-1719-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+        "[phase_contract][advisory] Output aligns with primary phase phase4a"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-15/with_skill/run-1/outputs",
+          "run_dir": "eval-15/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-15/with_skill/run-2/outputs",
+          "run_dir": "eval-15/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-15/with_skill/run-3/outputs",
+          "run_dir": "eval-15/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-15/without_skill/run-1/outputs",
+          "run_dir": "eval-15/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-15/without_skill/run-2/outputs",
+          "run_dir": "eval-15/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-15/without_skill/run-3/outputs",
+          "run_dir": "eval-15/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-15/with_skill/run-1/outputs",
+        "run_dir": "eval-15/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P4A-COMPONENT-STACK-001 with the current champion skill snapshot loaded. Save outputs under eval-15/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-15/without_skill/run-1/outputs",
+        "run_dir": "eval-15/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P4A-COMPONENT-STACK-001 without the skill as the baseline. Save outputs under eval-15/without_skill/run-1/outputs."
+      }
+    },
+    {
+      "eval_id": 24,
+      "eval_name": "ne-p1-context-intake-001",
+      "case_id": "NE-P1-CONTEXT-INTAKE-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase1",
+      "kind": "phase_contract",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": "BCED-1719-blind-pre-defect-bundle",
+      "blind_policy": {
+        "cutoff_policy": "all_customer_issues_only",
+        "issue_scope": {
+          "include_issue_classes": [
+            "customer"
+          ],
+          "exclude_issue_classes": [
+            "non_customer"
+          ]
+        }
+      },
+      "prompt": "Benchmark case NE-P1-CONTEXT-INTAKE-001 for qa-plan-orchestrator. Use feature BCED-1719 as the primary benchmark feature. Feature family: native-embedding. Knowledge pack: native-embedding. Primary phase/checkpoint under test: phase1. Case family: phase contract. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-1719-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+        "[phase_contract][advisory] Output aligns with primary phase phase1"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-24/with_skill/run-1/outputs",
+          "run_dir": "eval-24/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-24/with_skill/run-2/outputs",
+          "run_dir": "eval-24/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-24/with_skill/run-3/outputs",
+          "run_dir": "eval-24/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-24/without_skill/run-1/outputs",
+          "run_dir": "eval-24/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-24/without_skill/run-2/outputs",
+          "run_dir": "eval-24/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-24/without_skill/run-3/outputs",
+          "run_dir": "eval-24/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-24/with_skill/run-1/outputs",
+        "run_dir": "eval-24/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P1-CONTEXT-INTAKE-001 with the current champion skill snapshot loaded. Save outputs under eval-24/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-24/without_skill/run-1/outputs",
+        "run_dir": "eval-24/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P1-CONTEXT-INTAKE-001 without the skill as the baseline. Save outputs under eval-24/without_skill/run-1/outputs."
+      }
+    },
+    {
+      "eval_id": 25,
+      "eval_name": "ne-p5b-checkpoint-001",
+      "case_id": "NE-P5B-CHECKPOINT-001",
+      "feature_id": "BCED-1719",
+      "feature_family": "native-embedding",
+      "knowledge_pack_key": "native-embedding",
+      "primary_phase": "phase5b",
+      "kind": "checkpoint_enforcement",
+      "evidence_mode": "blind_pre_defect",
+      "blocking": false,
+      "fixture_refs": [
+        "BCED-1719-blind-pre-defect-bundle"
+      ],
+      "benchmark_profile": "global-cross-feature-v1",
+      "blind_fixture_id": "BCED-1719-blind-pre-defect-bundle",
+      "blind_policy": {
+        "cutoff_policy": "all_customer_issues_only",
+        "issue_scope": {
+          "include_issue_classes": [
+            "customer"
+          ],
+          "exclude_issue_classes": [
+            "non_customer"
+          ]
+        }
+      },
+      "prompt": "Benchmark case NE-P5B-CHECKPOINT-001 for qa-plan-orchestrator. Use feature BCED-1719 as the primary benchmark feature. Feature family: native-embedding. Knowledge pack: native-embedding. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCED-1719-blind-pre-defect-bundle. Blind evidence policy: use customer issues only under all_customer_issues_only. Blind evidence policy: exclude non-customer issues. Focus: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+      "expectations": [
+        "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+        "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b"
+      ],
+      "runs_per_configuration": 3,
+      "with_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-25/with_skill/run-1/outputs",
+          "run_dir": "eval-25/with_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-25/with_skill/run-2/outputs",
+          "run_dir": "eval-25/with_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-25/with_skill/run-3/outputs",
+          "run_dir": "eval-25/with_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "without_skill_runs": [
+        {
+          "run_number": 1,
+          "output_dir": "eval-25/without_skill/run-1/outputs",
+          "run_dir": "eval-25/without_skill/run-1",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 2,
+          "output_dir": "eval-25/without_skill/run-2/outputs",
+          "run_dir": "eval-25/without_skill/run-2",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        },
+        {
+          "run_number": 3,
+          "output_dir": "eval-25/without_skill/run-3/outputs",
+          "run_dir": "eval-25/without_skill/run-3",
+          "has_outputs": true,
+          "has_grading": true,
+          "has_timing": true,
+          "status": "completed"
+        }
+      ],
+      "with_skill": {
+        "output_dir": "eval-25/with_skill/run-1/outputs",
+        "run_dir": "eval-25/with_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P5B-CHECKPOINT-001 with the current champion skill snapshot loaded. Save outputs under eval-25/with_skill/run-1/outputs."
+      },
+      "without_skill": {
+        "output_dir": "eval-25/without_skill/run-1/outputs",
+        "run_dir": "eval-25/without_skill/run-1",
+        "instruction": "Execute qa-plan-orchestrator benchmark case NE-P5B-CHECKPOINT-001 without the skill as the baseline. Save outputs under eval-25/without_skill/run-1/outputs."
+      }
+    }
+  ]
+}

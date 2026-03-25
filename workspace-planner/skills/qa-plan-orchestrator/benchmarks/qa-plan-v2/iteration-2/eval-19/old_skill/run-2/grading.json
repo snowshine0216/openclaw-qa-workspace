@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": false,
+      "evidence": "result.md states the required focus but does not provide the Phase 4a plan content to verify it is explicitly covered: \"there is no Phase 4a artifact ... to confirm that these scenarios are authored\" and concludes \"Not satisfied (insufficient evidence).\" The listed \"Minimal Phase 4a scenario set\" is an evaluation criterion/example, not confirmed coverage in an output plan."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "Both execution_notes.md and result.md indicate Phase 4a alignment cannot be demonstrated due to missing Phase 4a deliverable: execution_notes.md: \"Could not verify because Phase 4a output ... is not present.\" result.md: \"Because the Phase 4a draft artifact is not included in evidence, alignment to phase4a cannot be demonstrated.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The output explicitly covers SKILL.md/README.md/reference.md alignment but cannot cover AGENTS docs due to missing evidence: execution_notes.md says \"**AGENTS docs** were not included in the provided evidence bundle... cannot be verified.\" result.md also flags \"AGENTS docs (not present in provided evidence)\" and \"Not assessable from provided evidence.\" Additionally, it finds a README↔reference mismatch about developer_smoke_test_<feature-id>.md, so full alignment is not satisfied."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The report stays within the docs-phase contract and uses the provided primary docs as authoritative sources (SKILL.md, README.md, reference.md). It evaluates consistency and identifies a specific misalignment rather than contradicting the phase docs: result.md states it is a \"Docs phase contract alignment check\" and bases findings on cross-checking those documents, e.g., \"SKILL.md ↔ reference.md... Aligned\" and flags one README↔reference artifact-family mismatch without introducing conflicting requirements."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

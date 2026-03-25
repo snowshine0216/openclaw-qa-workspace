@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": true,
+      "evidence": "The output explicitly addresses the case focus by stating Phase 5b’s rubric requires it and discussing the need for evidence of enforcement: result.md says the rubric states “historical analogs must become explicit required-before-ship gates (`[ANALOG-GATE]`)…” and repeats under “What phase5b is required to enforce” that “Historical analogs… must be rendered as explicit `[ANALOG-GATE]` entries…”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is centered on phase5b checkpoint enforcement and phase5b artifact requirements: execution_notes.md section “What was checked (phase5b checkpoint enforcement)” lists phase5b required artifacts; result.md includes “Phase alignment check” with “Primary phase under test: phase5b” and explains failure due to missing “Required phase5b outputs.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

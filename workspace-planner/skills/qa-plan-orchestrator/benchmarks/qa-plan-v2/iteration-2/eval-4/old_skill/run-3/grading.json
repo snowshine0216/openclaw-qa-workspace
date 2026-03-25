@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "In result.md, the run explicitly concludes the opposite: “Expectation A … **FAIL (blocking)** … Phase4a … **failed to make SDK/UI visible outcomes explicit** (notably **window title**) in scenario verification leaves.” It cites replay evidence: “BCIN-7289_SELF_TEST_GAP_ANALYSIS.md explicitly states the prior generated QA plan missed verification leaves for: **Window title correctness** (BCIN-7733) … and **Single loading indicator** (BCIN-7668).”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md states “Expectation B — … Output aligns with primary phase phase4a — **PASS (scope alignment)**” and supports it: “The identified gap is explicitly traced to **Phase 4a responsibility** … The remediation requirement is also phase4a-specific per contract language (observable leaves; SDK-visible outcomes testable as leaves).”"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

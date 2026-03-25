@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": true,
+      "evidence": "The output explicitly covers the required donut-label assumptions as the case focus, naming all three: \"preserves donut-label assumptions for: - label visibility - density limits - overlap-sensitive presentation\" and further states Phase 1 would need to capture them in \"spawn task text / manifest source routing\" or \"resulting context artifacts\". Although it cannot be demonstrated due to missing artifacts, the case focus is explicitly addressed."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The result.md is framed around Phase 1 contract requirements and missing Phase 1 artifacts, explicitly stating: \"This result is Phase 1 aligned\" and discussing Phase 1 outputs like \"phase1_spawn_manifest.json\" and Phase 1 context artifacts under \"context/\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

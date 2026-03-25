@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly frames and addresses the case focus: \"**Case focus:** canonical top-layer grouping **without collapsing scenarios**\" and reiterates the evaluation target: \"whether phase4b’s output demonstrates canonical top-layer grouping without collapsing scenarios\". It also cites the anti-compression requirement: \"**Preserving scenario granularity (anti-compression):** do **not** merge scenarios...\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "result.md is structured around the phase4b contract and phase4b obligations (canonical taxonomy, anti-compression, required artifacts): \"# Benchmark Evaluation — P4B-LAYERING-001 (phase4b)\" and \"What phase4b must do (per provided contract)\" referencing `references/phase4b-contract.md`. execution_notes.md likewise states: \"Checked the phase4b contract requirements and canonical-top-layer rules\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

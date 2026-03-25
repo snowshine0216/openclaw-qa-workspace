@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the required trio: it states the benchmark focus is “heatmap highlighting effect scenarios cover activation, persistence, and reset behavior” and provides a “Minimal Phase 4a scenario set” with separate bullets for “Activation”, “Persistence”, and “Reset”, including example checks under each."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md explicitly asserts and justifies phase4a alignment: “Output aligns with primary phase = phase4a” and “The benchmark’s primary checkpoint is phase4a, and the provided contract is specifically Phase 4a… The expected artifact at this checkpoint is: drafts/qa_plan_phase4a_r<round>.md”. execution_notes.md also states it verified “phase4a alignment using references/phase4a-contract.md”."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

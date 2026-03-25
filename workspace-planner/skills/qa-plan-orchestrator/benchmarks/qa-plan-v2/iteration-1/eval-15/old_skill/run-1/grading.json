@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: single embedding component planning covers panel-stack composition, embedding lifecycle, and regression-sensitive integration states",
+      "passed": true,
+      "evidence": "In result.md under “What this benchmark is checking (phase4a focus)”, the output explicitly lists the required focus items: “Single embedding component planning” and “panel-stack composition”, “embedding lifecycle”, “regression-sensitive integration states”. It further elaborates in section “2) Phase4a structure supports the benchmark’s case focus...” with example subcategories and scenario types for each of those three areas."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The verdict states “Pass (advisory) for the phase4a contract alignment.” Result.md section “1) Phase4a is the correct primary alignment target” cites the workflow/contract: “spawn the subcategory-draft writer”, validation of “drafts/qa_plan_phase4a_r<round>.md”, and gates “validate_phase4a_subcategory_draft”, matching the expectation that the output aligns to Phase 4a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

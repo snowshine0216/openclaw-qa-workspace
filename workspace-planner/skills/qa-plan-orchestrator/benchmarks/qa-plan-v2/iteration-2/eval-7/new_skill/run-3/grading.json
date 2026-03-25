@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": false,
+      "evidence": "In result.md, the run explicitly states the targeted interactions were not caught: “FAIL (blocking). … the orchestrator run missed the targeted cross-section interactions … ‘template with prompt pause mode → run report → correct execution’ exists and is explicitly called out as missed coverage … The ‘prompt-editor-open’ close-confirmation state transition (BCIN-7708) is explicitly categorized as a missed state transition.” Therefore the required case focus (that Phase 5a catches these) is not satisfied."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase5a",
+      "passed": false,
+      "evidence": "result.md marks this as “PARTIAL / NOT DEMONSTRATED” and execution_notes.md confirms missing Phase 5a artifacts: “The fixture evidence does not include actual Phase 5a runtime artifacts (context/review_notes_BCIN-7289.md, context/review_delta_BCIN-7289.md, drafts/qa_plan_phase5a_r*.md).” With alignment “can’t be directly validated,” the expectation is not met."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

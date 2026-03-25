@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": true,
+      "evidence": "In result.md, the benchmark focus is stated explicitly: \"Context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting\". It further enumerates what Phase 1 must preserve: \"A) Banding requirements (functional)... B) Style constraints... C) Rendering assumptions\" before any Phase 4 scenario drafting."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is explicitly framed as Phase 1: title \"Phase 1 Contract Check\" and section \"Phase 1 orchestrator contract alignment\" stating Phase 1 responsibilities (spawn requests, producing `phase1_spawn_manifest.json`, running a `--post` gate). It also states \"No scenario drafting (Phase 4+) was performed or implied.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

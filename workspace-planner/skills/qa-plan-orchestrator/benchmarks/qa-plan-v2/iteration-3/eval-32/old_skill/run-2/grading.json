@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": false,
+      "evidence": "result.md explicitly marks this as \"Fail (evidence missing)\" and states \"no actual Phase 5b run outputs\" and \"no checkpoint audit/delta demonstrating these items were evaluated\". The output does not contain any checkpoint artifact content covering OK/Cancel semantics, pending selection state, or dismissal correctness—only a statement that such evidence is missing."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "result.md marks \"Fail (evidence missing)\" and notes Phase 5b requires `checkpoint_audit`, `checkpoint_delta`, and `qa_plan_phase5b` artifacts, then states \"None of these BCDA-8653 artifacts are included\". execution_notes.md corroborates: \"No run directory artifacts... were provided\"; therefore the provided outputs do not demonstrate alignment with Phase 5b deliverables."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

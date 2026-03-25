@@ -67,6 +67,8 @@ For the shared orchestrator run, use the shared profile that matches the objecti
 - `qa-plan-knowledge-pack-coverage` for non-replay evolution runs
 - `qa-plan-defect-recall` only when replay is intentionally enabled with `defect_analysis_run_key`
 
+For a single-target operator workflow such as `report-editor`, pass `feature_family` and usually `feature_id` so mutation selection and knowledge-pack resolution stay anchored to that family. This scopes the evolution focus, but it does not shrink `qa-plan-v2` into a single-family benchmark. The global case catalog still runs, and non-target families remain the blind/holdout non-regression guardrail.
+
 ## End-To-End Workflow
 
 ### Step 1. Freeze the benchmark surface
@@ -226,6 +228,12 @@ At time of writing, the repository already contains a prepared `qa-plan-v2` base
 
 This means the benchmark matrix and champion snapshot exist, but the baseline grading/execution still needs to be completed before the benchmark becomes the stable comparison reference.
 
+Practical implication:
+
+- `qa-plan-evolution` already applies to `qa-plan-v2`
+- promotion decisions are structurally wired up
+- but `iteration-0` still needs executed benchmark outputs before the campaign is fully trustworthy as the authoritative acceptance gate
+
 ### Iteration 1 hypothesis
 
 Phase 2 identifies a gap like:
@@ -322,6 +330,32 @@ Before iteration work:
 - finish `iteration-0` baseline execution and aggregation
 - confirm `history.json` points to the intended champion
 
+Recommended single-family invocation when the current mutation target is `report-editor`:
+
+```bash
+./.agents/skills/qa-plan-evolution/scripts/orchestrate.sh --with-phase0 \
+  --run-key "qa-plan-orchestrator__report-editor__$(date -u +%Y%m%dT%H%M%SZ)" \
+  --target-skill-path workspace-planner/skills/qa-plan-orchestrator \
+  --target-skill-name qa-plan-orchestrator \
+  --benchmark-profile qa-plan-knowledge-pack-coverage \
+  --feature-family report-editor \
+  --feature-id BCIN-7289
+```
+
+Enable replay only when you intentionally want defect-backed evaluation:
+
+```bash
+./.agents/skills/qa-plan-evolution/scripts/orchestrate.sh --with-phase0 \
+  --run-key "qa-plan-orchestrator__report-editor__replay__$(date -u +%Y%m%dT%H%M%SZ)" \
+  --target-skill-path workspace-planner/skills/qa-plan-orchestrator \
+  --target-skill-name qa-plan-orchestrator \
+  --benchmark-profile qa-plan-defect-recall \
+  --feature-family report-editor \
+  --feature-id BCIN-7289 \
+  --knowledge-pack-key report-editor \
+  --defect-analysis-run-key BCIN-7289
+```
+
 For each iteration (orchestrated automatically):
 
 - Phase 3 selects one bounded mutation from the gap bundle
@@ -335,7 +369,7 @@ For each iteration (orchestrated automatically):
 - Shared skill entry: `.agents/skills/qa-plan-evolution/SKILL.md`
 - Shared runtime rules: `.agents/skills/qa-plan-evolution/reference.md`
 - Shared benchmark profiles: `.agents/skills/qa-plan-evolution/evals/evals.json`
-- Qa-plan benchmark spec: `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
+- Qa-plan benchmark spec: `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
 - Qa-plan benchmark manifest: `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/benchmark_manifest.json`
 - Qa-plan case catalog: `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/cases.json`
 - Baseline runner: `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/run_baseline.mjs`

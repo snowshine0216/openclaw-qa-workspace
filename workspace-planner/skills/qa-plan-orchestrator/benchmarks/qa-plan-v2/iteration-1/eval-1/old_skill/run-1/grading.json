@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
+      "passed": true,
+      "evidence": "result.md explicitly covers the case focus under “Phase 0 contract requirements” and “Resume semantics stability requirement (benchmark focus)”, detailing REPORT_STATE values and the contracted resume/reuse/smart_refresh/full_regenerate behavior (including apply_user_choice.sh effects and phase transitions). Although it notes evidence-level verification is blocked, the expectation asks for explicit coverage, which is present."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
+      "passed": true,
+      "evidence": "result.md is a “Phase 0 phase-contract check” and centers on Phase 0 responsibilities, required Phase 0 artifacts under context/, and phase0-driven REPORT_STATE semantics. It also provides a “Phase 0 alignment verdict”, indicating the output is aligned to phase0 even though artifact verification is blocked due to missing runtime files."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

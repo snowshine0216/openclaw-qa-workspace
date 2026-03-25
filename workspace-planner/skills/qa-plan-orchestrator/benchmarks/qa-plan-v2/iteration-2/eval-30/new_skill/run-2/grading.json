@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves Google Sheets export entry points, scope boundaries, and format constraints before scenario drafting",
+      "passed": true,
+      "evidence": "result.md explicitly states the benchmark intent: \"Verify that Phase 1 context intake ... is capable of preserving Google Sheets export entry points, scope boundaries, and format constraints ... before any scenario drafting begins.\" It also reiterates preservation needs and that assessment is before drafting: \"These artifacts ... imply the need to preserve: Entry points ... Scope boundaries ... Format constraints\" and notes \"no scenario drafting\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "execution_notes.md: \"Primary phase under test: Phase 1\" and \"Artifact produced here is a phase-contract evaluation writeup (no scenario drafting, no Phase 4+ content).\" result.md is titled \"Phase 1 Contract Check (Advisory)\" and discusses Phase 1 responsibilities (spawn manifest generation, context intake) without drafting scenarios."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

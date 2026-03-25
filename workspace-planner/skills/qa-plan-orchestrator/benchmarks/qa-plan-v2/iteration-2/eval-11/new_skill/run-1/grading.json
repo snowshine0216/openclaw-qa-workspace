@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the focus: \"the workflow must ensure a developer smoke checklist is derived from P1 and `[ANALOG-GATE]` scenarios\" and cites enforcement logic: \"extractDeveloperSmokeRows() includes a scenario row only if it is `<P1>` or contains `[ANALOG-GATE]`.\" It also references README.md stating the artifact is \"derived from P1 and `[ANALOG-GATE]` scenarios during Phase 7.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
+      "passed": true,
+      "evidence": "result.md anchors the behavior in phase7: \"Primary phase under test: phase7\" and \"Authoritative phase7 behavior... scripts/phase7.sh finalizes the plan and generates a summary using scripts/lib/finalPlanSummary.mjs\" and concludes \"PASS (phase alignment evidence)... generation ... squarely in Phase 7.\" execution_notes.md similarly cites phase7 responsibilities in the skill snapshot and notes the phase7 generation mechanism is present."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

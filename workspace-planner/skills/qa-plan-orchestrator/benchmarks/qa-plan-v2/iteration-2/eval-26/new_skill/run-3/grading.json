@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": true,
+      "evidence": "In result.md the run explicitly extracts and categorizes the required intake context: \"These items are exactly the benchmark’s target categories: - **Banding requirements:** rows + columns banding support, header-driven application. - **Style constraints:** ability to format/choose banding colors. - **Rendering assumptions:** how/where banding color is applied (row/column header-driven behavior).\" It also explicitly states Phase 1 should not draft scenarios: \"Do **not** draft scenarios here; only preserve/route intake context for later phases.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is framed and constrained to Phase 1 contract: title \"Phase 1 (Context Intake) Contract Check\" and section \"What Phase 1 must accomplish (per orchestrator contract)\" describing spawn-planning/manifest-only responsibilities, plus \"Notes on phase alignment\" in execution_notes.md: \"Kept analysis strictly within **Phase 1 scope** (spawn planning + routing), and did not draft scenarios (Phase 4+ concern).\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

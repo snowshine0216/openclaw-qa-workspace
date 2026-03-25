@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly states the check: \"ensuring that improvements made for the report-editor feature family... do not regress a different feature planning flow\" and explains the preserved alternative flow: \"This is the key cross-feature holdout regression point: report-editor improvements must not erase or break the alternative 'shell/migration/regression-first' planning flow.\" It then concludes PASS with rationale that Plan 2's flow is \"not discarded\" but \"preserved as a set of importable strengths.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md declares \"Primary phase under test: holdout\" and the content is structured as a holdout regression check using the specified fixture (\"Evidence used (holdout_regression fixture) ... compare-result.md\"), culminating in a \"Holdout regression verdict (blocking)\". execution_notes.md also frames the run as \"Evaluated the provided holdout_regression fixture for cross-feature planning-flow regression risk.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -55,7 +55,7 @@ Validate the existing batch workflow end-to-end once the baseline surface is pop
 **Files to change:**
 
 1. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/README.md`
-2. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+2. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-execution-batches.md`
 
 **No new scripts to create.** `run_batch.mjs` exists. Do not create a duplicate.
 
@@ -206,7 +206,7 @@ Refresh and normalize baseline artifacts for the active workspace before executi
 
 1. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/run_baseline.mjs`
 2. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/lib/benchmarkV2.mjs`
-3. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_BATCH1_OPERATOR_CHECKLIST.md`
+3. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-batch1-operator-checklist.md`
 
 **Expected content changes:**
 
@@ -236,8 +236,8 @@ Align docs with the real implementation level.
 2. `.agents/skills/qa-plan-evolution/SKILL.md`
 3. `.agents/skills/qa-plan-evolution/reference.md`
 4. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/README.md`
-5. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
-6. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_BATCH1_OPERATOR_CHECKLIST.md`
+5. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-execution-batches.md`
+6. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-batch1-operator-checklist.md`
 
 **Expected content changes:**
 
@@ -310,7 +310,7 @@ After the implemented benchmark integration work:
 
 1. `.agents/skills/qa-plan-evolution/SKILL.md`
 2. `.agents/skills/qa-plan-evolution/reference.md`
-3. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md`
-4. `workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_EXECUTION_BATCHES.md`
+3. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
+4. `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-execution-batches.md`
 5. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/benchmark_manifest.json`
 6. `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/cases.json`

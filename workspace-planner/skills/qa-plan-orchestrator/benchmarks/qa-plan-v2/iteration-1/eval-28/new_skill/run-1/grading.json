@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "The output states the benchmark focus but does not demonstrate it was preserved via Phase 1 intake artifacts: “Can the benchmark focus be explicitly covered using only the provided evidence? No.” It also notes the fixture lacks the needed assumptions and there is no Phase 1 manifest/task text to show they were captured."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": false,
+      "evidence": "The output explains Phase 1 requires producing `phase1_spawn_manifest.json`, then reports it is missing: “Is `phase1_spawn_manifest.json` present…? No.” Therefore alignment with Phase 1 deliverables cannot be shown, and the run does not provide Phase 1 artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

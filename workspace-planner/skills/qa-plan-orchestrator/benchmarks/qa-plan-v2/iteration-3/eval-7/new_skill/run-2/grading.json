@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": false,
+      "evidence": "result.md states the required focus items exist in the rubric but are not demonstrated in produced Phase 5a artifacts: “there are no Phase 5a run artifacts … demonstrating that the orchestrator/subagent actually executed Phase 5a and caught these interaction-state combinations.” It also marks expectation coverage as “NOT MET (no Phase 5a audit artifact demonstrating these two interaction/state checks).”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": false,
+      "evidence": "result.md explicitly indicates missing Phase 5a required outputs: “none of these Phase 5a outputs are present … Therefore… we cannot demonstrate that Phase 5a’s cross-section interaction audit was actually executed,” and summarizes: “Output aligns with phase5a: NOT MET (Phase 5a required outputs are absent in evidence).”"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

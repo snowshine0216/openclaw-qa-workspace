@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly addresses this: it cites `skill_snapshot/README.md` stating `context/developer_smoke_test_<feature-id>.md` is derived from P1 and `[ANALOG-GATE]` scenarios, and cites `skill_snapshot/scripts/lib/finalPlanSummary.mjs` where `extractDeveloperSmokeRows()` includes scenarios only if tagged `<P1>` or containing `[ANALOG-GATE]`, and writes `context/developer_smoke_test_<feature-id>.md`."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
+      "passed": true,
+      "evidence": "result.md explicitly checks Phase 7 alignment, citing `skill_snapshot/SKILL.md` Phase 7 contract (promotion to `qa_plan_final.md`, finalization record, final plan summary generation, explicit approval gate) and `finalPlanSummary.mjs` outputs including `context/final_plan_summary_<feature-id>.md` and `context/developer_smoke_test_<feature-id>.md`, which are Phase 7 artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

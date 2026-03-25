@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "result.md explicitly lists the focus: \"Missing scenario generation for: 1) template-save 2) report-builder loading\" and then provides missing Phase 4a scenarios under \"A) Template Save / Save-As Overwrite\" and \"B) Report Builder Loading\" including specific leaves tied to BCIN-7669 and BCIN-7727."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md states \"Primary phase under test: Phase 4a\" and frames the content as \"Phase 4a-style subcategory scenarios\" (\"subcategory → scenario → atomic steps → observable leaves\"). It also attributes misses to Phase 4a: \"Phase 4a is the phase where these misses occurred\" and \"Missed in Phase 4a\" with Phase 4a-aligned scenario generation examples."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

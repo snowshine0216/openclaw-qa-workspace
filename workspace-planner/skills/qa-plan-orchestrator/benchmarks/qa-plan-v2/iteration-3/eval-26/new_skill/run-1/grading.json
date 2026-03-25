@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves banding requirements, style constraints, and rendering assumptions before scenario drafting",
+      "passed": true,
+      "evidence": "result.md explicitly states the Phase 1 context-intake focus that must be preserved \"before any scenario drafting\" and enumerates: \"Banding requirements (rows + columns, header-based application, formatting/colors)\", \"Style constraints\", and \"Rendering assumptions\". It also reiterates preservation via Phase 1 spawn/evidence collection without drafting scenarios."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md section \"Output aligns with primary phase phase1\" says Phase 1 output is strictly \"phase1_spawn_manifest.json\" and Phase 1 responsibilities are \"spawn orchestration only (no inline logic, no drafting).\" execution_notes.md similarly notes Phase 1 \"outputs only phase1_spawn_manifest.json\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

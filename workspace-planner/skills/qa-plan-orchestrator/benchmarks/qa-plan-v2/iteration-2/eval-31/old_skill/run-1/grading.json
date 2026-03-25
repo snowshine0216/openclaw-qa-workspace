@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly targets all three focus areas: (1) dashboard-level export paths vs other contexts: \"Dashboard: export to Google Sheets from dashboard-level export entry\" and \"Dashboard vs Application/Report settings: dashboard-level Google Sheets export path remains distinct\"; (2) option combinations: \"Dashboard: export options combinations are selectable\" with steps to \"Toggle each available option\" and \"Select a representative combination of multiple options\"; (3) visible completion outcomes: \"Dashboard: successful Google Sheets export shows visible completion outcome\" asserting \"visible in-progress indicator\" and \"visible success outcome\" plus file/link presentation."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states \"Primary phase targeted - Phase 4a\" and notes \"Subcategory-first structure used\". result.md is a scenario draft in an XMindMark-like hierarchy with subcategory headers (e.g., \"Dashboard export — Google Sheets\") and atomic, nested, observable verification leaves (e.g., \"A visible in-progress indicator is shown\" / \"Export completes with a visible success outcome\"), which matches phase 4a scenario-draft expectations."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

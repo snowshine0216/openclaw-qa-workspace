@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly frames the check as: “ensuring that skill improvements made for the report-editor feature family (BCIN-6709) do not regress a different feature planning flow” and concludes “PASS (no regression detected for cross-feature planning flow)” with rationale that “A different planning flow (embedding/dashboard editor migration-shell/regression flow) is preserved as a distinct, strong coverage cluster… and is not collapsed or lost due to report-editor-centric improvements.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md states: “primary phase: holdout” and “did not attempt to execute phase scripts or generate QA-plan drafts… Output is limited to a holdout regression determination.” result.md matches this by providing a holdout regression verdict (PASS) and evidence-based rationale rather than generating phase artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

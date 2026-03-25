@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: canonical top-layer grouping without collapsing scenarios",
+      "passed": true,
+      "evidence": "In result.md, section “1) Case focus is explicitly covered…”, the run asserts Phase 4b purpose: “Group the Phase 4a draft into the canonical top-layer taxonomy without merging away scenario granularity.” It also lists “Anti-Compression Rule” guardrails such as “Do not merge distinct Workstation-only and Library-gap scenarios…”. This directly matches the expectation focus."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4b",
+      "passed": true,
+      "evidence": "In result.md, section “2) Output aligns with the primary phase under test: phase4b”, the run states Phase 4b work/output: “spawn the canonical top-layer grouper”, output “phase4b_spawn_manifest.json”, and required output “drafts/qa_plan_phase4b_r<round>.md”, and notes phase constraints like “Do not apply few-shot cleanup in this phase; Phase 6 owns…”. This indicates the evaluated output is framed as Phase 4b contract/workflow alignment."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

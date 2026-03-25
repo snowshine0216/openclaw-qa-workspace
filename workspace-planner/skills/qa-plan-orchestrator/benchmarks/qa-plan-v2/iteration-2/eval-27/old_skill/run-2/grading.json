@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint distinguishes hyperlink styling, contextual navigation behavior, and fallback rendering safety",
+      "passed": false,
+      "evidence": "The produced outputs do not contain Phase 5b checkpoint artifacts (audit/delta/plan) that would explicitly cover the three focus areas. result.md states: \"NOT DEMONSTRATED (insufficient evidence to verify Phase 5b checkpoint enforcement).\" and \"None of these runtime artifacts are included... so the benchmark’s checkpoint-focus cannot be verified as 'explicitly covered'.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "The outputs describe Phase 5b requirements but do not provide Phase 5b execution outputs. result.md: \"Therefore, alignment to Phase 5b cannot be demonstrated.\" and execution_notes.md: \"No Phase 5b runtime artifacts provided (checkpoint audit, checkpoint delta, Phase 5b draft plan).\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

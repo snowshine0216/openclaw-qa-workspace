@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly structures coverage into three sections: \"Banding — feature parity & rendering outcomes\" (styling variants like \"Row banding — color formatting\", \"Column banding — color formatting\", swap A/B, header-based application modes), \"Banding — interactions\" (scrolling, horizontal scroll, resize, sort, layout toggle), and \"Banding — backward-compatible rendering outcomes\" (\"Legacy Report parity check\" for row/column and \"Parity under header-based application modes\"). execution_notes.md also states: \"Case focus explicitly covered: Styling variants... Interactions... Backward-compatible rendering outcomes...\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md asserts \"Primary phase alignment: **phase4a**\" and describes phase4a traits: \"Subcategory-first structure only\" and \"Atomic nested steps with observable verification leaves.\" result.md matches this: it is a subcategory-only QA plan draft with nested steps and explicit observable outcomes (e.g., \"Banding remains aligned...\", \"No flicker...\", \"Modern Grid row banding outcome matches the legacy baseline\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

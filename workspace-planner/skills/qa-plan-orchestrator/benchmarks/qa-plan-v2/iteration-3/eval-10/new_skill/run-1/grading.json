@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "Both `execution_notes.md` and `result.md` explicitly cover this focus. Example: execution_notes.md: “Expectation: **[phase_contract][advisory] final quality pass preserves layering and executable wording** … Attempted verification requires Phase 6 artifacts … **Not possible**: those artifacts are not present in provided evidence.” result.md reiterates: “This benchmark’s focus is **Phase 6**: a *final quality pass* that **preserves layering** and **executable wording**… Therefore, we cannot verify…”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "The outputs are organized around Phase 6 contract alignment and required Phase 6 artifacts/sections. result.md is titled “Verdict (phase6 contract alignment)” and enumerates Phase 6 required outputs: “`drafts/qa_plan_phase6_r<round>.md`” and “`context/quality_delta_<feature-id>.md`” plus required `quality_delta` sections. execution_notes.md similarly frames checks as Phase 6 and notes missing Phase 6 artifacts as the blocker."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

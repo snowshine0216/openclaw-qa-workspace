@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly targets all three: (1) dashboard-level export paths: sections like \"Dashboard → Export → Google Sheets (GWS)\" and \"Dashboard vs Application-level settings — Path distinction\"; (2) option combinations: section \"Dashboard → Export → Google Sheets — Option combinations\" with default/single-change/multiple/invalid combinations; (3) visible completion outcomes: sections \"Export to Google Sheets starts...\" and \"Dashboard → Export → Google Sheets — Completion outcomes (visible)\" with success/failure/cancel observable outcomes."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states the primary phase targeted is \"Phase 4a\" and lists phase4a alignment checks. result.md is a subcategory-first scenario draft with nested action chains and observable verification leaves (e.g., \"Open a dashboard → Open dashboard Export → Choose Google Sheets → Start export → Observe...\") and avoids canonical top-level categories, matching Phase 4a style."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": true,
+      "evidence": "In result.md under “What this benchmark checks” it explicitly lists the required focus areas: “Dropdown confirmation flows: OK and Cancel”, “Pending selection state”, and “Dismissal outcomes”. It then provides concrete Phase 4a-style scenario bullets covering “Confirm selection with OK”, “Cancel confirmation”, “Pending selection / loading / debounce” (including “Popover remains open”), and “Dismissal outcomes” (click outside/ESC and “does not dismiss unexpectedly during loading/pending”)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md has a dedicated section “Phase alignment: Phase 4a contract fit” stating Phase 4a requires “subcategory-first scenario set with atomic action chains and observable verification leaves” and that the proposed coverage is expressed as “Phase 4a subcategory scenarios” and “does not require Phase 4b canonical grouping.” The provided scenario structure is subcategory-oriented (e.g., “Search box selector — Multi-select confirmation”, “Pending selection / loading / debounce”, “Dismissal outcomes”)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

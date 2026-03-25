@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The run output identifies the focus and states what would need to be checked, but does not show actual shipment-checkpoint enforcement artifacts or an audited plan. result.md: \"BLOCKER: Insufficient Phase 5b runtime artifacts...\" and \"It does not include any Phase 5b outputs... required to demonstrate checkpoint enforcement...\" Therefore the case focus is not explicitly covered as completed checkpoint verification—it's only described as a requirement."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Although result.md is framed as a Phase 5b assessment and cites Phase 5b required artifacts, it explicitly reports that those Phase 5b outputs are missing and alignment cannot be verified. result.md: \"Phase alignment (Phase 5b): Cannot be verified (required Phase 5b outputs not present)\"."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

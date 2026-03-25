@@ -26,7 +26,7 @@
         "contract_compliance_score",
         "regression_count"
       ],
-      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md"
     },
     {
       "id": "qa-plan-knowledge-pack-coverage",
@@ -42,7 +42,7 @@
       ],
       "evidence_hooks": {
         "inspect_target_artifacts": true,
-        "defects_analysis_refresh": "optional",
+        "defects_analysis_refresh": "required_when_stale",
         "knowledge_pack_version_check": true,
         "defect_replay_evals": false,
         "holdout_evals": true
@@ -52,7 +52,7 @@
         "contract_compliance_score",
         "regression_count"
       ],
-      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/docs/QA_PLAN_BENCHMARK_SPEC.md"
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md"
     },
     {
       "id": "generic-skill-regression",
@@ -71,6 +71,31 @@
         "holdout_evals": false
       },
       "scoring_dimensions": ["regression_count", "contract_compliance_score"]
+    },
+    {
+      "id": "qa-plan-pack-only",
+      "description": "Lightweight QA plan evolution for knowledge-pack mutations only. No defect evidence refresh, no replay evals. Use for the simple 3-phase operator path.",
+      "target_skill_hint": "qa-plan-orchestrator",
+      "gap_sources": [
+        {
+          "id": "knowledge_pack_coverage",
+          "required": true
+        },
+        "contract_drift"
+      ],
+      "evidence_hooks": {
+        "inspect_target_artifacts": true,
+        "defects_analysis_refresh": "none",
+        "knowledge_pack_version_check": true,
+        "defect_replay_evals": false,
+        "holdout_evals": true
+      },
+      "scoring_dimensions": [
+        "knowledge_pack_coverage_score",
+        "contract_compliance_score",
+        "regression_count"
+      ],
+      "canonical_benchmark_spec": "workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md"
     }
   ]
 }

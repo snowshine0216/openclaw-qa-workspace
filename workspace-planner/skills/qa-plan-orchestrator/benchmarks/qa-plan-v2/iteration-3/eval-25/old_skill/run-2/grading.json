@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers panel-stack composition, embedding lifecycle boundaries, and visible failure or recovery outcomes",
+      "passed": false,
+      "evidence": "result.md states the required case-focus areas but concludes they are \"Not verifiable\" due to missing Phase 5b artifacts: \"No Phase 5a draft, no Phase 5b draft, and no Phase 5b checkpoint artifacts are included.\" Therefore the output does not explicitly demonstrate coverage of panel-stack composition, embedding lifecycle boundaries, and failure/recovery outcomes."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": false,
+      "evidence": "Although result.md labels the target as phase5b (e.g., \"Primary phase under test: phase5b\"), it also states alignment cannot be verified: \"Not verifiable (no Phase 5b outputs present).\" The output does not provide actual Phase 5b deliverables (checkpoint_audit/checkpoint_delta/phase5b draft) to demonstrate phase5b-aligned execution."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

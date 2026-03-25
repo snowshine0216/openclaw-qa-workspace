@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": false,
+      "evidence": "The run explicitly targets SKILL.md/README.md/reference.md and mentions AGENTS, but concludes misalignment and inability to verify AGENTS: result.md: \"Focus files (as requested): - `SKILL.md` - `README.md` - `reference.md` - “AGENTS docs” (not provided in evidence)\"; \"Conclusion: The documentation set is not currently “staying aligned”...\"; and \"AGENTS docs alignment cannot be verified (missing from evidence bundle).\" execution_notes.md also states: \"No AGENTS documentation was provided in evidence, so alignment for “AGENTS docs stay aligned” cannot be verified.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The output is a docs/phase-contract alignment review, matching the primary docs-phase intent: result.md: \"Primary phase/checkpoint under test: **docs** (phase contract alignment across docs).\" and \"Result: Satisfied (this output is a docs-phase contract sync review)\"; the content focuses on cross-document phase contract consistency rather than implementing phase logic."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

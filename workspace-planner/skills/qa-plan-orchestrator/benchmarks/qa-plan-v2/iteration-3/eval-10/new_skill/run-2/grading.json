@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "In result.md, the section \"### Case focus coverage: “final quality pass preserves layering and executable wording”\" explicitly addresses both parts: (1) \"Preserves layering (final layered structure)\" with an enumerated layering chain and reference to \"final layering validators\", and (2) \"Executable wording (atomic action steps + observable expected results)\" citing required \"nested atomic action steps\" and \"observable verification leaves\" and \"no legacy `Action:` / `Expected:` labels\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "result.md states \"## Primary phase under test: Phase 6 (final quality pass)\" and then enumerates Phase 6 contract elements: \"Phase 6 outputs (required): `drafts/qa_plan_phase6_r<round>.md`, `context/quality_delta_<feature-id>.md`\" plus \"Phase 6 post-gate\" requirements. execution_notes.md likewise says it evaluated \"Phase contract alignment to Phase 6\" and notes blind_pre_defect limits to contract/rubric coverage rather than runtime artifacts—consistent with Phase 6 focus."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

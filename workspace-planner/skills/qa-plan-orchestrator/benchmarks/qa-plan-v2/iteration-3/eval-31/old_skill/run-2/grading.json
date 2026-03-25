@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: scenario drafting distinguishes dashboard-level Google Sheets export paths, option combinations, and visible completion outcomes",
+      "passed": true,
+      "evidence": "The scenario draft explicitly covers all three focus areas: (1) dashboard-level path distinction: \"Export dashboard to Google Sheets distinguishes dashboard-level path from other export entry points\" with steps comparing \"dashboard-level Export entry point\" vs \"non-dashboard export entry point\"; (2) option combinations: \"Export dashboard to Google Sheets with each option combination (matrix coverage)\" and \"generate a minimal pairwise matrix of combinations\"; (3) visible completion outcomes: repeated assertions like \"A visible 'export started / in progress' indication appears\" and \"Export completes with a visible 'completed / success' outcome\", plus a dedicated section \"Export — Dashboard → Google Sheets (completion outcomes)\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The output is explicitly labeled \"# Phase 4a — Scenario Draft (subcategories only)\" and is structured as scenario drafts under subcategory headings (e.g., \"Export — Dashboard → Google Sheets\") with stepwise flows and priority tags (<P1>, <P2>), matching a Phase 4a scenario-drafting deliverable rather than earlier-phase research/synthesis."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

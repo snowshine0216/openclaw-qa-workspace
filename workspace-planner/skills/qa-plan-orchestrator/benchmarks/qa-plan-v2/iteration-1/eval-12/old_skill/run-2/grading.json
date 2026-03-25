@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: SKILL.md, README.md, reference.md, and AGENTS docs stay aligned",
+      "passed": true,
+      "evidence": "result.md explicitly sets scope to “Verify that SKILL.md, README.md, reference.md, and AGENTS docs stay aligned” and includes a dedicated section “4) AGENTS docs alignment” noting “No AGENTS documentation was included… so AGENTS alignment cannot be verified.” execution_notes.md likewise states: “Attempted AGENTS alignment check, but no AGENTS evidence was available.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase docs",
+      "passed": true,
+      "evidence": "The output is a docs-phase artifact (a docs sync assessment) and is framed as “DOC-SYNC-001 — Docs sync check” and “Verify… docs stay aligned… and that outputs align with the primary phase: docs.” It performs comparisons of phase-contract documentation (SKILL/README/reference) and reports contract drift, which is consistent with producing a docs-focused evaluation rather than non-doc phase outputs."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

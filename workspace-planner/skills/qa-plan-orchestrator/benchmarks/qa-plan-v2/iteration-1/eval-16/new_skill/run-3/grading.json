@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid banding scenarios distinguish styling variants, interactions, and backward-compatible rendering outcomes",
+      "passed": true,
+      "evidence": "result.md explicitly restates the focus and enumerates the required distinctions: “Phase 4a scenarios (when prerequisites exist) must distinguish: - Styling variants… - Interactions… - Backward-compatible rendering outcomes…”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is titled “Phase 4a (advisory) deliverable” and assesses “Phase 4a assessment (contract alignment)”, citing phase4a-contract.md and identifying missing required Phase 4a inputs; this is a Phase 4a contract-alignment output even though it is blocked."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

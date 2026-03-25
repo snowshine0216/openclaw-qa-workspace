@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly has a section titled \"Case focus coverage (blocking): cross-feature non-regression\" and states: \"Nothing in the evidence suggests that improvements for the report-editor family would regress a different feature planning flow\" and further argues the orchestrator is \"feature-agnostic\" and \"contract-driven\" (generic feature-id scoped runs/<feature-id>/ and phase-script-only behavior)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md: \"Kept output to a holdout checkpoint: no plan drafting, no phase-by-phase artifacts generation claims, and no assertions about actual script execution.\" result.md \"Holdout alignment\" reiterates: \"It does not generate a QA plan\" and \"does not invent additional evidence or claim runtime execution.\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

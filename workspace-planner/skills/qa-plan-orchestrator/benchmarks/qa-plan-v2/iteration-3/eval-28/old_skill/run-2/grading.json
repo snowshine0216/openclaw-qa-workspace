@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "In result.md, the run states the focus but concludes it is \"NOT DEMONSTRATED with provided evidence (blocker: missing phase1 outputs)\" and notes \"There is no provided `phase1_spawn_manifest.json` ... showing that context intake would ... capture label-visibility rules, density limits, and overlap resolution.\" Therefore the case focus is not explicitly covered/verified by produced artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The produced evaluation output is explicitly framed as Phase 1: execution_notes.md and result.md repeatedly reference Phase 1 responsibilities and artifacts (e.g., \"Primary phase under test: phase1\"; \"Producing: `phase1_spawn_manifest.json`\"; \"Phase 1 does not author test coverage content ...\"). Although it cannot verify compliance due to missing Phase 1 artifacts, the output itself aligns to the phase1 evaluation scope."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

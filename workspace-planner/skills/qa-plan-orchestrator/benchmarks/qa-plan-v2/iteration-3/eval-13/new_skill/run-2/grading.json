@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: skill improvements for report-editor do not regress a different feature planning flow",
+      "passed": true,
+      "evidence": "result.md explicitly targets the blocking requirement: \"Skill improvements for report-editor do not regress a different feature planning flow\" and concludes: \"PASS — ... shows no workflow changes that would regress a different feature planning flow ...\" It also discusses cross-feature coupling risk and references the fixture on embedding/dashboard-editor drift."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md explicitly align to holdout: execution_notes.md section \"What was done (holdout phase alignment)\" and result.md header \"Verdict (primary phase: holdout)\" plus \"Given evidence mode is holdout_regression, we limit to...\" confirming the evaluation is constrained to holdout-regression evidence rather than full run artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
+      "passed": true,
+      "evidence": "In result.md, the output explicitly addresses the case focus and cites the contract: it states Phase 3 work is to “spawn Tavily-first deep-research requests” and that post validations include “optional Confluence fallback ordering.” It also asserts the ordering rule: “run tavily-search first” and “use Confluence only as a recorded fallback” with “record the fallback reason.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
+      "passed": true,
+      "evidence": "The output is organized around Phase 3 as primary phase under test and explains Phase 3 entry/work/output and validations. It lists Phase 3 artifacts/outputs (e.g., “phase3_spawn_manifest.json”, coverage ledger, deep research plan, synthesis report) and ties the Tavily-first/Confluence-fallback rule to Phase 3 responsibilities and Phase 3 --post validation scope."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

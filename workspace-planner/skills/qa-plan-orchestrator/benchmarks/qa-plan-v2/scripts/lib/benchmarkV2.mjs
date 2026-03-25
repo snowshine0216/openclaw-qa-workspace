@@ -1,4 +1,4 @@
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -451,4 +451,81 @@ export async function listPreparedEvalDirs(iterationDir) {
     .filter((entry) => entry.isDirectory() && entry.name.startsWith('eval-'))
     .map((entry) => entry.name)
     .sort();
+}
+
+function updateBaselineHistory(history, completedAt) {
+  const iterations = Array.isArray(history.iterations) ? history.iterations : [];
+  const normalizedIterations = iterations.map((entry) => (
+    entry.iteration === 0
+      ? {
+          ...entry,
+          grading_result: 'baseline_executed',
+          is_current_champion: true,
+          completed_at: entry.completed_at ?? completedAt,
+        }
+      : {
+          ...entry,
+          is_current_champion: false,
+        }
+  ));
+  if (!normalizedIterations.some((entry) => entry.iteration === 0)) {
+    normalizedIterations.unshift({
+      iteration: 0,
+      label: 'baseline',
+      role: 'champion_seed',
+      skill_snapshot: 'iteration-0/champion_snapshot',
+      grading_result: 'baseline_executed',
+      is_current_champion: true,
+      completed_at: completedAt,
+    });
+  }
+  return {
+    ...history,
+    current_champion_iteration: 0,
+    iterations: normalizedIterations,
+  };
+}
+
+export async function finalizeBenchmarkV2Baseline({
+  benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  iteration = 0,
+}) {
+  const iterationDir = getIterationDir(benchmarkRoot, iteration);
+  const benchmarkJsonPath = join(iterationDir, 'benchmark.json');
+  const benchmarkMarkdownPath = join(iterationDir, 'benchmark.md');
+  const manifestPath = join(benchmarkRoot, 'benchmark_manifest.json');
+  const historyPath = join(benchmarkRoot, 'history.json');
+  const contextPath = join(iterationDir, 'benchmark_context.json');
+  const completedAt = new Date().toISOString();
+
+  await Promise.all([
+    loadJson(benchmarkJsonPath),
+    readFile(benchmarkMarkdownPath, 'utf8'),
+  ]);
+
+  const [manifest, history, context] = await Promise.all([
+    loadJson(manifestPath),
+    loadJson(historyPath),
+    loadJson(contextPath),
+  ]);
+
+  await Promise.all([
+    writeJson(manifestPath, {
+      ...manifest,
+      status: 'frozen_matrix_executed',
+      executed_at: manifest.executed_at ?? completedAt,
+    }),
+    writeJson(historyPath, updateBaselineHistory(history, completedAt)),
+    writeJson(contextPath, {
+      ...context,
+      status: 'executed_aggregated',
+      aggregated_at: context.aggregated_at ?? completedAt,
+    }),
+  ]);
+
+  return {
+    manifestStatus: 'frozen_matrix_executed',
+    historyStatus: 'baseline_executed',
+    contextStatus: 'executed_aggregated',
+  };
 }

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: REPORT_STATE and resume semantics remain stable",
+      "passed": true,
+      "evidence": "result.md explicitly targets the case focus: \"FAIL — ... blocking phase-contract risk for the benchmark focus: `REPORT_STATE` and resume semantics remain stable\" and the section \"Benchmark focus check: REPORT_STATE + resume semantics stability\" analyzes resume/reuse semantics under REPORT_STATE."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase0",
+      "passed": true,
+      "evidence": "result.md is explicitly phase0-scoped: title \"— phase0 phase contract\", includes \"What phase0 must cover\" and a dedicated section \"Alignment with primary phase (phase0): This benchmark assessment is strictly phase0-scoped\"; execution_notes.md also states \"Assessment is limited to the provided workflow-contract snapshot text\" and treats the finding as \"blocking ... for phase0\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

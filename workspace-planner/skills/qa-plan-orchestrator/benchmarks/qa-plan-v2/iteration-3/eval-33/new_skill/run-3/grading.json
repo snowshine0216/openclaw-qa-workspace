@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "The output notes the focus but states it cannot be demonstrated: \"No provided artifacts show a 'defect feedback loop' implementation that injects defect-derived scenarios into a subsequent QA plan\" and \"there is no allowable claim ... that the orchestrator would transform those defects into QA-plan scenarios\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "The output explicitly reports a phase mismatch: \"Does not satisfy the benchmark expectation for phase8\" and \"Defines phases 0 through 7 only... Provides no phase8 entrypoint, contract, artifacts, gates, or behavior.\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

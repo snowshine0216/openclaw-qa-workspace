@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: donut-chart data label coverage distinguishes label visibility, density, and overlap-sensitive outcomes",
+      "passed": false,
+      "evidence": "The outputs state the phase4a artifact needed to verify focus is missing: \"no Phase 4a output draft (e.g., `drafts/qa_plan_phase4a_r1.md`) available ... to verify that the QA plan scenarios actually cover: label visibility rules; label density behavior; overlap-sensitive outcomes\". The focus is described, but not actually covered in a Phase 4a scenario draft."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The run reports misalignment/blockage due to missing required Phase 4a deliverable: \"Missing required Phase 4a artifact... No `drafts/qa_plan_phase4a_r1.md`\" and \"Not Demonstrated / Blocked (phase4a artifact missing).\" Without the Phase 4a draft, alignment to phase4a contract cannot be demonstrated."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

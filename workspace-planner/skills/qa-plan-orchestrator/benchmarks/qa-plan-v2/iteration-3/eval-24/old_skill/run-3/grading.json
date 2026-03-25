@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The output explicitly states the case focus and evaluates all three required aspects under “Phase 1 context-intake coverage assessment”: “Component-stack constraints”, “Embedding lifecycle assumptions”, and “Integration-sensitive customer expectations”, and ties them to the Phase 1 contract and available evidence (even though it concludes they are “Not demonstrable” without artifacts)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The result is framed as “NE-P1-CONTEXT-INTAKE-001 — Phase 1 (Context Intake) Contract Check”, lists Phase 1 requirements (entry script, spawn requests, required artifact `phase1_spawn_manifest.json`), and gives a “Phase 1 alignment verdict”, staying within Phase 1 scope."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

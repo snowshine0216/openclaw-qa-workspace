@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "The output explicitly covers the case focus in multiple places, e.g. in the header: \"Focus: *missing scenario generation for template-save and report-builder loading*\" and in the benchmark-specific section: \"This benchmark specifically expects Phase 4a to generate scenarios that cover: 1. Template-save gaps ... 2. Report-builder loading gaps\". It also ties to concrete defects (BCIN-7669, BCIN-7727) and provides \"Minimal Phase 4a scenario additions required\" for both focus areas."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The output is explicitly Phase-4a framed and contract-referenced: it states \"Primary phase/checkpoint under test: Phase 4a\" and includes a section \"What Phase 4a must demonstrate (contract-aligned)\" citing `phase4a-contract.md` requirements (subcategory-only, atomic action chains, observable verification leaves, no top-layer groupings). It evaluates alignment in \"Benchmark expectation check (Phase 4a alignment)\" and provides Phase 4a-style scenario additions (subcategory-first with action chains + verification leaves)."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

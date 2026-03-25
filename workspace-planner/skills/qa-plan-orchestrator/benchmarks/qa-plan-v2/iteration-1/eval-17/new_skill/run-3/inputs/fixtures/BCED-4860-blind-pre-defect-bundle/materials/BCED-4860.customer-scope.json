@@ -1,0 +1,17 @@
+{
+  "feature_id": "BCED-4860",
+  "exported_at": "2026-03-21T05:18:28Z",
+  "source_issue_key": "BCED-4860",
+  "issue_type": "Story",
+  "created": "2026-03-16T21:09:07.117-0400",
+  "labels": [],
+  "customer_fields": {
+    "customfield_10355": null,
+    "customfield_10586": null
+  },
+  "customer_signal_present": false,
+  "linked_issue_count": 0,
+  "subtask_count": 0,
+  "customer_issue_policy": "all_customer_issues_only",
+  "notes": "No explicit customer references found on the feature issue at export time."
+}

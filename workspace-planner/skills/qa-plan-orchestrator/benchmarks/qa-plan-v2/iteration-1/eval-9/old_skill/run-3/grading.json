@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: historical analogs become required-before-ship gates",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the case focus and the required-before-ship gate concept: it states the Phase 5b contract \"requires that relevant historical analogs be rendered as explicit [ANALOG-GATE] items in the release recommendation ... and treated as required-before-ship gates\" and concludes the run fails because such enforcement is not demonstrated due to missing Phase 5b artifacts."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is structured around Phase 5b requirements and artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b). It repeatedly anchors evaluation to the Phase 5b rubric/contract (review-rubric-phase5b.md) and evaluates absence of Phase 5b deliverables; this is alignment with Phase 5b as the primary phase, even though the verdict is FAIL for missing Phase 5b outputs."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

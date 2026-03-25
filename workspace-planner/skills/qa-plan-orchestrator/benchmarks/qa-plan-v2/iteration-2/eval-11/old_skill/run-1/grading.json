@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: developer smoke checklist is derived from P1 and analog-gate scenarios",
+      "passed": true,
+      "evidence": "result.md explicitly covers this case focus: it states Phase 7 must produce a developer smoke checklist “derived from P1 and `[ANALOG-GATE]` scenarios” and describes the derivation logic in `finalPlanSummary.mjs` (extracts `<P1>` and `[ANALOG-GATE]` scenario bullets). It also notes the evidence gap (missing `context/developer_smoke_test_BCIN-7289.md`) as the reason the run fails."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase7",
+      "passed": true,
+      "evidence": "result.md and execution_notes.md are explicitly framed as “Benchmark P7-DEV-SMOKE-001 — Phase 7 Checkpoint Enforcement” and enumerate Phase 7 responsibilities/artifacts (promote to `qa_plan_final.md`, write finalization record, generate `final_plan_summary_<feature-id>.md`, generate `developer_smoke_test_<feature-id>.md`). The verdict is tied to missing Phase 7 runtime artifacts, which is consistent with evaluating a Phase 7 checkpoint."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

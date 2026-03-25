@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers OK or Cancel semantics, pending selection state, and dismissal correctness for multi-selection workflows",
+      "passed": true,
+      "evidence": "result.md explicitly maps each focus area: (1) \"Shipment checkpoint covers OK/Cancel semantics\" referencing the missing OK button AC; (2) \"Pending selection state (selection still loading)\" referencing loading/debounce context and Phase 5b checkpoints; (3) \"Dismissal correctness\" referencing popover dismissal AC/context and Phase 5b rubric expectations. It also includes an explicit expectation check: \"Case focus explicitly covered: Yes, at contract level\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "result.md is framed as a Phase 5b shipment-checkpoint contract review, cites \"review-rubric-phase5b.md\" repeatedly, and lists Phase 5b required outputs/artifacts (checkpoint_audit, checkpoint_delta, qa_plan_phase5b) and dispositions. It states: \"Output aligns with primary phase phase5b: Yes\"."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

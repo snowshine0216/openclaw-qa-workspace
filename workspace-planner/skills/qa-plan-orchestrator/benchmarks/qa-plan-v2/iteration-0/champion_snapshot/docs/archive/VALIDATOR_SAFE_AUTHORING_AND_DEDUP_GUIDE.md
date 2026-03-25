@@ -441,7 +441,7 @@ These gaps were identified after the initial commit and resolved in the follow-u
 
 | Gap | Fix | Where |
 |---|---|---|
-| `docs/VALIDATOR_SAFE_AUTHORING_AND_DEDUP_GUIDE.md` and `references/subagent-quick-checklist.md` not registered as required docs | Added to `REQUIRED_FILES` in `docsContract.test.mjs` | `tests/docsContract.test.mjs` |
+| `references/validator-safe-authoring-and-dedup-guide.md` and `references/subagent-quick-checklist.md` not registered as required docs | Added to `REQUIRED_FILES` in `docsContract.test.mjs` | `tests/docsContract.test.mjs` |
 | No contract assertions for new phase4b / phase5b / phase5a rules | Added 4 new contract tests | `tests/docsContract.test.mjs` |
 | `buildPhaseTaskText` preflight injection untested | Added 3 manifest tests (phase4b, phase5a, phase5b) verifying checklist path, preflight block, and grouping-tag rule appear in generated task text | `scripts/test/spawnManifestBuilders.test.mjs` |
 | No test for grouping bullet carrying priority tag (§3.3 wrong pattern) | Added `validatePhase4bCategoryLayering rejects grouping bullets that carry priority tags` | `tests/planValidators.test.mjs` |

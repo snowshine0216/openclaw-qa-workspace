@@ -1,0 +1,27 @@
+{
+  "semantic_role": "candidate_skill",
+  "comparison_mode": "executed_benchmark_compare",
+  "configuration_dir": "new_skill",
+  "skill_name": "qa-plan-orchestrator",
+  "skill_snapshot_path": "iteration-1/candidate_snapshot",
+  "skill_snapshot_label": "candidate",
+  "model_name": null,
+  "reasoning_effort": null,
+  "knowledge_pack_version": "report-editor-2026-03-23",
+  "benchmark_version": "qa-plan-v2",
+  "eval_id": 13,
+  "run_number": 1,
+  "case_id": "HOLDOUT-REGRESSION-001",
+  "feature_id": "BCIN-6709",
+  "feature_family": "report-editor",
+  "knowledge_pack_key": "report-editor",
+  "primary_phase": "holdout",
+  "case_kind": "holdout_regression",
+  "evidence_mode": "holdout_regression",
+  "blocking": true,
+  "fixture_refs": [
+    "embedding-dashboard-editor-compare-result"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "parent_champion_snapshot_path": "iteration-0/champion_snapshot"
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: final quality pass preserves layering and executable wording",
+      "passed": true,
+      "evidence": "result.md explicitly addresses the focus: it states Phase 6 enforces “final layered structure” and “executable-step wording” and cites rubric/validators. Quotes: “Final Layering is defined explicitly…” and “The workflow includes `validate_executable_steps`…”, and “Confirmed benchmark focus is explicitly addressed in the Phase 6 rubric + phase gates.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase6",
+      "passed": true,
+      "evidence": "result.md is framed as a Phase 6 contract check and ties checks to Phase 6 artifacts and gates: “Primary phase under test: Phase 6”, and it lists Phase 6 required outputs (`drafts/qa_plan_phase6_r<round>.md`, `context/quality_delta_<feature-id>.md`, `phase6_spawn_manifest.json`) plus Phase 6 rubric sections and validators."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

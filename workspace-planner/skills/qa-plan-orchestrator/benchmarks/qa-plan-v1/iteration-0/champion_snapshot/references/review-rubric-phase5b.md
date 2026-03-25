@@ -1,6 +1,6 @@
 # Phase 5b Review Rubric
 
-Derived from `docs/checkpoints.md`. Treat this file as the normalized runtime contract for shipment-readiness review.
+Derived from `references/checkpoints.md`. Treat this file as the normalized runtime contract for shipment-readiness review.
 
 ## Purpose
 
@@ -25,6 +25,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - Refactor the plan only for checkpoint-backed gaps that are fixable in the current round.
 - Do not remove, defer, or move a concern to Out of Scope unless source evidence or explicit user direction requires it.
 - Produce a Release Recommendation that matches the checkpoint evidence.
+- Historical analogs that remain relevant must be rendered as explicit `[ANALOG-GATE]` entries in the release recommendation or developer smoke follow-up.
 - Rewrite `artifact_lookup_<feature-id>.md` for the successful round so new context artifacts and preserved read-state remain visible.
 
 ## Bounded Research Rule
@@ -73,6 +74,7 @@ Run explicit shipment-readiness checkpoints after Phase 5a and before the final 
 - `## Release Recommendation`
 
 The checkpoint summary must include an explicit `supporting_context_and_gap_readiness` row and route back to `phase5a` when supporting context or report-editor gap coverage is not release-ready.
+The release recommendation must enumerate all `[ANALOG-GATE]` items that remain blocking before ship.
 
 ### `checkpoint_delta_<feature-id>.md`
 

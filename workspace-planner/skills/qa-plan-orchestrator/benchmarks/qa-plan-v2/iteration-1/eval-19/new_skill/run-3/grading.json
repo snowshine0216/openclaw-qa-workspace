@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: heatmap highlighting effect scenarios cover activation, persistence, and reset behavior",
+      "passed": true,
+      "evidence": "result.md explicitly includes sections and scenarios for all three: \"- Heatmap highlight effect (iOS Mobile)\" with multiple \"Activation\" scenarios; \"- Heatmap highlight persistence (iOS Mobile)\" with multiple \"Persistence\" scenarios; and \"- Heatmap highlight reset behavior (iOS Mobile)\" with multiple \"Reset\" scenarios."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states: \"Output is a **Phase 4a-style subcategory-only QA draft**\" and result.md is titled \"# Phase 4a subcategory-only QA draft\" and presents subcategory-only, scenario-based, atomic action chains with observable verification leaves, consistent with the phase4a contract referenced."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

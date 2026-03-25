@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": false,
+      "evidence": "The output does not demonstrate that a shipment checkpoint explicitly covers activation/persistence/deselection/interaction safety for bar chart and heatmap; it states evidence is missing: \"NOT DEMONSTRATED (insufficient phase5b artifacts/evidence in provided bundle)\" and \"does not include any phase5b outputs (checkpoint audit/delta, or phase5b draft) that would prove checkpoint enforcement occurred\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The result is framed in phase5b terms and references phase5b required deliverables: \"Phase5b Checkpoint Enforcement\" and \"Phase 5b as a shipment-checkpoint review + refactor pass that produces a checkpoint audit, a checkpoint delta with final disposition, and a phase5b draft.\" It assesses absence of those phase5b artifacts, which is consistent with phase5b alignment."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

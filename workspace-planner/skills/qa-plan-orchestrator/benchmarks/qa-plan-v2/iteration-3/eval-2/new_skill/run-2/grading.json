@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": true,
+      "evidence": "result.md explicitly states: “supporting issues must remain `context_only_no_defect_analysis` and must produce summaries” and cites contract clauses: “Support-only issues must remain in `context_only_no_defect_analysis` mode.” It also lists required Phase 1 support artifacts including “context/supporting_issue_summary_<issue-key>_<feature-id>.md” and “context/supporting_issue_summary_<feature-id>.md”, plus `--post` validates “support summaries, and non-defect routing.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md frames the evaluation as Phase 1: “Verdict (phase_contract · blocking) PASS … for Phase 1.” It lists “What was validated (Phase 1 alignment)”, details Phase 1 work/output (“Output: `phase1_spawn_manifest.json`”), and ends with “Primary phase under test: Phase 1”. execution_notes.md likewise focuses on Phase 1 responsibilities and Phase 1 `--post` validation scope."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

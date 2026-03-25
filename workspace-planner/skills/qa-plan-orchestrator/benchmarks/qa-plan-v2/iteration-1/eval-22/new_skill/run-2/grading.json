@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": true,
+      "evidence": "In result.md the drafted scenarios explicitly include the four focus areas as section headers and scenarios: \"- Prompt handling (Workstation embedded Library Report Editor)\", \"- Template save\", \"- Report builder loading & prompt element navigation\", and \"- Visible report title outcomes (window title + in-app title)\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "execution_notes.md states: \"Output is a subcategory-first scenario set (no canonical top-level groupings like Security/Compatibility/E2E). Scenarios are written with nested atomic actions and observable outcomes, consistent with references/phase4a-contract.md.\" The result.md structure matches this: subcategory bullets with nested steps and observable verification points (e.g., \"Title is user-facing and meaningful...\", \"No prompt UI is displayed...\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

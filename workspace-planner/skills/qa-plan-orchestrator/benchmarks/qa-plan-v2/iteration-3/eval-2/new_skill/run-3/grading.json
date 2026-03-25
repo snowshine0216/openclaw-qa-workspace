@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: supporting issues stay context_only_no_defect_analysis and produce summaries",
+      "passed": true,
+      "evidence": "In result.md, the case focus is explicitly stated and mapped to contract language: “Supporting issues must stay `context_only_no_defect_analysis` and produce summaries”. It cites SKILL.md: “feature requests may include `supporting_issue_keys` that must stay in `context_only_no_defect_analysis` mode” and that “support issue summaries… must be persisted under `context/`”, plus reference.md policy: “Supporting Jira issues are context evidence only… must remain in `context_only_no_defect_analysis` mode.” It also lists required artifacts: “context/supporting_issue_summary_<issue-key>_<feature-id>.md” and “context/supporting_issue_summary_<feature-id>.md”, satisfying the ‘produce summaries’ requirement."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md explicitly sets “Primary phase/checkpoint: phase1” and supports it by citing SKILL.md Phase 1 entry/work/output and post-gate validation: “Entry: scripts/phase1.sh… Output: phase1_spawn_manifest.json… --post: validates … support relation map, support summaries, and non-defect routing.” This aligns the evaluation and described enforcement to Phase 1."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

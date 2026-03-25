@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: blind scenario drafting captures prompt handling, template save, report builder loading, and visible report title outcomes",
+      "passed": false,
+      "evidence": "The provided outputs explicitly state that case focus coverage cannot be verified because the Phase 4a scenario draft artifact is missing: result.md says \"Case focus coverage: Cannot confirm (no scenario draft available).\" It lists the desired focus areas, but does not include drafted scenarios that cover them."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "The outputs do not include the required Phase 4a deliverables and therefore cannot demonstrate Phase 4a alignment. result.md: \"Phase alignment: Cannot confirm (no Phase 4a draft artifact to inspect).\" execution_notes.md: \"No Phase 4a runtime artifacts were provided (e.g., no `phase4a_spawn_manifest.json`, no `drafts/qa_plan_phase4a_r1.md`).\""
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+      "passed": true,
+      "evidence": "In result.md under “Checkpoint-enforcement coverage for the case focus (advisory)”, the output explicitly enumerates A-D: “Highlight activation”, “Highlight persistence”, “Deselect / clear highlight”, and “Interaction safety” and states it applies “for both Bar Chart and Heatmap”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "The output is framed as Phase 5b shipment checkpoint enforcement throughout: title “Phase 5b Checkpoint Enforcement”, section “Benchmark goal (phase5b)”, and “Required Phase 5b alignment (contract-level)” listing required Phase 5b artifacts and dispositions from the Phase 5b rubric."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

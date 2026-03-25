@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][blocking] Case focus is explicitly covered: cross-section interaction audit catches template x pause-mode and prompt-editor-open states",
+      "passed": true,
+      "evidence": "result.md explicitly covers both required interaction pairs under “Benchmark focus (blocking)” and details evidence for each: “template × pause-mode” and “prompt-editor-open state × close/confirm flows”. It further ties them to BCIN-7730, BCIN-7708, and BCIN-7709, showing the cross-section interaction audit topic is explicitly addressed (even though the verdict is FAIL)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][blocking] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md anchors the evaluation to Phase 5a: “Primary checkpoint under test: Phase 5a … must include ## Cross-Section Interaction Audit … Phase 5a acceptance gate …”. execution_notes.md also states “Key checks performed (phase5a alignment)” and references “review-rubric-phase5a.md”, indicating the output is framed and evaluated against phase5a requirements."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

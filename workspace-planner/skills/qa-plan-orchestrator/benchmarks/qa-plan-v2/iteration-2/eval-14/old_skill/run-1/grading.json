@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly covers the case focus under the heading “Case focus (blocking): Promotion/finalization behavior remains stable on another feature” and describes stability as Phase 7 rules being feature-agnostic for BCIN-976, including approval gating and archive/promote/record/summary/notify steps."
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "result.md states “Primary phase under test: Holdout” and ties holdout to “Phase 7 (promotion/finalization)” with detailed Phase 7 obligations; execution_notes.md also says “Output intentionally focuses on holdout = Phase 7 promotion/finalization behavior.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

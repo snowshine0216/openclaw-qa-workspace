@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The output has an explicit section titled “Case focus coverage: context intake preserves…” and separately addresses “1) Component-stack constraints”, “2) Embedding lifecycle assumptions”, and “3) Integration-sensitive customer expectations”, including source-routing constraints and customer-scope evidence (CVS Pharmacy, Inc.)."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output repeatedly frames the work as Phase 1 “context intake / spawn planning”, cites Phase 1 entry (`scripts/phase1.sh`), expected output (`phase1_spawn_manifest.json`), and `--post` validations, and states “This matches the benchmark’s required emphasis on context intake rather than drafting/review.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

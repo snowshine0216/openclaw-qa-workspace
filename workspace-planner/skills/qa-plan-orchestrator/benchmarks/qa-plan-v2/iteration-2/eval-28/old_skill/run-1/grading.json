@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves donut-label assumptions for label visibility, density limits, and overlap-sensitive presentation",
+      "passed": false,
+      "evidence": "In result.md the run states the case focus but concludes it is not demonstrated: \"Determination: **Does the workflow package demonstrate the case focus is preserved in Phase 1?** **Not demonstrated by the provided evidence.**\" It further notes missing Phase 1 artifacts and that assumptions are not available: \"It does **not** include any Phase 1 runtime artifacts ... that explicitly capture donut-label behavior assumptions\" and in execution_notes.md: \"With only Jira summary-level evidence, donut-label **assumptions** (visibility/density/overlap behavior) are not available, so 'context intake preserves assumptions' cannot be demonstrated.\""
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is framed as Phase 1 context-intake evaluation and stays within Phase 1 contract language: result.md: \"Primary phase: Phase 1 (context intake / spawn-manifest generation & policy validation)\" and \"What Phase 1 is contractually responsible for\" (spawn manifest generation and --post validation). It does not attempt to write QA scenarios, and instead focuses on absence of Phase 1 artifacts (e.g., \"phase1_spawn_manifest.json\")."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

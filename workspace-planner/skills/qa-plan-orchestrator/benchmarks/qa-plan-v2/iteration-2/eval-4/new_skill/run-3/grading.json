@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": false,
+      "evidence": "In result.md under “Verdict Against Benchmark Expectations”, it states Expectation A is “FAIL (blocking)” because fixture evidence says “Observable Outcomes (Loading, Titles) were missed in Phase 4a” and the plan “lacked an explicit verification leaf ensuring the window title exactly matches the report context (BCIN-7733).” Therefore the case focus is not explicitly covered."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md reports Expectation B as “INCONCLUSIVE due to missing phase4a artifact… (treated as blocking for this benchmark run)” and notes no “drafts/qa_plan_phase4a_r<round>.md” is present, so phase4a-format compliance and mapping rules cannot be verified. This fails the expectation that the output aligns with phase4a."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

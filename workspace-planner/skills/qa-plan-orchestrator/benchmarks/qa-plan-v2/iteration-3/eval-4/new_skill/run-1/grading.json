@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][blocking] Case focus is explicitly covered: SDK/API visible outcomes like window title become explicit scenarios",
+      "passed": true,
+      "evidence": "In result.md, expectation 1 is explicitly addressed with contract language requiring SDK/API-visible outcomes (e.g., setWindowTitle) to map to scenarios with observable verification leaves: “SDK/API visible outcomes ... (e.g. `setWindowTitle`, `errorHandler`) must each map to at least one scenario with a testable, observable verification leaf.” It further cites replay-specific requirement: “Required report-editor replay scenario coverage must explicitly include: … workstation title correctness on edit.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][blocking] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md states the primary phase is phase4a and argues alignment to phase4a constraints: “Phase 4a is required to produce a subcategory-only QA draft and forbids canonical top-layer categories,” citing required structure and forbidden elements. execution_notes.md also lists checks performed confirming “phase4a output alignment constraints: subcategory-only structure; no canonical top-level categories.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

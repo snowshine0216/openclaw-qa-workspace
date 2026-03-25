@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[holdout_regression][blocking] Case focus is explicitly covered: promotion/finalization behavior remains stable on another feature",
+      "passed": true,
+      "evidence": "result.md explicitly frames the intent as cross-feature stability: “Validate that promotion/finalization behavior remains stable … while working on an unrelated feature.” It further states: “These behaviors are defined as stable contract obligations independent of the specific feature (i.e., they should hold for BCIN-976 and ‘another feature’ alike).”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[holdout_regression][blocking] Output aligns with primary phase holdout",
+      "passed": true,
+      "evidence": "execution_notes.md: “Primary phase under test is holdout; this execution limited scope to validating finalization/promotion stability (Phase 7 contract and gating).” result.md similarly: “Primary phase/checkpoint under test: holdout” and “This benchmark is holdout-phase focused, so the output is limited to verifying … promotion/finalization contract is unchanged and remains properly gated.”"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

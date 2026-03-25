@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: modern grid hyperlink-style coverage separates contextual-link styling from ordinary element rendering",
+      "passed": true,
+      "evidence": "In result.md under “Case focus coverage check (hyperlink-style separation)”, the output explicitly distinguishes the two conditions: “cells/objects with contextual links (should show hyperlink styling + indicator)” vs “cells/objects without contextual links (should render as ordinary grid text without hyperlink styling/indicator)”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": false,
+      "evidence": "result.md states: “Cannot verify phase4a output alignment in practice (artifact missing from evidence)” and later: “Output aligns with primary phase phase4a: Not verifiable (no phase4a output artifacts provided in evidence).” Since alignment is not demonstrated with phase4a artifacts, this expectation is not met."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

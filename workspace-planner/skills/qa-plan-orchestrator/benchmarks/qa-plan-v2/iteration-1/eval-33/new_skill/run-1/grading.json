@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: defect feedback loop injects scenarios from prior defects into next feature QA plan",
+      "passed": false,
+      "evidence": "The output states the focus but explicitly says it is not demonstrated: “we do not have phase8 outputs (or any outputs) showing that these defects were converted into QA plan scenarios for the feature.” It does not show any injected scenarios or mapping from defects into a QA plan."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase8",
+      "passed": false,
+      "evidence": "The result.md explicitly reports a phase mismatch: “the snapshot only defines phases 0–7… There is no Phase 8 described… Because the benchmark requires… phase8… we cannot show phase8-aligned behavior.”"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 2,
+    "total": 2,
+    "pass_rate": 0
+  }
+}

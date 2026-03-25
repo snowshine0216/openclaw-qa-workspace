@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "result.md includes a dedicated section: \"## Case focus coverage: context intake preserves constraints & expectations\" and explicitly maps all three sub-points: \"1) Component-stack constraints are preserved\", \"2) Embedding lifecycle assumptions are protected at intake (no premature analysis)\", and \"3) Integration-sensitive customer expectations are captured as context signals\" (including fixture evidence: \"Customer reference: CVS Pharmacy, Inc. – CS0928640\")."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "result.md states Phase 1 scope and constraints: \"Phase 1 is responsible for context intake routing, not authoring QA content\" and provides a \"Phase alignment check (primary phase = phase1)\" noting \"No Phase 2+ artifacts are required or implied\". execution_notes.md also frames evaluation as limited to \"contract alignment\" due to missing runtime artifacts, consistent with phase1 contract focus."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

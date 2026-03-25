@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][blocking] Case focus is explicitly covered: Tavily-first then Confluence fallback ordering",
+      "passed": true,
+      "evidence": "result.md explicitly states and quotes Phase 3 contract language: SKILL.md Phase 3: “spawn Tavily-first deep-research…” and “--post: validate … Tavily-first research artifacts, optional Confluence fallback ordering”. It also cites reference.md: “tavily-search must run before any confluence fallback… fallback reason must be recorded.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][blocking] Output aligns with primary phase phase3",
+      "passed": true,
+      "evidence": "result.md is scoped to Phase 3 throughout (“Phase 3 Contract Check”, “Evidence-backed findings (Phase 3 only)”, and “This benchmark is explicitly scoped to primary phase: Phase 3”), and all evidence cited is Phase 3 sections and Phase 3 artifact families."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

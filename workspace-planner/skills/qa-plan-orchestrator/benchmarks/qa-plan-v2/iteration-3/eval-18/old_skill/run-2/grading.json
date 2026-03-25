@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: search box selector dropdown planning covers OK or Cancel confirmation, pending selection, and dismissal outcomes",
+      "passed": true,
+      "evidence": "In result.md, the output explicitly enumerates the required coverage items: it states the benchmark requires planning covers “OK or Cancel confirmation”, “Pending selection”, and “Dismissal outcomes”, and then maps them to scenarios: “Confirming selection via OK”, “Cancelling / not confirming (paired outcome vs OK)”, “Handling pending/loading state”, and “Popover dismissal behavior (including preventing unexpected dismissal, and expected behavior when dismissal does occur)”. It also restates a minimum scenario set including “Confirm selection with OK”, “Cancel / close without OK”, “Selection pending/loading…”, and “Dismissal outcomes… not dismiss unexpectedly… and if user dismisses intentionally…”."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "The output frames its verdict as “PASS (advisory)” specifically against the “phase4a contract” and includes a “Phase alignment check (primary phase: phase4a)” section. It explains Phase 4a requirements (subcategory-only draft, scenario → atomic action chain → observable verification leaves) and references phase4a workflow artifacts/validation (scripts/phase4a.sh spawns writer and validates drafts/qa_plan_phase4a_r<round>.md). This directly aligns the evaluation and expected content to phase4a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

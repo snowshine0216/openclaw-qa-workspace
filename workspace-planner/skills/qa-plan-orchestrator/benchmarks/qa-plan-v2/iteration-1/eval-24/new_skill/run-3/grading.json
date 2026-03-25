@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[phase_contract][advisory] Case focus is explicitly covered: context intake preserves component-stack constraints, embedding lifecycle assumptions, and integration-sensitive customer expectations",
+      "passed": true,
+      "evidence": "The result explicitly restates and structures the case focus under “Benchmark focus coverage (Phase 1: context intake)” listing: “1) component-stack constraints 2) embedding lifecycle assumptions 3) integration-sensitive customer expectations”, and then provides dedicated sections “A) Component-stack constraints”, “B) Embedding lifecycle assumptions”, and “C) Integration-sensitive customer expectations” with Phase 1 implications for preserving/routing these signals."
+    },
+    {
+      "id": "exp-2",
+      "text": "[phase_contract][advisory] Output aligns with primary phase phase1",
+      "passed": true,
+      "evidence": "The output is framed as “Phase 1 Contract Check” and repeatedly limits scope to Phase 1 context intake/spawn planning (not drafting QA). It states “Output is intentionally limited to Phase 1 expectations (spawn planning and context preservation signals)” (execution_notes.md) and in result.md: “Phase 1 context intake (spawn planning, not drafting)” and “What Phase 1 is allowed/required to do… Output: phase1_spawn_manifest.json”, concluding it cannot verify due to missing Phase 1 artifacts—still consistent with a Phase 1-aligned evaluation."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

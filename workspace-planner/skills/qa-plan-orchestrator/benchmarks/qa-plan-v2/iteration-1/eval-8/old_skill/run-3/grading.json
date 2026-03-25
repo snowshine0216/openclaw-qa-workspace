@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "result.md explicitly covers the case focus at the contract level: “Phase 5a must include and pass a Coverage Preservation Audit… review/refactor rounds are coverage-preserving or coverage-positive… do not remove/defer/move concerns to Out of Scope unless evidence or explicit user direction requires it… acceptance gate… accept is forbidden if coverage-preservation items remain unresolved.” It also states: “These requirements are explicitly designed to prevent ‘silent drops’ of evidence-backed nodes.”"
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "The output is scoped to phase5a and evaluates phase5a-specific required artifacts and gates: “Primary checkpoint under test — Phase: phase5a (review + refactor)” and “Phase 5a… must produce… review_notes… review_delta… qa_plan_phase5a_r<round>… must include and pass a Coverage Preservation Audit… acceptance gate…”. It also notes missing phase5a artifacts in the fixture, but the analysis itself aligns with phase5a."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

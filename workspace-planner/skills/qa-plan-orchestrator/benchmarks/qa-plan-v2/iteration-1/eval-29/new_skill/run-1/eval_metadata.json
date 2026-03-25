@@ -1,0 +1,23 @@
+{
+  "eval_id": 29,
+  "eval_name": "viz-p5b-checkpoint-001",
+  "prompt": "Benchmark case VIZ-P5B-CHECKPOINT-001 for qa-plan-orchestrator. Use feature BCVE-6797 as the primary benchmark feature. Feature family: visualization. Knowledge pack: visualization. Primary phase/checkpoint under test: phase5b. Case family: checkpoint enforcement. Evidence mode: blind pre defect. Priority: advisory. Benchmark profile: global-cross-feature-v1. Fixture references: BCVE-6797-blind-pre-defect-bundle. Focus: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap. Generate or review only the artifacts needed to demonstrate whether the skill satisfies this benchmark case. Preserve the orchestrator contract and keep outputs aligned with the current qa-plan-orchestrator phase model.",
+  "assertions": [
+    "[checkpoint_enforcement][advisory] Case focus is explicitly covered: shipment checkpoint covers highlight activation, persistence, deselection, and interaction safety for bar chart and heatmap",
+    "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b"
+  ],
+  "case_id": "VIZ-P5B-CHECKPOINT-001",
+  "feature_id": "BCVE-6797",
+  "feature_family": "visualization",
+  "knowledge_pack_key": "visualization",
+  "primary_phase": "phase5b",
+  "eval_group": "checkpoint_enforcement",
+  "evidence_mode": "blind_pre_defect",
+  "blocking": false,
+  "fixture_refs": [
+    "BCVE-6797-blind-pre-defect-bundle"
+  ],
+  "benchmark_profile": "global-cross-feature-v1",
+  "blind_fixture_id": null,
+  "blind_policy": null
+}

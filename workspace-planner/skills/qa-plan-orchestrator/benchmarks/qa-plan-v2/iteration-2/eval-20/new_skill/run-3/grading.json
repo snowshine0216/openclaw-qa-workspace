@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: Google Sheets dashboard export coverage distinguishes supported formats, entry points, and output expectations",
+      "passed": false,
+      "evidence": "The output states the focus cannot be demonstrated as covered because required Phase 5b artifacts are missing: \"cannot be demonstrated as covered at Phase 5b, because the required Phase 5b artifacts (checkpoint audit/delta + Phase 5b draft) are not present\" and \"no Phase 5b checkpoint artifacts or QA plan drafts are included\". It lists what should be covered, but does not show actual plan content covering formats/entry points/output expectations."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5b",
+      "passed": true,
+      "evidence": "Both execution_notes.md and result.md are explicitly Phase 5b-oriented and check Phase 5b required artifacts per the rubric: \"Phase alignment check (phase5b)\" and \"What Phase 5b must show (per skill contract)\". The evaluation is framed as a Phase 5b checkpoint enforcement assessment, concluding Phase 5b cannot be evidenced due to missing artifacts."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5
+  }
+}

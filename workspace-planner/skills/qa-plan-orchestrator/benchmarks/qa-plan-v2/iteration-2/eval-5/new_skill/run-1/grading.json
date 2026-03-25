@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[defect_replay][advisory] Case focus is explicitly covered: missing scenario generation for template-save and report-builder loading",
+      "passed": true,
+      "evidence": "result.md explicitly states the focus and covers both areas with retrospective defect evidence and example scenarios: \"Focus: missing scenario generation for template-save and report-builder loading\"; and sections \"2.1 Missing template-save / save-as overwrite scenario chain\" and \"2.2 Missing report-builder loading/interactivity verification\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[defect_replay][advisory] Output aligns with primary phase phase4a",
+      "passed": true,
+      "evidence": "result.md is structured around Phase 4a and cites the Phase 4a contract: \"Primary phase under test: Phase 4a\" and \"Per the Phase 4a contract..., Phase 4a must produce...\" It evaluates the presence/absence of the Phase 4a artifact (\"no Phase 4a draft artifact... is present\") and provides Phase 4a-style scenario examples (\"These examples are expressed in Phase 4a style\")."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}

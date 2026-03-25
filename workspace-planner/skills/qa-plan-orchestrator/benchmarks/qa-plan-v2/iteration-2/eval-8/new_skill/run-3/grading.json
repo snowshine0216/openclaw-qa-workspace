@@ -1,0 +1,22 @@
+{
+  "expectations": [
+    {
+      "id": "exp-1",
+      "text": "[checkpoint_enforcement][advisory] Case focus is explicitly covered: review loop does not silently drop evidence-backed nodes",
+      "passed": true,
+      "evidence": "result.md explicitly states the benchmark focus and evaluates it: \"Benchmark focus: review loop does not silently drop evidence-backed nodes\" and includes a dedicated section \"Does the provided evidence demonstrate Phase 5a prevents silent dropping?\" plus it enumerates \"Evidence-backed nodes that were previously missed (should not be 'dropped' in review)\"."
+    },
+    {
+      "id": "exp-2",
+      "text": "[checkpoint_enforcement][advisory] Output aligns with primary phase phase5a",
+      "passed": true,
+      "evidence": "result.md is structured around Phase 5a requirements and artifacts: \"Primary phase under test: Phase 5a\" and \"What Phase 5a must enforce\" with required outputs (review_notes, review_delta, drafts/qa_plan_phase5a_r<round>.md) and the acceptance gate (\"End review_delta with... accept or return phase5a\" / \"Block accept if...\"). It also states: \"this result is framed around Phase 5a’s required artifacts and acceptance gate as defined by references/review-rubric-phase5a.md...\""
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 0,
+    "total": 2,
+    "pass_rate": 1
+  }
+}
