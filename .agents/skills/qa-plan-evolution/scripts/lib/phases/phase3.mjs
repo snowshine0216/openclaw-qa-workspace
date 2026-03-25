@@ -4,6 +4,11 @@ import { join, relative } from 'node:path';
 import { selectNextMutation } from '../mutationPlanner.mjs';
 import { copyChampionSnapshot, diffSnapshotDirs } from '../snapshot.mjs';
 import {
+  markPhaseJobsPostApplied,
+  refreshJobs,
+  registerManifestJob,
+} from '../asyncJobStore.mjs';
+import {
   parsePhaseArgs,
   resolveRunContext,
   requireTask,
@@ -82,7 +87,7 @@ function stopForEmptyBacklog({ runRoot, runKey, task, iter }) {
     next_action: 'stop_no_blocking_gaps',
     overall_status: 'completed',
     iteration: iter,
-    reason: 'no_pending_mutations',
+    reason: 'stop_no_pending_mutations',
   });
   writeFileSync(
     join(runRoot, 'evolution_final.md'),
@@ -93,6 +98,10 @@ function stopForEmptyBacklog({ runRoot, runKey, task, iter }) {
     current_phase: 'phase3',
     current_iteration: iter,
     overall_status: 'completed',
+    next_action: 'stop_no_blocking_gaps',
+    next_action_reason: 'stop_no_pending_mutations',
+    pending_job_ids: [],
+    blocking_reason: null,
     pending_finalization_iteration: null,
   });
   if (run) {
@@ -134,8 +143,26 @@ export async function main(argv = process.argv.slice(2)) {
   const args = parsePhaseArgs(argv);
   const { runKey, repoRoot, runRoot } = resolveRunContext(args);
   const task = requireTask(runRoot);
+  refreshJobs(runRoot, { phase: 'phase3' });
 
   const iter = parseInt(String(args.iteration ?? task.current_iteration ?? 1), 10) || 1;
+  if (args.post) {
+    finalizeCandidatePatch({
+      repoRoot,
+      runRoot,
+      task,
+      iter,
+    });
+    touchTask(runRoot, task, {
+      next_action: 'run_phase4',
+      next_action_reason: 'ready_for_phase4',
+      pending_job_ids: [],
+      blocking_reason: null,
+    });
+    markPhaseJobsPostApplied(runRoot, 'phase3');
+    console.log(`phase3 ok: iteration-${iter} candidate_patch_summary written`);
+    return;
+  }
   const backlogPath = join(runRoot, 'context', `mutation_backlog_${runKey}.json`);
   const raw = JSON.parse(readFileSync(backlogPath, 'utf8'));
   const mutations = raw.mutations ?? [];
@@ -167,17 +194,6 @@ export async function main(argv = process.argv.slice(2)) {
   const iterDir = join(runRoot, 'candidates', `iteration-${iter}`);
   mkdirSync(iterDir, { recursive: true });
   const candidateSnapshotPath = join(iterDir, 'candidate_snapshot');
-
-  if (args.post) {
-    finalizeCandidatePatch({
-      repoRoot,
-      runRoot,
-      task,
-      iter,
-    });
-    console.log(`phase3 ok: iteration-${iter} candidate_patch_summary written`);
-    return;
-  }
 
   if (!existsSync(candidateSnapshotPath)) {
     copyChampionSnapshot(repoRoot, task.target_skill_path, candidateSnapshotPath);
@@ -226,6 +242,18 @@ export async function main(argv = process.argv.slice(2)) {
     `${String(selected.knowledge_pack_delta)}\n`,
     'utf8',
   );
+  registerManifestJob(runRoot, {
+    phase: 'phase3',
+    manifestPath,
+    expectedArtifacts: [join(iterDir, 'candidate_worker_output.md')],
+    completionProbe: 'expected_artifacts_and_spawn_results',
+    freshnessInputs: [join(iterDir, 'candidate_scope.json')],
+    timeoutAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+    retryPolicy: { owner: 'orchestrator', max_retries: 1 },
+    nextAction: 'await_async_completion',
+    nextActionReason: 'awaiting_async_prerequisite',
+    blockingReason: 'waiting_on_candidate_patch',
+  });
 
   console.log(`SPAWN_MANIFEST: ${manifestPath}`);
   console.log(`phase3 ready: iteration-${iter} candidate_plan written`);

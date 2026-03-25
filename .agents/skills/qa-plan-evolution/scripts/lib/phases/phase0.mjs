@@ -1,6 +1,13 @@
 #!/usr/bin/env node
-import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+  existsSync,
+  lstatSync,
+  readdirSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
+import { join, resolve } from 'node:path';
 import {
   detectReportStateSync,
   ensureRunDirs,
@@ -13,6 +20,7 @@ import {
 import { copyChampionSnapshot } from '../snapshot.mjs';
 import { parsePhaseArgs, resolveRunContext } from './common.mjs';
 import { resolveKnowledgePackKey } from '../knowledgePackResolver.mjs';
+import { getRepoRoot, getRunRoot } from '../paths.mjs';
 
 function parseMax(v, fallback = 10) {
   const n = parseInt(String(v ?? fallback), 10);
@@ -22,7 +30,13 @@ function parseMax(v, fallback = 10) {
 
 export async function main(argv = process.argv.slice(2)) {
   const args = parsePhaseArgs(argv);
-  const { runKey, repoRoot, runRoot } = resolveRunContext(args);
+  const { runKey, repoRoot } = resolveRunContext(args);
+  const defaultRepoRoot = getRepoRoot();
+  const requestedRunRoot = args.run_root ? resolve(args.run_root) : null;
+  const useRequestedAsCanonical =
+    requestedRunRoot && resolve(repoRoot) !== resolve(defaultRepoRoot);
+  const canonicalRunRoot = useRequestedAsCanonical ? requestedRunRoot : getRunRoot(runKey);
+  const runRoot = canonicalRunRoot;
 
   const rawMax = parseMax(args.max_iterations, 10);
   if (rawMax > 10) {
@@ -38,7 +52,17 @@ export async function main(argv = process.argv.slice(2)) {
     throw new Error('--target-skill-path and --target-skill-name are required');
   }
 
-  const reportState = detectReportStateSync(runRoot);
+  const canonicalReportState = detectReportStateSync(runRoot);
+  const requestedReportState =
+    requestedRunRoot && requestedRunRoot !== canonicalRunRoot
+      ? detectReportStateSync(requestedRunRoot)
+      : null;
+  const reportState =
+    canonicalReportState !== 'FRESH'
+      ? canonicalReportState
+      : requestedReportState && requestedReportState !== 'FRESH'
+        ? requestedReportState
+        : canonicalReportState;
 
   const choice = args.choice ?? process.env.EVOLUTION_USER_CHOICE;
   const existing = loadTask(runRoot);
@@ -97,6 +121,19 @@ export async function main(argv = process.argv.slice(2)) {
   task.overall_status = 'in_progress';
   task.current_phase = 'phase1';
   task.report_state = reportState;
+  task.canonical_run_root = canonicalRunRoot;
+  task.scratch_run_root = requestedRunRoot && requestedRunRoot !== canonicalRunRoot
+    ? requestedRunRoot
+    : null;
+  task.runtime_root_mode = useRequestedAsCanonical
+    ? 'test_override'
+    : requestedRunRoot && requestedRunRoot !== canonicalRunRoot
+    ? 'scratch_alias'
+    : 'canonical_only';
+  task.next_action = 'run_phase1';
+  task.next_action_reason = 'phase0_complete';
+  task.pending_job_ids = [];
+  task.blocking_reason = null;
   if (reportState === 'FRESH' || choice === 'full_regenerate') {
     const champDir = join(runRoot, 'archive', 'champion-initial');
     copyChampionSnapshot(repoRoot, targetSkillPath, champDir);
@@ -123,6 +160,9 @@ export async function main(argv = process.argv.slice(2)) {
     run_key: runKey,
     report_state: reportState,
     repo_root: repoRoot,
+    canonical_run_root: canonicalRunRoot,
+    scratch_run_root: task.scratch_run_root,
+    runtime_root_mode: task.runtime_root_mode,
     target_skill_path: targetSkillPath,
     benchmark_profile: benchmarkProfile,
     requested_knowledge_pack_key: args.knowledge_pack_key ?? null,
@@ -131,6 +171,22 @@ export async function main(argv = process.argv.slice(2)) {
     defect_analysis_run_key: args.defect_analysis_run_key ?? null,
     max_iterations: maxIterations,
   });
+
+  if (!useRequestedAsCanonical && requestedRunRoot && requestedRunRoot !== canonicalRunRoot) {
+    const pointerPath = join(requestedRunRoot, '.canonical-run-root');
+    const canSymlink =
+      choice === 'full_regenerate' ||
+      !existsSync(requestedRunRoot) ||
+      (existsSync(requestedRunRoot) &&
+        ((lstatSync(requestedRunRoot).isSymbolicLink()) ||
+          readdirSync(requestedRunRoot).length === 0));
+    if (canSymlink) {
+      rmSync(requestedRunRoot, { recursive: true, force: true });
+      symlinkSync(canonicalRunRoot, requestedRunRoot, 'dir');
+    } else {
+      writeFileSync(pointerPath, `${canonicalRunRoot}\n`, 'utf8');
+    }
+  }
 
   console.log(`phase0 ok: run_root=${runRoot} report_state=${reportState}`);
 }

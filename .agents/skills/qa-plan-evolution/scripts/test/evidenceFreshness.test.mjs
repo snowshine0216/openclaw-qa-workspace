@@ -11,13 +11,32 @@ async function writeJson(path, payload) {
   await writeFile(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
+const TARGET_SKILL_MD = `---
+name: target-skill
+description: Generic target skill fixture for qa-plan-evolution regression tests.
+---
+
+# Target Skill
+
+REPORT_STATE
+`;
+const QA_PLAN_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Master orchestrator for script-driven feature QA planning. The orchestrator only calls phase scripts, interacts with the user, and spawns from phase manifests.
+---
+
+# qa-plan-orchestrator
+
+REPORT_STATE
+`;
+
 test('evidenceFreshness blocks when a required knowledge pack is missing', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-freshness-'));
   const skillRoot = join(repoRoot, 'target-skill');
 
   try {
     await mkdir(join(skillRoot, 'evals'), { recursive: true });
-    await writeFile(join(skillRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(skillRoot, 'SKILL.md'), TARGET_SKILL_MD, 'utf8');
     await writeFile(join(skillRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
     await writeJson(join(skillRoot, 'evals', 'evals.json'), { eval_groups: [] });
 
@@ -45,7 +64,7 @@ test('evidenceFreshness blocks when qa-plan-knowledge-pack-coverage requires def
 
   try {
     await mkdir(join(skillRoot, 'evals'), { recursive: true });
-    await writeFile(join(skillRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(skillRoot, 'SKILL.md'), QA_PLAN_SKILL_MD, 'utf8');
     await writeFile(join(skillRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
     await writeJson(join(skillRoot, 'evals', 'evals.json'), { eval_groups: [] });
 
@@ -76,7 +95,7 @@ test('evidenceFreshness keeps missing eval harness non-blocking for generic targ
 
   try {
     await mkdir(skillRoot, { recursive: true });
-    await writeFile(join(skillRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(skillRoot, 'SKILL.md'), TARGET_SKILL_MD, 'utf8');
     await writeFile(join(skillRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
 
     const freshness = buildEvidenceFreshness({
@@ -115,7 +134,7 @@ test('evidenceFreshness marks knowledge-pack-backed evidence stale when the pack
     await mkdir(join(skillRoot, 'evals'), { recursive: true });
     await mkdir(join(skillRoot, 'knowledge-packs', 'report-editor'), { recursive: true });
     await mkdir(join(defectsRunRoot, 'context'), { recursive: true });
-    await writeFile(join(skillRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(skillRoot, 'SKILL.md'), QA_PLAN_SKILL_MD, 'utf8');
     await writeFile(join(skillRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
     await writeJson(join(skillRoot, 'evals', 'evals.json'), { eval_groups: [] });
     await writeJson(

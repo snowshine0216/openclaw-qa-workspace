@@ -2,6 +2,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { scoreChallengerVsChampion } from '../scoreCandidate.mjs';
+import { hashJsonPayload } from '../workflowState.mjs';
+import { mutationSignature } from '../mutationPlanner.mjs';
 import {
   parsePhaseArgs,
   resolveRunContext,
@@ -53,6 +55,15 @@ export async function main(argv = process.argv.slice(2)) {
   const iterDir = join(runRoot, 'candidates', `iteration-${iter}`);
   const valPath = join(iterDir, 'validation_report.json');
   const val = JSON.parse(readFileSync(valPath, 'utf8'));
+  const candidateScopePath = join(iterDir, 'candidate_scope.json');
+  const candidateScope = (() => {
+    try {
+      return JSON.parse(readFileSync(candidateScopePath, 'utf8'));
+    } catch {
+      return {};
+    }
+  })();
+  const selectedMutation = candidateScope.mutation ?? null;
   const benchmarkScorecard = val.validation?.scorecard ?? null;
   const validationSummary = {
     regression_count: val.validation?.regression_count ?? 0,
@@ -145,6 +156,12 @@ export async function main(argv = process.argv.slice(2)) {
         iteration: iter,
         accept: outcome.accept,
         at: new Date().toISOString(),
+        mutation_signature: selectedMutation ? mutationSignature(selectedMutation) : null,
+        selected_observation_ids: selectedMutation?.source_observation_ids ?? [],
+        generalization_scope: selectedMutation?.generalization_scope ?? null,
+        validation_fingerprint: run.phase_receipts?.phase4?.fingerprint ?? null,
+        score_fingerprint: hashJsonPayload({ outcome, validationSummary }),
+        stop_reason: null,
       },
     ],
     consecutive_rejections: outcome.accept

@@ -1,4 +1,0 @@
-pass_rate: 0
-passed: 0
-failed: 2
-total: 2

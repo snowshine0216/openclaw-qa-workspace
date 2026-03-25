@@ -1,4 +1,5 @@
-import { resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { parseArgs } from '../args.mjs';
 import { getRepoRoot, getRunRoot } from '../paths.mjs';
 import {
@@ -19,8 +20,29 @@ export function resolveRunContext(args) {
     throw new Error('--run-key is required');
   }
   const repoRoot = args.repo_root ? resolve(args.repo_root) : getRepoRoot();
-  const runRoot = args.run_root ? resolve(args.run_root) : getRunRoot(runKey);
-  return { runKey, repoRoot, runRoot };
+  const defaultRepoRoot = getRepoRoot();
+  const canonicalRunRoot = getRunRoot(runKey);
+  const requestedRunRoot = args.run_root ? resolve(args.run_root) : null;
+  let runRoot = canonicalRunRoot;
+
+  if (requestedRunRoot) {
+    if (repoRoot !== resolve(defaultRepoRoot)) {
+      runRoot = requestedRunRoot;
+      return { runKey, repoRoot, runRoot, canonicalRunRoot: requestedRunRoot, requestedRunRoot };
+    }
+    const pointerPath = join(requestedRunRoot, '.canonical-run-root');
+    if (existsSync(join(canonicalRunRoot, 'task.json'))) {
+      runRoot = canonicalRunRoot;
+    } else if (existsSync(join(requestedRunRoot, 'task.json'))) {
+      runRoot = requestedRunRoot;
+    } else if (existsSync(pointerPath)) {
+      runRoot = resolve(readFileSync(pointerPath, 'utf8').trim());
+    } else {
+      runRoot = requestedRunRoot;
+    }
+  }
+
+  return { runKey, repoRoot, runRoot, canonicalRunRoot, requestedRunRoot };
 }
 
 export function requireTask(runRoot) {

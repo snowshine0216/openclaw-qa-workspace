@@ -17,7 +17,19 @@ async function writeJson(path, payload) {
 async function createTargetSkill(repoRoot, name = 'target-skill') {
   const skillRoot = join(repoRoot, name);
   await mkdir(skillRoot, { recursive: true });
-  await writeFile(join(skillRoot, 'SKILL.md'), '# Skill\nREPORT_STATE\n', 'utf8');
+  await writeFile(
+    join(skillRoot, 'SKILL.md'),
+    `---
+name: ${name}
+description: Generic target skill fixture for qa-plan-evolution tests.
+---
+
+# Skill
+
+REPORT_STATE
+`,
+    'utf8',
+  );
   await writeFile(join(skillRoot, 'reference.md'), '# Reference\n', 'utf8');
   await writeJson(join(skillRoot, 'package.json'), {
     name,
@@ -97,6 +109,16 @@ test('phase3 selects one pending mutation and writes candidate artifacts', async
       patchTask,
       new RegExp(`Only edit files under ${workerVisibleSnapshotPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
     );
+    const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
+    assert.equal(task.next_action, 'await_async_completion');
+    assert.equal(task.next_action_reason, 'awaiting_async_prerequisite');
+    assert.equal(task.blocking_reason, 'waiting_on_candidate_patch');
+    assert.deepEqual(task.pending_job_ids, ['phase3-1']);
+    const job = JSON.parse(
+      await readFile(join(runRoot, 'jobs', 'phase3-1.json'), 'utf8'),
+    );
+    assert.equal(job.phase, 'phase3');
+    assert.equal(job.status, 'queued');
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
     await rm(runRoot, { recursive: true, force: true });

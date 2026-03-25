@@ -47,7 +47,8 @@ Replay-enabled `report-editor` run:
   --defect-analysis-run-key BCIN-7289
 ```
 
-Use `--run-root` and `--repo-root` when keeping runs outside the default `runs/<run-key>/` tree (for example CI temp dirs).
+Normal operator usage resumes from `.agents/skills/qa-plan-evolution/runs/<run-key>/`.
+Use `--run-root` only for test/CI scratch surfaces; it is not the authoritative resume location for a normal workspace run.
 
 For `qa-plan-v2`, Phase 4 now prefers executed benchmark comparison through `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`. The older structural comparator in `scripts/lib/publishIterationComparison.mjs` remains a synthetic fallback only; it marks scorecards with `scoring_fidelity: "synthetic"` and blocks promotion.
 
@@ -86,7 +87,12 @@ Profiles now declare `gap_sources` so Phase 2 can remain shared while target-spe
 - `generic-skill-regression` uses generic sources such as target eval failures and contract drift.
 - `qa-plan-*` profiles add planner-specific sources such as defects cross-analysis and knowledge-pack coverage.
 
-`scripts/orchestrate.sh` now honors `SPAWN_MANIFEST:` output by running `scripts/lib/manifestRunner.mjs` and rerunning the same phase with `--post`.
+`scripts/orchestrate.sh` now persists async job state, performs bounded reconciliation on each invocation, and reruns the owning phase with `--post` only after the job completion probe succeeds.
+
+Resume and status commands:
+
+- `scripts/check_resume.sh --run-key <key>` — canonical operator summary
+- `scripts/progress.sh --run-key <key>` — read-only async-job status with expected artifact paths
 
 ## Related docs
 
@@ -94,3 +100,5 @@ Profiles now declare `gap_sources` so Phase 2 can remain shared while target-spe
 - `workspace-planner/skills/qa-plan-orchestrator/references/qa-plan-benchmark-spec.md`
 - `docs/QA_PLAN_EVOLUTION_WORKFLOW_AND_EXAMPLE.md`
 - `docs/QA_PLAN_V2_BENCHMARK_INTEGRATION_REMEDIATION_PLAN.md`
+- `docs/fix/2026-03-25-qa-plan-evolution-runtime-generalization-fix-plan.md`
+- `docs/fix/qa-plan-evolution-runtime-qa-scenarios.md`

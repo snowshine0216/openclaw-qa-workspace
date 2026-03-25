@@ -11,7 +11,7 @@ Defect analysis run key: `BCIN-7289`
 
 Primary clean evolution run:
 - run key: `qa-plan-orchestrator__report-editor__replay__fresh-start__final-green-baseline__20260324T020710Z`
-- run root: `/tmp/qa-plan-evolution-runs/qa-plan-orchestrator__report-editor__replay__fresh-start__final-green-baseline__20260324T020710Z`
+- run root: `.agents/skills/qa-plan-evolution/runs/qa-plan-orchestrator__report-editor__replay__fresh-start__final-green-baseline__20260324T020710Z`
 
 Task state:
 - `current_phase: "phase2"`
@@ -103,7 +103,7 @@ Everything else required for promotion was non-regressing or improved.
 ## Iteration 2 Candidate Patch
 
 Iteration 2 candidate was patched only in the candidate snapshot under:
-- `/tmp/qa-plan-evolution-runs/qa-plan-orchestrator__report-editor__replay__fresh-start__final-green-baseline__20260324T020710Z/candidates/iteration-2/candidate_snapshot`
+- `.agents/skills/qa-plan-evolution/runs/qa-plan-orchestrator__report-editor__replay__fresh-start__final-green-baseline__20260324T020710Z/candidates/iteration-2/candidate_snapshot`
 
 Patched files:
 - `scripts/lib/spawnManifestBuilders.mjs`

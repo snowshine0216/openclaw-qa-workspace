@@ -42,6 +42,11 @@ function mapStructuredGapToObservation(task, sourcePath, gap, index) {
     affected_phase: gap.affected_phase ?? null,
     feature_family: gap.feature_family ?? task.feature_family ?? null,
     generalization_scope: gap.generalization_scope ?? null,
+    generalized_rule: gap.generalized_rule ?? gap.summary,
+    target_surface: gap.target_surface ?? null,
+    source_examples: gap.source_examples ?? [],
+    allowed_mutation_scope: gap.allowed_mutation_scope ?? [],
+    promotion_eligible: true,
     source_defects: gap.source_defects ?? [],
   };
 }
@@ -98,13 +103,11 @@ export async function collectDefectsCrossAnalysisObservations({ repoRoot, task }
         summary,
         details: summary,
         taxonomy_candidates: [deriveBucket(summary)],
-        target_files: [
-          `${task.target_skill_path}/references/phase4a-contract.md`,
-          `${task.target_skill_path}/references/review-rubric-phase5a.md`,
-          `${task.target_skill_path}/scripts/lib/finalPlanSummary.mjs`,
-        ],
+        target_files: [],
         evals_affected: ['defect_recall_replay', 'self_test_gap_explanation'],
         knowledge_pack_key: task.knowledge_pack_key,
+        promotion_eligible: false,
+        advisory_only: true,
         confidence: 'high',
         blocking: true,
       });

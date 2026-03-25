@@ -20,6 +20,7 @@ All per-run artifacts live under:
 - `candidates/iteration-<n>/` — per-iteration challenger outputs
 - `benchmarks/` — benchmark profile, eval manifests, scoreboard
 - `archive/` — archived champion snapshots and prior finals
+- `jobs/` — persisted async-job receipts and completion probes
 - `task.json`, `run.json`
 
 ## Runtime State
@@ -60,6 +61,13 @@ Required fields:
 - `pending_finalization_iteration`
 - `champion_archive_path`
 - `finalization_approved_at`
+- `canonical_run_root`
+- `scratch_run_root`
+- `runtime_root_mode`
+- `next_action`
+- `next_action_reason`
+- `pending_job_ids`
+- `blocking_reason`
 - `created_at`
 - `updated_at`
 
@@ -90,6 +98,30 @@ Required fields:
 - `iteration_history`
 - `blocking_issues`
 - `champion_archive_history`
+- `phase_receipts`
+
+### Operator Summary Contract
+
+Both `check_resume.sh` and `progress.sh` render the same canonical summary payload:
+
+- `task.run_key`
+- `task.report_state`
+- `task.overall_status`
+- `task.current_phase`
+- `task.current_iteration`
+- `task.next_action`
+- `task.next_action_reason`
+- `task.pending_job_ids`
+- `task.blocking_reason`
+- `task.runtime_root_mode`
+- `task.canonical_run_root`
+- `task.scratch_run_root`
+- `jobs[].job_id`
+- `jobs[].phase`
+- `jobs[].status`
+- `jobs[].expected_artifacts`
+- `jobs[].post_applied_at`
+- `jobs[].failure_reason`
 
 ## Evidence Freshness Rules
 
@@ -150,6 +182,14 @@ Examples:
 Gap sources are resolved through adapter modules under `scripts/lib/gapSources/`. The shared orchestrator consumes normalized observations; target-specific parsing stays in the adapters.
 
 For `defects_cross_analysis`, the adapter must prefer `context/gap_bundle_<run-key>.json` and fall back to markdown parsing only for backward compatibility.
+
+Promotion-grade structured observations must expose:
+
+- `generalization_scope`
+- `generalized_rule`
+- `target_surface`
+- `source_examples`
+- `allowed_mutation_scope`
 
 ## Mutation Hypothesis Contract
 

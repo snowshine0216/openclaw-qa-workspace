@@ -1,6 +1,7 @@
 import { getProfileById } from './loadProfile.mjs';
 import { collectGapSourceResults as collectGapSourceResultsByProfile } from './gapSources/index.mjs';
 import { buildGapTaxonomy, buildObservationClusterKey } from './gapTaxonomy.mjs';
+import { normalizeSourceResultsForPromotion } from './generalizationGuard.mjs';
 
 function unique(items) {
   return [...new Set(items.filter(Boolean))];
@@ -97,12 +98,13 @@ export async function collectGapSourceResults({ repoRoot, runRoot, task, profile
 
 export async function buildGapSourceResults({ repoRoot, runRoot, task }) {
   const profile = getProfileById(task.benchmark_profile);
-  const sourceResults = await collectGapSourceResults({
+  const rawSourceResults = await collectGapSourceResults({
     repoRoot,
     runRoot,
     task,
     profile,
   });
+  const sourceResults = normalizeSourceResultsForPromotion(task, rawSourceResults);
   return { profile, sourceResults };
 }
 

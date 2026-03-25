@@ -345,6 +345,9 @@ function promoteCandidateWithGit({
 export async function main(argv = process.argv.slice(2)) {
   const args = parsePhaseArgs(argv);
   const { runKey, runRoot, repoRoot } = resolveRunContext(args);
+  mkdirSync(join(runRoot, 'context'), { recursive: true });
+  mkdirSync(join(runRoot, 'archive'), { recursive: true });
+  mkdirSync(join(runRoot, 'benchmarks'), { recursive: true });
   const task = requireTask(runRoot);
   const run = requireRun(runRoot);
 
@@ -373,6 +376,15 @@ export async function main(argv = process.argv.slice(2)) {
   const pushRemote = typeof args.push_remote === 'string' ? args.push_remote : null;
   const pushBranch = typeof args.push_branch === 'string' ? args.push_branch : null;
 
+  const stopReason = !accept && consecutive >= 3
+    ? 'stop_three_consecutive_rejections'
+    : !accept && iter >= max
+      ? 'stop_max_iterations'
+      : accept && approvalRequired
+        ? 'awaiting_final_approval'
+        : finalize
+          ? 'run_finalized'
+          : 'ready_for_phase2';
   const nextAction = approvalRequired
     ? 'await_final_approval'
     : finalize
@@ -472,6 +484,10 @@ export async function main(argv = process.argv.slice(2)) {
     current_iteration: approvalRequired || finalize ? iter : iter + 1,
     current_phase: approvalRequired || finalize ? 'phase6' : 'phase2',
     overall_status: overall,
+    next_action: nextAction,
+    next_action_reason: stopReason,
+    pending_job_ids: [],
+    blocking_reason: null,
     pending_finalization_iteration: approvalRequired ? iter : null,
     champion_snapshot_path: finalize && candidateArchivePath
       ? `archive/candidate-iteration-${iter}`

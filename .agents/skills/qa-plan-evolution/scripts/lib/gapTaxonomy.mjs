@@ -14,9 +14,15 @@ function uniqueSorted(items) {
 }
 
 export function buildObservationClusterKey(bucket, observation) {
+  const knowledgePackKey = observation.knowledge_pack_key || '';
+  const generalizedRule = String(observation.generalized_rule || '').trim().toLowerCase();
+  const targetSurface = String(observation.target_surface || '').trim().toLowerCase();
+  if (generalizedRule || targetSurface) {
+    const scopePack = observation.generalization_scope === 'feature_family' ? knowledgePackKey : '';
+    return `${bucket}|rule:${generalizedRule}|surface:${targetSurface}|pack:${scopePack}`;
+  }
   const evalsAffected = uniqueSorted(observation.evals_affected);
   const targetFiles = uniqueSorted(observation.target_files);
-  const knowledgePackKey = observation.knowledge_pack_key || '';
   return `${bucket}|evals:${evalsAffected.join(',')}|files:${targetFiles.join(',')}|pack:${knowledgePackKey}`;
 }
 
@@ -37,6 +43,8 @@ export function buildGapTaxonomy({ sourceResults }) {
           target_files: uniqueSorted(observation.target_files),
           evals_affected: uniqueSorted(observation.evals_affected),
           knowledge_pack_key: observation.knowledge_pack_key || null,
+          generalized_rule: observation.generalized_rule || null,
+          target_surface: observation.target_surface || null,
           summaries: [],
         };
         current.evidence.add(observation.source_path);
@@ -59,6 +67,8 @@ export function buildGapTaxonomy({ sourceResults }) {
     target_files: gap.target_files,
     evals_affected: gap.evals_affected,
     knowledge_pack_key: gap.knowledge_pack_key,
+    generalized_rule: gap.generalized_rule,
+    target_surface: gap.target_surface,
   }));
 
   return {

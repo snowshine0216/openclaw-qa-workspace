@@ -342,6 +342,19 @@ Recommended single-family invocation when the current mutation target is `report
   --feature-id BCIN-7289
 ```
 
+Canonical operator inspection:
+
+```bash
+./.agents/skills/qa-plan-evolution/scripts/check_resume.sh --run-key "qa-plan-orchestrator__report-editor__<timestamp>"
+./.agents/skills/qa-plan-evolution/scripts/progress.sh --run-key "qa-plan-orchestrator__report-editor__<timestamp>"
+```
+
+The authoritative run home is:
+
+```text
+.agents/skills/qa-plan-evolution/runs/<run-key>/
+```
+
 Enable replay only when you intentionally want defect-backed evaluation:
 
 ```bash

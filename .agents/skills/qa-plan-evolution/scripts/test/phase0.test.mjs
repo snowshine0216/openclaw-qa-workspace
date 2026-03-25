@@ -59,6 +59,47 @@ test('phase0 initializes champion snapshot for a fresh run', async () => {
   }
 });
 
+test('phase0 writes canonical root metadata and aliases an override run root to the canonical run', async () => {
+  const runKey = 'phase0-canonical-root';
+  const overrideRunRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-canonical-'));
+  const canonicalRunRoot = join(
+    REPO_ROOT,
+    '.agents',
+    'skills',
+    'qa-plan-evolution',
+    'runs',
+    runKey,
+  );
+
+  try {
+    const result = spawnSync('bash', [
+      PHASE0,
+      '--run-key', runKey,
+      '--run-root', overrideRunRoot,
+      '--repo-root', REPO_ROOT,
+      '--target-skill-path', FIXTURE,
+      '--target-skill-name', 'minimal-fixture',
+      '--benchmark-profile', 'generic-skill-regression',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 0, result.stderr);
+    const task = JSON.parse(await readFile(join(canonicalRunRoot, 'task.json'), 'utf8'));
+    assert.equal(task.canonical_run_root, canonicalRunRoot);
+    assert.equal(task.scratch_run_root, overrideRunRoot);
+    assert.equal(task.runtime_root_mode, 'scratch_alias');
+    assert.equal(task.next_action, 'run_phase1');
+    assert.equal(task.next_action_reason, 'phase0_complete');
+    assert.deepEqual(task.pending_job_ids, []);
+    assert.equal(task.blocking_reason, null);
+    assert.equal(existsSync(join(overrideRunRoot, 'task.json')), true);
+  } finally {
+    await rm(overrideRunRoot, { recursive: true, force: true });
+    await rm(canonicalRunRoot, { recursive: true, force: true });
+  }
+});
+
 test('phase0 full_regenerate clears stale run artifacts before reinitializing', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-regenerate-'));
 
