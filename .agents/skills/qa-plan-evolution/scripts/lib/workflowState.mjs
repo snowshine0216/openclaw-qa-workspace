@@ -1,4 +1,5 @@
 import {
+  statSync,
   readFileSync,
   writeFileSync,
   existsSync,
@@ -6,6 +7,7 @@ import {
   readdirSync,
   rmSync,
 } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 export function detectReportStateSync(runRoot) {
   const finalPath = join(runRoot, 'evolution_final.md');
@@ -65,6 +67,7 @@ export function ensureRunDirs(runRoot) {
     'candidates',
     'benchmarks',
     'archive',
+    'jobs',
   ]) {
     mkdirSync(join(runRoot, sub), { recursive: true });
   }
@@ -123,6 +126,13 @@ export function createTaskSkeleton({
     benchmark_profile: benchmarkProfile,
     current_iteration: 0,
     max_iterations: maxIterations,
+    canonical_run_root: null,
+    scratch_run_root: null,
+    runtime_root_mode: 'canonical_only',
+    next_action: null,
+    next_action_reason: null,
+    pending_job_ids: [],
+    blocking_reason: null,
     accepted_iteration: null,
     champion_snapshot_path: null,
     pending_finalization_iteration: null,
@@ -153,5 +163,16 @@ export function createRunSkeleton(runKey) {
     blocking_issues: [],
     consecutive_rejections: 0,
     champion_archive_history: [],
+    phase_receipts: {},
   };
+}
+
+export function hashJsonPayload(payload) {
+  return createHash('sha256')
+    .update(JSON.stringify(payload))
+    .digest('hex');
+}
+
+export function fileMtimeMs(path) {
+  return existsSync(path) ? statSync(path).mtimeMs : 0;
 }

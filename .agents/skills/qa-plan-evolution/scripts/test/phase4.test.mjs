@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -10,10 +10,26 @@ import { runTargetValidation } from '../lib/runTargetValidation.mjs';
 
 const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)));
 const PHASE4 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase4.sh');
+const MANIFEST_RUNNER = join(
+  REPO_ROOT,
+  '.agents/skills/qa-plan-evolution/scripts/lib/manifestRunner.mjs',
+);
 
 async function writeJson(path, payload) {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+}
+
+function buildSkillDoc(name, title = 'Target Skill') {
+  return `---
+name: ${name}
+description: Generic target skill fixture for qa-plan-evolution tests.
+---
+
+# ${title}
+
+REPORT_STATE
+`;
 }
 
 async function createQaPlanSkill(repoRoot, name, {
@@ -28,7 +44,7 @@ async function createQaPlanSkill(repoRoot, name, {
   await mkdir(join(targetRoot, 'scripts', 'lib'), { recursive: true });
   await mkdir(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'lib'), { recursive: true });
 
-  await writeFile(join(targetRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+  await writeFile(join(targetRoot, 'SKILL.md'), buildSkillDoc(name), 'utf8');
   await writeFile(join(targetRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
   await writeFile(join(targetRoot, 'README.md'), 'developer_smoke_test_\n', 'utf8');
   await writeFile(join(targetRoot, 'references', 'phase4a-contract.md'), '[ANALOG-GATE]\n', 'utf8');
@@ -617,7 +633,7 @@ test('phase4 keeps generic contract compliance at 1 when no eval harness exists'
 
   try {
     await mkdir(targetRoot, { recursive: true });
-    await writeFile(join(targetRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(targetRoot, 'SKILL.md'), buildSkillDoc('generic-skill'), 'utf8');
     await writeFile(join(targetRoot, 'reference.md'), 'Reference\n', 'utf8');
     await writeJson(join(targetRoot, 'package.json'), {
       name: 'generic-skill',
@@ -649,7 +665,7 @@ test('phase4 validates the candidate snapshot instead of the unchanged target tr
   try {
     await mkdir(join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot'), { recursive: true });
     await mkdir(join(targetRoot), { recursive: true });
-    await writeFile(join(targetRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(targetRoot, 'SKILL.md'), buildSkillDoc('target-skill'), 'utf8');
     await writeFile(join(targetRoot, 'reference.md'), 'Reference\n', 'utf8');
     await writeJson(join(targetRoot, 'package.json'), {
       name: 'target-skill',
@@ -661,7 +677,7 @@ test('phase4 validates the candidate snapshot instead of the unchanged target tr
     });
 
     const candidateRoot = join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot');
-    await writeFile(join(candidateRoot, 'SKILL.md'), 'REPORT_STATE\n', 'utf8');
+    await writeFile(join(candidateRoot, 'SKILL.md'), buildSkillDoc('target-skill'), 'utf8');
     await writeFile(join(candidateRoot, 'reference.md'), '# Mutated reference\n', 'utf8');
     await writeJson(join(candidateRoot, 'package.json'), {
       name: 'target-skill',
@@ -712,6 +728,236 @@ test('phase4 validates the candidate snapshot instead of the unchanged target tr
     );
     assert.equal(report.validation.smoke_ok, true);
     assert.equal(report.validation.validated_target_root, candidateRoot);
+  } finally {
+    await rm(runRoot, { recursive: true, force: true });
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase4 reuses validation receipts when candidate snapshot is unchanged', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-reuse-repo-'));
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-reuse-run-'));
+  const runKey = 'phase4-reuse';
+  const targetRoot = join(repoRoot, 'target-skill');
+
+  try {
+    await mkdir(join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot'), { recursive: true });
+    await mkdir(targetRoot, { recursive: true });
+    await writeFile(join(targetRoot, 'SKILL.md'), buildSkillDoc('target-skill'), 'utf8');
+    await writeFile(join(targetRoot, 'reference.md'), 'Reference\n', 'utf8');
+    await writeJson(join(targetRoot, 'package.json'), {
+      name: 'target-skill',
+      private: true,
+      type: 'module',
+      scripts: {
+        test: 'node -e "process.exit(0)"',
+      },
+    });
+
+    const candidateRoot = join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot');
+    await writeFile(join(candidateRoot, 'SKILL.md'), buildSkillDoc('target-skill'), 'utf8');
+    await writeFile(join(candidateRoot, 'reference.md'), '# Mutated reference\n', 'utf8');
+    await writeJson(join(candidateRoot, 'package.json'), {
+      name: 'target-skill',
+      private: true,
+      type: 'module',
+      scripts: {
+        test: 'node -e "process.exit(0)"',
+      },
+    });
+    await writeFile(
+      join(runRoot, 'candidates', 'iteration-1', 'candidate_patch_summary.md'),
+      '# Candidate patch summary\n\n- reference.md\n',
+      'utf8',
+    );
+    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'candidate_scope.json'), {
+      iteration: 1,
+      candidate_snapshot_path: 'candidates/iteration-1/candidate_snapshot',
+      changed_files: ['reference.md'],
+      mutation: {
+        mutation_id: 'mut-1',
+        target_files: ['target-skill/reference.md'],
+      },
+    });
+    await writeJson(join(runRoot, 'task.json'), {
+      run_key: runKey,
+      target_skill_path: relative(repoRoot, targetRoot),
+      benchmark_profile: 'generic-skill-regression',
+      current_iteration: 1,
+    });
+    await writeJson(join(runRoot, 'run.json'), {
+      run_key: runKey,
+      latest_validation_completed_at: null,
+      phase_receipts: {},
+    });
+
+    const first = spawnSync('bash', [
+      PHASE4,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '1',
+    ], {
+      encoding: 'utf8',
+    });
+    assert.equal(first.status, 0, first.stderr);
+
+    const reportPath = join(runRoot, 'candidates', 'iteration-1', 'validation_report.json');
+    const before = await stat(reportPath);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    const second = spawnSync('bash', [
+      PHASE4,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '1',
+    ], {
+      encoding: 'utf8',
+    });
+    assert.equal(second.status, 0, second.stderr);
+    assert.match(second.stdout, /reused/i);
+
+    const after = await stat(reportPath);
+    assert.equal(after.mtimeMs, before.mtimeMs);
+  } finally {
+    await rm(runRoot, { recursive: true, force: true });
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase4 persists async benchmark work and finalizes on post re-entry', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-async-repo-'));
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-async-run-'));
+  const runKey = 'phase4-async';
+
+  try {
+    const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-phase4-async', {
+      smokeScript: 'node -e "process.exit(0)"',
+      evalScript: `
+        import { writeFileSync } from 'node:fs';
+        writeFileSync(new URL('../eval-ran.txt', import.meta.url), 'eval-ran');
+      `,
+      publisherScript: `
+        export async function publishIterationComparison() {
+          throw new Error('synthetic publisher should not run when executed runner exists');
+        }
+      `,
+      runnerScript: `
+        import { mkdirSync, writeFileSync } from 'node:fs';
+        import { join } from 'node:path';
+
+        export async function runIterationCompare({ benchmarkRoot, iteration }) {
+          const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
+          mkdirSync(iterationDir, { recursive: true });
+          const scorecardPath = join(iterationDir, 'scorecard.json');
+          writeFileSync(join(iterationDir, 'benchmark.json'), JSON.stringify({ ok: true }));
+          writeFileSync(scorecardPath, JSON.stringify({
+            scoring_fidelity: 'executed',
+            decision: { result: 'accept' },
+            mode_scores: {
+              primary: {
+                blind_pre_defect: { mean_pass_rate: 1 },
+                retrospective_replay: { mean_pass_rate: 1 },
+                holdout_regression: { mean_pass_rate: 1 },
+              },
+            },
+          }));
+          return {
+            benchmarkJsonPath: join(iterationDir, 'benchmark.json'),
+            scorecardPath,
+            iterationDir,
+            candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
+          };
+        }
+      `,
+    });
+    const targetRoot = join(repoRoot, targetSkillPath);
+    const candidateRoot = join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot');
+    await mkdir(candidateRoot, { recursive: true });
+    await writeFile(join(candidateRoot, 'SKILL.md'), await readFile(join(targetRoot, 'SKILL.md'), 'utf8'), 'utf8');
+    await writeFile(join(candidateRoot, 'reference.md'), '# Mutated reference\n', 'utf8');
+    await writeJson(join(candidateRoot, 'package.json'), {
+      name: 'qa-plan-phase4-async',
+      private: true,
+      type: 'module',
+      scripts: {
+        test: 'node -e "process.exit(0)"',
+      },
+    });
+    await writeFile(
+      join(runRoot, 'candidates', 'iteration-1', 'candidate_patch_summary.md'),
+      '# Candidate patch summary\n\n- reference.md\n',
+      'utf8',
+    );
+    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'candidate_scope.json'), {
+      iteration: 1,
+      candidate_snapshot_path: 'candidates/iteration-1/candidate_snapshot',
+      changed_files: ['reference.md'],
+      mutation: {
+        mutation_id: 'mut-1',
+        target_files: [`${targetSkillPath}/reference.md`],
+      },
+    });
+    await writeJson(join(runRoot, 'task.json'), {
+      run_key: runKey,
+      target_skill_path: targetSkillPath,
+      target_skill_name: 'qa-plan-phase4-async',
+      benchmark_profile: 'qa-plan-defect-recall',
+      current_iteration: 1,
+      current_phase: 'phase4',
+    });
+    await writeJson(join(runRoot, 'run.json'), {
+      run_key: runKey,
+      latest_validation_completed_at: null,
+      phase_receipts: {},
+    });
+
+    const first = spawnSync('bash', [
+      PHASE4,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '1',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(first.status, 2, first.stderr);
+    assert.match(first.stdout, /SPAWN_MANIFEST:/);
+    const taskAfterSpawn = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
+    assert.equal(taskAfterSpawn.next_action, 'await_async_completion');
+    assert.equal(taskAfterSpawn.next_action_reason, 'awaiting_async_prerequisite');
+    assert.equal(taskAfterSpawn.blocking_reason, 'waiting_on_benchmark_compare');
+
+    const manifestRunner = spawnSync('node', [
+      MANIFEST_RUNNER,
+      join(runRoot, 'candidates', 'iteration-1', 'phase4_spawn_manifest.json'),
+      '--cwd',
+      repoRoot,
+    ], {
+      encoding: 'utf8',
+    });
+    assert.equal(manifestRunner.status, 0, manifestRunner.stderr);
+
+    const post = spawnSync('bash', [
+      PHASE4,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '1',
+      '--post',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(post.status, 0, post.stderr);
+    const report = JSON.parse(
+      await readFile(join(runRoot, 'candidates', 'iteration-1', 'validation_report.json'), 'utf8'),
+    );
+    assert.equal(report.validation.smoke_ok, true);
+    assert.equal(report.validation.eval_ok, true);
+    assert.equal(report.validation.scorecard.scoring_fidelity, 'executed');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
     await rm(repoRoot, { recursive: true, force: true });

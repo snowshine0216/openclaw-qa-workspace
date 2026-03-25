@@ -10,12 +10,30 @@ import { buildInitialChampionScoreboard } from '../lib/runTargetValidation.mjs';
 const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)));
 const PHASE0 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase0.sh');
 const PHASE1 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase1.sh');
+const QA_PLAN_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Master orchestrator for script-driven feature QA planning. The orchestrator only calls phase scripts, interacts with the user, and spawns from phase manifests.
+---
+
+# qa-plan-orchestrator
+
+REPORT_STATE
+`;
+const GENERIC_TARGET_SKILL_MD = `---
+name: generic-target
+description: Generic target skill fixture for qa-plan-evolution tests.
+---
+
+# generic target
+
+REPORT_STATE
+`;
 
 async function seedQaPlanTarget(repoRoot) {
   const targetRoot = join(repoRoot, 'workspace-planner', 'skills', 'qa-plan-orchestrator');
   await mkdir(join(targetRoot, 'evals'), { recursive: true });
   await mkdir(join(targetRoot, 'knowledge-packs', 'report-editor'), { recursive: true });
-  await writeFile(join(targetRoot, 'SKILL.md'), '# qa-plan-orchestrator\n\nREPORT_STATE\n', 'utf8');
+  await writeFile(join(targetRoot, 'SKILL.md'), QA_PLAN_SKILL_MD, 'utf8');
   await writeFile(join(targetRoot, 'reference.md'), '# reference\n\nREPORT_STATE\n', 'utf8');
   await writeFile(
     join(targetRoot, 'evals', 'evals.json'),
@@ -102,7 +120,7 @@ test('phase1 blocks qa-plan profile when the requested knowledge pack is missing
 
 test('phase1 does not emit SPAWN_MANIFEST when defects refresh is required but task has no run key', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase1-'));
-  const runKey = 'qa-plan-phase1-no-defect-key';
+  const runKey = `qa-plan-phase1-no-defect-key-${Date.now()}`;
 
   try {
     const phase0 = spawnSync('bash', [
@@ -191,6 +209,21 @@ test('phase1 emits defects-analysis refresh manifest when feature_id can derive 
       manifest.requests[0].local_command.argv[1],
       join(repoRoot, '.agents', 'skills', 'qa-plan-evolution', 'scripts', 'spawn_defects_analysis.sh'),
     );
+    const jobs = await readFile(join(runRoot, 'jobs', 'phase1-1.json'), 'utf8').catch(() => null);
+    assert.ok(jobs, 'phase1 should register a pending async job');
+    const job = JSON.parse(jobs);
+    assert.ok(Array.isArray(job.expected_artifacts));
+    assert.ok(job.expected_artifacts.length > 0);
+    assert.equal(job.completion_probe, 'expected_artifacts_and_spawn_results');
+    assert.ok(Array.isArray(job.freshness_inputs));
+    assert.equal(typeof job.timeout_at, 'string');
+    assert.deepEqual(job.retry_policy, { owner: 'orchestrator', max_retries: 1 });
+    assert.equal(job.blocking_reason, 'waiting_on_defects_analysis');
+    const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
+    assert.equal(task.next_action, 'await_async_completion');
+    assert.equal(task.next_action_reason, 'awaiting_async_prerequisite');
+    assert.equal(task.blocking_reason, 'waiting_on_defects_analysis');
+    assert.deepEqual(task.pending_job_ids, ['phase1-1']);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
     await rm(repoRoot, { recursive: true, force: true });
@@ -273,7 +306,7 @@ test('phase1 records resolved defect evidence when fresh gap bundle is present',
 
 test('phase1 preserves an existing scoreboard when the run is resumed', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase1-resume-'));
-  const runKey = 'qa-plan-phase1-resume';
+  const runKey = `qa-plan-phase1-resume-${Date.now()}`;
   const fixturePath = '.agents/skills/qa-plan-evolution/scripts/test/fixtures/minimal-target-skill';
 
   try {
@@ -357,7 +390,7 @@ test('phase1 seeds the initial champion from the current generic target scores',
 
   try {
     await mkdir(targetRoot, { recursive: true });
-    await writeFile(join(targetRoot, 'SKILL.md'), '# generic target\n', 'utf8');
+    await writeFile(join(targetRoot, 'SKILL.md'), GENERIC_TARGET_SKILL_MD, 'utf8');
     await writeFile(
       join(targetRoot, 'package.json'),
       JSON.stringify({

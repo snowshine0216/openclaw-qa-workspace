@@ -7,6 +7,11 @@ import { getProfileById } from '../loadProfile.mjs';
 import { buildInitialChampionScoreboard } from '../runTargetValidation.mjs';
 import { loadQaPlanAdapter } from '../evidence/adapters/qa-plan.mjs';
 import {
+  markPhaseJobsPostApplied,
+  refreshJobs,
+  registerManifestJob,
+} from '../asyncJobStore.mjs';
+import {
   parsePhaseArgs,
   resolveRunContext,
   requireTask,
@@ -184,12 +189,15 @@ function buildDefectEvidenceRecord(task, fresh) {
 }
 
 function buildDefectsRefreshManifest(repoRoot, task, runKey) {
+  const adapter = loadQaPlanAdapter();
   const resolvedRunKey = task.defect_analysis_run_key ?? task.feature_id ?? null;
   if (!resolvedRunKey) {
     return {
       reason: 'blocking_prerequisite',
       action: 'refresh_target_skill_or_evidence',
       run_key: runKey,
+      expected_artifacts: [],
+      freshness_inputs: [],
       requests: [],
     };
   }
@@ -218,10 +226,22 @@ function buildDefectsRefreshManifest(repoRoot, task, runKey) {
   if (task.feature_family) {
     argv.push('--feature-family', task.feature_family);
   }
+  const defectsRunRoot = adapter.getDefectsRunRoot(repoRoot, task);
+  const expectedArtifacts = defectsRunRoot
+    ? [
+        join(defectsRunRoot, 'context', `analysis_freshness_${resolvedRunKey}.json`),
+        join(defectsRunRoot, `${resolvedRunKey}_REPORT_FINAL.md`),
+        join(defectsRunRoot, `${resolvedRunKey}_QA_PLAN_CROSS_ANALYSIS.md`),
+        join(defectsRunRoot, `${resolvedRunKey}_SELF_TEST_GAP_ANALYSIS.md`),
+        join(defectsRunRoot, 'context', `gap_bundle_${resolvedRunKey}.json`),
+      ]
+    : [];
   return {
     reason: 'blocking_prerequisite',
     action: 'refresh_target_skill_or_evidence',
     run_key: runKey,
+    expected_artifacts: expectedArtifacts,
+    freshness_inputs: [join(repoRoot, task.target_skill_path, 'evals', 'evals.json')],
     requests: [
       {
         local_command: {
@@ -238,6 +258,8 @@ export async function main(argv = process.argv.slice(2)) {
   const { runKey, repoRoot, runRoot } = resolveRunContext(args);
   const task = requireTask(runRoot);
   const run = requireRun(runRoot);
+
+  refreshJobs(runRoot, { phase: 'phase1' });
 
   const fresh = buildEvidenceFreshness({
     repoRoot,
@@ -279,6 +301,18 @@ export async function main(argv = process.argv.slice(2)) {
     const manifestPath = join(runRoot, 'phase1_spawn_manifest.json');
     writeJson(manifestPath, manifest);
     if (manifest.requests.length > 0) {
+      registerManifestJob(runRoot, {
+        phase: 'phase1',
+        manifestPath,
+        expectedArtifacts: manifest.expected_artifacts ?? [],
+        completionProbe: 'expected_artifacts_and_spawn_results',
+        freshnessInputs: manifest.freshness_inputs ?? [],
+        timeoutAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+        retryPolicy: { owner: 'orchestrator', max_retries: 1 },
+        nextAction: 'await_async_completion',
+        nextActionReason: 'awaiting_async_prerequisite',
+        blockingReason: 'waiting_on_defects_analysis',
+      });
       console.log(`SPAWN_MANIFEST: ${manifestPath}`);
     } else {
       console.error(
@@ -332,11 +366,15 @@ export async function main(argv = process.argv.slice(2)) {
   const resolvedDefectsRunKey = adapter.resolveDefectsRunKey(task);
   const updatedTask = touchTask(runRoot, task, {
     defect_analysis_run_key: resolvedDefectsRunKey ?? task.defect_analysis_run_key ?? null,
+    next_action: 'run_phase2',
+    next_action_reason: 'phase1_complete',
+    blocking_reason: null,
   });
   if (fresh.defects_analysis?.status && fresh.defects_analysis.status !== 'skipped' && fresh.defects_analysis.status !== 'optional') {
     const evidenceRecord = buildDefectEvidenceRecord(updatedTask, fresh);
     writeJson(join(runRoot, 'context', `defect_evidence_${runKey}.json`), evidenceRecord);
   }
+  markPhaseJobsPostApplied(runRoot, 'phase1');
 
   const catalog = buildBenchmarkCatalog({
     profileId: updatedTask.benchmark_profile,

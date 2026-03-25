@@ -1,7 +1,0 @@
-{
-  "total_tokens": 14473,
-  "input_tokens": 13117,
-  "output_tokens": 1356,
-  "duration_ms": 38470,
-  "executor": "benchmark-runner-llm"
-}

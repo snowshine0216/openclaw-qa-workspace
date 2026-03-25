@@ -189,6 +189,8 @@ function resolveQaPlanBenchmarkControls(profileId, defectAnalysisRunKey = null) 
   };
 }
 
+export { resolveQaPlanBenchmarkControls };
+
 function createValidationResult() {
   return {
     smoke_ok: true,
@@ -414,6 +416,31 @@ async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options
   result.scorecard = JSON.parse(readFileSync(published.scorecardPath, 'utf8'));
 }
 
+export async function runQaPlanBenchmarkCompare(repoRoot, targetSkillPath, options = {}) {
+  const abs = options.candidateRoot ?? join(repoRoot, targetSkillPath);
+  const result = createValidationResult();
+  const benchmarkControls = resolveQaPlanBenchmarkControls(
+    options.profileId,
+    options.defectAnalysisRunKey ?? null,
+  );
+  await runQaPlanReplayValidation(
+    repoRoot,
+    targetSkillPath,
+    abs,
+    {
+      ...options,
+      ...benchmarkControls,
+      targetFeatureFamily: options.featureFamily ?? null,
+    },
+    result,
+  );
+  return {
+    benchmark_artifacts: result.benchmark_artifacts ?? null,
+    scorecard: result.scorecard ?? null,
+    execution_order: result.execution_order ?? [],
+  };
+}
+
 export async function runTargetValidation(repoRoot, targetSkillPath, options = {}) {
   const abs = options.candidateRoot ?? join(repoRoot, targetSkillPath);
   const result = createValidationResult();
@@ -456,7 +483,7 @@ export async function runTargetValidation(repoRoot, targetSkillPath, options = {
     result.contract_compliance_score,
     scores.contract_compliance_score,
   );
-  if (options.profileId?.startsWith('qa-plan')) {
+  if (options.profileId?.startsWith('qa-plan') && !options.skipQaPlanReplayValidation) {
     const benchmarkControls = resolveQaPlanBenchmarkControls(
       options.profileId,
       options.defectAnalysisRunKey ?? null,

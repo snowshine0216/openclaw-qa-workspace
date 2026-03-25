@@ -15,6 +15,25 @@ async function writeJson(path, payload) {
   await writeFile(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
+const TARGET_SKILL_MD = `---
+name: target-skill
+description: Generic target skill fixture for qa-plan-evolution tests.
+---
+
+# Skill
+
+REPORT_STATE
+`;
+const QA_PLAN_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Master orchestrator for script-driven feature QA planning. The orchestrator only calls phase scripts, interacts with the user, and spawns from phase manifests.
+---
+
+# Skill
+
+REPORT_STATE
+`;
+
 test('findBlockingGapSources only blocks required source failures', () => {
   const sourceResults = [
     {
@@ -59,7 +78,7 @@ test('collectGapSourceResults preserves required flags from profile definitions'
   try {
     const targetSkillRoot = join(repoRoot, 'target-skill');
     await mkdir(join(targetSkillRoot, 'evals'), { recursive: true });
-    await writeFile(join(targetSkillRoot, 'SKILL.md'), '# Skill\nREPORT_STATE\n', 'utf8');
+    await writeFile(join(targetSkillRoot, 'SKILL.md'), TARGET_SKILL_MD, 'utf8');
     await writeFile(join(targetSkillRoot, 'reference.md'), '# Ref\nREPORT_STATE\n', 'utf8');
     await writeJson(join(targetSkillRoot, 'evals', 'evals.json'), {
       eval_groups: [{ id: 'contract_evals', policy: 'blocking', prompt: 'keep it' }],
@@ -184,7 +203,7 @@ test('knowledge-pack coverage skips cleanly when no knowledge pack applies', asy
     );
     await mkdir(join(qaPlanRoot, 'evals'), { recursive: true });
     await mkdir(join(defectsRunRoot, 'context'), { recursive: true });
-    await writeFile(join(qaPlanRoot, 'SKILL.md'), '# Skill\nREPORT_STATE\n', 'utf8');
+    await writeFile(join(qaPlanRoot, 'SKILL.md'), QA_PLAN_SKILL_MD, 'utf8');
     await writeFile(join(qaPlanRoot, 'reference.md'), '# Ref\nREPORT_STATE\n', 'utf8');
     await writeJson(join(qaPlanRoot, 'evals', 'evals.json'), {
       eval_groups: [{ id: 'defect_recall_replay', policy: 'blocking', prompt: 'replay' }],
@@ -239,7 +258,7 @@ test('target eval failures only report groups that actually failed in validation
     const targetSkillRoot = join(repoRoot, 'target-skill');
     await mkdir(join(targetSkillRoot, 'evals'), { recursive: true });
     await mkdir(join(runRoot, 'candidates', 'iteration-2'), { recursive: true });
-    await writeFile(join(targetSkillRoot, 'SKILL.md'), '# Skill\nREPORT_STATE\n', 'utf8');
+    await writeFile(join(targetSkillRoot, 'SKILL.md'), TARGET_SKILL_MD, 'utf8');
     await writeFile(join(targetSkillRoot, 'reference.md'), '# Ref\nREPORT_STATE\n', 'utf8');
     await writeJson(join(targetSkillRoot, 'evals', 'evals.json'), {
       eval_groups: [

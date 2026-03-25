@@ -16,6 +16,43 @@ async function writeJson(path, payload) {
   await writeFile(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
+const QA_PLAN_LIVE_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Master orchestrator for script-driven feature QA planning. The orchestrator only calls phase scripts, interacts with the user, and spawns from phase manifests.
+---
+
+# qa-plan live
+
+REPORT_STATE
+`;
+const ITERATION_CHAMPION_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Archived champion snapshot fixture for qa-plan-evolution tests.
+---
+
+# iteration-0 champion
+
+REPORT_STATE
+`;
+const PROMOTED_CANDIDATE_SKILL_MD = `---
+name: qa-plan-orchestrator
+description: Promoted candidate snapshot fixture for qa-plan-evolution tests.
+---
+
+# promoted candidate snapshot
+
+REPORT_STATE
+`;
+const GIT_TARGET_SKILL_MD = `---
+name: git-target
+description: Generic target skill fixture for qa-plan-evolution git finalization tests.
+---
+
+# skill
+
+REPORT_STATE
+`;
+
 function runGit(repoRoot, args) {
   const result = spawnSync('git', ['-C', repoRoot, ...args], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
@@ -322,6 +359,7 @@ test('phase6 finalizes rejected run after stop condition is reached', async () =
     assert.equal(result.status, 0);
     const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
     assert.equal(task.overall_status, 'completed');
+    assert.equal(task.next_action_reason, 'stop_three_consecutive_rejections');
     await readFile(join(runRoot, 'evolution_final.md'), 'utf8');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
@@ -474,16 +512,16 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
     await mkdir(join(targetRoot, 'evals'), { recursive: true });
     await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot'), { recursive: true });
     await mkdir(join(benchmarkRoot, 'iteration-1', 'candidate_snapshot'), { recursive: true });
-    await writeFile(join(targetRoot, 'SKILL.md'), '# qa-plan live\n', 'utf8');
+    await writeFile(join(targetRoot, 'SKILL.md'), QA_PLAN_LIVE_SKILL_MD, 'utf8');
     await writeFile(join(targetRoot, 'reference.md'), '# reference\n', 'utf8');
     await writeFile(
       join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'SKILL.md'),
-      '# iteration-0 champion\n',
+      ITERATION_CHAMPION_SKILL_MD,
       'utf8',
     );
     await writeFile(
       join(benchmarkRoot, 'iteration-1', 'candidate_snapshot', 'SKILL.md'),
-      '# promoted candidate snapshot\n',
+      PROMOTED_CANDIDATE_SKILL_MD,
       'utf8',
     );
     await writeJson(join(benchmarkRoot, 'history.json'), {
@@ -551,7 +589,7 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
       join(benchmarkRoot, 'iteration-1', 'champion_snapshot', 'SKILL.md'),
       'utf8',
     );
-    assert.equal(publishedSnapshot, '# promoted candidate snapshot\n');
+    assert.equal(publishedSnapshot, PROMOTED_CANDIDATE_SKILL_MD);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
     await rm(repoRoot, { recursive: true, force: true });
@@ -567,7 +605,7 @@ test('phase6 finalize commits accepted candidate changes and records git promoti
 
   try {
     await mkdir(targetRoot, { recursive: true });
-    await writeFile(join(targetRoot, 'SKILL.md'), '# skill\n', 'utf8');
+    await writeFile(join(targetRoot, 'SKILL.md'), GIT_TARGET_SKILL_MD, 'utf8');
     await writeFile(join(targetRoot, 'reference.md'), '# baseline\n', 'utf8');
     runGit(repoRoot, ['init']);
     runGit(repoRoot, ['config', 'user.email', 'qa@example.com']);
@@ -585,7 +623,7 @@ test('phase6 finalize commits accepted candidate changes and records git promoti
     );
     await writeFile(
       join(runRoot, 'candidates', 'iteration-1', 'candidate_snapshot', 'SKILL.md'),
-      '# skill\n',
+      GIT_TARGET_SKILL_MD,
       'utf8',
     );
     await writeJson(join(runRoot, 'task.json'), {

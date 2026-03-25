@@ -95,6 +95,7 @@ All artifacts for one evolution run live under `<skill-root>/runs/<run-key>/`:
     iteration-1/
   benchmarks/
   archive/
+  jobs/
   task.json
   run.json
   phase1_spawn_manifest.json
@@ -231,6 +232,7 @@ The bucket rank has been aligned with the category order: `knowledge_pack_gap` i
 - `scripts/phase0.sh` … `scripts/phase6.sh` — individual phases
 - `scripts/spawn_defects_analysis.sh` — refresh reporter evidence and ensure `gap_bundle_<run-key>.json`
 - `scripts/check_runtime_env.sh` — node/jq checks
-- `scripts/check_resume.sh` — inspect `task.json` for resume
+- `scripts/check_resume.sh` — inspect the canonical operator summary for resume
+- `scripts/progress.sh` — read-only async reconciliation and expected-artifact summary
 
 Benchmark profiles for generic targets are defined in `evals/evals.json`. For the `qa-plan-orchestrator` target, the active benchmark is `qa-plan-v2` at `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/` with profile `global-cross-feature-v1`.
