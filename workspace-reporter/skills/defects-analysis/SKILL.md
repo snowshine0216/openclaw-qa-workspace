@@ -5,7 +5,7 @@ description: Runs defect analysis for a Jira issue, feature, story, epic, JQL qu
 
 # Defect Analysis Skill
 
-This skill is the canonical reporter-owned entrypoint for defect analysis. It preserves the reporter-local multi-defect analysis path, adds mandatory Phase 0 scope routing, and removes the old approval + Confluence publish flow.
+This skill is the canonical reporter-owned entrypoint for defect analysis. It preserves the reporter-local multi-defect analysis path, adds mandatory Phase 0 scope routing, and now separates rich feature reporting from release-level coordination and fan-out.
 
 The orchestrator has exactly three responsibilities:
 
@@ -89,6 +89,17 @@ On reporter-local runs:
 - `<skill-root>/runs/<run-key>/<run-key>_REVIEW_SUMMARY.md`
 - `<skill-root>/runs/<run-key>/<run-key>_REPORT_FINAL.md`
 - `<skill-root>/runs/<run-key>/context/analysis_freshness_<run-key>.json`
+- `<skill-root>/runs/<run-key>/context/feature_metadata.json` for feature runs
+- `<skill-root>/runs/<run-key>/context/feature_summary.json` for feature runs
+
+On release runs:
+
+- `<skill-root>/runs/release_<version>/context/feature_state_matrix.json`
+- `<skill-root>/runs/release_<version>/context/feature_runs.json`
+- `<skill-root>/runs/release_<version>/context/release_summary_inputs.json`
+- `<skill-root>/runs/release_<version>/features/<feature-key>/packet_manifest.json`
+- `<skill-root>/runs/release_<version>/features/<feature-key>/<feature-key>_REPORT_FINAL.md`
+- `<skill-root>/runs/release_<version>/features/<feature-key>/feature_summary.json`
 
 When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 
@@ -114,23 +125,29 @@ When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 ### Phase 1
 
 - scope discovery for reporter-local single-key, release, or JQL input
+- release runs compute per-feature `report_state` and default action mapping
 
 ### Phase 2
 
-- Jira defect extraction and raw artifact persistence
+- feature and JQL runs perform Jira defect extraction and raw artifact persistence
+- release parent runs stay coordinator-only and do not flatten release defects into one monolithic `jira_raw.json`
 
 ### Phase 3
 
-- defect normalization and PR link extraction
+- feature and JQL runs normalize defects, extract PR links, and persist `feature_metadata.json`
+- release runs execute or reuse canonical child feature runs sequentially and persist `feature_runs.json`
 
 ### Phase 4
 
-- PR analysis spawn/post consolidation
+- feature and JQL runs perform PR analysis spawn/post consolidation
+- release runs collect child `feature_summary.json` outputs and materialize release packet folders
 
 ### Phase 5
 
 - orchestrator directly generates draft report from context
 - self-review + finalize loop
+- feature runs persist `feature_summary.json` after finalization
+- release runs generate one overall release report from collected feature summaries
 - bundle validation for report artifacts
 - Feishu completion marker or fallback notification persistence
 

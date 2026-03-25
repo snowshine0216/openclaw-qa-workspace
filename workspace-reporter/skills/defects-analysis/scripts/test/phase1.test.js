@@ -30,8 +30,54 @@ test('expands release scope into feature keys and default actions', async () => 
   );
   assert.deepEqual(keys.feature_keys, ['BCIN-5809', 'BCIN-5810']);
   assert.equal(matrix.features.length, 2);
+  assert.deepEqual(
+    matrix.features.map((entry) => entry.default_action),
+    ['proceed', 'proceed'],
+  );
 
   await rm(runDir, { recursive: true, force: true });
+});
+
+test('maps release feature states from canonical child runs', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-plan-root-'));
+  const runDir = join(root, 'workspace-reporter', 'skills', 'defects-analysis', 'runs', 'release_26.03');
+  const skillRunsDir = join(root, 'workspace-reporter', 'skills', 'defects-analysis', 'runs');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5809', 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5810', 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5811', 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
+  );
+  await writeFile(join(skillRunsDir, 'BCIN-5809', 'BCIN-5809_REPORT_FINAL.md'), 'final\n');
+  await writeFile(join(skillRunsDir, 'BCIN-5810', 'BCIN-5810_REPORT_DRAFT.md'), 'draft\n');
+  await writeFile(join(skillRunsDir, 'BCIN-5811', 'context', 'jira_raw.json'), '{"issues":[]}\n');
+
+  const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      REPO_ROOT: root,
+      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810","BCIN-5811","BCIN-5812"]',
+    },
+  });
+
+  assert.equal(result.status, 0);
+  const matrix = JSON.parse(
+    await readFile(join(runDir, 'context', 'feature_state_matrix.json'), 'utf8'),
+  );
+  assert.deepEqual(
+    matrix.features.map((entry) => [entry.feature_key, entry.report_state, entry.default_action]),
+    [
+      ['BCIN-5809', 'FINAL_EXISTS', 'use_existing'],
+      ['BCIN-5810', 'DRAFT_EXISTS', 'resume'],
+      ['BCIN-5811', 'CONTEXT_ONLY', 'generate_from_cache'],
+      ['BCIN-5812', 'FRESH', 'proceed'],
+    ],
+  );
+
+  await rm(root, { recursive: true, force: true });
 });
 
 test('uses plain jira project list output for release discovery', async () => {
