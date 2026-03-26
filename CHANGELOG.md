@@ -4,6 +4,11 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.3.1] - 2026-03-26
+
+### Fixed
+- **ppt-agent: documentation quality issues** — Fixed six documentation gaps: aligned `research.md` section names with actual `speaker-script.js` output, added four new Phase 2 fields (`composition_family`, `component_list`, `primary_visual_anchor`, `render_strategy`) to `docs/README.md` update-plan schema, removed resolved Tavily strategy open question, renamed duplicate SKILL.md heading, updated stale text-only-slides caveat, and added inline "reuse-first" definition
+
 ## [0.1.3.0] - 2026-03-26
 
 ### Fixed
