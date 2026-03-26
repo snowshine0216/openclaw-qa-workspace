@@ -360,6 +360,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
 
     const benchmarkContext = JSON.parse(await readFile(join(benchmarkRoot, 'iteration-0', 'benchmark_context.json'), 'utf8'));
     assert.equal(benchmarkContext.case_count, 2);
+    assert.equal(benchmarkContext.canonical_skill_root, '../..');
     assert.equal(benchmarkContext.executor_model, 'gpt-5.4');
 
     const spawnManifest = JSON.parse(await readFile(join(benchmarkRoot, 'iteration-0', 'spawn_manifest.json'), 'utf8'));
@@ -385,6 +386,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       'utf8',
     ));
     assert.equal(comparisonMetadata.case_id, 'CASE-1');
+    assert.equal(comparisonMetadata.canonical_skill_root, '../..');
     assert.equal(comparisonMetadata.case_kind, 'checkpoint_enforcement');
     assert.equal(comparisonMetadata.feature_family, 'report-editor');
     assert.equal(comparisonMetadata.knowledge_pack_key, 'report-editor');

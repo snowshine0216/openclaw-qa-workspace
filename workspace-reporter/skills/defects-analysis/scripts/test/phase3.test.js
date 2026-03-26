@@ -230,3 +230,93 @@ exit 99
 
   await rm(root, { recursive: true, force: true });
 });
+
+test('passes release feature title hint to child feature runs', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'defects-analysis-phase3-release-title-hint-'));
+  const skillRoot = join(root, 'workspace-reporter', 'skills', 'defects-analysis');
+  const runsRoot = join(skillRoot, 'runs');
+  const runDir = join(runsRoot, 'release_26.04');
+  const featureRunDir = join(runsRoot, 'AHSC-1972');
+  const orchestrateScript = join(root, 'stub-orchestrate.sh');
+  const hintLog = join(root, 'feature-title-hints.log');
+
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await mkdir(join(featureRunDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.04', route_kind: 'reporter_scope_release' }),
+  );
+  await writeFile(
+    join(runDir, 'context', 'feature_state_matrix.json'),
+    JSON.stringify({
+      features: [
+        {
+          feature_key: 'AHSC-1972',
+          report_state: 'FRESH',
+          default_action: 'proceed',
+          selected_action: 'proceed',
+          canonical_run_dir: featureRunDir,
+          release_packet_dir: join(runDir, 'features', 'AHSC-1972'),
+        },
+      ],
+    }),
+  );
+  await writeFile(
+    join(runDir, 'context', 'scope_source.json'),
+    JSON.stringify({
+      issues: [
+        {
+          key: 'AHSC-1972',
+          fields: { summary: 'Auto Dashboard Reliability Improvements' },
+        },
+      ],
+    }),
+  );
+  await writeFile(join(runDir, 'task.json'), '{"processed_features":0,"current_phase":"phase2"}\n');
+  await writeFile(
+    orchestrateScript,
+    `#!/usr/bin/env bash
+set -euo pipefail
+feature_key="$1"
+run_dir="${featureRunDir}"
+printf '%s\\n' "\${FEATURE_TITLE_HINT:-}" >> "${hintLog}"
+mkdir -p "$run_dir/context"
+cat <<EOF > "$run_dir/\${feature_key}_REPORT_FINAL.md"
+# final
+EOF
+cat <<'EOF' > "$run_dir/context/feature_summary.json"
+{
+  "feature_key": "AHSC-1972",
+  "feature_title": "Auto Dashboard Reliability Improvements",
+  "report_final_path": "${featureRunDir}/AHSC-1972_REPORT_FINAL.md",
+  "risk_level": "HIGH",
+  "total_defects": 1,
+  "open_defects": 1,
+  "open_high_defects": 1,
+  "pr_count": 0,
+  "repos_changed": [],
+  "top_risk_areas": ["Action Reliability"],
+  "blocking_defects": ["AHSC-2132"],
+  "generated_at": "2026-03-26T00:00:00.000Z"
+}
+EOF
+echo "PHASE5_DONE"
+`,
+  );
+  await chmod(orchestrateScript, 0o755);
+
+  const result = spawnSync('bash', [SCRIPT, '26.04', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      REPO_ROOT: root,
+      ORCHESTRATE_SCRIPT: orchestrateScript,
+    },
+  });
+
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const hints = (await readFile(hintLog, 'utf8')).trim().split('\n');
+  assert.equal(hints[0], 'Auto Dashboard Reliability Improvements');
+
+  await rm(root, { recursive: true, force: true });
+});

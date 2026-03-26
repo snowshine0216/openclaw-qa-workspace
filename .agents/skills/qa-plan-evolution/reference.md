@@ -13,6 +13,14 @@ All per-run artifacts live under:
 <skill-root>/runs/<run-key>/
 ```
 
+Retention policy:
+
+- Phase 0 prunes older sibling run directories in the same `runs/` root.
+- Default keep count is `3` newest runs by mtime.
+- Default prune minimum age is `3600` seconds (newer runs are skipped).
+- Active run key is always protected from deletion.
+- Override with `--retain-runs` / `EVOLUTION_RETAIN_RUNS` and `--prune-min-age-seconds` / `EVOLUTION_PRUNE_MIN_AGE_SECONDS`.
+
 ### Run-Root Artifact Families
 
 - `context/` — freshness checks, gap taxonomy, mutation backlog, evidence index
@@ -122,6 +130,12 @@ Both `check_resume.sh` and `progress.sh` render the same canonical summary paylo
 - `jobs[].expected_artifacts`
 - `jobs[].post_applied_at`
 - `jobs[].failure_reason`
+
+Runtime setup metadata (`context/runtime_setup_<run-key>.json`) includes:
+
+- `run_retention_keep`
+- `run_prune_min_age_seconds`
+- `run_prune` (`kept`, `removed`, `skipped`, `errors`)
 
 `check_resume.sh` may prepend operator hints derived from that payload:
 

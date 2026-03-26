@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { extractFeatureMetadata } from './extract_feature_metadata.mjs';
+import { inferFunctionalArea } from './derive_functional_area.mjs';
 
 const DONE_STATUSES = new Set(['Done', 'Resolved', 'Closed']);
 const HIGH_RISK_PRIORITIES = new Set([
@@ -35,14 +36,13 @@ function isHighRiskDefect(defect) {
   return HIGH_RISK_PRIORITIES.has(normalizePriority(defect.priority));
 }
 
-function deriveArea(defect) {
-  return defect.area || defect.functional_area || 'General';
-}
-
 function loadDefects(runDir) {
   const index = safeReadJson(join(runDir, 'context', 'defect_index.json'));
   if (Array.isArray(index?.defects)) {
-    return index.defects;
+    return index.defects.map((defect) => ({
+      ...defect,
+      area: inferFunctionalArea(defect),
+    }));
   }
 
   const jiraRaw = safeReadJson(join(runDir, 'context', 'jira_raw.json')) ?? { issues: [] };
@@ -52,11 +52,18 @@ function loadDefects(runDir) {
     status: issue.fields?.status?.name ?? 'Unknown',
     priority: issue.fields?.priority?.name ?? 'Medium',
     assignee: issue.fields?.assignee?.displayName ?? 'Unassigned',
-    area:
-      issue.fields?.components?.[0]?.name ??
-      issue.fields?.labels?.[0] ??
-      issue.fields?.issuetype?.name ??
-      'General',
+    area: inferFunctionalArea({
+      summary: issue.fields?.summary ?? issue.key,
+      description:
+        typeof issue.fields?.description === 'string'
+          ? issue.fields.description
+          : JSON.stringify(issue.fields?.description ?? ''),
+      area:
+        issue.fields?.components?.[0]?.name ??
+        issue.fields?.labels?.[0] ??
+        issue.fields?.issuetype?.name ??
+        'General',
+    }),
     pr_links: [],
   }));
 }
@@ -75,7 +82,7 @@ function loadPrSummary(runDir) {
 function collectTopRiskAreas(defects) {
   const areas = new Map();
   for (const defect of defects.filter(isOpenDefect)) {
-    const area = deriveArea(defect);
+    const area = inferFunctionalArea(defect);
     const entry = areas.get(area) ?? { area, open_count: 0, high_count: 0 };
     entry.open_count += 1;
     if (isHighRiskDefect(defect)) {
@@ -83,10 +90,12 @@ function collectTopRiskAreas(defects) {
     }
     areas.set(area, entry);
   }
-  return [...areas.values()]
+  const ranked = [...areas.values()]
     .sort((left, right) => right.high_count - left.high_count || right.open_count - left.open_count)
-    .slice(0, 3)
-    .map((entry) => entry.area);
+    .slice(0, 5);
+  const nonGeneric = ranked.filter((entry) => entry.area !== 'General');
+  const selected = nonGeneric.length > 0 ? nonGeneric : ranked;
+  return selected.slice(0, 3).map((entry) => entry.area);
 }
 
 function deriveRiskLevel(openHighDefects, openDefects) {

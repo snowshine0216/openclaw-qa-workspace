@@ -74,6 +74,39 @@ test('writes valid task.json for quoted JQL input', async () => {
   await rm(runDir, { recursive: true, force: true });
 });
 
+test('persists release scope metadata for qa owner scoped release inputs', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-release-scope-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+
+  const result = spawnSync('bash', [SCRIPT, 'run defects analysis for release 26.04', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      TEST_RUNTIME_ENV_OK: '1',
+      RELEASE_VERSION_INPUT: '26.04',
+      QA_OWNER_INPUT: 'current_user',
+      QA_OWNER_FIELD_INPUT: 'QA Owner',
+    },
+  });
+
+  assert.equal(result.status, 0);
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
+  assert.equal(route.route_kind, 'reporter_scope_release');
+  assert.equal(route.release_version, '26.04');
+  assert.match(route.run_key, /^release_26\.04__scope_[a-f0-9]{8}$/);
+  assert.deepEqual(route.release_scope, {
+    release_version: '26.04',
+    qa_owner_field: 'QA Owner',
+    qa_owner_mode: 'current_user',
+    qa_owner_value: null,
+  });
+  assert.equal(task.release_version, '26.04');
+  assert.deepEqual(task.release_scope, route.release_scope);
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
 test('blocks destructive refresh when fetched data is less than one hour old', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-refresh-'));
   await mkdir(join(runDir, 'context'), { recursive: true });

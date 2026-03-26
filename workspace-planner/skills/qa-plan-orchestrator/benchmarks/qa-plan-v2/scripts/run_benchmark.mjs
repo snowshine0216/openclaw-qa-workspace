@@ -23,6 +23,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadEnv } from './lib/loadEnv.mjs';
+import { resolveCanonicalSkillRoot } from './lib/benchmarkSkillPaths.mjs';
 import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
@@ -101,7 +102,7 @@ async function runNodeScript(scriptPath, extraArgs = []) {
 
 export function resolveSkillRootForBenchmarkRoot(benchmarkRoot) {
   const root = String(benchmarkRoot || '').trim();
-  return root ? resolve(root, '..', '..') : DEFAULT_SKILL_ROOT;
+  return root ? resolveCanonicalSkillRoot(root) : DEFAULT_SKILL_ROOT;
 }
 
 export function buildBaselineScriptArgs({ mode, benchmarkRoot, skillRoot }) {

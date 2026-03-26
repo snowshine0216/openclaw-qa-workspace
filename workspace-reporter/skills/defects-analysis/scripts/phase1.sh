@@ -54,6 +54,31 @@ list_payload_keys() {
   jq -r 'if type == "array" then .[].key else (.issues // [])[].key end' "$payload_file" | sort -u
 }
 
+escape_for_jql_string() {
+  printf '%s' "$1" | sed 's/"/\\"/g'
+}
+
+build_release_scope_query() {
+  local release_version="$1"
+  local qa_owner_mode="$2"
+  local qa_owner_value="$3"
+  local qa_owner_field="$4"
+  local escaped_release
+  local escaped_owner_field
+  escaped_release="$(escape_for_jql_string "$release_version")"
+  escaped_owner_field="$(escape_for_jql_string "$qa_owner_field")"
+
+  local query="project in (${project_keys}) AND \"Release[Version Picker (single version)]\" = \"${escaped_release}\" AND type = Feature"
+  if [[ "$qa_owner_mode" == "current_user" ]]; then
+    query="${query} AND \"${escaped_owner_field}\" = currentUser()"
+  elif [[ "$qa_owner_mode" == "explicit" && -n "$qa_owner_value" ]]; then
+    local escaped_owner
+    escaped_owner="$(escape_for_jql_string "$qa_owner_value")"
+    query="${query} AND \"${escaped_owner_field}\" = \"${escaped_owner}\""
+  fi
+  printf '%s\n' "$query"
+}
+
 discover_feature_keys() {
   local jira_runner="$1"
   local output_file="$CONTEXT_DIR/scope_source.json"
@@ -62,24 +87,38 @@ discover_feature_keys() {
   if [[ "$route_kind" == "reporter_scope_release" ]]; then
     /bin/bash "$jira_runner" project list >"$CONTEXT_DIR/jira_projects.txt"
     project_keys="$(extract_project_keys <"$CONTEXT_DIR/jira_projects.txt" | paste -sd, -)"
-    query="project in (${project_keys}) AND \"Release[Version Picker (single version)]\" = \"${RAW_INPUT}\" AND type = Feature"
+    query="$(build_release_scope_query "$release_version" "$release_scope_mode" "$release_scope_value" "$release_scope_field")"
   else
     query="$RAW_INPUT"
   fi
 
   /bin/bash "$jira_runner" issue list --jql "$query" --raw --paginate 50 >"$output_file"
-  jq -n --argjson keys "$(list_payload_keys "$output_file" | jq -R -s 'split("\n") | map(select(length>0))')" '{feature_keys: $keys}'
+  jq -n \
+    --argjson keys "$(list_payload_keys "$output_file" | jq -R -s 'split("\n") | map(select(length>0))')" \
+    --arg query "$query" \
+    '{feature_keys: $keys, query: $query}'
 }
 
 route_kind="$(jq -r '.route_kind' "$CONTEXT_DIR/route_decision.json")"
 default_key="$(jq -r '.run_key' "$CONTEXT_DIR/route_decision.json")"
+release_version="$(jq -r '.release_version // empty' "$CONTEXT_DIR/route_decision.json")"
+release_scope_mode="$(jq -r '.release_scope.qa_owner_mode // empty' "$CONTEXT_DIR/route_decision.json")"
+release_scope_value="$(jq -r '.release_scope.qa_owner_value // empty' "$CONTEXT_DIR/route_decision.json")"
+release_scope_field="$(jq -r '.release_scope.qa_owner_field // empty' "$CONTEXT_DIR/route_decision.json")"
+release_scope_json="$(jq -c '.release_scope // null' "$CONTEXT_DIR/route_decision.json")"
+if [[ -z "$release_version" && "$route_kind" == "reporter_scope_release" ]]; then
+  release_version="$RAW_INPUT"
+fi
+if [[ -z "$release_scope_field" ]]; then
+  release_scope_field="QA Owner"
+fi
 
 if [[ "$route_kind" == "reporter_scope_single_key" ]]; then
-  feature_json="$(jq -n --arg key "$default_key" '{feature_keys: [$key]}')"
+  feature_json="$(jq -n --arg key "$default_key" '{feature_keys: [$key], query: null}')"
 elif [[ "$route_kind" == "reporter_scope_jql" ]]; then
-  feature_json='{"feature_keys":[]}'
+  feature_json="$(jq -n --arg query "$RAW_INPUT" '{feature_keys: [], query: $query}')"
 elif [[ -n "${TEST_FEATURE_KEYS_JSON:-}" ]]; then
-  feature_json="$(jq -n --argjson keys "$TEST_FEATURE_KEYS_JSON" '{feature_keys: $keys}')"
+  feature_json="$(jq -n --argjson keys "$TEST_FEATURE_KEYS_JSON" '{feature_keys: $keys, query: null}')"
 else
   load_jira_env
   jira_runner="$(resolve_jira_runner)"
@@ -87,17 +126,46 @@ else
   feature_json="$(discover_feature_keys "$jira_runner")"
 fi
 
-printf '%s\n' "$feature_json" >"$CONTEXT_DIR/feature_keys.json"
+printf '%s\n' "$(printf '%s\n' "$feature_json" | jq '{feature_keys: (.feature_keys // [])}')" >"$CONTEXT_DIR/feature_keys.json"
+scope_query="$(printf '%s\n' "$feature_json" | jq -r '.query // empty')"
+printf '%s\n' "$(jq -n \
+  --arg query "$scope_query" \
+  --arg release_version "$release_version" \
+  --arg route_kind "$route_kind" \
+  --arg qa_owner_mode "$release_scope_mode" \
+  --arg qa_owner_value "$release_scope_value" \
+  --arg qa_owner_field "$release_scope_field" \
+  '{
+    route_kind: $route_kind,
+    release_version: ($release_version | select(length > 0) // null),
+    query: ($query | select(length > 0) // null),
+    release_scope: (
+      if $qa_owner_mode == "" then null
+      else {
+        qa_owner_mode: $qa_owner_mode,
+        qa_owner_value: ($qa_owner_value | select(length > 0) // null),
+        qa_owner_field: $qa_owner_field
+      }
+      end
+    )
+  }')" >"$CONTEXT_DIR/scope_query.json"
 printf '%s\n' "$(jq -n \
   --arg route_kind "$route_kind" \
   --arg raw_input "$RAW_INPUT" \
+  --arg release_version "$release_version" \
+  --arg query "$scope_query" \
   --argjson feature_keys "$(printf '%s\n' "$feature_json" | jq '.feature_keys')" \
+  --argjson release_scope "$release_scope_json" \
   --arg query_mode "$([[ "$route_kind" == "reporter_scope_jql" ]] && echo "direct_jql" || echo "")" \
   '{
     route_kind: $route_kind,
     raw_input: $raw_input,
     feature_keys: $feature_keys
-  } + (if $query_mode == "" then {} else {query_mode: $query_mode} end)')" >"$CONTEXT_DIR/scope.json"
+  }
+  + (if $query_mode == "" then {} else {query_mode: $query_mode} end)
+  + (if $release_version == "" then {} else {release_version: $release_version} end)
+  + (if $query == "" then {} else {query: $query} end)
+  + (if $release_scope == null then {} else {release_scope: $release_scope} end)')" >"$CONTEXT_DIR/scope.json"
 
 if [[ "$route_kind" == "reporter_scope_release" ]]; then
   explicit_release_mode=""

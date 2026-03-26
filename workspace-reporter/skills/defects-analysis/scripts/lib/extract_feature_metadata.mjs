@@ -46,11 +46,20 @@ function firstFeatureLikeSummary(jiraRaw, runKey) {
   return '';
 }
 
+function featureTitleHint(runKey) {
+  const hint = String(process.env.FEATURE_TITLE_HINT ?? '').trim();
+  if (!hint || hint === runKey) {
+    return '';
+  }
+  return hint;
+}
+
 function inferFeatureTitle({ existing, jiraRaw, runKey }) {
   return (
     existing?.feature_title ||
     firstParentSummary(jiraRaw) ||
     firstFeatureLikeSummary(jiraRaw, runKey) ||
+    featureTitleHint(runKey) ||
     runKey
   );
 }

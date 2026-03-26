@@ -12,7 +12,7 @@
 | exactly one Jira key or Jira URL resolves to issue type `Issue`, `Bug`, or `Defect` | `issue_class` -> delegate to `.agents/skills/single-defect-analysis` |
 | exactly one Jira key or Jira URL resolves to issue type `Story`, `Feature`, or `Epic` | `reporter_scope_single_key` |
 | explicit `feature_key` input | `reporter_scope_single_key` |
-| explicit `release_version` input | `reporter_scope_release` |
+| explicit `release_version` input (optionally with `qa_owner`) | `reporter_scope_release` |
 | explicit `jql_query` input | `reporter_scope_jql` |
 | input cannot be resolved confidently | `blocked` |
 
@@ -60,7 +60,8 @@ workspace-reporter/skills/defects-analysis/runs/<run-key>/
 Run-key derivation:
 
 - `<ISSUE_KEY>` for single Jira key input
-- `release_<VERSION>` for release input
+- `release_<VERSION>` for unfiltered release input
+- `release_<VERSION>__scope_<sha1_8>` for filtered release input (for example release + `qa_owner=current_user`)
 - `jql_<sha1_12>` for JQL input
 
 ## Artifact Families
@@ -83,6 +84,7 @@ Additional release-run artifacts:
 - `context/feature_state_matrix.json`
 - `context/feature_runs.json`
 - `context/release_summary_inputs.json`
+- `context/scope_query.json`
 - `features/<feature-key>/packet_manifest.json`
 - `features/<feature-key>/<feature-key>_REPORT_FINAL.md`
 - `features/<feature-key>/feature_summary.json`
@@ -121,6 +123,8 @@ Required fields:
 - `run_key`
 - `raw_input`
 - `route_kind`
+- `release_version`
+- `release_scope`
 - `selected_mode`
 - `overall_status`
 - `current_phase`

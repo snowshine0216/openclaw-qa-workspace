@@ -79,3 +79,29 @@ test('reuses cached PR analysis during smart_refresh', async () => {
 
   await rm(runDir, { recursive: true, force: true });
 });
+
+test('extracts PR number from GitHub URL when markdown omits explicit PR # marker', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase4-pr-number-'));
+  await mkdir(join(runDir, 'context', 'prs'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'pr_links.json'),
+    '["https://github.com/org/repo/pull/12"]\n',
+  );
+
+  const first = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir], { encoding: 'utf8' });
+  assert.equal(first.status, 0);
+  await writeFile(
+    join(runDir, 'context', 'prs', 'pr-1_impact.md'),
+    'Risk: High\nPR: https://github.com/org/repo/pull/12\nRepository: repo\n',
+  );
+
+  const second = spawnSync('bash', [SCRIPT, 'BCIN-5809', runDir, '--post'], { encoding: 'utf8' });
+  assert.equal(second.status, 0);
+
+  const summary = JSON.parse(
+    await readFile(join(runDir, 'context', 'pr_impact_summary.json'), 'utf8'),
+  );
+  assert.equal(summary.top_risky_prs[0].number, 12);
+
+  await rm(runDir, { recursive: true, force: true });
+});

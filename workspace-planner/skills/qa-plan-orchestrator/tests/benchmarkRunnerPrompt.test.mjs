@@ -33,6 +33,7 @@ test('buildBenchmarkRunnerPrompt embeds skill snapshot and fixture evidence cont
       evidence_mode: 'blind_pre_defect',
       prompt: 'Audit coverage for save-as overwrite.',
       expectations: ['Includes overwrite-confirmation coverage'],
+      canonical_skill_root: '/tmp/repo/workspace-planner/skills/qa-plan-orchestrator',
       skill_snapshot_path: snapshotRoot,
       fixtures: [
         {
@@ -48,6 +49,10 @@ test('buildBenchmarkRunnerPrompt embeds skill snapshot and fixture evidence cont
     });
 
     assert.match(prompt, /=== SKILL SNAPSHOT EVIDENCE ===/);
+    assert.match(prompt, /Canonical skill root: \/tmp\/repo\/workspace-planner\/skills\/qa-plan-orchestrator/);
+    assert.match(prompt, /Skill snapshot path:/);
+    assert.match(prompt, /Treat the canonical skill root as the only active qa-plan-orchestrator package/);
+    assert.match(prompt, /Treat any skill snapshot or benchmark-local SKILL\.md as frozen reference evidence/);
     assert.match(prompt, /skill_snapshot\/SKILL\.md/);
     assert.match(prompt, /REPORT_STATE/);
     assert.match(prompt, /review-rubric-phase5a\.md/);
@@ -72,6 +77,7 @@ test('buildBenchmarkRunnerPrompt excludes skill snapshot corpus for baseline run
     evidence_mode: 'blind_pre_defect',
     prompt: 'Baseline prompt.',
     expectations: ['Stays baseline only'],
+    canonical_skill_root: '/tmp/repo/workspace-planner/skills/qa-plan-orchestrator',
     skill_snapshot_path: '/tmp/should-not-be-used',
     fixtures: [],
     run: {
@@ -113,6 +119,7 @@ test('runBenchmarkRunnerCli sends embedded evidence in the provider payload', as
         evidence_mode: 'blind_pre_defect',
         prompt: 'Draft the benchmark output.',
         expectations: ['Preserves the double-click title outcome'],
+        canonical_skill_root: '/tmp/repo/workspace-planner/skills/qa-plan-orchestrator',
         skill_snapshot_path: snapshotRoot,
         fixtures: [{ fixture_id: 'BCIN-2-bundle', local_path: fixtureRoot, materials: [] }],
         run: {
@@ -143,6 +150,8 @@ test('runBenchmarkRunnerCli sends embedded evidence in the provider payload', as
 
     const userMessage = capturedBody.messages.find((message) => message.role === 'user');
     assert.ok(userMessage);
+    assert.match(userMessage.content, /Canonical skill root: \/tmp\/repo\/workspace-planner\/skills\/qa-plan-orchestrator/);
+    assert.match(userMessage.content, /Use the skill snapshot evidence below as a frozen export/);
     assert.match(userMessage.content, /REPORT_STATE/);
     assert.match(userMessage.content, /observable verification leaf/);
     assert.match(userMessage.content, /Double-click title bug/);

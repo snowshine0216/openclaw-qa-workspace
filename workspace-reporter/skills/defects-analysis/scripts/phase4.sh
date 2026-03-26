@@ -66,6 +66,14 @@ function parseRepository(content) {
   );
 }
 
+function parsePrNumber(content) {
+  const fromUrl = content.match(/\/pull\/(\d+)/i)?.[1];
+  if (fromUrl) return Number(fromUrl);
+  const fromLabel = content.match(/\bPR\s*#?(\d+)\b/i)?.[1];
+  if (fromLabel) return Number(fromLabel);
+  return null;
+}
+
 for (const file of files) {
   const content = readFileSync(join(prsDir, file), 'utf8');
   const lowered = content.toLowerCase();
@@ -77,7 +85,7 @@ for (const file of files) {
   const riskLevel = parseRiskLevel(content);
   topRiskyPrs.push({
     repository,
-    number: content.match(/PR\s*#?(\d+)/i)?.[1] ? Number(content.match(/PR\s*#?(\d+)/i)[1]) : null,
+    number: parsePrNumber(content),
     risk_level: riskLevel,
     summary: content.split('\n').find((line) => line.trim() && !line.startsWith('#'))?.trim() ?? 'Risk summary not captured.',
   });
