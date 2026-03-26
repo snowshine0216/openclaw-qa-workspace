@@ -18,11 +18,25 @@ _Operating instructions for test execution and validation._
 - use `code-quality-orchestrator` for all coding tasks.
 - use `skill-creator` for all skill creation and refactoring tasks.
 - never use web-fetch for below tasks.
-   - use `jira-cli` for all Jira tasks. 
+   - use `jira-cli` for all Jira tasks.
       - Before using Jira CLI in this workspace, source `~/.agents/skills/jira-cli/.env`
-   - use `github` for all github tasks. 
+   - use `github` for all github tasks.
    - use `confluence` for all confluence tasks.
 
+## Workspace Artifact Root Convention
+
+**Runtime artifacts must be separated from source code.** See `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md` for full details.
+
+**Key principles:**
+- Live runs and benchmark iterations belong under `workspace-artifacts/skills/<workspace>/<skill>/`
+- Source skill trees (`.agents/skills/*`, `workspace-*/skills/*`) contain only code, checked-in benchmark definitions, and explicit archive-only evidence
+- `workspace-artifacts/` is runtime-only and gitignored — it must not be treated as an active skill-discovery root
+- Source-owned `benchmarks/*/archive/` trees are frozen evidence only and must not be treated as active skill roots
+
+**For skill development:**
+- Use `.agents/skills/lib/artifactRoots.mjs` for canonical path resolution
+- Use `.agents/skills/lib/artifactDiscoveryPolicy.mjs` for discovery exclusion patterns
+- Never hardcode artifact paths — always use the resolver functions
 
 ---
 
