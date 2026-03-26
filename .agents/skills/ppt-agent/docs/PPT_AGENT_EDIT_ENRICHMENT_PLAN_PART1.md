@@ -841,6 +841,7 @@ Files to change:
 
 - `.agents/skills/ppt-agent/scripts/lib/slide-transcript.js`
 - `.agents/skills/ppt-agent/scripts/lib/deck-analysis.js`
+- `.agents/skills/ppt-agent/scripts/lib/edit-workflow.js`
 - `.agents/skills/ppt-agent/roles/research.md`
 - `.agents/skills/ppt-agent/SKILL.md`
 
@@ -857,6 +858,7 @@ Expected content changes:
 - keep concise on-slide copy separate from detailed narration
 - keep `transcript-enrichment.js` limited to building canonical slide briefs only;
   it may not mutate `visual-plan`, notes, image prompts, or execution artifacts directly
+- replace deriveFindings() stub with call to transcript-enrichment module
 
 Validation expectations:
 
@@ -875,6 +877,7 @@ Make edit mode decide what kind of slide to build and why that visual anchor is 
 Files to change:
 
 - `.agents/skills/ppt-agent/scripts/lib/edit-workflow.js`
+- `.agents/skills/ppt-agent/scripts/lib/deck-analysis.js`
 - `.agents/skills/ppt-agent/roles/design.md`
 - `.agents/skills/ppt-agent/SKILL.md`
 
@@ -902,6 +905,7 @@ Expected content changes:
 - add `text_only_exception` with explicit reason for allowed text-only slides such as `thank_you` or `agenda`
 - add a constrained `text_statement` family so rare text-led slides stay intentional instead of collapsing into placeholder bullets
 - keep `visual-plan.js` limited to summary derivation; it may not mutate slide briefs in place
+- extract source-theme.json with per-token confidence scores and fallback policy
 
 Validation expectations:
 
@@ -918,6 +922,22 @@ Route complex `add_after` actions through the existing structured `pptx` rendere
 
 This section covers `add_after` actions and routing decisions only.
 For `revise` action handling and `replace_existing` merge-back contract, see Part 2.
+
+### Required changes
+
+Files to change:
+
+- `.agents/skills/ppt-agent/scripts/lib/pptx-edit-ops.js`
+- `.agents/skills/ppt-agent/scripts/lib/build-pptx-from-handoff.js`
+
+Files to create:
+
+- `.agents/skills/ppt-agent/scripts/lib/merge-back.js`
+
+Expected content changes:
+
+- implement 6-step OOXML merge-back algorithm for insert_after and replace_existing actions
+- add buildSlideFromSpec() function for single-slide structured rendering
 
 ### Execution Routing for `add_after`
 
