@@ -12,6 +12,7 @@ import {
   runTargetValidation,
 } from '../runTargetValidation.mjs';
 import { createHash } from 'node:crypto';
+import { getQaPlanBenchmarkRuntimeRoot } from '../benchmarkPaths.mjs';
 import {
   parsePhaseArgs,
   resolveRunContext,
@@ -98,7 +99,7 @@ function writeValidationArtifacts(iterDir, validation, summary) {
 }
 
 function benchmarkArtifactPaths(repoRoot, task, runRoot, iter) {
-  const benchmarkRoot = join(repoRoot, task.target_skill_path, 'benchmarks', 'qa-plan-v2');
+  const benchmarkRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
   const iterationDir = join(benchmarkRoot, `iteration-${iter}`);
   return {
     compareResultPath: join(runRoot, 'candidates', `iteration-${iter}`, 'benchmark_compare_result.json'),

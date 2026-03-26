@@ -9,6 +9,8 @@ import {
   ensurePrepared,
   resolveSkillRootForBenchmarkRoot,
 } from '../benchmarks/qa-plan-v2/scripts/run_benchmark.mjs';
+import { benchmarkDefinitionRoot } from '../benchmarks/qa-plan-v2/scripts/lib/benchmarkSkillPaths.mjs';
+import { benchmarkRuntimeRoot } from '../benchmarks/qa-plan-v2/scripts/lib/benchmarkSkillPaths.mjs';
 
 test('ensurePrepared invokes run_baseline directly when the spawn manifest is missing', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'benchmark-prepare-'));
@@ -30,6 +32,8 @@ test('ensurePrepared invokes run_baseline directly when the spawn manifest is mi
       '--prepare-only',
       '--benchmark-root',
       benchRoot,
+      '--benchmark-definition-root',
+      benchmarkDefinitionRoot('qa-plan-v2'),
       '--skill-root',
       join(repoRoot, 'workspace-planner', 'skills', 'qa-plan-orchestrator'),
     ]);
@@ -75,8 +79,26 @@ test('buildBaselineScriptArgs preserves the selected benchmark root and derived 
       '--aggregate-only',
       '--benchmark-root',
       benchmarkRoot,
+      '--benchmark-definition-root',
+      benchmarkDefinitionRoot('qa-plan-v2'),
       '--skill-root',
       resolve(benchmarkRoot, '..', '..'),
+    ],
+  );
+});
+
+test('buildBaselineScriptArgs derives the canonical source skill root when benchmarkRoot is the runtime root', () => {
+  const benchmarkRoot = benchmarkRuntimeRoot('qa-plan-v2');
+  assert.deepEqual(
+    buildBaselineScriptArgs({ mode: 'prepare', benchmarkRoot }),
+    [
+      '--prepare-only',
+      '--benchmark-root',
+      benchmarkRoot,
+      '--benchmark-definition-root',
+      benchmarkDefinitionRoot('qa-plan-v2'),
+      '--skill-root',
+      resolve(benchmarkDefinitionRoot('qa-plan-v2'), '..', '..'),
     ],
   );
 });

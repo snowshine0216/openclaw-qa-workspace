@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { getQaPlanBenchmarkRoots } from '../benchmarkPaths.mjs';
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -43,18 +44,10 @@ function collectCaseBackedObservations(task, replayCases, sourcePath) {
 }
 
 export async function collectReplayEvalMissObservations({ repoRoot, task }) {
-  const benchmarkRoot = join(
-    repoRoot,
-    task.target_skill_path,
-    'benchmarks',
-    'qa-plan-v2',
-  );
-  const benchmarkManifestPath = join(
-    benchmarkRoot,
-    'benchmark_manifest.json',
-  );
-  const casesPath = join(benchmarkRoot, 'cases.json');
-  const historyPath = join(benchmarkRoot, 'history.json');
+  const { definitionRoot, runtimeRoot } = getQaPlanBenchmarkRoots(repoRoot, task.target_skill_path);
+  const benchmarkManifestPath = join(definitionRoot, 'benchmark_manifest.json');
+  const casesPath = join(definitionRoot, 'cases.json');
+  const historyPath = join(runtimeRoot, 'history.json');
   if (!existsSync(benchmarkManifestPath) || !existsSync(casesPath) || !existsSync(historyPath)) {
     return {
       source_type: 'replay_eval_misses',
@@ -93,7 +86,7 @@ export async function collectReplayEvalMissObservations({ repoRoot, task }) {
   }
 
   const championIteration = history.current_champion_iteration ?? 0;
-  const championIterationDir = join(benchmarkRoot, `iteration-${championIteration}`);
+  const championIterationDir = join(runtimeRoot, `iteration-${championIteration}`);
   const scorecardPath = join(championIterationDir, 'scorecard.json');
   const benchmarkJsonPath = join(championIterationDir, 'benchmark.json');
 

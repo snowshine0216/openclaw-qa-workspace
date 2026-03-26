@@ -111,8 +111,13 @@ export function resolveSkillRootForBenchmarkRoot(benchmarkRoot) {
 
 export function buildBaselineScriptArgs({ mode, benchmarkRoot, benchmarkDefinitionRoot, skillRoot }) {
   const action = mode === 'aggregate' ? '--aggregate-only' : '--prepare-only';
-  const resolvedSkillRoot = String(skillRoot || '').trim() || resolveSkillRootForBenchmarkRoot(benchmarkRoot);
   const resolvedBenchmarkDefinitionRoot = benchmarkDefinitionRoot || DEFAULT_BENCHMARK_DEFINITION_ROOT;
+  const benchmarkRootLooksRuntime = String(benchmarkRoot || '').includes('workspace-artifacts');
+  const resolvedSkillRoot = String(skillRoot || '').trim() || (
+    benchmarkRootLooksRuntime
+      ? resolveCanonicalSkillRoot(resolvedBenchmarkDefinitionRoot)
+      : resolveSkillRootForBenchmarkRoot(benchmarkRoot)
+  );
   return [
     action,
     '--benchmark-root',
