@@ -100,7 +100,11 @@ printf '%s\n' "$(jq -n \
   } + (if $query_mode == "" then {} else {query_mode: $query_mode} end)')" >"$CONTEXT_DIR/scope.json"
 
 if [[ "$route_kind" == "reporter_scope_release" ]]; then
-  feature_plan_json="$(node "$SCRIPT_DIR/lib/compute_feature_run_plan.mjs" "$(printf '%s\n' "$feature_json" | jq -c '.feature_keys')" "$RUNS_ROOT" "$RUN_DIR")"
+  explicit_release_mode=""
+  if [[ -f "$RUN_DIR/task.json" ]]; then
+    explicit_release_mode="$(jq -r '.selected_mode // empty' "$RUN_DIR/task.json" 2>/dev/null || true)"
+  fi
+  feature_plan_json="$(node "$SCRIPT_DIR/lib/compute_feature_run_plan.mjs" "$(printf '%s\n' "$feature_json" | jq -c '.feature_keys')" "$RUNS_ROOT" "$RUN_DIR" "$explicit_release_mode")"
   printf '%s\n' "$feature_plan_json" >"$CONTEXT_DIR/feature_state_matrix.json"
   printf '%s\n' "$feature_plan_json" >"$CONTEXT_DIR/feature_runs.json"
 else

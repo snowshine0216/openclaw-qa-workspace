@@ -31,14 +31,15 @@
     },
     {
       "id": 3,
-      "prompt": "Run defect analysis for release version 26.03. Prior runs have mixed states: FINAL_EXISTS for some features, DRAFT_EXISTS for others, CONTEXT_ONLY and FRESH for the rest. Verify automatic default plan selection per feature_state_matrix.",
+      "prompt": "Run defect analysis for release version 26.03. Prior runs have mixed states: FINAL_EXISTS for some features, DRAFT_EXISTS for others, jira_raw-backed CONTEXT_ONLY, and FRESH or summary-only partial runs for the rest. Verify automatic default plan selection per feature_state_matrix.",
       "expected_output": "Phase 1 expands release into feature keys. Per-feature default actions: use_existing, resume, generate_from_cache, proceed. No manual approval prompt.",
       "files": [],
       "expectations": [
         "context/feature_state_matrix.json has per-feature report_state and default_action",
         "FINAL_EXISTS -> use_existing",
         "DRAFT_EXISTS -> resume",
-        "CONTEXT_ONLY -> generate_from_cache",
+        "CONTEXT_ONLY with jira_raw.json -> generate_from_cache",
+        "Derived summaries without jira_raw.json stay FRESH -> proceed",
         "FRESH -> proceed",
         "No blocking for routine approval"
       ]
@@ -95,14 +96,15 @@
     },
     {
       "id": 8,
-      "prompt": "Run defect analysis for release version 26.03 where prior canonical feature runs are mixed across FINAL_EXISTS, DRAFT_EXISTS, CONTEXT_ONLY, and FRESH. Verify each feature gets the expected selected action without manual approval.",
+      "prompt": "Run defect analysis for release version 26.03 where prior canonical feature runs are mixed across FINAL_EXISTS, DRAFT_EXISTS, jira_raw-backed CONTEXT_ONLY, and FRESH or summary-only partial runs. Verify each feature gets the expected selected action without manual approval.",
       "expected_output": "Phase 1 persists a mixed feature state matrix and the release parent respects those defaults during child-run coordination.",
       "files": [],
       "expectations": [
         "context/feature_state_matrix.json includes selected_action for each feature",
         "FINAL_EXISTS -> use_existing",
         "DRAFT_EXISTS -> resume",
-        "CONTEXT_ONLY -> generate_from_cache",
+        "CONTEXT_ONLY with jira_raw.json -> generate_from_cache",
+        "Derived summaries without jira_raw.json stay FRESH -> proceed",
         "FRESH -> proceed"
       ]
     },
