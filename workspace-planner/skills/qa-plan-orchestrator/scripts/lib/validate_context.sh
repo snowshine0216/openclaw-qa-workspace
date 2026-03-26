@@ -9,9 +9,13 @@ set -euo pipefail
 
 FEATURE_ID="${1:?Usage: validate_context.sh <feature-id> <artifact-name>...}"
 shift
-# All artifacts under <skill-root>/runs/<feature-id>/context
-SKILL_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-RUN_DIR="${FQPO_RUN_DIR:-${FQPO_PROJECT_DIR:-$SKILL_ROOT/runs/$FEATURE_ID}}"
+# Resolve run directory: FQPO_RUN_DIR override or artifact-root canonical location
+if [ -n "${FQPO_RUN_DIR:-}" ]; then
+  RUN_DIR="$FQPO_RUN_DIR"
+else
+  REPO_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
+  RUN_DIR="$REPO_ROOT/workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/$FEATURE_ID"
+fi
 CONTEXT_DIR="$RUN_DIR/context"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 

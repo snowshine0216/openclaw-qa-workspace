@@ -10,8 +10,19 @@ Human-facing guide for the skill package. This file is intentionally short.
 - Long-form design docs: `docs/` (`docs/KNOWLEDGE_PACK_RUNTIME.md` is the canonical knowledge-pack runtime doc)
 - Historical design docs: `docs/archive/`
 - Benchmark execution contract: `benchmarks/qa-plan-v2/README.md` and `benchmarks/qa-plan-v2/scripts/lib/benchmarkSkillPaths.mjs`
+- Artifact root convention: `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md`
+
+## Benchmark Paths
+
+- **Benchmark definition root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/` (source-owned, versioned)
+- **Benchmark archive root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/archive/` (frozen baselines, versioned, read-only)
+- **Benchmark runtime root:** `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/` (active iterations, gitignored)
+
+Frozen baseline evidence lives under `archive/` and is read-only. Active benchmark iterations and snapshots live under the runtime root.
 
 ## What This Skill Produces
+
+All runtime artifacts live under `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/<feature-id>/`:
 
 - source evidence saved under `context/`
 - support-only Jira relation maps and summaries saved under `context/`
@@ -24,6 +35,8 @@ Human-facing guide for the skill package. This file is intentionally short.
 - `developer_smoke_test_<feature-id>.md` under `context/`, derived from P1 and `[ANALOG-GATE]` scenarios during Phase 7
 - phase spawn manifests under the project root
 - a promoted `qa_plan_final.md` only after user approval
+
+**Artifact Root Convention**: Runtime state lives under `workspace-artifacts/` per the workspace artifact root convention documented in `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md`.
 
 ## Active Contract Files
 

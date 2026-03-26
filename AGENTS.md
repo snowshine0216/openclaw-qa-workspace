@@ -67,6 +67,21 @@ Handoff rules:
 - Reuse existing shared skills before creating new ones; when adding a new skill, decide explicitly whether it should be shared (`.agents/skills`) or workspace-local (`workspace-*/skills`).
 - For OpenClaw design work, prefer direct reuse of existing shared skills such as `jira-cli`, `confluence`, and `feishu-notify` before introducing wrappers or duplicate integrations.
 
+## Workspace Artifact Root Convention
+
+**Runtime artifacts must be separated from source code.** See `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md` for full details.
+
+**Key principles:**
+- Live runs and benchmark iterations belong under `workspace-artifacts/skills/<workspace>/<skill>/`
+- Source skill trees (`.agents/skills/*`, `workspace-*/skills/*`) contain only code, checked-in benchmark definitions, and explicit archive-only evidence
+- `workspace-artifacts/` is runtime-only and gitignored — it must not be treated as an active skill-discovery root
+- Source-owned `benchmarks/*/archive/` trees are frozen evidence only and must not be treated as active skill roots
+
+**For skill development:**
+- Use `.agents/skills/lib/artifactRoots.mjs` for canonical path resolution
+- Use `.agents/skills/lib/artifactDiscoveryPolicy.mjs` for discovery exclusion patterns
+- Never hardcode artifact paths — always use the resolver functions
+
 ## Skill self-improvement
 
 - For **bounded champion-vs-challenger skill evolution** (evidence refresh, eval-gated mutations, iteration cap), use the shared skill at `.agents/skills/qa-plan-evolution/` (`SKILL.md`, `scripts/phase0.sh`–`phase6.sh`).

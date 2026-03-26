@@ -1,5 +1,18 @@
 "use strict";
 
+// Preservation regression suite — phase-2 baseline guardrail.
+//
+// These tests lock the preserve/refine/replace audit contract in finalize-edit-run.
+// The baseline is green on branch `evolve` as of 2026-03-26 and must remain green
+// before any enrichment work expands media behavior.
+//
+// Audit tiers:
+//   preserve — source media refs must survive unchanged; drift without approval fails finalize
+//   refine   — source media may be annotated or cropped; job must record derived_from_media_ref
+//   replace  — source media may be swapped; requires an approved replacement preview artifact
+//
+// Any regression here blocks enrichment implementation from proceeding.
+
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("fs");

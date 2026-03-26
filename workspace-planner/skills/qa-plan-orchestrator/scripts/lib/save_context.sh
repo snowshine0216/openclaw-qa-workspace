@@ -8,10 +8,13 @@ FEATURE_ID="${1:?Usage: save_context.sh <feature-id> <artifact-name> <content-or
 ARTIFACT_NAME="${2:?Missing artifact name}"
 CONTENT_OR_FILE="${3:?Missing content or file path}"
 
-# Preferred: FQPO_RUN_DIR or FQPO_PROJECT_DIR (legacy) = <skill-root>/runs/<feature-id>
-# Fallback: <skill-root>/runs/<feature-id>/context (all artifacts under skill-root/runs/)
-SKILL_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-RUN_DIR="${FQPO_RUN_DIR:-${FQPO_PROJECT_DIR:-$SKILL_ROOT/runs/$FEATURE_ID}}"
+# Resolve run directory: FQPO_RUN_DIR override or artifact-root canonical location
+if [ -n "${FQPO_RUN_DIR:-}" ]; then
+  RUN_DIR="$FQPO_RUN_DIR"
+else
+  REPO_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
+  RUN_DIR="$REPO_ROOT/workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/$FEATURE_ID"
+fi
 CONTEXT_DIR="$RUN_DIR/context"
 mkdir -p "$CONTEXT_DIR"
 

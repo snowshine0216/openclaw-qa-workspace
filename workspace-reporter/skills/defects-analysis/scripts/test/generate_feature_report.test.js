@@ -172,3 +172,89 @@ test('generateFeatureReport infers concrete functional areas when defect_index o
     await rm(runDir, { recursive: true, force: true });
   }
 });
+
+test('groupByArea counts high only for open defects — closed high-priority is excluded', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-feature-report-highcount-'));
+  try {
+    await mkdir(join(runDir, 'context', 'prs'), { recursive: true });
+    await writeFile(
+      join(runDir, 'context', 'feature_metadata.json'),
+      JSON.stringify({ feature_key: 'FEAT-1', feature_title: 'High Count Fix', issue_type: 'Feature', release_version: '1.0' }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'defect_index.json'),
+      JSON.stringify({
+        defects: [
+          { key: 'BUG-1', summary: 'Closed high', status: 'Done', priority: 'High', area: 'Save / Save-As Flows' },
+          { key: 'BUG-2', summary: 'Open high', status: 'Open', priority: 'High', area: 'Save / Save-As Flows' },
+          { key: 'BUG-3', summary: 'Open low', status: 'Open', priority: 'Low', area: 'Save / Save-As Flows' },
+        ],
+      }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'pr_impact_summary.json'),
+      JSON.stringify({ pr_count: 0, repos_changed: [], top_risky_prs: [], top_changed_domains: [] }),
+      'utf8',
+    );
+
+    const outPath = generateFeatureReport(runDir, 'FEAT-1', 'https://jira.example.com');
+    const report = await readFile(outPath, 'utf8');
+
+    // Area table: total=3, open=2, high=1 (closed high not counted)
+    assert.match(report, /Save \/ Save-As Flows/);
+    // high column must be 1, not 2
+    assert.doesNotMatch(report, /\|\s*Save \/ Save-As Flows\s*\|\s*3\s*\|\s*2\s*\|\s*2\s*\|/);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('section 8 includes specific open defect keys per area', async () => {
+  const runDir = await setupFeatureRun();
+  try {
+    const outPath = generateFeatureReport(runDir, 'BCIN-7289', 'https://jira.example.com');
+    const report = await readFile(outPath, 'utf8');
+
+    const section8Match = report.match(/## 8\. Recommended QA Focus Areas([\s\S]*?)---/);
+    assert.ok(section8Match, 'Section 8 not found');
+    const section8 = section8Match[1];
+    const hasKey = ['BCIN-7669', 'BCIN-7727'].some((key) => section8.includes(key));
+    assert.ok(hasKey, `Section 8 should contain an open defect key. Got:\n${section8}`);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('section 9 mentions open defect count and feature key', async () => {
+  const runDir = await setupFeatureRun();
+  try {
+    const outPath = generateFeatureReport(runDir, 'BCIN-7289', 'https://jira.example.com');
+    const report = await readFile(outPath, 'utf8');
+
+    const section9Match = report.match(/## 9\. Test Environment Recommendations([\s\S]*?)---/);
+    assert.ok(section9Match, 'Section 9 not found');
+    const section9 = section9Match[1];
+    assert.match(section9, /2 still-open defect/);
+    assert.match(section9, /BCIN-7289/);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('section 10 emits per-defect checkboxes for open high-priority items', async () => {
+  const runDir = await setupFeatureRun();
+  try {
+    const outPath = generateFeatureReport(runDir, 'BCIN-7289', 'https://jira.example.com');
+    const report = await readFile(outPath, 'utf8');
+
+    const section10Match = report.match(/## 10\. Verification Checklist for Release([\s\S]*?)---/);
+    assert.ok(section10Match, 'Section 10 not found');
+    const section10 = section10Match[1];
+    assert.match(section10, /- \[ \] BCIN-7669/);
+    assert.match(section10, /- \[ \] BCIN-7727/);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});

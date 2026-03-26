@@ -12,7 +12,9 @@ import {
   loadState,
   resolveDefaultRunDir,
   resolveLegacyRunDir,
+  saveState,
 } from '../scripts/lib/workflowState.mjs';
+import { runRuntimeSetupCli } from '../scripts/lib/runtimeEnv.mjs';
 
 const THIS_DIR = fileURLToPath(new URL('.', import.meta.url));
 
@@ -22,7 +24,7 @@ test('resolveDefaultRunDir is repo-root stable regardless of caller cwd', () => 
   const alternatePath = resolveDefaultRunDir(featureId, '/tmp/not-the-repo-root');
 
   assert.equal(alternatePath, defaultPath);
-  assert.match(defaultPath, /workspace-planner\/skills\/qa-plan-orchestrator\/runs\/BCIN-ROOT-STABLE$/);
+  assert.match(defaultPath, /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs\/BCIN-ROOT-STABLE$/);
 });
 
 test('resolveDefaultRunDir ignores canonical skill root override outside snapshots', () => {
@@ -36,7 +38,7 @@ test('resolveDefaultRunDir ignores canonical skill root override outside snapsho
     } else {
       assert.match(
         runDir,
-        /workspace-planner\/skills\/qa-plan-orchestrator\/runs\/BCIN-OVERRIDE$/,
+        /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs\/BCIN-OVERRIDE$/,
       );
     }
   } finally {
@@ -48,46 +50,35 @@ test('resolveDefaultRunDir ignores canonical skill root override outside snapsho
   }
 });
 
-test('loadState migrates legacy feature-plan runs into qa-plan-orchestrator runs', async () => {
-  const featureId = `BCIN-LEGACY-${Date.now()}`;
-  const legacyRunDir = resolveLegacyRunDir(featureId);
+test('loadState succeeds when canonical run exists and no legacy run is present', async () => {
+  const featureId = `BCIN-CANONICAL-ONLY-${Date.now()}`;
   const runDir = resolveDefaultRunDir(featureId);
+  const legacyRunDir = resolveLegacyRunDir(featureId);
 
-  await rm(legacyRunDir, { recursive: true, force: true });
   await rm(runDir, { recursive: true, force: true });
+  await rm(legacyRunDir, { recursive: true, force: true });
 
   try {
-    await mkdir(join(legacyRunDir, 'context'), { recursive: true });
-    await mkdir(join(legacyRunDir, 'drafts'), { recursive: true });
-    await writeFile(join(legacyRunDir, 'context', `jira_issue_${featureId}.md`), 'legacy evidence', 'utf8');
-    await writeFile(join(legacyRunDir, 'drafts', 'qa_plan_phase4a_r1.md'), 'legacy draft', 'utf8');
-    await writeFile(join(legacyRunDir, 'task.json'), JSON.stringify({
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await mkdir(join(runDir, 'drafts'), { recursive: true });
+    await writeFile(join(runDir, 'task.json'), JSON.stringify({
       feature_id: featureId,
-      run_key: 'legacy-run',
+      run_key: 'canonical-run',
       current_phase: 'phase_4a_subcategory_draft',
       overall_status: 'in_progress',
     }, null, 2));
-    await writeFile(join(legacyRunDir, 'run.json'), JSON.stringify({
-      run_key: 'legacy-run',
+    await writeFile(join(runDir, 'run.json'), JSON.stringify({
+      run_key: 'canonical-run',
       spawn_history: [{ source_family: 'jira' }],
     }, null, 2));
 
     const state = await loadState(featureId, runDir);
 
-    assert.equal(state.task.run_key, 'legacy-run');
-    assert.equal(state.task.legacy_project_dir, legacyRunDir);
-    assert.match(state.task.migrated_from_legacy_at, /^\d{4}-\d{2}-\d{2}T/);
-    assert.equal(state.run.legacy_migration.source, legacyRunDir);
-    assert.equal(
-      await readFile(join(runDir, 'context', `jira_issue_${featureId}.md`), 'utf8'),
-      'legacy evidence',
-    );
-    assert.equal(
-      await readFile(join(runDir, 'drafts', 'qa_plan_phase4a_r1.md'), 'utf8'),
-      'legacy draft',
-    );
+    assert.equal(state.task.run_key, 'canonical-run');
+    assert.equal(state.task.feature_id, featureId);
+    assert.ok(!state.task.legacy_project_dir);
+    assert.ok(!state.task.migrated_from_legacy_at);
   } finally {
-    await rm(legacyRunDir, { recursive: true, force: true });
     await rm(runDir, { recursive: true, force: true });
   }
 });
@@ -303,3 +294,188 @@ test('applyRequestModel replaces generated supporting-issue materials and requir
   assert.ok(task.request_requirements.some((requirement) => requirement.requirement_id === 'req-read-support-issue-BCIN-11'));
   assert.ok(!task.request_requirements.some((requirement) => requirement.requirement_id === 'req-read-support-issue-BCIN-10'));
 });
+
+test('resolveDefaultRunDir returns artifact-root path', () => {
+  const featureId = 'BCIN-ARTIFACT-ROOT';
+  const runDir = resolveDefaultRunDir(featureId);
+
+  assert.match(runDir, /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs\/BCIN-ARTIFACT-ROOT$/);
+  assert.ok(!runDir.includes('/workspace-planner/skills/qa-plan-orchestrator/runs/'));
+});
+
+test('FQPO_RUN_DIR override bypasses artifact root', () => {
+  const previous = process.env.FQPO_RUN_DIR;
+  process.env.FQPO_RUN_DIR = '/tmp/custom-run-dir';
+
+  try {
+    const runDir = resolveDefaultRunDir('BCIN-OVERRIDE');
+    assert.equal(runDir, '/tmp/custom-run-dir');
+  } finally {
+    if (previous == null) {
+      delete process.env.FQPO_RUN_DIR;
+    } else {
+      process.env.FQPO_RUN_DIR = previous;
+    }
+  }
+});
+
+test('loadState throws migration required error when legacy run exists but canonical does not', async () => {
+  const featureId = `BCIN-MIGRATION-REQ-${Date.now()}`;
+  const legacyRunDir = resolveLegacyRunDir(featureId);
+  const runDir = resolveDefaultRunDir(featureId);
+
+  await rm(legacyRunDir, { recursive: true, force: true });
+  await rm(runDir, { recursive: true, force: true });
+
+  try {
+    await mkdir(join(legacyRunDir, 'context'), { recursive: true });
+    await writeFile(join(legacyRunDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'legacy-run',
+    }, null, 2));
+
+    await assert.rejects(
+      async () => await loadState(featureId, runDir),
+      (error) => {
+        assert.match(error.message, /MIGRATION_REQUIRED/);
+        assert.match(error.message, /Run migration script first/);
+        assert.ok(error.message.includes(legacyRunDir));
+        assert.ok(error.message.includes(runDir));
+        return true;
+      }
+    );
+  } finally {
+    await rm(legacyRunDir, { recursive: true, force: true });
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('loadState throws conflict error when both legacy and canonical runs exist', async () => {
+  const featureId = `BCIN-CONFLICT-${Date.now()}`;
+  const legacyRunDir = resolveLegacyRunDir(featureId);
+  const runDir = resolveDefaultRunDir(featureId);
+
+  await rm(legacyRunDir, { recursive: true, force: true });
+  await rm(runDir, { recursive: true, force: true });
+
+  try {
+    await mkdir(join(legacyRunDir, 'context'), { recursive: true });
+    await writeFile(join(legacyRunDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'legacy-run',
+    }, null, 2));
+
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await writeFile(join(runDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'canonical-run',
+    }, null, 2));
+
+    await assert.rejects(
+      async () => await loadState(featureId, runDir),
+      (error) => {
+        assert.match(error.message, /MIGRATION_CONFLICT/);
+        assert.match(error.message, /resolve manually/i);
+        assert.ok(error.message.includes(legacyRunDir));
+        assert.ok(error.message.includes(runDir));
+        return true;
+      }
+    );
+  } finally {
+    await rm(legacyRunDir, { recursive: true, force: true });
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('FQPO_RUN_DIR override bypasses migration checks', async () => {
+  const featureId = `BCIN-OVERRIDE-MIGRATION-${Date.now()}`;
+  const legacyRunDir = resolveLegacyRunDir(featureId);
+  const customRunDir = `/tmp/custom-run-${Date.now()}`;
+
+  await rm(legacyRunDir, { recursive: true, force: true });
+  await rm(customRunDir, { recursive: true, force: true });
+
+  const previous = process.env.FQPO_RUN_DIR;
+  process.env.FQPO_RUN_DIR = customRunDir;
+
+  try {
+    await mkdir(join(legacyRunDir, 'context'), { recursive: true });
+    await writeFile(join(legacyRunDir, 'task.json'), JSON.stringify({
+      feature_id: featureId,
+      run_key: 'legacy-run',
+    }, null, 2));
+
+    const state = await loadState(featureId, customRunDir);
+
+    assert.equal(state.task.feature_id, featureId);
+    assert.ok(!state.task.legacy_project_dir);
+    assert.ok(!state.task.migrated_from_legacy_at);
+  } finally {
+    if (previous == null) {
+      delete process.env.FQPO_RUN_DIR;
+    } else {
+      process.env.FQPO_RUN_DIR = previous;
+    }
+    await rm(legacyRunDir, { recursive: true, force: true });
+    await rm(customRunDir, { recursive: true, force: true });
+  }
+});
+
+test('maybeMigrateLegacyRun is not exported (regression test)', async () => {
+  const workflowStateModule = await import('../scripts/lib/workflowState.mjs');
+  assert.equal(workflowStateModule.maybeMigrateLegacyRun, undefined);
+});
+
+test('saveState writes to artifact-root run directory', async () => {
+  const featureId = `BCIN-SAVE-${Date.now()}`;
+  const runDir = resolveDefaultRunDir(featureId);
+
+  await rm(runDir, { recursive: true, force: true });
+
+  try {
+    const state = await loadState(featureId, runDir);
+    state.task.current_phase = 'phase_1_evidence_gathering';
+    state.run.data_fetched_at = '2026-03-26T10:00:00Z';
+
+    await saveState(state);
+
+    assert.match(state.taskPath, /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs/);
+    assert.match(state.runPath, /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs/);
+
+    const savedTask = JSON.parse(await readFile(state.taskPath, 'utf8'));
+    const savedRun = JSON.parse(await readFile(state.runPath, 'utf8'));
+
+    assert.equal(savedTask.current_phase, 'phase_1_evidence_gathering');
+    assert.equal(savedRun.data_fetched_at, '2026-03-26T10:00:00Z');
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('runtimeEnv.mjs derives same default run root as workflowState.mjs', async () => {
+  const featureId = `BCIN-RUNTIME-${Date.now()}`;
+  const workflowRunDir = resolveDefaultRunDir(featureId);
+
+  await rm(workflowRunDir, { recursive: true, force: true });
+
+  try {
+    const result = await runRuntimeSetupCli([featureId, 'jira']);
+
+    const contextDir = join(workflowRunDir, 'context');
+    const runtimeSetupPath = join(contextDir, `runtime_setup_${featureId}.json`);
+
+    assert.ok(await fileExists(runtimeSetupPath));
+    assert.match(runtimeSetupPath, /workspace-artifacts\/skills\/workspace-planner\/qa-plan-orchestrator\/runs/);
+  } finally {
+    await rm(workflowRunDir, { recursive: true, force: true });
+  }
+});
+
+async function fileExists(path) {
+  try {
+    await readFile(path);
+    return true;
+  } catch {
+    return false;
+  }
+}

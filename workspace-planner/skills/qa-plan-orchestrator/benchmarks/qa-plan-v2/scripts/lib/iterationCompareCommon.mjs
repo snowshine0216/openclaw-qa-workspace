@@ -8,6 +8,10 @@ import {
   getIterationDir,
 } from './benchmarkV2.mjs';
 import {
+  benchmarkDefinitionRoot as getBenchmarkDefinitionRoot,
+  benchmarkRuntimeRoot,
+} from './benchmarkSkillPaths.mjs';
+import {
   loadJson,
   seedChampionSnapshot,
   writeJson,
@@ -184,8 +188,9 @@ export async function materializeIterationComparison({
   enabledEvidenceModes = null,
   targetFeatureFamily = null,
 }) {
-  const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
-  const casesDocument = await loadJson(join(benchmarkRoot, 'cases.json'));
+  const benchmarkDefinitionRoot = getBenchmarkDefinitionRoot('qa-plan-v2');
+  const benchmarkManifest = await loadJson(join(benchmarkDefinitionRoot, 'benchmark_manifest.json'));
+  const casesDocument = await loadJson(join(benchmarkDefinitionRoot, 'cases.json'));
   const history = await loadJson(join(benchmarkRoot, 'history.json'));
   const currentChampionIteration = history.current_champion_iteration ?? 0;
   const currentChampionSnapshot = join(

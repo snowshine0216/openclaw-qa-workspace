@@ -1,5 +1,9 @@
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  getRepoRoot as getRepoRootFromResolver,
+  getRunRoot as getRunRootFromResolver,
+} from '../../../lib/artifactRoots.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -8,7 +12,7 @@ export const SKILL_ROOT = resolve(__dirname, '..', '..');
 
 /** Repository root (openclaw-qa-workspace) */
 export function getRepoRoot() {
-  return resolve(SKILL_ROOT, '..', '..', '..');
+  return getRepoRootFromResolver();
 }
 
 export function resolveFromRepo(repoRoot, relativePath) {
@@ -16,5 +20,5 @@ export function resolveFromRepo(repoRoot, relativePath) {
 }
 
 export function getRunRoot(runKey) {
-  return join(SKILL_ROOT, 'runs', runKey);
+  return getRunRootFromResolver('shared', 'qa-plan-evolution', runKey);
 }

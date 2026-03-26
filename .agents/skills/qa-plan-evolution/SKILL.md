@@ -85,10 +85,10 @@ When defect evidence is part of the benchmark, also read:
 
 ## Runtime Layout
 
-All artifacts for one evolution run live under `<skill-root>/runs/<run-key>/`:
+All artifacts for one evolution run live under `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`:
 
 ```text
-<skill-root>/runs/<run-key>/
+workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/
   context/
   drafts/
   candidates/
@@ -101,6 +101,8 @@ All artifacts for one evolution run live under `<skill-root>/runs/<run-key>/`:
   phase1_spawn_manifest.json
   evolution_final.md
 ```
+
+**Artifact Root Convention**: Runtime state lives under `workspace-artifacts/` per the workspace artifact root convention. The skill source tree (`.agents/skills/qa-plan-evolution/`) contains only code, definitions, and frozen archive evidence.
 
 ## Input Contract
 
@@ -125,15 +127,15 @@ Optional inputs:
 
 Always:
 
-- `<skill-root>/runs/<run-key>/task.json`
-- `<skill-root>/runs/<run-key>/run.json`
-- `<skill-root>/runs/<run-key>/context/evidence_freshness_<run-key>.md`
-- `<skill-root>/runs/<run-key>/context/defect_evidence_<run-key>.json` (when defects-analysis evidence is active)
-- `<skill-root>/runs/<run-key>/context/gap_taxonomy_<run-key>.md`
-- `<skill-root>/runs/<run-key>/context/mutation_backlog_<run-key>.md`
-- `<skill-root>/runs/<run-key>/benchmarks/scoreboard_<run-key>.json`
-- `<skill-root>/runs/<run-key>/evolution_final.md` (when the run is finalized)
-- `<skill-root>/runs/<run-key>/context/runtime_setup_<run-key>.json` now includes `run_retention_keep` and `run_prune`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/task.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/run.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/evidence_freshness_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/defect_evidence_<run-key>.json` (when defects-analysis evidence is active)
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/gap_taxonomy_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/mutation_backlog_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/benchmarks/scoreboard_<run-key>.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/evolution_final.md` (when the run is finalized)
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/runtime_setup_<run-key>.json` now includes `run_retention_keep` and `run_prune`
 
 Per iteration:
 

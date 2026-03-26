@@ -6,8 +6,9 @@ const path = require("path");
 const { compareDecks } = require("./eval-presentation");
 const { cleanUnpackedRoot, packDeck } = require("./pptx-edit-ops");
 const { renderSlides, renderSnapshotsFromUnpacked } = require("./render-slides");
-const { appendEvent, writeOperatorSummary, writeRunSummary, writeStageStatus } = require("./run-logging");
+const { appendEvent, writeOperatorSummary, writeRunSummary, writeEditSummary, writeStageStatus } = require("./run-logging");
 const { readManifest, updateManifest } = require("./run-manifest");
+const { generateSpeakerNotesArtifacts } = require("./speaker-script");
 
 function listBeforeRenders(beforeDir) {
   if (!fs.existsSync(beforeDir)) {
@@ -87,6 +88,28 @@ function hasAnchorLoss(sourceLayoutAnchor, finalLayoutAnchor) {
   );
 }
 
+// Preserve/refine/replace audit contract — phase-2 baseline guardrail.
+//
+// This function enforces the media preservation guarantees that must remain stable
+// before enrichment work expands edit-mode behavior. The baseline is green on branch
+// `evolve` as of 2026-03-26 and any regression here blocks enrichment implementation.
+//
+// Audit tiers:
+//   preserve — source media refs must survive unchanged (same relationship_id or content_hash)
+//              drift without approval → finalize fails with "drifted_without_approval"
+//   refine   — source media may be annotated or cropped; job must record derived_from_media_ref
+//              to prove the final media is derived from the source; otherwise drift fails finalize
+//   replace  — source media may be swapped; requires an approved replacement preview artifact
+//              and the final media hash must differ from source; otherwise drift fails finalize
+//
+// Layout preservation:
+//   When layout_strategy is "preserve" or "preserve_seed" and allowed_layout_delta is
+//   "tighten_only", "duplicate_seed_adjustment_only", or "none", the audit checks that
+//   no layout anchors (title_box, body_box, image_box) are lost. Anchor loss → drift failure.
+//
+// This audit runs during finalize and gates the comparison evaluation. Enrichment features
+// that expand media behavior (e.g., structured slide rendering, image generation) must not
+// break these guarantees for slides marked preserve or refine.
 function auditSlidePreservation({ runRoot, job, planAction, originalSlideIndex, approvalDecision }) {
   const unpackedRoot = path.join(runRoot, "working", "unpacked");
   const sourceRecord = originalSlideIndex.find((entry) => entry.slide_number === planAction.source_slide_number);
@@ -343,6 +366,33 @@ function finalizeEditRun({ runRoot }) {
     .filter((slide) => slide.outcome !== "applied")
     .map((slide) => slide.slide_number);
   const imagerySummary = preservationAudit.summary;
+
+  // Generate speaker notes artifacts
+  let speakerNotesStatus = null;
+  try {
+    speakerNotesStatus = generateSpeakerNotesArtifacts({ runRoot });
+  } catch (error) {
+    console.warn("Failed to generate speaker notes:", error.message);
+  }
+
+  // Write edit-summary.md as the canonical human-readable review artifact
+  writeEditSummary(
+    runRoot,
+    [
+      "# Edit Summary",
+      "",
+      `- what changed: ${comparison.requested_updates.applied} slide updates applied out of ${comparison.requested_updates.total} requested`,
+      `- which slides preserved source imagery: ${imagerySummary.preserved}`,
+      `- which slides refined imagery: ${imagerySummary.refined}`,
+      `- which slides generated new imagery: ${(handoff.jobs || []).filter((job) => job.image_action === "generate_media").length}`,
+      `- which slides need manual review: ${manualReviewSlides.length > 0 ? manualReviewSlides.join(", ") : "none"}`,
+      `- speaker notes generated: ${speakerNotesStatus ? speakerNotesStatus.totalNotes : 0} slides`,
+      `- presenter script: ${speakerNotesStatus ? speakerNotesStatus.presenterScriptPath : "not generated"}`,
+      `- where the final deck lives inside the run root: ${path.relative(runRoot, outputDeck.outputPath)}`
+    ].join("\n")
+  );
+
+  // Keep run_summary.md for backward compatibility
   writeRunSummary(
     runRoot,
     [

@@ -11,6 +11,7 @@ const {
   isTextSafeVisualFallback
 } = require("./slide-transcript");
 const { createDeckFromSpec } = require("../../../pptx/scripts/lib/create-deck-from-spec");
+const { generateImageMetaPrompt } = require("./image-meta-prompt");
 
 function resolveRunRootFromHandoffPath(handoffPath) {
   return path.resolve(path.dirname(handoffPath), "..");
@@ -76,7 +77,8 @@ async function buildDeckFromHandoff({
       slideSpec,
       slideNumber: index + 1,
       generateImage,
-      partialFailures
+      partialFailures,
+      designTokens
     });
     imageGenerationReport.push(imageDecision);
     slideEntries.push({ slideModel, slideSpec });
@@ -125,7 +127,8 @@ async function ensureRequiredVisual({
   slideSpec,
   slideNumber,
   generateImage,
-  partialFailures
+  partialFailures,
+  designTokens = {}
 }) {
   const visualRole = slideSpec.visual_role || determineVisualRole({
     title: slideSpec.title || slideModel.title,
@@ -208,9 +211,27 @@ async function ensureRequiredVisual({
     "generated-images",
     `slide-${String(slideNumber).padStart(2, "0")}.png`
   );
+
+  // Generate image meta prompt if we have a slide brief with primary_visual_anchor
+  let metaPromptPath = null;
+  let finalPrompt = requiredVisual.prompt;
+
+  if (slideSpec.slide_brief) {
+    const metaPromptResult = generateImageMetaPrompt({
+      runRoot,
+      slideBrief: slideSpec.slide_brief,
+      slideNumber,
+      designTokens
+    });
+    if (metaPromptResult) {
+      metaPromptPath = metaPromptResult.metaPromptPath;
+      finalPrompt = metaPromptResult.finalPrompt;
+    }
+  }
+
   try {
     const generatedPath = await generateImage({
-      prompt: requiredVisual.prompt,
+      prompt: finalPrompt,
       outputPath,
       slideNumber
     });
@@ -221,7 +242,8 @@ async function ensureRequiredVisual({
         visual_role: visualRole,
         image_strategy: imageStrategy,
         generator_ran: true,
-        artifact_path: generatedPath
+        artifact_path: generatedPath,
+        meta_prompt_path: metaPromptPath
       };
     }
     if (requiredVisual.required_for_comprehension) {
@@ -235,7 +257,7 @@ async function ensureRequiredVisual({
     }
     partialFailures.push({
       slide_number: slideNumber,
-      asset: requiredVisual.prompt,
+      asset: finalPrompt,
       fallback: requiredVisual.fallback || "layout",
       reason: error.message
     });
@@ -246,11 +268,85 @@ async function ensureRequiredVisual({
     visual_role: visualRole,
     image_strategy: imageStrategy,
     generator_ran: true,
-    artifact_path: null
+    artifact_path: null,
+    meta_prompt_path: metaPromptPath
   };
+}
+
+/**
+ * Build a single slide from a slide brief spec.
+ * Used for structured_rebuild actions in edit mode.
+ *
+ * @param {Object} params
+ * @param {Object} params.slideBrief - Slide brief with composition_family, content, etc.
+ * @param {string} params.outputPath - Path for temporary single-slide deck
+ * @param {Object} params.designTokens - Design tokens from source theme
+ * @param {Function} params.pptxFactory - Optional PptxGenJS factory
+ * @param {Function} params.generateImage - Optional image generator
+ * @returns {Promise<Object>} Result with outputPath and slideCount
+ */
+async function buildSlideFromSpec({
+  slideBrief,
+  outputPath,
+  designTokens,
+  pptxFactory,
+  generateImage
+}) {
+  if (!slideBrief) {
+    throw new Error("slideBrief is required");
+  }
+  if (!outputPath) {
+    throw new Error("outputPath is required");
+  }
+
+  const { COMPOSITION_FAMILY } = require("./shared-constants");
+
+  // Convert slide brief to slideModel format
+  const slideModel = {
+    title: slideBrief.title || "",
+    bodyLines: Array.isArray(slideBrief.on_slide_copy)
+      ? slideBrief.on_slide_copy
+      : [slideBrief.on_slide_copy || ""],
+    imagePaths: slideBrief.primary_visual_anchor?.artifact_path
+      ? [slideBrief.primary_visual_anchor.artifact_path]
+      : []
+  };
+
+  // Map composition_family to layout
+  const layoutMap = {
+    [COMPOSITION_FAMILY.TITLE_HERO]: "title_hero",
+    [COMPOSITION_FAMILY.SECTION_DIVIDER]: "section_divider",
+    [COMPOSITION_FAMILY.EVIDENCE_PANEL]: "two_column",
+    [COMPOSITION_FAMILY.COMPARISON_MATRIX]: "comparison_matrix",
+    [COMPOSITION_FAMILY.PROCESS_FLOW]: "process_flow",
+    [COMPOSITION_FAMILY.TABLE_SUMMARY]: "data_panel",
+    [COMPOSITION_FAMILY.TEXT_STATEMENT]: "two_column",
+    [COMPOSITION_FAMILY.CLOSING_STATEMENT]: "closing_statement"
+  };
+
+  const slideSpec = {
+    layout: layoutMap[slideBrief.composition_family] || "two_column",
+    title: slideBrief.title,
+    role: slideBrief.slide_goal
+  };
+
+  const slideEntry = { slideModel, slideSpec };
+
+  const result = await createDeckFromSpec({
+    deckTitle: slideBrief.title || "Single Slide",
+    layout: "LAYOUT_16x9",
+    outputPath,
+    designTokens: designTokens || {},
+    slides: [slideEntry],
+    manuscriptPath: null,
+    pptxFactory
+  });
+
+  return result;
 }
 
 module.exports = {
   parseManuscriptSlides,
-  buildDeckFromHandoff
+  buildDeckFromHandoff,
+  buildSlideFromSpec
 };

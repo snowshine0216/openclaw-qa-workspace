@@ -39,6 +39,8 @@ function buildPromptHeader(request) {
     .flatMap((fixture) => extractFixtureRoots(fixture))
     .filter(Boolean);
 
+  const forbiddenRoots = (request.forbidden_skill_roots || []).filter(Boolean);
+
   return [
     `Benchmark case: ${request.case_id}`,
     `Feature: ${request.feature_id}`,
@@ -49,12 +51,16 @@ function buildPromptHeader(request) {
     `Canonical skill root: ${request.canonical_skill_root || '(not provided)'}`,
     `Skill snapshot path: ${request.skill_snapshot_path || '(none)'}`,
     `Allowed fixture roots: ${fixtureRoots.length ? fixtureRoots.join(', ') : '(none)'}`,
+    `Forbidden skill roots: ${forbiddenRoots.length ? forbiddenRoots.join(', ') : '(none)'}`,
     '',
     'Rules:',
     '- Use only the benchmark evidence listed below.',
     '- Treat the canonical skill root as the only active qa-plan-orchestrator package for this run.',
     '- Treat any skill snapshot or benchmark-local SKILL.md as frozen reference evidence, never as the active entrypoint.',
     '- Never infer the active skill from files under benchmarks/, inputs/, or snapshot directories.',
+    ...(forbiddenRoots.length
+      ? ['- Do not read, execute, or reference any files under the forbidden skill roots listed above.']
+      : []),
     '- Save the main deliverable to ./outputs/result.md.',
     '- Save ./outputs/execution_notes.md with: evidence used, files produced, blockers.',
     '',

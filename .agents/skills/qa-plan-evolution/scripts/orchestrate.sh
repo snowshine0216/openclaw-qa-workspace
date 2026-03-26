@@ -4,6 +4,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$DIR/.." && pwd)"
 DEFAULT_REPO_ROOT="$(cd "$ROOT/../../.." && pwd)"
+CANONICAL_RUNS_ROOT="$DEFAULT_REPO_ROOT/workspace-artifacts/skills/shared/qa-plan-evolution/runs"
 WITH_PHASE0=false
 STOP_RUN=false
 if [[ "${1:-}" == "--with-phase0" ]]; then
@@ -24,7 +25,7 @@ for ((i=0; i<${#ARGS[@]}; i+=1)); do
 done
 
 resolve_run_root() {
-  local canonical_run_root="$ROOT/runs/$RUN_KEY"
+  local canonical_run_root="$CANONICAL_RUNS_ROOT/$RUN_KEY"
   if [[ -n "$REPO_ROOT_ARG" && "$REPO_ROOT_ARG" != "$DEFAULT_REPO_ROOT" && -n "$RUN_ROOT" ]]; then
     echo "$RUN_ROOT"
     return

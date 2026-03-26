@@ -37,10 +37,10 @@ Always read:
 
 ## Runtime Layout
 
-All artifacts for a run live under `<skill-root>/runs/<feature-id>/` (skill-root is derived from script location):
+All artifacts for a run live under `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/<feature-id>/`:
 
 ```text
-<skill-root>/runs/<feature-id>/
+workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/<feature-id>/
   context/
   drafts/
   task.json
@@ -54,6 +54,8 @@ All artifacts for a run live under `<skill-root>/runs/<feature-id>/` (skill-root
   phase6_spawn_manifest.json
   qa_plan_final.md
 ```
+
+**Artifact Root Convention**: Runtime state lives under `workspace-artifacts/` per the workspace artifact root convention. The skill source tree (`workspace-planner/skills/qa-plan-orchestrator/`) contains only code, definitions, and frozen archive evidence.
 
 ## Orchestrator Loop
 

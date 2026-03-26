@@ -76,6 +76,14 @@ const AREA_RULES = [
   },
 ];
 
+// Strip attachment filenames (image-XXXX.ext, media-XXXX.ext) from ADF JSON payloads
+// to prevent keyword rules from matching artifact noise like "image-20260324-021922.png".
+function stripAdfArtifacts(text) {
+  return text
+    .replace(/\b(?:image|media|attachment)-[\w.-]+\.\w{2,5}\b/gi, '')
+    .replace(/"type"\s*:\s*"media[^"]*"/gi, '');
+}
+
 function isMeaningfulArea(value) {
   const normalized = String(value ?? '').trim();
   if (!normalized) {
@@ -102,7 +110,8 @@ export function inferFunctionalArea(defect = {}) {
     return String(explicitArea).trim();
   }
 
-  const text = `${defect.summary ?? ''} ${defect.description ?? ''}`.trim();
+  const rawText = `${defect.summary ?? ''} ${defect.description ?? ''}`.trim();
+  const text = stripAdfArtifacts(rawText);
   if (!text) {
     return 'General';
   }

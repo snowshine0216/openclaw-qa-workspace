@@ -5,6 +5,17 @@ const fs = require("fs");
 const path = require("path");
 const { getT2IModelConfig } = require("./lib/load-config");
 
+/**
+ * generate-image.js
+ *
+ * This script generates images from text prompts using a configured T2I model.
+ *
+ * Note: For generate_new image decisions, the prompt should be derived from
+ * an image meta prompt artifact (artifacts/image-prompts/slide-XX.md) created
+ * by the image-meta-prompt.js module. This script receives the final prompt
+ * string and does not generate meta prompts itself.
+ */
+
 function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i++) {

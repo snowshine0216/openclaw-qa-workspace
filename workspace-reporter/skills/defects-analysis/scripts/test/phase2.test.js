@@ -213,3 +213,51 @@ exit 1
 
   await rm(runDir, { recursive: true, force: true });
 });
+
+test('feature-based extraction JQL uses linkedIssues + parent + Parent Link (not text~)', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase2-jql-linked-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context', 'jira_issues'), { recursive: true });
+  await writeFile(join(runDir, 'context', 'feature_keys.json'), '{"feature_keys":["FEAT-1"]}\n');
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'FEAT-1', route_kind: 'feature_keys' }),
+  );
+  await writeFile(
+    join(runDir, 'task.json'),
+    '{"selected_mode":"proceed","processed_defects":0,"current_phase":"phase1_scope"}\n',
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  printf 'KEY\\tNAME\\nBCIN\\tBCIN Project\\n'
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  printf '[{"key":"BUG-99","fields":{"summary":"linked defect","status":{"name":"Open"},"priority":{"name":"High"},"assignee":{"displayName":"Ada"},"resolutiondate":null,"comment":{"comments":[]}}}]\\n'
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync('bash', [SCRIPT, 'FEAT-1', runDir], {
+    encoding: 'utf8',
+    env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+  });
+
+  assert.equal(result.status, 0, `phase2 failed:\n${result.stderr}`);
+  const log = await readFile(logFile, 'utf8');
+
+  assert.match(log, /linkedIssues\("FEAT-1"\)/, 'JQL must use linkedIssues()');
+  assert.match(log, /parent = "FEAT-1"/, 'JQL must include parent =');
+  assert.match(log, /"Parent Link" = "FEAT-1"/, 'JQL must include "Parent Link" =');
+  assert.doesNotMatch(log, /text ~ "FEAT-1"/, 'JQL must NOT use text ~ (old noisy clause)');
+
+  await rm(runDir, { recursive: true, force: true });
+});

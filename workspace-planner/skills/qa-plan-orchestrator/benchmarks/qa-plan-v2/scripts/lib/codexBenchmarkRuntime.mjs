@@ -2,6 +2,7 @@ import { mkdtemp, mkdir, readFile, rm, symlink, writeFile, cp } from 'node:fs/pr
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
+import { validateRuntimeIsolation } from './benchmarkSkillPaths.mjs';
 
 export const DEFAULT_CODEX_BIN = process.env.CODEX_BIN || 'codex';
 export const DEFAULT_CODEX_MODEL = process.env.CODEX_BENCHMARK_MODEL || '';
@@ -39,6 +40,16 @@ export async function materializeRequestWorkspace({
   extraFiles = [],
 }) {
   const workspaceDir = await createRunWorkspace(workspacePrefix);
+
+  if (request.canonical_skill_root || (request.forbidden_skill_roots || []).length > 0) {
+    await validateRuntimeIsolation({
+      canonicalSkillRoot: request.canonical_skill_root || resolve('/'),
+      skillSnapshotPath: request.skill_snapshot_path || '',
+      forbiddenSkillRoots: request.forbidden_skill_roots || [],
+      workspaceDir,
+    });
+  }
+
   const inputsSourceDir = join(request.run.run_dir, 'inputs');
   const inputsTargetDir = join(workspaceDir, 'inputs');
   const outputsDir = join(workspaceDir, 'outputs');

@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
+  assertNoLegacyRuntimeState,
+  assertNoDualRuntimeRoots,
   getIterationDir,
 } from './benchmarkV2.mjs';
 
@@ -50,6 +52,9 @@ export async function writeBatchArtifacts({
   iteration = DEFAULT_ITERATION,
   batchNumber,
 }) {
+  await assertNoLegacyRuntimeState();
+  await assertNoDualRuntimeRoots(benchmarkRoot);
+
   const batchDefinition = getBatchDefinition(batchNumber);
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const spawnManifest = await loadJson(join(iterationDir, 'spawn_manifest.json'));

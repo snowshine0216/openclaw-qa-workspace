@@ -3,6 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILL_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
+ARTIFACT_ROOT_RESOLVER="$REPO_ROOT/.agents/skills/lib/artifactRoots.mjs"
 RAW_INPUT="${1:-}"
 shift || true
 REFRESH_MODE=""
@@ -113,7 +115,7 @@ derive_run_key() {
 }
 
 RUN_KEY="$(derive_run_key "$RAW_INPUT")"
-RUN_DIR="$SKILL_ROOT/runs/$RUN_KEY"
+RUN_DIR="$(node --input-type=module -e "import { getRunRoot } from '$ARTIFACT_ROOT_RESOLVER'; console.log(getRunRoot('workspace-reporter', 'defects-analysis', process.argv[1]));" "$RUN_KEY")"
 mkdir -p "$RUN_DIR/context" "$RUN_DIR/drafts" "$RUN_DIR/reports" "$RUN_DIR/archive"
 
 export SELECTED_MODE="$REFRESH_MODE"

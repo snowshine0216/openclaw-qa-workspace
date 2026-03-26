@@ -1,9 +1,13 @@
-import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { validateCanonicalSkillRoot } from './benchmarkSkillPaths.mjs';
+import {
+  benchmarkDefinitionRoot,
+  benchmarkRuntimeRoot,
+  validateCanonicalSkillRoot,
+} from './benchmarkSkillPaths.mjs';
 import {
   BASELINE_CONFIGS,
   buildComparisonMetadata as buildBaselineComparisonMetadata,
@@ -16,9 +20,53 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const DEFAULT_BENCHMARK_ROOT = resolve(__dirname, '../..');
+export const BENCHMARK_FAMILY = 'qa-plan-v2';
+export const DEFAULT_BENCHMARK_DEFINITION_ROOT = benchmarkDefinitionRoot(BENCHMARK_FAMILY);
+export const DEFAULT_BENCHMARK_ROOT = benchmarkRuntimeRoot(BENCHMARK_FAMILY);
 export const DEFAULT_SKILL_ROOT = resolve(__dirname, '../../../..');
 export const DEFAULT_ITERATION = 0;
+
+async function pathExists(path) {
+  try {
+    await stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Fail-fast guard: if benchmark runtime state is found inside the source tree,
+ * the operator must run the migration script before proceeding.
+ */
+export async function assertNoLegacyRuntimeState() {
+  const legacyIterationDir = join(DEFAULT_BENCHMARK_DEFINITION_ROOT, 'iteration-0');
+  if (await pathExists(legacyIterationDir)) {
+    throw new Error(
+      'benchmark runtime state found in source tree — run the migration script first\n' +
+      `  Legacy path: ${legacyIterationDir}\n` +
+      `  Expected runtime root: ${DEFAULT_BENCHMARK_ROOT}`,
+    );
+  }
+}
+
+/**
+ * Fail-fast guard: if both legacy and canonical benchmark runtime roots exist,
+ * the operator must resolve the conflict manually.
+ */
+export async function assertNoDualRuntimeRoots(runtimeRoot = DEFAULT_BENCHMARK_ROOT) {
+  const legacyIterationDir = join(DEFAULT_BENCHMARK_DEFINITION_ROOT, 'iteration-0');
+  const canonicalIterationDir = join(runtimeRoot, 'iteration-0');
+  const legacyExists = await pathExists(legacyIterationDir);
+  const canonicalExists = await pathExists(canonicalIterationDir);
+  if (legacyExists && canonicalExists) {
+    throw new Error(
+      'Both legacy and canonical benchmark runtime roots exist — operator must resolve conflict\n' +
+      `  Legacy: ${legacyIterationDir}\n` +
+      `  Canonical: ${canonicalIterationDir}`,
+    );
+  }
+}
 const SUPPORTED_EVIDENCE_MODES = ['blind_pre_defect', 'retrospective_replay', 'holdout_regression'];
 const BLIND_BUNDLE_TYPE = 'blind_pre_defect_bundle';
 const BLIND_CUTOFF_POLICY = 'all_customer_issues_only';
@@ -151,8 +199,8 @@ function validateCaseDefinition(caseDefinition, fixtureIndex) {
   }
 }
 
-export function getIterationDir(benchmarkRoot, iteration = DEFAULT_ITERATION) {
-  return join(benchmarkRoot, `iteration-${iteration}`);
+export function getIterationDir(benchmarkRuntimeRoot, iteration = DEFAULT_ITERATION) {
+  return join(benchmarkRuntimeRoot, `iteration-${iteration}`);
 }
 
 export function buildCasePrompt(caseDefinition) {
@@ -291,19 +339,23 @@ export async function validateCaseMatrix({
 export async function prepareBenchmarkV2Baseline({
   skillRoot = DEFAULT_SKILL_ROOT,
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot = DEFAULT_BENCHMARK_DEFINITION_ROOT,
   iteration = DEFAULT_ITERATION,
   executorModel = null,
   reasoningEffort = null,
 }) {
+  await assertNoLegacyRuntimeState();
+  await assertNoDualRuntimeRoots(benchmarkRoot);
+
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const canonicalSkillRoot = validateCanonicalSkillRoot({
-    benchmarkRoot,
+    benchmarkDefinitionRoot,
     canonicalSkillRoot: skillRoot,
   });
   const snapshotDir = join(iterationDir, 'champion_snapshot');
-  const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
-  const casesDocument = await loadJson(join(benchmarkRoot, 'cases.json'));
-  const fixturesDocument = await loadJson(join(benchmarkRoot, 'fixtures_manifest.json'));
+  const benchmarkManifest = await loadJson(join(benchmarkDefinitionRoot, 'benchmark_manifest.json'));
+  const casesDocument = await loadJson(join(benchmarkDefinitionRoot, 'cases.json'));
+  const fixturesDocument = await loadJson(join(benchmarkDefinitionRoot, 'fixtures_manifest.json'));
   const fixtureIndex = buildFixtureIndex(fixturesDocument);
 
   await validateCaseMatrix({ benchmarkManifest, casesDocument, fixturesDocument });
@@ -317,9 +369,9 @@ export async function prepareBenchmarkV2Baseline({
     comparison_mode: 'baseline_value',
     primary_configuration: 'with_skill',
     reference_configuration: 'without_skill',
-    canonical_skill_root: relative(benchmarkRoot, canonicalSkillRoot) || '.',
+    canonical_skill_root: canonicalSkillRoot,
     skill_snapshot_role: 'champion_seed',
-    skill_snapshot_path: relative(benchmarkRoot, snapshotDir),
+    skill_snapshot_path: snapshotDir,
     executor_model: executorModel,
     reasoning_effort: reasoningEffort,
     runs_per_configuration: benchmarkManifest.runs_per_configuration,
@@ -344,7 +396,7 @@ export async function prepareBenchmarkV2Baseline({
         iteration: 0,
         label: 'baseline',
         role: 'champion_seed',
-        skill_snapshot: relative(benchmarkRoot, snapshotDir),
+        skill_snapshot: snapshotDir,
         grading_result: 'pending_baseline_execution',
         is_current_champion: true,
       },
@@ -353,10 +405,10 @@ export async function prepareBenchmarkV2Baseline({
 
   const manifest = {
     skill_name: benchmarkManifest.skill_name,
-    skill_path: relative(benchmarkRoot, canonicalSkillRoot) || '.',
+    skill_path: canonicalSkillRoot,
     workspace: '.',
     iteration,
-    iteration_dir: relative(benchmarkRoot, iterationDir) || '.',
+    iteration_dir: iterationDir,
     benchmark_version: benchmarkManifest.benchmark_version,
     tasks: [],
   };
@@ -378,8 +430,8 @@ export async function prepareBenchmarkV2Baseline({
           configurationDir,
           evalId,
           runNumber,
-          canonicalSkillRoot: relative(benchmarkRoot, canonicalSkillRoot) || '.',
-          snapshotPath: relative(benchmarkRoot, snapshotDir),
+          canonicalSkillRoot,
+          snapshotPath: snapshotDir,
           executorModel,
           reasoningEffort,
           caseDefinition,

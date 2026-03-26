@@ -404,6 +404,7 @@ function ensureTranscriptArtifacts({
       transcript_number: transcriptNumber,
       source_slide_number: action.source_slide_number || slide.slide_number || null,
       title,
+      // Raw extraction: title + body_lines. This feeds into transcript-enrichment.js for semantic enrichment.
       body_text: [title, ...(slide.body_lines || [])].filter(Boolean).join("\n"),
       grounding_sources: groundingSources,
       grounding_summary: `Grounded from ${groundingSources.join(", ")}.`,

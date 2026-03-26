@@ -21,6 +21,10 @@ workspace-tester/memory/site-knowledge/
 # Tester-flow runtime state (runs, logs, healing reports)
 workspace-tester/memory/tester-flow/
 
+# Artifact runtime trees (live runs, benchmark iterations, snapshots)
+# Source-owned benchmark fixtures/manifests under benchmarks/ remain versioned
+workspace-artifacts/
+
 # Logs & Temp Files
 *.log
 *.tmp

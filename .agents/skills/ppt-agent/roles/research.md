@@ -79,3 +79,7 @@ Your job is to identify what changed, what is stale, and what must be updated wi
 - missing source notes do not block transcript generation; emit `none present in source deck`
 - when user request, source deck/material, and Tavily search are still insufficient, stop in `needs_context` instead of guessing
 - include speaker-note formatting and provenance markers in the transcript-ready output
+
+### Research Delta Integration
+
+The research delta output feeds into `transcript-enrichment.js` as grounding material for the slide brief's `evidence_points` and `speaker_script` fields. The enrichment module uses the research delta to synthesize presenter-grade notes and evidence-backed content for revised and added slides.

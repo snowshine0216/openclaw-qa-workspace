@@ -23,11 +23,15 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadEnv } from './lib/loadEnv.mjs';
-import { resolveCanonicalSkillRoot } from './lib/benchmarkSkillPaths.mjs';
+import { benchmarkDefinitionRoot, resolveCanonicalSkillRoot } from './lib/benchmarkSkillPaths.mjs';
 import {
+  BENCHMARK_FAMILY,
+  DEFAULT_BENCHMARK_DEFINITION_ROOT,
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
   DEFAULT_SKILL_ROOT,
+  assertNoLegacyRuntimeState,
+  assertNoDualRuntimeRoots,
   getIterationDir,
 } from './lib/benchmarkV2.mjs';
 
@@ -105,13 +109,16 @@ export function resolveSkillRootForBenchmarkRoot(benchmarkRoot) {
   return root ? resolveCanonicalSkillRoot(root) : DEFAULT_SKILL_ROOT;
 }
 
-export function buildBaselineScriptArgs({ mode, benchmarkRoot, skillRoot }) {
+export function buildBaselineScriptArgs({ mode, benchmarkRoot, benchmarkDefinitionRoot, skillRoot }) {
   const action = mode === 'aggregate' ? '--aggregate-only' : '--prepare-only';
   const resolvedSkillRoot = String(skillRoot || '').trim() || resolveSkillRootForBenchmarkRoot(benchmarkRoot);
+  const resolvedBenchmarkDefinitionRoot = benchmarkDefinitionRoot || DEFAULT_BENCHMARK_DEFINITION_ROOT;
   return [
     action,
     '--benchmark-root',
     benchmarkRoot,
+    '--benchmark-definition-root',
+    resolvedBenchmarkDefinitionRoot,
     '--skill-root',
     resolvedSkillRoot,
   ];
@@ -146,6 +153,9 @@ async function main() {
   const options = parseArgs(process.argv);
   const { benchmarkRoot, iteration, family, batch, evalsRange, dryRun, aggregate, failFast } = options;
   loadEnv(resolveSkillRootForBenchmarkRoot(benchmarkRoot));
+
+  await assertNoLegacyRuntimeState();
+  await assertNoDualRuntimeRoots(benchmarkRoot);
 
   const spawnManifestPath = await ensurePrepared(benchmarkRoot, iteration);
   const spawnManifest = JSON.parse(await readFile(spawnManifestPath, 'utf8'));
@@ -190,6 +200,7 @@ async function main() {
 
   const result = await executeSelectedRuns({
     benchmarkRoot,
+    benchmarkDefinitionRoot: DEFAULT_BENCHMARK_DEFINITION_ROOT,
     iteration,
     selectedTasks: tasks,
     executorScript: runner,

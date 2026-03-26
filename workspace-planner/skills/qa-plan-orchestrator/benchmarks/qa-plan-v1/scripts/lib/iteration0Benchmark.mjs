@@ -1,25 +1,74 @@
-import { access, cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { access, cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
+import {
+  benchmarkDefinitionRoot,
+  benchmarkRuntimeRoot,
+} from './benchmarkSkillPaths.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+export const BENCHMARK_FAMILY = 'qa-plan-v1';
+export const DEFAULT_BENCHMARK_DEFINITION_ROOT = benchmarkDefinitionRoot(BENCHMARK_FAMILY);
+export const DEFAULT_BENCHMARK_ROOT = benchmarkRuntimeRoot(BENCHMARK_FAMILY);
 export const DEFAULT_SKILL_ROOT = resolve(__dirname, '../../../..');
-export const DEFAULT_BENCHMARK_ROOT = resolve(__dirname, '../..');
 export const DEFAULT_ITERATION = 0;
 export const DEFAULT_RUNS_PER_CONFIGURATION = 3;
 export const BASELINE_CONFIGS = ['with_skill', 'without_skill'];
 const EXCLUDED_SNAPSHOT_ENTRIES = new Set(['benchmarks', 'node_modules']);
 
+async function pathExists(path) {
+  try {
+    await stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Fail-fast guard: if benchmark runtime state is found inside the source tree,
+ * the operator must run the migration script before proceeding.
+ */
+export async function assertNoLegacyRuntimeState() {
+  const legacyIterationDir = join(DEFAULT_BENCHMARK_DEFINITION_ROOT, 'iteration-0');
+  if (await pathExists(legacyIterationDir)) {
+    throw new Error(
+      'benchmark runtime state found in source tree — run the migration script first\n' +
+      `  Legacy path: ${legacyIterationDir}\n` +
+      `  Expected runtime root: ${DEFAULT_BENCHMARK_ROOT}`,
+    );
+  }
+}
+
+/**
+ * Fail-fast guard: if both legacy and canonical benchmark runtime roots exist,
+ * the operator must resolve the conflict manually.
+ */
+export async function assertNoDualRuntimeRoots(runtimeRoot = DEFAULT_BENCHMARK_ROOT) {
+  const legacyIterationDir = join(DEFAULT_BENCHMARK_DEFINITION_ROOT, 'iteration-0');
+  const canonicalIterationDir = join(runtimeRoot, 'iteration-0');
+  const legacyExists = await pathExists(legacyIterationDir);
+  const canonicalExists = await pathExists(canonicalIterationDir);
+  if (legacyExists && canonicalExists) {
+    throw new Error(
+      'Both legacy and canonical benchmark runtime roots exist — operator must resolve conflict\n' +
+      `  Legacy: ${legacyIterationDir}\n` +
+      `  Canonical: ${canonicalIterationDir}`,
+    );
+  }
+}
+
 export function shouldIncludeSnapshotEntry(entryName) {
   return !EXCLUDED_SNAPSHOT_ENTRIES.has(entryName);
 }
 
-export function getIterationDir(benchmarkRoot, iteration = DEFAULT_ITERATION) {
+export function getIterationDir(benchmarkRoot = DEFAULT_BENCHMARK_ROOT, iteration = DEFAULT_ITERATION) {
   return join(benchmarkRoot, `iteration-${iteration}`);
 }
 
@@ -85,11 +134,14 @@ export async function seedIterationWorkspace({
   executorModel = null,
   reasoningEffort = null,
 }) {
+  await assertNoLegacyRuntimeState();
+  await assertNoDualRuntimeRoots(benchmarkRoot);
+
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const snapshotDir = join(iterationDir, 'champion_snapshot');
   const evalsPath = join(skillRoot, 'evals', 'evals.json');
   const benchmarkContextPath = join(iterationDir, 'benchmark_context.json');
-  const manifestPath = join(benchmarkRoot, 'benchmark_manifest.json');
+  const manifestPath = join(DEFAULT_BENCHMARK_DEFINITION_ROOT, 'benchmark_manifest.json');
   const evalCatalog = await loadJson(evalsPath);
   const benchmarkManifest = await loadJson(manifestPath);
 
