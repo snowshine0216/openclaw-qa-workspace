@@ -228,6 +228,7 @@ function buildBenchmarkMetadata(prepared) {
 
 export async function publishIterationComparison({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot: explicitDefinitionRoot = null,
   skillRoot,
   iteration,
   defectAnalysisRunKey = null,
@@ -236,6 +237,7 @@ export async function publishIterationComparison({
 }) {
   const prepared = await materializeIterationComparison({
     benchmarkRoot,
+    benchmarkDefinitionRoot: explicitDefinitionRoot,
     skillRoot,
     iteration,
     comparisonMode: SYNTHETIC_STRUCTURAL_COMPARE,
@@ -280,6 +282,7 @@ export async function publishIterationComparison({
 
   const scorecardPath = await writeScorecardForIteration({
     benchmarkRoot,
+    benchmarkDefinitionRoot: explicitDefinitionRoot,
     iterationDir: prepared.iterationDir,
     iteration,
     comparisonMode: SYNTHETIC_STRUCTURAL_COMPARE,

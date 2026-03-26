@@ -1,1 +1,0 @@
-./skill_snapshot/scripts/phase0.sh: line 5: node: command not found

@@ -1,9 +1,0 @@
-{"type":"thread.started","thread_id":"019d0fdf-1417-7652-9557-7111ca3794df"}
-{"type":"turn.started"}
-{"type":"error","message":"Reconnecting... 1/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 43868f18-24bf-45f6-b360-abe9bc746ef5)"}
-{"type":"error","message":"Reconnecting... 2/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 26884983-9d7e-4757-b9f1-7ae020914cdb)"}
-{"type":"error","message":"Reconnecting... 3/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: fcf18187-5505-41e6-b30f-3190a89afde3)"}
-{"type":"error","message":"Reconnecting... 4/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: 45daf2dc-484e-4a1b-83da-4e4a2adc94d3)"}
-{"type":"error","message":"Reconnecting... 5/5 (unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: ee12225c-8c3f-4b6b-a230-7409b1d64a03)"}
-{"type":"error","message":"unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: e7449c70-7dbe-4d48-b726-86130cd22f96"}
-{"type":"turn.failed","error":{"message":"unexpected status 502 Bad Gateway: Upstream service temporarily unavailable, url: https://gmncode.cn/responses, request id: e7449c70-7dbe-4d48-b726-86130cd22f96"}}

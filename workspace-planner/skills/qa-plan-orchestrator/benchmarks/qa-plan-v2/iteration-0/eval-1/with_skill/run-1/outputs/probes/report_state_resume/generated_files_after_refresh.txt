@@ -1,4 +1,0 @@
-./outputs/probes/report_state_resume/BCIN-976/context/jira_issue_BCIN-976.md
-./outputs/probes/report_state_resume/BCIN-976/drafts/qa_plan_phase4a_r1.md
-./outputs/probes/report_state_resume/BCIN-976/run.json
-./outputs/probes/report_state_resume/BCIN-976/task.json

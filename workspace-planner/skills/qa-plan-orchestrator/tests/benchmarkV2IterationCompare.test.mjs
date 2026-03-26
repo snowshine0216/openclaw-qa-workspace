@@ -124,6 +124,7 @@ test('publishIterationComparison writes benchmark.json and scorecard.json aligne
 
     const result = await publishIterationComparison({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
     });
@@ -244,6 +245,7 @@ test('publishIterationComparison excludes replay cases without defect analysis a
 
     const result = await publishIterationComparison({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
     });
@@ -371,6 +373,7 @@ await writeFile(request.run.metrics_path, JSON.stringify({ total_tokens: 3 }, nu
     await assert.rejects(
       () => runIterationCompare({
         benchmarkRoot,
+        benchmarkDefinitionRoot: benchmarkRoot,
         skillRoot,
         iteration: 1,
       }),
@@ -493,6 +496,7 @@ await writeFile(request.run.grading_path, JSON.stringify({
 
     const result = await runIterationCompare({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
     });
@@ -628,6 +632,7 @@ test('runIterationCompare resumes from partial progress and reruns only incomple
     await assert.rejects(
       () => runIterationCompare({
         benchmarkRoot,
+        benchmarkDefinitionRoot: benchmarkRoot,
         skillRoot,
         iteration: 1,
         gradingHarness,
@@ -638,6 +643,7 @@ test('runIterationCompare resumes from partial progress and reruns only incomple
 
     const result = await runIterationCompare({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
       gradingHarness,
@@ -742,6 +748,7 @@ test('publishIterationComparison includes replay cases when defect analysis is e
 
     const result = await publishIterationComparison({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
       defectAnalysisRunKey: 'BCIN-7289',
@@ -862,6 +869,7 @@ test('publishIterationComparison honors explicit evidence mode filters even when
 
     const result = await publishIterationComparison({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       skillRoot,
       iteration: 1,
       defectAnalysisRunKey: 'BCIN-7289',
@@ -980,6 +988,7 @@ await writeFile(request.run.metrics_path, JSON.stringify({ total_tokens: 5 }, nu
     await assert.rejects(
       () => runIterationCompare({
         benchmarkRoot,
+        benchmarkDefinitionRoot: benchmarkRoot,
         skillRoot,
         iteration: 1,
       }),
@@ -1079,6 +1088,7 @@ test('runIterationCompare fails fast when the primary harness fails', async () =
     await assert.rejects(
       () => runIterationCompare({
         benchmarkRoot,
+        benchmarkDefinitionRoot: benchmarkRoot,
         skillRoot,
         iteration: 1,
       }),

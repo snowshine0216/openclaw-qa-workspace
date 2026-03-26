@@ -1,3 +1,0 @@
-Wrote the required artifacts to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-b7uoYK/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-b7uoYK/outputs/execution_notes.md).
-
-The holdout assessment records a `PASS`: based on the copied `embedding-dashboard-editor-compare-result` fixture and the authoritative `skill_snapshot` contracts, the snapshot preserves cross-flow planning guardrails and the deliverable is correctly aligned to `primary_phase: holdout`. No blockers were found.

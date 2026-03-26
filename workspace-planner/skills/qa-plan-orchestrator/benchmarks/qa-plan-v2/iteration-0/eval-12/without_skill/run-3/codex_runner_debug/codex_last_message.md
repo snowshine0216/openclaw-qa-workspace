@@ -1,3 +1,0 @@
-Wrote the deliverables to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-p85DzX/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-p85DzX/outputs/execution_notes.md).
-
-Summary: on the copied blind evidence, this docs benchmark is not satisfied. The bundle only contains `README.md` and `reference.md`, so the required `SKILL.md` and AGENTS cross-doc alignment cannot be demonstrated, and the two provided docs already drift on artifact contract and phase-model coverage.

@@ -1,3 +1,0 @@
-Wrote the benchmark artifacts to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-B5u99l/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-B5u99l/outputs/execution_notes.md).
-
-The retrospective phase5b verdict is `FAIL` / `BLOCKED`: the copied evidence shows BCIN-7289 had known BCED-2416 analogs, but the baseline behavior left them as advisories instead of explicit `REQUIRED_BEFORE_SHIP` gates. No blockers encountered while producing the artifacts.

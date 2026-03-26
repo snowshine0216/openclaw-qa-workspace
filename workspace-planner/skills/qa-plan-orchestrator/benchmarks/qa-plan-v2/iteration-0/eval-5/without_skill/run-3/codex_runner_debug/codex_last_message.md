@@ -1,3 +1,0 @@
-Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-hNFDuW/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-hNFDuW/outputs/execution_notes.md).
-
-The result marks the baseline as `advisory fail`: the retrospective evidence shows phase4a missed standalone scenario generation for `template-save` and `report-builder loading`, and the deliverable includes the minimal phase4a-style scenario additions needed to satisfy the case. Main limitation noted in the execution notes: the fixture did not include the original phase4a draft or `qa_plan_phase6_r1.md`, so the assessment relies on downstream retrospective analysis.

@@ -1,9 +1,0 @@
-{
-  "run_key": "resume-probe",
-  "spawn_history": [
-    {
-      "source_family": "jira",
-      "artifact_paths": ["context/jira_issue_BCIN-976.md"]
-    }
-  ]
-}
