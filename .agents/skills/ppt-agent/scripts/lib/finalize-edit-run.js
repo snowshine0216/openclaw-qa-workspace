@@ -6,8 +6,9 @@ const path = require("path");
 const { compareDecks } = require("./eval-presentation");
 const { cleanUnpackedRoot, packDeck } = require("./pptx-edit-ops");
 const { renderSlides, renderSnapshotsFromUnpacked } = require("./render-slides");
-const { appendEvent, writeOperatorSummary, writeRunSummary, writeStageStatus } = require("./run-logging");
+const { appendEvent, writeOperatorSummary, writeRunSummary, writeEditSummary, writeStageStatus } = require("./run-logging");
 const { readManifest, updateManifest } = require("./run-manifest");
+const { generateSpeakerNotesArtifacts } = require("./speaker-script");
 
 function listBeforeRenders(beforeDir) {
   if (!fs.existsSync(beforeDir)) {
@@ -365,6 +366,33 @@ function finalizeEditRun({ runRoot }) {
     .filter((slide) => slide.outcome !== "applied")
     .map((slide) => slide.slide_number);
   const imagerySummary = preservationAudit.summary;
+
+  // Generate speaker notes artifacts
+  let speakerNotesStatus = null;
+  try {
+    speakerNotesStatus = generateSpeakerNotesArtifacts({ runRoot });
+  } catch (error) {
+    console.warn("Failed to generate speaker notes:", error.message);
+  }
+
+  // Write edit-summary.md as the canonical human-readable review artifact
+  writeEditSummary(
+    runRoot,
+    [
+      "# Edit Summary",
+      "",
+      `- what changed: ${comparison.requested_updates.applied} slide updates applied out of ${comparison.requested_updates.total} requested`,
+      `- which slides preserved source imagery: ${imagerySummary.preserved}`,
+      `- which slides refined imagery: ${imagerySummary.refined}`,
+      `- which slides generated new imagery: ${(handoff.jobs || []).filter((job) => job.image_action === "generate_media").length}`,
+      `- which slides need manual review: ${manualReviewSlides.length > 0 ? manualReviewSlides.join(", ") : "none"}`,
+      `- speaker notes generated: ${speakerNotesStatus ? speakerNotesStatus.totalNotes : 0} slides`,
+      `- presenter script: ${speakerNotesStatus ? speakerNotesStatus.presenterScriptPath : "not generated"}`,
+      `- where the final deck lives inside the run root: ${path.relative(runRoot, outputDeck.outputPath)}`
+    ].join("\n")
+  );
+
+  // Keep run_summary.md for backward compatibility
   writeRunSummary(
     runRoot,
     [

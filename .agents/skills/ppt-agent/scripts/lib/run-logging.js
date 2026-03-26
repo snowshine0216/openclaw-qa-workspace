@@ -39,9 +39,17 @@ function writeRunSummary(runRoot, markdown) {
   return filePath;
 }
 
+function writeEditSummary(runRoot, markdown) {
+  const filePath = path.join(runRoot, "artifacts", "edit-summary.md");
+  ensureParent(filePath);
+  fs.writeFileSync(filePath, String(markdown || "").trimEnd() + "\n");
+  return filePath;
+}
+
 module.exports = {
   appendEvent,
   writeOperatorSummary,
   writeRunSummary,
+  writeEditSummary,
   writeStageStatus
 };
