@@ -49,6 +49,14 @@ Replay-enabled `report-editor` run:
 
 Normal operator usage resumes from `.agents/skills/qa-plan-evolution/runs/<run-key>/`.
 Use `--run-root` only for test/CI scratch surfaces; it is not the authoritative resume location for a normal workspace run.
+Phase 0 now enforces run retention by pruning older sibling run directories (default keep count: `3`), while always protecting the active run key.
+
+Retention controls:
+
+- `--retain-runs <n>` for `phase0.sh` or `orchestrate.sh --with-phase0`
+- `EVOLUTION_RETAIN_RUNS=<n>` as environment override
+- `--prune-min-age-seconds <seconds>` / `EVOLUTION_PRUNE_MIN_AGE_SECONDS=<seconds>` (default `3600`)
+- `scripts/prune_runs.sh --keep <n> [--min-age-seconds <seconds>] [--dry-run]` for one-shot operator cleanup
 
 For `qa-plan-v2`, Phase 4 now prefers executed benchmark comparison through `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`. The older structural comparator in `scripts/lib/publishIterationComparison.mjs` remains a synthetic fallback only; it marks scorecards with `scoring_fidelity: "synthetic"` and blocks promotion.
 

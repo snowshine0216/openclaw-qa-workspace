@@ -118,6 +118,8 @@ Optional inputs:
 - `refresh_mode`
 - `defect_analysis_run_key`
 - `benchmark_profile`
+- `retain_runs` (default `3`; Phase 0 prunes older sibling run dirs while protecting the active run key)
+- `prune_min_age_seconds` (default `3600`; skip pruning very recent run dirs)
 
 ## Output Contract
 
@@ -131,6 +133,7 @@ Always:
 - `<skill-root>/runs/<run-key>/context/mutation_backlog_<run-key>.md`
 - `<skill-root>/runs/<run-key>/benchmarks/scoreboard_<run-key>.json`
 - `<skill-root>/runs/<run-key>/evolution_final.md` (when the run is finalized)
+- `<skill-root>/runs/<run-key>/context/runtime_setup_<run-key>.json` now includes `run_retention_keep` and `run_prune`
 
 Per iteration:
 

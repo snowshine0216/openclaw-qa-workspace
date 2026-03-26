@@ -7,7 +7,7 @@ import {
   symlinkSync,
   writeFileSync,
 } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import {
   detectReportStateSync,
   ensureRunDirs,
@@ -21,10 +21,23 @@ import { copyChampionSnapshot } from '../snapshot.mjs';
 import { parsePhaseArgs, resolveRunContext } from './common.mjs';
 import { resolveKnowledgePackKey } from '../knowledgePackResolver.mjs';
 import { getRepoRoot, getRunRoot } from '../paths.mjs';
+import { pruneRunDirs } from '../pruneRuns.mjs';
 
 function parseMax(v, fallback = 10) {
   const n = parseInt(String(v ?? fallback), 10);
   if (Number.isNaN(n)) return fallback;
+  return n;
+}
+
+function parseRetainRuns(v, fallback = 3) {
+  const n = parseInt(String(v ?? fallback), 10);
+  if (Number.isNaN(n) || n <= 0) return fallback;
+  return n;
+}
+
+function parsePruneMinAgeSeconds(v, fallback = 3600) {
+  const n = parseInt(String(v ?? fallback), 10);
+  if (Number.isNaN(n) || n < 0) return fallback;
   return n;
 }
 
@@ -43,6 +56,14 @@ export async function main(argv = process.argv.slice(2)) {
     throw new Error('max_iterations must be <= 10');
   }
   const maxIterations = rawMax;
+  const retainRuns = parseRetainRuns(
+    args.retain_runs ?? process.env.EVOLUTION_RETAIN_RUNS,
+    3,
+  );
+  const pruneMinAgeSeconds = parsePruneMinAgeSeconds(
+    args.prune_min_age_seconds ?? process.env.EVOLUTION_PRUNE_MIN_AGE_SECONDS,
+    3600,
+  );
 
   const targetSkillPath = args.target_skill_path;
   const targetSkillName = args.target_skill_name;
@@ -92,6 +113,18 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   ensureRunDirs(runRoot);
+  const canonicalRunsRoot = resolve(getRunRoot(runKey), '..');
+  const requestedRunsRoot = requestedRunRoot ? resolve(requestedRunRoot, '..') : null;
+  const pruneRunsRoot =
+    requestedRunsRoot && basename(requestedRunsRoot) === 'runs'
+      ? requestedRunsRoot
+      : canonicalRunsRoot;
+  const pruneReport = pruneRunDirs({
+    runsRoot: pruneRunsRoot,
+    keepCount: retainRuns,
+    minAgeMs: pruneMinAgeSeconds * 1000,
+    protectRunKeys: [runKey],
+  });
   const resolvedKnowledgePack = resolveKnowledgePackKey({
     repoRoot,
     targetSkillPath,
@@ -153,6 +186,9 @@ export async function main(argv = process.argv.slice(2)) {
     `- knowledge_pack_key: ${task.knowledge_pack_key ?? 'none'}`,
     `- knowledge_pack_resolution_source: ${task.knowledge_pack_resolution_source ?? 'none'}`,
     `- max_iterations: ${maxIterations}`,
+    `- run_retention_keep: ${retainRuns}`,
+    `- run_prune_min_age_seconds: ${pruneMinAgeSeconds}`,
+    `- run_prune_removed: ${pruneReport.removed.length}`,
   ].join('\n');
 
   writeFileSync(join(runRoot, 'context', `runtime_setup_${runKey}.md`), setupMd, 'utf8');
@@ -170,6 +206,9 @@ export async function main(argv = process.argv.slice(2)) {
     knowledge_pack_resolution_source: task.knowledge_pack_resolution_source ?? null,
     defect_analysis_run_key: args.defect_analysis_run_key ?? null,
     max_iterations: maxIterations,
+    run_retention_keep: retainRuns,
+    run_prune_min_age_seconds: pruneMinAgeSeconds,
+    run_prune: pruneReport,
   });
 
   if (!useRequestedAsCanonical && requestedRunRoot && requestedRunRoot !== canonicalRunRoot) {

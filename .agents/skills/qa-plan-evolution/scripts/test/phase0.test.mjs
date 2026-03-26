@@ -35,12 +35,21 @@ test('phase0 rejects max_iterations above hard cap', async () => {
 });
 
 test('phase0 initializes champion snapshot for a fresh run', async () => {
+  const runKey = `phase0-fresh-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-fresh-'));
+  const canonicalRunRoot = join(
+    REPO_ROOT,
+    '.agents',
+    'skills',
+    'qa-plan-evolution',
+    'runs',
+    runKey,
+  );
 
   try {
     const result = spawnSync('bash', [
       PHASE0,
-      '--run-key', 'phase0-fresh',
+      '--run-key', runKey,
       '--run-root', runRoot,
       '--repo-root', REPO_ROOT,
       '--target-skill-path', FIXTURE,
@@ -56,6 +65,7 @@ test('phase0 initializes champion snapshot for a fresh run', async () => {
     assert.equal(task.champion_snapshot_path, 'archive/champion-initial');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(canonicalRunRoot, { recursive: true, force: true });
   }
 });
 
@@ -220,5 +230,59 @@ test('phase0 infers knowledge pack from qa-plan-v2 cases when feature_id is prov
     assert.equal(task.knowledge_pack_resolution_source, 'cases_lookup');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase0 prunes sibling run directories and records prune summary', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-prune-repo-'));
+  const runsRoot = join(repoRoot, 'runs');
+  const runRoot = join(runsRoot, 'phase0-prune-current');
+  const targetSkillPath = 'skills/minimal-fixture';
+
+  try {
+    await mkdir(join(repoRoot, 'skills', 'minimal-fixture'), { recursive: true });
+    await writeFile(
+      join(repoRoot, 'skills', 'minimal-fixture', 'SKILL.md'),
+      '---\nname: minimal-fixture\ndescription: fixture\n---\n',
+      'utf8',
+    );
+    await writeFile(
+      join(repoRoot, 'skills', 'minimal-fixture', 'reference.md'),
+      '# reference\n',
+      'utf8',
+    );
+    await mkdir(join(runsRoot, 'phase0-prune-old-1'), { recursive: true });
+    await mkdir(join(runsRoot, 'phase0-prune-old-2'), { recursive: true });
+
+    const result = spawnSync('bash', [
+      PHASE0,
+      '--run-key', 'phase0-prune-current',
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--target-skill-path', targetSkillPath,
+      '--target-skill-name', 'minimal-fixture',
+      '--retain-runs', '1',
+      '--prune-min-age-seconds', '0',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(existsSync(join(runsRoot, 'phase0-prune-old-1')), false);
+    assert.equal(existsSync(join(runsRoot, 'phase0-prune-old-2')), false);
+    assert.equal(existsSync(runRoot), true);
+
+    const setupJsonPath = join(
+      runRoot,
+      'context',
+      'runtime_setup_phase0-prune-current.json',
+    );
+    const setupJson = JSON.parse(await readFile(setupJsonPath, 'utf8'));
+    assert.equal(setupJson.run_retention_keep, 1);
+    assert.equal(setupJson.run_prune_min_age_seconds, 0);
+    assert.equal(typeof setupJson.run_prune?.removed?.length, 'number');
+    assert.equal(setupJson.run_prune?.removed?.length >= 2, true);
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
   }
 });
