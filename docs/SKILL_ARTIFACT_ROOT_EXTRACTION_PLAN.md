@@ -177,6 +177,7 @@ Required invariants:
 - existing state files must still serialize relative paths where portable, absolute paths only at runtime boundaries
 - when both legacy in-skill and canonical artifact-root copies exist, runtime reads silently prefer the canonical artifact-root copy
 - discovery exclusion must be enforced in-repo by a repo-policy test, not documentation alone
+- snapshot-executed skill copies must continue to resolve artifact paths through the canonical source skill root rather than through the copied `champion_snapshot/` or `candidate_snapshot/` tree; the new resolver must preserve the current `FQPO_CANONICAL_SKILL_ROOT` compatibility behavior instead of inventing a second snapshot-only path rule
 
 ### Discovery owner boundary
 
@@ -184,7 +185,8 @@ The pollution bug has two owners, and this design must name both explicitly:
 
 1. **In-repo owner**
    - any helper, script, or test in this repository that scans for active skill packages must treat `workspace-artifacts/` and source-owned `benchmarks/*/archive/` as excluded inputs unless a caller explicitly asks for evidence files.
-   - the in-repo enforcement point is `workspace-planner/skills/qa-plan-orchestrator/tests/workspaceArtifactPolicy.test.mjs`.
+   - the in-repo enforcement surface is a shared production helper, `.agents/skills/lib/artifactDiscoveryPolicy.mjs`, that exports the canonical exclusion/allowlist rules for repo-owned scanners and context-assembly flows.
+   - the in-repo enforcement test is `workspace-planner/skills/qa-plan-orchestrator/tests/workspaceArtifactPolicy.test.mjs`, which validates that callers using the shared policy helper exclude `workspace-artifacts/` and source-owned `benchmarks/*/archive/` trees by default.
 
 2. **External owner**
    - any external skill-discovery or context-assembly system that receives repository paths from this repo must consume an explicit allowlist rooted in source-owned skill trees, never a broad recursive repo scan.
@@ -286,6 +288,9 @@ Expected content changes:
   - skill artifact root by workspace and skill name
   - run root
   - benchmark runtime root
+- preserve the existing snapshot-execution contract:
+  - when a copied benchmark snapshot is executing skill code, the resolver must still anchor canonical artifact paths to the source skill root provided by `FQPO_CANONICAL_SKILL_ROOT`
+  - when no snapshot override is present, the resolver must fall back to the real on-disk skill root
 - support `ARTIFACT_ROOT` for tests and backfills
 - do not add benchmark-family-specific or tool-specific artifact-root env vars; rely on existing explicit run-root overrides where a workflow already has one
 
@@ -314,6 +319,7 @@ Expected content changes:
 
 - unit tests prove each resolver maps to the correct workspace-root artifact path
 - existing run-root override tests still pass
+- snapshot-executed tests prove a copied `champion_snapshot/` or `candidate_snapshot/` still resolves the same canonical artifact root as the source skill
 - old runs under in-skill locations can still be resumed during the compatibility window
 - PR1 does not yet relocate benchmark iteration trees; it only gives them a future canonical root contract
 
@@ -354,6 +360,7 @@ Expected content changes:
 
 - add benchmark-path helpers so “definition root” and “runtime root” are distinct
 - add an explicit `benchmarkArchiveRoot` for checked-in frozen baselines that must remain versioned
+- add one archive compatibility helper so callers can resolve frozen evidence from `benchmarks/<family>/archive/...` without each script hardcoding legacy `iteration-0/champion_snapshot` assumptions
 - rename variables where needed to stop overloading one `benchmarkRoot` for both concepts
 - keep benchmark manifests and fixtures checked in under the source benchmark tree; do not duplicate them under `workspace-artifacts/`
 - move any intentionally preserved checked-in baseline evidence under `benchmarks/<family>/archive/` so archive-only material is clearly separated from live runtime roots
@@ -393,6 +400,7 @@ Expected content changes:
   - cross-filesystem moves must stage-copy under the artifact root, validate, then promote
   - failed migration must remove incomplete staging output and leave the canonical runtime root absent
   - if both legacy and canonical benchmark runtime roots exist and differ, runtime uses canonical and records a machine-readable divergence note in benchmark metadata
+- route directory adoption through one shared helper (for example `.agents/skills/lib/adoptDirectoryTree.mjs`) so live-run migration and benchmark-runtime migration do not re-implement slightly different locking, staging, cleanup, and divergence semantics
 
 #### Phase C: Strengthen isolation at runtime
 
@@ -419,6 +427,8 @@ Expected content changes:
 - request payload tests assert split definition/runtime roots, not only metadata fields
 - benchmark migration tests prove failed `rename`/copy promotion cannot leave a half-written canonical benchmark runtime root
 - dual-root benchmark tests prove canonical silently wins when legacy and canonical runtime trees coexist
+- concurrent benchmark-family migration tests prove two prepares/resumes cannot migrate the same benchmark runtime root into competing canonical destinations
+- archive replay tests prove preserved baselines remain readable after relocation under `benchmarks/<family>/archive/`
 
 ## Functional Design 3
 
@@ -520,6 +530,7 @@ Stub tests only for the implementation phase:
    - workspace-local skill artifact root resolves to `workspace-artifacts/skills/<workspace>/<skill>/...`
    - `ARTIFACT_ROOT` override works for tests and backfills without changing source-owned definition roots
    - no benchmark-family-specific artifact-root env vars are required beyond `ARTIFACT_ROOT` and existing explicit run-root escapes
+   - snapshot-executed resolver tests prove copied benchmark snapshots still resolve canonical artifact paths through `FQPO_CANONICAL_SKILL_ROOT`
 
 2. qa-plan-evolution path tests
    - Phase 0 initializes runs under the new artifact root
@@ -545,6 +556,8 @@ Stub tests only for the implementation phase:
    - `qa-plan-v1` scripts no longer write under source-tree iteration folders
    - `qa-plan-v1/scripts/lib/iteration0Benchmark.mjs` roots iteration, snapshot, and eval workspace writes under the artifact root, not the source benchmark tree
    - preserved checked-in baseline evidence is reachable through `archive/` without being treated as the active benchmark runtime root
+   - preserved baseline replay paths that previously referenced `iteration-0/champion_snapshot` continue to resolve through the archive compatibility helper after relocation
+   - concurrent benchmark-family migration attempts serialize behind a per-family lock and converge on the same canonical runtime root
 
 5. End-to-end smoke tests
    - benchmark prepare/run/aggregate succeeds with no writes under source-tree `iteration-*`
@@ -553,7 +566,8 @@ Stub tests only for the implementation phase:
    - qa-plan-evolution resume succeeds from migrated artifact-root state
 
 6. Repo-policy / discovery exclusion tests
-   - add `workspace-planner/skills/qa-plan-orchestrator/tests/workspaceArtifactPolicy.test.mjs` as the in-repo guard that proves `workspace-artifacts/` and source-owned benchmark `archive/` trees are excluded from skill discovery and repo-scan context assembly
+   - create `.agents/skills/lib/artifactDiscoveryPolicy.mjs` as the shared in-repo production helper for skill-discovery and context-assembly exclusion rules
+   - add `workspace-planner/skills/qa-plan-orchestrator/tests/workspaceArtifactPolicy.test.mjs` as the in-repo guard that proves callers using the shared policy helper exclude `workspace-artifacts/` and source-owned benchmark `archive/` trees from skill discovery and repo-scan context assembly
    - document the external discovery owner and boundary explicitly in `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md`; the in-repo test does not claim to validate external scanners
 
 ## Documentation Changes
@@ -597,6 +611,7 @@ Expected content:
 - path ownership rules
 - runtime-only / gitignored policy for `workspace-artifacts/`
 - archive-only policy for `benchmarks/*/archive/`
+- in-repo production enforcement surface: `.agents/skills/lib/artifactDiscoveryPolicy.mjs`
 - in-repo enforcement point: `workspace-planner/skills/qa-plan-orchestrator/tests/workspaceArtifactPolicy.test.mjs`
 - ownership note for discovery exclusion: either the in-repo scanner/test that enforces exclusion, or the external tool boundary that is responsible for never treating `workspace-artifacts/` as an active skill root
 - migration guidance for future skills
@@ -616,7 +631,7 @@ Expected content changes:
 
 ### PR1
 
-1. Add shared artifact-root resolver helpers.
+1. Add shared artifact-root resolver helpers and the shared discovery-policy helper.
 2. Convert `qa-plan-evolution` run-root resolution to the new artifact root.
 3. Convert `qa-plan-orchestrator` run-root resolution to the new artifact root through `workflowState.mjs`, `runPhase.mjs`, `runtimeEnv.mjs`, and the save/validate helpers.
 4. Move `defects-analysis` live runs to the new artifact root and update `spawn_defects_analysis.sh`.
@@ -628,12 +643,12 @@ Expected content changes:
 
 ### PR2
 
-1. Split benchmark definition root, benchmark archive root, and benchmark runtime root for both `qa-plan-v1` and `qa-plan-v2`.
+1. Split benchmark definition root, benchmark archive root, and benchmark runtime root for both `qa-plan-v1` and `qa-plan-v2`, including the archive compatibility helper for frozen baseline reads.
 2. Move live iteration/history/snapshot writes to the artifact root and relocate intentionally preserved baselines under `benchmarks/*/archive/`.
 3. Add migration logic for legacy benchmark runtime trees, with canonical silently preferred on dual-root detection.
-4. Make benchmark and run-root migration atomic: `rename` when possible, otherwise stage-copy then promote, never exposing a half-written canonical destination.
+4. Route benchmark and live-run directory adoption through one shared helper; make migration atomic with `rename` when possible and stage-copy promotion otherwise, never exposing a half-written canonical destination.
 5. Make runner isolation enforce forbidden roots at runtime, not only in prompt text.
-6. Update tests for benchmark runtime, archive/runtime separation, policy exclusion, migration locking, divergence handling, and resume compatibility.
+6. Update tests for benchmark runtime, archive/runtime separation, policy exclusion, migration locking, divergence handling, snapshot compatibility, and resume compatibility.
 7. Run targeted benchmark smoke flows and verify no new artifact writes land in live skill source trees or source-owned archive trees.
 
 ## References
@@ -649,9 +664,10 @@ Expected content changes:
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | clean | mode: SELECTIVE_EXPANSION, 0 critical gaps |
-| Codex Review | `/codex review` | Independent 2nd opinion | 0 | — | — |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 2 | issues_open | 11 issues, 2 critical gaps |
+| Codex Review | `/codex review` | Independent 2nd opinion | 1 | issues_found | outside voice (claude subagent): 6 concerns, 3 accepted |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 5 | issues_open | 8 issues, 0 critical gaps, 3 plan updates pending |
 | Design Review | `/plan-design-review` | UI/UX gaps | 1 | clean | score: 8/10 -> 10/10, 12 decisions |
 
-**UNRESOLVED:** 1 decision
-**VERDICT:** CEO + DESIGN CLEARED; eng review required.
+**CROSS-MODEL:** Outside voice agreed with review on snapshot contract; challenged migration complexity (accepted), 2-PR split (accepted), archive helper (accepted).
+**UNRESOLVED:** 3 plan updates pending (simplify migration, combine PRs, expand tests)
+**VERDICT:** CEO + DESIGN CLEARED; eng review requires plan updates before implementation.

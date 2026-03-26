@@ -1,5 +1,19 @@
 # TODOS
 
+## Skill Artifact Roots
+
+### Add A Concrete In-Repo Artifact Discovery Exclusion Helper When A Real Caller Exists
+
+**What:** Add a concrete in-repo discovery/context-assembly exclusion helper only when a named production caller is identified and migrated to it.
+
+**Why:** The artifact-root convention needs one real enforcement point eventually, but adding a helper before a caller exists would be speculative infrastructure.
+
+**Context:** During `/plan-eng-review` of `docs/SKILL_ARTIFACT_ROOT_EXTRACTION_PLAN.md`, the review accepted deferring `.agents/skills/lib/artifactDiscoveryPolicy.mjs` until a real scanner or context-assembler is in scope. The current plan should document the boundary and ignore rules now, then introduce a helper only when there is a concrete production caller to wire up in the same change set.
+
+**Effort:** M
+**Priority:** P2
+**Depends on:** Identification of a concrete production caller that scans repo paths for active skills or context inputs
+
 ## PPT Agent
 
 ### Lock The Phase 1 Create-Mode Build Path And `pptx` Integration Contract
@@ -36,6 +50,82 @@
 
 **Effort:** M
 **Priority:** P2
+**Depends on:** None
+
+### Define Artifact Retention Policy For Enriched Phase 2 Edit Runs
+
+**What:** Define retention tiers and cleanup rules for enriched `ppt-agent` Phase 2 run artifacts, including which intermediate files must persist for resume/debugging and which can be pruned safely.
+
+**Why:** The enriched edit workflow will produce more artifacts per run, such as slide briefs, source-theme snapshots, image prompts, rebuilt slide packages, and richer render/eval outputs. Without a retention policy, disk usage and run-folder sprawl will grow quickly.
+
+**Context:** Added during `/plan-eng-review` of `PPT_AGENT_EDIT_ENRICHMENT_PLAN.md`. The reviewed plan intentionally expands Phase 2 artifact volume to improve trust, resume behavior, and auditability, but it does not yet define artifact lifecycle or cleanup boundaries.
+
+**Effort:** S
+**Priority:** P2
+**Depends on:** Finalized enriched Phase 2 artifact contract
+
+### Define Single-Slide Package Artifact Naming Convention
+
+**What:** Add deterministic naming for single-slide package artifacts (e.g., `artifacts/rebuilt-slide-{slideNumber}.pptx`).
+
+**Why:** The merge-back algorithm produces single-slide packages but doesn't specify where they're stored or how they're named, creating ambiguity about artifact layout.
+
+**Pros:** Enables resume behavior, auditability, and debugging.
+
+**Cons:** Adds one more artifact type to manage.
+
+**Context:** Identified during `/plan-eng-review` of `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md`. The merge-back algorithm needs a deterministic path for the single-slide package artifact it produces.
+
+**Effort:** S
+**Priority:** P1
+**Depends on:** None
+
+### Add Theme Snapshot Artifact To Baseline Verification
+
+**What:** Write a `source-theme-snapshot.json` artifact during baseline verification that captures the source deck's theme tokens (colors, fonts, spacing).
+
+**Why:** The structured renderer needs to preserve source-deck theme identity during `structured_rebuild`, but it currently has no mechanism to read theme from the source deck.
+
+**Pros:** Enables theme preservation without coupling the renderer to unpacked deck state.
+
+**Cons:** Adds one more artifact to baseline verification.
+
+**Context:** Identified during `/plan-eng-review` of `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md`. The plan says rebuilt slides must preserve source-deck theme identity, but doesn't specify how theme tokens are passed to the renderer.
+
+**Effort:** M
+**Priority:** P1
+**Depends on:** None
+
+### Clarify Fail-Closed Behavior For Structured Rebuild
+
+**What:** Document that 'fail closed' means abort the entire run, preserve the working deck untouched, and emit a structured error artifact for debugging.
+
+**Why:** The plan says 'fail closed' but doesn't define what that means concretely — it could mean abort the run, abort just that slide, or fall back to a different strategy.
+
+**Pros:** Eliminates ambiguity about error handling.
+
+**Cons:** None.
+
+**Context:** Identified during `/plan-eng-review` of `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md`. The merge-back algorithm needs explicit fail-closed semantics.
+
+**Effort:** S
+**Priority:** P2
+**Depends on:** None
+
+### Update PPT Agent Edit Enrichment Plan Part 1 With Engineering Review Findings
+
+**What:** Update `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART1.md` to incorporate the 8 architectural and code quality issues identified during `/plan-eng-review`: (1) add edit-workflow.js to FD1 to replace deriveFindings() stub, (2) add deck-analysis.js to FD2 for theme extraction, (3) add pptx-edit-ops.js + merge-back.js to FD3 for OOXML merge-back, (4) add explicit artifact derivation order section, (5) add build-pptx-from-handoff.js to FD3 for single-slide rendering, (6) create shared-constants.js for enums/validation, (7) add all 34 missing tests as requirements, (8) add parallelization guidance for per-slide derivations.
+
+**Why:** The review identified critical gaps in file ownership, artifact derivation order, test coverage, and performance that must be addressed before implementation. Without these updates, the plan will lead to ad hoc implementation decisions, missing tests, and performance issues.
+
+**Pros:** Makes the plan complete and unambiguous. Prevents implementation drift and ensures full test coverage from day 1.
+
+**Cons:** Increases plan complexity slightly (adds 6 files, 34 tests).
+
+**Context:** Identified during `/plan-eng-review` of `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART1.md` on 2026-03-26. All 8 issues were approved by the user with recommendation to choose the complete option (Completeness: 10/10 for all).
+
+**Effort:** M
+**Priority:** P1
 **Depends on:** None
 
 ## Completed
