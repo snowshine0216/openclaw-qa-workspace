@@ -51,6 +51,7 @@ For each phase `0..5`:
 2. If stdout includes `SPAWN_MANIFEST: <path>`:
    - run `node scripts/spawn_from_manifest.mjs <path> --cwd <run-dir>`
    - rerun `scripts/phaseN.sh <raw-input> <run-dir> --post`
+   - treat `SPAWN_MANIFEST` as a normal handoff marker, not a failure by itself
 3. If stdout includes `DELEGATED_RUN: <path>`, record the delegated path in the session summary and stop successfully.
 4. Stop immediately on non-zero exit.
 
@@ -128,6 +129,7 @@ When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 ### Phase 1
 
 - scope discovery for reporter-local single-key, release, or JQL input
+- release scope is enforced through the generated Jira query and persisted in `context/scope_query.json`
 - release runs compute per-feature `report_state` and default action mapping
 
 ### Phase 2
@@ -143,6 +145,7 @@ When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 ### Phase 4
 
 - feature and JQL runs perform PR analysis spawn/post consolidation
+- manifest execution may fall back from `openclaw` to `codex` when `openclaw` is unavailable in the current runtime
 - release runs collect child `feature_summary.json` outputs and materialize release packet folders
 
 ### Phase 5

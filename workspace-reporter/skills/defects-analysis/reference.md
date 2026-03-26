@@ -216,8 +216,16 @@ This contract intentionally aligns with the normalized summary concepts already 
 Release runs are parent coordinators, not monolithic defect aggregators.
 
 - Phase 1 computes per-feature state for canonical child runs under `runs/<feature-key>/`
+- For release-scope runs, Phase 1 is also the enforcement point for the generated Jira query; the resolved query must be persisted in `context/scope_query.json`
 - Phase 3 executes or reuses those child runs with the mapped selected action
+- Child feature runs are expected to complete their own manifest-driven spawn/post loops before the release parent continues
 - Phase 4 collects `feature_summary.json` outputs and materializes release packets under `runs/release_<version>/features/<feature-key>/`
+
+## Spawn Manifest Contract
+
+- `SPAWN_MANIFEST: <path>` is a handoff marker, not an error condition on its own
+- `scripts/spawn_from_manifest.mjs` should first try `openclaw sessions spawn`
+- When `openclaw` is unavailable in the runtime, the manifest runner should fall back to `codex exec` and still materialize any declared `output_file`
 - Phase 5 generates the overall release report from `release_summary_inputs.json`
 
 ### Reviewer Fail Conditions
