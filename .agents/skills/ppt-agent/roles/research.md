@@ -86,4 +86,4 @@ Your job is to identify what changed, what is stale, and what must be updated wi
 
 The research delta output feeds into `transcript-enrichment.js` as grounding material for the slide brief's `evidence_points` and `speaker_script` fields. The enrichment module uses the research delta to synthesize presenter-grade notes and evidence-backed content for revised and added slides.
 
-The delta must provide enough depth for `transcript-enrichment.js` to produce all five sections of the per-slide note artifact (`artifacts/speaker-notes/slide-XX.md`): delivery guidance, evidence points, transition cue, supporting context, and provenance notes. Shallow or title-restatement output is a quality gate failure.
+The delta must provide enough depth for `transcript-enrichment.js` to produce all five sections of the per-slide note artifact (`artifacts/speaker-notes/slide-XX.md`): Opening, Main explanation, Evidence callouts, Transition line, and Questions to anticipate. Shallow or title-restatement output is a quality gate failure.
