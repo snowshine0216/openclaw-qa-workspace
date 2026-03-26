@@ -4,12 +4,13 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
-## [0.1.4.0] - 2026-03-26
+## [0.1.5.0] - 2026-03-26
 
 ### Fixed
-- **artifact-root runtime helpers now resolve through the shared contract** — `qa-plan-evolution` resume/progress scripts and `qa-plan-orchestrator` context helpers now resolve canonical run roots through `.agents/skills/lib/artifactRoots.mjs`, preserving `ARTIFACT_ROOT`, `REPO_ROOT`, and explicit run-dir override behavior.
-- **qa-plan-orchestrator benchmark runners now forward benchmark definition roots correctly** — batch and family execution paths now pass the benchmark definition root into isolated execution requests, fixing fixture resolution in temp benchmark runs.
-- **artifact-root regression coverage is now complete and deterministic** — strengthened qa-plan-evolution and qa-plan-orchestrator tests now cover canonical artifact-root defaults, scratch/canonical resume behavior, benchmark fixture path updates, and deterministic prune ordering.
+- **artifact-root runtime helpers now honor explicit repo roots through the shared contract** — shared artifact-root resolution now supports repo-root-aware run and benchmark runtime paths, and `qa-plan-evolution` resume/progress utilities continue to preserve `ARTIFACT_ROOT`, `REPO_ROOT`, and explicit run-dir overrides.
+- **qa-plan-evolution now keeps qa-plan benchmark runtime state entirely under `workspace-artifacts`** — Phase 4 compare outputs, Phase 6 champion promotion, and replay-gap analysis now read source benchmark definitions from the skill tree while writing and reading live benchmark history, scorecards, and iteration snapshots from the canonical runtime root.
+- **qa-plan-orchestrator benchmark/bootstrap path coverage now matches the runtime split** — benchmark runners, bootstrap argument builders, and runtime-env shell fixtures now forward benchmark definition roots explicitly and assert the `workspace-artifacts` output contract in both Node and shell regression tests.
+- **artifact-root regression coverage is now complete and deterministic** — strengthened `qa-plan-evolution` and `qa-plan-orchestrator` tests now cover canonical artifact-root defaults, scratch/canonical resume behavior, runtime benchmark path updates, and deterministic fixture setup across temp workspaces.
 
 ## [0.1.3.1] - 2026-03-26
 
