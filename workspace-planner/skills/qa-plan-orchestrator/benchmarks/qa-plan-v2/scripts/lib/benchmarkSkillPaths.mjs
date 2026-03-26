@@ -1,3 +1,4 @@
+import { realpath } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getBenchmarkRuntimeRoot } from '../../../../../../../.agents/skills/lib/artifactRoots.mjs';
@@ -158,4 +159,73 @@ export function buildForbiddenSkillRoots({
   ].filter(Boolean);
 
   return [...new Set(roots)];
+}
+
+async function resolveRealpath(path) {
+  try {
+    return await realpath(path);
+  } catch {
+    return resolve(path);
+  }
+}
+
+async function isSubpathRealpath(parentPath, childPath) {
+  const resolvedParent = await resolveRealpath(parentPath);
+  const resolvedChild = await resolveRealpath(childPath);
+  const relation = relative(resolvedParent, resolvedChild);
+  return relation === '' || (!relation.startsWith('..') && relation !== '.');
+}
+
+export async function validateRuntimeIsolation({
+  canonicalSkillRoot,
+  skillSnapshotPath = '',
+  forbiddenSkillRoots = [],
+  workspaceDir = '',
+}) {
+  const resolvedCanonical = await resolveRealpath(canonicalSkillRoot);
+  const resolvedSnapshot = skillSnapshotPath ? await resolveRealpath(skillSnapshotPath) : '';
+  const resolvedWorkspace = workspaceDir ? await resolveRealpath(workspaceDir) : '';
+  const resolvedForbidden = await Promise.all(
+    forbiddenSkillRoots.map((root) => resolveRealpath(root)),
+  );
+
+  if (resolvedSnapshot && resolvedSnapshot === resolvedCanonical) {
+    throw new Error(
+      `Runtime isolation violation: skill snapshot path must differ from canonical skill root\n` +
+      `  Canonical: ${resolvedCanonical}\n` +
+      `  Snapshot: ${resolvedSnapshot}`,
+    );
+  }
+
+  for (const forbiddenRoot of resolvedForbidden) {
+    if (await isSubpathRealpath(forbiddenRoot, resolvedCanonical)) {
+      throw new Error(
+        `Runtime isolation violation: canonical skill root overlaps with forbidden root\n` +
+        `  Canonical: ${resolvedCanonical}\n` +
+        `  Forbidden: ${forbiddenRoot}`,
+      );
+    }
+
+    if (resolvedSnapshot && await isSubpathRealpath(forbiddenRoot, resolvedSnapshot)) {
+      throw new Error(
+        `Runtime isolation violation: skill snapshot path overlaps with forbidden root\n` +
+        `  Snapshot: ${resolvedSnapshot}\n` +
+        `  Forbidden: ${forbiddenRoot}`,
+      );
+    }
+
+    if (resolvedWorkspace && await isSubpathRealpath(forbiddenRoot, resolvedWorkspace)) {
+      throw new Error(
+        `Runtime isolation violation: workspace directory overlaps with forbidden root\n` +
+        `  Workspace: ${resolvedWorkspace}\n` +
+        `  Forbidden: ${forbiddenRoot}`,
+      );
+    }
+  }
+
+  return {
+    canonicalSkillRoot: resolvedCanonical,
+    skillSnapshotPath: resolvedSnapshot,
+    forbiddenSkillRoots: resolvedForbidden,
+  };
 }
