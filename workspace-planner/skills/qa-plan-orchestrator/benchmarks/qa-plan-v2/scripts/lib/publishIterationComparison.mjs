@@ -4,6 +4,7 @@ import { join } from 'node:path';
 
 import { writeJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
 import { DEFAULT_BENCHMARK_ROOT } from './benchmarkV2.mjs';
+import { benchmarkDefinitionRoot } from './benchmarkSkillPaths.mjs';
 import {
   PRIMARY_CONFIGURATION,
   REFERENCE_CONFIGURATION,

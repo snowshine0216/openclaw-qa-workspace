@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 
 import { loadJson, writeJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
+import { benchmarkDefinitionRoot } from './benchmarkSkillPaths.mjs';
 
 export async function loadCaseIndex(casesPath) {
   const casesDocument = await loadJson(casesPath);
@@ -372,8 +373,9 @@ export async function writeScorecardForIteration({
   referenceConfiguration,
   scoringFidelity = null,
 }) {
-  const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
-  const caseIndex = await loadCaseIndex(join(benchmarkRoot, 'cases.json'));
+  const benchmarkDefinitionRoot = benchmarkDefinitionRoot('qa-plan-v2');
+  const benchmarkManifest = await loadJson(join(benchmarkDefinitionRoot, 'benchmark_manifest.json'));
+  const caseIndex = await loadCaseIndex(join(benchmarkDefinitionRoot, 'cases.json'));
   const benchmark = await loadJson(join(iterationDir, 'benchmark.json'));
 
   const scorecard = buildScorecard({

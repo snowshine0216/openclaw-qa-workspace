@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import {
   DEFAULT_BENCHMARK_ROOT,
   DEFAULT_ITERATION,
+  assertNoLegacyRuntimeState,
+  assertNoDualRuntimeRoots,
   getIterationDir,
 } from './benchmarkV2.mjs';
 import { loadJson, writeJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
@@ -49,6 +51,9 @@ export async function writeFamilyArtifacts({
   iteration = DEFAULT_ITERATION,
   familyName,
 }) {
+  await assertNoLegacyRuntimeState();
+  await assertNoDualRuntimeRoots(benchmarkRoot);
+
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
   const spawnManifest = await loadJson(join(iterationDir, 'spawn_manifest.json'));
   const familyDefinition = getFamilyDefinition(spawnManifest, familyName);

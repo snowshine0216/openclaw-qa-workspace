@@ -5,6 +5,13 @@ import { basename, dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  BENCHMARK_FAMILY,
+  DEFAULT_BENCHMARK_DEFINITION_ROOT,
+  assertNoLegacyRuntimeState,
+  assertNoDualRuntimeRoots,
+} from './benchmarkV2.mjs';
+import {
+  benchmarkDefinitionRoot,
   buildForbiddenSkillRoots,
   resolveCanonicalSkillRoot,
   validateSkillPathContract,
@@ -38,13 +45,13 @@ function buildFixtureIndex(fixturesDocument) {
   return new Map((fixturesDocument.fixtures || []).map((fixture) => [fixture.fixture_id, fixture]));
 }
 
-async function resolveInputPath(benchmarkRoot, inputPath) {
+async function resolveInputPath(benchmarkDefinitionRoot, inputPath) {
   if (!inputPath) return '';
   if (inputPath.startsWith('/')) {
     return inputPath;
   }
 
-  let current = resolve(benchmarkRoot);
+  let current = resolve(benchmarkDefinitionRoot);
   while (true) {
     const candidate = resolve(current, inputPath);
     if (await pathExists(candidate)) {
@@ -70,8 +77,8 @@ async function copyInto(sourcePath, destinationPath) {
   await cp(sourcePath, join(destinationPath, basename(sourcePath)));
 }
 
-async function materializeFixtureInputs(runDir, fixtureRefs, benchmarkRoot) {
-  const fixtureManifestPath = join(benchmarkRoot, 'fixtures_manifest.json');
+async function materializeFixtureInputs(runDir, fixtureRefs, benchmarkDefinitionRoot) {
+  const fixtureManifestPath = join(benchmarkDefinitionRoot, 'fixtures_manifest.json');
   const fixtureRoot = join(runDir, 'inputs', 'fixtures');
   await rm(fixtureRoot, { recursive: true, force: true });
   await mkdir(fixtureRoot, { recursive: true });
@@ -96,7 +103,7 @@ async function materializeFixtureInputs(runDir, fixtureRefs, benchmarkRoot) {
 
     let localFixturePath = null;
     if (fixture.path) {
-      const sourcePath = await resolveInputPath(benchmarkRoot, fixture.path);
+      const sourcePath = await resolveInputPath(benchmarkDefinitionRoot, fixture.path);
       localFixturePath = join(fixtureDir, 'source');
       await copyInto(sourcePath, localFixturePath);
     }
@@ -105,7 +112,7 @@ async function materializeFixtureInputs(runDir, fixtureRefs, benchmarkRoot) {
     for (const material of fixture.materials || []) {
       let localMaterialPath = null;
       if (material.snapshot_path) {
-        const sourcePath = await resolveInputPath(benchmarkRoot, material.snapshot_path);
+        const sourcePath = await resolveInputPath(benchmarkDefinitionRoot, material.snapshot_path);
         const materialDir = join(fixtureDir, 'materials');
         await mkdir(materialDir, { recursive: true });
         await cp(sourcePath, join(materialDir, basename(sourcePath)));
@@ -132,7 +139,7 @@ async function writeJson(path, value) {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 }
 
-async function buildExecutionRequest(runDefinition, benchmarkRoot) {
+async function buildExecutionRequest(runDefinition, benchmarkDefinitionRoot) {
   const runDir = runDefinition.runDir;
   const outputDir = join(runDir, 'outputs');
   const requestPath = join(runDir, 'execution_request.json');
@@ -140,11 +147,11 @@ async function buildExecutionRequest(runDefinition, benchmarkRoot) {
   const fixtures = await materializeFixtureInputs(
     runDir,
     runDefinition.caseDefinition.fixture_refs || [],
-    benchmarkRoot,
+    benchmarkDefinitionRoot,
   );
   const { canonicalSkillRoot, skillSnapshotPath } = validateSkillPathContract({
-    benchmarkRoot,
-    canonicalSkillRoot: resolveCanonicalSkillRoot(benchmarkRoot),
+    benchmarkDefinitionRoot,
+    canonicalSkillRoot: resolveCanonicalSkillRoot(benchmarkDefinitionRoot),
     skillSnapshotPath: runDefinition.configuration.snapshotRoot,
   });
 
@@ -180,7 +187,7 @@ async function buildExecutionRequest(runDefinition, benchmarkRoot) {
     },
     skill_snapshot_path: skillSnapshotPath,
     forbidden_skill_roots: buildForbiddenSkillRoots({
-      benchmarkRoot,
+      benchmarkDefinitionRoot,
       runDir,
       skillSnapshotPath,
     }),
@@ -261,12 +268,12 @@ async function resetRunArtifacts(runDefinition) {
 
 async function runHarnessPair({
   runDefinition,
-  benchmarkRoot,
+  benchmarkDefinitionRoot,
   executorScript,
   graderScript,
   transcriptLabel = null,
 }) {
-  const { request, requestPath, transcriptPath } = await buildExecutionRequest(runDefinition, benchmarkRoot);
+  const { request, requestPath, transcriptPath } = await buildExecutionRequest(runDefinition, benchmarkDefinitionRoot);
   if (transcriptLabel) {
     await writeFile(
       transcriptPath,
@@ -290,11 +297,13 @@ async function runHarnessPair({
 }
 
 export async function executeGradingHarness(runDefinition, options = {}) {
-  const { gradingHarness = null, benchmarkRoot = '' } = options;
+  const { gradingHarness = null, benchmarkDefinitionRoot = DEFAULT_BENCHMARK_DEFINITION_ROOT } = options;
   if (typeof gradingHarness === 'function') {
     await gradingHarness(runDefinition);
     return;
   }
+
+  await assertNoLegacyRuntimeState();
 
   const executorScript = process.env.QA_PLAN_BENCHMARK_EXECUTOR_SCRIPT || DEFAULT_EXECUTOR_SCRIPT;
   const graderScript = process.env.QA_PLAN_BENCHMARK_GRADER_SCRIPT || DEFAULT_GRADER_SCRIPT;
@@ -302,7 +311,7 @@ export async function executeGradingHarness(runDefinition, options = {}) {
   await resetRunArtifacts(runDefinition);
   await runHarnessPair({
     runDefinition,
-    benchmarkRoot,
+    benchmarkDefinitionRoot,
     executorScript,
     graderScript,
     transcriptLabel: 'primary',
