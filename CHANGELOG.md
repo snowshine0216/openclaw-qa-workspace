@@ -4,6 +4,19 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.2.0] - 2026-03-26
+
+### Added
+
+- Added a descendant-activity pruning regression test for `qa-plan-evolution` so active runs are retained even when only nested artifacts change.
+- Added split `ppt-agent` enrichment-plan draft docs for the reviewed Part 1 / Part 2 design.
+
+### Changed
+
+- Changed `qa-plan-evolution` run pruning to rank runs by the newest descendant artifact activity instead of top-level run directory mtime only.
+- Changed `defects-analysis` manifest execution to fall back from `openclaw` to `codex` when local spawn runtime support is unavailable, with end-to-end scoped-release regression coverage.
+- Expanded the skill-artifact-root extraction design and TODO backlog with the newly identified follow-up work.
+
 ## [0.1.1.0] - 2026-03-26
 
 ### Added
