@@ -19,7 +19,7 @@ test('expands release scope into feature keys and default actions', async () => 
     encoding: 'utf8',
     env: {
       ...process.env,
-      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810"]',
+      TEST_FEATURE_KEYS_JSON: '["TST-5809","TST-5810"]',
     },
   });
 
@@ -28,7 +28,7 @@ test('expands release scope into feature keys and default actions', async () => 
   const matrix = JSON.parse(
     await readFile(join(runDir, 'context', 'feature_state_matrix.json'), 'utf8'),
   );
-  assert.deepEqual(keys.feature_keys, ['BCIN-5809', 'BCIN-5810']);
+  assert.deepEqual(keys.feature_keys, ['TST-5809', 'TST-5810']);
   assert.equal(matrix.features.length, 2);
   assert.deepEqual(
     matrix.features.map((entry) => entry.default_action),
@@ -46,6 +46,7 @@ test('maps release feature states from canonical child runs', async () => {
   await mkdir(join(skillRunsDir, 'BCIN-5809', 'context'), { recursive: true });
   await mkdir(join(skillRunsDir, 'BCIN-5810', 'context'), { recursive: true });
   await mkdir(join(skillRunsDir, 'BCIN-5811', 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5812', 'context'), { recursive: true });
   await writeFile(
     join(runDir, 'context', 'route_decision.json'),
     JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
@@ -53,13 +54,17 @@ test('maps release feature states from canonical child runs', async () => {
   await writeFile(join(skillRunsDir, 'BCIN-5809', 'BCIN-5809_REPORT_FINAL.md'), 'final\n');
   await writeFile(join(skillRunsDir, 'BCIN-5810', 'BCIN-5810_REPORT_DRAFT.md'), 'draft\n');
   await writeFile(join(skillRunsDir, 'BCIN-5811', 'context', 'jira_raw.json'), '{"issues":[]}\n');
+  await writeFile(
+    join(skillRunsDir, 'BCIN-5812', 'context', 'feature_summary.json'),
+    '{"feature_key":"BCIN-5812"}\n',
+  );
 
   const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
     encoding: 'utf8',
     env: {
       ...process.env,
       REPO_ROOT: root,
-      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810","BCIN-5811","BCIN-5812"]',
+      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810","BCIN-5811","BCIN-5812","BCIN-5813"]',
     },
   });
 
@@ -74,6 +79,47 @@ test('maps release feature states from canonical child runs', async () => {
       ['BCIN-5810', 'DRAFT_EXISTS', 'resume'],
       ['BCIN-5811', 'CONTEXT_ONLY', 'generate_from_cache'],
       ['BCIN-5812', 'FRESH', 'proceed'],
+      ['BCIN-5813', 'FRESH', 'proceed'],
+    ],
+  );
+
+  await rm(root, { recursive: true, force: true });
+});
+
+test('applies explicit release refresh mode to every child selected action', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-refresh-root-'));
+  const runDir = join(root, 'workspace-reporter', 'skills', 'defects-analysis', 'runs', 'release_26.03');
+  const skillRunsDir = join(root, 'workspace-reporter', 'skills', 'defects-analysis', 'runs');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5809', 'context'), { recursive: true });
+  await mkdir(join(skillRunsDir, 'BCIN-5810', 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
+  );
+  await writeFile(join(runDir, 'task.json'), '{"selected_mode":"smart_refresh"}\n');
+  await writeFile(join(skillRunsDir, 'BCIN-5809', 'BCIN-5809_REPORT_FINAL.md'), 'final\n');
+  await writeFile(join(skillRunsDir, 'BCIN-5810', 'BCIN-5810_REPORT_DRAFT.md'), 'draft\n');
+
+  const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      REPO_ROOT: root,
+      TEST_FEATURE_KEYS_JSON: '["BCIN-5809","BCIN-5810","BCIN-5811"]',
+    },
+  });
+
+  assert.equal(result.status, 0);
+  const matrix = JSON.parse(
+    await readFile(join(runDir, 'context', 'feature_state_matrix.json'), 'utf8'),
+  );
+  assert.deepEqual(
+    matrix.features.map((entry) => [entry.feature_key, entry.default_action, entry.selected_action]),
+    [
+      ['BCIN-5809', 'use_existing', 'smart_refresh'],
+      ['BCIN-5810', 'resume', 'smart_refresh'],
+      ['BCIN-5811', 'proceed', 'smart_refresh'],
     ],
   );
 

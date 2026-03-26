@@ -163,7 +163,7 @@ Unless the caller overrides the mode explicitly:
 
 - `FINAL_EXISTS` -> `use_existing`
 - `DRAFT_EXISTS` -> `resume`
-- `CONTEXT_ONLY` -> `generate_from_cache`
+- `CONTEXT_ONLY` -> `generate_from_cache` only when `context/jira_raw.json` exists
 - `FRESH` -> `proceed`
 
 ## Boundary Exclusions

@@ -59,6 +59,21 @@ npx mcporter config add playwright-mcp --command "npx -y @playwright/mcp@latest"
 mcporter list
 ```
 
+## Release Metadata
+
+The repository now uses one canonical root release-metadata set:
+
+- `VERSION` — the repository release version in `MAJOR.MINOR.PATCH.MICRO` format
+- `CHANGELOG.md` — the user-visible release history keyed by version and date
+- `TODOS.md` — the canonical checked-in backlog for repo-wide work
+
+Rules:
+
+- Keep these files in the repository root.
+- Do not maintain parallel active copies under `docs/`.
+- `docs/` may reference release metadata, but root owns it.
+- `/ship`, `/review`, `/document-release`, `/retro`, and related workflows should read and update the root files.
+
 ## Skills Structure
 
 Skills are organized by scope. See `docs/SKILL_FOLDER_REFACTOR_PLAN.md` for the full mapping.

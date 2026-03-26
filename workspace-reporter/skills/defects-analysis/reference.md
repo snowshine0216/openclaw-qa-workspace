@@ -36,7 +36,7 @@ When both patterns could match, explicit input flags (`feature_key`, `release_ve
 |---|---|---|
 | `FINAL_EXISTS` | `use_existing` | block only for explicit destructive refresh on fresh data |
 | `DRAFT_EXISTS` | `resume` | block only if draft metadata is corrupted |
-| `CONTEXT_ONLY` | `generate_from_cache` | block only if required cached files are missing |
+| `CONTEXT_ONLY` | `generate_from_cache` | only when `context/jira_raw.json` exists; otherwise treat the run as `FRESH` |
 | `FRESH` | `proceed` | none |
 
 ## selected_mode

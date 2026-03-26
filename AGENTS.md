@@ -11,6 +11,15 @@ This repository is configured for Codex multi-agent execution with reusable skil
 ## Mandatory Skills
 - use `code-quality-orchestrator` for all code quality work.
 
+## Release Metadata Convention
+
+- The canonical checked-in release metadata lives in the repository root:
+  - `VERSION`
+  - `CHANGELOG.md`
+  - `TODOS.md`
+- Do not create or maintain competing active copies of these files under `docs/` or workspace subfolders.
+- Documentation under `docs/` may link to the root files, but the root files are the source of truth for shipping and review workflows.
+
 ## Specialist Agents
 
 Use these specialists from `.codex/config.toml`:

@@ -7,6 +7,7 @@ CONTEXT_DIR="$RUN_DIR/context"
 TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUNS_ROOT="$(cd "$RUN_DIR/.." && pwd)"
+ORCHESTRATE_SCRIPT="${ORCHESTRATE_SCRIPT:-$SCRIPT_DIR/orchestrate.sh}"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase3.sh <input> <run-dir>" >&2; exit 1; }
 mkdir -p "$CONTEXT_DIR/jira_issues"
@@ -23,25 +24,54 @@ if [[ "$route_kind" == "reporter_scope_release" ]]; then
     [[ -n "$feature" ]] || continue
     feature_key="$(printf '%s\n' "$feature" | jq -r '.feature_key')"
     selected_action="$(printf '%s\n' "$feature" | jq -r '.selected_action // .default_action')"
-    child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$SCRIPT_DIR/orchestrate.sh" "$feature_key" "$selected_action" 2>&1)" || {
-      echo "$child_output"
-      exit 1
-    }
-    echo "$child_output"
-
+    effective_action="$selected_action"
     canonical_run_dir="$RUNS_ROOT/$feature_key"
     report_final_path="$canonical_run_dir/${feature_key}_REPORT_FINAL.md"
     feature_summary_path="$canonical_run_dir/context/feature_summary.json"
+    summary_plan_json='{}'
+    summary_status=''
 
-    [[ -f "$report_final_path" ]] || { echo "Missing final report for $feature_key" >&2; exit 1; }
-    if [[ ! -f "$feature_summary_path" ]]; then
+    if [[ -f "$report_final_path" ]]; then
+      summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
+      summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    fi
+
+    if [[ ! -f "$report_final_path" || "$summary_status" == "refresh" || "$summary_status" == "error" ]]; then
+      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
+        echo "$child_output"
+        exit 1
+      }
+      echo "$child_output"
+      [[ -f "$report_final_path" ]] || { echo "Missing final report for $feature_key" >&2; exit 1; }
+      summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
+      summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    else
+      effective_action='use_existing'
+    fi
+
+    if [[ "$summary_status" == "refresh" ]]; then
+      effective_action="$(printf '%s\n' "$summary_plan_json" | jq -r '.refresh_mode')"
+      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
+        echo "$child_output"
+        exit 1
+      }
+      echo "$child_output"
+      [[ -f "$report_final_path" ]] || { echo "Missing final report for $feature_key after refresh" >&2; exit 1; }
+      summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
+      summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    fi
+
+    if [[ "$summary_status" == "synthesize" ]]; then
       node "$SCRIPT_DIR/lib/build_feature_summary.mjs" "$canonical_run_dir" "$feature_key" >/dev/null
+    elif [[ "$summary_status" == "error" ]]; then
+      echo "Unable to produce feature summary for $feature_key: $(printf '%s\n' "$summary_plan_json" | jq -r '.reason')" >&2
+      exit 1
     fi
     [[ -f "$feature_summary_path" ]] || { echo "Missing feature summary for $feature_key" >&2; exit 1; }
 
     feature_runs="$(printf '%s\n' "$feature_runs" | jq \
       --arg feature_key "$feature_key" \
-      --arg selected_action "$selected_action" \
+      --arg selected_action "$effective_action" \
       --arg canonical_run_dir "$canonical_run_dir" \
       --arg report_final_path "$report_final_path" \
       --arg feature_summary_path "$feature_summary_path" \
