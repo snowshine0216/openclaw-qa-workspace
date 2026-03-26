@@ -7,6 +7,8 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
+import { getQaPlanBenchmarkRuntimeRoot } from '../lib/benchmarkPaths.mjs';
+
 const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)));
 const PHASE6 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase6.sh');
 const FIXTURE = '.agents/skills/qa-plan-evolution/scripts/test/fixtures/minimal-target-skill';
@@ -504,7 +506,7 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-run-'));
   const runKey = 'phase6-qa-plan-finalize';
   const targetRoot = join(repoRoot, 'workspace-planner', 'skills', 'qa-plan-orchestrator');
-  const benchmarkRoot = join(targetRoot, 'benchmarks', 'qa-plan-v2');
+  const benchmarkRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
 
   try {
     await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });

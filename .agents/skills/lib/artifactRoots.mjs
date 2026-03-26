@@ -17,6 +17,11 @@ function assertNonEmpty(value, paramName) {
   }
 }
 
+function resolveRepoRootOverride(repoRootOverride) {
+  const override = String(repoRootOverride || '').trim();
+  return override ? resolve(override) : getRepoRoot();
+}
+
 /**
  * Returns the absolute path to the repository root.
  *
@@ -70,12 +75,12 @@ function getRepoRoot() {
  * getWorkspaceArtifactRoot();
  * // '/tmp/custom-artifacts'
  */
-function getWorkspaceArtifactRoot() {
+function getWorkspaceArtifactRoot(repoRootOverride = null) {
   const override = String(process.env.ARTIFACT_ROOT || '').trim();
   if (override) {
     return resolve(override);
   }
-  return join(getRepoRoot(), 'workspace-artifacts');
+  return join(resolveRepoRootOverride(repoRootOverride), 'workspace-artifacts');
 }
 
 /**
@@ -127,10 +132,10 @@ function resolveCanonicalSkillRoot(skillRoot) {
  * getSkillArtifactRoot('workspace-planner', 'qa-plan-orchestrator');
  * // '<artifactRoot>/skills/workspace-planner/qa-plan-orchestrator'
  */
-function getSkillArtifactRoot(workspaceName, skillName) {
+function getSkillArtifactRoot(workspaceName, skillName, repoRootOverride = null) {
   assertNonEmpty(workspaceName, 'workspaceName');
   assertNonEmpty(skillName, 'skillName');
-  return join(getWorkspaceArtifactRoot(), 'skills', workspaceName, skillName);
+  return join(getWorkspaceArtifactRoot(repoRootOverride), 'skills', workspaceName, skillName);
 }
 
 /**
@@ -148,11 +153,11 @@ function getSkillArtifactRoot(workspaceName, skillName) {
  * getRunRoot('shared', 'qa-plan-evolution', 'run-abc123');
  * // '<artifactRoot>/skills/shared/qa-plan-evolution/runs/run-abc123'
  */
-function getRunRoot(workspaceName, skillName, runKey) {
+function getRunRoot(workspaceName, skillName, runKey, repoRootOverride = null) {
   assertNonEmpty(workspaceName, 'workspaceName');
   assertNonEmpty(skillName, 'skillName');
   assertNonEmpty(runKey, 'runKey');
-  return join(getSkillArtifactRoot(workspaceName, skillName), 'runs', runKey);
+  return join(getSkillArtifactRoot(workspaceName, skillName, repoRootOverride), 'runs', runKey);
 }
 
 /**
@@ -170,11 +175,20 @@ function getRunRoot(workspaceName, skillName, runKey) {
  * getBenchmarkRuntimeRoot('workspace-planner', 'qa-plan-orchestrator', 'qa-plan-v2');
  * // '<artifactRoot>/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2'
  */
-function getBenchmarkRuntimeRoot(workspaceName, skillName, benchmarkFamily) {
+function getBenchmarkRuntimeRoot(
+  workspaceName,
+  skillName,
+  benchmarkFamily,
+  repoRootOverride = null,
+) {
   assertNonEmpty(workspaceName, 'workspaceName');
   assertNonEmpty(skillName, 'skillName');
   assertNonEmpty(benchmarkFamily, 'benchmarkFamily');
-  return join(getSkillArtifactRoot(workspaceName, skillName), 'benchmarks', benchmarkFamily);
+  return join(
+    getSkillArtifactRoot(workspaceName, skillName, repoRootOverride),
+    'benchmarks',
+    benchmarkFamily,
+  );
 }
 
 export {

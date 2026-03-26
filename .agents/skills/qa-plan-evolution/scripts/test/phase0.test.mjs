@@ -11,8 +11,20 @@ const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)
 const PHASE0 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase0.sh');
 const FIXTURE = '.agents/skills/qa-plan-evolution/scripts/test/fixtures/minimal-target-skill';
 
+function getArtifactRunRoot(artifactRoot, runKey) {
+  return join(
+    artifactRoot,
+    'skills',
+    'shared',
+    'qa-plan-evolution',
+    'runs',
+    runKey,
+  );
+}
+
 test('phase0 rejects max_iterations above hard cap', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-cap-'));
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-cap-artifacts-'));
 
   try {
     const result = spawnSync('bash', [
@@ -25,26 +37,22 @@ test('phase0 rejects max_iterations above hard cap', async () => {
       '--max-iterations', '11',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 1);
     assert.match(result.stderr, /max_iterations/i);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 initializes champion snapshot for a fresh run', async () => {
   const runKey = `phase0-fresh-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-fresh-'));
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
-    'skills',
-    'qa-plan-evolution',
-    'runs',
-    runKey,
-  );
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-fresh-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   try {
     const result = spawnSync('bash', [
@@ -57,6 +65,7 @@ test('phase0 initializes champion snapshot for a fresh run', async () => {
       '--benchmark-profile', 'generic-skill-regression',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0);
@@ -65,21 +74,15 @@ test('phase0 initializes champion snapshot for a fresh run', async () => {
     assert.equal(task.champion_snapshot_path, 'archive/champion-initial');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 writes canonical root metadata and aliases an override run root to the canonical run', async () => {
   const runKey = 'phase0-canonical-root';
   const overrideRunRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-canonical-'));
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
-    'skills',
-    'qa-plan-evolution',
-    'runs',
-    runKey,
-  );
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-canonical-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   try {
     const result = spawnSync('bash', [
@@ -92,6 +95,7 @@ test('phase0 writes canonical root metadata and aliases an override run root to 
       '--benchmark-profile', 'generic-skill-regression',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0, result.stderr);
@@ -106,12 +110,13 @@ test('phase0 writes canonical root metadata and aliases an override run root to 
     assert.equal(existsSync(join(overrideRunRoot, 'task.json')), true);
   } finally {
     await rm(overrideRunRoot, { recursive: true, force: true });
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 full_regenerate clears stale run artifacts before reinitializing', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-regenerate-'));
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-regenerate-artifacts-'));
 
   try {
     await mkdir(join(runRoot, 'context'), { recursive: true });
@@ -132,6 +137,7 @@ test('phase0 full_regenerate clears stale run artifacts before reinitializing', 
       '--choice', 'full_regenerate',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0, result.stderr);
@@ -158,11 +164,13 @@ test('phase0 full_regenerate clears stale run artifacts before reinitializing', 
     );
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 resolves knowledge pack from feature_family when key is omitted for qa-plan profile', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-family-'));
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-family-artifacts-'));
   try {
     const result = spawnSync('bash', [
       PHASE0,
@@ -175,6 +183,7 @@ test('phase0 resolves knowledge pack from feature_family when key is omitted for
       '--feature-family', 'native-embedding',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
     assert.equal(result.status, 0, result.stderr);
     const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
@@ -183,11 +192,13 @@ test('phase0 resolves knowledge pack from feature_family when key is omitted for
     assert.equal(task.requested_knowledge_pack_key, null);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 falls back to general knowledge pack when key and inference inputs are omitted', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-general-'));
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-general-artifacts-'));
   try {
     const result = spawnSync('bash', [
       PHASE0,
@@ -199,6 +210,7 @@ test('phase0 falls back to general knowledge pack when key and inference inputs 
       '--benchmark-profile', 'qa-plan-defect-recall',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
     assert.equal(result.status, 0, result.stderr);
     const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
@@ -206,11 +218,13 @@ test('phase0 falls back to general knowledge pack when key and inference inputs 
     assert.equal(task.knowledge_pack_resolution_source, 'default_general');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('phase0 infers knowledge pack from qa-plan-v2 cases when feature_id is provided', async () => {
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-cases-'));
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-phase0-pack-cases-artifacts-'));
   try {
     const result = spawnSync('bash', [
       PHASE0,
@@ -223,6 +237,7 @@ test('phase0 infers knowledge pack from qa-plan-v2 cases when feature_id is prov
       '--feature-id', 'BCIN-7289',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
     assert.equal(result.status, 0, result.stderr);
     const task = JSON.parse(await readFile(join(runRoot, 'task.json'), 'utf8'));
@@ -230,6 +245,7 @@ test('phase0 infers knowledge pack from qa-plan-v2 cases when feature_id is prov
     assert.equal(task.knowledge_pack_resolution_source, 'cases_lookup');
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 

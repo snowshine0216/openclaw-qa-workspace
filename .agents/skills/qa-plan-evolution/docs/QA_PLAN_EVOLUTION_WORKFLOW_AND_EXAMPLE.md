@@ -256,9 +256,9 @@ Possible target files:
 
 Phase 4 creates:
 
-- `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/candidate_snapshot/`
-- `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/benchmark.json`
-- `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/scorecard.json`
+- `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/candidate_snapshot/`
+- `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/benchmark.json`
+- `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/iteration-1/scorecard.json`
 
 The comparison is:
 

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getProfileById } from './loadProfile.mjs';
 import { withRetry } from './retry.mjs';
+import { getQaPlanBenchmarkRoots } from './benchmarkPaths.mjs';
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
@@ -369,10 +370,10 @@ export function runContractEvalValidation(targetRoot) {
 }
 
 async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options, result) {
-  const benchmarkRoot = join(repoRoot, targetSkillPath, 'benchmarks', 'qa-plan-v2');
-  const executedRunnerPath = join(benchmarkRoot, 'scripts', 'run_iteration_compare.mjs');
+  const { definitionRoot, runtimeRoot } = getQaPlanBenchmarkRoots(repoRoot, targetSkillPath);
+  const executedRunnerPath = join(definitionRoot, 'scripts', 'run_iteration_compare.mjs');
   const syntheticPublisherPath = join(
-    benchmarkRoot,
+    definitionRoot,
     'scripts',
     'lib',
     'publishIterationComparison.mjs',
@@ -386,7 +387,7 @@ async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options
   // Use benchmark-runner-llm.mjs (no fallback to local) — aligns with npm run benchmark:v2:run
   process.env.QA_PLAN_BENCHMARK_DISABLE_LOCAL_FALLBACK = '1';
   const compareArgs = {
-    benchmarkRoot,
+    benchmarkRoot: runtimeRoot,
     skillRoot: abs,
     iteration: options.iteration ?? 1,
     defectAnalysisRunKey: options.defectAnalysisRunKey ?? null,

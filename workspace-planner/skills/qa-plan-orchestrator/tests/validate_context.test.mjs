@@ -10,6 +10,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const SCRIPT_DIR = join(__dirname, '..', 'scripts', 'lib');
 const VALIDATE_CONTEXT_SRC = join(SCRIPT_DIR, 'validate_context.sh');
 const VALIDATE_STRUCTURE_SRC = join(SCRIPT_DIR, 'validate_testcase_structure.sh');
+const ARTIFACT_ROOTS_SRC = join(__dirname, '..', '..', '..', '..', '.agents', 'skills', 'lib', 'artifactRoots.mjs');
 const REPO_ROOT = join(__dirname, '..', '..', '..', '..');
 
 const VALID_XMINDMARK = `Feature QA Plan
@@ -44,19 +45,25 @@ async function runScript(scriptPath, args, cwd, env = {}) {
 async function setupScripts() {
   const tmp = await mkdtemp(join(tmpdir(), 'val_ctx_'));
   const scriptsLibDir = join(tmp, 'scripts', 'lib');
+  const artifactLibDir = join(tmp, '.agents', 'skills', 'lib');
+  const validatorPath = join(tmp, 'validate_xmindmark.mjs');
   await mkdir(scriptsLibDir, { recursive: true });
+  await mkdir(artifactLibDir, { recursive: true });
   await cp(VALIDATE_CONTEXT_SRC, join(scriptsLibDir, 'validate_context.sh'));
   await cp(VALIDATE_STRUCTURE_SRC, join(scriptsLibDir, 'validate_testcase_structure.sh'));
-  return { tmp, scriptsLibDir };
+  await cp(ARTIFACT_ROOTS_SRC, join(artifactLibDir, 'artifactRoots.mjs'));
+  await writeFile(validatorPath, 'process.exit(0);\n', 'utf8');
+  return { tmp, scriptsLibDir, validatorPath };
 }
 
 test('default mode reports CONTEXT_OK when all artifacts exist', async () => {
   const { tmp, scriptsLibDir } = await setupScripts();
-  const ctxDir = join(tmp, 'runs', 'BCIN-6709', 'context');
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
+  const ctxDir = join(runDir, 'context');
   await mkdir(ctxDir, { recursive: true });
   await writeFile(join(ctxDir, 'qa_plan_atlassian_BCIN-6709.md'), 'ok');
 
-  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'], tmp);
+  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'], tmp, { FQPO_RUN_DIR: runDir });
   assert.equal(code, 0);
   assert.match(stdout, /CONTEXT_OK/);
   await rm(tmp, { recursive: true, force: true });
@@ -64,7 +71,8 @@ test('default mode reports CONTEXT_OK when all artifacts exist', async () => {
 
 test('default mode reports missing artifacts clearly', async () => {
   const { tmp, scriptsLibDir } = await setupScripts();
-  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'], tmp);
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
+  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'], tmp, { FQPO_RUN_DIR: runDir });
   assert.notEqual(code, 0);
   assert.match(stdout, /CONTEXT_MISSING/);
   assert.match(stdout, /qa_plan_atlassian_BCIN-6709/);
@@ -73,12 +81,13 @@ test('default mode reports missing artifacts clearly', async () => {
 
 test('resolve mode prefers v2 when present for legacy callers', async () => {
   const { tmp, scriptsLibDir } = await setupScripts();
-  const ctxDir = join(tmp, 'runs', 'BCIN-6709', 'context');
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
+  const ctxDir = join(runDir, 'context');
   await mkdir(ctxDir, { recursive: true });
   await writeFile(join(ctxDir, 'sub_test_cases_atlassian_BCIN-6709.md'), 'base');
   await writeFile(join(ctxDir, 'sub_test_cases_atlassian_BCIN-6709_v2.md'), 'v2');
 
-  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', '--resolve-sub-testcases', 'atlassian'], tmp);
+  const { code, stdout } = await runScript(join(scriptsLibDir, 'validate_context.sh'), ['BCIN-6709', '--resolve-sub-testcases', 'atlassian'], tmp, { FQPO_RUN_DIR: runDir });
   assert.equal(code, 0);
   assert.match(stdout, /_v2\.md/);
   assert.match(stdout, /RESOLVED_OK/);
@@ -86,7 +95,7 @@ test('resolve mode prefers v2 when present for legacy callers', async () => {
 });
 
 test('validate structure mode delegates to markxmind validator', async () => {
-  const { tmp, scriptsLibDir } = await setupScripts();
+  const { tmp, scriptsLibDir, validatorPath } = await setupScripts();
   const artifact = join(tmp, 'draft.md');
   await writeFile(artifact, VALID_XMINDMARK);
 
@@ -94,10 +103,36 @@ test('validate structure mode delegates to markxmind validator', async () => {
     join(scriptsLibDir, 'validate_context.sh'),
     ['BCIN-6709', '--validate-testcase-structure', artifact],
     tmp,
-    { REPO_ROOT }
+    { REPO_ROOT, MARKXMIND_VALIDATOR: validatorPath }
   );
   assert.equal(code, 0);
   assert.match(stdout, /STRUCTURE_OK/);
+  assert.match(stdout, /CONTEXT_OK/);
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('default artifact-root mode resolves the canonical run directory when FQPO_RUN_DIR is unset', async () => {
+  const { tmp, scriptsLibDir } = await setupScripts();
+  const ctxDir = join(
+    tmp,
+    'workspace-artifacts',
+    'skills',
+    'workspace-planner',
+    'qa-plan-orchestrator',
+    'runs',
+    'BCIN-6709',
+    'context',
+  );
+  await mkdir(ctxDir, { recursive: true });
+  await writeFile(join(ctxDir, 'qa_plan_atlassian_BCIN-6709.md'), 'ok');
+
+  const { code, stdout } = await runScript(
+    join(scriptsLibDir, 'validate_context.sh'),
+    ['BCIN-6709', 'qa_plan_atlassian_BCIN-6709'],
+    tmp,
+    { REPO_ROOT: tmp },
+  );
+  assert.equal(code, 0);
   assert.match(stdout, /CONTEXT_OK/);
   await rm(tmp, { recursive: true, force: true });
 });

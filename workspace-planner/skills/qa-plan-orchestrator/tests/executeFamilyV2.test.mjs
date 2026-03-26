@@ -187,6 +187,7 @@ await writeFile(join(request.run.run_dir, 'grading.json'), JSON.stringify({
 
     const result = await executeFamilyRuns({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       iteration: 0,
       familyName: 'report-editor',
       executorScript: runnerScript,
@@ -249,6 +250,7 @@ await writeFile(join(request.run.run_dir, 'grading.json'), JSON.stringify({
 
     const result = await executeFamilyRuns({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       iteration: 0,
       familyName: 'report-editor',
       executorScript: runnerScript,

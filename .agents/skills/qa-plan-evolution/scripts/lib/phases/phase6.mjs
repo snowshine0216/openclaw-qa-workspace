@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node
 import { dirname, join } from 'node:path';
 import { copyChampionSnapshot, copySnapshotDir, diffSnapshotDirs } from '../snapshot.mjs';
 import { mutationSignature } from '../mutationPlanner.mjs';
+import { getQaPlanBenchmarkRuntimeRoot } from '../benchmarkPaths.mjs';
 import {
   parsePhaseArgs,
   resolveRunContext,
@@ -87,7 +88,7 @@ function promoteScoreboardChampion(runRoot, runKey, scores) {
 }
 
 function qaPlanBenchmarkRoot(repoRoot, task) {
-  return join(repoRoot, task.target_skill_path, 'benchmarks', 'qa-plan-v2');
+  return getQaPlanBenchmarkRuntimeRoot(repoRoot);
 }
 
 function currentQaPlanChampionSnapshot(repoRoot, task) {

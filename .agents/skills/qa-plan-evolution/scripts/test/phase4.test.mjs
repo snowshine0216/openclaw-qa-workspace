@@ -6,6 +6,7 @@ import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
+import { getQaPlanBenchmarkRuntimeRoot } from '../lib/benchmarkPaths.mjs';
 import { runTargetValidation } from '../lib/runTargetValidation.mjs';
 
 const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)));
@@ -39,10 +40,12 @@ async function createQaPlanSkill(repoRoot, name, {
   runnerScript = null,
 }) {
   const targetRoot = join(repoRoot, name);
+  const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
   await mkdir(join(targetRoot, 'evals'), { recursive: true });
   await mkdir(join(targetRoot, 'references'), { recursive: true });
   await mkdir(join(targetRoot, 'scripts', 'lib'), { recursive: true });
   await mkdir(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'lib'), { recursive: true });
+  await mkdir(benchmarkRuntimeRoot, { recursive: true });
 
   await writeFile(join(targetRoot, 'SKILL.md'), buildSkillDoc(name), 'utf8');
   await writeFile(join(targetRoot, 'reference.md'), 'REPORT_STATE\n', 'utf8');
@@ -76,7 +79,7 @@ async function createQaPlanSkill(repoRoot, name, {
   await writeJson(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'cases.json'), {
     cases: [],
   });
-  await writeJson(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'history.json'), {
+  await writeJson(join(benchmarkRuntimeRoot, 'history.json'), {
     current_champion_iteration: 0,
     iterations: [],
   });
@@ -115,6 +118,7 @@ test('phase4 fails fast when smoke regresses and skips contract/replay validatio
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
@@ -124,7 +128,7 @@ test('phase4 fails fast when smoke regresses and skips contract/replay validatio
     assert.equal(result.smoke_ok, false);
     assert.deepEqual(result.execution_order, ['smoke']);
     await assert.rejects(() => readFile(join(targetRoot, 'eval-ran.txt'), 'utf8'));
-    await assert.rejects(() => readFile(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'publisher-ran.txt'), 'utf8'));
+    await assert.rejects(() => readFile(join(benchmarkRuntimeRoot, 'publisher-ran.txt'), 'utf8'));
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
@@ -203,6 +207,7 @@ test('phase4 does not bypass snapshot smoke failures when unrelated regressions 
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const targetRoot = join(repoRoot, targetSkillPath);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
@@ -214,7 +219,7 @@ test('phase4 does not bypass snapshot smoke failures when unrelated regressions 
     assert.deepEqual(result.execution_order, ['smoke']);
     assert.match(result.smoke_log, /UNRELATED_FAILURE/);
     await assert.rejects(() => readFile(join(targetRoot, 'eval-ran.txt'), 'utf8'));
-    await assert.rejects(() => readFile(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'publisher-ran.txt'), 'utf8'));
+    await assert.rejects(() => readFile(join(benchmarkRuntimeRoot, 'publisher-ran.txt'), 'utf8'));
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
@@ -240,6 +245,7 @@ test('phase4 stops after blocking contract eval failure and does not publish rep
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
@@ -250,7 +256,7 @@ test('phase4 stops after blocking contract eval failure and does not publish rep
     assert.equal(result.eval_ok, false);
     assert.deepEqual(result.execution_order, ['smoke', 'contract_evals']);
     assert.equal(await readFile(join(targetRoot, 'eval-ran.txt'), 'utf8'), 'eval-ran');
-    await assert.rejects(() => readFile(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'publisher-ran.txt'), 'utf8'));
+    await assert.rejects(() => readFile(join(benchmarkRuntimeRoot, 'publisher-ran.txt'), 'utf8'));
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
@@ -293,6 +299,7 @@ test('phase4 runs replay publication after smoke and contract evals succeed', as
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
@@ -302,7 +309,7 @@ test('phase4 runs replay publication after smoke and contract evals succeed', as
     assert.equal(result.smoke_ok, true);
     assert.equal(result.eval_ok, true);
     assert.deepEqual(result.execution_order, ['smoke', 'contract_evals', 'defect_replay_evals']);
-    assert.equal(await readFile(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'publisher-ran.txt'), 'utf8'), 'publisher-ran');
+    assert.equal(await readFile(join(benchmarkRuntimeRoot, 'publisher-ran.txt'), 'utf8'), 'publisher-ran');
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
@@ -355,6 +362,7 @@ test('phase4 passes defect analysis run key to the executed benchmark runner', a
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
@@ -362,7 +370,7 @@ test('phase4 passes defect analysis run key to the executed benchmark runner', a
     });
     const targetRoot = join(repoRoot, targetSkillPath);
     const runnerArgs = JSON.parse(await readFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'iteration-1', 'runner-args.json'),
+      join(benchmarkRuntimeRoot, 'iteration-1', 'runner-args.json'),
       'utf8',
     ));
 
@@ -461,14 +469,14 @@ test('phase4 falls back to synthetic comparison when runner reports missing grad
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
       defectAnalysisRunKey: 'BCIN-7289',
     });
-    const targetRoot = join(repoRoot, targetSkillPath);
     const fallbackMarker = await readFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'iteration-1', 'fallback-used.txt'),
+      join(benchmarkRuntimeRoot, 'iteration-1', 'fallback-used.txt'),
       'utf8',
     );
 
@@ -478,7 +486,7 @@ test('phase4 falls back to synthetic comparison when runner reports missing grad
     assert.equal(result.scorecard.decision.result, 'blocked_synthetic');
     assert.equal(fallbackMarker, 'synthetic');
     await assert.rejects(() => readFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'iteration-1', 'eval-1', 'new_skill', 'run-1', 'grading.json'),
+      join(benchmarkRuntimeRoot, 'iteration-1', 'eval-1', 'new_skill', 'run-1', 'grading.json'),
       'utf8',
     ));
   } finally {
@@ -529,14 +537,14 @@ test('phase4 falls back to synthetic comparison when executed runner errors for 
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-defect-recall',
       iteration: 1,
       defectAnalysisRunKey: 'BCIN-7289',
     });
-    const targetRoot = join(repoRoot, targetSkillPath);
     const fallbackMarker = await readFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'iteration-1', 'fallback-used.txt'),
+      join(benchmarkRuntimeRoot, 'iteration-1', 'fallback-used.txt'),
       'utf8',
     );
 
@@ -607,14 +615,14 @@ test('phase4 respects profile-specific qa-plan evidence mode gates', async () =>
   });
 
   try {
+    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
     const result = await runTargetValidation(repoRoot, targetSkillPath, {
       profileId: 'qa-plan-knowledge-pack-coverage',
       iteration: 1,
       defectAnalysisRunKey: 'BCIN-7289',
     });
-    const targetRoot = join(repoRoot, targetSkillPath);
     const runnerArgs = JSON.parse(await readFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'iteration-1', 'runner-args.json'),
+      join(benchmarkRuntimeRoot, 'iteration-1', 'runner-args.json'),
       'utf8',
     ));
 

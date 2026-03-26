@@ -45,6 +45,18 @@ test('getWorkspaceArtifactRoot respects ARTIFACT_ROOT override', () => {
   }
 });
 
+test('getWorkspaceArtifactRoot accepts an explicit repo root override', () => {
+  const originalArtifactRoot = process.env.ARTIFACT_ROOT;
+  delete process.env.ARTIFACT_ROOT;
+
+  const artifactRoot = getWorkspaceArtifactRoot('/tmp/custom-repo-root');
+  assert.equal(artifactRoot, '/tmp/custom-repo-root/workspace-artifacts');
+
+  if (originalArtifactRoot) {
+    process.env.ARTIFACT_ROOT = originalArtifactRoot;
+  }
+});
+
 test('getSkillArtifactRoot maps shared skills to workspace-artifacts/skills/shared/<skill-name>', () => {
   const originalArtifactRoot = process.env.ARTIFACT_ROOT;
   process.env.ARTIFACT_ROOT = '/tmp/test-artifacts';
@@ -87,6 +99,21 @@ test('getRunRoot returns run root under skill artifact root', () => {
   }
 });
 
+test('getRunRoot accepts an explicit repo root override', () => {
+  const originalArtifactRoot = process.env.ARTIFACT_ROOT;
+  delete process.env.ARTIFACT_ROOT;
+
+  const runRoot = getRunRoot('shared', 'qa-plan-evolution', 'run-abc123', '/tmp/custom-repo-root');
+  assert.equal(
+    runRoot,
+    '/tmp/custom-repo-root/workspace-artifacts/skills/shared/qa-plan-evolution/runs/run-abc123',
+  );
+
+  if (originalArtifactRoot) {
+    process.env.ARTIFACT_ROOT = originalArtifactRoot;
+  }
+});
+
 test('getBenchmarkRuntimeRoot returns benchmark runtime root under skill artifact root', () => {
   const originalArtifactRoot = process.env.ARTIFACT_ROOT;
   process.env.ARTIFACT_ROOT = '/tmp/test-artifacts';
@@ -98,6 +125,26 @@ test('getBenchmarkRuntimeRoot returns benchmark runtime root under skill artifac
     process.env.ARTIFACT_ROOT = originalArtifactRoot;
   } else {
     delete process.env.ARTIFACT_ROOT;
+  }
+});
+
+test('getBenchmarkRuntimeRoot accepts an explicit repo root override', () => {
+  const originalArtifactRoot = process.env.ARTIFACT_ROOT;
+  delete process.env.ARTIFACT_ROOT;
+
+  const benchmarkRoot = getBenchmarkRuntimeRoot(
+    'workspace-planner',
+    'qa-plan-orchestrator',
+    'qa-plan-v2',
+    '/tmp/custom-repo-root',
+  );
+  assert.equal(
+    benchmarkRoot,
+    '/tmp/custom-repo-root/workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2',
+  );
+
+  if (originalArtifactRoot) {
+    process.env.ARTIFACT_ROOT = originalArtifactRoot;
   }
 });
 

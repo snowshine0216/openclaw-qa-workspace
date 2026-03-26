@@ -48,7 +48,7 @@ test_invalid_args() {
   assert_contains "$(cat /tmp/check-runtime-env-invalid.stderr)" "output-dir"
 }
 
-test_default_output_dir_uses_skill_runs_root() {
+test_default_output_dir_uses_workspace_artifact_root() {
   local temp_dir
   temp_dir="$(new_temp_dir)"
   setup_fake_tooling "$temp_dir/bin"
@@ -60,6 +60,9 @@ test_default_output_dir_uses_skill_runs_root() {
   cp "$SKILL_ROOT/scripts/lib/runtimeEnv.mjs" "$skill_root/scripts/lib/runtimeEnv.mjs"
   cp "$SKILL_ROOT/scripts/lib/contextRules.mjs" "$skill_root/scripts/lib/contextRules.mjs"
   cp "$SKILL_ROOT/scripts/lib/workflowState.mjs" "$skill_root/scripts/lib/workflowState.mjs"
+  mkdir -p "$workspace_root/.agents/skills/lib"
+  cp "$SKILL_ROOT/../../../.agents/skills/lib/artifactRoots.mjs" \
+    "$workspace_root/.agents/skills/lib/artifactRoots.mjs"
 
   local output
   output="$(
@@ -70,8 +73,10 @@ test_default_output_dir_uses_skill_runs_root() {
     bash "$skill_root/scripts/check_runtime_env.sh" BCIN-RUNS jira
   )"
 
-  assert_contains "$output" "runs/BCIN-RUNS/context/runtime_setup_BCIN-RUNS.json"
-  assert_file_exists "$skill_root/runs/BCIN-RUNS/context/runtime_setup_BCIN-RUNS.json"
+  local expected_suffix="workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/BCIN-RUNS/context/runtime_setup_BCIN-RUNS.json"
+  assert_contains "$output" "$expected_suffix"
+  local actual_json="${output#RUNTIME_SETUP_OK: }"
+  assert_file_exists "$actual_json"
 }
 
 test_global_jira_path_resolution() {
@@ -98,5 +103,5 @@ test_global_jira_path_resolution() {
 test_success_all_sources
 test_missing_jira_env
 test_invalid_args
-test_default_output_dir_uses_skill_runs_root
+test_default_output_dir_uses_workspace_artifact_root
 test_global_jira_path_resolution
