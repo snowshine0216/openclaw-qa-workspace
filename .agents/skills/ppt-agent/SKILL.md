@@ -99,6 +99,63 @@ prompt + optional attachments
 
 References and templates may influence style or structure, but Phase 1 still produces a **new** deck through `pptx`.
 
+## Phase 2 Edit Workflow
+
+Phase 2 edits an existing deck in place.
+
+### Edit Path
+
+```text
+existing deck + change request + attachments
+  -> analyze source deck
+  -> extract source theme tokens (artifacts/source-theme.json)
+  -> classify slides into keep / light_edit / structured_rebuild
+  -> for each non-keep slide:
+       -> build canonical slide_brief with composition_family, component_list, primary_visual_anchor
+       -> require primary_visual_anchor.relevance_rationale
+       -> derive visual plan summary
+       -> inherit source theme when parseable; otherwise fall back to local design reference
+  -> execution routing
+       -> light_edit -> preserve seed + scoped OOXML text edits
+       -> structured_rebuild -> reuse pptx structured renderer for chosen family
+  -> write concise on-slide copy
+  -> write detailed speaker notes
+  -> render before/after
+  -> evaluate
+```
+
+### Key Artifacts
+
+- `artifacts/slide-briefs/slide-XX.json` - canonical per-slide semantic source of truth
+- `artifacts/source-theme.json` - extracted theme tokens with confidence scores
+- `artifacts/visual-plan.json` - derived summary from slide briefs
+- `artifacts/update_plan.json` - execution control plane derived from slide briefs
+
+### Composition Planning
+
+Every non-`keep` slide must declare:
+
+- `composition_family` - slide layout family (evidence_panel, comparison_matrix, process_flow, etc.)
+- `component_list` - structural components present on the slide
+- `primary_visual_anchor` - the dominant visual element with:
+  - `kind` - type of visual anchor
+  - `source` - where it comes from
+  - `asset_ref` - reference to the asset
+  - `relevance_rationale` - why this anchor is valid for this slide
+  - `fallback_order` - fallback strategy if primary anchor fails
+- `render_strategy` - preserve_only, light_edit, or structured_rebuild
+- `text_only_exception` - explicit reason if slide is text-only
+
+### Theme Preservation
+
+Source theme extraction provides:
+
+- per-token confidence scores for fonts, colors, surfaces
+- fallback policy when extraction confidence is low
+- mixed mode when some tokens come from source, others from fallback reference
+
+Slide briefs record whether typography, palette, and background came from source deck theme or fallback reference.
+
 Operational commands:
 
 ```bash
@@ -226,6 +283,8 @@ node scripts/finalize-edit-run.js \
 
 If `--root-dir` is omitted, Phase 2 defaults to `.agents/skills/ppt-agent/runs`.
 
+Phase 2 now produces canonical slide briefs at `artifacts/slide-briefs/slide-XX.json` via the transcript-enrichment module. These enriched JSON briefs supersede the markdown transcripts for semantic grounding and provide structured evidence points, speaker scripts, and composition metadata.
+
 Phase 2 emits:
 
 - `artifacts/original-text.md`
@@ -238,6 +297,8 @@ Phase 2 emits:
 - `artifacts/update_plan.json`
 - `artifacts/slide-transcripts/slide-XX.md`
 - `artifacts/transcript-index.json`
+- `artifacts/slide-briefs/slide-XX.json` (canonical enriched briefs)
+- `artifacts/slide-briefs/index.json`
 - `artifacts/pre_edit_checkpoint.md`
 - `artifacts/manual_handoff.md`
 - `artifacts/edit_handoff.json`

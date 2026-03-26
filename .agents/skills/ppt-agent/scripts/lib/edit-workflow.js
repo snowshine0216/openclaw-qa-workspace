@@ -19,6 +19,9 @@ const {
   ensureTranscriptArtifacts
 } = require("./slide-transcript");
 const { validateUpdatePlanObject } = require("./update-plan");
+const { enrichSlideTranscripts } = require("./transcript-enrichment");
+const { generateVisualPlanFromBriefs } = require("./visual-plan");
+const { extractSourceTheme } = require("./source-theme-extraction");
 
 function hashBuffer(buffer) {
   return crypto.createHash("sha256").update(buffer).digest("hex");
@@ -141,6 +144,8 @@ async function writeResearchDelta({ runRoot, request }) {
     summaryBlocks.push(fs.readFileSync(outputPath, "utf8"));
   }
 
+  // deriveFindings() is a shallow heuristic fallback.
+  // The enriched slide briefs from transcript-enrichment.js provide the canonical semantic source.
   const delta = [
     "# Research Delta",
     "",
@@ -163,6 +168,8 @@ async function writeResearchDelta({ runRoot, request }) {
   return researchDeltaPath;
 }
 
+// Shallow heuristic fallback for research delta findings.
+// Enriched slide briefs from transcript-enrichment.js supersede this for semantic grounding.
 function deriveFindings(changeRequest) {
   const lower = changeRequest.toLowerCase();
   const findings = [];
@@ -468,6 +475,39 @@ function buildUpdatePlan({ runRoot, request }) {
       : "",
     mode: "edit"
   });
+
+  // Extract source theme tokens
+  const themeResult = extractSourceTheme({
+    runRoot,
+    slideAnalysis: analysis
+  });
+
+  // Generate enriched JSON slide briefs
+  const enrichmentResult = enrichSlideTranscripts({
+    slideAnalysis: analysis,
+    researchDelta: fs.existsSync(path.join(runRoot, "artifacts", "research_delta.md"))
+      ? fs.readFileSync(path.join(runRoot, "artifacts", "research_delta.md"), "utf8")
+      : "",
+    changeRequest: request,
+    runRoot
+  });
+
+  // Generate visual plan from finalized slide briefs
+  let visualPlanResult = null;
+  if (enrichmentResult.status === "ok" || enrichmentResult.status === "warnings") {
+    const slideBriefs = enrichmentResult.briefsDir
+      ? fs.readdirSync(enrichmentResult.briefsDir)
+          .filter(f => f.startsWith("slide-") && f.endsWith(".json"))
+          .map(f => JSON.parse(fs.readFileSync(path.join(enrichmentResult.briefsDir, f), "utf8")))
+      : [];
+
+    if (slideBriefs.length > 0) {
+      visualPlanResult = generateVisualPlanFromBriefs({
+        runRoot,
+        slideBriefs
+      });
+    }
+  }
   fs.writeFileSync(
     checkpointPath,
     [
@@ -490,6 +530,14 @@ function buildUpdatePlan({ runRoot, request }) {
       "",
       `- untouched slides remain untouched: true`,
       `- transcript status: ${transcripts.status}`,
+      `- enrichment status: ${enrichmentResult.status}`,
+      `- slide briefs generated: ${enrichmentResult.totalBriefs}`,
+      `- source theme extracted: ${themeResult.themeSource}`,
+      `- theme confidence: ${themeResult.confidence.toFixed(2)}`,
+      `- visual plan generated: ${visualPlanResult ? visualPlanResult.slideCount + " slides" : "pending"}`,
+      ...(enrichmentResult.validationErrors.length > 0
+        ? ["", "## Enrichment Warnings", "", ...enrichmentResult.validationErrors.map(err => `- ${err}`)]
+        : []),
       ...(slideActions.every((action) => action.action === "keep")
         ? ["", "- Nothing to update", "- No meaningful update opportunities detected"]
         : []),
@@ -515,7 +563,15 @@ function buildUpdatePlan({ runRoot, request }) {
     checkpointPath,
     manualHandoffPath,
     transcriptIndexPath: path.join(runRoot, "artifacts", "transcript-index.json"),
-    transcriptStatus: transcripts.status
+    transcriptStatus: transcripts.status,
+    slideBriefsDir: enrichmentResult.briefsDir,
+    slideBriefsIndexPath: enrichmentResult.indexPath,
+    enrichmentStatus: enrichmentResult.status,
+    sourceThemePath: themeResult.sourceThemePath,
+    themeSource: themeResult.themeSource,
+    themeConfidence: themeResult.confidence,
+    visualPlanPath: visualPlanResult ? visualPlanResult.visualPlanPath : null,
+    visualPlanSlideCount: visualPlanResult ? visualPlanResult.slideCount : 0
   };
 }
 

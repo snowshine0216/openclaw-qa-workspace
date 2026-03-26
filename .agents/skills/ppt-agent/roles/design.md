@@ -94,3 +94,10 @@ Your job is to turn deck analysis and delta research into a deterministic update
 - use `refine` only for derived variants such as crops or annotations
 - use `replace` only with a recorded replacement reason, preview artifact, and explicit approval
 - use `generate_new` only for new slides or media-less slides that need a new visual anchor
+- every non-`keep` slide must declare `composition_family`, `component_list`, and `primary_visual_anchor`
+- every `primary_visual_anchor` must include `relevance_rationale` explaining why that anchor is valid for the slide
+- every non-`keep` slide must record `render_strategy`: `preserve_only`, `light_edit`, or `structured_rebuild`
+- `add_after` actions must resolve to a non-placeholder family or a blocked plan
+- text-only slides require explicit `text_only_exception` with approved reason
+- slide briefs must record whether typography, palette, and background came from source deck theme or fallback reference
+- source theme extraction must provide per-token confidence scores and fallback policy

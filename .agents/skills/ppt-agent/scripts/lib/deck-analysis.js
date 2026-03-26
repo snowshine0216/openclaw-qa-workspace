@@ -205,6 +205,10 @@ function buildOriginalText(slides) {
   return lines.join("\n");
 }
 
+// Raw deck analysis feeds into the enrichment pipeline in transcript-enrichment.js.
+// The slide_analysis.json output provides structural metadata that enrichSlideTranscripts()
+// uses to generate canonical slide briefs with semantic grounding.
+
 async function analyzeDeck({ runRoot, deckPath, documentToMarkdown = convertDocumentToMarkdown }) {
   const inputDeckPath = path.join(runRoot, "input", "original.pptx");
   const unpackedRoot = path.join(runRoot, "working", "unpacked");
