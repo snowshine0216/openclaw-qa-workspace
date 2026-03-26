@@ -104,3 +104,71 @@ test('generateFeatureReport renders feature title, grouped risks, blocking defec
     await rm(runDir, { recursive: true, force: true });
   }
 });
+
+test('generateFeatureReport infers concrete functional areas when defect_index only provides General', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-feature-report-area-inference-'));
+  try {
+    await mkdir(join(runDir, 'context', 'prs'), { recursive: true });
+    await writeFile(
+      join(runDir, 'context', 'feature_metadata.json'),
+      JSON.stringify({
+        feature_key: 'AHSC-1972',
+        feature_title: 'Auto Dash Reliability',
+        issue_type: 'Feature',
+        release_version: '26.04',
+      }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'defect_index.json'),
+      JSON.stringify({
+        defects: [
+          {
+            key: 'ACSC-4918',
+            summary: 'Information window layout breaks after adding visualization',
+            status: 'Open',
+            priority: 'High',
+            assignee: 'Ada',
+            area: 'General',
+          },
+          {
+            key: 'AHSC-2132',
+            summary: 'Rich text box appears in raw Markdown format',
+            status: 'To Do',
+            priority: 'High',
+            assignee: 'Lin',
+            area: 'General',
+          },
+        ],
+      }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'pr_impact_summary.json'),
+      JSON.stringify({
+        pr_count: 1,
+        repos_changed: ['container-ai-engine-chat-service'],
+        top_risky_prs: [
+          {
+            repository: 'container-ai-engine-chat-service',
+            number: null,
+            risk_level: 'HIGH',
+            summary: 'PR: https://github.com/mstr-kiai/container-ai-engine-chat-service/pull/4094',
+          },
+        ],
+        top_changed_domains: ['api', 'prompt'],
+      }),
+      'utf8',
+    );
+
+    const outPath = generateFeatureReport(runDir, 'AHSC-1972', 'https://jira.example.com');
+    const report = await readFile(outPath, 'utf8');
+
+    assert.match(report, /Information Window/);
+    assert.match(report, /Rich Text & Narrative Content/);
+    assert.doesNotMatch(report, /Primary concerns:\s*General\./);
+    assert.match(report, /PR #4094/);
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});

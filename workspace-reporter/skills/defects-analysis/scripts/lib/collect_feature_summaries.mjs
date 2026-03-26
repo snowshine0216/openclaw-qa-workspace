@@ -11,8 +11,14 @@ function safeReadJson(path) {
   }
 }
 
-function releaseVersionFromDir(releaseRunDir) {
-  return basename(releaseRunDir).replace(/^release_/, '');
+function releaseVersionFromRun(releaseRunDir) {
+  const routeDecision = safeReadJson(join(releaseRunDir, 'context', 'route_decision.json')) ?? {};
+  if (typeof routeDecision.release_version === 'string' && routeDecision.release_version.length > 0) {
+    return routeDecision.release_version;
+  }
+  return basename(releaseRunDir)
+    .replace(/^release_/, '')
+    .replace(/__scope_[a-f0-9]{8}$/i, '');
 }
 
 export function collectFeatureSummaries({ releaseRunDir, features }) {
@@ -36,7 +42,7 @@ export function collectFeatureSummaries({ releaseRunDir, features }) {
   });
 
   const payload = {
-    release_version: releaseVersionFromDir(releaseRunDir),
+    release_version: releaseVersionFromRun(releaseRunDir),
     features: collected,
   };
 

@@ -5,6 +5,15 @@ import { fileURLToPath } from 'node:url';
 const ISSUE_CLASS_TYPES = new Set(['issue', 'bug', 'defect']);
 const REPORTER_CLASS_TYPES = new Set(['story', 'feature', 'epic', 'task', 'sub-task', 'subtask']);
 const JQL_TOKENS = ['project', 'issuetype', 'order by', ' and ', ' or ', ' in ', '='];
+const DEFAULT_QA_OWNER_FIELD = 'QA Owner';
+const CURRENT_USER_ALIASES = new Set([
+  'me',
+  'myself',
+  'current_user',
+  'currentuser',
+  'currentuser()',
+  'current_user()',
+]);
 
 function normalizeIssueKey(rawInput) {
   if (!rawInput) {
@@ -31,7 +40,65 @@ function buildJqlKey(rawInput) {
   return `jql_${digest}`;
 }
 
-function buildRoute({ rawInput, runKey, routeKind, jiraIssueType = null, delegatesTo = null, reason }) {
+function valueOrNull(value) {
+  const normalized = String(value ?? '').trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeQaOwner(qaOwner) {
+  const value = valueOrNull(qaOwner);
+  if (!value) {
+    return null;
+  }
+  const normalized = value.toLowerCase();
+  if (CURRENT_USER_ALIASES.has(normalized)) {
+    return { qa_owner_mode: 'current_user', qa_owner_value: null };
+  }
+  return { qa_owner_mode: 'explicit', qa_owner_value: value };
+}
+
+function normalizeQaOwnerField(qaOwnerField) {
+  return valueOrNull(qaOwnerField) ?? DEFAULT_QA_OWNER_FIELD;
+}
+
+function buildReleaseScope({ releaseVersion, qaOwner, qaOwnerField }) {
+  const normalizedOwner = normalizeQaOwner(qaOwner);
+  if (!normalizedOwner) {
+    return null;
+  }
+  return {
+    release_version: releaseVersion,
+    qa_owner_field: normalizeQaOwnerField(qaOwnerField),
+    ...normalizedOwner,
+  };
+}
+
+function buildReleaseRunKey(releaseVersion, releaseScope) {
+  if (!releaseScope) {
+    return `release_${releaseVersion}`;
+  }
+  const scopeFingerprint = {
+    release_version: releaseScope.release_version,
+    qa_owner_field: releaseScope.qa_owner_field,
+    qa_owner_mode: releaseScope.qa_owner_mode,
+    qa_owner_value: releaseScope.qa_owner_value,
+  };
+  const scopeDigest = createHash('sha1')
+    .update(JSON.stringify(scopeFingerprint))
+    .digest('hex')
+    .slice(0, 8);
+  return `release_${releaseVersion}__scope_${scopeDigest}`;
+}
+
+function buildRoute({
+  rawInput,
+  runKey,
+  routeKind,
+  jiraIssueType = null,
+  delegatesTo = null,
+  reason,
+  extra = {},
+}) {
   return {
     run_key: runKey,
     raw_input: rawInput,
@@ -40,6 +107,7 @@ function buildRoute({ rawInput, runKey, routeKind, jiraIssueType = null, delegat
     issue_key: normalizeIssueKey(rawInput),
     delegates_to: delegatesTo,
     reason,
+    ...extra,
   };
 }
 
@@ -49,6 +117,8 @@ export function deriveRouteDecision({
   featureKey = null,
   releaseVersion = null,
   jqlQuery = null,
+  qaOwner = null,
+  qaOwnerField = null,
 }) {
   const effectiveInput = rawInput ?? featureKey ?? releaseVersion ?? jqlQuery;
   if (!effectiveInput) {
@@ -65,13 +135,26 @@ export function deriveRouteDecision({
     });
   }
 
+  if (releaseVersion && !isReleaseVersion(releaseVersion)) {
+    throw new Error(`Invalid release version: ${releaseVersion}`);
+  }
+
   if (releaseVersion || isReleaseVersion(effectiveInput)) {
     const value = releaseVersion ?? effectiveInput;
+    const releaseScope = buildReleaseScope({
+      releaseVersion: value,
+      qaOwner,
+      qaOwnerField,
+    });
     return buildRoute({
       rawInput: value,
-      runKey: `release_${value}`,
+      runKey: buildReleaseRunKey(value, releaseScope),
       routeKind: 'reporter_scope_release',
       reason: 'Release version inputs stay in reporter scope',
+      extra: {
+        release_version: value,
+        release_scope: releaseScope,
+      },
     });
   }
 
@@ -127,12 +210,23 @@ export function deriveRouteDecision({
 }
 
 async function main() {
-  const [rawInput, jiraIssueType] = process.argv.slice(2);
+  const [rawInput, jiraIssueType, featureKey, releaseVersion, jqlQuery, qaOwner, qaOwnerField] =
+    process.argv.slice(2);
   if (!rawInput) {
-    console.error('Usage: classify_input.mjs <raw-input> [issue-type]');
+    console.error(
+      'Usage: classify_input.mjs <raw-input> [issue-type] [feature-key] [release-version] [jql-query] [qa-owner] [qa-owner-field]',
+    );
     process.exit(1);
   }
-  const result = deriveRouteDecision({ rawInput, jiraIssueType });
+  const result = deriveRouteDecision({
+    rawInput,
+    jiraIssueType,
+    featureKey: valueOrNull(featureKey),
+    releaseVersion: valueOrNull(releaseVersion),
+    jqlQuery: valueOrNull(jqlQuery),
+    qaOwner: valueOrNull(qaOwner),
+    qaOwnerField: valueOrNull(qaOwnerField),
+  });
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }
 

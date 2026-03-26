@@ -66,6 +66,8 @@ Provide exactly one primary input:
 Optional inputs:
 
 - `refresh_mode` — `use_existing`, `resume`, `generate_from_cache`, `smart_refresh`, `full_regenerate`
+- `qa_owner` — optional release-scope filter (`current_user`/`me` or explicit account value)
+- `qa_owner_field` — optional Jira field label override; default `QA Owner`
 - `invoked_by`
 - `skip_notification`
 - `notification_target`
@@ -78,6 +80,7 @@ Always:
 - `<skill-root>/runs/<run-key>/run.json`
 - `<skill-root>/runs/<run-key>/context/runtime_setup_<run-key>.json`
 - `<skill-root>/runs/<run-key>/context/route_decision.json`
+- `<skill-root>/runs/<run-key>/context/scope_query.json`
 
 On delegated issue-class runs:
 

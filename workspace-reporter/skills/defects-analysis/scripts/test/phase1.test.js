@@ -215,3 +215,64 @@ exit 1
 
   await rm(runDir, { recursive: true, force: true });
 });
+
+test('adds qa owner currentUser clause to release discovery query when release scope is set', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-release-scope-query-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({
+      run_key: 'release_26.04__scope_1234abcd',
+      route_kind: 'reporter_scope_release',
+      release_version: '26.04',
+      release_scope: {
+        qa_owner_mode: 'current_user',
+        qa_owner_value: null,
+        qa_owner_field: 'QA Owner',
+      },
+    }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  cat <<'EOF'
+NAME KEY TYPE
+Alpha BCIN software
+EOF
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  cat <<'EOF'
+[{"key":"BCIN-5809"}]
+EOF
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync('bash', [SCRIPT, 'run defects analysis for release 26.04 with qa owner me', runDir], {
+    encoding: 'utf8',
+    env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+  });
+
+  assert.equal(result.status, 0);
+  const log = await readFile(logFile, 'utf8');
+  const scope = JSON.parse(await readFile(join(runDir, 'context', 'scope.json'), 'utf8'));
+  assert.match(
+    log,
+    /CMD=issue list --jql project in \(BCIN\) AND "Release\[Version Picker \(single version\)\]" = "26\.04" AND type = Feature AND "QA Owner" = currentUser\(\) --raw --paginate 50/,
+  );
+  assert.equal(scope.release_version, '26.04');
+  assert.equal(scope.release_scope.qa_owner_mode, 'current_user');
+  assert.match(scope.query, /"QA Owner" = currentUser\(\)/);
+  assert.equal(scope.raw_input, 'run defects analysis for release 26.04 with qa owner me');
+
+  await rm(runDir, { recursive: true, force: true });
+});

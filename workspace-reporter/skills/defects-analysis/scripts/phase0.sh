@@ -9,6 +9,11 @@ RUN_KEY="$(basename "$RUN_DIR")"
 CONTEXT_DIR="$RUN_DIR/context"
 REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
 REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
+FEATURE_KEY_INPUT="${FEATURE_KEY_INPUT:-}"
+RELEASE_VERSION_INPUT="${RELEASE_VERSION_INPUT:-}"
+JQL_QUERY_INPUT="${JQL_QUERY_INPUT:-}"
+QA_OWNER_INPUT="${QA_OWNER_INPUT:-${QA_OWNER:-}}"
+QA_OWNER_FIELD_INPUT="${QA_OWNER_FIELD_INPUT:-${QA_OWNER_FIELD:-}}"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase0.sh <input> <run-dir> [--post]" >&2; exit 1; }
 mkdir -p "$CONTEXT_DIR" "$RUN_DIR/drafts" "$RUN_DIR/reports" "$RUN_DIR/archive"
@@ -109,16 +114,27 @@ fi
 
 "$SCRIPT_DIR/check_runtime_env.sh" "$RUN_KEY" "jira,github" "$CONTEXT_DIR"
 issue_type="$(fetch_issue_type "$RAW_INPUT")"
-route_json="$(node "$SCRIPT_DIR/lib/classify_input.mjs" "$RAW_INPUT" "$issue_type")"
+route_json="$(node "$SCRIPT_DIR/lib/classify_input.mjs" \
+  "$RAW_INPUT" \
+  "$issue_type" \
+  "$FEATURE_KEY_INPUT" \
+  "$RELEASE_VERSION_INPUT" \
+  "$JQL_QUERY_INPUT" \
+  "$QA_OWNER_INPUT" \
+  "$QA_OWNER_FIELD_INPUT")"
 write_json_file "$CONTEXT_DIR/route_decision.json" "$route_json"
 
 route_kind="$(printf '%s\n' "$route_json" | jq -r '.route_kind')"
+release_version="$(printf '%s\n' "$route_json" | jq -r '.release_version // empty')"
+release_scope_json="$(printf '%s\n' "$route_json" | jq -c '.release_scope // null')"
 ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
 jq -n \
   --arg run_key "$RUN_KEY" \
   --arg raw_input "$RAW_INPUT" \
   --arg route_kind "$route_kind" \
+  --arg release_version "$release_version" \
+  --argjson release_scope "$release_scope_json" \
   --arg selected_mode "$selected_mode" \
   --arg invoked_by "${INVOKED_BY:-}" \
   --arg release_version_context "${RELEASE_VERSION_CONTEXT:-}" \
@@ -127,6 +143,8 @@ jq -n \
     run_key: $run_key,
     raw_input: $raw_input,
     route_kind: $route_kind,
+    release_version: ($release_version | select(length > 0) // null),
+    release_scope: $release_scope,
     selected_mode: $selected_mode,
     invoked_by: ($invoked_by | select(length > 0) // null),
     release_version_context: ($release_version_context | select(length > 0) // null),

@@ -19,6 +19,10 @@ fi
 
 if [[ "$route_kind" == "reporter_scope_release" ]]; then
   [[ -f "$CONTEXT_DIR/feature_state_matrix.json" ]] || { echo "Missing feature_state_matrix.json" >&2; exit 1; }
+  release_version_context="$(jq -r '.release_version // .raw_input // empty' "$CONTEXT_DIR/route_decision.json" 2>/dev/null || true)"
+  if [[ -z "$release_version_context" ]]; then
+    release_version_context="$RAW_INPUT"
+  fi
   feature_runs='[]'
   while IFS= read -r feature; do
     [[ -n "$feature" ]] || continue
@@ -30,14 +34,27 @@ if [[ "$route_kind" == "reporter_scope_release" ]]; then
     feature_summary_path="$canonical_run_dir/context/feature_summary.json"
     summary_plan_json='{}'
     summary_status=''
+    feature_title_hint="$(jq -r --arg key "$feature_key" '(.issues // [] | map(select(.key == $key)) | .[0].fields.summary) // empty' "$CONTEXT_DIR/scope_source.json" 2>/dev/null || true)"
+
+    apply_title_hint_if_needed() {
+      [[ -n "$feature_title_hint" ]] || return 0
+      local metadata_path="$canonical_run_dir/context/feature_metadata.json"
+      [[ -f "$metadata_path" ]] || return 0
+      local current_title
+      current_title="$(jq -r '.feature_title // empty' "$metadata_path" 2>/dev/null || true)"
+      if [[ -z "$current_title" || "$current_title" == "$feature_key" ]]; then
+        jq --arg title "$feature_title_hint" '.feature_title = $title' "$metadata_path" >"$metadata_path.tmp" && mv "$metadata_path.tmp" "$metadata_path"
+      fi
+    }
 
     if [[ -f "$report_final_path" ]]; then
       summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
       summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+      apply_title_hint_if_needed
     fi
 
     if [[ ! -f "$report_final_path" || "$summary_status" == "refresh" || "$summary_status" == "error" ]]; then
-      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
+      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$release_version_context" FEATURE_TITLE_HINT="$feature_title_hint" FEATURE_KEY_INPUT="$feature_key" RELEASE_VERSION_INPUT="" JQL_QUERY_INPUT="" QA_OWNER_INPUT="" QA_OWNER_FIELD_INPUT="" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
         echo "$child_output"
         exit 1
       }
@@ -51,7 +68,7 @@ if [[ "$route_kind" == "reporter_scope_release" ]]; then
 
     if [[ "$summary_status" == "refresh" ]]; then
       effective_action="$(printf '%s\n' "$summary_plan_json" | jq -r '.refresh_mode')"
-      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
+      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$release_version_context" FEATURE_TITLE_HINT="$feature_title_hint" FEATURE_KEY_INPUT="$feature_key" RELEASE_VERSION_INPUT="" JQL_QUERY_INPUT="" QA_OWNER_INPUT="" QA_OWNER_FIELD_INPUT="" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
         echo "$child_output"
         exit 1
       }
