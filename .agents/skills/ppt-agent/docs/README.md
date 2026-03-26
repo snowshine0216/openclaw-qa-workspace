@@ -320,6 +320,10 @@ For non-keep actions:
 - `allowed_layout_delta`
 - `allowed_image_delta` (mandatory if source media exists)
 - `transcript_path`
+- `composition_family` - slide layout family (e.g. `evidence_panel`, `comparison_matrix`, `process_flow`)
+- `component_list` - structural components present on the slide
+- `primary_visual_anchor` - dominant visual element including `kind`, `source`, `asset_ref`, `relevance_rationale`, and `fallback_order`
+- `render_strategy` - `preserve_only`, `light_edit`, or `structured_rebuild`
 
 Additional constraints:
 
@@ -402,7 +406,7 @@ Primary files:
 
 ### FD3: Structured edit execution
 
-- Route `add_after` actions through the reuse-first structured renderer.
+- Route `add_after` actions through the reuse-first (always attempt the pptx structured renderer before any parallel edit path) structured renderer.
 - `light_edit` preserves seed layout with scoped OOXML text edits.
 - `structured_rebuild` delegates to the existing `pptx` structured renderer for the chosen composition family.
 - No parallel edit renderer: structured fallback reuses the shared `pptx` mechanics.
@@ -509,7 +513,6 @@ Checklist:
    - preserve as-is
    - preserve with annotation/crop
    - replacement only after explicit preview + user approval
-2. Tavily strategy should default to one cached deck-level search pass; allow slide-level follow-up only for explicit unresolved gaps.
 
 ## 12) References
 

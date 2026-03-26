@@ -251,9 +251,9 @@ Phase 2 adds enrichment quality gates that check for:
 - Missing description metadata for generated images, charts, or diagrams
 - Shallow transcripts (speaker script too close to slide copy)
 
-Enrichment quality failures are separated from hard preservation failures. Text-only slides currently generate warnings (will become hard failures after structured fallback routing exists).
+Enrichment quality failures are separated from hard preservation failures. Text-only slides currently generate warnings; enrichment issues are tracked in `enrichment_issues` and `enrichment_warnings` but do not yet trigger hard failures (they are informational only alongside preservation failures).
 
-## Phase 2 Edit Workflow
+## Phase 2 Default Policy
 
 Phase 2 updates an existing deck while preserving its narrative spine and visual identity unless the user explicitly asks for a restyle.
 
