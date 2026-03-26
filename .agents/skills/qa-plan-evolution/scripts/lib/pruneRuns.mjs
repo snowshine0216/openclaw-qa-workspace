@@ -27,6 +27,44 @@ function normalizeProtectSet(protectRunKeys = []) {
   );
 }
 
+function readMtimeMs(path) {
+  return statSync(path).mtimeMs;
+}
+
+function readDirEntries(path) {
+  try {
+    return readdirSync(path, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+}
+
+function latestActivityMtimeMs(runPath) {
+  let latest = readMtimeMs(runPath);
+  const pending = [runPath];
+
+  while (pending.length > 0) {
+    const current = pending.pop();
+    for (const entry of readDirEntries(current)) {
+      const fullPath = join(current, entry.name);
+      let entryMtimeMs;
+      try {
+        entryMtimeMs = readMtimeMs(fullPath);
+      } catch {
+        continue;
+      }
+      if (entryMtimeMs > latest) {
+        latest = entryMtimeMs;
+      }
+      if (entry.isDirectory()) {
+        pending.push(fullPath);
+      }
+    }
+  }
+
+  return latest;
+}
+
 function listRunDirs(runsRoot) {
   if (!existsSync(runsRoot)) {
     return [];
@@ -38,7 +76,7 @@ function listRunDirs(runsRoot) {
       return {
         runKey: entry.name,
         fullPath,
-        mtimeMs: statSync(fullPath).mtimeMs,
+        mtimeMs: latestActivityMtimeMs(fullPath),
       };
     })
     .sort((a, b) => b.mtimeMs - a.mtimeMs || a.runKey.localeCompare(b.runKey));
