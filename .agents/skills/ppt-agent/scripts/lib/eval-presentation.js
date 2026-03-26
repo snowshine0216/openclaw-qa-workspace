@@ -184,7 +184,7 @@ function evaluateEnrichmentQuality({ runRoot, slideActions }) {
       ].includes(anchor.kind);
 
       if (needsDescription && (!anchor.description || anchor.description.trim().length === 0)) {
-        enrichmentWarnings.push(`Slide ${slideNum}: missing description metadata for ${anchor.kind}`);
+        enrichmentIssues.push(`Slide ${slideNum}: missing description metadata for ${anchor.kind}`);
       }
     }
 
