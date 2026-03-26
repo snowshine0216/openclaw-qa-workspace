@@ -1,3 +1,0 @@
-Wrote the holdout assessment to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-iRdHD2/outputs/result.md) and the run notes to [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-iRdHD2/outputs/execution_notes.md).
-
-The benchmark case is assessed as `PASS` on the provided local evidence. The copied compare-result fixture captures the cross-feature regression risk, and the snapshot’s holdout, coverage-preservation, anti-compression, and checkpoint contracts are sufficient to show the report-editor improvements do not regress a different planning flow under this holdout check. No blockers were identified.

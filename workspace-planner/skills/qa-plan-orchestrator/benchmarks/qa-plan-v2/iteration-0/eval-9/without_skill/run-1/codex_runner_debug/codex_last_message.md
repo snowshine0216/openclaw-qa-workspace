@@ -1,3 +1,0 @@
-Wrote the deliverables to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-uI2bDw/outputs/result.md#L1) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-uI2bDw/outputs/execution_notes.md#L1).
-
-The replay verdict is `FAIL`: the BCIN-7289 evidence shows BCED-2416 analogs were known, but not promoted to explicit `REQUIRED_BEFORE_SHIP` phase5b gates. The result artifact is phase5b-aligned and records the missing analog-gate enforcement, validator failures, and a `BLOCK_SHIP` recommendation. A caveat about the inconsistent `BCIN-7691` raw Jira snapshot is noted in both outputs.

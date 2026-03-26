@@ -74,6 +74,7 @@ function buildBenchmarkMetadata(prepared) {
 
 export async function runIterationCompare({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot: explicitDefinitionRoot = null,
   skillRoot,
   iteration,
   defectAnalysisRunKey = null,
@@ -83,6 +84,7 @@ export async function runIterationCompare({
 }) {
   const prepared = await materializeIterationComparison({
     benchmarkRoot,
+    benchmarkDefinitionRoot: explicitDefinitionRoot,
     skillRoot,
     iteration,
     comparisonMode: EXECUTED_BENCHMARK_COMPARE,
@@ -128,6 +130,7 @@ export async function runIterationCompare({
 
   const scorecardPath = await writeScorecardForIteration({
     benchmarkRoot,
+    benchmarkDefinitionRoot: explicitDefinitionRoot,
     iterationDir: prepared.iterationDir,
     iteration,
     comparisonMode: EXECUTED_BENCHMARK_COMPARE,

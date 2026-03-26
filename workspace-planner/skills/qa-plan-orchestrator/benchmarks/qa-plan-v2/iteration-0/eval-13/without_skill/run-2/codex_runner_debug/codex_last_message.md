@@ -1,3 +1,0 @@
-Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-XAYu2P/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-XAYu2P/outputs/execution_notes.md).
-
-The holdout verdict is `FAIL` at blocking priority: the supplied evidence shows report-editor-specific ranking criteria overruling the different planning flow implied by `embedding-dashboard-editor-compare-result`, so the benchmark is not satisfied. No blockers were encountered.

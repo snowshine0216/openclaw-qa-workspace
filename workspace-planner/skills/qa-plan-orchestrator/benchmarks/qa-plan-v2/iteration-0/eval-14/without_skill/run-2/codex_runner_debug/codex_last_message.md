@@ -1,3 +1,0 @@
-Wrote the required artifacts to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-S477iM/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-S477iM/outputs/execution_notes.md).
-
-The holdout-phase verdict is `NOT SATISFIED`: the BCIN-976 fixture supports report-editor scope and related cross-feature references, but it does not provide direct promotion/finalization or regression-stability evidence showing that behavior remains stable on another feature.

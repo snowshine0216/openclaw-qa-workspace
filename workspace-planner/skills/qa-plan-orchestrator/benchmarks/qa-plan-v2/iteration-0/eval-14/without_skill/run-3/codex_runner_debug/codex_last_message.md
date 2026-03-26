@@ -1,3 +1,0 @@
-Created [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-Y5BC6W/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-Y5BC6W/outputs/execution_notes.md).
-
-The holdout deliverable is aligned to the `holdout` phase, explicitly covers promotion/finalization stability on BCIN-976 as another `report-editor` feature, and records a conservative checkpoint outcome: remain in holdout and do not promote/finalize from the provided blind evidence. No blockers were encountered.

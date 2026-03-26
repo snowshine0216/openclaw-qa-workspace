@@ -366,6 +366,7 @@ export function buildScorecard({
 
 export async function writeScorecardForIteration({
   benchmarkRoot,
+  benchmarkDefinitionRoot: explicitDefinitionRoot = null,
   iterationDir,
   iteration,
   comparisonMode,
@@ -373,9 +374,9 @@ export async function writeScorecardForIteration({
   referenceConfiguration,
   scoringFidelity = null,
 }) {
-  const benchmarkDefinitionRoot = benchmarkDefinitionRoot('qa-plan-v2');
-  const benchmarkManifest = await loadJson(join(benchmarkDefinitionRoot, 'benchmark_manifest.json'));
-  const caseIndex = await loadCaseIndex(join(benchmarkDefinitionRoot, 'cases.json'));
+  const defRoot = explicitDefinitionRoot || benchmarkDefinitionRoot('qa-plan-v2');
+  const benchmarkManifest = await loadJson(join(defRoot, 'benchmark_manifest.json'));
+  const caseIndex = await loadCaseIndex(join(defRoot, 'cases.json'));
   const benchmark = await loadJson(join(iterationDir, 'benchmark.json'));
 
   const scorecard = buildScorecard({

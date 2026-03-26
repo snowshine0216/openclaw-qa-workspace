@@ -1,3 +1,0 @@
-Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-qFmQAT/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-qFmQAT/outputs/execution_notes.md).
-
-The deliverable concludes the baseline replay fails the `phase4a` benchmark contract: the fixture evidence says SDK-visible outcomes, specifically `setWindowTitle`/window-title behavior, were dropped instead of becoming explicit scenarios. The result also includes the minimal phase4a-compliant scenario content needed to satisfy the case, tied to `BCIN-7674`, `BCIN-7719`, and `BCIN-7733`.

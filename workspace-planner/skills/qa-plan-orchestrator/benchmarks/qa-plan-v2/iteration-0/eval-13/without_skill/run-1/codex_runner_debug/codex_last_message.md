@@ -1,3 +1,0 @@
-Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-z6Z26q/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-z6Z26q/outputs/execution_notes.md).
-
-The holdout verdict is `FAIL`: the only copied fixture is a plan-comparison memo centered on `BCED-2416`, not a holdout-phase regression artifact for `BCIN-6709`, and it does not explicitly show that report-editor improvements avoid regressing a different feature planning flow.

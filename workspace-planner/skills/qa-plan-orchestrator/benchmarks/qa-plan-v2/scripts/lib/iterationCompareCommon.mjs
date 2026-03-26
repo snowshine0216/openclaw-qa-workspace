@@ -180,6 +180,7 @@ function buildBenchmarkContext({
 
 export async function materializeIterationComparison({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot: explicitDefinitionRoot = null,
   skillRoot,
   iteration,
   comparisonMode,
@@ -188,7 +189,7 @@ export async function materializeIterationComparison({
   enabledEvidenceModes = null,
   targetFeatureFamily = null,
 }) {
-  const benchmarkDefinitionRoot = getBenchmarkDefinitionRoot('qa-plan-v2');
+  const benchmarkDefinitionRoot = explicitDefinitionRoot || getBenchmarkDefinitionRoot('qa-plan-v2');
   const benchmarkManifest = await loadJson(join(benchmarkDefinitionRoot, 'benchmark_manifest.json'));
   const casesDocument = await loadJson(join(benchmarkDefinitionRoot, 'cases.json'));
   const history = await loadJson(join(benchmarkRoot, 'history.json'));

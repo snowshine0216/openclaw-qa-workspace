@@ -1,3 +1,0 @@
-[result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-aXpc1x/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-aXpc1x/outputs/execution_notes.md) are written.
-
-The replay result marks the case as advisory-pass at phase4a and includes the minimal subcategory-only draft content needed to cover the missing template-save and Report Builder loading scenarios for BCIN-7289, based only on the copied fixture evidence. Execution notes list the skill snapshot references and fixture files used, with no blockers and no external web access.

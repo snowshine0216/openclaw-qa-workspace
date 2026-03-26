@@ -1,3 +1,0 @@
-Wrote [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-EqWwWG/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-EqWwWG/outputs/execution_notes.md).
-
-Execution summary: the retrospective phase5a review does not satisfy this benchmark case. From the replay evidence, 2 evidence-backed nodes were preserved, 3 were weakened into generic buckets, and 3 were dropped from the phase5a review surface rather than being carried forward as explicit advisories.

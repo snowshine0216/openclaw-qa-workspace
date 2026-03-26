@@ -1,3 +1,0 @@
-Wrote the benchmark deliverables to [result.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-p3Uhsx/outputs/result.md) and [execution_notes.md](/var/folders/l6/943vfmlj0_70tww5dbqq4cr40000gq/T/qa-plan-benchmark-runner-p3Uhsx/outputs/execution_notes.md).
-
-The phase5a replay verdict is `FAIL`: the fixture shows review completed as `pass_with_advisories`, but the final artifact is unchanged from the draft and silently drops at least three evidence-backed review nodes. One review advisory was treated as weak evidence because `BCIN-7720` does have a linked PR in the raw defect index.
