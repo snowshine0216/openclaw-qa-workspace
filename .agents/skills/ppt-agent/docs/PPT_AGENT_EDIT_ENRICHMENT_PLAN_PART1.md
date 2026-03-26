@@ -265,6 +265,33 @@ Artifact authority is locked as follows:
 This gives the workflow one semantic authority and one execution authority, with
 one-way derivation between them instead of peer artifacts that can drift.
 
+### Artifact Derivation Order
+
+Derivation order is locked as follows:
+
+1. **Slide briefs generation** (plan stage)
+   - `transcript-enrichment.js` generates `slide-briefs/slide-XX.json` for all non-keep slides
+   - Each brief is finalized with content hash before derivation begins
+
+2. **Parallel per-slide derivations** (plan stage)
+   - Once slide briefs are finalized, these derivations run in parallel:
+     - `visual-plan.js` derives `visual-plan.json` summary
+     - `speaker-script.js` derives `speaker-notes/slide-XX.md` per slide
+     - `image-meta-prompt.js` derives `image-prompts/slide-XX.md` for generate_new slides
+   - Parallelization is mandatory for performance (20x faster for 20-slide deck)
+
+3. **Execution plan derivation** (plan stage)
+   - After all semantic artifacts are ready, `update_plan.json` is derived from finalized slide briefs
+   - Execution plan includes slide_brief_path and slide_brief_content_hash for validation
+
+4. **Deck-level aggregation** (plan stage)
+   - `presenter-script.md` is stitched from finalized per-slide speaker notes
+
+Invalidation rules:
+- If `slide_brief` content hash changes: regenerate all derived artifacts for that slide
+- If derivation rules change: resume from `plan` stage
+- If only execution fields change: resume from `edit` stage
+
 ### Execution Routing
 
 ```text
@@ -279,9 +306,17 @@ slide action
 
 Routing heuristics are locked as follows:
 
+**For slides with existing structured components:**
 - choose `light_edit` only when the slide keeps the same primary visual anchor, the same component type, and the same overall layout structure
 - choose `structured_rebuild` when the primary visual anchor changes
 - choose `structured_rebuild` when the slide needs a new component type such as table, chart, diagram, metric panel, comparison layout, or image panel
+
+**For plain-text placeholder slides (current starting state for most decks):**
+- choose `structured_rebuild` when the slide brief specifies a non-text-only `composition_family` (e.g. `evidence_panel`, `comparison_matrix`, `process_flow`, `table_summary`, `qa_two_column`)
+- choose `light_edit` only for text-only families (`agenda`, `section_divider`, `thank_you`, `text_statement`) where the seed layout is already sufficient
+- the "same component type" comparison is skipped for plain-text placeholder slides — the intended `composition_family` in the slide brief determines routing directly
+
+**For all slides:**
 - choose `structured_rebuild` when the slide needs tabular, series-based, or multi-region content that the seeded layout does not already support
 - choose `structured_rebuild` when text expansion would force layout reflow beyond the recorded `allowed_layout_delta`
 - choose `structured_rebuild` for any `add_after` slide whose intended family is not already satisfied by the duplicated seed layout
@@ -912,6 +947,30 @@ Validation expectations:
 - all `add_after` actions resolve to a non-placeholder family or a blocked plan
 - evaluator fails when `add_after` yields only title and body text without approved exception and without a structured fallback path
 
+## Functional Design 2A: Shared Constants And Validation
+
+### Goal
+
+Lock all enums and validation rules in one shared module to prevent duplication and drift.
+
+### Required changes
+
+Files to create:
+
+- `.agents/skills/ppt-agent/scripts/lib/shared-constants.js`
+
+Expected content changes:
+
+- export all enums: `composition_family`, `primary_visual_anchor.kind`, `primary_visual_anchor.source`, `text_only_exception.reason`, `qa_flags`, `render_strategy`, `takeaway_placement`, `theme_source`
+- export validation functions for each enum
+- export schema validation for slide_brief, source-theme, visual-plan
+- all 4 new modules (transcript-enrichment, visual-plan, image-meta-prompt, speaker-script) must import from shared-constants
+
+Validation expectations:
+
+- unknown enum values fail validation with clear error messages
+- all modules use the same enum definitions (no duplication)
+
 ## Functional Design 3: Structured Execution for `add_after` Actions
 
 ### Goal
@@ -1057,7 +1116,7 @@ Validation expectations:
 
 ## Tests
 
-Stub tests only. No implementation in this artifact.
+All tests listed below are required for implementation. The plan must not ship without full test coverage.
 
 ### Unit tests
 
