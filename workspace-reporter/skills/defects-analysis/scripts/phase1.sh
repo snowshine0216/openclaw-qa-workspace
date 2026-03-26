@@ -10,7 +10,36 @@ REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../../../.." && pwd)}"
 REGISTRAR_SH="$REPO_ROOT/.agents/skills/skill-path-registrar/scripts/skill_path_registrar.sh"
 RUNS_ROOT="$REPO_ROOT/workspace-reporter/skills/defects-analysis/runs"
 
-[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase1.sh <input> <run-dir>" >&2; exit 1; }
+# Parse named args after positional $1/$2
+QA_OWNER_CLI=""
+QA_OWNER_FIELD_CLI=""
+shift 2 || true
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --qa-owner)
+      [[ -n "${2:-}" ]] || { echo "Missing value for --qa-owner" >&2; exit 1; }
+      QA_OWNER_CLI="$2"; shift 2 ;;
+    --qa-owner-field)
+      [[ -n "${2:-}" ]] || { echo "Missing value for --qa-owner-field" >&2; exit 1; }
+      QA_OWNER_FIELD_CLI="$2"; shift 2 ;;
+    *) echo "Unknown argument: $1" >&2; exit 1 ;;
+  esac
+done
+# CLI args override env; inject into route_decision.json when provided directly
+if [[ -n "$QA_OWNER_CLI" && -f "$CONTEXT_DIR/route_decision.json" ]]; then
+  qa_mode="$QA_OWNER_CLI"
+  qa_field="${QA_OWNER_FIELD_CLI:-QA Owner}"
+  tmp_route="$CONTEXT_DIR/route_decision.json.tmp"
+  jq --arg mode "$qa_mode" --arg field "$qa_field" '
+    .release_scope = {
+      qa_owner_mode: (if $mode == "current_user" or $mode == "me" then "current_user" else "explicit" end),
+      qa_owner_value: (if $mode == "current_user" or $mode == "me" then null else $mode end),
+      qa_owner_field: $field
+    }
+  ' "$CONTEXT_DIR/route_decision.json" > "$tmp_route" && mv "$tmp_route" "$CONTEXT_DIR/route_decision.json"
+fi
+
+[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase1.sh <input> <run-dir> [--qa-owner <value>] [--qa-owner-field <field>]" >&2; exit 1; }
 [[ -f "$CONTEXT_DIR/route_decision.json" ]] || { echo "Missing route_decision.json" >&2; exit 1; }
 
 load_jira_env() {

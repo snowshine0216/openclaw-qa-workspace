@@ -107,6 +107,79 @@ test('persists release scope metadata for qa owner scoped release inputs', async
   await rm(runDir, { recursive: true, force: true });
 });
 
+test('accepts --qa-owner current_user CLI arg and persists release_scope in route_decision.json', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-qa-owner-cli-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir, '--qa-owner', 'current_user'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, TEST_RUNTIME_ENV_OK: '1' },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  assert.equal(route.route_kind, 'reporter_scope_release');
+  assert.equal(route.release_version, '26.04');
+  assert.ok(route.release_scope, 'release_scope should be set');
+  assert.equal(route.release_scope.qa_owner_mode, 'current_user');
+  assert.equal(route.release_scope.qa_owner_value, null);
+  assert.equal(route.release_scope.qa_owner_field, 'QA Owner');
+  // run_key must include a scope hash suffix (not plain release_26.04)
+  assert.match(route.run_key, /^release_26\.04__scope_[a-f0-9]{8}$/);
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('accepts --qa-owner with custom --qa-owner-field CLI args', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-qa-owner-field-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir, '--qa-owner', 'current_user', '--qa-owner-field', 'QA Engineer'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, TEST_RUNTIME_ENV_OK: '1' },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  assert.equal(route.release_scope.qa_owner_mode, 'current_user');
+  assert.equal(route.release_scope.qa_owner_field, 'QA Engineer');
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('CLI --qa-owner arg takes precedence over env QA_OWNER_INPUT', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-qa-owner-precedence-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir, '--qa-owner', 'current_user'],
+    {
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        TEST_RUNTIME_ENV_OK: '1',
+        QA_OWNER_INPUT: 'explicit_other_user',
+      },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  // CLI value (current_user) should win over env
+  assert.equal(route.release_scope.qa_owner_mode, 'current_user');
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
 test('blocks destructive refresh when fetched data is less than one hour old', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase0-refresh-'));
   await mkdir(join(runDir, 'context'), { recursive: true });

@@ -3,7 +3,6 @@ set -euo pipefail
 
 RAW_INPUT="${1:-}"
 RUN_DIR="${2:-}"
-MODE="${3:-}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUN_KEY="$(basename "$RUN_DIR")"
 CONTEXT_DIR="$RUN_DIR/context"
@@ -15,7 +14,26 @@ JQL_QUERY_INPUT="${JQL_QUERY_INPUT:-}"
 QA_OWNER_INPUT="${QA_OWNER_INPUT:-${QA_OWNER:-}}"
 QA_OWNER_FIELD_INPUT="${QA_OWNER_FIELD_INPUT:-${QA_OWNER_FIELD:-}}"
 
-[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase0.sh <input> <run-dir> [--post]" >&2; exit 1; }
+# Parse remaining positional/named args (after $1=input, $2=run-dir)
+MODE=""
+shift 2 || true
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --post) MODE="--post"; shift ;;
+    --qa-owner)
+      [[ -n "${2:-}" ]] || { echo "Missing value for --qa-owner" >&2; exit 1; }
+      QA_OWNER_INPUT="$2"; shift 2 ;;
+    --qa-owner-field)
+      [[ -n "${2:-}" ]] || { echo "Missing value for --qa-owner-field" >&2; exit 1; }
+      QA_OWNER_FIELD_INPUT="$2"; shift 2 ;;
+    --release-version)
+      [[ -n "${2:-}" ]] || { echo "Missing value for --release-version" >&2; exit 1; }
+      RELEASE_VERSION_INPUT="$2"; shift 2 ;;
+    *) echo "Unknown argument: $1" >&2; exit 1 ;;
+  esac
+done
+
+[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase0.sh <input> <run-dir> [--post] [--qa-owner <value>] [--qa-owner-field <field>] [--release-version <version>]" >&2; exit 1; }
 mkdir -p "$CONTEXT_DIR" "$RUN_DIR/drafts" "$RUN_DIR/reports" "$RUN_DIR/archive"
 
 write_json_file() {

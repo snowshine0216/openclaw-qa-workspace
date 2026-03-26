@@ -216,6 +216,167 @@ exit 1
   await rm(runDir, { recursive: true, force: true });
 });
 
+test('accepts --qa-owner CLI arg and injects currentUser filter when route_decision has no release_scope', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-qa-owner-cli-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  // route_decision WITHOUT release_scope (simulates phase0 called without --qa-owner)
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({
+      run_key: 'release_26.04',
+      route_kind: 'reporter_scope_release',
+      release_version: '26.04',
+      release_scope: null,
+    }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  echo "NAME KEY TYPE"
+  echo "Alpha BCIN software"
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  echo '[{"key":"BCIN-5809"}]'
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir, '--qa-owner', 'current_user'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const log = await readFile(logFile, 'utf8');
+  // The issued JQL must include currentUser()
+  assert.match(log, /"QA Owner" = currentUser\(\)/);
+  // route_decision.json must now carry release_scope
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  assert.ok(route.release_scope, 'release_scope should be patched into route_decision.json');
+  assert.equal(route.release_scope.qa_owner_mode, 'current_user');
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('accepts --qa-owner me as alias for current_user in phase1', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-qa-owner-me-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({
+      run_key: 'release_26.04',
+      route_kind: 'reporter_scope_release',
+      release_version: '26.04',
+      release_scope: null,
+    }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  echo "NAME KEY TYPE"
+  echo "Alpha BCIN software"
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  echo '[{"key":"BCIN-5809"}]'
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir, '--qa-owner', 'me'],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const log = await readFile(logFile, 'utf8');
+  assert.match(log, /"QA Owner" = currentUser\(\)/);
+  const route = JSON.parse(await readFile(join(runDir, 'context', 'route_decision.json'), 'utf8'));
+  assert.equal(route.release_scope.qa_owner_mode, 'current_user');
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
+test('--qa-owner does not override existing release_scope already set in route_decision.json', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-qa-owner-no-override-'));
+  const jiraStub = join(runDir, 'jira-run.sh');
+  const logFile = join(runDir, 'jira.log');
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  // route_decision already has release_scope set (phase0 was called correctly)
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({
+      run_key: 'release_26.04__scope_30da81b1',
+      route_kind: 'reporter_scope_release',
+      release_version: '26.04',
+      release_scope: {
+        qa_owner_mode: 'current_user',
+        qa_owner_value: null,
+        qa_owner_field: 'QA Owner',
+      },
+    }),
+  );
+  await writeFile(
+    jiraStub,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf 'CMD=%s\\n' "$*" >> "${logFile}"
+if [[ "$1 $2" == "project list" ]]; then
+  echo "NAME KEY TYPE"
+  echo "Alpha BCIN software"
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  echo '[{"key":"BCIN-5809"}]'
+  exit 0
+fi
+exit 1
+`,
+  );
+  spawnSync('chmod', ['+x', jiraStub], { encoding: 'utf8' });
+
+  const result = spawnSync(
+    'bash',
+    [SCRIPT, '26.04', runDir],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, JIRA_CLI_SCRIPT: jiraStub },
+    },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const log = await readFile(logFile, 'utf8');
+  // release_scope was already set so query must still include currentUser()
+  assert.match(log, /"QA Owner" = currentUser\(\)/);
+
+  await rm(runDir, { recursive: true, force: true });
+});
+
 test('adds qa owner currentUser clause to release discovery query when release scope is set', async () => {
   const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-phase1-release-scope-query-'));
   const jiraStub = join(runDir, 'jira-run.sh');
