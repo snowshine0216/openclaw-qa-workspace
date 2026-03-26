@@ -1,10 +1,10 @@
-# PPT Agent Edit Enrichment Plan
+# PPT Agent Edit Enrichment Plan - Part 1
 
-> Design ID: `ppt-agent-edit-enrichment-2026-03-26`
+> Design ID: `ppt-agent-edit-enrichment-2026-03-26-part1`
 > Date: 2026-03-26
 > Status: Draft
-> Scope: Make `ppt-agent` edit mode produce presentation-grade transcripts, richer added slides, and explicit image/layout plans when updating an existing `.pptx`.
-> Constraint: Design artifact only. Do not implement until approved.
+> Scope: Baseline verification, slide briefs, visual planning, image meta prompts, presenter notes, and evaluation gates
+> Note: This is Part 1 of a split design. See Part 2 for `revise` action handling and `replace_existing` merge-back contract.
 
 ## Overview
 
@@ -908,46 +908,36 @@ Validation expectations:
 - all `add_after` actions resolve to a non-placeholder family or a blocked plan
 - evaluator fails when `add_after` yields only title and body text without approved exception and without a structured fallback path
 
-## Functional Design 3: Reuse-First Structured Execution
+## Functional Design 3: Structured Execution for `add_after` Actions
 
 ### Goal
 
-Keep low-risk seed-preserving edits in OOXML, but route complex slides through the
-existing structured `pptx` renderer instead of building a second component engine.
+Route complex `add_after` actions through the existing structured `pptx` renderer.
 
-### Required changes
+### Scope for Part 1
 
-Files to change:
+This section covers `add_after` actions and routing decisions only.
+For `revise` action handling and `replace_existing` merge-back contract, see Part 2.
 
-- `.agents/skills/ppt-agent/scripts/lib/pptx-edit-ops.js`
-- `.agents/skills/ppt-agent/scripts/lib/edit-handoff.js`
-- `.agents/skills/ppt-agent/scripts/lib/build-pptx-from-handoff.js`
-- `.agents/skills/pptx/scripts/lib/render-slide-from-spec.js`
+### Execution Routing for `add_after`
 
-Files to create:
+```text
+add_after action
+  -> does the request stay within light-edit limits?
+     -> yes: light_edit (duplicate seed + scoped text edits)
+     -> no: structured_rebuild (route to pptx renderer)
+```
 
-- `.agents/skills/ppt-agent/scripts/lib/structured-slide-spec.js`
+Routing heuristics:
 
-Expected content changes:
+- choose `structured_rebuild` for `add_after` when the intended family is not satisfied by the duplicated seed layout
+- choose `structured_rebuild` when the slide needs table, chart, diagram, metric panel, comparison layout, or image panel
+- choose `structured_rebuild` when text expansion would force layout reflow beyond `allowed_layout_delta`
 
-- keep seed duplication for preservation-safe `light_edit`
-- route complex `add_after` and complex `revise` actions to `structured_rebuild`
-- generate a normalized structured slide spec from the canonical slide brief
-- emit a deterministic single-slide package artifact for every `structured_rebuild`
-- define the exact OOXML reinsertion algorithm for `insert_after` and `replace_existing`
-- preserve source-deck theme identity on rebuilt slides unless the run is in
-  explicit restyle mode or the source theme is unusable
-- reuse existing structured families first, adding only the minimum extra family support needed for edit-mode parity
-- avoid creating a new OOXML-native `component-renderers.js` stack
-- keep edit-specific theme/routing/merge metadata in `ppt-agent`; `pptx` only consumes generic structured slide specs
-- forbid full-deck render/eval inside the per-slide rebuild loop
+### Validation expectations
 
-Validation expectations:
-
-- newly added complex slides can render through the structured builder with at least one of table, image panel, comparison columns, process flow, or metric panel
-- edit mode preserves original media when `image_strategy=preserve`
+- newly added complex slides can render through the structured builder
 - edit mode can add new non-text components without altering untouched slides
-- structured rebuild fails closed if single-slide reinsertion is not deterministic
 
 ## Functional Design 4: Image Meta Prompt Pipeline
 
@@ -1206,9 +1196,10 @@ execution grows, and avoids building a second renderer.
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | CLEAR | mode: SELECTIVE_EXPANSION, 0 critical gaps |
 | Codex Review | `/codex review` | Independent 2nd opinion | 0 | — | — |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 3 | OPEN | 32 issues/gaps, 2 critical gaps |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 5 | ISSUES (PLAN) | 8 issues, 5 critical gaps |
 | Design Review | `/plan-design-review` | UI/UX gaps | 1 | CLEAR | score: 8/10 -> 10/10, 12 decisions |
 
-**OUTSIDE VOICE:** unavailable — Codex failed with runtime/transport errors before returning a review.
-**UNRESOLVED:** 0
-**VERDICT:** CEO + DESIGN CLEARED; ENG OPEN — amend the plan per review decisions before implementation.
+**OUTSIDE VOICE:** Claude subagent — 10 findings including routing heuristic unimplementable for plain-text starting state, merge-back OOXML global state risk, and theme extraction feasibility.
+**CROSS-MODEL TENSION:** Outside voice questions whether single-slide OOXML merge-back is necessary vs. create-mode deck generation. Review accepted merge-back as a deliberate tradeoff for source deck identity preservation.
+**UNRESOLVED:** 1 (outside voice finding #4 — routing heuristic assumes structured components that don't yet exist)
+**VERDICT:** CEO + DESIGN CLEARED; ENG ISSUES OPEN — apply 8 review decisions to plan before implementation. Address routing heuristic gap for plain-text starting state.
