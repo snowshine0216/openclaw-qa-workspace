@@ -36,13 +36,14 @@ function groupByArea(defects) {
   const areas = new Map();
   for (const defect of defects) {
     const area = inferFunctionalArea(defect);
-    const entry = areas.get(area) ?? { area, total: 0, open: 0, high: 0, keys: [] };
+    const entry = areas.get(area) ?? { area, total: 0, open: 0, high: 0, keys: [], open_keys: [] };
     entry.total += 1;
     if (isOpen(defect)) {
       entry.open += 1;
-    }
-    if ((defect.priority ?? '').toString().match(HIGH_RISK_PATTERN)) {
-      entry.high += 1;
+      entry.open_keys.push(defect.key);
+      if ((defect.priority ?? '').toString().match(HIGH_RISK_PATTERN)) {
+        entry.high += 1;
+      }
     }
     entry.keys.push(defect.key);
     areas.set(area, entry);
@@ -207,7 +208,12 @@ function buildQAFocusAreas(areaGroups, summary) {
   const areaLines = areaGroups
     .filter((entry) => entry.open > 0)
     .slice(0, 4)
-    .map((entry) => `- ${entry.area}: prioritize ${entry.open} unresolved defects (${entry.high} high).`);
+    .map((entry) => {
+      const keyList = (entry.open_keys ?? []).slice(0, 3).join(', ');
+      const overflow = entry.open > 3 ? ', …' : '';
+      const highNote = entry.high > 0 ? `, ${entry.high} high` : '';
+      return `- **${entry.area}** (${entry.open} open${highNote}): ${keyList}${overflow}`;
+    });
   if (summary.blocking_defects.length > 0) {
     areaLines.unshift(
       `- Blocking defect verification: ${summary.blocking_defects.slice(0, 5).join(', ')}${summary.blocking_defects.length > 5 ? ', ...' : ''}.`,
@@ -216,6 +222,39 @@ function buildQAFocusAreas(areaGroups, summary) {
   return areaLines.length > 0
     ? areaLines.join('\n')
     : '- Smoke test the feature flow and confirm no open defect clusters remain.';
+}
+
+function buildEnvRecommendations(defects, metadata) {
+  const openDefects = defects.filter(isOpen);
+  const areas = [...new Set(openDefects.map(inferFunctionalArea))].slice(0, 4);
+  const lines = [
+    `- Re-run top-risk flows for ${metadata.feature_key} in a production-like environment with feature flags matching defect repro steps.`,
+    `- Validate changes in environments touched by linked PRs (see Section 6).`,
+    `- Preserve repro fixtures for: ${areas.length > 0 ? areas.join(', ') : 'all open defect areas'}.`,
+  ];
+  if (openDefects.length > 0) {
+    lines.push(`- Confirm ${openDefects.length} still-open defect(s) are reproducible before sign-off.`);
+  }
+  return lines.join('\n');
+}
+
+function buildVerificationChecklist(defects, summary) {
+  const items = [];
+  for (const key of summary.blocking_defects.slice(0, 6)) {
+    items.push(`- [ ] ${key} — confirm resolved or explicitly deferred`);
+  }
+  const highOpen = defects
+    .filter((d) => isOpen(d) && (d.priority ?? '').toString().match(HIGH_RISK_PATTERN))
+    .filter((d) => !summary.blocking_defects.includes(d.key))
+    .slice(0, 5);
+  for (const d of highOpen) {
+    items.push(`- [ ] ${d.key} — verify fix in target build (${d.summary ?? ''})`);
+  }
+  if (summary.top_risk_areas.length > 0) {
+    items.push(`- [ ] Regression coverage for: ${summary.top_risk_areas.join(', ')}`);
+  }
+  items.push('- [ ] All linked PR impact areas signed off before release');
+  return items.length > 0 ? items.join('\n') : '- [ ] Smoke test feature flow; confirm no open defects remain.';
 }
 
 function buildAppendix(defects, jiraBaseUrl) {
@@ -332,17 +371,13 @@ ${buildQAFocusAreas(areaGroups, summary)}
 
 ## 9. Test Environment Recommendations
 
-- Re-run the top-risk flows with production-like feature flags.
-- Validate repository-specific changes in the environments touched by the linked PRs.
-- Preserve defect repro fixtures for ${metadata.feature_key}.
+${buildEnvRecommendations(defects, metadata)}
 
 ---
 
 ## 10. Verification Checklist for Release
 
-- Confirm each blocking defect status in Jira matches reality.
-- Verify the highest-risk areas: ${summary.top_risk_areas.length > 0 ? summary.top_risk_areas.join(', ') : 'baseline regression coverage'}.
-- Recheck all linked PR impact areas before sign-off.
+${buildVerificationChecklist(defects, summary)}
 
 ---
 
