@@ -65,6 +65,23 @@ Prompt-only requests are allowed only when the workflow can ground them in verif
 - CLI auto-materialization requires `--source-provenance` for prompt-only runs so the workflow can record inspectable evidence instead of fabricating content
 - manual-artifact imports may skip auto-materialized research, but prompt-only generated runs must not synthesize placeholder provenance
 
+## Design References
+
+The canonical presentation design reference lives at:
+
+- `.agents/skills/ppt-agent/references/ppt-agent-presentation-design-system.md`
+
+Phase 1 create-mode work and Phase 2 edit-mode work should reuse that reference
+for locked presentation decisions, including:
+
+- color tokens and typography defaults
+- preferred slide families and text-only exceptions
+- image-direction and meta-prompt constraints
+- anti-slop rules and notes strategy
+
+Feature plans may add workflow-specific execution details, but they should not
+redefine those baseline presentation decisions in parallel.
+
 ## Create-Mode Build Contract
 
 Phase 1 create mode always generates a **new** deck through `pptx`.
