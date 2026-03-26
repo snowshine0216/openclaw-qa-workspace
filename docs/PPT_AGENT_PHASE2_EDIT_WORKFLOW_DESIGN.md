@@ -1856,7 +1856,7 @@ No repo-root `README.md` change is required. The operator-facing updates belong 
 
 ### Docs To Update
 
-- update [docs/TODOS.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/docs/TODOS.md) so the Phase 2 TODO points to this design
+- update [TODOS.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/TODOS.md) so the Phase 2 TODO points to this design
 - optionally add one cross-reference from [docs/PPT_AGENT_SKILL_DESIGN.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/docs/PPT_AGENT_SKILL_DESIGN.md) to this doc under Functional Design 2
 
 ## What Already Exists
@@ -1901,7 +1901,7 @@ None after this review cycle.
 ## References
 
 - [docs/PPT_AGENT_SKILL_DESIGN.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/docs/PPT_AGENT_SKILL_DESIGN.md)
-- [docs/TODOS.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/docs/TODOS.md)
+- [TODOS.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/TODOS.md)
 - [SKILL.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/ppt-agent/SKILL.md)
 - [reference.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/ppt-agent/reference.md)
 - [pptx SKILL.md](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/.agents/skills/pptx/SKILL.md)
