@@ -1,7 +1,6 @@
 import { existsSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SKILL_ROOT } from './paths.mjs';
 
 function parsePositiveInt(raw, fallback) {
   const parsed = Number.parseInt(String(raw ?? ''), 10);
@@ -83,12 +82,15 @@ function listRunDirs(runsRoot) {
 }
 
 export function pruneRunDirs({
-  runsRoot = join(SKILL_ROOT, 'runs'),
+  runsRoot,
   keepCount = 3,
   dryRun = false,
   protectRunKeys = [],
   minAgeMs = 60 * 60 * 1000,
 } = {}) {
+  if (!runsRoot) {
+    throw new Error('pruneRunDirs: runsRoot parameter is required');
+  }
   const resolvedRunsRoot = resolve(runsRoot);
   const normalizedKeepCount = parsePositiveInt(keepCount, 3);
   const normalizedMinAgeMs = Math.max(0, Number(minAgeMs) || 0);
@@ -151,7 +153,7 @@ function parseCliArgs(argv) {
     keep_count: 3,
     min_age_seconds: 3600,
     dry_run: false,
-    runs_root: join(SKILL_ROOT, 'runs'),
+    runs_root: null,
     protect_run_keys: [],
   };
   for (let index = 0; index < argv.length; index += 1) {
