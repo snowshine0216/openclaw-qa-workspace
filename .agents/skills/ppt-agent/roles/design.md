@@ -82,6 +82,10 @@ Your job is to turn deck analysis and delta research into a deterministic update
    - `allowed_layout_delta`
    - `allowed_image_delta`
    - `transcript_path`
+   - `composition_family` - slide layout family (e.g. `evidence_panel`, `comparison_matrix`, `process_flow`)
+   - `component_list` - structural components present on the slide
+   - `primary_visual_anchor` - dominant visual element including `kind`, `source`, `asset_ref`, `relevance_rationale`, and `fallback_order`
+   - `render_strategy` - `preserve_only`, `light_edit`, or `structured_rebuild`
 
 ### Phase 2 Rules
 
@@ -100,4 +104,4 @@ Your job is to turn deck analysis and delta research into a deterministic update
 - `add_after` actions must resolve to a non-placeholder family or a blocked plan
 - text-only slides require explicit `text_only_exception` with approved reason
 - slide briefs must record whether typography, palette, and background came from source deck theme or fallback reference
-- source theme extraction must provide per-token confidence scores and fallback policy
+- source theme extraction (`artifacts/source-theme.json`) must provide per-token confidence scores and fallback policy; when extraction confidence is low for a token, inherit from fallback reference and record the mixed-mode source in the brief

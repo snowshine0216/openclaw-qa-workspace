@@ -1,8 +1,8 @@
 # PPT Agent Unified Design Contract
 
-> Canonical file: `.agents/skills/ppt-agent/docs/README.md`  
-> Last consolidated: 2026-03-26  
-> Status: Draft design artifact (do not implement until approved)  
+> Canonical file: `.agents/skills/ppt-agent/docs/README.md`
+> Last consolidated: 2026-03-26
+> Status: Implemented (FD0–FD6 complete; tests passing)
 > Consolidated sources:
 > - `.agents/skills/ppt-agent/docs/PPT_AGENT_EDIT_ENRICHMENT_PLAN.md` (`ppt-agent-edit-enrichment-2026-03-26`)
 > - `.agents/skills/ppt-agent/references/ppt-agent-presentation-design-system.md` (`ppt-agent-presentation-design-system-2026-03-26`)
@@ -260,14 +260,18 @@ Repo-level workflow outputs under `.ppt-agent-runs/...` or `ppt/...` are forbidd
 - `logs/stage-status.json`
 - `artifacts/slide_analysis.json` (edit mode)
 - `artifacts/source-media-index.json` (edit mode)
+- `artifacts/source-theme.json` (edit mode; per-token confidence scores for fonts, colors, surfaces)
 - `artifacts/update_plan.md` and `artifacts/update_plan.json` (edit mode)
 - `artifacts/edit_handoff.json` (when edits apply)
 - `artifacts/slide-transcripts/slide-XX.md`
 - `artifacts/transcript-index.json`
-- `artifacts/slide-briefs/slide-XX.json`
+- `artifacts/slide-briefs/slide-XX.json` (canonical enriched brief; required for every non-keep slide)
+- `artifacts/slide-briefs/index.json`
 - `artifacts/visual-plan.json`
 - `artifacts/speaker-notes/slide-XX.md`
-- `artifacts/image-prompts/slide-XX.md` (for `generate_new`)
+- `artifacts/presenter-script.md`
+- `artifacts/image-prompts/slide-XX.md` (required before any image generation)
+- `artifacts/edit-summary.md` (canonical Phase 2 human-facing summary)
 - `artifacts/comparison_evals.json` (edit mode)
 - `artifacts/run_summary.md`
 - `artifacts/operator-summary.json`
@@ -398,13 +402,14 @@ Primary files:
 
 ### FD3: Structured edit execution
 
-- Move from text-only replacement to component-aware mutation.
-- Support controlled single-slide rebuild when seed layout cannot satisfy requested composition.
+- Route `add_after` actions through the reuse-first structured renderer.
+- `light_edit` preserves seed layout with scoped OOXML text edits.
+- `structured_rebuild` delegates to the existing `pptx` structured renderer for the chosen composition family.
+- No parallel edit renderer: structured fallback reuses the shared `pptx` mechanics.
 
 Primary files:
 
 - update: `scripts/lib/pptx-edit-ops.js`, `scripts/lib/edit-handoff.js`
-- add: `scripts/lib/layout-synthesis.js`, `scripts/lib/component-renderers.js`
 
 ### FD4: Image meta-prompt pipeline
 
@@ -436,12 +441,11 @@ Primary files:
 
 ## 9) Testing And Eval Contract
 
-Stub tests (design-only list):
+Implemented tests:
 
 - `tests/slide-transcript-richness.test.js`
 - `tests/visual-plan.test.js`
 - `tests/image-meta-prompt.test.js`
-- `tests/component-renderers.test.js`
 - `tests/workflow-edit-rich-transcript.test.js`
 - `tests/workflow-edit-visual-anchor.test.js`
 - `tests/workflow-edit-table-or-image-upgrade.test.js`
@@ -488,16 +492,16 @@ Recommended two-pass order:
 
 Checklist:
 
-- [ ] Lock image-policy vocabulary in docs and JSON contracts
-- [ ] Enforce run-root output paths
-- [ ] Persist media refs/layout anchors/notes availability in deck analysis
-- [ ] Emit slide-level image/layout strategies in update plans
-- [ ] Split edit handoff into text and image operations
-- [ ] Add preservation audit before finalize success
-- [ ] Emit per-slide transcripts plus transcript index
-- [ ] Implement grounding and `needs_context` stop
-- [ ] Require non-empty logs/summaries/evals/after-renders
-- [ ] Add/update tests and regression fixtures
+- [x] Lock image-policy vocabulary in docs and JSON contracts
+- [x] Enforce run-root output paths
+- [x] Persist media refs/layout anchors/notes availability in deck analysis
+- [x] Emit slide-level image/layout strategies in update plans
+- [x] Split edit handoff into text and image operations
+- [x] Add preservation audit before finalize success
+- [x] Emit per-slide transcripts plus transcript index
+- [x] Implement grounding and `needs_context` stop
+- [x] Require non-empty logs/summaries/evals/after-renders
+- [x] Add/update tests and regression fixtures
 
 ## 11) Open Questions
 

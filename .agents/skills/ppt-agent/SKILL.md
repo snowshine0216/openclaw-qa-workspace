@@ -15,7 +15,7 @@ This skill is built on top of the existing `pptx` skill:
 Default style contract:
 
 - business deck
-- minimal text
+- minimal text on slides (detail belongs in speaker notes, not on-slide copy)
 - analytical visuals first
 - `#FA6611` as the primary accent
 
@@ -115,21 +115,28 @@ existing deck + change request + attachments
        -> require primary_visual_anchor.relevance_rationale
        -> derive visual plan summary
        -> inherit source theme when parseable; otherwise fall back to local design reference
-  -> execution routing
+  -> execution routing (reuse-first: always attempt pptx structured renderer before parallel edit path)
        -> light_edit -> preserve seed + scoped OOXML text edits
        -> structured_rebuild -> reuse pptx structured renderer for chosen family
-  -> write concise on-slide copy
-  -> write detailed speaker notes
+  -> write concise on-slide copy (minimal text; depth goes in speaker notes)
+  -> write detailed speaker notes and image meta prompt artifacts for generated imagery
   -> render before/after
   -> evaluate
+  -> emit edit-summary.md as canonical Phase 2 human-facing summary
 ```
 
 ### Key Artifacts
 
-- `artifacts/slide-briefs/slide-XX.json` - canonical per-slide semantic source of truth
-- `artifacts/source-theme.json` - extracted theme tokens with confidence scores
-- `artifacts/visual-plan.json` - derived summary from slide briefs
+- `artifacts/slide-briefs/slide-XX.json` - canonical per-slide semantic source of truth (required for every non-keep slide)
+- `artifacts/source-theme.json` - extracted theme tokens with per-token confidence scores
+- `artifacts/visual-plan.json` - derived visual plan summary from slide briefs
 - `artifacts/update_plan.json` - execution control plane derived from slide briefs
+- `artifacts/image-prompts/slide-XX.md` - 9-section meta prompt artifact required before any image generation
+- `artifacts/speaker-notes/slide-XX.md` - per-slide presenter notes (5 sections)
+- `artifacts/presenter-script.md` - deck-level stitched presenter script
+- `artifacts/edit-summary.md` - canonical Phase 2 human-facing summary
+
+See [reference.md](reference.md) for the full run-state/resume contract and artifact vocabulary.
 
 ### Composition Planning
 
@@ -304,13 +311,19 @@ Phase 2 emits:
 - `artifacts/raw-slide-captions.json`
 - `artifacts/slide_analysis.json`
 - `artifacts/source-media-index.json`
+- `artifacts/source-theme.json` (extracted theme tokens with per-token confidence scores)
 - `artifacts/research_delta.md`
 - `artifacts/update_plan.md`
 - `artifacts/update_plan.json`
 - `artifacts/slide-transcripts/slide-XX.md`
 - `artifacts/transcript-index.json`
-- `artifacts/slide-briefs/slide-XX.json` (canonical enriched briefs)
+- `artifacts/slide-briefs/slide-XX.json` (canonical enriched briefs, required for every non-keep slide)
 - `artifacts/slide-briefs/index.json`
+- `artifacts/visual-plan.json`
+- `artifacts/speaker-notes/slide-XX.md`
+- `artifacts/presenter-script.md`
+- `artifacts/image-prompts/slide-XX.md` (required before any image generation)
+- `artifacts/edit-summary.md` (canonical Phase 2 human-facing summary)
 - `artifacts/pre_edit_checkpoint.md`
 - `artifacts/manual_handoff.md`
 - `artifacts/edit_handoff.json`

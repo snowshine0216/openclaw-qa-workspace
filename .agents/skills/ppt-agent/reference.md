@@ -162,11 +162,19 @@ Each logical run should have a run root:
 - `artifacts/raw-slide-captions.json`
 - `artifacts/slide_analysis.json`
 - `artifacts/source-media-index.json`
+- `artifacts/source-theme.json` (per-token confidence scores for fonts, colors, surfaces)
 - `artifacts/research_delta.md`
 - `artifacts/update_plan.md`
 - `artifacts/update_plan.json`
 - `artifacts/slide-transcripts/slide-XX.md`
 - `artifacts/transcript-index.json`
+- `artifacts/slide-briefs/slide-XX.json` (canonical enriched brief, required for every non-keep slide)
+- `artifacts/slide-briefs/index.json`
+- `artifacts/visual-plan.json`
+- `artifacts/speaker-notes/slide-XX.md`
+- `artifacts/presenter-script.md`
+- `artifacts/image-prompts/slide-XX.md` (required before any image generation)
+- `artifacts/edit-summary.md` (canonical Phase 2 human-facing summary)
 - `artifacts/pre_edit_checkpoint.md`
 - `artifacts/manual_handoff.md`
 - `artifacts/edit_handoff.json`

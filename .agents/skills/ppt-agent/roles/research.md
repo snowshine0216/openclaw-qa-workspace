@@ -79,7 +79,11 @@ Your job is to identify what changed, what is stale, and what must be updated wi
 - missing source notes do not block transcript generation; emit `none present in source deck`
 - when user request, source deck/material, and Tavily search are still insufficient, stop in `needs_context` instead of guessing
 - include speaker-note formatting and provenance markers in the transcript-ready output
+- research output must supply both on-slide copy grounding and presenter-note enrichment inputs: evidence points, supporting context, transition cues, and delivery guidance for each slide
+- default to a single cached deck-level Tavily search pass; use slide-level follow-up search only for explicitly unresolved gaps — do not repeat the deck-level pass per slide
 
 ### Research Delta Integration
 
 The research delta output feeds into `transcript-enrichment.js` as grounding material for the slide brief's `evidence_points` and `speaker_script` fields. The enrichment module uses the research delta to synthesize presenter-grade notes and evidence-backed content for revised and added slides.
+
+The delta must provide enough depth for `transcript-enrichment.js` to produce all five sections of the per-slide note artifact (`artifacts/speaker-notes/slide-XX.md`): delivery guidance, evidence points, transition cue, supporting context, and provenance notes. Shallow or title-restatement output is a quality gate failure.
