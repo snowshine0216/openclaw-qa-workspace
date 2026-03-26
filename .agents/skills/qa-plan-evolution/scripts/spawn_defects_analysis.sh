@@ -29,7 +29,8 @@ done
 REPORTER_RUN_KEY="${DEFECT_ANALYSIS_RUN_KEY:-$RUN_KEY}"
 
 REPORTER_ROOT="$REPO_ROOT/workspace-reporter/skills/defects-analysis"
-REPORTER_RUN_ROOT="$REPORTER_ROOT/runs/$REPORTER_RUN_KEY"
+ARTIFACT_ROOT_RESOLVER="$REPO_ROOT/.agents/skills/lib/artifactRoots.mjs"
+REPORTER_RUN_ROOT="$(node --input-type=module -e "import { getRunRoot } from '$ARTIFACT_ROOT_RESOLVER'; console.log(getRunRoot('workspace-reporter', 'defects-analysis', process.argv[1]));" "$REPORTER_RUN_KEY")"
 ORCHESTRATE_SH="$REPORTER_ROOT/scripts/orchestrate.sh"
 GAP_BUNDLE_SH="$REPORTER_ROOT/scripts/phase_gap_bundle.sh"
 SPAWN_FROM_MANIFEST="$REPORTER_ROOT/scripts/spawn_from_manifest.mjs"
