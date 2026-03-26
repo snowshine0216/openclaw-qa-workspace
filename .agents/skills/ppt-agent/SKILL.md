@@ -234,6 +234,18 @@ This scores the run against the Phase 1 content, design, and coherence rubric an
 
 The evaluator is render-aware but still artifact-driven. It requires rendered slides from the build step, validates that the render images are actually inspectable, and returns a recoverable partial result when one evaluation dimension cannot complete reliably.
 
+Phase 2 adds enrichment quality gates that check for:
+
+- Text-only added slides without valid text_only_exception
+- Missing primary visual anchor for non-text-only slides
+- Irrelevant preserved primary visual anchor (lacking specific relevance rationale)
+- Missing speaker notes for non-keep slides
+- Missing image meta prompt for generated images
+- Missing description metadata for generated images, charts, or diagrams
+- Shallow transcripts (speaker script too close to slide copy)
+
+Enrichment quality failures are separated from hard preservation failures. Text-only slides currently generate warnings (will become hard failures after structured fallback routing exists).
+
 ## Phase 2 Edit Workflow
 
 Phase 2 updates an existing deck while preserving its narrative spine and visual identity unless the user explicitly asks for a restyle.

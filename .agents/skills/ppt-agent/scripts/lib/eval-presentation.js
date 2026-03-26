@@ -3,6 +3,12 @@
 const fs = require("fs");
 const path = require("path");
 
+const {
+  PRIMARY_VISUAL_ANCHOR_KIND,
+  PRIMARY_VISUAL_ANCHOR_SOURCE,
+  TEXT_ONLY_EXCEPTION_REASON
+} = require("./shared-constants");
+
 function listRenders(dirPath) {
   if (!fs.existsSync(dirPath)) {
     return [];
@@ -86,6 +92,118 @@ function buildExecutiveSummary({ applied, skipped, regressions, recommendation, 
   ];
 }
 
+/**
+ * Evaluate enrichment quality for slide briefs
+ * Checks for visual/plain-text regressions and semantic-anchor mistakes
+ */
+function evaluateEnrichmentQuality({ runRoot, slideActions }) {
+  const enrichmentIssues = [];
+  const enrichmentWarnings = [];
+
+  if (!runRoot) {
+    return { enrichmentIssues, enrichmentWarnings };
+  }
+
+  const slideBriefsDir = path.join(runRoot, "artifacts", "slide-briefs");
+  if (!fs.existsSync(slideBriefsDir)) {
+    // If slide briefs don't exist, skip enrichment quality checks
+    // This allows older test fixtures and workflows to pass
+    return { enrichmentIssues, enrichmentWarnings };
+  }
+
+  const briefFiles = fs.readdirSync(slideBriefsDir)
+    .filter(name => /^slide-\d+\.json$/.test(name));
+
+  // If no brief files exist, skip checks
+  if (briefFiles.length === 0) {
+    return { enrichmentIssues, enrichmentWarnings };
+  }
+
+  briefFiles.forEach(file => {
+    const briefPath = path.join(slideBriefsDir, file);
+    let brief;
+
+    try {
+      brief = loadJson(briefPath);
+    } catch (error) {
+      // Skip malformed briefs
+      return;
+    }
+
+    if (brief.action === "keep") {
+      return;
+    }
+
+    const slideNum = brief.slide_number;
+    const hasVisualAnchor = brief.primary_visual_anchor && brief.primary_visual_anchor.kind;
+    const hasTextOnlyException = brief.text_only_exception && brief.text_only_exception.reason;
+
+    if (!hasVisualAnchor && !hasTextOnlyException) {
+      enrichmentWarnings.push(`Slide ${slideNum}: text-only slide without valid exception or visual anchor`);
+    }
+
+    if (!hasTextOnlyException && !hasVisualAnchor) {
+      enrichmentIssues.push(`Slide ${slideNum}: missing primary visual anchor`);
+    }
+
+    if (hasVisualAnchor) {
+      const anchor = brief.primary_visual_anchor;
+      const isPreserved = anchor.source === PRIMARY_VISUAL_ANCHOR_SOURCE.SOURCE_DECK &&
+                         anchor.kind === PRIMARY_VISUAL_ANCHOR_KIND.EXISTING_MEDIA;
+
+      if (isPreserved) {
+        const hasRelevanceRationale = anchor.relevance_rationale &&
+                                     anchor.relevance_rationale.length > 20 &&
+                                     !anchor.relevance_rationale.includes("established visual anchor");
+
+        if (!hasRelevanceRationale) {
+          enrichmentIssues.push(`Slide ${slideNum}: preserved visual anchor lacks specific relevance rationale`);
+        }
+      }
+    }
+
+    if (!brief.speaker_script || brief.speaker_script.trim().length === 0) {
+      enrichmentIssues.push(`Slide ${slideNum}: missing speaker notes`);
+    }
+
+    if (hasVisualAnchor && brief.primary_visual_anchor.kind === PRIMARY_VISUAL_ANCHOR_KIND.GENERATED_IMAGE) {
+      const imagePromptsDir = path.join(runRoot, "artifacts", "image-prompts");
+      const metaPromptPath = path.join(imagePromptsDir, `slide-${String(slideNum).padStart(2, "0")}.md`);
+
+      if (!fs.existsSync(metaPromptPath)) {
+        enrichmentIssues.push(`Slide ${slideNum}: missing image meta prompt for generated image`);
+      }
+    }
+
+    if (hasVisualAnchor) {
+      const anchor = brief.primary_visual_anchor;
+      const needsDescription = [
+        PRIMARY_VISUAL_ANCHOR_KIND.GENERATED_IMAGE,
+        PRIMARY_VISUAL_ANCHOR_KIND.CHART,
+        PRIMARY_VISUAL_ANCHOR_KIND.DIAGRAM
+      ].includes(anchor.kind);
+
+      if (needsDescription && (!anchor.description || anchor.description.trim().length === 0)) {
+        enrichmentWarnings.push(`Slide ${slideNum}: missing description metadata for ${anchor.kind}`);
+      }
+    }
+
+    if (brief.speaker_script && brief.on_slide_copy) {
+      const scriptNormalized = brief.speaker_script.toLowerCase().trim();
+      const onSlideCopyNormalized = brief.on_slide_copy.toLowerCase().trim();
+
+      if (onSlideCopyNormalized && scriptNormalized.includes(onSlideCopyNormalized)) {
+        const extraContent = scriptNormalized.replace(onSlideCopyNormalized, "").trim();
+        if (extraContent.length < 50) {
+          enrichmentWarnings.push(`Slide ${slideNum}: speaker script too close to slide copy (shallow transcript)`);
+        }
+      }
+    }
+  });
+
+  return { enrichmentIssues, enrichmentWarnings };
+}
+
 function compareDecks({
   beforeDir,
   afterDir,
@@ -110,6 +228,15 @@ function compareDecks({
   const unauthorizedDrift = (preservationAudit?.slides || []).filter((slide) => slide.audit_result === "drifted_without_approval");
   const transcriptCount = (transcriptIndex?.transcripts || []).length;
   const missingRequiredArtifacts = requiredArtifacts.filter((artifactPath) => !fs.existsSync(artifactPath));
+
+  // Evaluate enrichment quality
+  const enrichmentQuality = evaluateEnrichmentQuality({ runRoot, slideActions: plan.slide_actions || [] });
+  const enrichmentIssues = enrichmentQuality.enrichmentIssues || [];
+  const enrichmentWarnings = enrichmentQuality.enrichmentWarnings || [];
+
+  // Note: Enrichment issues are tracked but not added to regressions yet
+  // They will become hard failures after the enrichment pipeline is fully mature
+  // For now, they are informational only and tracked separately from preservation failures
 
   if (afterSlides.length === 0) {
     regressions.push("No after-render output was produced");
@@ -152,7 +279,8 @@ function compareDecks({
     transcript_grounding: transcriptIndex
       ? Number(((transcriptIndex.deck_grounding?.status === "ok" || transcriptIndex.status === "ready") ? 4.4 : 2.8).toFixed(2))
       : 3.0,
-    evidence_completeness: Number((missingRequiredArtifacts.length === 0 ? 4.8 : 1.9).toFixed(2))
+    evidence_completeness: Number((missingRequiredArtifacts.length === 0 ? 4.8 : 1.9).toFixed(2)),
+    enrichment_quality: Number((enrichmentIssues.length === 0 && enrichmentWarnings.length === 0 ? 4.7 : enrichmentIssues.length === 0 ? 3.8 : 2.1).toFixed(2))
   };
   deckScores.overall = Number(
     (
@@ -164,8 +292,9 @@ function compareDecks({
         deckScores.layout_drift +
         deckScores.transcript_completeness +
         deckScores.transcript_grounding +
-        deckScores.evidence_completeness
-      ) / 8
+        deckScores.evidence_completeness +
+        deckScores.enrichment_quality
+      ) / 9
     ).toFixed(2)
   );
 
@@ -199,7 +328,9 @@ function compareDecks({
         message: regressions.length === 0 ? "Deck is already current" : "Comparison evaluation could not determine update safety"
       },
       preservation_audit: preservationAudit,
-      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown"
+      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown",
+      enrichment_issues: enrichmentIssues,
+      enrichment_warnings: enrichmentWarnings
     };
   }
 
@@ -233,7 +364,9 @@ function compareDecks({
         message: "Comparison evaluation could not determine update safety"
       },
       preservation_audit: preservationAudit,
-      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown"
+      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown",
+      enrichment_issues: enrichmentIssues,
+      enrichment_warnings: enrichmentWarnings
     };
   }
 
@@ -267,7 +400,9 @@ function compareDecks({
         message: "Safe to review, not presentation-ready until flagged items are checked"
       },
       preservation_audit: preservationAudit,
-      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown"
+      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown",
+      enrichment_issues: enrichmentIssues,
+      enrichment_warnings: enrichmentWarnings
     };
   }
 
@@ -300,7 +435,9 @@ function compareDecks({
         message: "Requested changes landed and no unacceptable regressions were found"
       },
       preservation_audit: preservationAudit,
-      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown"
+      transcript_status: transcriptIndex ? transcriptIndex.status : "unknown",
+      enrichment_issues: enrichmentIssues,
+      enrichment_warnings: enrichmentWarnings
   };
 }
 
