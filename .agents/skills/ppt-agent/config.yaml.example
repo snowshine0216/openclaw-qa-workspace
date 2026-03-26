@@ -1,0 +1,12 @@
+# Optional Phase 1 text-to-image configuration only.
+# Remove or leave uncreated if the workflow should avoid external image generation.
+# API keys are loaded from .env unless api_key is set directly.
+
+t2i_model:
+  base_url: "https://example-provider.invalid/v1"
+  model: "provider/image-model"
+  api_key_env: "T2I_API_KEY"
+  modalities: ["image"]
+  image_config:
+    aspect_ratio: "16:9"
+    image_size: "1K"
