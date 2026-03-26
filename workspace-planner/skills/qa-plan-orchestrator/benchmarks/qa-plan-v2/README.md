@@ -27,6 +27,13 @@ Execution-fidelity note:
 - **Policy:** new baselines must use real execution through **`benchmark-runner.mjs`** and **`benchmark-grader.mjs`**. These are the only supported executed entrypoints. Use `npm run benchmark:v2:verify-fidelity` with `BENCHMARK_REQUIRE_EXECUTED=1` before merging baseline changes.
 - `benchmark-runner-llm.mjs` and `benchmark-grader-llm.mjs` remain internal implementation details behind the wrapper entrypoints.
 
+Skill-resolution note:
+
+- The active skill for any `qa-plan-v2` run is always the canonical owning package at `workspace-planner/skills/qa-plan-orchestrator`.
+- Snapshot directories such as `iteration-*/champion_snapshot` and `iteration-*/candidate_snapshot` are frozen benchmark evidence only.
+- Benchmark fixtures, copied inputs, and snapshot-local `SKILL.md` files must never be treated as the active runtime skill entrypoint.
+- Benchmark request payloads therefore carry both `canonical_skill_root` and `skill_snapshot_path`, and runners must keep those roles separate.
+
 ## Strategy
 
 `qa-plan-v2` is a global benchmark, not a single-feature benchmark.

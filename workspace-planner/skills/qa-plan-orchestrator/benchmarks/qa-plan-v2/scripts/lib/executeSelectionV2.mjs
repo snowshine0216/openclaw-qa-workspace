@@ -4,6 +4,11 @@ import { basename, dirname, extname, join, resolve } from 'node:path';
 
 import { loadJson, writeJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
 import { DEFAULT_BENCHMARK_ROOT, DEFAULT_ITERATION, getIterationDir } from './benchmarkV2.mjs';
+import {
+  buildForbiddenSkillRoots,
+  resolveCanonicalSkillRoot,
+  validateSkillPathContract,
+} from './benchmarkSkillPaths.mjs';
 import { resolveIterationPath } from './selectionArtifactsV2.mjs';
 
 function buildFixtureIndex(fixturesDocument) {
@@ -138,7 +143,11 @@ async function buildExecutionRequest({
 }) {
   const runDir = runEntry.run_dir;
   const resolvedFixtures = await materializeFixtureInputs(runDir, task.fixture_refs || [], fixtureIndex, benchmarkRoot);
-  const skillSnapshotPath = await resolveSkillSnapshotPath(benchmarkRoot, iterationDir, runDir, runEntry.configuration_dir);
+  const { canonicalSkillRoot, skillSnapshotPath } = validateSkillPathContract({
+    benchmarkRoot,
+    canonicalSkillRoot: resolveCanonicalSkillRoot(benchmarkRoot),
+    skillSnapshotPath: await resolveSkillSnapshotPath(benchmarkRoot, iterationDir, runDir, runEntry.configuration_dir),
+  });
   const transcriptPath = join(runDir, 'execution_transcript.log');
   const requestPath = join(runDir, 'execution_request.json');
 
@@ -161,6 +170,7 @@ async function buildExecutionRequest({
     blind_policy: task.blind_policy || null,
     prompt: task.prompt,
     expectations: task.expectations || [],
+    canonical_skill_root: canonicalSkillRoot,
     run: {
       configuration_dir: runEntry.configuration_dir,
       run_number: runEntry.run_number,
@@ -172,6 +182,11 @@ async function buildExecutionRequest({
       metrics_path: join(runEntry.output_dir, 'metrics.json'),
     },
     skill_snapshot_path: skillSnapshotPath,
+    forbidden_skill_roots: buildForbiddenSkillRoots({
+      benchmarkRoot,
+      runDir,
+      skillSnapshotPath,
+    }),
     fixtures: resolvedFixtures,
   };
 

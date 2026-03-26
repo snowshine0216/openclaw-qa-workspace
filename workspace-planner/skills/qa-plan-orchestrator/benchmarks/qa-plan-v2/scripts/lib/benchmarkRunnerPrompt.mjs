@@ -35,6 +35,10 @@ function normalizeText(value) {
 }
 
 function buildPromptHeader(request) {
+  const fixtureRoots = (request.fixtures || [])
+    .flatMap((fixture) => extractFixtureRoots(fixture))
+    .filter(Boolean);
+
   return [
     `Benchmark case: ${request.case_id}`,
     `Feature: ${request.feature_id}`,
@@ -42,9 +46,15 @@ function buildPromptHeader(request) {
     `Primary phase under test: ${request.primary_phase}`,
     `Evidence mode: ${request.evidence_mode}`,
     `Configuration: ${request.run.configuration_dir}`,
+    `Canonical skill root: ${request.canonical_skill_root || '(not provided)'}`,
+    `Skill snapshot path: ${request.skill_snapshot_path || '(none)'}`,
+    `Allowed fixture roots: ${fixtureRoots.length ? fixtureRoots.join(', ') : '(none)'}`,
     '',
     'Rules:',
     '- Use only the benchmark evidence listed below.',
+    '- Treat the canonical skill root as the only active qa-plan-orchestrator package for this run.',
+    '- Treat any skill snapshot or benchmark-local SKILL.md as frozen reference evidence, never as the active entrypoint.',
+    '- Never infer the active skill from files under benchmarks/, inputs/, or snapshot directories.',
     '- Save the main deliverable to ./outputs/result.md.',
     '- Save ./outputs/execution_notes.md with: evidence used, files produced, blockers.',
     '',
@@ -150,7 +160,8 @@ async function formatEvidenceSection(title, descriptors) {
 function buildSnapshotGuidance(request) {
   if (usesSkillSnapshot(request)) {
     return [
-      'Use the qa-plan-orchestrator skill snapshot evidence below as the authoritative workflow package.',
+      'The canonical skill root named above is authoritative for this benchmark run.',
+      'Use the skill snapshot evidence below as a frozen export of that canonical skill for reference and comparison only.',
       'If snapshot evidence is present, do not claim SKILL.md or the listed references are missing.',
     ];
   }

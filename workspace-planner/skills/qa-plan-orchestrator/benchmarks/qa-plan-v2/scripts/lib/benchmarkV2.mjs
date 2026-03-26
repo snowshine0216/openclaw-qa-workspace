@@ -3,6 +3,7 @@ import { join, relative, resolve } from 'node:path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { validateCanonicalSkillRoot } from './benchmarkSkillPaths.mjs';
 import {
   BASELINE_CONFIGS,
   buildComparisonMetadata as buildBaselineComparisonMetadata,
@@ -211,6 +212,7 @@ export function buildComparisonMetadata({
   configurationDir,
   evalId,
   runNumber,
+  canonicalSkillRoot,
   snapshotPath,
   executorModel = null,
   reasoningEffort = null,
@@ -228,6 +230,7 @@ export function buildComparisonMetadata({
       reasoningEffort,
     }),
     case_id: caseDefinition.case_id,
+    canonical_skill_root: canonicalSkillRoot,
     feature_id: caseDefinition.feature_id,
     feature_family: caseDefinition.feature_family,
     knowledge_pack_key: caseDefinition.knowledge_pack_key,
@@ -293,6 +296,10 @@ export async function prepareBenchmarkV2Baseline({
   reasoningEffort = null,
 }) {
   const iterationDir = getIterationDir(benchmarkRoot, iteration);
+  const canonicalSkillRoot = validateCanonicalSkillRoot({
+    benchmarkRoot,
+    canonicalSkillRoot: skillRoot,
+  });
   const snapshotDir = join(iterationDir, 'champion_snapshot');
   const benchmarkManifest = await loadJson(join(benchmarkRoot, 'benchmark_manifest.json'));
   const casesDocument = await loadJson(join(benchmarkRoot, 'cases.json'));
@@ -300,7 +307,7 @@ export async function prepareBenchmarkV2Baseline({
   const fixtureIndex = buildFixtureIndex(fixturesDocument);
 
   await validateCaseMatrix({ benchmarkManifest, casesDocument, fixturesDocument });
-  await seedChampionSnapshot(skillRoot, snapshotDir);
+  await seedChampionSnapshot(canonicalSkillRoot, snapshotDir);
   const resolvedCases = casesDocument.cases.map((caseDefinition) => hydrateCaseDefinition(caseDefinition, fixtureIndex));
 
   const benchmarkContext = {
@@ -310,6 +317,7 @@ export async function prepareBenchmarkV2Baseline({
     comparison_mode: 'baseline_value',
     primary_configuration: 'with_skill',
     reference_configuration: 'without_skill',
+    canonical_skill_root: relative(benchmarkRoot, canonicalSkillRoot) || '.',
     skill_snapshot_role: 'champion_seed',
     skill_snapshot_path: relative(benchmarkRoot, snapshotDir),
     executor_model: executorModel,
@@ -345,7 +353,7 @@ export async function prepareBenchmarkV2Baseline({
 
   const manifest = {
     skill_name: benchmarkManifest.skill_name,
-    skill_path: relative(benchmarkRoot, skillRoot) || '.',
+    skill_path: relative(benchmarkRoot, canonicalSkillRoot) || '.',
     workspace: '.',
     iteration,
     iteration_dir: relative(benchmarkRoot, iterationDir) || '.',
@@ -370,6 +378,7 @@ export async function prepareBenchmarkV2Baseline({
           configurationDir,
           evalId,
           runNumber,
+          canonicalSkillRoot: relative(benchmarkRoot, canonicalSkillRoot) || '.',
           snapshotPath: relative(benchmarkRoot, snapshotDir),
           executorModel,
           reasoningEffort,

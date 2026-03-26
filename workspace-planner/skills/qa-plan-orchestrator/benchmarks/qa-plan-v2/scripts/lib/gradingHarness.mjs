@@ -4,6 +4,12 @@ import { existsSync, readFileSync } from 'node:fs';
 import { basename, dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  buildForbiddenSkillRoots,
+  resolveCanonicalSkillRoot,
+  validateSkillPathContract,
+} from './benchmarkSkillPaths.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const DEFAULT_EXECUTOR_SCRIPT = join(__dirname, '..', 'benchmark-runner.mjs');
@@ -136,6 +142,11 @@ async function buildExecutionRequest(runDefinition, benchmarkRoot) {
     runDefinition.caseDefinition.fixture_refs || [],
     benchmarkRoot,
   );
+  const { canonicalSkillRoot, skillSnapshotPath } = validateSkillPathContract({
+    benchmarkRoot,
+    canonicalSkillRoot: resolveCanonicalSkillRoot(benchmarkRoot),
+    skillSnapshotPath: runDefinition.configuration.snapshotRoot,
+  });
 
   const request = {
     benchmark_version: 'qa-plan-v2',
@@ -155,6 +166,7 @@ async function buildExecutionRequest(runDefinition, benchmarkRoot) {
     expectations: runDefinition.evalMetadata.expectations
       || runDefinition.evalMetadata.assertions
       || [],
+    canonical_skill_root: canonicalSkillRoot,
     run: {
       configuration_dir: runDefinition.configuration.configurationDir,
       uses_skill_snapshot: true,
@@ -166,7 +178,12 @@ async function buildExecutionRequest(runDefinition, benchmarkRoot) {
       timing_path: join(runDir, 'timing.json'),
       metrics_path: join(outputDir, 'metrics.json'),
     },
-    skill_snapshot_path: runDefinition.configuration.snapshotRoot,
+    skill_snapshot_path: skillSnapshotPath,
+    forbidden_skill_roots: buildForbiddenSkillRoots({
+      benchmarkRoot,
+      runDir,
+      skillSnapshotPath,
+    }),
     fixtures,
   };
 

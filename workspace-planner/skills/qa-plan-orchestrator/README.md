@@ -9,6 +9,7 @@ Human-facing guide for the skill package. This file is intentionally short.
 - Writer and reviewer rules: `references/*.md`
 - Long-form design docs: `docs/` (`docs/KNOWLEDGE_PACK_RUNTIME.md` is the canonical knowledge-pack runtime doc)
 - Historical design docs: `docs/archive/`
+- Benchmark execution contract: `benchmarks/qa-plan-v2/README.md` and `benchmarks/qa-plan-v2/scripts/lib/benchmarkSkillPaths.mjs`
 
 ## What This Skill Produces
 

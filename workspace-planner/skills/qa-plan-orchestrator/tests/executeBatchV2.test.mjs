@@ -186,7 +186,9 @@ await writeFile(join(dirname(requestPath), 'executor-observation.json'), JSON.st
   configuration: request.run.configuration_dir,
   fixture_local_paths: request.fixtures.map((fixture) => fixture.local_path || null),
   material_local_paths: request.fixtures.flatMap((fixture) => (fixture.materials || []).map((material) => material.local_path || null)),
+  canonical_skill_root: request.canonical_skill_root,
   skill_snapshot_path: request.skill_snapshot_path,
+  forbidden_skill_roots: request.forbidden_skill_roots,
 }, null, 2), 'utf8');
 console.log('runner-complete');
 `, 'utf8');
@@ -225,7 +227,10 @@ console.log('grader-complete');
     assert.equal(request.case_id, 'CASE-1');
     assert.equal(request.run.configuration_dir, 'with_skill');
     assert.equal(request.fixture_refs[0], 'BLIND-BCIN-976');
+    assert.equal(request.canonical_skill_root, tmp);
     assert.ok(request.skill_snapshot_path.endsWith('iteration-0/champion_snapshot'));
+    assert.ok(request.forbidden_skill_roots.some((entry) => entry.endsWith('benchmarks/qa-plan-v2')));
+    assert.ok(request.forbidden_skill_roots.some((entry) => entry.endsWith('run-1/inputs')));
 
     const copiedBlindFixture = join(iterationDir, 'eval-1', 'with_skill', 'run-1', 'inputs', 'fixtures', 'BLIND-BCIN-976', 'materials', 'BCIN-976.customer-scope.json');
     assert.equal(existsSync(copiedBlindFixture), true);
@@ -243,8 +248,11 @@ console.log('grader-complete');
     assert.equal(grading.summary.pass_rate, 1);
 
     const observation = JSON.parse(await readFile(join(iterationDir, 'eval-1', 'with_skill', 'run-1', 'executor-observation.json'), 'utf8'));
+    assert.equal(observation.canonical_skill_root, tmp);
     assert.ok(observation.material_local_paths.some((entry) => entry && entry.endsWith('BCIN-976.customer-scope.json')));
     assert.ok(observation.skill_snapshot_path.endsWith('iteration-0/champion_snapshot'));
+    assert.ok(observation.forbidden_skill_roots.some((entry) => entry.endsWith('benchmarks/qa-plan-v2')));
+    assert.ok(observation.forbidden_skill_roots.some((entry) => entry.endsWith('run-1/inputs')));
 
     const batchManifest = JSON.parse(await readFile(join(iterationDir, 'batches', 'batch-1', 'batch_manifest.json'), 'utf8'));
     assert.equal(batchManifest.summary.completed_run_count, 3);
