@@ -278,10 +278,107 @@ function packDeck({ unpackedRoot, outputPath }) {
   }
 }
 
+/**
+ * Determine render strategy for add_after or revise actions.
+ * Routes to light_edit or structured_rebuild based on heuristics.
+ *
+ * @param {Object} params
+ * @param {string} params.action - "add_after" or "revise"
+ * @param {Object} params.slideBrief - Slide brief with composition_family, component_list, etc.
+ * @param {Object} params.seedLayout - Layout info from duplicated/existing slide
+ * @param {number} params.allowedLayoutDelta - Max allowed layout change threshold
+ * @returns {Object} { strategy: "light_edit" | "structured_rebuild", reason: string }
+ */
+function determineRenderStrategy({
+  action,
+  slideBrief,
+  seedLayout,
+  allowedLayoutDelta
+}) {
+  const { RENDER_STRATEGY, COMPOSITION_FAMILY, PRIMARY_VISUAL_ANCHOR_KIND } = require("./shared-constants");
+
+  // Text-only families that can use light_edit
+  const textOnlyFamilies = [
+    COMPOSITION_FAMILY.TEXT_STATEMENT,
+    COMPOSITION_FAMILY.SECTION_DIVIDER,
+    COMPOSITION_FAMILY.CLOSING_STATEMENT
+  ];
+
+  // Complex component types requiring structured_rebuild
+  const complexComponents = [
+    PRIMARY_VISUAL_ANCHOR_KIND.TABLE,
+    PRIMARY_VISUAL_ANCHOR_KIND.CHART,
+    PRIMARY_VISUAL_ANCHOR_KIND.DIAGRAM,
+    PRIMARY_VISUAL_ANCHOR_KIND.METRIC_PANEL,
+    PRIMARY_VISUAL_ANCHOR_KIND.COMPARISON_LAYOUT,
+    PRIMARY_VISUAL_ANCHOR_KIND.PROCESS_FLOW
+  ];
+
+  const compositionFamily = slideBrief.composition_family;
+  const primaryAnchorKind = slideBrief.primary_visual_anchor?.kind;
+
+  // Check if slide needs complex components
+  if (primaryAnchorKind && complexComponents.includes(primaryAnchorKind)) {
+    return {
+      strategy: RENDER_STRATEGY.STRUCTURED_REBUILD,
+      reason: `Slide requires complex component: ${primaryAnchorKind}`
+    };
+  }
+
+  // Check if composition family requires structured rendering
+  if (compositionFamily && !textOnlyFamilies.includes(compositionFamily)) {
+    const complexFamilies = [
+      COMPOSITION_FAMILY.EVIDENCE_PANEL,
+      COMPOSITION_FAMILY.COMPARISON_MATRIX,
+      COMPOSITION_FAMILY.PROCESS_FLOW,
+      COMPOSITION_FAMILY.TABLE_SUMMARY,
+      COMPOSITION_FAMILY.QA_TWO_COLUMN
+    ];
+
+    if (complexFamilies.includes(compositionFamily)) {
+      return {
+        strategy: RENDER_STRATEGY.STRUCTURED_REBUILD,
+        reason: `Composition family requires structured rendering: ${compositionFamily}`
+      };
+    }
+  }
+
+  // For add_after: check if intended family matches seed layout
+  if (action === "add_after") {
+    if (!seedLayout || seedLayout.family !== compositionFamily) {
+      return {
+        strategy: RENDER_STRATEGY.STRUCTURED_REBUILD,
+        reason: "Intended family not satisfied by duplicated seed layout"
+      };
+    }
+  }
+
+  // Check for text expansion beyond allowed delta
+  if (slideBrief.on_slide_copy && allowedLayoutDelta !== undefined) {
+    const textLength = Array.isArray(slideBrief.on_slide_copy)
+      ? slideBrief.on_slide_copy.join(" ").length
+      : String(slideBrief.on_slide_copy).length;
+
+    if (textLength > allowedLayoutDelta) {
+      return {
+        strategy: RENDER_STRATEGY.STRUCTURED_REBUILD,
+        reason: "Text expansion exceeds allowed_layout_delta"
+      };
+    }
+  }
+
+  // Default to light_edit for simple text changes
+  return {
+    strategy: RENDER_STRATEGY.LIGHT_EDIT,
+    reason: "Slide stays within light-edit limits"
+  };
+}
+
 module.exports = {
   applyTextUpdateToSlide,
   basenameFromRelative,
   cleanUnpackedRoot,
+  determineRenderStrategy,
   listPresentationSlides,
   packDeck,
   registerSlideInPresentation,
