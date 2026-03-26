@@ -3,6 +3,7 @@ import { constants } from 'node:fs';
 import { access, cp, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getRunRoot } from '../../../../../.agents/skills/lib/artifactRoots.mjs';
 
 export const PHASE_ORDER = [
   'phase_0_runtime_setup',
@@ -351,7 +352,11 @@ export function resolveRunPaths(runDir, featureId) {
 
 export function resolveDefaultRunDir(featureId, cwd = process.cwd()) {
   void cwd;
-  return resolve(resolveCanonicalSkillRoot(), 'runs', featureId);
+  const override = String(process.env.FQPO_RUN_DIR || '').trim();
+  if (override) {
+    return resolve(override);
+  }
+  return getRunRoot('workspace-planner', 'qa-plan-orchestrator', featureId);
 }
 
 export function normalizeIssueKeys(value) {
@@ -728,25 +733,34 @@ export function buildRequestFulfillmentModel(task, featureId = task?.feature_id 
 }
 
 export function resolveLegacyRunDir(featureId) {
-  return resolve(REPO_ROOT, 'workspace-planner', 'projects', 'feature-plan', featureId);
+  return resolve(resolveCanonicalSkillRoot(), 'runs', featureId);
 }
 
 async function maybeMigrateLegacyRun(featureId, runDir) {
-  if (await fileExists(runDir)) {
+  const override = String(process.env.FQPO_RUN_DIR || '').trim();
+  if (override) {
     return { migrated: false, legacyRunDir: '' };
   }
 
+  const canonicalExists = await fileExists(runDir);
   const legacyRunDir = resolveLegacyRunDir(featureId);
-  if (!(await fileExists(legacyRunDir))) {
-    return { migrated: false, legacyRunDir };
+  const legacyExists = await fileExists(legacyRunDir);
+
+  if (canonicalExists && legacyExists) {
+    throw new Error(
+      `MIGRATION_CONFLICT: Both canonical run (${runDir}) and legacy run (${legacyRunDir}) exist. ` +
+      `Resolve manually by removing one or set FQPO_RUN_DIR to choose explicitly.`
+    );
   }
 
-  await cp(legacyRunDir, runDir, { recursive: true });
-  return {
-    migrated: true,
-    legacyRunDir,
-    migratedAt: nowIso(),
-  };
+  if (!canonicalExists && legacyExists) {
+    throw new Error(
+      `MIGRATION_REQUIRED: Legacy run exists at ${legacyRunDir} but canonical location ${runDir} is empty. ` +
+      `Run migration script first before proceeding.`
+    );
+  }
+
+  return { migrated: false, legacyRunDir: '' };
 }
 
 async function safeReadDir(path) {
