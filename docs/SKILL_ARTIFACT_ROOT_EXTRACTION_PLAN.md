@@ -250,21 +250,20 @@ workspace-artifacts/
 
 ### Delivery strategy
 
-This design lands in two PRs.
+This design lands in one atomic PR.
 
-PR1: run roots and discovery boundary
+**Rationale for single PR:** The outside voice review identified that benchmark trees with `SKILL.md` files are the actual discovery pollution; run directories are just housekeeping. Splitting into two PRs sequences the easy part first without fixing the real bug. A single atomic PR fixes all pollution at once with simpler integration surface.
 
-1. add the shared resolver and lock the override contract
-2. migrate live run roots for `qa-plan-evolution`, `qa-plan-orchestrator`, and `defects-analysis`
-3. update repo ignore rules plus source-owned docs to define the runtime-only boundary
-4. add the in-repo policy guard and document the external discovery owner
+**Implementation sequence:**
 
-PR2: benchmark runtime relocation and isolation
-
-1. split benchmark definition/archive roots from benchmark runtime roots
-2. migrate legacy benchmark runtime state for `qa-plan-v1` and `qa-plan-v2`
-3. enforce runtime isolation with realpath-aware overlap checks
-4. update benchmark smoke/integration coverage
+1. Add the shared artifact-root resolver and lock the override contract
+2. Migrate live run roots for `qa-plan-evolution`, `qa-plan-orchestrator`, and `defects-analysis`
+3. Split benchmark definition/archive roots from benchmark runtime roots
+4. Migrate legacy benchmark runtime state for `qa-plan-v1` and `qa-plan-v2`
+5. Enforce runtime isolation with realpath-aware overlap checks
+6. Update repo ignore rules plus source-owned docs to define the runtime-only boundary
+7. Add the in-repo policy guard and document the external discovery owner
+8. Update benchmark smoke/integration coverage
 
 ## Functional Design 1
 
@@ -392,15 +391,12 @@ Expected content changes:
 - migrate `qa-plan-v1` runtime outputs under `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v1/` or explicitly remove support for `qa-plan-v1` in the same change set; this design chooses migration, not retirement
 - update the `qa-plan-v1` library-level path helpers in `scripts/lib/iteration0Benchmark.mjs`, not only the top-level runner, so `DEFAULT_BENCHMARK_ROOT`, `getIterationDir`, snapshot seeding, and eval workspace creation all root under `workspace-artifacts/`
 - stop all new writes to source-owned `archive/` trees after migration; archive roots become read-only evidence
-- legacy benchmark runtime migration uses the same boring precedence rule as live runs:
-  - canonical runtime root silently wins if already present
-  - legacy source-tree benchmark runtime is adopted only when the canonical runtime root is absent
-  - migration is atomic at the benchmark-family runtime-root level, not file-by-file
-  - same-filesystem moves may use `rename`
-  - cross-filesystem moves must stage-copy under the artifact root, validate, then promote
-  - failed migration must remove incomplete staging output and leave the canonical runtime root absent
-  - if both legacy and canonical benchmark runtime roots exist and differ, runtime uses canonical and records a machine-readable divergence note in benchmark metadata
-- route directory adoption through one shared helper (for example `.agents/skills/lib/adoptDirectoryTree.mjs`) so live-run migration and benchmark-runtime migration do not re-implement slightly different locking, staging, cleanup, and divergence semantics
+- legacy benchmark runtime migration uses a fail-fast approach:
+  - if old state exists in the source tree, fail with a clear error: "benchmark runtime state found in source tree — run the migration script first"
+  - migration is a separate explicit operation, not an on-first-write side effect
+  - migration script uses `mv` (same-filesystem) or copy-then-delete (cross-filesystem); no staging directories, no divergence detection
+  - if both legacy and canonical benchmark runtime roots exist, fail with an error rather than silently preferring one; require the operator to resolve the conflict explicitly
+- route benchmark and live-run migration through one shared migration script rather than inline on-first-write logic; this keeps runtime code simple and migration explicit
 
 #### Phase C: Strengthen isolation at runtime
 
