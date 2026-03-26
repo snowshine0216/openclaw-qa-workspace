@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run test:phase1",
     "test:phase1": "node --test tests/build-pptx-from-handoff.test.js tests/create-run.test.js tests/evaluate-run.test.js tests/evaluation-failure-paths.test.js tests/generate-image.test.js tests/handoff-pipeline.test.js tests/helper-cli-contract.test.js tests/load-config.test.js tests/phase1-e2e.test.js tests/phase2-gating.test.js tests/pptx-handoff.test.js tests/ppteval-rubric.test.js tests/reference-analysis.test.js tests/refinement-loop.test.js tests/run-manifest.test.js tests/slide-transcript.test.js tests/style-contract.test.js tests/workflow-create-build-path.test.js tests/workflow-create-image-priority.test.js tests/workflow-create-partial-success.test.js tests/workflow-create-smoke.test.js tests/workflow-create-states.test.js",
-    "test:phase2": "node --test tests/apply-edit-run.test.js tests/edit-run.test.js tests/finalize-edit-run.test.js tests/update-plan.test.js tests/workflow-edit-contract.test.js tests/workflow-edit-image-preservation.test.js tests/workflow-edit-run-artifacts.test.js tests/workflow-edit-smoke.test.js",
+    "test:phase2": "node --test tests/apply-edit-run.test.js tests/edit-run.test.js tests/finalize-edit-run.test.js tests/update-plan.test.js tests/workflow-edit-contract.test.js tests/workflow-edit-image-preservation.test.js tests/workflow-edit-run-artifacts.test.js tests/workflow-edit-smoke.test.js tests/slide-transcript-richness.test.js tests/visual-plan.test.js tests/image-meta-prompt.test.js tests/structured-slide-spec.test.js tests/run-manifest-enrichment.test.js",
     "test:all": "node --test tests/*.test.js",
     "create-run": "node scripts/create-run.js",
     "edit-run": "node scripts/edit-run.js",
