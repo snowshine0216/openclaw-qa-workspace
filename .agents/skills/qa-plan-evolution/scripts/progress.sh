@@ -3,6 +3,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$DIR/.." && pwd)"
 REPO_ROOT="$(cd "$ROOT/../../.." && pwd)"
+ARTIFACT_ROOT_RESOLVER="$REPO_ROOT/.agents/skills/lib/artifactRoots.mjs"
 RUN_KEY=""
 RUN_ROOT=""
 while [[ $# -gt 0 ]]; do
@@ -16,7 +17,7 @@ if [[ -z "$RUN_KEY" ]]; then
   echo "usage: $0 --run-key <key> [--run-root path]" >&2
   exit 1
 fi
-CANONICAL_RUN_ROOT="$REPO_ROOT/workspace-artifacts/skills/shared/qa-plan-evolution/runs/$RUN_KEY"
+CANONICAL_RUN_ROOT="$(node --input-type=module -e "import { getRunRoot } from '$ARTIFACT_ROOT_RESOLVER'; console.log(getRunRoot('shared', 'qa-plan-evolution', process.argv[1]));" "$RUN_KEY")"
 if [[ -z "$RUN_ROOT" ]]; then
   RUN_ROOT="$CANONICAL_RUN_ROOT"
 fi

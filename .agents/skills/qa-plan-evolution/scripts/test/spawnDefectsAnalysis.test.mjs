@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chmod, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, cp, mkdtemp, mkdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -23,17 +23,30 @@ test('spawn_defects_analysis uses the reporter run key for gap-bundle refresh', 
   const evolutionRunKey = 'evolution-20260321';
   const reporterRunKey = 'BCIN-7289';
   const reporterRoot = join(repoRoot, 'workspace-reporter', 'skills', 'defects-analysis');
+  const artifactResolverRoot = join(repoRoot, '.agents', 'skills', 'lib');
   const scriptsRoot = join(reporterRoot, 'scripts');
+  const reporterRunRoot = join(
+    repoRoot,
+    'workspace-artifacts',
+    'skills',
+    'workspace-reporter',
+    'defects-analysis',
+    'runs',
+    reporterRunKey,
+  );
 
   try {
     await mkdir(scriptsRoot, { recursive: true });
+    await mkdir(artifactResolverRoot, { recursive: true });
+    await cp(
+      join(REPO_ROOT, '.agents/skills/lib/artifactRoots.mjs'),
+      join(artifactResolverRoot, 'artifactRoots.mjs'),
+    );
     await writeExecutable(
       join(scriptsRoot, 'orchestrate.sh'),
       `#!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-RUN_KEY="$1"
-mkdir -p "$SCRIPT_DIR/../runs/$RUN_KEY/context"
+exit 0
 `,
     );
     await writeExecutable(
@@ -65,16 +78,14 @@ printf '%s\n%s\n%s\n' "$RUN_KEY" "$RUN_ROOT" "$INVOKED_BY" > "$RUN_ROOT/context/
 
     assert.equal(result.status, 0, result.stderr);
     const argsPath = join(
-      reporterRoot,
-      'runs',
-      reporterRunKey,
+      reporterRunRoot,
       'context',
       'gap_bundle_args.txt',
     );
     const recordedArgs = (await readFile(argsPath, 'utf8')).trim().split('\n');
     assert.deepEqual(recordedArgs, [
       reporterRunKey,
-      join(reporterRoot, 'runs', reporterRunKey),
+      await realpath(reporterRunRoot),
       'qa-plan-evolution',
     ]);
     assert.equal(

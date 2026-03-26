@@ -24,6 +24,7 @@ import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
 
 const SCRIPT_SRC = join(__dirname, '..', 'scripts', 'lib', 'save_context.sh');
+const ARTIFACT_ROOTS_SRC = join(__dirname, '..', '..', '..', '..', '.agents', 'skills', 'lib', 'artifactRoots.mjs');
 
 /** Skill-root layout: tmp/scripts/lib/save_context.sh → SKILL_ROOT=tmp, output under tmp/runs/<feature-id>/context */
 function skillRootLayout(tmp) {
@@ -52,14 +53,15 @@ test('save_inline_content: saves inline content to context/<artifact>.md', async
   await mkdir(scriptsLibDir, { recursive: true });
   await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
   const { code, stdout } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'jira_issue_BCIN-6709',
     'Summary: Add pause mode\nDescription: User can pause the report.',
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
+  const outPath = join(runDir, 'context', 'jira_issue_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('Summary: Add pause mode'));
   assert.ok(content.includes('Description: User can pause the report.'));
@@ -77,14 +79,15 @@ test('copy_file_content: copies file when 3rd arg is file path', async () => {
   const srcFile = join(tmp, 'diff.md');
   await writeFile(srcFile, 'diff --git a/foo b/foo\n+new line');
 
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
   const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'github_diff_biweb',
     srcFile,
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'github_diff_biweb.md');
+  const outPath = join(runDir, 'context', 'github_diff_biweb.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('diff --git'));
   assert.ok(content.includes('+new line'));
@@ -98,7 +101,8 @@ test('archive_before_overwrite: archives existing file before overwrite', async 
   await mkdir(scriptsLibDir, { recursive: true });
   await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
-  const ctxDir = join(tmp, 'runs', 'BCIN-6709', 'context');
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
+  const ctxDir = join(runDir, 'context');
   await mkdir(ctxDir, { recursive: true });
   const firstPath = join(ctxDir, 'qa_plan_atlassian_BCIN-6709.md');
   await writeFile(firstPath, 'original content');
@@ -107,7 +111,7 @@ test('archive_before_overwrite: archives existing file before overwrite', async 
     'BCIN-6709',
     'qa_plan_atlassian_BCIN-6709',
     'updated content',
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
   const content = await readFile(firstPath, 'utf8');
@@ -127,14 +131,15 @@ test('support_subpaths: creates figma/ subdir for figma/figma_metadata_...', asy
   await mkdir(scriptsLibDir, { recursive: true });
   await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
   const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'figma/figma_metadata_BCIN-6709',
     'Figma metadata JSON here',
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'figma', 'figma_metadata_BCIN-6709.md');
+  const outPath = join(runDir, 'context', 'figma', 'figma_metadata_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('Figma metadata JSON here'));
 
@@ -147,14 +152,15 @@ test('normalize_md_suffix: strips .md from artifact name when provided', async (
   await mkdir(scriptsLibDir, { recursive: true });
   await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
   const { code } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'jira_issue_BCIN-6709.md',
     'content',
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
-  const outPath = join(tmp, 'runs', 'BCIN-6709', 'context', 'jira_issue_BCIN-6709.md');
+  const outPath = join(runDir, 'context', 'jira_issue_BCIN-6709.md');
   const content = await readFile(outPath, 'utf8');
   assert.ok(content.includes('content'));
 
@@ -184,14 +190,48 @@ test('emit_saved_message: prints SAVED: context/<name>.md on success', async () 
   await mkdir(scriptsLibDir, { recursive: true });
   await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
 
+  const runDir = join(tmp, 'runs', 'BCIN-6709');
   const { code, stdout } = await runSaveContext(scriptsLibDir, [
     'BCIN-6709',
     'research_bg_tavily_reCreateReportInstance_BCIN-6709',
     'search result',
-  ]);
+  ], { FQPO_RUN_DIR: runDir });
 
   assert.equal(code, 0);
   assert.match(stdout, /^SAVED: context\/research_bg_tavily_reCreateReportInstance_BCIN-6709\.md/);
+
+  await rm(tmp, { recursive: true, force: true });
+});
+
+test('default_artifact_root: resolves the canonical artifact-root run directory when FQPO_RUN_DIR is unset', async () => {
+  const tmp = await mkdtemp(join(tmpdir(), 'save_ctx_'));
+  const scriptsLibDir = skillRootLayout(tmp);
+  const artifactLibDir = join(tmp, '.agents', 'skills', 'lib');
+  await mkdir(scriptsLibDir, { recursive: true });
+  await mkdir(artifactLibDir, { recursive: true });
+  await cp(SCRIPT_SRC, join(scriptsLibDir, 'save_context.sh'));
+  await cp(ARTIFACT_ROOTS_SRC, join(artifactLibDir, 'artifactRoots.mjs'));
+
+  const { code } = await runSaveContext(scriptsLibDir, [
+    'BCIN-6709',
+    'jira_issue_BCIN-6709',
+    'content',
+  ], { REPO_ROOT: tmp });
+
+  assert.equal(code, 0);
+  const outPath = join(
+    tmp,
+    'workspace-artifacts',
+    'skills',
+    'workspace-planner',
+    'qa-plan-orchestrator',
+    'runs',
+    'BCIN-6709',
+    'context',
+    'jira_issue_BCIN-6709.md',
+  );
+  const content = await readFile(outPath, 'utf8');
+  assert.ok(content.includes('content'));
 
   await rm(tmp, { recursive: true, force: true });
 });

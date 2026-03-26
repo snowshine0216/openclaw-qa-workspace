@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, utimes, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -100,13 +100,19 @@ test('prune logic operates only on artifact-root siblings', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-prune-artifact-'));
   const artifactRoot = join(repoRoot, 'workspace-artifacts');
   const runsRoot = join(artifactRoot, 'skills', 'shared', 'qa-plan-evolution', 'runs');
-  const now = Date.now();
 
   try {
     // Create runs under artifact root
-    await mkdir(join(runsRoot, 'artifact-run-old'), { recursive: true });
-    await mkdir(join(runsRoot, 'artifact-run-mid'), { recursive: true });
-    await mkdir(join(runsRoot, 'artifact-run-new'), { recursive: true });
+    const oldRun = join(runsRoot, 'artifact-run-old');
+    const midRun = join(runsRoot, 'artifact-run-mid');
+    const newRun = join(runsRoot, 'artifact-run-new');
+    await mkdir(oldRun, { recursive: true });
+    await mkdir(midRun, { recursive: true });
+    await mkdir(newRun, { recursive: true });
+    const baseTime = Date.now() / 1000;
+    await utimes(oldRun, baseTime - 300, baseTime - 300);
+    await utimes(midRun, baseTime - 200, baseTime - 200);
+    await utimes(newRun, baseTime - 100, baseTime - 100);
 
     // Create runs under old skill root (should NOT be touched by prune)
     const skillRunsRoot = join(repoRoot, '.agents', 'skills', 'qa-plan-evolution', 'runs');

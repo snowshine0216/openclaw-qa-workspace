@@ -212,6 +212,7 @@ console.log('grader-complete');
 
     const result = await executeBatchRuns({
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       iteration: 0,
       batchNumber: 1,
       executorScript: runnerScript,

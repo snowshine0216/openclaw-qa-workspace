@@ -1,6 +1,11 @@
 import { join } from 'node:path';
 import { loadJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
-import { DEFAULT_BENCHMARK_ROOT, DEFAULT_ITERATION, getIterationDir } from './benchmarkV2.mjs';
+import {
+  DEFAULT_BENCHMARK_DEFINITION_ROOT,
+  DEFAULT_BENCHMARK_ROOT,
+  DEFAULT_ITERATION,
+  getIterationDir,
+} from './benchmarkV2.mjs';
 import { getBatchDefinition, writeBatchArtifacts } from './batchRunnerV2.mjs';
 import { executeSelectedRuns } from './executeSelectionV2.mjs';
 
@@ -55,6 +60,7 @@ export function parseExecuteBatchArgs(argv) {
 
 export async function executeBatchRuns({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot = DEFAULT_BENCHMARK_DEFINITION_ROOT,
   iteration = DEFAULT_ITERATION,
   batchNumber,
   executorScript,
@@ -69,6 +75,7 @@ export async function executeBatchRuns({
   const selectedTasks = spawnManifest.tasks.filter((task) => batchDefinition.eval_ids.includes(task.eval_id));
   const result = await executeSelectedRuns({
     benchmarkRoot,
+    benchmarkDefinitionRoot,
     iteration,
     selectedTasks,
     executorScript,

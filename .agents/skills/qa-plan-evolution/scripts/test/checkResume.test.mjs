@@ -26,16 +26,21 @@ async function writeJson(path, payload) {
   await writeFile(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
-test('check_resume renders the operator summary from canonical task state', async () => {
-  const runKey = 'check-resume-summary';
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
+function getArtifactRunRoot(artifactRoot, runKey) {
+  return join(
+    artifactRoot,
     'skills',
+    'shared',
     'qa-plan-evolution',
     'runs',
     runKey,
   );
+}
+
+test('check_resume renders the operator summary from canonical task state', async () => {
+  const runKey = 'check-resume-summary';
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-check-resume-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   try {
     await mkdir(canonicalRunRoot, { recursive: true });
@@ -59,6 +64,7 @@ test('check_resume renders the operator summary from canonical task state', asyn
       '--run-key', runKey,
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0, result.stderr);
@@ -73,20 +79,14 @@ test('check_resume renders the operator summary from canonical task state', asyn
     assert.match(result.stdout, /"blocking_reason": "waiting_on_defects_analysis"/);
     assert.match(result.stdout, /"runtime_root_mode": "canonical_only"/);
   } finally {
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('check_resume and progress render the same operator summary contract', async () => {
   const runKey = 'check-resume-progress-contract';
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
-    'skills',
-    'qa-plan-evolution',
-    'runs',
-    runKey,
-  );
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-check-progress-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   function extractJson(text) {
     return JSON.parse(text.slice(text.indexOf('{')));
@@ -122,32 +122,28 @@ test('check_resume and progress render the same operator summary contract', asyn
       '--run-key', runKey,
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
     const progressResult = spawnSync('bash', [
       PROGRESS,
       '--run-key', runKey,
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(resumeResult.status, 0, resumeResult.stderr);
     assert.equal(progressResult.status, 0, progressResult.stderr);
     assert.deepEqual(extractJson(resumeResult.stdout), extractJson(progressResult.stdout));
   } finally {
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('check_resume refreshes pending jobs before rendering the summary', async () => {
   const runKey = 'check-resume-refresh';
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
-    'skills',
-    'qa-plan-evolution',
-    'runs',
-    runKey,
-  );
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-check-refresh-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   try {
     await mkdir(join(canonicalRunRoot, 'jobs'), { recursive: true });
@@ -197,26 +193,21 @@ test('check_resume refreshes pending jobs before rendering the summary', async (
       '--run-key', runKey,
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /"status": "completed"/);
   } finally {
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });
 
 test('check_resume still resolves canonical state after scratch alias deletion', async () => {
   const runKey = 'check-resume-scratch-deleted';
   const overrideRunRoot = await mkdtemp(join(tmpdir(), 'seo-check-resume-scratch-'));
-  const canonicalRunRoot = join(
-    REPO_ROOT,
-    '.agents',
-    'skills',
-    'qa-plan-evolution',
-    'runs',
-    runKey,
-  );
+  const artifactRoot = await mkdtemp(join(tmpdir(), 'seo-check-resume-artifacts-'));
+  const canonicalRunRoot = getArtifactRunRoot(artifactRoot, runKey);
 
   try {
     const phase0Result = spawnSync('bash', [
@@ -229,6 +220,7 @@ test('check_resume still resolves canonical state after scratch alias deletion',
       '--benchmark-profile', 'generic-skill-regression',
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
     assert.equal(phase0Result.status, 0, phase0Result.stderr);
 
@@ -239,6 +231,7 @@ test('check_resume still resolves canonical state after scratch alias deletion',
       '--run-key', runKey,
     ], {
       encoding: 'utf8',
+      env: { ...process.env, ARTIFACT_ROOT: artifactRoot },
     });
 
     assert.equal(result.status, 0, result.stderr);
@@ -247,6 +240,6 @@ test('check_resume still resolves canonical state after scratch alias deletion',
     assert.doesNotMatch(result.stdout, /no task\.json: fresh run/i);
   } finally {
     await rm(overrideRunRoot, { recursive: true, force: true });
-    await rm(canonicalRunRoot, { recursive: true, force: true });
+    await rm(artifactRoot, { recursive: true, force: true });
   }
 });

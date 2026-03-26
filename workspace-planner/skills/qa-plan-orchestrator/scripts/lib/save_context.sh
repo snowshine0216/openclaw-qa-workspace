@@ -12,8 +12,9 @@ CONTENT_OR_FILE="${3:?Missing content or file path}"
 if [ -n "${FQPO_RUN_DIR:-}" ]; then
   RUN_DIR="$FQPO_RUN_DIR"
 else
-  REPO_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
-  RUN_DIR="$REPO_ROOT/workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/runs/$FEATURE_ID"
+  REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "$0")/../../../.." && pwd)}"
+  ARTIFACT_ROOT_RESOLVER="$REPO_ROOT/.agents/skills/lib/artifactRoots.mjs"
+  RUN_DIR="$(node --input-type=module -e "import { getRunRoot } from '$ARTIFACT_ROOT_RESOLVER'; console.log(getRunRoot('workspace-planner', 'qa-plan-orchestrator', process.argv[1]));" "$FEATURE_ID")"
 fi
 CONTEXT_DIR="$RUN_DIR/context"
 mkdir -p "$CONTEXT_DIR"

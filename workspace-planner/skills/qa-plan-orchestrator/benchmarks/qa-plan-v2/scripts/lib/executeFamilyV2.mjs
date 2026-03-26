@@ -1,7 +1,12 @@
 import { join } from 'node:path';
 
 import { loadJson } from '../../../qa-plan-v1/scripts/lib/iteration0Benchmark.mjs';
-import { DEFAULT_BENCHMARK_ROOT, DEFAULT_ITERATION, getIterationDir } from './benchmarkV2.mjs';
+import {
+  DEFAULT_BENCHMARK_DEFINITION_ROOT,
+  DEFAULT_BENCHMARK_ROOT,
+  DEFAULT_ITERATION,
+  getIterationDir,
+} from './benchmarkV2.mjs';
 import { executeSelectedRuns } from './executeSelectionV2.mjs';
 import { getFamilyDefinition, writeFamilyArtifacts } from './familyRunnerV2.mjs';
 
@@ -56,6 +61,7 @@ export function parseExecuteFamilyArgs(argv) {
 
 export async function executeFamilyRuns({
   benchmarkRoot = DEFAULT_BENCHMARK_ROOT,
+  benchmarkDefinitionRoot = DEFAULT_BENCHMARK_DEFINITION_ROOT,
   iteration = DEFAULT_ITERATION,
   familyName,
   executorScript,
@@ -71,6 +77,7 @@ export async function executeFamilyRuns({
 
   const result = await executeSelectedRuns({
     benchmarkRoot,
+    benchmarkDefinitionRoot,
     iteration,
     selectedTasks,
     executorScript,

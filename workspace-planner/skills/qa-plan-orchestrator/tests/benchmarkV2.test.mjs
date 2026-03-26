@@ -38,7 +38,7 @@ function buildFixturesDocument() {
       },
       {
         fixture_id: 'BCIN-7289-defect-analysis-run',
-        path: 'workspace-reporter/skills/defects-analysis/runs/BCIN-7289',
+        path: 'workspace-artifacts/skills/workspace-reporter/defects-analysis/runs/BCIN-7289',
         type: 'defect_replay_source',
         status: 'active',
       },
@@ -289,7 +289,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       fixtures: [
         {
           fixture_id: 'BCIN-7289-defect-analysis-run',
-          path: 'workspace-reporter/skills/defects-analysis/runs/BCIN-7289',
+          path: 'workspace-artifacts/skills/workspace-reporter/defects-analysis/runs/BCIN-7289',
           type: 'defect_replay_source',
           status: 'active',
         },
@@ -348,6 +348,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     const prepared = await prepareBenchmarkV2Baseline({
       skillRoot,
       benchmarkRoot,
+      benchmarkDefinitionRoot: benchmarkRoot,
       iteration: 0,
       executorModel: 'gpt-5.4',
       reasoningEffort: 'high',
@@ -360,7 +361,7 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
 
     const benchmarkContext = JSON.parse(await readFile(join(benchmarkRoot, 'iteration-0', 'benchmark_context.json'), 'utf8'));
     assert.equal(benchmarkContext.case_count, 2);
-    assert.equal(benchmarkContext.canonical_skill_root, '../..');
+    assert.equal(benchmarkContext.canonical_skill_root, skillRoot);
     assert.equal(benchmarkContext.executor_model, 'gpt-5.4');
 
     const spawnManifest = JSON.parse(await readFile(join(benchmarkRoot, 'iteration-0', 'spawn_manifest.json'), 'utf8'));
@@ -377,16 +378,16 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
     assert.equal(spawnManifest.tasks[0].without_skill.run_dir, 'eval-1/without_skill/run-1');
     assert.equal(spawnManifest.tasks[1].blind_policy.cutoff_policy, 'all_customer_issues_only');
     assert.deepEqual(spawnManifest.tasks[1].blind_policy.issue_scope.include_issue_classes, ['customer']);
-    assert.equal(spawnManifest.skill_path, '../..');
+    assert.equal(spawnManifest.skill_path, skillRoot);
     assert.equal(spawnManifest.workspace, '.');
-    assert.equal(spawnManifest.iteration_dir, 'iteration-0');
+    assert.equal(spawnManifest.iteration_dir, join(benchmarkRoot, 'iteration-0'));
 
     const comparisonMetadata = JSON.parse(await readFile(
       join(benchmarkRoot, 'iteration-0', 'eval-1', 'with_skill', 'run-1', 'comparison_metadata.json'),
       'utf8',
     ));
     assert.equal(comparisonMetadata.case_id, 'CASE-1');
-    assert.equal(comparisonMetadata.canonical_skill_root, '../..');
+    assert.equal(comparisonMetadata.canonical_skill_root, skillRoot);
     assert.equal(comparisonMetadata.case_kind, 'checkpoint_enforcement');
     assert.equal(comparisonMetadata.feature_family, 'report-editor');
     assert.equal(comparisonMetadata.knowledge_pack_key, 'report-editor');
@@ -397,7 +398,10 @@ test('prepareBenchmarkV2Baseline materializes the full multi-case iteration-0 wo
       'utf8',
     ));
     assert.equal(blindComparisonMetadata.blind_policy.cutoff_policy, 'all_customer_issues_only');
-    assert.equal(JSON.stringify(spawnManifest).includes(tmp), false);
+    assert.equal(
+      JSON.stringify(spawnManifest).includes('workspace-reporter/skills/defects-analysis/runs/BCIN-7289'),
+      false,
+    );
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
