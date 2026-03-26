@@ -131,3 +131,102 @@ echo "PHASE5_DONE"
 
   await rm(root, { recursive: true, force: true });
 });
+
+test('synthesizes missing feature summary before rerunning an explicit refresh child with an existing final report', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'defects-analysis-phase3-release-synthesize-'));
+  const skillRoot = join(root, 'workspace-reporter', 'skills', 'defects-analysis');
+  const runsRoot = join(skillRoot, 'runs');
+  const runDir = join(runsRoot, 'release_26.03');
+  const featureRunDir = join(runsRoot, 'BCIN-5810');
+  const orchestrateScript = join(root, 'stub-orchestrate.sh');
+  const actionLog = join(root, 'child-actions.log');
+
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await mkdir(join(featureRunDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'context', 'route_decision.json'),
+    JSON.stringify({ run_key: 'release_26.03', route_kind: 'reporter_scope_release' }),
+  );
+  await writeFile(
+    join(runDir, 'context', 'feature_state_matrix.json'),
+    JSON.stringify({
+      features: [
+        {
+          feature_key: 'BCIN-5810',
+          report_state: 'FINAL_EXISTS',
+          default_action: 'use_existing',
+          selected_action: 'smart_refresh',
+          canonical_run_dir: featureRunDir,
+          release_packet_dir: join(runDir, 'features', 'BCIN-5810'),
+        },
+      ],
+    }),
+  );
+  await writeFile(join(runDir, 'task.json'), '{"processed_features":0,"current_phase":"phase2"}\n');
+  await writeFile(join(featureRunDir, 'BCIN-5810_REPORT_FINAL.md'), '# Existing final\n');
+  await writeFile(
+    join(featureRunDir, 'context', 'feature_metadata.json'),
+    JSON.stringify({
+      feature_key: 'BCIN-5810',
+      feature_title: 'Existing final feature',
+      issue_type: 'Feature',
+      release_version: '26.03',
+    }),
+  );
+  await writeFile(
+    join(featureRunDir, 'context', 'defect_index.json'),
+    JSON.stringify({
+      defects: [
+        {
+          key: 'BUG-EXISTING-1',
+          summary: 'Existing defect',
+          status: 'Open',
+          priority: 'High',
+          area: 'General',
+          pr_links: [],
+        },
+      ],
+    }),
+  );
+  await writeFile(
+    join(featureRunDir, 'context', 'pr_impact_summary.json'),
+    JSON.stringify({
+      pr_count: 1,
+      repos_changed: ['web-dossier'],
+      top_risky_prs: [{ repository: 'web-dossier' }],
+    }),
+  );
+  await writeFile(
+    orchestrateScript,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\\n' "\${2:-}" >> "${actionLog}"
+echo "unexpected child rerun"
+exit 99
+`,
+  );
+  await chmod(orchestrateScript, 0o755);
+
+  const result = spawnSync('bash', [SCRIPT, '26.03', runDir], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      REPO_ROOT: root,
+      ORCHESTRATE_SCRIPT: orchestrateScript,
+    },
+  });
+
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const featureRuns = JSON.parse(
+    await readFile(join(runDir, 'context', 'feature_runs.json'), 'utf8'),
+  );
+  const featureSummary = JSON.parse(
+    await readFile(join(featureRunDir, 'context', 'feature_summary.json'), 'utf8'),
+  );
+  await assert.rejects(readFile(actionLog, 'utf8'), /ENOENT/);
+  assert.equal(featureRuns.features[0].selected_action, 'use_existing');
+  assert.equal(featureSummary.total_defects, 1);
+  assert.equal(featureSummary.pr_count, 1);
+
+  await rm(root, { recursive: true, force: true });
+});

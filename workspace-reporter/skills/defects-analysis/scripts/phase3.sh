@@ -25,19 +25,29 @@ if [[ "$route_kind" == "reporter_scope_release" ]]; then
     feature_key="$(printf '%s\n' "$feature" | jq -r '.feature_key')"
     selected_action="$(printf '%s\n' "$feature" | jq -r '.selected_action // .default_action')"
     effective_action="$selected_action"
-    child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
-      echo "$child_output"
-      exit 1
-    }
-    echo "$child_output"
-
     canonical_run_dir="$RUNS_ROOT/$feature_key"
     report_final_path="$canonical_run_dir/${feature_key}_REPORT_FINAL.md"
     feature_summary_path="$canonical_run_dir/context/feature_summary.json"
+    summary_plan_json='{}'
+    summary_status=''
 
-    [[ -f "$report_final_path" ]] || { echo "Missing final report for $feature_key" >&2; exit 1; }
-    summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
-    summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    if [[ -f "$report_final_path" ]]; then
+      summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
+      summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    fi
+
+    if [[ ! -f "$report_final_path" || "$summary_status" == "refresh" || "$summary_status" == "error" ]]; then
+      child_output="$(SUPPRESS_NOTIFICATION=1 INVOKED_BY=defects-analysis-release-parent RELEASE_VERSION_CONTEXT="$RAW_INPUT" bash "$ORCHESTRATE_SCRIPT" "$feature_key" "$effective_action" 2>&1)" || {
+        echo "$child_output"
+        exit 1
+      }
+      echo "$child_output"
+      [[ -f "$report_final_path" ]] || { echo "Missing final report for $feature_key" >&2; exit 1; }
+      summary_plan_json="$(node "$SCRIPT_DIR/lib/feature_summary_recovery_plan.mjs" "$canonical_run_dir" "$effective_action")"
+      summary_status="$(printf '%s\n' "$summary_plan_json" | jq -r '.status')"
+    else
+      effective_action='use_existing'
+    fi
 
     if [[ "$summary_status" == "refresh" ]]; then
       effective_action="$(printf '%s\n' "$summary_plan_json" | jq -r '.refresh_mode')"
