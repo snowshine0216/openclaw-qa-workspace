@@ -37,6 +37,15 @@ function firstParentSummary(jiraRaw) {
   return '';
 }
 
+function parentSummaryForRunKey(jiraRaw, runKey) {
+  for (const issue of jiraRaw.issues ?? []) {
+    if (issue?.fields?.parent?.key === runKey && issue?.fields?.parent?.fields?.summary) {
+      return issue.fields.parent.fields.summary;
+    }
+  }
+  return '';
+}
+
 function firstFeatureLikeSummary(jiraRaw, runKey) {
   for (const issue of jiraRaw.issues ?? []) {
     if (issue?.key === runKey && issue?.fields?.summary) {
@@ -55,9 +64,10 @@ function featureTitleHint(runKey) {
 }
 
 function inferFeatureTitle({ existing, jiraRaw, runKey }) {
+  const existingTitle = String(existing?.feature_title ?? '').trim();
   return (
-    existing?.feature_title ||
-    firstParentSummary(jiraRaw) ||
+    (existingTitle && existingTitle !== runKey ? existingTitle : '') ||
+    parentSummaryForRunKey(jiraRaw, runKey) ||
     firstFeatureLikeSummary(jiraRaw, runKey) ||
     featureTitleHint(runKey) ||
     runKey
@@ -83,10 +93,6 @@ function inferIssueType(existing, routeDecision, task) {
 
 export function extractFeatureMetadata(runDir, runKey) {
   const existing = readExistingMetadata(runDir);
-  if (existing?.feature_key && existing?.feature_title) {
-    return existing;
-  }
-
   const task = readTask(runDir);
   const routeDecision = readRouteDecision(runDir);
   const jiraRaw = readJiraRaw(runDir);

@@ -56,8 +56,48 @@ function hotspotRows(features) {
   return `| Area | Features |\n|------|----------|\n${rows}`;
 }
 
+function loadFeatureTitle(runDir, featureKey, inputTitle) {
+  const summary = safeReadJson(join(runDir, 'context', 'feature_summaries', `${featureKey}.json`));
+  return summary?.feature_title ?? inputTitle ?? featureKey;
+}
+
+function normalizeDefectRecord(item, defaultPriority = 'High') {
+  if (!item) {
+    return null;
+  }
+  if (typeof item === 'string') {
+    return { key: item, summary: '', priority: defaultPriority, status: 'Open' };
+  }
+  return {
+    key: item.key ?? item.defect_key ?? item.id ?? '—',
+    summary: item.summary ?? '',
+    priority: item.priority ?? defaultPriority,
+    status: item.status ?? 'Open',
+  };
+}
+
+function normalizeFeature(runDir, feature) {
+  const title = loadFeatureTitle(runDir, feature.feature_key, feature.feature_title);
+  const openDetails = (feature.open_defect_details ?? feature.defects ?? [])
+    .map((item) => normalizeDefectRecord(item, item?.priority ?? 'Medium'))
+    .filter(Boolean);
+  const byKey = new Map(openDetails.map((item) => [item.key, item]));
+  const blockingDetails = (feature.blocking_defects ?? [])
+    .map((item) => {
+      const record = normalizeDefectRecord(item);
+      return byKey.get(record.key) ?? record;
+    })
+    .filter(Boolean);
+  return {
+    ...feature,
+    feature_title: title,
+    open_defect_details: openDetails,
+    blocking_defect_details: blockingDetails,
+  };
+}
+
 function blockingFeatures(features) {
-  return features.filter((feature) => (feature.blocking_defects ?? []).length > 0);
+  return features.filter((feature) => feature.blocking_defect_details.length > 0);
 }
 
 function featureRiskTable(features) {
@@ -67,7 +107,7 @@ function featureRiskTable(features) {
         `| ${feature.feature_key} | ${feature.feature_title} | ${feature.risk_level} | ${feature.open_defects ?? 0} | ${feature.open_high_defects ?? 0} |`,
     )
     .join('\n');
-  return `| Feature | Title | Risk | Open | Open High |\n|---------|-------|------|------|-----------|\n${rows}`;
+  return `| Feature | Title | Risk | Open | Open High |\n|---------|-------|------|------|-----------|\n${rows || '| — | — | — | 0 | 0 |'}`;
 }
 
 function packetSection(features) {
@@ -76,12 +116,54 @@ function packetSection(features) {
     .join('\n');
 }
 
+function buildBlockingSection(features) {
+  if (features.length === 0) {
+    return 'Blocking Features: none';
+  }
+  return features
+    .map((feature) => {
+      const rows = feature.blocking_defect_details
+        .map(
+          (defect) =>
+            `| ${defect.key} | ${defect.summary || '—'} | ${defect.priority ?? 'High'} | ${defect.status ?? 'Open'} |`,
+        )
+        .join('\n');
+      return `**${feature.feature_key}** — ${feature.feature_title}
+| Defect | Summary | Priority | Status |
+|--------|---------|----------|--------|
+${rows}`;
+    })
+    .join('\n\n');
+}
+
+function collectAppendixRows(features) {
+  const rows = [];
+  for (const feature of features) {
+    const seen = new Set();
+    const defects = [...feature.blocking_defect_details, ...feature.open_defect_details];
+    for (const defect of defects) {
+      if (!defect?.key || seen.has(defect.key)) {
+        continue;
+      }
+      seen.add(defect.key);
+      rows.push(
+        `| ${feature.feature_key} | ${defect.key} | ${defect.summary || '—'} | ${defect.priority ?? '—'} | ${defect.status ?? '—'} |`,
+      );
+    }
+  }
+  return rows;
+}
+
 export function generateReleaseReport(runDir, runKey) {
   const inputs =
-    safeReadJson(join(runDir, 'context', 'release_summary_inputs.json')) ?? { features: [], release_version: runKey.replace(/^release_/, '') };
-  const features = sortFeatures(inputs.features ?? []);
+    safeReadJson(join(runDir, 'context', 'release_summary_inputs.json')) ?? {
+      features: [],
+      release_version: runKey.replace(/^release_/, ''),
+    };
+  const features = sortFeatures((inputs.features ?? []).map((feature) => normalizeFeature(runDir, feature)));
   const totals = aggregateTotals(features);
   const blocking = blockingFeatures(features);
+  const appendixRows = collectAppendixRows(features);
 
   const report = `## 1. Report Header
 
@@ -120,7 +202,7 @@ ${hotspotRows(features)}
 
 ## 5. Defect Analysis by Priority
 
-${blocking.length > 0 ? blocking.map((feature) => `- ${feature.feature_key}: ${(feature.blocking_defects ?? []).join(', ')}`).join('\n') : 'Blocking Features: none'}
+${buildBlockingSection(blocking)}
 
 ---
 
@@ -166,7 +248,9 @@ Release Recommendation: ${blocking.length > 0 ? 'hold release until blocking fea
 
 ## 12. Appendix: Defect Reference List
 
-${packetSection(features)}
+| Feature | Defect | Summary | Priority | Status |
+|---------|--------|---------|----------|--------|
+${appendixRows.join('\n') || '| — | — | — | — | — |'}
 `;
 
   const outPath = join(runDir, `${runKey}_REPORT_DRAFT.md`);

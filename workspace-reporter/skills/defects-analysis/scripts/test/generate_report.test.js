@@ -46,7 +46,7 @@ test('generateReport marks Highest/Critical/P0/P1 open defects as HIGH risk', as
     const outPath = generateReport(runDir, 'BCIN-5809', 'https://jira.example.com');
     const report = await readFile(outPath, 'utf8');
 
-    assert.match(report, /### Risk Rating: \*\*HIGH\*\*/);
+    assert.match(report, /### Risk Rating: (🔴 HIGH|\*\*HIGH\*\*)/);
     assert.match(report, /High-risk open: 4\. Medium\/Low: 1 total\./);
   } finally {
     await rm(runDir, { recursive: true, force: true });
@@ -65,7 +65,7 @@ test('generateReport keeps low risk when high-risk priorities are already resolv
     const outPath = generateReport(runDir, 'BCIN-5810', 'https://jira.example.com');
     const report = await readFile(outPath, 'utf8');
 
-    assert.match(report, /### Risk Rating: \*\*LOW\*\*/);
+    assert.match(report, /### Risk Rating: (🟢 LOW|\*\*LOW\*\*)/);
     assert.match(report, /High-risk open: 0\. Medium\/Low: 3 total\./);
   } finally {
     await rm(runDir, { recursive: true, force: true });

@@ -136,3 +136,87 @@ test('extractFeatureMetadata uses FEATURE_TITLE_HINT when Jira payload lacks a f
     await rm(runDir, { recursive: true, force: true });
   }
 });
+
+test('resolves feature_title from jira_raw parent when existing title equals runKey', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-feature-metadata-parent-title-'));
+  try {
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await writeFile(
+      join(runDir, 'context', 'feature_metadata.json'),
+      JSON.stringify({
+        feature_key: 'BCIN-976',
+        feature_title: 'BCIN-976',
+        issue_type: 'Feature',
+      }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'jira_raw.json'),
+      JSON.stringify({
+        issues: [
+          {
+            key: 'BCIN-1001',
+            fields: {
+              summary: 'Child defect',
+              parent: {
+                key: 'BCIN-976',
+                fields: {
+                  summary: 'Real Feature Title',
+                },
+              },
+            },
+          },
+        ],
+      }),
+      'utf8',
+    );
+
+    const metadata = extractFeatureMetadata(runDir, 'BCIN-976');
+
+    assert.equal(metadata.feature_title, 'Real Feature Title');
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
+
+test('does not override feature_title when existing title differs from runKey', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'defects-analysis-feature-metadata-existing-title-'));
+  try {
+    await mkdir(join(runDir, 'context'), { recursive: true });
+    await writeFile(
+      join(runDir, 'context', 'feature_metadata.json'),
+      JSON.stringify({
+        feature_key: 'BCIN-976',
+        feature_title: 'Some Real Title',
+        issue_type: 'Feature',
+      }),
+      'utf8',
+    );
+    await writeFile(
+      join(runDir, 'context', 'jira_raw.json'),
+      JSON.stringify({
+        issues: [
+          {
+            key: 'BCIN-1001',
+            fields: {
+              summary: 'Child defect',
+              parent: {
+                key: 'BCIN-976',
+                fields: {
+                  summary: 'Overridden Title',
+                },
+              },
+            },
+          },
+        ],
+      }),
+      'utf8',
+    );
+
+    const metadata = extractFeatureMetadata(runDir, 'BCIN-976');
+
+    assert.equal(metadata.feature_title, 'Some Real Title');
+  } finally {
+    await rm(runDir, { recursive: true, force: true });
+  }
+});
