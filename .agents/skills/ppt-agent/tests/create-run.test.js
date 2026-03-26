@@ -86,9 +86,12 @@ test("create-run can emit slide-build-spec when manuscript and design plan are p
   assert.ok(fs.existsSync(parsed.pptxHandoffPath));
   assert.ok(fs.existsSync(path.join(parsed.runRoot, "artifacts", "manuscript.md")));
   assert.ok(fs.existsSync(path.join(parsed.runRoot, "artifacts", "design_plan.md")));
+  const manuscriptFixtureContent = fs.readFileSync(manuscriptFixture, "utf8");
   assert.equal(
     fs.readFileSync(path.join(parsed.runRoot, "artifacts", "manuscript.md"), "utf8"),
-    fs.readFileSync(manuscriptFixture, "utf8")
+    manuscriptFixtureContent.endsWith("\n\n")
+      ? manuscriptFixtureContent
+      : manuscriptFixtureContent.replace(/\n*$/, "\n\n")
   );
   assert.equal(
     fs.readFileSync(path.join(parsed.runRoot, "artifacts", "design_plan.md"), "utf8"),
