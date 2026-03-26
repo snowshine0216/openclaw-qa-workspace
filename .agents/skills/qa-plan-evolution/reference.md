@@ -10,8 +10,16 @@
 All per-run artifacts live under:
 
 ```text
-<skill-root>/runs/<run-key>/
+workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/
 ```
+
+**Artifact Root Convention**: Runtime state lives under `workspace-artifacts/` per the workspace artifact root convention documented in `docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md`. The skill source tree (`.agents/skills/qa-plan-evolution/`) contains only code, definitions, and frozen archive evidence.
+
+**Benchmark Archive Root**: Frozen baseline evidence lives under `.agents/skills/qa-plan-evolution/benchmarks/<family>/archive/` (versioned, read-only).
+
+**Benchmark Runtime Root**: Active benchmark iterations and snapshots live under `workspace-artifacts/skills/shared/qa-plan-evolution/benchmarks/<family>/` (gitignored, ephemeral).
+
+**Legacy Compatibility**: For a transition period, the skill may read from legacy in-skill `runs/` paths. When both canonical artifact-root state and legacy in-skill state exist, the canonical artifact-root state silently wins.
 
 Retention policy:
 
@@ -22,6 +30,8 @@ Retention policy:
 - Override with `--retain-runs` / `EVOLUTION_RETAIN_RUNS` and `--prune-min-age-seconds` / `EVOLUTION_PRUNE_MIN_AGE_SECONDS`.
 
 ### Run-Root Artifact Families
+
+Under `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`:
 
 - `context/` — freshness checks, gap taxonomy, mutation backlog, evidence index
 - `drafts/` — proposed design deltas or mutation notes
@@ -276,7 +286,9 @@ When a mutation is rejected, write:
 
 When evolving `qa-plan-orchestrator`:
 
-- **Benchmark root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/`
+- **Benchmark definition root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/` (source-owned, versioned)
+- **Benchmark archive root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/archive/` (frozen baselines, versioned, read-only)
+- **Benchmark runtime root:** `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/` (active iterations, gitignored)
 - **Profile:** `global-cross-feature-v1` (declared in `benchmark_manifest.json`)
 - **Default evidence mode:** `blind_pre_defect`
   - Activates all phase-contract and holdout-regression blocking cases.
@@ -296,7 +308,7 @@ When evolving `qa-plan-orchestrator`:
 - **Synthetic scorecards:** if `scoring_fidelity === "synthetic"`, the scorecard must report `decision.result: "blocked_synthetic"` and Phase 6 must refuse promotion.
 - **Acceptance gate:** a challenger is rejected if any case in `blocking_case_ids` from `benchmark_manifest.json` fails.
 - **Cross-family gate:** for active blind/holdout evidence modes, non-target feature families must be non-regressing.
-- **Evolution run root** (for `REPORT_STATE` / task state): `.agents/skills/qa-plan-evolution/runs/<run-key>/`
+- **Evolution run root** (for `REPORT_STATE` / task state): `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`
 - **Benchmark campaign root** (frozen, append-only): `benchmarks/qa-plan-v2/` — publish outputs there per `references/qa-plan-benchmark-spec.md`.
 
 The skill's own `evals/evals.json` remains the smoke gate. `qa-plan-v2` cases are the acceptance gate for challenger promotion.

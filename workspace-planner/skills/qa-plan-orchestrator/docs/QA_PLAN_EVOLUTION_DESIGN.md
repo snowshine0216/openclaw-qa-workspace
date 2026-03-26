@@ -137,11 +137,13 @@ Phase 5 additions:
 2. Set inputs:
    - orchestrator `benchmark_profile` → usually `qa-plan-knowledge-pack-coverage` for blind/holdout-only iterations or `qa-plan-defect-recall` when replay evidence is intentionally enabled
    - `target_skill_path` → `workspace-planner/skills/qa-plan-orchestrator`
-   - qa-plan benchmark root → `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/`
+   - qa-plan benchmark definition root → `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/`
+   - qa-plan benchmark archive root → `workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/archive/`
+   - qa-plan benchmark runtime root → `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/qa-plan-v2/`
    - qa-plan-v2 benchmark manifest profile → `global-cross-feature-v1`
    - enable replay only when `defect_analysis_run_key` is present
 3. Invoke `qa-plan-evolution` scripts only (`scripts/orchestrate.sh`); no parallel NLG playbook.
-4. Point to canonical benchmark output under `qa-plan-orchestrator/benchmarks/<benchmark-version>/` (for example `qa-plan-v2/`).
+4. Point to benchmark runtime root under `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/<benchmark-version>/` (for example `qa-plan-v2/`). Frozen baselines live under the archive root in the source tree.
 5. User approval and Feishu steps consistent with Phase 6 in this design.
 
 The shared `SKILL.md` lists qa-plan-specific files to read; planner defaults (profiles, benchmark paths) live in this design doc and `README.md` under the shared skill.
@@ -208,6 +210,11 @@ State transitions:
       snapshot.mjs
   scripts/test/
   evals/
+  benchmarks/
+    <family>/
+      archive/          # Frozen baselines (versioned, read-only)
+
+workspace-artifacts/skills/shared/qa-plan-evolution/
   runs/<run-key>/
     context/
     drafts/
@@ -220,6 +227,8 @@ State transitions:
     run.json
     phase1_spawn_manifest.json
     evolution_final.md
+  benchmarks/
+    <family>/           # Active iterations (gitignored)
 
 workspace-planner/skills/qa-plan-orchestrator/
   knowledge-packs/
@@ -249,11 +258,16 @@ Design placement:
 2. `qa-plan-orchestrator` knowledge packs stay workspace-local because they are planner-domain artifacts and should evolve with planner contracts.
 3. `defects-analysis` remains reporter-local; only freshness and output contracts are extended.
 
-### Benchmark layout: canonical vs evolution run
+### Benchmark layout: definition, archive, and runtime roots
 
-- **Canonical frozen campaign (`qa-plan-orchestrator`):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — manifests, `iteration-*`, scorecards, and `skill-creator` aggregates per [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md). This is the **authoritative** record for champion versus candidate comparisons and reporting.
-- **Per-run operational tree:** `.agents/skills/qa-plan-evolution/runs/<run-key>/benchmarks/` — working artifacts (`scoreboard_<run-key>.json`, `benchmark_catalog_<run-key>.json`, and related files) for idempotency and resume.
-- **Consistency rule:** For target `qa-plan-orchestrator`, Phases 4–6 **must** publish iteration results into the canonical `benchmarks/<benchmark-version>/iteration-<n>/` tree so `aggregate_benchmark.py` and the eval viewer consume the same layout as the benchmark spec. The evolution run directory remains the workflow root for `REPORT_STATE` and task state; the qa-plan benchmark tree is the frozen campaign record.
+Per the workspace artifact root convention (`docs/WORKSPACE_ARTIFACT_ROOT_CONVENTION.md`):
+
+- **Benchmark definition root (`qa-plan-orchestrator`):** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — manifests, case definitions, grading rubrics (source-owned, versioned).
+- **Benchmark archive root:** `workspace-planner/skills/qa-plan-orchestrator/benchmarks/<benchmark-version>/archive/` — frozen baseline snapshots promoted from runtime (versioned, read-only).
+- **Benchmark runtime root:** `workspace-artifacts/skills/workspace-planner/qa-plan-orchestrator/benchmarks/<benchmark-version>/` — active `iteration-*`, `candidate_snapshot/`, `champion_snapshot/`, scorecards, and `skill-creator` aggregates (gitignored, ephemeral).
+- **Per-run operational tree:** `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/benchmarks/` — working artifacts (`scoreboard_<run-key>.json`, `benchmark_catalog_<run-key>.json`, and related files) for idempotency and resume.
+- **Consistency rule:** For target `qa-plan-orchestrator`, Phases 4–6 **must** publish iteration results into the benchmark runtime root so `aggregate_benchmark.py` and the eval viewer consume the same layout as the benchmark spec. The evolution run directory remains the workflow root for `REPORT_STATE` and task state; the qa-plan benchmark runtime tree is the authoritative record for champion versus candidate comparisons.
+- **Legacy compatibility:** When both canonical artifact-root state and legacy in-skill state exist, the canonical artifact-root state silently wins.
 
 ### Target skill profile (generalization)
 
@@ -318,7 +332,7 @@ Example profile-to-source mapping:
 - **Verification command:**
 
 ```bash
-jq '.notification_pending' ".agents/skills/qa-plan-evolution/runs/<run-key>/run.json"
+jq '.notification_pending' "workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/run.json"
 # Expect null or false after a successful send; non-null object indicates pending manual notification
 ```
 
@@ -366,10 +380,10 @@ When defect evidence is part of the benchmark, also read:
 
 ## Runtime Layout
 
-All artifacts for one evolution run live under `<skill-root>/runs/<run-key>/`:
+All artifacts for one evolution run live under `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`:
 
 ```text
-<skill-root>/runs/<run-key>/
+workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/
   context/
   drafts/
   candidates/
@@ -403,13 +417,13 @@ Optional inputs:
 
 Always:
 
-- `<skill-root>/runs/<run-key>/task.json`
-- `<skill-root>/runs/<run-key>/run.json`
-- `<skill-root>/runs/<run-key>/context/evidence_freshness_<run-key>.md`
-- `<skill-root>/runs/<run-key>/context/gap_taxonomy_<run-key>.md`
-- `<skill-root>/runs/<run-key>/context/mutation_backlog_<run-key>.md`
-- `<skill-root>/runs/<run-key>/benchmarks/scoreboard_<run-key>.json`
-- `<skill-root>/runs/<run-key>/evolution_final.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/task.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/run.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/evidence_freshness_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/gap_taxonomy_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/context/mutation_backlog_<run-key>.md`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/benchmarks/scoreboard_<run-key>.json`
+- `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/evolution_final.md`
 
 Per iteration:
 
@@ -491,7 +505,7 @@ Per iteration:
 All per-run artifacts live under:
 
 ```text
-<skill-root>/runs/<run-key>/
+workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/
 ```
 
 ### Run-Root Artifact Families
@@ -640,7 +654,7 @@ When finalizing, write:
 ## Target-Skill Safety Rules
 
 1. Preserve the target skill's `REPORT_STATE` semantics unless the change is explicitly benchmarked.
-2. Preserve the target skill's runtime output location under its own `runs/<run-key>/`.
+2. Preserve the target skill's runtime output location under `workspace-artifacts/skills/<workspace>/<skill>/runs/<run-key>/`.
 3. Do not accept challenger changes that weaken existing validators without stronger replacement checks.
 4. Knowledge packs must remain reviewable text or JSON artifacts in the target skill tree; do not make hidden or opaque retrieval mandatory.
 ```
@@ -665,7 +679,7 @@ When finalizing, write:
   "current_iteration": 1,
   "max_iterations": 10,
   "accepted_iteration": null,
-  "champion_snapshot_path": ".agents/skills/qa-plan-evolution/runs/.../archive/champion-initial",
+  "champion_snapshot_path": "workspace-artifacts/skills/shared/qa-plan-evolution/runs/.../archive/champion-initial",
   "created_at": "2026-03-21T10:00:00Z",
   "updated_at": "2026-03-21T10:10:00Z"
 }
@@ -764,7 +778,7 @@ Create a canonical evolution workflow that preserves OpenClaw idempotency while 
 
 **Detailed Implementation:**
 
-1. Resolve run root under `.agents/skills/qa-plan-evolution/runs/<run-key>/`.
+1. Resolve run root under `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`.
 2. Detect `REPORT_STATE` from prior artifacts.
 3. Reject `max_iterations > 10`.
 4. Snapshot current target skill into `archive/champion-initial/` when starting fresh.
@@ -1316,20 +1330,20 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 ### README impact
 
 - New operator-facing content lives in `.agents/skills/qa-plan-evolution/README.md` (how to run phases, run root layout, link to benchmark spec for qa-plan).
-- `qa-plan-orchestrator/README.md` must cross-link to `references/qa-plan-benchmark-spec.md` and `benchmarks/<version>/` for frozen campaigns.
+- `qa-plan-orchestrator/README.md` must cross-link to `references/qa-plan-benchmark-spec.md` and the benchmark definition root for frozen campaigns. Active iterations live under the benchmark runtime root.
 
 ## MVP and release phasing
 
 | Stage | Scope | Exit criteria |
 |-------|--------|----------------|
-| **MVP** | Phase 0–1 scripts; frozen `qa-plan-orchestrator/benchmarks/qa-plan-v1/` baseline; manual or semi-automated candidate apply for Phase 3; Phase 4 runs existing smoke + evals | One full baseline (`iteration-0`) recorded under canonical benchmark tree; evolution run `task.json` / `run.json` reproducible |
+| **MVP** | Phase 0–1 scripts; frozen `qa-plan-orchestrator/benchmarks/qa-plan-v1/` baseline; manual or semi-automated candidate apply for Phase 3; Phase 4 runs existing smoke + evals | One full baseline (`iteration-0`) recorded under benchmark runtime root; evolution run `task.json` / `run.json` reproducible |
 | **V1** | Phases 2–6 automated; champion promotion; `defects-analysis` freshness metadata; Feishu path | End-to-end champion versus challenger loop without manual score copying; notification verified or `notification_pending` populated |
 | **V2** | Second target skill using `generic-skill-regression` only | Proves target skill profile without qa-plan-specific evidence |
 
 ## Quality gates (design review)
 
 - [ ] Paths in this doc and [qa-plan-benchmark-spec.md](../references/qa-plan-benchmark-spec.md) are repo-relative where applicable.
-- [ ] Canonical benchmark tree and evolution run `benchmarks/` roles are consistent with implementation.
+- [ ] Benchmark definition, archive, and runtime root roles are consistent with implementation per workspace artifact root convention.
 - [ ] Phase scripts exist for each phase; tests stubbed or implemented per Tests section.
 - [ ] Feishu notification and `notification_pending` behavior match workspace conventions.
 - [ ] `openclaw-agent-design-review` run completes with no P0/P1 findings before implementation freeze.
@@ -1337,7 +1351,7 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 ## Implementation Checklist
 
 1. ~~Create `.agents/skills/qa-plan-evolution/` with `SKILL.md`, `reference.md`, `README.md`, `scripts/`, `scripts/test/`, and `evals/`.~~ **Done**
-2. ~~Implement Phase 0-6 entry scripts and helper modules with persistent artifacts only under `runs/<run-key>/`.~~ **Done** (`scripts/phase0.sh`–`phase6.sh`, `scripts/lib/*.mjs`, optional `--run-root` / `--repo-root`)
+2. ~~Implement Phase 0-6 entry scripts and helper modules with persistent artifacts only under `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`.~~ **Done** (`scripts/phase0.sh`–`phase6.sh`, `scripts/lib/*.mjs`, optional `--run-root` / `--repo-root`)
 3. Add **profile-driven** evidence freshness in Phase 1: always inspect target skill artifacts and eval catalog; run defects-analysis refresh, knowledge-pack version checks, and related hooks **only** when the selected `benchmark_profile` declares them (see qa-plan extensions in Architecture). **Done**
 4. ~~Add mutation backlog and candidate scoring artifacts.~~ **Done**
 5. ~~Add `qa-plan-orchestrator/knowledge-packs/report-editor/pack.md` and `pack.json`.~~ **Done**
@@ -1352,8 +1366,8 @@ Append blocking eval groups to `workspace-planner/skills/qa-plan-orchestrator/ev
 
 ## References
 
-1. `workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_SELF_TEST_GAP_ANALYSIS.md`
-2. `workspace-reporter/skills/defects-analysis/runs/BCIN-7289/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
+1. `workspace-artifacts/skills/workspace-reporter/defects-analysis/runs/BCIN-7289/BCIN-7289_SELF_TEST_GAP_ANALYSIS.md`
+2. `workspace-artifacts/skills/workspace-reporter/defects-analysis/runs/BCIN-7289/BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md`
 3. `workspace-planner/skills/qa-plan-orchestrator/SKILL.md`
 4. `workspace-planner/skills/qa-plan-orchestrator/reference.md`
 5. `workspace-planner/skills/qa-plan-orchestrator/evals/evals.json`
