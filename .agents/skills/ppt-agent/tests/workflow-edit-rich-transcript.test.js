@@ -96,7 +96,7 @@ test("enrichSlideTranscripts writes a slide-brief JSON for each action", () => {
     runRoot
   });
 
-  assert.equal(result.status === "ok" || result.status === "warnings", true);
+  assert.equal(result.status, "ok");
   assert.equal(result.totalBriefs, 2);
 
   const brief1Path = path.join(result.briefsDir, "slide-01.json");

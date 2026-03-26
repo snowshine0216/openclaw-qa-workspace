@@ -183,6 +183,7 @@ test("compareDecks does not flag anchor issue when primary_visual_anchor is pres
     component_list: ["title", "chart", "body_text"],
     primary_visual_anchor: {
       kind: "chart",
+      description: "A chart description",
       source: "source_deck",
       asset_ref: "hiring_chart.png",
       relevance_rationale: "Chart visualizes headcount growth trajectory supporting the hiring narrative",
@@ -208,6 +209,7 @@ test("compareDecks does not flag anchor issue when primary_visual_anchor is pres
     issue => /visual anchor/i.test(issue) && /slide 2/i.test(issue)
   );
   assert.equal(anchorIssues.length, 0, "No anchor issues expected when primary_visual_anchor is present");
+  assert.equal(result.enrichment_issues.length, 0, "No enrichment issues expected for fully-enriched brief");
 });
 
 test("compareDecks flags enrichment_issues when slide has no speaker notes", () => {
@@ -232,6 +234,7 @@ test("compareDecks flags enrichment_issues when slide has no speaker notes", () 
     component_list: ["title", "chart"],
     primary_visual_anchor: {
       kind: "chart",
+      description: "A chart description",
       source: "source_deck",
       asset_ref: "chart.png",
       relevance_rationale: "Supports hiring narrative with visual data",
