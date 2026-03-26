@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, readdir, rm } from 'node:fs/promises';
+import { readFile, readdir, rm, writeFile, chmod, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -136,33 +136,97 @@ test('runs the full release coordinator flow and materializes feature packets', 
 });
 
 test('creates a scope-aware release run directory for qa owner scoped release input', async () => {
+  const releaseStubRoot = join(RUNS_ROOT, '.tmp-release-scope-stub');
+  const jiraStub = join(releaseStubRoot, 'jira-run.sh');
+  const codexStub = join(releaseStubRoot, 'fake-codex.sh');
   const featureRunDir = join(RUNS_ROOT, 'TREL-9101');
   await rm(featureRunDir, { recursive: true, force: true });
+  await rm(releaseStubRoot, { recursive: true, force: true });
   for (const entry of await readdir(RUNS_ROOT)) {
     if (/^release_77\.66(?:__scope_[a-f0-9]{8})?$/.test(entry)) {
       await rm(join(RUNS_ROOT, entry), { recursive: true, force: true });
     }
   }
 
-  const jiraRaw = {
-    issues: [
-      {
-        key: 'BUG-77',
-        fields: {
-          summary: 'Scoped release run captures qa owner filter',
-          description: 'Fix in https://github.com/org/repo/pull/12',
-          status: { name: 'Resolved' },
-          priority: { name: 'High' },
-          assignee: { displayName: 'Ada' },
-          resolutiondate: '2026-03-10T12:00:00.000+0000',
-          comment: { comments: [] },
-        },
-      },
-    ],
-  };
-
   let scopedDirName = '';
   try {
+    await mkdir(releaseStubRoot, { recursive: true });
+    await writeFile(
+      jiraStub,
+      `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1 $2" == "issue view" ]]; then
+  cat <<'EOF'
+{"fields":{"issuetype":{"name":"Feature"}}}
+EOF
+  exit 0
+fi
+if [[ "$1 $2" == "project list" ]]; then
+  cat <<'EOF'
+NAME KEY TYPE
+Alpha BCIN software
+EOF
+  exit 0
+fi
+if [[ "$1 $2" == "issue list" ]]; then
+  jql=""
+  shift 2
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--jql" ]]; then
+      jql="$2"
+      break
+    fi
+    shift
+  done
+  if [[ "$jql" == *'Release[Version Picker (single version)]'* ]]; then
+    cat <<'EOF'
+[{"key":"TREL-9101","fields":{"summary":"Scoped release feature"}}]
+EOF
+    exit 0
+  fi
+  if [[ "$jql" == *'parent="TREL-9101"'* ]]; then
+    cat <<'EOF'
+[{"key":"BUG-77","fields":{"summary":"Scoped release run captures qa owner filter","description":"Fix in https://github.com/org/repo/pull/12","status":{"name":"Resolved"},"priority":{"name":"High"},"assignee":{"displayName":"Ada"},"resolutiondate":"2026-03-10T12:00:00.000+0000","comment":{"comments":[]}}}]
+EOF
+    exit 0
+  fi
+  printf '{"issues":[]}\n'
+  exit 0
+fi
+exit 1
+`,
+    );
+    await chmod(jiraStub, 0o755);
+    await writeFile(
+      codexStub,
+      `#!/usr/bin/env bash
+set -euo pipefail
+output=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -o)
+      output="$2"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+[[ -n "$output" ]] || exit 1
+mkdir -p "$(dirname "$output")"
+cat <<'EOF' > "$output"
+# Generated PR Impact
+
+Repository: repo
+Risk: Medium
+Domains: api,ui
+PR: https://github.com/org/repo/pull/12
+EOF
+`,
+    );
+    await chmod(codexStub, 0o755);
+
     const result = spawnSync(
       'bash',
       [SCRIPT, 'run defects analysis for release 77.66 with qa owner me', '--release-version', '77.66', '--qa-owner', 'current_user'],
@@ -171,10 +235,9 @@ test('creates a scope-aware release run directory for qa owner scoped release in
         env: {
           ...process.env,
           TEST_RUNTIME_ENV_OK: '1',
-          TEST_JIRA_ISSUE_TYPE: 'Feature',
-          TEST_JIRA_RAW_JSON: JSON.stringify(jiraRaw),
-          TEST_SPAWN_OUTPUT_MODE: 'materialize',
-          TEST_FEATURE_KEYS_JSON: '["TREL-9101"]',
+          JIRA_CLI_SCRIPT: jiraStub,
+          OPENCLAW_BIN: join(releaseStubRoot, 'missing-openclaw'),
+          CODEX_BIN: codexStub,
           FEISHU_CHAT_ID: 'oc_test_chat',
         },
       },
@@ -192,13 +255,32 @@ test('creates a scope-aware release run directory for qa owner scoped release in
         'utf8',
       ),
     );
+    const scopedQuery = JSON.parse(
+      await readFile(
+        join(RUNS_ROOT, scopedDirName, 'context', 'scope_query.json'),
+        'utf8',
+      ),
+    );
+    const scopedFeatures = JSON.parse(
+      await readFile(
+        join(RUNS_ROOT, scopedDirName, 'context', 'feature_keys.json'),
+        'utf8',
+      ),
+    );
+    const prSummary = JSON.parse(
+      await readFile(join(RUNS_ROOT, 'TREL-9101', 'context', 'pr_impact_summary.json'), 'utf8'),
+    );
     assert.equal(scopedRoute.release_version, '77.66');
     assert.equal(scopedRoute.release_scope.qa_owner_mode, 'current_user');
+    assert.match(scopedQuery.query, /"QA Owner" = currentUser\(\)/);
+    assert.deepEqual(scopedFeatures.feature_keys, ['TREL-9101']);
+    assert.equal(prSummary.pr_count, 1);
   } finally {
     if (scopedDirName) {
       await rm(join(RUNS_ROOT, scopedDirName), { recursive: true, force: true });
     }
     await rm(featureRunDir, { recursive: true, force: true });
+    await rm(releaseStubRoot, { recursive: true, force: true });
   }
 });
 
