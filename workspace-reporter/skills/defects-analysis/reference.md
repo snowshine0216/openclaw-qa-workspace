@@ -60,9 +60,11 @@ workspace-reporter/skills/defects-analysis/runs/<run-key>/
 Run-key derivation:
 
 - `<ISSUE_KEY>` for single Jira key input
-- `release_<VERSION>` for unfiltered release input
-- `release_<VERSION>__scope_<sha1_8>` for filtered release input (for example release + `qa_owner=current_user`)
+- `release_<VERSION>` for unfiltered release input (no qa_owner filter — only used when the user explicitly opts out)
+- `release_<VERSION>__scope_<sha1_8>` for filtered release input (default for all release runs; e.g. release + `qa_owner=current_user`)
 - `jql_<sha1_12>` for JQL input
+
+> **Default:** release inputs always produce a scoped run key (`release_<VERSION>__scope_<sha1_8>`) because `qa_owner` defaults to `current_user`. A plain `release_<VERSION>` run key only occurs when the user explicitly requests all features with no owner filter.
 
 ## Artifact Families
 

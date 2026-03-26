@@ -48,6 +48,11 @@ Issue-class delegated runs still use this run root for routing evidence and dele
 For each phase `0..5`:
 
 1. Run `scripts/phaseN.sh <raw-input> <run-dir>`.
+   - For release inputs, **always** pass `--qa-owner` to `phase0.sh` and `phase1.sh`:
+     - Default (no explicit owner given): pass `--qa-owner current_user`
+     - Explicit owner given by user: pass the value as-is (e.g. `--qa-owner me` or `--qa-owner user@example.com`)
+   - Example: `phase0.sh "26.04" <run-dir> --qa-owner current_user`
+   - This ensures `release_scope` is always set in `route_decision.json` and the Jira query includes the owner filter.
 2. If stdout includes `SPAWN_MANIFEST: <path>`:
    - run `node scripts/spawn_from_manifest.mjs <path> --cwd <run-dir>`
    - rerun `scripts/phaseN.sh <raw-input> <run-dir> --post`
@@ -67,7 +72,7 @@ Provide exactly one primary input:
 Optional inputs:
 
 - `refresh_mode` — `use_existing`, `resume`, `generate_from_cache`, `smart_refresh`, `full_regenerate`
-- `qa_owner` — optional release-scope filter (`current_user`/`me` or explicit account value)
+- `qa_owner` — release-scope filter (`current_user`/`me` or explicit account value). **For `release_version` inputs this defaults to `current_user` unless the user explicitly opts out.** Ignored for single-key and JQL inputs.
 - `qa_owner_field` — optional Jira field label override; default `QA Owner`
 - `invoked_by`
 - `skip_notification`
