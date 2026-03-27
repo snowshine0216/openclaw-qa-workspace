@@ -7,7 +7,7 @@ const path = require("path");
 
 const skillPath = path.resolve(__dirname, "..", "SKILL.md");
 const designRolePath = path.resolve(__dirname, "..", "roles", "design.md");
-const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "PPT_AGENT_SKILL_DESIGN.md");
+const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "archive", "ppt-agent", "PPT_AGENT_SKILL_DESIGN.md");
 
 function read(filePath) {
   return fs.readFileSync(filePath, "utf8");

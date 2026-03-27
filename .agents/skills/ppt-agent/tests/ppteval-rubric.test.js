@@ -8,7 +8,7 @@ const path = require("path");
 const contentPromptPath = path.resolve(__dirname, "..", "prompts", "eval-content.md");
 const designPromptPath = path.resolve(__dirname, "..", "prompts", "eval-design.md");
 const coherencePromptPath = path.resolve(__dirname, "..", "prompts", "eval-coherence.md");
-const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "PPT_AGENT_SKILL_DESIGN.md");
+const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "archive", "ppt-agent", "PPT_AGENT_SKILL_DESIGN.md");
 
 function read(filePath) {
   return fs.readFileSync(filePath, "utf8");

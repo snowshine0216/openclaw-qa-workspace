@@ -565,7 +565,7 @@ test("buildDeckFromHandoff returns partial success details when optional imagery
 
 test("build-pptx-from-handoff CLI requires a handoff path", () => {
   const scriptPath = path.resolve(__dirname, "..", "scripts", "build-pptx-from-handoff.js");
-  const result = spawnSync("node", [scriptPath], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, [scriptPath], { encoding: "utf8" });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Usage: node build-pptx-from-handoff\.js --handoff/);
 });

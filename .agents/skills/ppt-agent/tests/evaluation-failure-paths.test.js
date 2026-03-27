@@ -5,7 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("fs");
 const path = require("path");
 
-const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "PPT_AGENT_SKILL_DESIGN.md");
+const planPath = path.resolve(__dirname, "..", "..", "..", "..", "docs", "archive", "ppt-agent", "PPT_AGENT_SKILL_DESIGN.md");
 
 function read(filePath) {
   return fs.readFileSync(filePath, "utf8");

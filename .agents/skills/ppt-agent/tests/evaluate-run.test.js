@@ -235,14 +235,14 @@ test("evaluateRun fails when rendered slide coverage does not match the build sp
 });
 
 test("evaluate-run CLI requires run-root", () => {
-  const result = spawnSync("node", [scriptPath], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, [scriptPath], { encoding: "utf8" });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Usage: node evaluate-run\.js --run-root/);
 });
 
 test("evaluate-run CLI exits non-zero when evaluation status is fail", () => {
   const runRoot = tmpRunRoot();
-  const result = spawnSync("node", [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
 
   assert.notEqual(result.status, 0);
   const parsed = JSON.parse(result.stdout);
@@ -254,7 +254,7 @@ test("evaluate-run CLI exits non-zero when evaluation status is partial", () => 
   writeGoodRun(runRoot);
   fs.writeFileSync(path.join(runRoot, "renders", "slide-02.png"), "not-a-real-png");
 
-  const result = spawnSync("node", [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
 
   assert.notEqual(result.status, 0);
   const parsed = JSON.parse(result.stdout);
