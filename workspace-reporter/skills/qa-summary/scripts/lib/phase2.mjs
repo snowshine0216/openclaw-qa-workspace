@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 /**
  * Phase 2: Defect-analysis coordination - inspect, reuse, or spawn.
+ *
+ * Two-step spawn flow tracked via task.phase2_step:
+ *   1. Spawn defects-analysis (when needed) — step: 'defects_analysis_spawned'
+ *   2. Spawn defect-summary LLM subagent — step: 'defect_summary_spawned'
+ *   3. --post after step 2: validate output, finalize task state
  */
 
-import { readFile, writeFile, unlink } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { buildDefectSummary } from './buildDefectSummary.mjs';
 import { resolveQaSummaryRepoRoot } from './resolveQaSummaryRepoRoot.mjs';
+import {
+  buildSubagentPrompt,
+  buildManifest,
+} from './build_defect_summary_spawn_manifest.mjs';
 
 async function safeReadJson(path) {
   try {
@@ -33,7 +41,7 @@ function resolveDefaultDefectsRunRoot(runDir) {
   );
 }
 
-async function classifyDefectContext(defectsRunDir, defectFinalPath, featureKey) {
+async function classifyDefectContext(defectsRunDir, defectFinalPath) {
   const { existsSync } = await import('node:fs');
   if (existsSync(defectFinalPath)) {
     return {
@@ -44,7 +52,7 @@ async function classifyDefectContext(defectsRunDir, defectFinalPath, featureKey)
       updated_at: new Date().toISOString(),
     };
   }
-  const draftPath = join(defectsRunDir, `${featureKey}_REPORT_DRAFT.md`);
+  const draftPath = join(defectsRunDir, `${defectsRunDir.split('/').at(-1)}_REPORT_DRAFT.md`);
   if (existsSync(draftPath)) {
     return {
       kind: 'defect_draft_exists',
@@ -54,8 +62,7 @@ async function classifyDefectContext(defectsRunDir, defectFinalPath, featureKey)
       updated_at: new Date().toISOString(),
     };
   }
-  const contextDir = join(defectsRunDir, 'context');
-  const jiraRawPath = join(contextDir, 'jira_raw.json');
+  const jiraRawPath = join(defectsRunDir, 'context', 'jira_raw.json');
   if (existsSync(jiraRawPath)) {
     const jiraRaw = await safeReadJson(jiraRawPath);
     if (Array.isArray(jiraRaw?.issues) && jiraRaw.issues.length === 0) {
@@ -102,25 +109,31 @@ async function resolveDefectSummaryRunDir({
   return configuredRunDir;
 }
 
-async function removeArtifact(path) {
-  try {
-    await unlink(path);
-  } catch {
-    /* ignore missing artifacts */
-  }
-}
+async function emitDefectSummarySpawn({ featureKey, runDir, task, taskPath, defectSummaryRunDir }) {
+  const ts = new Date().toISOString();
+  const updatedTask = {
+    ...task,
+    phase2_step: 'defect_summary_spawned',
+    updated_at: ts,
+  };
+  await writeFile(taskPath, `${JSON.stringify(updatedTask, null, 2)}\n`, 'utf8');
 
-async function writeDefectContextArtifacts(runDir, summary) {
-  const defectSummaryPath = join(runDir, 'context', 'defect_summary.json');
-  const noDefectsPath = join(runDir, 'context', 'no_defects.json');
-  if (summary.totalDefects === 0) {
-    await removeArtifact(defectSummaryPath);
-    await writeFile(noDefectsPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
-    return;
-  }
+  const { join: pathJoin, dirname } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const SKILL_ROOT = pathJoin(dirname(fileURLToPath(import.meta.url)), '..', '..');
+  const schemaRefPath = pathJoin(SKILL_ROOT, 'references', 'planner-and-defects.md');
 
-  await removeArtifact(noDefectsPath);
-  await writeFile(defectSummaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+  const prompt = buildSubagentPrompt({
+    runDir,
+    defectsRunDir: defectSummaryRunDir,
+    schemaRefPath,
+  });
+  const manifest = buildManifest(prompt);
+
+  const manifestPath = pathJoin(runDir, 'phase2_defect_summary_manifest.json');
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  console.log(`SPAWN_MANIFEST: ${manifestPath}`);
+  return 0;
 }
 
 export async function runPhase2(featureKey, runDir, mode = 'main') {
@@ -142,10 +155,47 @@ export async function runPhase2(featureKey, runDir, mode = 'main') {
 
   const defectsRunDir = join(defectsRunRoot, featureKey);
   const defaultDefectsRunDir = join(resolveDefaultDefectsRunRoot(runDir), featureKey);
-  const defectFinal = join(defectsRunDir, `${featureKey}_REPORT_FINAL.md`);
 
+  // --post after defect-summary LLM spawn: validate output and finalize
+  if (mode === '--post' && task.phase2_step === 'defect_summary_spawned') {
+    const { existsSync } = await import('node:fs');
+    const defectSummaryPath = join(runDir, 'context', 'defect_summary.json');
+    const noDefectsPath = join(runDir, 'context', 'no_defects.json');
+    if (!existsSync(defectSummaryPath) && !existsSync(noDefectsPath)) {
+      console.error(
+        'BLOCKED: Defect summary subagent did not produce defect_summary.json or no_defects.json.'
+      );
+      return 2;
+    }
+
+    const ts = new Date().toISOString();
+    task.current_phase = 'phase2';
+    task.phase2_step = 'done';
+    task.updated_at = ts;
+    await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
+
+    const runPath = join(runDir, 'run.json');
+    let run = {};
+    try {
+      const raw = await readFile(runPath, 'utf8');
+      run = JSON.parse(raw);
+    } catch {
+      /* ignore */
+    }
+    run.defect_context_resolved_at = ts;
+    run.subtask_timestamps = run.subtask_timestamps || {};
+    run.subtask_timestamps.defects_analysis = ts;
+    run.updated_at = ts;
+    await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
+
+    console.log('PHASE2_DONE');
+    return 0;
+  }
+
+  // Pre-spawn: classify defect context and decide next step
   if (mode !== '--post') {
-    const state = await classifyDefectContext(defectsRunDir, defectFinal, featureKey);
+    const defectFinal = join(defectsRunDir, `${featureKey}_REPORT_FINAL.md`);
+    const state = await classifyDefectContext(defectsRunDir, defectFinal);
     await writeFile(
       join(runDir, 'context', 'defect_context_state.json'),
       `${JSON.stringify(state, null, 2)}\n`,
@@ -175,6 +225,7 @@ export async function runPhase2(featureKey, runDir, mode = 'main') {
     }
 
     if (state.kind === 'no_defect_artifacts' || state.userChoice === 'regenerate_defects') {
+      // Step 1: spawn defects-analysis first
       const manifest = {
         version: 1,
         phase: 'phase2',
@@ -190,23 +241,20 @@ export async function runPhase2(featureKey, runDir, mode = 'main') {
       };
       const manifestPath = join(runDir, 'phase2_spawn_manifest.json');
       await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+
+      const ts = new Date().toISOString();
+      task.phase2_step = 'defects_analysis_spawned';
+      task.updated_at = ts;
+      await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
+
       console.log(`SPAWN_MANIFEST: ${manifestPath}`);
       return 0;
     }
   }
 
-  const state = await (async () => {
-    try {
-      const raw = await readFile(join(runDir, 'context', 'defect_context_state.json'), 'utf8');
-      return JSON.parse(raw);
-    } catch {
-      return {};
-    }
-  })();
-  const reportPathOverride =
-    state.kind === 'defect_draft_exists' && state.userChoice === 'reuse_existing_defects'
-      ? state.defect_report_path
-      : null;
+  // --post after defects-analysis spawn, or pre-spawn with existing defect artifacts:
+  // both paths emit the defect-summary LLM spawn manifest
+  const state = (await safeReadJson(join(runDir, 'context', 'defect_context_state.json'))) ?? {};
   const defectSummaryRunDir = await resolveDefectSummaryRunDir({
     configuredRunDir: defectsRunDir,
     defaultRunDir: defaultDefectsRunDir,
@@ -214,43 +262,7 @@ export async function runPhase2(featureKey, runDir, mode = 'main') {
     defectContextState: state,
   });
 
-  let summary;
-  try {
-    summary = await buildDefectSummary({
-      featureKey,
-      defectsRunDir: defectSummaryRunDir,
-      plannerLookupPath: join(runDir, 'context', 'planner_artifact_lookup.json'),
-      plannerSeedPath: join(runDir, 'context', 'planner_summary_seed.md'),
-      reportPathOverride,
-    });
-  } catch (error) {
-    console.error(`BLOCKED: ${error.message}`);
-    return 2;
-  }
-
-  await writeDefectContextArtifacts(runDir, summary);
-
-  const ts = new Date().toISOString();
-  task.current_phase = 'phase2';
-  task.updated_at = ts;
-  await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
-
-  const runPath = join(runDir, 'run.json');
-  let run = {};
-  try {
-    const raw = await readFile(runPath, 'utf8');
-    run = JSON.parse(raw);
-  } catch {
-    /* ignore */
-  }
-  run.defect_context_resolved_at = ts;
-  run.subtask_timestamps = run.subtask_timestamps || {};
-  run.subtask_timestamps.defects_analysis = ts;
-  run.updated_at = ts;
-  await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
-
-  console.log('PHASE2_DONE');
-  return 0;
+  return emitDefectSummarySpawn({ featureKey, runDir, task, taskPath, defectSummaryRunDir });
 }
 
 async function main() {
