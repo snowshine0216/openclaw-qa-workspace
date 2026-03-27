@@ -106,6 +106,14 @@ All coding must follow TDD. Tests are written before implementation.
 - ✅ Separate computation from effects
 - ✅ Small, focused functions with early returns
 
+## Python Environment
+
+- **Virtual environment**: `.venv` at repo root `/Users/xuyin/Documents/Repository/openclaw-qa-workspace/.venv`
+- **Package manager**: `uv` (not pip or poetry) — use `uv add <package>` to install
+- **markitdown CLI**: `.venv/bin/markitdown`
+- **Activation**: `source .venv/bin/activate` (or prefix commands with `.venv/bin/python -m`)
+- **Shell invocation pattern**: `source '.venv/bin/activate' && python -m markitdown '<input>'`
+
 ## Quick Decision Guides
 
 **Should this be a shared skill?**
