@@ -128,6 +128,42 @@
 **Priority:** P1
 **Depends on:** None
 
+### Wire Single-Slide Package Path In build-pptx-from-handoff.js
+
+**What:** Extend `build-pptx-from-handoff.js` to emit a deterministic single-slide package artifact at `artifacts/rebuilt-slide-{slideNumber}.pptx` for `structured_rebuild` actions.
+
+**Why:** The `applyStructuredRebuildAction()` in `edit-handoff.js` currently returns `status: "planned"` — the spec and merge-back contract are ready but the actual renderer wiring is deferred.
+
+**Context:** Deferred from plan `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md` during shipping on 2026-03-27. The merge-back algorithm and structured-slide-spec contract are complete and tested.
+
+**Effort:** M
+**Priority:** P1
+**Depends on:** Completion of `structured-slide-spec.js` and `merge-back.js` (done)
+
+### Wire Single-Slide Rendering In render-slide-from-spec.js
+
+**What:** Extend `render-slide-from-spec.js` to support single-slide package output for the `structured_rebuild` path.
+
+**Why:** The renderer currently produces full deck packages; single-slide output is needed for the merge-back algorithm to work end-to-end.
+
+**Context:** Deferred from plan `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md` during shipping on 2026-03-27. Depends on the build-pptx-from-handoff.js single-slide path wiring above.
+
+**Effort:** M
+**Priority:** P1
+**Depends on:** Wire Single-Slide Package Path In build-pptx-from-handoff.js
+
+### Fix 33 Pre-Existing Test Failures In ppt-agent Test Suite
+
+**What:** Investigate and fix 33 pre-existing test failures across: build-pptx-from-handoff, create-run, edit-run, evaluate-run, finalize-edit-run, caption-image, summarize-doc, eval-presentation, plan, workflow-create-partial-success, workflow-edit-resume, workflow-edit-smoke, generate-image, load-config test files.
+
+**Why:** These failures were present before the merge-back/structured-slide-spec implementation on branch `claude/vibrant-hugle` and are unrelated to those changes. They block future CI validation and may hide real regressions.
+
+**Context:** Noticed on branch `claude/vibrant-hugle` (2026-03-27) during `/ship`. Root causes appear to include missing Python venv (`.venv/bin/activate` not found), missing external CLIs (markitdown), and possibly missing test fixtures. Our 48 new tests pass cleanly.
+
+**Effort:** L
+**Priority:** P0
+**Depends on:** None
+
 ## Completed
 
 ### Implement Phase 2 Edit Workflow For `ppt-agent`
@@ -143,3 +179,17 @@
 **Depends on:** Phase 1 create workflow stabilization
 
 **Completed:** v0.1.0.0 (2026-03-25)
+
+### Implement Merge-Back Contract And Structured-Slide-Spec For ppt-agent
+
+**What:** Implemented the OOXML merge-back algorithm (6 explicit exported step-functions) and the `structured-slide-spec.js` brief-to-spec converter as specified in `PPT_AGENT_EDIT_ENRICHMENT_PLAN_PART2.md`. Added `structured_rebuild` action dispatch in `edit-handoff.js` and validation in `update-plan.js`.
+
+**Why:** The edit enrichment plan required a fail-closed, independently-testable merge-back contract for single-slide rebuild without triggering a full-deck re-render.
+
+**Context:** Implemented on 2026-03-27. Includes 48 new tests covering all 4 critical fail-closed paths. Renderer integration (build-pptx-from-handoff.js + render-slide-from-spec.js) is deferred to follow-up PRs.
+
+**Effort:** L
+**Priority:** P1
+**Depends on:** PPT Agent Phase 2 edit workflow
+
+**Completed:** v0.1.8.0 (2026-03-27)
