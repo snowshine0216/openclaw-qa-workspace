@@ -4,6 +4,21 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.11.0] - 2026-03-27
+
+### Added
+- **Section 12 "Known Limitations" in `qa-summary` skill** — QA summaries now include a 12th section populated from `## Known Limitations` / `## Known Issues` headings in the QA plan, or from planner `outOfScopeLines`. Implemented in new `extractKnownLimitations.mjs` pure extraction module, `buildSummaryDraft.mjs`, and `phase1.mjs` (saves `context/known_limitations_seed.json` as a new intermediate artifact).
+- **`extractKnownLimitations.mjs`** — new pure function `extractKnownLimitationsSeed(markdown, outOfScopeLines)` that scans QA plan markdown for Known Limitations headings, collects bullet items, strips `<P1>/<P2>` priority markers, and deduplicates case-insensitively. 10 unit tests.
+
+### Changed
+- **Rubric files synced to 12-section structure** — `summary-generation-rubric.md`, `summary-review-rubric.md`, and `summary-formatting.md` updated to reflect all 12 sections (Background & Solution section was in code but missing from rubrics; Known Limitations section is new). Review rubric now covers criteria C1–C12 (was C1–C10).
+- **LLM spawn manifest prompts updated** — `build_summary_draft_spawn_manifest.mjs` now lists `known_limitations_seed.json` as a source artifact, references "all 12 numbered sections", and instructs the LLM subagent to self-review against C1–C12.
+- **Canonical path resolution in `resolvePlannerArtifact.mjs`** — all `join()` calls replaced with `resolve()` for normalized absolute paths; added explicit null guard for `plannerRunRoot` (throws instead of crashing at `.startsWith()`).
+
+### Fixed
+- **BLOCKED message now includes expected path and recovery instructions** — when Phase 1 cannot find a QA plan for a feature key, the error now prints `Expected path: <path>` and instructs the user to run `qa-plan-orchestrator` or set `planner_plan_path`.
+- **Known Limitations extraction uses raw plan markdown** — previously passed filtered `bgSeed.outOfScopeText` (which EXCLUSION_PATTERN had stripped of affirmative limitation text like "i18n deferred to Q3") to the extractor. Now passes raw plan markdown directly.
+
 ## [0.1.10.0] - 2026-03-27
 
 ### Added
