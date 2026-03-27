@@ -20,6 +20,18 @@ const SECTION_HEADINGS = [
 ];
 
 export function buildRawDefectFacts(jiraRaw, jiraBaseUrl) {
+  // defect_index.json format: { defects: [{ key, priority, status, summary, ... }] }
+  if (Array.isArray(jiraRaw.defects)) {
+    return jiraRaw.defects.map((d) => ({
+      key: d.key,
+      url: `${jiraBaseUrl}/browse/${d.key}`,
+      title: d.summary ?? '',
+      priority: d.priority ?? 'Unknown',
+      status: d.status ?? 'Unknown',
+      summary: d.summary ?? '',
+    }));
+  }
+  // jira_raw.json format: { issues: [{ key, fields: { priority, status, summary } }] }
   return (jiraRaw.issues || []).map((issue) => ({
     key: issue.key,
     url: `${jiraBaseUrl}/browse/${issue.key}`,

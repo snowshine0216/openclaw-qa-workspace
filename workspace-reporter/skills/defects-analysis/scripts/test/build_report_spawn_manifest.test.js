@@ -218,6 +218,30 @@ test('buildSubagentPrompt specifies output file paths for draft and review artif
   assert.match(prompt, /report_review_delta\.md/);
 });
 
+test('buildRawDefectFacts handles defect_index.json format with flat defects array', () => {
+  const defectIndex = {
+    defects: [
+      { key: 'BCFR-3828', summary: 'Save report shows unknown error', priority: 'High', status: 'Done' },
+      { key: 'BCIN-7795', summary: 'Cancel prompt nav broken', priority: 'High', status: 'To Do' },
+    ],
+  };
+  const facts = buildRawDefectFacts(defectIndex, 'https://jira.example.com');
+  assert.equal(facts.length, 2);
+  assert.equal(facts[0].key, 'BCFR-3828');
+  assert.equal(facts[0].url, 'https://jira.example.com/browse/BCFR-3828');
+  assert.equal(facts[0].title, 'Save report shows unknown error');
+  assert.equal(facts[0].priority, 'High');
+  assert.equal(facts[0].status, 'Done');
+  assert.equal(facts[1].key, 'BCIN-7795');
+  assert.equal(facts[1].priority, 'High');
+  assert.equal(facts[1].status, 'To Do');
+});
+
+test('buildRawDefectFacts returns empty array when neither issues nor defects property exists', () => {
+  const facts = buildRawDefectFacts({}, 'https://jira.example.com');
+  assert.deepEqual(facts, []);
+});
+
 test('buildManifest produces valid JSON with count=1 and one request', () => {
   const manifest = buildManifest('Do the task');
   assert.equal(manifest.version, 1);

@@ -26,6 +26,15 @@ This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/R
 - Dependency on `qa-summary-review` skill removed from Phase 4.
 - Dependency on `report-quality-reviewer` removed.
 
+## [0.1.7.1] - 2026-03-27
+
+### Fixed
+- **defects-analysis: Priority Breakdown, Defect Breakdown by Status, and Defect Analysis by Priority sections always showed zero counts** — `buildRawDefectFacts` in `build_report_spawn_manifest.mjs` read `jiraRaw.issues` (Jira API format) but `defect_index.json` stores normalized defects under `jiraRaw.defects` with flat fields. The empty defect table caused the LLM to correctly generate all-zero placeholders. Now detects both formats: `{ defects: [...] }` and `{ issues: [...] }`.
+- **defects-analysis review rubric C2 now rejects all-zero placeholder tables** — previously "Table present with data rows" was vacuously satisfied by zero-value rows. Updated to require at least one row with a non-zero Total or Open count when defects were provided in the task input.
+
+### Added
+- **Two new unit tests for `buildRawDefectFacts`** — covers `defect_index.json` format (flat `defects` array) and the empty-object edge case (neither `issues` nor `defects` property).
+
 ## [0.1.7.0] - 2026-03-27
 
 ### Added
