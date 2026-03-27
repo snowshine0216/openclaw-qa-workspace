@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import {
+  assertExecutedQaPlanScorecard,
+  buildQaPlanOutcomeFromScorecard,
+} from '../qaPlanScorecard.mjs';
 import { scoreChallengerVsChampion } from '../scoreCandidate.mjs';
 import { hashJsonPayload } from '../workflowState.mjs';
 import { mutationSignature } from '../mutationPlanner.mjs';
@@ -11,39 +15,6 @@ import {
   requireRun,
   touchRun,
 } from './common.mjs';
-
-function readPrimaryModePassRate(scorecard, mode) {
-  const value = scorecard?.mode_scores?.primary?.[mode]?.mean_pass_rate;
-  return value == null ? null : value;
-}
-
-function firstDefinedModeScore(scorecard, modes) {
-  for (const mode of modes) {
-    const value = readPrimaryModePassRate(scorecard, mode);
-    if (value != null) {
-      return value;
-    }
-  }
-  return null;
-}
-
-function resolveKnowledgePackCoverageScore(scorecard, validationSummary) {
-  const activeModes = new Set(
-    Array.isArray(scorecard?.active_evidence_modes)
-      ? scorecard.active_evidence_modes
-      : [],
-  );
-  const preferredModes = [
-    ...(activeModes.has('holdout_regression') ? ['holdout_regression'] : []),
-    ...(activeModes.has('retrospective_replay') ? ['retrospective_replay'] : []),
-    ...(activeModes.has('blind_pre_defect') ? ['blind_pre_defect'] : []),
-    'holdout_regression',
-    'retrospective_replay',
-    'blind_pre_defect',
-  ];
-  const modeScore = firstDefinedModeScore(scorecard, preferredModes);
-  return modeScore ?? validationSummary.knowledge_pack_coverage_score ?? 0;
-}
 
 export async function main(argv = process.argv.slice(2)) {
   const args = parsePhaseArgs(argv);
@@ -65,10 +36,8 @@ export async function main(argv = process.argv.slice(2)) {
   })();
   const selectedMutation = candidateScope.mutation ?? null;
   const benchmarkScorecard = val.validation?.scorecard ?? null;
-  if (benchmarkScorecard && benchmarkScorecard.scoring_fidelity !== 'executed') {
-    throw new Error(
-      `Invalid qa-plan benchmark scorecard fidelity: expected "executed", received "${benchmarkScorecard.scoring_fidelity ?? 'unknown'}"`,
-    );
+  if (benchmarkScorecard) {
+    assertExecutedQaPlanScorecard(benchmarkScorecard);
   }
   const validationSummary = {
     regression_count: val.validation?.regression_count ?? 0,
@@ -84,29 +53,7 @@ export async function main(argv = process.argv.slice(2)) {
   const champion = scoreboard.champion ?? {};
 
   const outcome = benchmarkScorecard
-    ? {
-        scores: {
-          defect_recall_score:
-            readPrimaryModePassRate(benchmarkScorecard, 'retrospective_replay') ??
-            validationSummary.defect_recall_score ??
-            0,
-          contract_compliance_score:
-            readPrimaryModePassRate(benchmarkScorecard, 'blind_pre_defect') ??
-            validationSummary.contract_compliance_score ??
-            0,
-          knowledge_pack_coverage_score:
-            resolveKnowledgePackCoverageScore(benchmarkScorecard, validationSummary),
-          regression_count:
-            benchmarkScorecard.decision?.result === 'accept' ? 0 : 1,
-        },
-        accept: benchmarkScorecard.decision?.result === 'accept',
-        blocking_regression: benchmarkScorecard.decision?.result !== 'accept',
-        primary_metrics: Array.isArray(benchmarkScorecard.active_evidence_modes)
-          ? benchmarkScorecard.active_evidence_modes
-          : ['blind_pre_defect', 'retrospective_replay', 'holdout_regression'],
-        meaningful_improvement: benchmarkScorecard.decision?.result === 'accept',
-        benchmark_scorecard: benchmarkScorecard,
-      }
+    ? buildQaPlanOutcomeFromScorecard(benchmarkScorecard, validationSummary)
     : scoreChallengerVsChampion({
         profileId: task.benchmark_profile,
         validationSummary,

@@ -205,6 +205,17 @@ function createValidationResult() {
   };
 }
 
+function recordBenchmarkCompareFailure(result, message, code = 'benchmark_compare_failed') {
+  result.eval_ok = false;
+  result.regression_count += 1;
+  result.eval_log = message;
+  result.benchmark_artifacts = null;
+  result.scorecard = null;
+  result.benchmark_compare_ok = false;
+  result.benchmark_compare_error = { code, message };
+  result.execution_order.push('defect_replay_evals');
+}
+
 function sliceErrorOutput(error, { tail = false } = {}) {
   const stdout = String(error?.stdout || '');
   const stderr = String(error?.stderr || '');
@@ -261,10 +272,6 @@ function shouldBypassSnapshotSmokeFailure(logText, validationRoot) {
     'if old in-source benchmark runtime exists and canonical does not, assertNoLegacyRuntimeState fails fast',
     'resolveArchiveCompatiblePath resolves archive paths to definition root',
     'resolveDefaultRunDir ignores canonical skill root override outside snapshots',
-    'tests/validate_context.test.mjs',
-    'tests/benchmarkSkillPaths.test.mjs',
-    'tests/workflowState.test.mjs',
-    'tests/workspaceArtifactPolicy.test.mjs',
   ];
   const lines = String(logText || '')
     .split('\n')
@@ -407,7 +414,12 @@ async function runQaPlanReplayValidation(repoRoot, targetSkillPath, abs, options
   const executedRunnerPath = join(definitionRoot, 'scripts', 'run_iteration_compare.mjs');
   const hasExecutedRunner = existsSync(executedRunnerPath);
   if (!hasExecutedRunner) {
-    throw new Error(`Missing qa-plan iteration compare runner: ${executedRunnerPath}`);
+    recordBenchmarkCompareFailure(
+      result,
+      `Missing qa-plan iteration compare runner: ${executedRunnerPath}`,
+      'missing_runner',
+    );
+    return;
   }
 
   result.execution_order.push('defect_replay_evals');
@@ -448,9 +460,11 @@ export async function runQaPlanBenchmarkCompare(repoRoot, targetSkillPath, optio
     result,
   );
   return {
+    ok: result.benchmark_compare_ok !== false,
     benchmark_artifacts: result.benchmark_artifacts ?? null,
     scorecard: result.scorecard ?? null,
     execution_order: result.execution_order ?? [],
+    error: result.benchmark_compare_error ?? null,
   };
 }
 

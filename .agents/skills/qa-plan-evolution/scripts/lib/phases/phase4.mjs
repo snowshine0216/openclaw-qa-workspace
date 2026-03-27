@@ -66,6 +66,26 @@ function buildValidationSummary(validation, iter) {
   };
 }
 
+function mergeBenchmarkCompareValidation(precheck, compare) {
+  const validation = {
+    ...precheck,
+    benchmark_artifacts: compare.benchmark_artifacts ?? null,
+    scorecard: compare.scorecard ?? null,
+    execution_order: [
+      ...(precheck.execution_order ?? []),
+      ...(compare.execution_order ?? []),
+    ],
+  };
+  if (compare.ok === false) {
+    validation.eval_ok = false;
+    validation.regression_count = (validation.regression_count ?? 0) + 1;
+    validation.eval_log = [validation.eval_log, compare.error?.message]
+      .filter(Boolean)
+      .join('\n\n');
+  }
+  return validation;
+}
+
 function writeValidationArtifacts(iterDir, validation, summary) {
   const report = [
     `# Validation report (iteration ${summary.iteration})`,
@@ -215,18 +235,15 @@ export async function main(argv = process.argv.slice(2)) {
     if (!precheck) {
       throw new Error(`Missing phase4 precheck artifacts for iteration ${iter}: ${precheckPath}`);
     }
-    const validation = {
-      ...precheck,
-      benchmark_artifacts: compare.benchmark_artifacts ?? null,
-      scorecard: compare.scorecard ?? null,
-      execution_order: [
-        ...(precheck.execution_order ?? []),
-        ...(compare.execution_order ?? []),
-      ],
-    };
+    const validation = mergeBenchmarkCompareValidation(precheck, compare);
     const summary = buildValidationSummary(validation, iter);
     writeValidationArtifacts(iterDir, validation, summary);
     writePhase4Receipt(runRoot, run, iter, validationFingerprint, validationReportPath);
+    if (!validation.smoke_ok || !validation.eval_ok) {
+      console.error('phase4: validation reported failures (see validation_report.md)');
+      process.exitCode = 1;
+      return;
+    }
     touchTask(runRoot, task, {
       current_phase: 'phase5',
       next_action: 'run_phase5',

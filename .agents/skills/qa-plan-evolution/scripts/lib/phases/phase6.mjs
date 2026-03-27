@@ -1,10 +1,15 @@
 #!/usr/bin/env node
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { copyChampionSnapshot, copySnapshotDir, diffSnapshotDirs } from '../snapshot.mjs';
 import { mutationSignature } from '../mutationPlanner.mjs';
 import { getQaPlanBenchmarkRuntimeRoot } from '../benchmarkPaths.mjs';
+import {
+  assertExecutedQaPlanScorecard,
+  buildQaPlanOutcomeFromScorecard,
+} from '../qaPlanScorecard.mjs';
 import {
   parsePhaseArgs,
   resolveRunContext,
@@ -195,6 +200,83 @@ function updateQaPlanChampionHistory(repoRoot, task, iter) {
   writeFileSync(historyPath, `${JSON.stringify(history, null, 2)}\n`, 'utf8');
 }
 
+function readQaPlanValidationSummary(runRoot, iter, scoreData) {
+  const validationReportPath = join(runRoot, 'candidates', `iteration-${iter}`, 'validation_report.json');
+  if (existsSync(validationReportPath)) {
+    const report = readJson(validationReportPath);
+    if (report.summary) {
+      return report.summary;
+    }
+  }
+  return scoreData.validation_summary ?? scoreData.outcome?.scores ?? {};
+}
+
+function verifyQaPlanPromotionOutcome({ repoRoot, runRoot, task, iter, scoreData }) {
+  const benchmarkRoot = qaPlanBenchmarkRoot(repoRoot, task);
+  const scorecardPath = join(benchmarkRoot, `iteration-${iter}`, 'scorecard.json');
+  if (!existsSync(scorecardPath)) {
+    throw new Error(`Missing canonical qa-plan benchmark scorecard: ${scorecardPath}`);
+  }
+
+  const scorecard = readJson(scorecardPath);
+  assertExecutedQaPlanScorecard(scorecard, 'qa-plan benchmark scorecard');
+  if (scorecard.decision?.result !== 'accept') {
+    throw new Error(
+      `qa-plan benchmark scorecard decision must be "accept" before promotion; received "${scorecard.decision?.result ?? 'unknown'}"`,
+    );
+  }
+
+  const recordedScorecard = scoreData.outcome?.benchmark_scorecard ?? null;
+  if (!recordedScorecard) {
+    throw new Error(
+      `Missing qa-plan benchmark scorecard in ${join(runRoot, 'candidates', `iteration-${iter}`, 'score.json')}; rerun phase5.`,
+    );
+  }
+  if (!isDeepStrictEqual(recordedScorecard, scorecard)) {
+    throw new Error('qa-plan benchmark scorecard in score.json is stale or tampered; rerun phase5.');
+  }
+
+  const fidelityCheckPath = join(
+    repoRoot,
+    task.target_skill_path,
+    'benchmarks',
+    'qa-plan-v2',
+    'scripts',
+    'check_benchmark_fidelity.mjs',
+  );
+  if (!existsSync(fidelityCheckPath)) {
+    throw new Error(`Missing benchmark fidelity checker: ${fidelityCheckPath}`);
+  }
+
+  try {
+    execFileSync(
+      'node',
+      [
+        fidelityCheckPath,
+        '--benchmark-root',
+        benchmarkRoot,
+        '--iteration',
+        String(iter),
+      ],
+      {
+        encoding: 'utf8',
+        stdio: 'pipe',
+        env: { ...process.env, BENCHMARK_REQUIRE_EXECUTED: '1' },
+      },
+    );
+  } catch (error) {
+    const failureOutput = String(error?.stdout || error?.stderr || error?.message || '').trim();
+    throw new Error(
+      `qa-plan benchmark scorecard fidelity check failed for iteration ${iter}: ${failureOutput}`,
+    );
+  }
+
+  return buildQaPlanOutcomeFromScorecard(
+    scorecard,
+    readQaPlanValidationSummary(runRoot, iter, scoreData),
+  );
+}
+
 function upsertArchiveHistory(history, iter, championArchivePath, candidateArchivePath, accept, finalize) {
   if (!championArchivePath) {
     return history;
@@ -359,7 +441,10 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   const scoreData = JSON.parse(readFileSync(scorePath, 'utf8'));
-  const accept = scoreData.outcome?.accept === true;
+  const promotionOutcome = String(task.benchmark_profile || '').startsWith('qa-plan')
+    ? verifyQaPlanPromotionOutcome({ repoRoot, runRoot, task, iter, scoreData })
+    : (scoreData.outcome ?? {});
+  const accept = promotionOutcome.accept === true;
 
   const max = task.max_iterations ?? 10;
   const consecutive = run.consecutive_rejections ?? 0;
@@ -449,7 +534,7 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   if (accept && finalize) {
-    promoteScoreboardChampion(runRoot, runKey, scoreData.outcome?.scores ?? {});
+    promoteScoreboardChampion(runRoot, runKey, promotionOutcome.scores ?? {});
     updateAcceptedGapIds(runRoot, runKey, acceptedGapIds);
   }
 
@@ -507,7 +592,7 @@ export async function main(argv = process.argv.slice(2)) {
     '',
     '## Score snapshot',
     '```json',
-    JSON.stringify(scoreData.outcome?.scores ?? {}, null, 2),
+    JSON.stringify(promotionOutcome.scores ?? {}, null, 2),
     '```',
     '',
     '## Next steps',

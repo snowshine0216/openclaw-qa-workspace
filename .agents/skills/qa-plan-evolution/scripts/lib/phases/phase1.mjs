@@ -26,6 +26,14 @@ function writeJson(path, payload) {
   writeFileSync(path, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
+function readJsonFile(path, context) {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch (error) {
+    throw new Error(`Unreadable ${context}: ${path}. ${error.message}`);
+  }
+}
+
 function isQaPlanEvolutionTask(task) {
   return (
     String(task.benchmark_profile || '').startsWith('qa-plan') ||
@@ -207,7 +215,7 @@ function seedQaPlanBenchmarkRuntimeBaseline(repoRoot, task) {
   let history = null;
   const historyPath = join(runtimeRoot, 'history.json');
   if (existsSync(historyPath)) {
-    history = JSON.parse(readFileSync(historyPath, 'utf8'));
+    history = readJsonFile(historyPath, 'benchmark runtime history');
   }
 
   const now = new Date().toISOString();
@@ -221,7 +229,13 @@ function seedQaPlanBenchmarkRuntimeBaseline(repoRoot, task) {
     'champion_snapshot',
   );
 
-  if (!existsSync(championSnapshotPath)) {
+  if (history && !existsSync(championSnapshotPath)) {
+    throw new Error(
+      `Missing champion snapshot for current benchmark history: ${championSnapshotPath}. Refusing to reseed from the live worktree.`,
+    );
+  }
+
+  if (!history && !existsSync(championSnapshotPath)) {
     mkdirSync(join(runtimeRoot, `iteration-${championIteration}`), { recursive: true });
     copyChampionSnapshot(repoRoot, task.target_skill_path, championSnapshotPath);
   }
