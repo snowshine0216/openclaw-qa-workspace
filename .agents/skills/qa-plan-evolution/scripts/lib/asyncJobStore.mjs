@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 function readJson(path) {
@@ -13,6 +13,13 @@ function writeJson(path, payload) {
 
 function isoNow() {
   return new Date().toISOString();
+}
+
+export function defaultSpawnResultsPathForManifest(manifestPath) {
+  const resolvedManifestPath = resolve(manifestPath);
+  const manifestDir = dirname(resolvedManifestPath);
+  const manifestBase = basename(resolvedManifestPath, extname(resolvedManifestPath));
+  return join(manifestDir, `${manifestBase.replace(/_manifest$/, '')}_results.json`);
 }
 
 export function jobsRoot(runRoot) {
@@ -90,6 +97,7 @@ export function registerManifestJob(
   {
     phase,
     manifestPath,
+    spawnResultsPath = null,
     expectedArtifacts = [],
     completionProbe = 'spawn_results_only',
     freshnessInputs = [],
@@ -108,7 +116,9 @@ export function registerManifestJob(
     job_type: 'spawn_manifest',
     status: 'queued',
     manifest_path: resolve(manifestPath),
-    spawn_results_path: join(dirname(resolve(manifestPath)), 'spawn_results.json'),
+    spawn_results_path: resolve(
+      spawnResultsPath ?? defaultSpawnResultsPathForManifest(manifestPath),
+    ),
     expected_artifacts: expectedArtifacts.map((path) => resolve(path)),
     completion_probe: completionProbe,
     freshness_inputs: freshnessInputs.map((path) => resolve(path)),
@@ -145,6 +155,14 @@ function allResultsComplete(results = []) {
 
 function fileMtimeMs(path) {
   return existsSync(path) ? statSync(path).mtimeMs : 0;
+}
+
+function candidateSpawnResultsPaths(job) {
+  const configuredPath = job.spawn_results_path ? resolve(job.spawn_results_path) : null;
+  const derivedPath = job.manifest_path
+    ? defaultSpawnResultsPathForManifest(job.manifest_path)
+    : null;
+  return [...new Set([configuredPath, derivedPath].filter(Boolean))];
 }
 
 function isoToMs(value) {
@@ -223,8 +241,12 @@ export function refreshJobs(runRoot, { phase = null } = {}) {
       writeJson(jobPath(runRoot, next.job_id), next);
       return next;
     }
-    if (existsSync(next.spawn_results_path)) {
-      const results = readJson(next.spawn_results_path).results ?? [];
+    const resultsPath = candidateSpawnResultsPaths(next)
+      .sort((left, right) => fileMtimeMs(right) - fileMtimeMs(left))
+      .find((path) => existsSync(path));
+    if (resultsPath) {
+      next.spawn_results_path = resultsPath;
+      const results = readJson(resultsPath).results ?? [];
       const failureReason = summarizeResultFailure(results);
       if (failureReason) {
         next.status = 'failed';

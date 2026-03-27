@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { defaultSpawnResultsPathForManifest } from './asyncJobStore.mjs';
 
 async function materializeOutputs(manifestPath, requests) {
   const results = [];
@@ -133,7 +134,7 @@ export async function runManifest(manifestPath, options = {}) {
     }
   }
 
-  const outputPath = join(dirname(manifestPath), 'spawn_results.json');
+  const outputPath = defaultSpawnResultsPathForManifest(manifestPath);
   await writeFile(outputPath, `${JSON.stringify({ results }, null, 2)}\n`, 'utf8');
   const failed = results.some((result) => result.status !== 'completed' && result.status !== 'skipped');
   return { results, failed };

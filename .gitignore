@@ -30,6 +30,9 @@ workspace-artifacts/
 *.tmp
 .DS_Store
 Thumbs.db
+.claire/
+.claude/worktrees/
+**/.DS_Store
 
 # Node modules (if any scripts need them)
 node_modules/
@@ -62,6 +65,7 @@ data/
 defects-analysis/
 !workspace-reporter/skills/defects-analysis/
 !workspace-reporter/skills/defects-analysis/**
+workspace-reporter/skills/defects-analysis/.DS_Store
 qa-summaries/
 feature-plan/
 test-reports/
