@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ACTIONS = new Set(["keep", "revise", "split", "merge", "add_after", "remove"]);
+const ACTIONS = new Set(["keep", "revise", "split", "merge", "add_after", "remove", "structured_rebuild"]);
 const RISK_LEVELS = new Set(["low", "medium", "high"]);
 const IMAGE_STRATEGIES = new Set(["forbid", "preserve", "refine", "replace", "generate_new", "optional"]);
 
