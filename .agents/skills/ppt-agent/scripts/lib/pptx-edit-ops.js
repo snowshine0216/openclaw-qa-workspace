@@ -343,6 +343,15 @@ function determineRenderStrategy({
     }
   }
 
+  // Plain-text origin guard: source has no visual anchor.
+  // If the intended family is not text-only, light_edit cannot achieve it.
+  if (!primaryAnchorKind && compositionFamily && !textOnlyFamilies.includes(compositionFamily)) {
+    return {
+      strategy: RENDER_STRATEGY.STRUCTURED_REBUILD,
+      reason: "Plain-text source cannot reach non-text composition family via light_edit"
+    };
+  }
+
   // For add_after: check if intended family matches seed layout
   if (action === "add_after") {
     if (!seedLayout || seedLayout.family !== compositionFamily) {
