@@ -5,52 +5,104 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runPhase3 } from '../lib/phase3.mjs';
 
-test('builds full draft with section 1 plus sections 2 through 11', async () => {
+async function makeRunDir(extraTask = {}) {
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase3-'));
   await mkdir(join(runDir, 'context'), { recursive: true });
   await mkdir(join(runDir, 'drafts'), { recursive: true });
-  await writeFile(join(runDir, 'context', 'planner_artifact_lookup.json'), '{}');
   await writeFile(
-    join(runDir, 'context', 'feature_overview_table.md'),
-    '### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |'
+    join(runDir, 'task.json'),
+    JSON.stringify({ feature_key: 'BCIN-7289', ...extraTask })
   );
-  await writeFile(
-    join(runDir, 'context', 'defect_summary.json'),
-    JSON.stringify({
-      totalDefects: 1,
-      openDefects: 0,
-      resolvedDefects: 1,
-      defects: [],
-      prs: [],
-    })
-  );
+  return runDir;
+}
+
+// --- Pre-spawn (mode !== --post) ---
+
+test('pre-spawn emits phase3_spawn_manifest.json and returns 0', async () => {
+  const runDir = await makeRunDir();
   const code = await runPhase3('BCIN-7289', runDir);
   assert.equal(code, 0);
-  const draft = await readFile(join(runDir, 'drafts', 'BCIN-7289_QA_SUMMARY_DRAFT.md'), 'utf8');
-  assert.match(draft, /### 1\. Feature Overview/);
-  assert.match(draft, /### 11\. Automation Coverage/);
+  const manifest = JSON.parse(await readFile(join(runDir, 'phase3_spawn_manifest.json'), 'utf8'));
+  assert.equal(manifest.version, 1);
+  assert.equal(manifest.source_kind, 'qa-summary-draft');
 });
 
-test('blocks when feature overview table is missing', async () => {
-  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase3-'));
-  await mkdir(join(runDir, 'context'), { recursive: true });
-  await mkdir(join(runDir, 'drafts'), { recursive: true });
-  await writeFile(join(runDir, 'context', 'planner_artifact_lookup.json'), '{}');
-  await writeFile(join(runDir, 'context', 'defect_summary.json'), '{}');
-  const code = await runPhase3('BCIN-7289', runDir);
+test('pre-spawn prompt contains feature key and rubric references', async () => {
+  const runDir = await makeRunDir();
+  await runPhase3('BCIN-7289', runDir);
+  const manifest = JSON.parse(await readFile(join(runDir, 'phase3_spawn_manifest.json'), 'utf8'));
+  const prompt = manifest.requests[0].openclaw.args.task;
+  assert.match(prompt, /BCIN-7289/);
+  assert.match(prompt, /summary-generation-rubric/);
+  assert.match(prompt, /summary-review-rubric/);
+});
+
+test('pre-spawn uses round 1 when task has no phase3_round', async () => {
+  const runDir = await makeRunDir();
+  await runPhase3('BCIN-7289', runDir);
+  const manifest = JSON.parse(await readFile(join(runDir, 'phase3_spawn_manifest.json'), 'utf8'));
+  assert.match(manifest.requests[0].openclaw.args.task, /Round 1/);
+});
+
+// --- --post accept ---
+
+test('--post with accept verdict updates task to review_in_progress and returns 0', async () => {
+  const runDir = await makeRunDir({ phase3_round: 0 });
+  await writeFile(join(runDir, 'context', 'phase3_review_delta.md'), '## Verdict\n\n- accept\n');
+  const code = await runPhase3('BCIN-7289', runDir, '--post');
+  assert.equal(code, 0);
+  const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
+  assert.equal(task.current_phase, 'phase3');
+  assert.equal(task.overall_status, 'review_in_progress');
+  assert.equal(task.return_to_phase, null);
+});
+
+// --- --post return phase3 retry ---
+
+test('--post with return verdict re-emits spawn manifest and returns 0', async () => {
+  const runDir = await makeRunDir({ phase3_round: 0 });
+  await writeFile(
+    join(runDir, 'context', 'phase3_review_delta.md'),
+    '## Verdict\n\n- return phase3\n'
+  );
+  const code = await runPhase3('BCIN-7289', runDir, '--post');
+  assert.equal(code, 0);
+  const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
+  assert.equal(task.phase3_round, 1);
+  assert.equal(task.return_to_phase, 'phase3');
+  const manifest = JSON.parse(await readFile(join(runDir, 'phase3_spawn_manifest.json'), 'utf8'));
+  assert.match(manifest.requests[0].openclaw.args.task, /Round 2/);
+});
+
+test('--post with return verdict on round 2 uses round 3', async () => {
+  const runDir = await makeRunDir({ phase3_round: 1 });
+  await writeFile(
+    join(runDir, 'context', 'phase3_review_delta.md'),
+    '## Verdict\n\n- return phase3\n'
+  );
+  await runPhase3('BCIN-7289', runDir, '--post');
+  const task = JSON.parse(await readFile(join(runDir, 'task.json'), 'utf8'));
+  assert.equal(task.phase3_round, 2);
+  const manifest = JSON.parse(await readFile(join(runDir, 'phase3_spawn_manifest.json'), 'utf8'));
+  assert.match(manifest.requests[0].openclaw.args.task, /Round 3/);
+});
+
+// --- --post max rounds ---
+
+test('--post blocks when phase3_round reaches MAX_ROUNDS (3)', async () => {
+  const runDir = await makeRunDir({ phase3_round: 3 });
+  await writeFile(
+    join(runDir, 'context', 'phase3_review_delta.md'),
+    '## Verdict\n\n- return phase3\n'
+  );
+  const code = await runPhase3('BCIN-7289', runDir, '--post');
   assert.equal(code, 2);
 });
 
-test('blocks when defect context is missing', async () => {
-  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase3-'));
-  await mkdir(join(runDir, 'context'), { recursive: true });
-  await mkdir(join(runDir, 'drafts'), { recursive: true });
-  await writeFile(join(runDir, 'context', 'planner_artifact_lookup.json'), '{}');
-  await writeFile(
-    join(runDir, 'context', 'feature_overview_table.md'),
-    '### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |'
-  );
+// --- --post missing delta ---
 
-  const code = await runPhase3('BCIN-7289', runDir);
+test('--post blocks when phase3_review_delta.md is missing', async () => {
+  const runDir = await makeRunDir();
+  const code = await runPhase3('BCIN-7289', runDir, '--post');
   assert.equal(code, 2);
 });
