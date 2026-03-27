@@ -3,12 +3,13 @@ set -euo pipefail
 
 RAW_INPUT="${1:-}"
 RUN_DIR="${2:-}"
+POST_FLAG="${3:-}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONTEXT_DIR="$RUN_DIR/context"
 TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 
-[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase5.sh <input> <run-dir>" >&2; exit 1; }
+[[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase5.sh <input> <run-dir> [--post]" >&2; exit 1; }
 if [[ -f "$RUN_DIR/task.json" ]] && command -v jq >/dev/null 2>&1; then
   RUN_KEY="$(jq -r '.run_key // empty' "$RUN_DIR/task.json")"
   ROUTE_KIND="$(jq -r '.route_kind // empty' "$RUN_DIR/task.json")"
@@ -49,16 +50,6 @@ load_jira_server() {
   printf '%s\n' "https://jira.example.com"
 }
 
-JIRA_BASE_URL="$(load_jira_server)"
-
-REPORTER_SCRIPT="${REPORTER_SCRIPT:-$SCRIPT_DIR/lib/generate_report.mjs}"
-REVIEWER_SCRIPT="${REVIEWER_SCRIPT:-$SCRIPT_DIR/../../report-quality-reviewer/scripts/review.mjs}"
-AUTO_FIX_SCRIPT="${AUTO_FIX_SCRIPT:-$SCRIPT_DIR/lib/auto_fix_report_format.mjs}"
-
-generate_report() {
-  node "$REPORTER_SCRIPT" "$RUN_DIR" "$RUN_KEY" "$JIRA_BASE_URL"
-}
-
 write_evolution_support_artifacts() {
   [[ -f "$CONTEXT_DIR/jira_raw.json" ]] || return 0
   local freshness_json="$CONTEXT_DIR/analysis_freshness_${RUN_KEY}.json"
@@ -96,24 +87,33 @@ write_evolution_support_artifacts() {
     }' >"$freshness_json"
 }
 
-generate_report
+MANIFEST_SCRIPT="${MANIFEST_SCRIPT:-$SCRIPT_DIR/lib/build_report_spawn_manifest.mjs}"
+VALIDATE_SCRIPT="${VALIDATE_SCRIPT:-$SCRIPT_DIR/lib/validate_report_review.mjs}"
 
-attempt=1
-status="fail"
-while [[ "$attempt" -le 3 ]]; do
-  status="$(node "$REVIEWER_SCRIPT" "$RUN_DIR" "$RUN_KEY" 2>/dev/null)" || status="fail"
-  if [[ "$status" == "pass" || "$status" == "pass_with_advisories" ]]; then
-    break
-  fi
-  fix_result="$(node "$AUTO_FIX_SCRIPT" "$RUN_DIR" "$RUN_KEY" 2>/dev/null)" || fix_result="unchanged"
-  if [[ "$fix_result" != "changed" ]]; then
-    break
-  fi
-  attempt=$((attempt + 1))
-done
+# ── Pre-spawn (no --post): build spawn manifest ─────────────────────────────
+if [[ "$POST_FLAG" != "--post" ]]; then
+  JIRA_SERVER="$(load_jira_server)" node "$MANIFEST_SCRIPT" "$RUN_DIR" "$RUN_KEY"
+  exit 0
+fi
 
-[[ "$status" == "pass" || "$status" == "pass_with_advisories" ]] || { echo "Phase 5 review loop failed to converge" >&2; exit 1; }
+# ── Post: validate review delta and finalize or request rerun ───────────────
+validate_output="$(node "$VALIDATE_SCRIPT" "$RUN_DIR" "$RUN_KEY" 2>&1)" || {
+  echo "$validate_output" >&2
+  exit 1
+}
+echo "$validate_output"
+
+# Check if orchestrator should rerun (return_to_phase set by validator)
+return_to_phase="$(jq -r '.return_to_phase // empty' "$RUN_DIR/task.json" 2>/dev/null || true)"
+if [[ "$return_to_phase" == "phase5" ]]; then
+  # Validator already updated task.json — signal orchestrator to loop
+  exit 0
+fi
+
+# Accept path: finalize report
+[[ -f "$RUN_DIR/${RUN_KEY}_REPORT_DRAFT.md" ]] || { echo "Missing draft report: ${RUN_KEY}_REPORT_DRAFT.md" >&2; exit 1; }
 cp "$RUN_DIR/${RUN_KEY}_REPORT_DRAFT.md" "$RUN_DIR/${RUN_KEY}_REPORT_FINAL.md"
+
 if [[ "$ROUTE_KIND" != "reporter_scope_release" ]]; then
   node "$SCRIPT_DIR/lib/build_feature_summary.mjs" "$RUN_DIR" "$RUN_KEY" >/dev/null
 fi
