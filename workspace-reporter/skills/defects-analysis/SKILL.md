@@ -60,6 +60,17 @@ For each phase `0..5`:
 3. If stdout includes `DELEGATED_RUN: <path>`, record the delegated path in the session summary and stop successfully.
 4. Stop immediately on non-zero exit.
 
+### Phase 5 Review Loop
+
+Phase 5 uses a subagent spawn pattern. After `phase5.sh --post` returns exit 0, read `task.json`:
+
+- If `task.return_to_phase === "phase5"`:
+  - If `task.phase5_round >= 3`: stop with error "Phase 5 failed to converge after 3 rounds — review the context/report_review_delta.md for blocking criteria"
+  - Otherwise: re-run Phase 5 from the beginning (pre-spawn → spawn subagent → --post)
+- If `task.return_to_phase` is absent, null, or empty: Phase 5 is complete, continue normally
+
+The loop terminates when the subagent's self-review passes all criteria (`context/report_review_delta.md` ends with `- accept`) or when the max-round limit is reached.
+
 ## Input Contract
 
 Provide exactly one primary input:
@@ -155,11 +166,12 @@ When `invoked_by=qa-plan-evolution` triggers the dedicated gap-bundle phase:
 
 ### Phase 5
 
-- orchestrator directly generates draft report from context
-- self-review + finalize loop
+- pre-spawn: builds spawn manifest with raw facts (defects, PRs) and instructs subagent via rubrics
+- subagent (LLM-driven): generates comprehensive report + self-reviews against `references/report-review-rubric.md`, writes `context/report_review_notes.md` and `context/report_review_delta.md`
+- post: validates review delta verdict; if `return phase5`, orchestrator loops (max 3 rounds); if `accept`, finalizes
 - feature runs persist `feature_summary.json` after finalization
 - release runs generate one overall release report from collected feature summaries
-- bundle validation for report artifacts
+- bundle validation for report artifacts (`context/report_review_delta.md` and `context/report_review_notes.md` required)
 - Feishu completion marker or fallback notification persistence
 
 ### Dedicated Gap Bundle Phase
