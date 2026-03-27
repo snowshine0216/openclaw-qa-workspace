@@ -90,6 +90,81 @@ test('resolves relative planner root and plan path from repository root', async 
   );
 });
 
+test('absolute plannerRunRoot with .. segments is normalized to canonical path', async () => {
+  const plannerDir = await mkdtemp(join(tmpdir(), 'qa-summary-planner-'));
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-run-'));
+  const featureDir = join(plannerDir, 'BCIN-7289');
+  await mkdir(join(featureDir, 'context'), { recursive: true });
+  await writeFile(join(featureDir, 'qa_plan_final.md'), '# Plan');
+  // Inject .. segments that resolve() should normalize
+  const dirtyRoot = join(plannerDir, 'subdir', '..'); // resolves to plannerDir
+  const result = await resolvePlannerArtifact({
+    featureKey: 'BCIN-7289',
+    plannerRunRoot: dirtyRoot,
+    plannerPlanPath: null,
+    runDir,
+  });
+  // plannerRunRoot returned should not contain .. segments
+  assert.ok(!result.plannerRunRoot.includes('..'), 'no .. in plannerRunRoot');
+  assert.equal(result.planPath, join(plannerDir, 'BCIN-7289', 'qa_plan_final.md'));
+});
+
+test('relative plannerRunRoot resolves to canonical absolute path', async () => {
+  const repoDir = await mkdtemp(join(tmpdir(), 'qa-summary-repo-'));
+  const runDir = join(
+    repoDir,
+    'workspace-reporter',
+    'skills',
+    'qa-summary',
+    'runs',
+    'BCIN-7289'
+  );
+  const plannerFeatureDir = join(
+    repoDir,
+    'workspace-planner',
+    'skills',
+    'qa-plan-orchestrator',
+    'runs',
+    'BCIN-7289'
+  );
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await mkdir(join(plannerFeatureDir, 'context'), { recursive: true });
+  await writeFile(join(plannerFeatureDir, 'qa_plan_final.md'), '# Plan');
+
+  const result = await resolvePlannerArtifact({
+    featureKey: 'BCIN-7289',
+    plannerRunRoot: 'workspace-planner/skills/qa-plan-orchestrator/runs',
+    plannerPlanPath: null,
+    runDir,
+  });
+  // plannerRunRoot must be absolute (no relative segments)
+  assert.ok(result.plannerRunRoot.startsWith('/'), 'plannerRunRoot is absolute');
+  assert.ok(!result.plannerRunRoot.includes('..'), 'no .. in plannerRunRoot');
+});
+
+test('planPath returned by resolvePlannerArtifact contains no .. segments', async () => {
+  const plannerDir = await mkdtemp(join(tmpdir(), 'qa-summary-planner-'));
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-run-'));
+  const featureDir = join(plannerDir, 'BCIN-7289');
+  await mkdir(featureDir, { recursive: true });
+  await writeFile(join(featureDir, 'qa_plan_final.md'), '# Plan');
+  const result = await resolvePlannerArtifact({
+    featureKey: 'BCIN-7289',
+    plannerRunRoot: plannerDir,
+    plannerPlanPath: null,
+    runDir,
+  });
+  assert.ok(!result.planPath.includes('..'), 'planPath has no .. segments');
+});
+
+test('throws when plannerRunRoot is null', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-run-'));
+  await assert.rejects(
+    () => resolvePlannerArtifact({ featureKey: 'BCIN-7289', plannerRunRoot: null, runDir }),
+    { message: /plannerRunRoot is required/ }
+  );
+});
+
 test('merges planner summary markdown into seed markdown when both summary and plan exist', async () => {
   const plannerDir = await mkdtemp(join(tmpdir(), 'qa-summary-planner-'));
   const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-run-'));

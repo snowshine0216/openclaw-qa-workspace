@@ -5,7 +5,7 @@
 
 import { readFile, access } from 'node:fs/promises';
 import { constants } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { resolveQaSummaryRepoRoot } from './resolveQaSummaryRepoRoot.mjs';
 
@@ -40,20 +40,19 @@ function mergeSeedMarkdown(baseSeed, summaryContent, planContent) {
 }
 
 function resolvePlanPath(plannerPlanPath, repoRoot, runDirPlanner) {
-  if (!plannerPlanPath) return join(runDirPlanner, 'qa_plan_final.md');
-  if (plannerPlanPath.startsWith('/')) return plannerPlanPath;
+  if (!plannerPlanPath) return resolve(runDirPlanner, 'qa_plan_final.md');
+  if (plannerPlanPath.startsWith('/')) return resolve(plannerPlanPath);
   const repoRootForResolve = repoRoot || process.cwd();
-  return join(repoRootForResolve, plannerPlanPath);
+  return resolve(repoRootForResolve, plannerPlanPath);
 }
 
 export async function resolvePlannerArtifact({ featureKey, plannerRunRoot, plannerPlanPath, runDir }) {
+  if (!plannerRunRoot) throw new Error('plannerRunRoot is required');
   const repoRoot = runDir ? resolveQaSummaryRepoRoot(runDir) : process.cwd();
-  const resolvedPlannerRoot = plannerRunRoot.startsWith('/')
-    ? plannerRunRoot
-    : join(repoRoot, plannerRunRoot);
-  const runDirPlanner = join(resolvedPlannerRoot, featureKey);
+  const resolvedPlannerRoot = resolve(repoRoot, plannerRunRoot);
+  const runDirPlanner = resolve(resolvedPlannerRoot, featureKey);
   const planPath = resolvePlanPath(plannerPlanPath, repoRoot, runDirPlanner);
-  const summaryPath = join(runDirPlanner, 'context', `final_plan_summary_${featureKey}.md`);
+  const summaryPath = resolve(runDirPlanner, 'context', `final_plan_summary_${featureKey}.md`);
 
   const planExists = await fileExists(planPath);
   const summaryExists = await fileExists(summaryPath);

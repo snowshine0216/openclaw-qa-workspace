@@ -4,11 +4,12 @@
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { resolvePlannerArtifact } from './resolvePlannerArtifact.mjs';
 import { buildFeatureOverviewTable } from './buildFeatureOverviewTable.mjs';
 import { persistPlannerResolution } from './persistPlannerResolution.mjs';
 import { extractBackgroundSolutionSeed } from './extractBackgroundSolution.mjs';
+import { extractKnownLimitationsSeed } from './extractKnownLimitations.mjs';
 
 async function fetchJiraFeatureMeta(featureKey, deps = {}) {
   try {
@@ -56,7 +57,12 @@ export async function runPhase1(featureKey, runDir) {
   });
 
   if (!resolved.planPath) {
-    console.error(`BLOCKED: Provide QA plan markdown for ${featureKey}`);
+    const expectedPath = resolve(resolved.plannerRunRoot, featureKey, 'qa_plan_final.md');
+    console.error(
+      `BLOCKED: QA plan not found for ${featureKey}.\n` +
+      `Expected path: ${expectedPath}\n` +
+      `To fix: run qa-plan-orchestrator for ${featureKey}, or set planner_plan_path to an existing qa_plan_final.md.`
+    );
     return 2;
   }
 
@@ -144,6 +150,24 @@ export async function runPhase1(featureKey, runDir) {
       outOfScopeText: bgSeed.outOfScopeText,
       outOfScopeLines: bgSeed.outOfScopeText ? bgSeed.outOfScopeText.split('\n').filter(Boolean) : [],
     }, null, 2)}\n`,
+    'utf8'
+  );
+
+  // Extract Known Limitations from raw plan markdown (not filtered bgSeed.outOfScopeText).
+  // Using raw plan markdown preserves affirmative limitation text that EXCLUSION_PATTERN would drop.
+  let planMarkdownRaw = '';
+  if (resolved.planPath) {
+    try {
+      planMarkdownRaw = await readFile(resolved.planPath, 'utf8');
+    } catch { /* ignore — plan may have been deleted */ }
+  }
+  const klSeed = extractKnownLimitationsSeed(
+    planMarkdownRaw || combinedForSeed || resolved.seedMarkdown || '',
+    [] // outOfScopeLines not used — raw plan markdown is the authoritative source
+  );
+  await writeFile(
+    join(runDir, 'context', 'known_limitations_seed.json'),
+    `${JSON.stringify({ lines: klSeed.lines, raw: klSeed.raw }, null, 2)}\n`,
     'utf8'
   );
 

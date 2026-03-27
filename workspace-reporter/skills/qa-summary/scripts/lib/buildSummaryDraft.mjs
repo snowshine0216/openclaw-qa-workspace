@@ -5,6 +5,7 @@
 
 import { normalizeRiskLevel, strongerRisk } from './riskLevels.mjs';
 import { extractBackgroundSolutionSeed } from './extractBackgroundSolution.mjs';
+import { extractKnownLimitationsSeed } from './extractKnownLimitations.mjs';
 
 const OPEN_STATUSES = new Set(['Open', 'In Progress', 'To Do', 'In Review']);
 const RESOLVED_STATUSES = new Set(['Resolved', 'Closed', 'Done']);
@@ -585,6 +586,30 @@ function buildRegression(plannerEvidence, defectSummary) {
   );
 }
 
+function buildKnownLimitations(plannerContext, knownLimitationsSeed) {
+  // Priority order:
+  // 1. Pre-parsed seed from Phase 1 (lines already extracted)
+  // 2. backgroundSolutionData.outOfScopeLines from Phase 1
+  // 3. Live extraction from plan markdown heading
+
+  let lines = [];
+
+  if (knownLimitationsSeed?.lines?.length > 0) {
+    lines = knownLimitationsSeed.lines;
+  } else {
+    const outOfScopeLines = plannerContext?.backgroundSolutionData?.outOfScopeLines ?? [];
+    const planMarkdown = plannerContext?.planMarkdown ?? '';
+    const seed = extractKnownLimitationsSeed(planMarkdown, outOfScopeLines);
+    lines = seed.lines;
+  }
+
+  return renderBulletSection(
+    '12. Known Limitations',
+    lines,
+    '[PENDING — No known limitations identified from planner artifacts.]'
+  );
+}
+
 function buildAutomationCoverage(plannerEvidence, defectSummary) {
   const highRiskPrs = (defectSummary?.prs ?? [])
     .filter((pr) => pr.sourceKind === 'defect_fix')
@@ -629,6 +654,7 @@ export async function buildSummaryDraft({
   featureOverviewTable,
   defectSummary,
   approvalFeedback = '',
+  knownLimitationsSeed = null,
 }) {
   const prs = mergeApprovalFeedbackPrs(defectSummary?.prs, approvalFeedback);
   const plannerEvidence = normalizePlannerEvidence(plannerContext);
@@ -644,6 +670,7 @@ export async function buildSummaryDraft({
     buildSecurity(plannerEvidence, defectSummary),
     buildRegression(plannerEvidence, defectSummary),
     buildAutomationCoverage(plannerEvidence, defectSummary),
+    buildKnownLimitations(plannerContext, knownLimitationsSeed),
   ];
 
   const markdown = ['## 📊 QA Summary', '', ...sections].join('\n');
@@ -654,7 +681,7 @@ export async function buildSummaryDraft({
       featureKey,
       generatedAt: new Date().toISOString(),
       approvalFeedbackApplied: Boolean(feedbackSummary(approvalFeedback)),
-      sectionsPresent: 11,
+      sectionsPresent: sections.length,
     },
   };
 }

@@ -40,8 +40,9 @@ Read these files:
 
 - \`${runDir}/context/feature_overview_table.md\` — Section 1 content (copy verbatim)
 - \`${runDir}/context/defect_summary.json\` or \`${runDir}/context/no_defects.json\` — defect and PR data
-- \`${runDir}/context/planner_summary_seed.md\` — planner context for sections 6–10
+- \`${runDir}/context/planner_summary_seed.md\` — planner context for sections 6–11
 - \`${runDir}/context/background_solution_seed.md\` — optional additional context
+- \`${runDir}/context/known_limitations_seed.json\` — pre-extracted known limitations for Section 12
 
 ## Required Output Files
 
@@ -53,16 +54,16 @@ Write exactly these three files:
 
 ## Draft Structure
 
-The draft must open with \`## 📊 QA Summary\` and contain all 10 numbered sections as defined in the generation rubric.
+The draft must open with \`## 📊 QA Summary\` and contain all 12 numbered sections as defined in the generation rubric.
 
 ## Self-Review Instructions
 
 After writing the draft:
 
-1. Read \`${rubricPaths.reviewRubric}\` and evaluate each criterion (C1–C10) against the draft.
+1. Read \`${rubricPaths.reviewRubric}\` and evaluate each criterion (C1–C12) against the draft.
 2. Write \`${runDir}/context/phase3_review_notes.md\` with the full criterion verdict table.
 3. Write \`${runDir}/context/phase3_review_delta.md\` with blocking findings and one terminal verdict:
-   - \`- accept\` if all 10 criteria pass
+   - \`- accept\` if all 12 criteria pass
    - \`- return phase3\` if any criterion fails
 
 Do not mark as \`accept\` if any criterion fails. Be strict.
