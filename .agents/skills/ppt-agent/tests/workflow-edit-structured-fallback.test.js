@@ -190,3 +190,52 @@ test("determineRenderStrategy allows light_edit for closing_statement", () => {
 
   assert.equal(result.strategy, RENDER_STRATEGY.LIGHT_EDIT);
 });
+
+// Plain-text origin tests: source slide has no visual anchor (primary_visual_anchor: null).
+// The intended composition_family in the brief determines routing directly.
+
+test("plain-text source routes to structured_rebuild for checklist_cards", () => {
+  const result = determineRenderStrategy({
+    action: "revise",
+    slideBrief: makeBrief({ compositionFamily: COMPOSITION_FAMILY.CHECKLIST_CARDS, anchorKind: null }),
+    seedLayout: null,
+    allowedLayoutDelta: 9999
+  });
+
+  assert.equal(result.strategy, RENDER_STRATEGY.STRUCTURED_REBUILD);
+  assert.ok(result.reason, "reason must be provided");
+});
+
+test("plain-text source routes to structured_rebuild for title_hero", () => {
+  const result = determineRenderStrategy({
+    action: "revise",
+    slideBrief: makeBrief({ compositionFamily: COMPOSITION_FAMILY.TITLE_HERO, anchorKind: null }),
+    seedLayout: null,
+    allowedLayoutDelta: 9999
+  });
+
+  assert.equal(result.strategy, RENDER_STRATEGY.STRUCTURED_REBUILD);
+  assert.ok(result.reason, "reason must be provided");
+});
+
+test("plain-text source routes to structured_rebuild for evidence_panel (regression)", () => {
+  const result = determineRenderStrategy({
+    action: "revise",
+    slideBrief: makeBrief({ compositionFamily: COMPOSITION_FAMILY.EVIDENCE_PANEL, anchorKind: null }),
+    seedLayout: null,
+    allowedLayoutDelta: 9999
+  });
+
+  assert.equal(result.strategy, RENDER_STRATEGY.STRUCTURED_REBUILD);
+});
+
+test("plain-text source stays light_edit for text_statement (must not over-route)", () => {
+  const result = determineRenderStrategy({
+    action: "revise",
+    slideBrief: makeBrief({ compositionFamily: COMPOSITION_FAMILY.TEXT_STATEMENT, anchorKind: null }),
+    seedLayout: null,
+    allowedLayoutDelta: 9999
+  });
+
+  assert.equal(result.strategy, RENDER_STRATEGY.LIGHT_EDIT);
+});
