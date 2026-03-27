@@ -5,7 +5,9 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { buildInitialChampionScoreboard } from '../lib/runTargetValidation.mjs';
+import { getQaPlanBenchmarkRuntimeRoot } from '../lib/benchmarkPaths.mjs';
 
 const REPO_ROOT = join(fileURLToPath(new URL('../../../../../', import.meta.url)));
 const PHASE0 = join(REPO_ROOT, '.agents/skills/qa-plan-evolution/scripts/phase0.sh');
@@ -380,6 +382,109 @@ test('phase1 preserves an existing scoreboard when the run is resumed', async ()
     assert.deepEqual(scoreboard, preservedScoreboard);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase1 seeds qa-plan benchmark runtime baseline when runtime history is missing', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase1-benchmark-seed-repo-'));
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase1-benchmark-seed-run-'));
+  const runKey = `qa-plan-phase1-benchmark-seed-${Date.now()}`;
+  const runtimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
+  const historyPath = join(runtimeRoot, 'history.json');
+  const championSnapshotPath = join(runtimeRoot, 'iteration-0', 'champion_snapshot');
+  const defectsRunRoot = join(repoRoot, 'workspace-reporter', 'skills', 'defects-analysis', 'runs', 'BCIN-7289');
+  const definitionRoot = join(
+    repoRoot,
+    'workspace-planner',
+    'skills',
+    'qa-plan-orchestrator',
+    'benchmarks',
+    'qa-plan-v2',
+  );
+
+  try {
+    await seedQaPlanTarget(repoRoot);
+    await mkdir(join(definitionRoot, 'fixtures'), { recursive: true });
+    await writeFile(
+      join(definitionRoot, 'benchmark_manifest.json'),
+      JSON.stringify({ benchmark_version: 'qa-plan-v2' }, null, 2),
+      'utf8',
+    );
+    await writeFile(
+      join(definitionRoot, 'cases.json'),
+      JSON.stringify({
+        cases: [
+          {
+            case_id: 'CASE-1',
+            focus: 'Preserve replay coverage',
+            evidence_mode: 'retrospective_replay',
+            primary_phase: 'phase5a',
+            blocking: true,
+            knowledge_pack_key: 'report-editor',
+          },
+        ],
+      }, null, 2),
+      'utf8',
+    );
+    await mkdir(join(defectsRunRoot, 'context'), { recursive: true });
+    await writeFile(join(defectsRunRoot, 'BCIN-7289_REPORT_FINAL.md'), '# report\n', 'utf8');
+    await writeFile(join(defectsRunRoot, 'BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md'), '# cross\n', 'utf8');
+    await writeFile(join(defectsRunRoot, 'BCIN-7289_SELF_TEST_GAP_ANALYSIS.md'), '# self\n', 'utf8');
+    await writeFile(
+      join(defectsRunRoot, 'context', 'analysis_freshness_BCIN-7289.json'),
+      JSON.stringify({ generated_at: '2099-03-21T00:00:00.000Z' }, null, 2),
+      'utf8',
+    );
+    await writeFile(
+      join(defectsRunRoot, 'context', 'gap_bundle_BCIN-7289.json'),
+      JSON.stringify({
+        run_key: 'BCIN-7289',
+        generated_at: '2099-03-21T00:00:00.000Z',
+        feature_id: 'BCIN-7289',
+        feature_family: 'report-editor',
+        source_artifacts: ['BCIN-7289_QA_PLAN_CROSS_ANALYSIS.md'],
+        gaps: [],
+      }, null, 2),
+      'utf8',
+    );
+
+    const phase0 = spawnSync('bash', [
+      PHASE0,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--target-skill-path', 'workspace-planner/skills/qa-plan-orchestrator',
+      '--target-skill-name', 'qa-plan-orchestrator',
+      '--benchmark-profile', 'qa-plan-defect-recall',
+      '--feature-id', 'BCIN-7289',
+      '--feature-family', 'report-editor',
+      '--knowledge-pack-key', 'report-editor',
+      '--defect-analysis-run-key', 'BCIN-7289',
+    ], {
+      encoding: 'utf8',
+    });
+    assert.equal(phase0.status, 0, phase0.stderr);
+
+    const phase1 = spawnSync('bash', [
+      PHASE1,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(phase1.status, 0, phase1.stderr);
+    assert.equal(existsSync(historyPath), true);
+    assert.equal(existsSync(championSnapshotPath), true);
+
+    const history = JSON.parse(await readFile(historyPath, 'utf8'));
+    assert.equal(history.current_champion_iteration, 0);
+    assert.equal(history.iterations[0].skill_snapshot, 'iteration-0/champion_snapshot');
+    assert.equal(existsSync(join(championSnapshotPath, 'SKILL.md')), true);
+  } finally {
+    await rm(runRoot, { recursive: true, force: true });
+    await rm(repoRoot, { recursive: true, force: true });
   }
 });
 

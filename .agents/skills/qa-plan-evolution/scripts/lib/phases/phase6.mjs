@@ -359,10 +359,6 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   const scoreData = JSON.parse(readFileSync(scorePath, 'utf8'));
-  const benchmarkScorecard = scoreData.outcome?.benchmark_scorecard ?? null;
-  if (scoreData.outcome?.accept === true && benchmarkScorecard?.scoring_fidelity === 'synthetic') {
-    throw new Error('Cannot promote a challenger from a synthetic benchmark scorecard.');
-  }
   const accept = scoreData.outcome?.accept === true;
 
   const max = task.max_iterations ?? 10;

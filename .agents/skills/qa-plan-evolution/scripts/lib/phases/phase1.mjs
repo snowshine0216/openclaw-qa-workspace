@@ -3,9 +3,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildEvidenceFreshness } from '../evidenceFreshness.mjs';
 import { buildBenchmarkCatalog } from '../benchmarkCatalog.mjs';
+import { getQaPlanBenchmarkRuntimeRoot } from '../benchmarkPaths.mjs';
 import { getProfileById } from '../loadProfile.mjs';
 import { buildInitialChampionScoreboard } from '../runTargetValidation.mjs';
 import { loadQaPlanAdapter } from '../evidence/adapters/qa-plan.mjs';
+import { copyChampionSnapshot } from '../snapshot.mjs';
 import {
   markPhaseJobsPostApplied,
   refreshJobs,
@@ -185,6 +187,67 @@ function buildDefectEvidenceRecord(task, fresh) {
     freshness_status: defectsInfo.status ?? 'skipped',
     replay_evidence_enabled: fresh.profile_id === 'qa-plan-defect-recall',
     gap_bundle_path: defectsInfo.gap_bundle_path ?? null,
+  };
+}
+
+function seedQaPlanBenchmarkRuntimeBaseline(repoRoot, task) {
+  if (!isQaPlanEvolutionTask(task)) {
+    return null;
+  }
+
+  const runtimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
+  const benchmarkManifestPath = join(
+    repoRoot,
+    task.target_skill_path,
+    'benchmarks',
+    'qa-plan-v2',
+    'benchmark_manifest.json',
+  );
+
+  let history = null;
+  const historyPath = join(runtimeRoot, 'history.json');
+  if (existsSync(historyPath)) {
+    history = JSON.parse(readFileSync(historyPath, 'utf8'));
+  }
+
+  const now = new Date().toISOString();
+  const benchmarkVersion = existsSync(benchmarkManifestPath)
+    ? JSON.parse(readFileSync(benchmarkManifestPath, 'utf8')).benchmark_version ?? 'qa-plan-v2'
+    : 'qa-plan-v2';
+  const championIteration = history?.current_champion_iteration ?? 0;
+  const championSnapshotPath = join(
+    runtimeRoot,
+    `iteration-${championIteration}`,
+    'champion_snapshot',
+  );
+
+  if (!existsSync(championSnapshotPath)) {
+    mkdirSync(join(runtimeRoot, `iteration-${championIteration}`), { recursive: true });
+    copyChampionSnapshot(repoRoot, task.target_skill_path, championSnapshotPath);
+  }
+
+  if (!history) {
+    writeJson(historyPath, {
+      benchmark_version: benchmarkVersion,
+      started_at: now,
+      current_champion_iteration: championIteration,
+      iterations: [
+        {
+          iteration: championIteration,
+          label: championIteration === 0 ? 'baseline' : `iteration-${championIteration}`,
+          role: 'champion_seed',
+          skill_snapshot: `iteration-${championIteration}/champion_snapshot`,
+          grading_result: 'baseline_seeded_for_evolution',
+          is_current_champion: true,
+          completed_at: now,
+        },
+      ],
+    });
+  }
+
+  return {
+    history_path: historyPath,
+    champion_snapshot_path: championSnapshotPath,
   };
 }
 
@@ -374,6 +437,7 @@ export async function main(argv = process.argv.slice(2)) {
     const evidenceRecord = buildDefectEvidenceRecord(updatedTask, fresh);
     writeJson(join(runRoot, 'context', `defect_evidence_${runKey}.json`), evidenceRecord);
   }
+  seedQaPlanBenchmarkRuntimeBaseline(repoRoot, updatedTask);
   markPhaseJobsPostApplied(runRoot, 'phase1');
 
   const catalog = buildBenchmarkCatalog({

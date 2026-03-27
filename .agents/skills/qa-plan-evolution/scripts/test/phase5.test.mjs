@@ -48,6 +48,7 @@ test('phase5 uses benchmark scorecard for qa-plan decisions', async () => {
         contract_compliance_score: 0.1,
         knowledge_pack_coverage_score: 0.1,
         scorecard: {
+          scoring_fidelity: 'executed',
           decision: { result: 'accept' },
           mode_scores: {
             primary: {
@@ -136,6 +137,7 @@ test('phase5 maps knowledge-pack coverage from emitted scorecard modes when repl
         contract_compliance_score: 0.3,
         knowledge_pack_coverage_score: 0.1,
         scorecard: {
+          scoring_fidelity: 'executed',
           decision: { result: 'accept' },
           active_evidence_modes: ['blind_pre_defect', 'holdout_regression'],
           mode_scores: {
@@ -168,9 +170,9 @@ test('phase5 maps knowledge-pack coverage from emitted scorecard modes when repl
   }
 });
 
-test('phase5 blocks synthetic benchmark scorecards from promotion', async () => {
-  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase5-synthetic-'));
-  const runKey = 'phase5-synthetic';
+test('phase5 rejects non-executed benchmark scorecards as invalid input', async () => {
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase5-invalid-fidelity-'));
+  const runKey = 'phase5-invalid-fidelity';
 
   try {
     await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });
@@ -199,7 +201,7 @@ test('phase5 blocks synthetic benchmark scorecards from promotion', async () => 
         knowledge_pack_coverage_score: 0.1,
         scorecard: {
           scoring_fidelity: 'synthetic',
-          decision: { result: 'blocked_synthetic' },
+          decision: { result: 'reject' },
           mode_scores: {
             primary: {
               blind_pre_defect: { mean_pass_rate: 1 },
@@ -221,12 +223,8 @@ test('phase5 blocks synthetic benchmark scorecards from promotion', async () => 
       encoding: 'utf8',
     });
 
-    assert.equal(result.status, 0);
-    const score = JSON.parse(
-      await readFile(join(runRoot, 'candidates', 'iteration-1', 'score.json'), 'utf8'),
-    );
-    assert.equal(score.outcome.accept, false);
-    assert.equal(score.outcome.blocking_regression, true);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /expected "executed"/i);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
   }

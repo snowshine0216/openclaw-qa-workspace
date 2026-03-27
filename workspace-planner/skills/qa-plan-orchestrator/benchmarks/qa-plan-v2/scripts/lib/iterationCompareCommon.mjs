@@ -20,7 +20,6 @@ import {
 export const PRIMARY_CONFIGURATION = 'new_skill';
 export const REFERENCE_CONFIGURATION = 'old_skill';
 export const EXECUTED_BENCHMARK_COMPARE = 'executed_benchmark_compare';
-export const SYNTHETIC_STRUCTURAL_COMPARE = 'synthetic_structural_compare';
 
 function normalizeKey(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : null;

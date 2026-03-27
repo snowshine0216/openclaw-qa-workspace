@@ -447,60 +447,6 @@ test('phase6 persists a machine-readable rejected mutation signature for future 
   }
 });
 
-test('phase6 refuses promotion when the accepted scorecard is synthetic', async () => {
-  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-synthetic-'));
-  const runKey = 'phase6-synthetic';
-
-  try {
-    await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });
-    await mkdir(join(runRoot, 'context'), { recursive: true });
-    await writeJson(join(runRoot, 'task.json'), {
-      run_key: runKey,
-      target_skill_path: FIXTURE,
-      benchmark_profile: 'qa-plan-defect-recall',
-      current_iteration: 1,
-      max_iterations: 10,
-    });
-    await writeJson(join(runRoot, 'run.json'), {
-      consecutive_rejections: 0,
-      rejected_iterations: [],
-      iteration_history: [],
-      champion_archive_history: [],
-      finalized_at: null,
-      notification_pending: null,
-    });
-    await writeJson(join(runRoot, 'context', `mutation_backlog_${runKey}.json`), {
-      mutations: [],
-    });
-    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'score.json'), {
-      outcome: {
-        accept: true,
-        benchmark_scorecard: {
-          scoring_fidelity: 'synthetic',
-        },
-        scores: {
-          contract_compliance_score: 1,
-        },
-      },
-    });
-
-    const result = spawnSync('bash', [
-      PHASE6,
-      '--run-key', runKey,
-      '--run-root', runRoot,
-      '--repo-root', REPO_ROOT,
-      '--iteration', '1',
-    ], {
-      encoding: 'utf8',
-    });
-
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /synthetic/i);
-  } finally {
-    await rm(runRoot, { recursive: true, force: true });
-  }
-});
-
 test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is finalized', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-repo-'));
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-run-'));

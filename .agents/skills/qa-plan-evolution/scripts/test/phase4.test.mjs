@@ -88,13 +88,44 @@ async function createQaPlanSkill(repoRoot, name, {
     publisherScript,
     'utf8',
   );
-  if (runnerScript) {
-    await writeFile(
-      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'run_iteration_compare.mjs'),
-      runnerScript,
-      'utf8',
-    );
-  }
+  await writeFile(
+    join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'run_iteration_compare.mjs'),
+    runnerScript || `
+      import { mkdirSync, writeFileSync } from 'node:fs';
+      import { join } from 'node:path';
+      export async function runIterationCompare({ benchmarkRoot, iteration }) {
+        const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
+        mkdirSync(iterationDir, { recursive: true });
+        const benchmarkJsonPath = join(iterationDir, 'benchmark.json');
+        const scorecardPath = join(iterationDir, 'scorecard.json');
+        writeFileSync(benchmarkJsonPath, JSON.stringify({
+          metadata: {
+            scoring_fidelity: 'executed',
+            comparison_mode: 'executed_benchmark_compare',
+          },
+          runs: [],
+        }));
+        writeFileSync(scorecardPath, JSON.stringify({
+          scoring_fidelity: 'executed',
+          decision: { result: 'accept' },
+          mode_scores: {
+            primary: {
+              blind_pre_defect: { mean_pass_rate: 1 },
+              retrospective_replay: { mean_pass_rate: 1 },
+              holdout_regression: { mean_pass_rate: 1 },
+            },
+          },
+        }));
+        return {
+          benchmarkJsonPath,
+          scorecardPath,
+          iterationDir,
+          candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
+        };
+      }
+    `,
+    'utf8',
+  );
 
   return relative(repoRoot, targetRoot);
 }
@@ -138,6 +169,60 @@ test('phase4 bypasses snapshot-only smoke failures and continues validation', as
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-snapshot-bypass-'));
   const targetSkillPath = await createQaPlanSkill(repoRoot, 'candidate_snapshot/qa-plan-snapshot-bypass', {
     smokeScript: 'node -e "console.error(\'MARKXMIND_VALIDATOR_MISSING\'); console.error(\'resolveDefaultRunDir is repo-root stable regardless of caller cwd\'); process.exit(1)"',
+    evalScript: `
+      import { writeFileSync } from 'node:fs';
+      writeFileSync(new URL('../eval-ran.txt', import.meta.url), 'eval-ran');
+    `,
+    publisherScript: `
+      import { mkdirSync, writeFileSync } from 'node:fs';
+      import { join } from 'node:path';
+      export async function publishIterationComparison({ benchmarkRoot, iteration }) {
+        const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
+        mkdirSync(iterationDir, { recursive: true });
+        const scorecardPath = join(iterationDir, 'scorecard.json');
+        writeFileSync(scorecardPath, JSON.stringify({
+          scoring_fidelity: 'executed',
+          decision: { result: 'accept' },
+          mode_scores: {
+            primary: {
+              blind_pre_defect: { mean_pass_rate: 1 },
+              retrospective_replay: { mean_pass_rate: 1 },
+              holdout_regression: { mean_pass_rate: 1 },
+            },
+          },
+        }));
+        return {
+          benchmarkJsonPath: join(iterationDir, 'benchmark.json'),
+          scorecardPath,
+          iterationDir,
+          candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
+        };
+      }
+    `,
+  });
+
+  try {
+    const targetRoot = join(repoRoot, targetSkillPath);
+    const result = await runTargetValidation(repoRoot, targetSkillPath, {
+      profileId: 'qa-plan-defect-recall',
+      iteration: 1,
+      candidateRoot: targetRoot,
+    });
+
+    assert.equal(result.smoke_ok, true);
+    assert.equal(result.eval_ok, true);
+    assert.match(result.smoke_log, /SNAPSHOT_SMOKE_BYPASS/);
+    assert.deepEqual(result.execution_order, ['smoke', 'contract_evals', 'defect_replay_evals']);
+    assert.equal(await readFile(join(targetRoot, 'eval-ran.txt'), 'utf8'), 'eval-ran');
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase4 bypasses snapshot smoke failures caused by benchmark path assertions', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-snapshot-benchmark-bypass-'));
+  const targetSkillPath = await createQaPlanSkill(repoRoot, 'candidate_snapshot/qa-plan-snapshot-benchmark-bypass', {
+    smokeScript: 'node -e "console.error(\'benchmarkArchiveRoot returns archive subdirectory under definition root\'); console.error(\'benchmarkArchiveRoot returns benchmarks/<family>/archive/ under source skill tree\'); console.error(\'resolveArchiveCompatiblePath resolves archive paths to definition root\'); console.error(\'resolveDefaultRunDir ignores canonical skill root override outside snapshots\'); process.exit(1)"',
     evalScript: `
       import { writeFileSync } from 'node:fs';
       writeFileSync(new URL('../eval-ran.txt', import.meta.url), 'eval-ran');
@@ -262,7 +347,7 @@ test('phase4 stops after blocking contract eval failure and does not publish rep
   }
 });
 
-test('phase4 runs replay publication after smoke and contract evals succeed', async () => {
+test('phase4 runs executed replay comparison after smoke and contract evals succeed', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-order-'));
   const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-replay', {
     smokeScript: 'node -e "process.exit(0)"',
@@ -309,7 +394,12 @@ test('phase4 runs replay publication after smoke and contract evals succeed', as
     assert.equal(result.smoke_ok, true);
     assert.equal(result.eval_ok, true);
     assert.deepEqual(result.execution_order, ['smoke', 'contract_evals', 'defect_replay_evals']);
-    assert.equal(await readFile(join(benchmarkRuntimeRoot, 'publisher-ran.txt'), 'utf8'), 'publisher-ran');
+    assert.equal(result.scorecard.scoring_fidelity, 'executed');
+    assert.equal(result.scorecard.decision.result, 'accept');
+    assert.equal(
+      JSON.parse(await readFile(join(benchmarkRuntimeRoot, 'iteration-1', 'benchmark.json'), 'utf8')).metadata.scoring_fidelity,
+      'executed',
+    );
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
@@ -382,39 +472,17 @@ test('phase4 passes defect analysis run key to the executed benchmark runner', a
   }
 });
 
-test('phase4 falls back to synthetic comparison when runner reports missing grading files', async () => {
-  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-runner-fallback-'));
-  const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-runner-fallback', {
+test('phase4 fails when runner reports missing grading files', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-runner-missing-grading-'));
+  const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-runner-missing-grading', {
     smokeScript: 'node -e "process.exit(0)"',
     evalScript: `
       import { writeFileSync } from 'node:fs';
       writeFileSync(new URL('../eval-ran.txt', import.meta.url), 'eval-ran');
     `,
     publisherScript: `
-      import { mkdirSync, writeFileSync } from 'node:fs';
-      import { join } from 'node:path';
-      export async function publishIterationComparison({ benchmarkRoot, iteration }) {
-        const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
-        mkdirSync(iterationDir, { recursive: true });
-        const scorecardPath = join(iterationDir, 'scorecard.json');
-        writeFileSync(join(iterationDir, 'fallback-used.txt'), 'synthetic');
-        writeFileSync(scorecardPath, JSON.stringify({
-          scoring_fidelity: 'synthetic',
-          decision: { result: 'blocked_synthetic' },
-          mode_scores: {
-            primary: {
-              blind_pre_defect: { mean_pass_rate: 1 },
-              retrospective_replay: { mean_pass_rate: 1 },
-              holdout_regression: { mean_pass_rate: 1 },
-            },
-          },
-        }));
-        return {
-          benchmarkJsonPath: join(iterationDir, 'benchmark.json'),
-          scorecardPath,
-          iterationDir,
-          candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
-        };
+      export async function publishIterationComparison() {
+        throw new Error('synthetic publisher must not run');
       }
     `,
     runnerScript: `
@@ -437,96 +505,36 @@ test('phase4 falls back to synthetic comparison when runner reports missing grad
         if (!existsSync(comparisonMetadataPath)) {
           writeFileSync(comparisonMetadataPath, JSON.stringify({ case_id: 'CASE-1', configuration_dir: 'new_skill' }));
         }
-        const gradingPath = join(
-          runDir,
-          'grading.json',
-        );
-        if (!existsSync(gradingPath)) {
-          throw new Error('Missing required grading.json');
-        }
-        const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
-        mkdirSync(iterationDir, { recursive: true });
-        const scorecardPath = join(iterationDir, 'scorecard.json');
-        writeFileSync(scorecardPath, JSON.stringify({
-          scoring_fidelity: 'executed',
-          decision: { result: 'accept' },
-          mode_scores: {
-            primary: {
-              blind_pre_defect: { mean_pass_rate: 1 },
-              retrospective_replay: { mean_pass_rate: 1 },
-              holdout_regression: { mean_pass_rate: 1 },
-            },
-          },
-        }));
-        return {
-          benchmarkJsonPath: join(iterationDir, 'benchmark.json'),
-          scorecardPath,
-          iterationDir,
-          candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
-        };
+        throw new Error('Missing required grading.json');
       }
     `,
   });
 
   try {
-    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
-    const result = await runTargetValidation(repoRoot, targetSkillPath, {
-      profileId: 'qa-plan-defect-recall',
-      iteration: 1,
-      defectAnalysisRunKey: 'BCIN-7289',
-    });
-    const fallbackMarker = await readFile(
-      join(benchmarkRuntimeRoot, 'iteration-1', 'fallback-used.txt'),
-      'utf8',
+    await assert.rejects(
+      () => runTargetValidation(repoRoot, targetSkillPath, {
+        profileId: 'qa-plan-defect-recall',
+        iteration: 1,
+        defectAnalysisRunKey: 'BCIN-7289',
+      }),
+      /grading\.json/,
     );
-
-    assert.equal(result.smoke_ok, true);
-    assert.equal(result.eval_ok, true);
-    assert.equal(result.scorecard.scoring_fidelity, 'synthetic');
-    assert.equal(result.scorecard.decision.result, 'blocked_synthetic');
-    assert.equal(fallbackMarker, 'synthetic');
-    await assert.rejects(() => readFile(
-      join(benchmarkRuntimeRoot, 'iteration-1', 'eval-1', 'new_skill', 'run-1', 'grading.json'),
-      'utf8',
-    ));
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }
 });
 
-test('phase4 falls back to synthetic comparison when executed runner errors for non-artifact reasons', async () => {
-  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-runner-fallback-generic-'));
-  const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-runner-fallback-generic', {
+test('phase4 fails when executed runner errors for non-artifact reasons', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase4-runner-hard-fail-'));
+  const targetSkillPath = await createQaPlanSkill(repoRoot, 'qa-plan-runner-hard-fail', {
     smokeScript: 'node -e "process.exit(0)"',
     evalScript: `
       import { writeFileSync } from 'node:fs';
       writeFileSync(new URL('../eval-ran.txt', import.meta.url), 'eval-ran');
     `,
     publisherScript: `
-      import { mkdirSync, writeFileSync } from 'node:fs';
-      import { join } from 'node:path';
-      export async function publishIterationComparison({ benchmarkRoot, iteration }) {
-        const iterationDir = join(benchmarkRoot, 'iteration-' + iteration);
-        mkdirSync(iterationDir, { recursive: true });
-        const scorecardPath = join(iterationDir, 'scorecard.json');
-        writeFileSync(join(iterationDir, 'fallback-used.txt'), 'synthetic');
-        writeFileSync(scorecardPath, JSON.stringify({
-          scoring_fidelity: 'synthetic',
-          decision: { result: 'blocked_synthetic' },
-          mode_scores: {
-            primary: {
-              blind_pre_defect: { mean_pass_rate: 1 },
-              retrospective_replay: { mean_pass_rate: 1 },
-              holdout_regression: { mean_pass_rate: 1 },
-            },
-          },
-        }));
-        return {
-          benchmarkJsonPath: join(iterationDir, 'benchmark.json'),
-          scorecardPath,
-          iterationDir,
-          candidateSnapshotDir: join(iterationDir, 'candidate_snapshot'),
-        };
+      export async function publishIterationComparison() {
+        throw new Error('synthetic publisher must not run');
       }
     `,
     runnerScript: `
@@ -537,21 +545,14 @@ test('phase4 falls back to synthetic comparison when executed runner errors for 
   });
 
   try {
-    const benchmarkRuntimeRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
-    const result = await runTargetValidation(repoRoot, targetSkillPath, {
-      profileId: 'qa-plan-defect-recall',
-      iteration: 1,
-      defectAnalysisRunKey: 'BCIN-7289',
-    });
-    const fallbackMarker = await readFile(
-      join(benchmarkRuntimeRoot, 'iteration-1', 'fallback-used.txt'),
-      'utf8',
+    await assert.rejects(
+      () => runTargetValidation(repoRoot, targetSkillPath, {
+        profileId: 'qa-plan-defect-recall',
+        iteration: 1,
+        defectAnalysisRunKey: 'BCIN-7289',
+      }),
+      /unexpected benchmark runner failure/,
     );
-
-    assert.equal(result.smoke_ok, true);
-    assert.equal(result.eval_ok, true);
-    assert.equal(result.scorecard.scoring_fidelity, 'synthetic');
-    assert.equal(fallbackMarker, 'synthetic');
   } finally {
     await rm(repoRoot, { recursive: true, force: true });
   }

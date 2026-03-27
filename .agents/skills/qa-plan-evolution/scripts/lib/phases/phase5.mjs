@@ -65,6 +65,11 @@ export async function main(argv = process.argv.slice(2)) {
   })();
   const selectedMutation = candidateScope.mutation ?? null;
   const benchmarkScorecard = val.validation?.scorecard ?? null;
+  if (benchmarkScorecard && benchmarkScorecard.scoring_fidelity !== 'executed') {
+    throw new Error(
+      `Invalid qa-plan benchmark scorecard fidelity: expected "executed", received "${benchmarkScorecard.scoring_fidelity ?? 'unknown'}"`,
+    );
+  }
   const validationSummary = {
     regression_count: val.validation?.regression_count ?? 0,
     smoke_ok: val.validation?.smoke_ok ?? false,
