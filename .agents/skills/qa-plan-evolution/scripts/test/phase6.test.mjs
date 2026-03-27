@@ -447,60 +447,6 @@ test('phase6 persists a machine-readable rejected mutation signature for future 
   }
 });
 
-test('phase6 refuses promotion when the accepted scorecard is synthetic', async () => {
-  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-synthetic-'));
-  const runKey = 'phase6-synthetic';
-
-  try {
-    await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });
-    await mkdir(join(runRoot, 'context'), { recursive: true });
-    await writeJson(join(runRoot, 'task.json'), {
-      run_key: runKey,
-      target_skill_path: FIXTURE,
-      benchmark_profile: 'qa-plan-defect-recall',
-      current_iteration: 1,
-      max_iterations: 10,
-    });
-    await writeJson(join(runRoot, 'run.json'), {
-      consecutive_rejections: 0,
-      rejected_iterations: [],
-      iteration_history: [],
-      champion_archive_history: [],
-      finalized_at: null,
-      notification_pending: null,
-    });
-    await writeJson(join(runRoot, 'context', `mutation_backlog_${runKey}.json`), {
-      mutations: [],
-    });
-    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'score.json'), {
-      outcome: {
-        accept: true,
-        benchmark_scorecard: {
-          scoring_fidelity: 'synthetic',
-        },
-        scores: {
-          contract_compliance_score: 1,
-        },
-      },
-    });
-
-    const result = spawnSync('bash', [
-      PHASE6,
-      '--run-key', runKey,
-      '--run-root', runRoot,
-      '--repo-root', REPO_ROOT,
-      '--iteration', '1',
-    ], {
-      encoding: 'utf8',
-    });
-
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /synthetic/i);
-  } finally {
-    await rm(runRoot, { recursive: true, force: true });
-  }
-});
-
 test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is finalized', async () => {
   const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-repo-'));
   const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-run-'));
@@ -512,10 +458,18 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
     await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });
     await mkdir(join(runRoot, 'context'), { recursive: true });
     await mkdir(join(targetRoot, 'evals'), { recursive: true });
+    await mkdir(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts'), { recursive: true });
     await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot'), { recursive: true });
     await mkdir(join(benchmarkRoot, 'iteration-1', 'candidate_snapshot'), { recursive: true });
     await writeFile(join(targetRoot, 'SKILL.md'), QA_PLAN_LIVE_SKILL_MD, 'utf8');
     await writeFile(join(targetRoot, 'reference.md'), '# reference\n', 'utf8');
+    await writeFile(
+      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'check_benchmark_fidelity.mjs'),
+      `#!/usr/bin/env node
+console.log('fidelity ok');
+`,
+      'utf8',
+    );
     await writeFile(
       join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'SKILL.md'),
       ITERATION_CHAMPION_SKILL_MD,
@@ -538,6 +492,17 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
           is_current_champion: true,
         },
       ],
+    });
+    await writeJson(join(benchmarkRoot, 'iteration-1', 'scorecard.json'), {
+      scoring_fidelity: 'executed',
+      decision: { result: 'accept' },
+      mode_scores: {
+        primary: {
+          blind_pre_defect: { mean_pass_rate: 1 },
+          retrospective_replay: { mean_pass_rate: 1 },
+          holdout_regression: { mean_pass_rate: 1 },
+        },
+      },
     });
     await writeJson(join(runRoot, 'task.json'), {
       run_key: runKey,
@@ -563,6 +528,14 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
         accept: true,
         benchmark_scorecard: {
           scoring_fidelity: 'executed',
+          decision: { result: 'accept' },
+          mode_scores: {
+            primary: {
+              blind_pre_defect: { mean_pass_rate: 1 },
+              retrospective_replay: { mean_pass_rate: 1 },
+              holdout_regression: { mean_pass_rate: 1 },
+            },
+          },
         },
         scores: {
           contract_compliance_score: 1,
@@ -592,6 +565,128 @@ test('phase6 publishes a qa-plan champion snapshot when an accepted iteration is
       'utf8',
     );
     assert.equal(publishedSnapshot, PROMOTED_CANDIDATE_SKILL_MD);
+  } finally {
+    await rm(runRoot, { recursive: true, force: true });
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+test('phase6 refuses qa-plan finalization when the canonical benchmark scorecard is not executed', async () => {
+  const repoRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-bad-fidelity-repo-'));
+  const runRoot = await mkdtemp(join(tmpdir(), 'seo-phase6-qa-plan-bad-fidelity-run-'));
+  const runKey = 'phase6-qa-plan-bad-fidelity';
+  const targetRoot = join(repoRoot, 'workspace-planner', 'skills', 'qa-plan-orchestrator');
+  const benchmarkRoot = getQaPlanBenchmarkRuntimeRoot(repoRoot);
+
+  try {
+    await mkdir(join(runRoot, 'candidates', 'iteration-1'), { recursive: true });
+    await mkdir(join(runRoot, 'context'), { recursive: true });
+    await mkdir(join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts'), { recursive: true });
+    await mkdir(join(benchmarkRoot, 'iteration-0', 'champion_snapshot'), { recursive: true });
+    await mkdir(join(benchmarkRoot, 'iteration-1', 'candidate_snapshot'), { recursive: true });
+    await mkdir(join(benchmarkRoot, 'iteration-1', 'eval-1', 'with_skill', 'run-1', 'outputs'), { recursive: true });
+    await writeFile(join(targetRoot, 'SKILL.md'), QA_PLAN_LIVE_SKILL_MD, 'utf8');
+    await writeFile(join(targetRoot, 'reference.md'), '# reference\n', 'utf8');
+    await writeFile(
+      join(targetRoot, 'benchmarks', 'qa-plan-v2', 'scripts', 'check_benchmark_fidelity.mjs'),
+      `#!/usr/bin/env node
+process.exitCode = 1;
+console.error('synthetic fidelity failure');
+`,
+      'utf8',
+    );
+    await writeFile(
+      join(benchmarkRoot, 'iteration-0', 'champion_snapshot', 'SKILL.md'),
+      ITERATION_CHAMPION_SKILL_MD,
+      'utf8',
+    );
+    await writeFile(
+      join(benchmarkRoot, 'iteration-1', 'candidate_snapshot', 'SKILL.md'),
+      PROMOTED_CANDIDATE_SKILL_MD,
+      'utf8',
+    );
+    await writeJson(join(benchmarkRoot, 'history.json'), {
+      current_champion_iteration: 0,
+      iterations: [
+        {
+          iteration: 0,
+          label: 'iteration-0',
+          role: 'seed_champion',
+          skill_snapshot: 'iteration-0/champion_snapshot',
+          grading_result: 'accepted',
+          is_current_champion: true,
+        },
+      ],
+    });
+    await writeJson(join(benchmarkRoot, 'iteration-1', 'scorecard.json'), {
+      scoring_fidelity: 'synthetic',
+      decision: { result: 'accept' },
+      mode_scores: {
+        primary: {
+          blind_pre_defect: { mean_pass_rate: 1 },
+        },
+      },
+    });
+    await writeJson(join(runRoot, 'task.json'), {
+      run_key: runKey,
+      target_skill_path: 'workspace-planner/skills/qa-plan-orchestrator',
+      benchmark_profile: 'qa-plan-defect-recall',
+      current_iteration: 1,
+      max_iterations: 10,
+      champion_snapshot_path: 'archive/champion-initial',
+    });
+    await writeJson(join(runRoot, 'run.json'), {
+      consecutive_rejections: 0,
+      rejected_iterations: [],
+      iteration_history: [],
+      champion_archive_history: [],
+      finalized_at: null,
+      notification_pending: null,
+    });
+    await writeJson(join(runRoot, 'context', `mutation_backlog_${runKey}.json`), {
+      mutations: [],
+    });
+    await writeJson(join(runRoot, 'candidates', 'iteration-1', 'score.json'), {
+      outcome: {
+        accept: true,
+        benchmark_scorecard: {
+          scoring_fidelity: 'executed',
+          decision: { result: 'accept' },
+          mode_scores: {
+            primary: {
+              blind_pre_defect: { mean_pass_rate: 1 },
+              retrospective_replay: { mean_pass_rate: 1 },
+              holdout_regression: { mean_pass_rate: 1 },
+            },
+          },
+        },
+        scores: {
+          contract_compliance_score: 1,
+        },
+      },
+      validation_summary: {
+        contract_compliance_score: 1,
+        defect_recall_score: 1,
+        knowledge_pack_coverage_score: 1,
+        regression_count: 0,
+      },
+    });
+
+    const result = spawnSync('bash', [
+      PHASE6,
+      '--run-key', runKey,
+      '--run-root', runRoot,
+      '--repo-root', repoRoot,
+      '--iteration', '1',
+      '--finalize',
+    ], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /benchmark scorecard fidelity/i);
+    const history = JSON.parse(await readFile(join(benchmarkRoot, 'history.json'), 'utf8'));
+    assert.equal(history.current_champion_iteration, 0);
   } finally {
     await rm(runRoot, { recursive: true, force: true });
     await rm(repoRoot, { recursive: true, force: true });

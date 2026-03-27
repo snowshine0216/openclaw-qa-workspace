@@ -321,6 +321,9 @@ export function buildScorecard({
     (isModeActive(activeEvidenceModes, 'blind_pre_defect') ||
       isModeActive(activeEvidenceModes, 'holdout_regression')) &&
     benchmarkManifest.acceptance_policy?.require_non_target_family_non_regression !== false;
+  if (scoringFidelity !== 'executed') {
+    throw new Error(`Unsupported scoring fidelity: ${scoringFidelity}`);
+  }
 
   const decisionPassed =
     (!shouldRequireBlocking || acceptanceChecks.blocking_cases_pass) &&
@@ -328,7 +331,6 @@ export function buildScorecard({
     (!shouldRequireReplay || acceptanceChecks.retrospective_replay_improved) &&
     (!shouldRequireHoldout || acceptanceChecks.holdout_regression_non_regression) &&
     (!shouldRequireNonTargetFamily || acceptanceChecks.non_target_family_non_regression);
-  const blockedSynthetic = scoringFidelity === 'synthetic';
 
   return {
     benchmark_version: benchmarkManifest.benchmark_version,
@@ -352,14 +354,10 @@ export function buildScorecard({
     mode_scores: modeScores,
     family_mode_scores: familyModeScores,
     decision: {
-      result: blockedSynthetic
-        ? 'blocked_synthetic'
-        : (decisionPassed ? 'accept' : 'reject'),
-      reason: blockedSynthetic
-        ? 'Synthetic structural comparison is informative only and cannot promote a challenger.'
-        : (decisionPassed
-          ? `Mode checks passed. Non-target families improved/stable: ${[...nonTargetFamilyCheck.improved, ...nonTargetFamilyCheck.stable].join(', ') || 'none'}.`
-          : `One or more acceptance checks failed. Non-target family regressions: ${nonTargetFamilyCheck.regressed.join(', ') || 'none'}.`),
+      result: decisionPassed ? 'accept' : 'reject',
+      reason: decisionPassed
+        ? `Mode checks passed. Non-target families improved/stable: ${[...nonTargetFamilyCheck.improved, ...nonTargetFamilyCheck.stable].join(', ') || 'none'}.`
+        : `One or more acceptance checks failed. Non-target family regressions: ${nonTargetFamilyCheck.regressed.join(', ') || 'none'}.`,
     },
   };
 }

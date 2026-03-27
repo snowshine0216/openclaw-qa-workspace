@@ -393,6 +393,10 @@ ${buildDefectAnalysisSection(features)}
 
 ${buildCodeChangeSection(features)}
 
+### Feature Packet References
+
+${packetSection(features)}
+
 ---
 
 ## 7. Residual Risk Assessment
@@ -430,10 +434,6 @@ Release Recommendation: ${blocking.length > 0 ? `⛔ **HOLD** — Resolve blocki
 | Feature | Defect | Summary | Priority | Status |
 |---------|--------|---------|----------|--------|
 ${appendixRows.join('\n') || '| — | — | — | — | — |'}
-
-### Feature Packet References
-
-${packetSection(features)}
 `;
 
   const outPath = join(runDir, `${runKey}_REPORT_DRAFT.md`);

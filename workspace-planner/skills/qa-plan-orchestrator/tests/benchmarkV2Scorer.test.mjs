@@ -257,7 +257,7 @@ test('buildScorecard rejects missing evidence instead of silently passing null m
   assert.equal(scorecard.acceptance_checks.policy.null_score_policy, 'reject');
 });
 
-test('buildScorecard blocks synthetic scorecards from promotion', () => {
+test('buildScorecard rejects non-executed scoring fidelity', () => {
   const caseIndex = new Map([
     [1, { evidence_mode: 'blind_pre_defect', blocking: true }],
     [2, { evidence_mode: 'holdout_regression', blocking: true }],
@@ -283,19 +283,19 @@ test('buildScorecard blocks synthetic scorecards from promotion', () => {
     },
   };
 
-  const scorecard = buildScorecard({
-    benchmark,
-    benchmarkManifest: manifest,
-    caseIndex,
-    comparisonMode: 'synthetic_structural_compare',
-    primaryConfiguration: 'new_skill',
-    referenceConfiguration: 'old_skill',
-    iteration: 1,
-    scoringFidelity: 'synthetic',
-  });
-
-  assert.equal(scorecard.scoring_fidelity, 'synthetic');
-  assert.equal(scorecard.decision.result, 'blocked_synthetic');
+  assert.throws(
+    () => buildScorecard({
+      benchmark,
+      benchmarkManifest: manifest,
+      caseIndex,
+      comparisonMode: 'synthetic_structural_compare',
+      primaryConfiguration: 'new_skill',
+      referenceConfiguration: 'old_skill',
+      iteration: 1,
+      scoringFidelity: 'synthetic',
+    }),
+    /Unsupported scoring fidelity: synthetic/,
+  );
 });
 
 test('writeScorecardForIteration writes scorecard.json from benchmark and case metadata', async () => {
