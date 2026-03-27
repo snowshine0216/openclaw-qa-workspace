@@ -172,6 +172,139 @@ test('writes empty background_solution_seed.md when no intro section exists in p
   assert.equal(seed.trim(), '');
 });
 
+test('writes known_limitations_seed.json when plan has ## Known Limitations heading', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-kl-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    [
+      '# QA Plan',
+      '',
+      '### 1. Feature Overview',
+      '| Field | Value |',
+      '| --- | --- |',
+      '| Feature | BCIN-7289 |',
+      '',
+      '## Known Limitations',
+      '- mobile not supported',
+      '- offline mode deferred',
+    ].join('\n')
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-kl-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: planDir, planner_plan_path: planPath })
+  );
+  const code = await runPhase1('BCIN-7289', runDir);
+  assert.equal(code, 0);
+  const kl = JSON.parse(await readFile(join(runDir, 'context', 'known_limitations_seed.json'), 'utf8'));
+  assert.ok(Array.isArray(kl.lines));
+  assert.ok(kl.lines.includes('mobile not supported'));
+  assert.ok(kl.lines.includes('offline mode deferred'));
+});
+
+test('writes known_limitations_seed.json with empty lines when no limitations in plan', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-nokl-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    [
+      '# QA Plan',
+      '',
+      '### 1. Feature Overview',
+      '| Field | Value |',
+      '| --- | --- |',
+      '| Feature | BCIN-7289 |',
+    ].join('\n')
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-nokl-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: planDir, planner_plan_path: planPath })
+  );
+  const code = await runPhase1('BCIN-7289', runDir);
+  assert.equal(code, 0);
+  const kl = JSON.parse(await readFile(join(runDir, 'context', 'known_limitations_seed.json'), 'utf8'));
+  assert.deepEqual(kl.lines, []);
+  assert.equal(kl.raw, '');
+});
+
+test('known_limitations_seed.json captures affirmative limitation text (not filtered by EXCLUSION_PATTERN)', async () => {
+  const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-aff-'));
+  const planPath = join(planDir, 'qa_plan_final.md');
+  await writeFile(
+    planPath,
+    [
+      '# QA Plan',
+      '',
+      '### 1. Feature Overview',
+      '| Field | Value |',
+      '| --- | --- |',
+      '| Feature | BCIN-7289 |',
+      '',
+      '## Known Limitations',
+      '- i18n deferred to Q3',
+      '- performance baseline not yet established',
+    ].join('\n')
+  );
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-aff-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: planDir, planner_plan_path: planPath })
+  );
+  const code = await runPhase1('BCIN-7289', runDir);
+  assert.equal(code, 0);
+  const kl = JSON.parse(await readFile(join(runDir, 'context', 'known_limitations_seed.json'), 'utf8'));
+  // These lines are affirmative (no negation words) — must survive in raw-markdown path
+  assert.ok(kl.lines.includes('i18n deferred to Q3'), 'affirmative limitation preserved');
+  assert.ok(kl.lines.includes('performance baseline not yet established'), 'affirmative limitation preserved');
+});
+
+test('BLOCKED error message contains Expected path and feature key directory', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-blocked-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: '/tmp/does-not-exist-qa-plan', planner_plan_path: null })
+  );
+  const errors = [];
+  const origErr = console.error;
+  console.error = (...args) => errors.push(args.join(' '));
+  try {
+    await runPhase1('BCIN-7289', runDir);
+  } finally {
+    console.error = origErr;
+  }
+  const combined = errors.join('\n');
+  assert.ok(combined.includes('Expected path:'), 'BLOCKED message has Expected path');
+  assert.ok(combined.includes('BCIN-7289'), 'BLOCKED message has feature key');
+});
+
+test('BLOCKED error message mentions qa-plan-orchestrator or planner_plan_path', async () => {
+  const runDir = await mkdtemp(join(tmpdir(), 'qa-summary-phase1-blocked2-'));
+  await mkdir(join(runDir, 'context'), { recursive: true });
+  await writeFile(
+    join(runDir, 'task.json'),
+    JSON.stringify({ planner_run_root: '/tmp/does-not-exist-qa-plan', planner_plan_path: null })
+  );
+  const errors = [];
+  const origErr = console.error;
+  console.error = (...args) => errors.push(args.join(' '));
+  try {
+    await runPhase1('BCIN-7289', runDir);
+  } finally {
+    console.error = origErr;
+  }
+  const combined = errors.join('\n');
+  assert.ok(
+    combined.includes('qa-plan-orchestrator') || combined.includes('planner_plan_path'),
+    'BLOCKED message guides user to fix'
+  );
+});
+
 test('persists jira_feature_meta.json when jira returns metadata', async () => {
   const { execSync } = await import('node:child_process');
   const planDir = await mkdtemp(join(tmpdir(), 'qa-plan-jira-'));
