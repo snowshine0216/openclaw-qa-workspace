@@ -4,6 +4,21 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.10.0] - 2026-03-27
+
+### Added
+- **`buildSlideFromStructuredSpec()` in `build-pptx-from-handoff.js`** — new function that takes a normalized structured spec (output of `buildStructuredSlideSpec()`) and renders a deterministic single-slide PPTX package via the shared `createDeckFromSpec` renderer. Supports dependency injection via `createDeckFromSpecImpl` for unit testing.
+- **`executeStructuredRebuilds()` in `build-pptx-from-handoff.js`** — async orchestrator that processes all `structured_rebuild` jobs with `status: "planned"` from the edit handoff, renders each to its `artifact_path`, determines `replace_existing` vs `insert_after` action kind from the original slide index, calls `mergeRebuiltSlide()` to splice the rebuilt slide into the working unpacked deck, and returns updated jobs with `status: "applied"`. Fail-closed: throws immediately on any render or merge failure.
+- **`build-pptx-structured-rebuild.test.js`** — 10 new TDD tests covering all paths for `buildSlideFromStructuredSpec` and `executeStructuredRebuilds`: happy path, image propagation, input validation, insert_after vs replace_existing, skip non-rebuild jobs, fail-closed on render failure, multi-job ordering.
+- **Python environment documentation in `CLAUDE.md`** — added "Python Environment" section documenting `.venv` location (`repo-root/.venv`), `uv` package manager, `markitdown` CLI path, and shell invocation pattern.
+
+### Fixed
+- **33 pre-existing test failures in ppt-agent test suite** — three root causes resolved: (1) `node_modules` empty in git worktree; `npm install` now required after worktree creation; (2) `spawnSync("node", ...)` fails when `node` is not in `PATH`; fixed to `spawnSync(process.execPath, ...)` in `build-pptx-from-handoff.test.js`, `evaluate-run.test.js`, `finalize-edit-run.test.js`, and `helper-cli-contract.test.js`; (3) design doc moved to `docs/archive/ppt-agent/` but 3 test files still referenced `docs/PPT_AGENT_SKILL_DESIGN.md`; paths updated in `evaluation-failure-paths.test.js`, `style-contract.test.js`, and `ppteval-rubric.test.js`.
+- **`.venv` not found in worktree** — `findRepoRoot()` resolves to worktree root (via `AGENTS.md` marker) but `.venv` lives at main repo root; added symlink `.venv → /Users/xuyin/Documents/Repository/openclaw-qa-workspace/.venv` in worktree root.
+
+### Changed
+- **`apply-edit-run.js` main()** — converted from sync to async; after `applyEditRun()` returns, checks for pending `structured_rebuild` jobs and calls `executeStructuredRebuilds()`; writes updated job statuses back to `edit_handoff.json` on disk before emitting result to stdout.
+
 ## [0.1.9.0] - 2026-03-27
 
 ### Added

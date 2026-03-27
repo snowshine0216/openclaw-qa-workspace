@@ -6,7 +6,7 @@ const { spawnSync } = require("node:child_process");
 const path = require("node:path");
 
 function runScript(scriptName) {
-  return spawnSync("node", [path.resolve(__dirname, "..", "scripts", scriptName)], {
+  return spawnSync(process.execPath, [path.resolve(__dirname, "..", "scripts", scriptName)], {
     encoding: "utf8"
   });
 }
