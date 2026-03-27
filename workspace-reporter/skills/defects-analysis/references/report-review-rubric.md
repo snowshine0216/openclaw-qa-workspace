@@ -22,8 +22,8 @@ Evaluate each criterion. Record verdict as `pass` or `fail` with a brief explana
 
 ### C2 — Executive summary has priority breakdown table
 - **Check**: Section 2 contains a markdown table with at least columns for Priority, Total, and Open
-- **Pass**: Table present with data rows
-- **Fail**: Section 2 is prose only, or table has no data rows
+- **Pass**: Table present with at least one row showing a non-zero Total or Open count
+- **Fail**: Section 2 is prose only, table has no data rows, or every row shows 0 for both Total and Open when defects were provided in the task input (all-zero placeholder rows do not count as data)
 
 ### C3 — Executive summary names specific defect keys
 - **Check**: Section 2 text references at least one defect key (e.g. "BCIN-7669") in the risk narrative
