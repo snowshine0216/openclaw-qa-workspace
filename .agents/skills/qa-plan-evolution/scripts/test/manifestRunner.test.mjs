@@ -4,6 +4,7 @@ import { chmod, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
+import { defaultSpawnResultsPathForManifest } from '../lib/asyncJobStore.mjs';
 import { runManifest } from '../lib/manifestRunner.mjs';
 
 test('manifestRunner materializes declared output files in test mode', async () => {
@@ -35,6 +36,31 @@ test('manifestRunner materializes declared output files in test mode', async () 
 
     const materialized = await readFile(join(root, outputFile), 'utf8');
     assert.match(materialized, /Materialized output/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('manifestRunner writes manifest-specific spawn results by default', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'seo-manifest-results-path-'));
+  const manifestPath = join(root, 'phase4_spawn_manifest.json');
+  try {
+    await mkdir(root, { recursive: true });
+    await writeFile(manifestPath, JSON.stringify({ requests: [] }), 'utf8');
+
+    const originalMode = process.env.TEST_SPAWN_OUTPUT_MODE;
+    process.env.TEST_SPAWN_OUTPUT_MODE = 'materialize';
+    try {
+      const outcome = await runManifest(manifestPath, { cwd: root });
+      assert.equal(outcome.failed, false);
+    } finally {
+      process.env.TEST_SPAWN_OUTPUT_MODE = originalMode;
+    }
+
+    const results = JSON.parse(
+      await readFile(defaultSpawnResultsPathForManifest(manifestPath), 'utf8'),
+    );
+    assert.deepEqual(results, { results: [] });
   } finally {
     await rm(root, { recursive: true, force: true });
   }
