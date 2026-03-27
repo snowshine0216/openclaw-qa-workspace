@@ -1,12 +1,27 @@
 #!/usr/bin/env node
 /**
- * Phase 4: qa-summary-review gate and approval.
+ * Phase 4: LLM-driven QA Summary review with structural refactor and approval gate.
+ *
+ * Pre-spawn: builds phase4_spawn_manifest.json with internal review subagent.
+ * --post: validates verdict; retries up to MAX_ROUNDS; advances to awaiting_approval on accept.
+ * Awaiting approval: reads APPROVE / revision feedback and handles both.
+ *
+ * Removed dependencies: qa-summary-review skill, applyReviewRefactor.mjs
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
-import { applyReviewRefactor } from './applyReviewRefactor.mjs';
-import { generateSummaryDraftArtifacts } from './generateSummaryDraftArtifacts.mjs';
+import { join } from 'node:path';
+import {
+  buildSubagentPrompt,
+  buildManifest,
+} from './build_summary_review_spawn_manifest.mjs';
+import { parseVerdict, updateTaskForRerun } from './validate_summary_review.mjs';
+import {
+  buildSubagentPrompt as buildDraftPrompt,
+  buildManifest as buildDraftManifest,
+} from './build_summary_draft_spawn_manifest.mjs';
+
+const MAX_ROUNDS = 3;
 
 async function readJson(path, fallback = null) {
   try {
@@ -41,82 +56,6 @@ async function renderDraft(featureKey, runDir) {
   }
 }
 
-function normalizeRunRelativePath(relativePath) {
-  if (typeof relativePath !== 'string') return null;
-  const trimmed = relativePath.trim();
-  if (!trimmed || trimmed.startsWith('/')) return null;
-  const normalized = normalize(trimmed);
-  if (normalized === '..' || normalized.startsWith('../')) return null;
-  return normalized;
-}
-
-function isReviewArtifactPath(featureKey, relativePath, reviewResult = {}) {
-  const normalized = normalizeRunRelativePath(relativePath);
-  const reviewOutputPath = normalizeRunRelativePath(reviewResult.reviewOutputPath);
-  const defaultReviewPath = `${featureKey}_QA_SUMMARY_REVIEW.md`;
-  return (
-    normalized === reviewOutputPath ||
-    normalized === defaultReviewPath ||
-    normalized?.endsWith('_QA_SUMMARY_REVIEW.md')
-  );
-}
-
-async function syncReviewedDraft(featureKey, runDir, reviewResult = {}) {
-  const draftPath = join(runDir, 'drafts', `${featureKey}_QA_SUMMARY_DRAFT.md`);
-  const updatedDraftPath = normalizeRunRelativePath(reviewResult.updatedDraftPath);
-
-  if (reviewResult.updatedDraftPath && !updatedDraftPath) {
-    return {
-      ok: false,
-      message: 'BLOCKED: review_result.json updatedDraftPath must be a safe run-dir-relative path.',
-    };
-  }
-
-  if (isReviewArtifactPath(featureKey, updatedDraftPath, reviewResult)) {
-    return {
-      ok: false,
-      message: 'BLOCKED: review_result.json updatedDraftPath points to the review report, not the reviewed draft.',
-    };
-  }
-
-  if (updatedDraftPath) {
-    try {
-      const reviewedContent = await readFile(join(runDir, updatedDraftPath), 'utf8');
-      await writeFile(draftPath, reviewedContent, 'utf8');
-      return { ok: true };
-    } catch {
-      return {
-        ok: false,
-        message: `BLOCKED: Reviewed draft is not readable at ${updatedDraftPath}.`,
-      };
-    }
-  }
-
-  try {
-    await readFile(draftPath, 'utf8');
-    return { ok: true };
-  } catch {
-    return {
-      ok: false,
-      message: `BLOCKED: Missing reviewed draft at drafts/${featureKey}_QA_SUMMARY_DRAFT.md.`,
-    };
-  }
-}
-
-function resolveReviewPath(featureKey, runDir, reviewResult = {}) {
-  const relativePath = normalizeRunRelativePath(reviewResult.reviewOutputPath);
-  if (reviewResult.reviewOutputPath && !relativePath) {
-    return {
-      ok: false,
-      message: 'BLOCKED: review_result.json reviewOutputPath must be a safe run-dir-relative path.',
-    };
-  }
-  return {
-    ok: true,
-    path: join(runDir, relativePath || `${featureKey}_QA_SUMMARY_REVIEW.md`),
-  };
-}
-
 async function markApproved(taskPath, runPath, task) {
   const ts = new Date().toISOString();
   task.overall_status = 'approved';
@@ -131,32 +70,42 @@ async function markApproved(taskPath, runPath, task) {
   await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
 }
 
-function buildPhase4Manifest(featureKey, approvalFeedbackPath = null) {
-  const args = [
-    '--skill',
-    'qa-summary-review',
-    '--feature-key',
-    featureKey,
-    '--draft',
-    `drafts/${featureKey}_QA_SUMMARY_DRAFT.md`,
-  ];
-  if (approvalFeedbackPath) {
-    args.push('--approval-feedback', approvalFeedbackPath);
+async function emitReviewSpawn({ featureKey, runDir, task, taskPath }) {
+  const round = (task.phase4_round ?? 0) + 1;
+
+  const { join: pathJoin, dirname } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const SKILL_ROOT = pathJoin(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+  const rubricPaths = {
+    formattingRef: pathJoin(SKILL_ROOT, 'references', 'summary-formatting.md'),
+    reviewRubric: pathJoin(SKILL_ROOT, 'references', 'summary-review-rubric.md'),
+  };
+  const reviewNotesPath =
+    round > 1 ? pathJoin(runDir, 'context', 'phase4_review_notes.md') : null;
+
+  let approvalFeedbackPath = null;
+  try {
+    await readFile(join(runDir, 'context', 'approval_feedback.json'), 'utf8');
+    approvalFeedbackPath = 'context/approval_feedback.json';
+  } catch {
+    /* no approval feedback */
   }
 
-  return {
-    version: 1,
-    phase: 'phase4',
-    requests: [
-      {
-        kind: 'qa-summary-review',
-        feature_key: featureKey,
-        openclaw: {
-          args,
-        },
-      },
-    ],
-  };
+  const prompt = buildSubagentPrompt({
+    runDir,
+    featureKey,
+    rubricPaths,
+    reviewNotesPath,
+    approvalFeedbackPath,
+    round,
+  });
+  const manifest = buildManifest(prompt);
+
+  const manifestPath = join(runDir, 'phase4_spawn_manifest.json');
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  console.log(`SPAWN_MANIFEST: ${manifestPath}`);
+  return 0;
 }
 
 function feedbackLines(feedback) {
@@ -167,27 +116,18 @@ function feedbackLines(feedback) {
     .map((line) => (line.startsWith('- ') ? line : `- ${line}`));
 }
 
-async function persistApprovalFeedbackArtifacts({ featureKey, runDir, feedback, feedbackPath, ts }) {
+async function queueRevisionFeedback({ featureKey, runDir, taskPath, runPath, task, feedback }) {
+  const ts = new Date().toISOString();
+  const feedbackPath = join(runDir, `${featureKey}_QA_SUMMARY_APPROVAL_FEEDBACK.md`);
+
   const approvalFeedback = {
     decision: 'REVISION_REQUESTED',
     feedback,
     recorded_at: ts,
   };
-
   await writeFile(
     join(runDir, 'context', 'approval_feedback.json'),
     `${JSON.stringify(approvalFeedback, null, 2)}\n`,
-    'utf8'
-  );
-  await writeFile(
-    join(runDir, 'context', 'review_result.json'),
-    `${JSON.stringify({
-      verdict: 'fail',
-      requiresRefactor: true,
-      source: 'approval_feedback',
-      reviewOutputPath: `${featureKey}_QA_SUMMARY_APPROVAL_FEEDBACK.md`,
-      updatedDraftPath: `drafts/${featureKey}_QA_SUMMARY_DRAFT.md`,
-    }, null, 2)}\n`,
     'utf8'
   );
   await writeFile(
@@ -203,24 +143,42 @@ async function persistApprovalFeedbackArtifacts({ featureKey, runDir, feedback, 
     ].join('\n'),
     'utf8'
   );
-}
 
-async function regenerateDraftFromApprovalFeedback({ featureKey, runDir, feedback }) {
-  try {
-    await generateSummaryDraftArtifacts({
-      featureKey,
-      runDir,
-      approvalFeedback: feedback,
-    });
-  } catch (error) {
-    throw new Error(`BLOCKED: Failed to regenerate approval feedback draft: ${error.message}`);
-  }
-}
+  // Regenerate the draft via Phase 3 spawn with approval feedback context
+  const { join: pathJoin, dirname } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const SKILL_ROOT = pathJoin(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-async function updateRevisionState({ featureKey, runDir, taskPath, runPath, task, ts }) {
+  const rubricPaths = {
+    formattingRef: pathJoin(SKILL_ROOT, 'references', 'summary-formatting.md'),
+    generationRubric: pathJoin(SKILL_ROOT, 'references', 'summary-generation-rubric.md'),
+    reviewRubric: pathJoin(SKILL_ROOT, 'references', 'summary-review-rubric.md'),
+  };
+  const round = (task.phase3_round ?? 0) + 1;
+  const reviewNotesPath =
+    round > 1 ? pathJoin(runDir, 'context', 'phase3_review_notes.md') : null;
+
+  // Embed approval feedback instruction in the prompt
+  const basePrompt = buildDraftPrompt({
+    runDir,
+    featureKey,
+    rubricPaths,
+    reviewNotesPath,
+    round,
+  });
+  const promptWithFeedback = `${basePrompt}
+## Approval Feedback to Address
+
+The user requested the following changes before approving the draft. Read \`${runDir}/context/approval_feedback.json\` and address every required fix listed.
+`;
+  const draftManifest = buildDraftManifest(promptWithFeedback);
+  const draftManifestPath = pathJoin(runDir, 'phase4_draft_regen_manifest.json');
+  await writeFile(draftManifestPath, `${JSON.stringify(draftManifest, null, 2)}\n`, 'utf8');
+
   task.overall_status = 'review_in_progress';
   task.current_phase = 'phase4';
   task.review_status = 'changes_requested';
+  task.phase3_round = round;
   task.updated_at = ts;
   await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
 
@@ -231,40 +189,7 @@ async function updateRevisionState({ featureKey, runDir, taskPath, runPath, task
   run.updated_at = ts;
   await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
 
-  const manifestPath = join(runDir, 'phase4_spawn_manifest.json');
-  await writeFile(
-    manifestPath,
-    `${JSON.stringify(buildPhase4Manifest(featureKey, 'context/approval_feedback.json'), null, 2)}\n`,
-    'utf8'
-  );
-  console.log(`SPAWN_MANIFEST: ${manifestPath}`);
-}
-
-async function approvalFeedbackArg(runDir) {
-  const relativePath = 'context/approval_feedback.json';
-  const feedback = await readJson(join(runDir, relativePath));
-  return feedback ? relativePath : null;
-}
-
-async function queueRevisionFeedback({ featureKey, runDir, taskPath, runPath, task, feedback }) {
-  const ts = new Date().toISOString();
-  const feedbackPath = join(runDir, `${featureKey}_QA_SUMMARY_APPROVAL_FEEDBACK.md`);
-
-  try {
-    await persistApprovalFeedbackArtifacts({
-      featureKey,
-      runDir,
-      feedback,
-      feedbackPath,
-      ts,
-    });
-    await regenerateDraftFromApprovalFeedback({ featureKey, runDir, feedback });
-  } catch (error) {
-    console.error(error.message);
-    return 2;
-  }
-
-  await updateRevisionState({ featureKey, runDir, taskPath, runPath, task, ts });
+  console.log(`SPAWN_MANIFEST: ${draftManifestPath}`);
   return 0;
 }
 
@@ -277,6 +202,7 @@ export async function runPhase4(featureKey, runDir, mode = 'main') {
     return 2;
   }
 
+  // Awaiting approval: handle APPROVE or revision feedback
   if (mode !== '--post' && task.overall_status === 'awaiting_approval') {
     const approval = approvalInput();
     if (approval.decision === 'APPROVE') {
@@ -299,94 +225,79 @@ export async function runPhase4(featureKey, runDir, mode = 'main') {
     return 2;
   }
 
+  // Pre-spawn: emit review manifest
   if (mode !== '--post') {
-    const approvalFeedbackPath = await approvalFeedbackArg(runDir);
-    const manifestPath = join(runDir, 'phase4_spawn_manifest.json');
-    await writeFile(
-      manifestPath,
-      `${JSON.stringify(buildPhase4Manifest(featureKey, approvalFeedbackPath), null, 2)}\n`,
-      'utf8'
-    );
-    console.log(`SPAWN_MANIFEST: ${manifestPath}`);
-    return 0;
-  }
-
-  let reviewResult = {};
-  try {
-    const raw = await readFile(join(runDir, 'context', 'review_result.json'), 'utf8');
-    reviewResult = JSON.parse(raw);
-  } catch {
-    console.error('BLOCKED: Missing review_result.json. Run qa-summary-review first.');
-    return 2;
-  }
-
-  if (reviewResult.source === 'approval_feedback') {
-    console.error('BLOCKED: Approval feedback is queued. Run qa-summary-review before Phase 4 post-processing.');
-    return 2;
-  }
-
-  if (reviewResult.verdict !== 'pass') {
-    if (reviewResult.requiresRefactor) {
-      const syncResult = await syncReviewedDraft(featureKey, runDir, reviewResult);
-      if (!syncResult.ok) {
-        console.error(syncResult.message);
-        return 2;
-      }
-      const reviewPathResult = resolveReviewPath(featureKey, runDir, reviewResult);
-      if (!reviewPathResult.ok) {
-        console.error(reviewPathResult.message);
-        return 2;
-      }
-      try {
-        await applyReviewRefactor({
-          draftPath: join(runDir, 'drafts', `${featureKey}_QA_SUMMARY_DRAFT.md`),
-          reviewPath: reviewPathResult.path,
-        });
-      } catch (error) {
-        console.error(`BLOCKED: Failed to apply Phase 4 review refactor: ${error.message}`);
-        return 2;
-      }
-      task.overall_status = 'review_in_progress';
-      task.current_phase = 'phase4';
-      task.updated_at = new Date().toISOString();
+    // Reset phase4_round when entering fresh (not a retry)
+    if (!task.phase4_round) {
+      task.phase4_round = 0;
       await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
-      const manifestPath = join(runDir, 'phase4_spawn_manifest.json');
-      const approvalFeedbackPath = await approvalFeedbackArg(runDir);
-      await writeFile(
-        manifestPath,
-        `${JSON.stringify(buildPhase4Manifest(featureKey, approvalFeedbackPath), null, 2)}\n`,
-        'utf8'
-      );
-      console.log(`SPAWN_MANIFEST: ${manifestPath}`);
-      return 0;
     }
-    console.error('BLOCKED: Review verdict is fail and requiresRefactor is false.');
+    return emitReviewSpawn({ featureKey, runDir, task, taskPath });
+  }
+
+  // --post after draft-regen (approval feedback path): re-enter review
+  if (task.review_status === 'changes_requested') {
+    // Clear approval-feedback state and start Phase 4 review fresh
+    task.review_status = null;
+    task.phase4_round = 0;
+    await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
+    return emitReviewSpawn({ featureKey, runDir, task, taskPath });
+  }
+
+  // --post: validate review verdict
+  const deltaPath = join(runDir, 'context', 'phase4_review_delta.md');
+  let deltaContent;
+  try {
+    deltaContent = await readFile(deltaPath, 'utf8');
+  } catch {
+    console.error('BLOCKED: Missing context/phase4_review_delta.md. Run review subagent first.');
     return 2;
   }
 
-  const syncResult = await syncReviewedDraft(featureKey, runDir, reviewResult);
-  if (!syncResult.ok) {
-    console.error(syncResult.message);
+  const { verdict } = parseVerdict(deltaContent, 'phase4');
+
+  if (!verdict) {
+    console.error(
+      'BLOCKED: Invalid verdict in phase4_review_delta.md — expected "- accept" or "- return phase4".'
+    );
     return 2;
   }
 
-  const ts = new Date().toISOString();
-  task.overall_status = 'awaiting_approval';
-  task.current_phase = 'phase4';
-  task.review_status = 'pass';
-  task.updated_at = ts;
-  await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
+  if (verdict === 'accept') {
+    const ts = new Date().toISOString();
+    task.overall_status = 'awaiting_approval';
+    task.current_phase = 'phase4';
+    task.review_status = 'pass';
+    task.return_to_phase = null;
+    task.updated_at = ts;
+    await writeFile(taskPath, `${JSON.stringify(task, null, 2)}\n`, 'utf8');
 
-  const run = (await readJson(runPath, {})) ?? {};
-  run.review_completed_at = ts;
-  run.subtask_timestamps = run.subtask_timestamps || {};
-  run.subtask_timestamps.summary_review = ts;
-  run.updated_at = ts;
-  await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
+    const run = (await readJson(runPath, {})) ?? {};
+    run.review_completed_at = ts;
+    run.subtask_timestamps = run.subtask_timestamps || {};
+    run.subtask_timestamps.summary_review = ts;
+    run.updated_at = ts;
+    await writeFile(runPath, `${JSON.stringify(run, null, 2)}\n`, 'utf8');
 
-  await renderDraft(featureKey, runDir);
-  console.error('Awaiting APPROVE or revision feedback');
-  return 2;
+    await renderDraft(featureKey, runDir);
+    console.error('Awaiting APPROVE or revision feedback');
+    return 2;
+  }
+
+  // verdict === 'return phase4'
+  const currentRound = task.phase4_round ?? 0;
+  if (currentRound >= MAX_ROUNDS) {
+    console.error(
+      `BLOCKED: Phase 4 failed to converge after ${MAX_ROUNDS} rounds — review context/phase4_review_delta.md for blocking criteria.`
+    );
+    return 2;
+  }
+
+  const newRound = currentRound + 1;
+  const updatedTask = updateTaskForRerun(task, 'phase4', newRound);
+  await writeFile(taskPath, `${JSON.stringify(updatedTask, null, 2)}\n`, 'utf8');
+
+  return emitReviewSpawn({ featureKey, runDir, task: updatedTask, taskPath });
 }
 
 async function main() {
