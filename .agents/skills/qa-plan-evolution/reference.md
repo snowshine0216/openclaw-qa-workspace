@@ -297,15 +297,14 @@ When evolving `qa-plan-orchestrator`:
 - **Adding replay evidence:** only when operator explicitly provides `defect_analysis_run_key`.
   - Activates `retrospective_replay` cases: `P4A-SDK-CONTRACT-001`, `P5A-INTERACTION-AUDIT-001`, `P5A-COVERAGE-PRESERVATION-001`, `P5B-ANALOG-GATE-001`, `P7-DEV-SMOKE-001`.
   - Do not enable automatically — newly logged defects must not contaminate the mutation decision.
-- **Iteration comparison:** use executed comparison for promotion decisions. The synthetic structural comparator is fallback-only and cannot promote a challenger.
+- **Iteration comparison:** use executed comparison only.
   - Executed compare: `scripts/run_iteration_compare.mjs` (uses `benchmark-runner-llm.mjs` via grading harness; local fallback disabled so behavior aligns with `npm run benchmark:v2:run`)
-  - Synthetic fallback: `scripts/lib/publishIterationComparison.mjs`
+  - If executed compare fails or cannot produce required grading artifacts, Phase 4 must fail and block the run.
 - **Iteration scoring:** run `scripts/score_iteration.mjs` after each Phase 5 decision:
   ```bash
   node workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts/score_iteration.mjs \
     --iteration <n> --profile global-cross-feature-v1
   ```
-- **Synthetic scorecards:** if `scoring_fidelity === "synthetic"`, the scorecard must report `decision.result: "blocked_synthetic"` and Phase 6 must refuse promotion.
 - **Acceptance gate:** a challenger is rejected if any case in `blocking_case_ids` from `benchmark_manifest.json` fails.
 - **Cross-family gate:** for active blind/holdout evidence modes, non-target feature families must be non-regressing.
 - **Evolution run root** (for `REPORT_STATE` / task state): `workspace-artifacts/skills/shared/qa-plan-evolution/runs/<run-key>/`

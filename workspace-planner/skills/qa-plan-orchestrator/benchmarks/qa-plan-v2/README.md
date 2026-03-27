@@ -494,10 +494,10 @@ The scorer evaluates acceptance by `evidence_mode`:
 2. improvement on `retrospective_replay`
 3. no regression on `holdout_regression`
 
-### Executed vs synthetic iteration comparison
+### Iteration comparison
 
 - `scripts/run_iteration_compare.mjs` is the promotion path. It assembles `benchmark.json` from real per-run `outputs/`, `grading.json`, and `timing.json`.
-- `scripts/lib/publishIterationComparison.mjs` is a synthetic structural fallback. It does not execute the benchmark; scorecards use `scoring_fidelity: synthetic` and `decision.result: blocked_synthetic`, so challenger promotion is blocked. Kept for tests and emergency tooling only — not equivalent to executed evidence.
+- No synthetic structural fallback is supported. If executed compare cannot produce real benchmark artifacts, the iteration must fail instead of degrading to an alternate scorecard.
 - Replay cases are opt-in. Without `defect_analysis_run_key`, iteration comparison includes only `blind_pre_defect` and `holdout_regression`.
 
 ## Practical Workflow

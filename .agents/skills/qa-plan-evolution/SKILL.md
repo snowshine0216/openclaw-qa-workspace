@@ -73,8 +73,7 @@ node workspace-planner/skills/qa-plan-orchestrator/benchmarks/qa-plan-v2/scripts
 For qa-plan iteration comparison:
 
 - Default promotion path: `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`
-- Synthetic fallback only: `benchmarks/qa-plan-v2/scripts/lib/publishIterationComparison.mjs`
-- Synthetic scorecards must carry `scoring_fidelity: "synthetic"` and `decision.result: "blocked_synthetic"`; they are not promotion-eligible
+- No synthetic fallback is allowed. If executed compare cannot complete, Phase 4 must fail and leave the run blocked.
 
 For the qa-plan target, the active benchmark is `qa-plan-v2` (not the skill's own `evals/evals.json`). The skill's own evals remain the smoke gate; `qa-plan-v2` cases are the acceptance gate for challenger promotion.
 
@@ -189,7 +188,7 @@ Per iteration:
 - run qa-plan benchmark comparison
   - default to executed benchmark comparison
   - include replay cases only when `defect_analysis_run_key` is provided
-  - treat synthetic comparison as a non-gating fallback only
+  - fail hard when executed comparison cannot produce a real scorecard
 
 ### Phase 5
 

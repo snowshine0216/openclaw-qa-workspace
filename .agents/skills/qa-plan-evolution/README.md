@@ -58,7 +58,7 @@ Retention controls:
 - `--prune-min-age-seconds <seconds>` / `EVOLUTION_PRUNE_MIN_AGE_SECONDS=<seconds>` (default `3600`)
 - `scripts/prune_runs.sh --keep <n> [--min-age-seconds <seconds>] [--dry-run]` for one-shot operator cleanup
 
-For `qa-plan-v2`, Phase 4 now prefers executed benchmark comparison through `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`. The older structural comparator in `scripts/lib/publishIterationComparison.mjs` remains a synthetic fallback only; it marks scorecards with `scoring_fidelity: "synthetic"` and blocks promotion.
+For `qa-plan-v2`, Phase 4 uses only executed benchmark comparison through `benchmarks/qa-plan-v2/scripts/run_iteration_compare.mjs`. If executed compare cannot complete, the run fails and remains blocked until the benchmark issue is fixed.
 
 ## Knowledge Pack Behavior
 
