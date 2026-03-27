@@ -4,6 +4,21 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.6.0] - 2026-03-27
+
+### Fixed
+- **qa-plan benchmark comparison is now executed-only** — `qa-plan-evolution` Phase 4 now requires `run_iteration_compare.mjs`, hard-fails when executed compare is missing or errors, and rejects any non-`executed` benchmark scorecard at scoring time instead of silently degrading to synthetic output.
+- **qa-plan benchmark scoring now enforces real scorecard fidelity** — `scoreBenchmarkV2` rejects unsupported scoring fidelity, and the promotion path no longer carries synthetic-only acceptance branches.
+- **qa-plan evolution now seeds qa-plan benchmark runtime baseline state when missing** — Phase 1 creates the canonical runtime `history.json` and `champion_snapshot` under `workspace-artifacts` so replay/compare phases can start from a valid executed benchmark baseline.
+
+### Changed
+- **qa-plan benchmark and evolution docs now describe executed-only compare semantics** — active skill and benchmark docs no longer advertise synthetic fallback behavior.
+- **executed benchmark regression coverage was tightened across both skills** — updated phase4/phase5/phase6 evolution tests plus qa-plan benchmark iteration/scorer tests now assert executed compare success or hard failure only.
+
+### Removed
+- **qa-plan synthetic structural compare implementation** — removed `publishIterationComparison.mjs` and the direct synthetic-compare benchmark tests that depended on it.
+- **stale defects-analysis fix-plan note** — removed the obsolete reporter-side `workspace-reporter/skills/defects-analysis/docs/fix-plan.md` document.
+
 ## [0.1.5.0] - 2026-03-26
 
 ### Fixed
