@@ -4,7 +4,7 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
-## [0.1.8.0] - 2026-03-27
+## [0.1.9.0] - 2026-03-27
 
 ### Added
 - **`structured-slide-spec.js`** — new `ppt-agent` module that converts a canonical slide brief to a normalized structured slide spec with layout mapping, body content, and design token resolution. Supports 10 composition families (PROCESS_FLOW, COMPARISON_MATRIX, TABLE_SUMMARY, EVIDENCE_PANEL, TITLE_HERO, SECTION_DIVIDER, CHECKLIST_CARDS, QA_TWO_COLUMN, TEXT_STATEMENT, CLOSING_STATEMENT) with fallback to `two_column` for unrecognized families.
@@ -16,6 +16,37 @@ This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/R
 - **`update-plan.js` ACTIONS set** — added `structured_rebuild` so plans using this action type pass validation before reaching `applyAction`.
 - **`structured-slide-spec.js` design token resolution** — uses `??` (nullish coalescing) instead of `||` for theme token fallback so explicitly set empty-string tokens are not silently overridden; default color tokens now uniformly include `#` prefix.
 - **`structured-slide-spec.js` source_brief** — returned as a shallow copy instead of a direct reference, following project immutability rules.
+
+## [0.1.8.0] - 2026-03-27
+
+### Added
+- **`qa-summary` Phase 2 now uses LLM-driven defect-summary subagent** — replaces `buildDefectSummary.mjs` with a two-step spawn pattern tracked via `task.phase2_step`: (1) spawn `defects-analysis` when needed, (2) spawn a defect-summary subagent that reads raw Jira/PR artifacts and writes `context/defect_summary.json` or `context/no_defects.json`.
+- **`qa-summary` Phase 3 now uses LLM-driven draft generation with exit gate** — replaces `buildSummaryDraft.mjs` with a spawn-manifest pattern: `phase3.sh` emits `phase3_spawn_manifest.json`; the subagent reads planner/defect context against `summary-generation-rubric.md`, self-reviews against `summary-review-rubric.md`, writes verdict to `context/phase3_review_delta.md`; retry loop up to 3 rounds.
+- **`qa-summary` Phase 4 now uses internal LLM review subagent** — removes dependency on `qa-summary-review` skill and `applyReviewRefactor.mjs`; replaced with `phase4_spawn_manifest.json` driving a review subagent that applies structural fixes in-place and writes `context/phase4_review_delta.md`; retry loop up to 3 rounds.
+- **new `references/summary-generation-rubric.md`** — 10-section hard constraints for the Phase 3 draft-generation subagent (tables, bullets, placeholder policy, prohibited filler).
+- **new `references/summary-review-rubric.md`** — 10 self-review criteria (C1–C10) covering sections, tables, defect counts, and filler detection; used by both Phase 3 and Phase 4 subagents.
+- **new `scripts/lib/build_defect_summary_spawn_manifest.mjs`** — reads defects-analysis run dir artifacts and builds a spawn manifest instructing the LLM to produce `defect_summary.json`.
+- **new `scripts/lib/build_summary_draft_spawn_manifest.mjs`** — builds Phase 3 spawn manifest for LLM draft generation + self-review; includes prior review notes on retry rounds.
+- **new `scripts/lib/build_summary_review_spawn_manifest.mjs`** — builds Phase 4 spawn manifest for internal review subagent; replaces the `qa-summary-review` external skill spawn.
+- **new `scripts/lib/validate_summary_review.mjs`** — shared verdict parser for Phase 3 and Phase 4; parameterized by phase name; `accept` clears `return_to_phase`; `return phaseN` increments round counter.
+
+### Changed
+- **`scripts/phase3.sh` now passes `--post` flag** — added `MODE` variable and `${MODE:+"$MODE"}` passthrough to `phase3.mjs`.
+- **`SKILL.md` updated** — removed `qa-summary-review` and `report-quality-reviewer` from skill reuse list; updated Phase 2/3/4 descriptions to reflect LLM-driven spawn pattern; added `summary-generation-rubric.md` and `summary-review-rubric.md` to Required References.
+
+### Removed
+- `buildDefectSummary.mjs`, `buildSummaryDraft.mjs`, `applyReviewRefactor.mjs`, `generateSummaryDraftArtifacts.mjs` are retired (kept in place but no longer called).
+- Dependency on `qa-summary-review` skill removed from Phase 4.
+- Dependency on `report-quality-reviewer` removed.
+
+## [0.1.7.1] - 2026-03-27
+
+### Fixed
+- **defects-analysis: Priority Breakdown, Defect Breakdown by Status, and Defect Analysis by Priority sections always showed zero counts** — `buildRawDefectFacts` in `build_report_spawn_manifest.mjs` read `jiraRaw.issues` (Jira API format) but `defect_index.json` stores normalized defects under `jiraRaw.defects` with flat fields. The empty defect table caused the LLM to correctly generate all-zero placeholders. Now detects both formats: `{ defects: [...] }` and `{ issues: [...] }`.
+- **defects-analysis review rubric C2 now rejects all-zero placeholder tables** — previously "Table present with data rows" was vacuously satisfied by zero-value rows. Updated to require at least one row with a non-zero Total or Open count when defects were provided in the task input.
+
+### Added
+- **Two new unit tests for `buildRawDefectFacts`** — covers `defect_index.json` format (flat `defects` array) and the empty-object edge case (neither `issues` nor `defects` property).
 
 ## [0.1.7.0] - 2026-03-27
 

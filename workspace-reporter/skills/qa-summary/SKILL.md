@@ -26,6 +26,8 @@ Load phase-specific references only when the phase needs them:
 
 - `references/planner-and-defects.md` for Phase 1 and Phase 2
 - `references/summary-formatting.md` for Phase 3
+- `references/summary-generation-rubric.md` for Phase 3
+- `references/summary-review-rubric.md` for Phase 3 and Phase 4
 - `references/publish-and-notification.md` for Phase 5 and Phase 6
 
 ## Required Runtime Config
@@ -37,8 +39,6 @@ Always load:
 This file is the source of truth for default planner and defect-analysis run roots. Caller-provided path overrides may replace these defaults for one run, but the skill must always load the config file first and persist the resolved values into `task.json`.
 
 When Phase 2 delegates or refreshes defect state, also respect skill: `defects-analysis`
-
-When Phase 4 reviews and refactors the draft, also respect skill: `qa-summary-review`
 
 ## Resume Flow
 
@@ -107,14 +107,20 @@ Conditional:
 
 - `<skill-root>/runs/<feature-key>/context/no_defects.json`
 - `<skill-root>/runs/<feature-key>/context/feature_overview_source.json`
+- `<skill-root>/runs/<feature-key>/context/phase3_review_notes.md`
+- `<skill-root>/runs/<feature-key>/context/phase3_review_delta.md`
+- `<skill-root>/runs/<feature-key>/context/phase4_review_notes.md`
+- `<skill-root>/runs/<feature-key>/context/phase4_review_delta.md`
 - `<skill-root>/runs/<feature-key>/phase2_spawn_manifest.json`
+- `<skill-root>/runs/<feature-key>/phase2_defect_summary_manifest.json`
+- `<skill-root>/runs/<feature-key>/phase3_spawn_manifest.json`
 - `<skill-root>/runs/<feature-key>/phase4_spawn_manifest.json`
 - `<skill-root>/runs/<feature-key>/<feature-key>_QA_SUMMARY_MERGED.md`
 
 ## Shared Skill Reuse
 
 - Direct shared reuse: `confluence`, `feishu-notify`
-- Reporter-local reuse: `defects-analysis`, `qa-summary-review`
+- Reporter-local reuse: `defects-analysis`
 - Explicit non-use: direct `jira-cli` and `github` access inside this skill. Those remain owned by `defects-analysis`.
 
 ## Phase Contract
@@ -150,13 +156,14 @@ Conditional:
 ### Phase 2
 
 - Entry: `scripts/phase2.sh`
-- Work: inspect existing reporter defect-analysis artifacts from the resolved config-backed run root, ask the user whether to reuse or regenerate when prior analysis exists, spawn `defects-analysis` only when needed, then consolidate defect context into summary-friendly metadata, including both defect-fix PRs and feature-level PRs
+- Work: inspect existing reporter defect-analysis artifacts from the resolved config-backed run root, ask the user whether to reuse or regenerate when prior analysis exists, spawn `defects-analysis` only when needed (step `defects_analysis_spawned`), then spawn a defect-summary subagent (step `defect_summary_spawned`) to normalize raw defect artifacts into `defect_summary.json` using `references/planner-and-defects.md` as schema reference. Two-step spawn flow tracked via `task.phase2_step`.
 - Reference: `references/planner-and-defects.md`
 - Output:
   - `context/defect_context_state.json`
-  - `context/defect_summary.json`
-  - `context/no_defects.json` when zero defects are found
+  - `context/defect_summary.json` — written by LLM subagent
+  - `context/no_defects.json` when zero defects are found — written by LLM subagent
   - `phase2_spawn_manifest.json` when defect-analysis must run
+  - `phase2_defect_summary_manifest.json` for defect-summary LLM spawn
 - User interaction:
   - when prior defect-analysis artifacts exist, ask the user to choose `reuse_existing_defects` or `regenerate_defects`
   - when the user selects `regenerate_defects`, Phase 2 post-processing must summarize the freshly spawned default defects-analysis run instead of stale override artifacts
@@ -164,25 +171,29 @@ Conditional:
 ### Phase 3
 
 - Entry: `scripts/phase3.sh`
-- Work: build the draft by combining the planner-sourced Section 1 table with defect context sections 2 through 10 and applying the section, placeholder, and table rules from `references/summary-formatting.md`
-- Reference: `references/summary-formatting.md`
+- Work: spawn a draft-generation subagent that reads planner + defect context, applies `references/summary-generation-rubric.md` to produce all 10 sections, then self-reviews against `references/summary-review-rubric.md` (criteria C1–C10). Only advances on a self-review verdict of `accept`. On `return phase3`, increments `task.phase3_round` and re-spawns with prior review notes (max 3 rounds).
+- Reference: `references/summary-formatting.md`, `references/summary-generation-rubric.md`, `references/summary-review-rubric.md`
 - Output:
-  - `drafts/<feature-key>_QA_SUMMARY_DRAFT.md`
-  - `context/summary_generation.json`
+  - `drafts/<feature-key>_QA_SUMMARY_DRAFT.md` — written by LLM subagent
+  - `context/phase3_review_notes.md` — per-criterion self-review
+  - `context/phase3_review_delta.md` — verdict
+  - `phase3_spawn_manifest.json`
 - User interaction:
   - none
 
 ### Phase 4
 
 - Entry: `scripts/phase4.sh`
-- Work: when `task.json.overall_status = awaiting_approval`, re-render the already reviewed draft and block for approval; if approval feedback is provided, regenerate the draft from persisted planner and defect context with that feedback applied, then re-enter the Phase 4 review loop. Otherwise run the `qa-summary-review` quality gate, persist the review output, apply a refactor pass when the verdict is not `pass`, rerun `qa-summary-review`, and only render the draft to the user once the review verdict is `pass`
-- Reference: `workspace-reporter/skills/qa-summary-review/SKILL.md`
+- Work: when `task.json.overall_status = awaiting_approval`, re-render the already reviewed draft and block for approval; if approval feedback is provided, spawn a draft-regeneration subagent with the approval feedback, then re-enter the Phase 4 review loop. Otherwise spawn an internal review subagent that reads the draft against `references/summary-review-rubric.md`, applies structural fixes in-place (missing sections, missing tables, missing bullets only), and writes the verdict. Only transitions to `awaiting_approval` when verdict is `accept`. On `return phase4`, increments `task.phase4_round` and re-spawns (max 3 rounds).
+- Reference: `references/summary-formatting.md`, `references/summary-review-rubric.md`
 - Output:
-  - `<feature-key>_QA_SUMMARY_REVIEW.md`
-  - `context/review_result.json`
-  - `phase4_spawn_manifest.json` when the review is delegated through a spawn manifest
+  - `<feature-key>_QA_SUMMARY_REVIEW.md` — written by LLM subagent
+  - `context/phase4_review_notes.md` — per-criterion verdicts
+  - `context/phase4_review_delta.md` — verdict
+  - `context/review_result.json` — machine-readable result
+  - `phase4_spawn_manifest.json`
 - User interaction:
-  - no approval prompt is shown until `qa-summary-review` returns `pass`
+  - no approval prompt is shown until review verdict is `accept`
   - print the reviewed draft in chat only after a passing review
   - require explicit `APPROVE` or revision feedback before continuing
 
