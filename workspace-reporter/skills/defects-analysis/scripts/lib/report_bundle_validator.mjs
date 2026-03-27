@@ -11,12 +11,13 @@ async function assertReadable(path) {
 export async function validateReportBundle(runKey, runDir) {
   const required = [
     `${runKey}_REPORT_DRAFT.md`,
-    `${runKey}_REVIEW_SUMMARY.md`,
     `${runKey}_REPORT_FINAL.md`,
     'task.json',
     'run.json',
     'context/route_decision.json',
     `context/runtime_setup_${runKey}.json`,
+    'context/report_review_delta.md',
+    'context/report_review_notes.md',
   ];
 
   const missing = [];
@@ -33,15 +34,15 @@ export async function validateReportBundle(runKey, runDir) {
     throw new Error(`Missing required artifacts: ${missing.join(', ')}`);
   }
 
-  const reviewSummary = await readFile(join(runDir, `${runKey}_REVIEW_SUMMARY.md`), 'utf8');
-  if (!reviewSummary.includes('## Review Result: pass')) {
-    throw new Error('Review summary does not contain a passing result');
+  const reviewDelta = await readFile(join(runDir, 'context', 'report_review_delta.md'), 'utf8');
+  if (!/^\s*-\s*accept\s*$/im.test(reviewDelta)) {
+    throw new Error('Review delta does not contain an accept verdict');
   }
 
   return {
     valid: true,
     required,
-    review_status: 'pass',
+    review_status: 'accept',
   };
 }
 
