@@ -4,6 +4,20 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.7.0] - 2026-03-27
+
+### Added
+- **defects-analysis Phase 5 now uses LLM-driven subagent spawn** — `phase5.sh` replaced static script-driven report generation and broken review loop with a spawn manifest pattern: pre-spawn builds `phase5_spawn_manifest.json` via `build_report_spawn_manifest.mjs`; SKILL.md orchestrator spawns the subagent; post-phase validates `context/report_review_delta.md` via `validate_report_review.mjs`.
+- **new `build_report_spawn_manifest.mjs`** — reads `jira_raw.json`, `pr_impact_summary.json`, and `task.json` to emit tabular raw facts (defects + PRs) and instruct the subagent via `references/report-generation-rubric.md` and `references/report-review-rubric.md`. On round > 1, includes path to prior `context/report_review_notes.md`.
+- **new `validate_report_review.mjs`** — parses `context/report_review_delta.md` verdict; `accept` clears `return_to_phase`; `return phase5` increments `phase5_round` and sets `return_to_phase: "phase5"` for orchestrator loop; exits 1 on missing/invalid delta.
+- **new `references/report-generation-rubric.md`** — 12-section quality spec and data contract for the subagent report generator.
+- **new `references/report-review-rubric.md`** — 12 self-review criteria (C1–C12) with pass/fail rules; subagent writes `context/report_review_notes.md` and `context/report_review_delta.md`.
+- **Phase 5 review loop contract in SKILL.md** — orchestrator reads `task.json` after `--post`; loops up to 3 rounds on `return_to_phase === "phase5"`; stops with error after 3 rounds.
+
+### Changed
+- **`report_bundle_validator.mjs` now checks `context/report_review_delta.md`** — replaced `_REVIEW_SUMMARY.md` + `## Review Result: pass` check with `context/report_review_delta.md` + `context/report_review_notes.md` existence and `- accept` verdict regex.
+- **`phase5.sh` removes `report-quality-reviewer` dependency** — `REPORTER_SCRIPT`, `REVIEWER_SCRIPT`, `AUTO_FIX_SCRIPT` variables and the bash while loop are gone; replaced by `MANIFEST_SCRIPT` and `VALIDATE_SCRIPT` env-overridable variables.
+
 ## [0.1.6.0] - 2026-03-27
 
 ### Fixed
