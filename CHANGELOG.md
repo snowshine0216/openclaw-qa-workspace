@@ -4,6 +4,19 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.9.0] - 2026-03-27
+
+### Added
+- **`structured-slide-spec.js`** — new `ppt-agent` module that converts a canonical slide brief to a normalized structured slide spec with layout mapping, body content, and design token resolution. Supports 10 composition families (PROCESS_FLOW, COMPARISON_MATRIX, TABLE_SUMMARY, EVIDENCE_PANEL, TITLE_HERO, SECTION_DIVIDER, CHECKLIST_CARDS, QA_TWO_COLUMN, TEXT_STATEMENT, CLOSING_STATEMENT) with fallback to `two_column` for unrecognized families.
+- **`structured_rebuild` action type in `edit-handoff.js`** — `applyAction()` now dispatches `structured_rebuild` actions to `applyStructuredRebuildAction()`, which loads the canonical slide brief and source-theme-snapshot.json, builds a structured slide spec, and returns a planned job with `artifact_path` and `structured_spec` for downstream renderer wiring.
+- **`merge-back.js` explicit step-function exports** — refactored from a single opaque orchestrator to six individually-exported, independently-testable functions: `extractSlidePackage`, `allocateNonConflictingIds`, `updatePresentationXml`, `updateContentTypes`, `copyMediaDependencies`, `validateNeighboringSlides`, plus the `mergeRebuiltSlide` orchestrator.
+- **48 new tests** across 3 files: `merge-back.test.js` (22 unit tests), expanded `structured-slide-spec.test.js` (+13 tests), and `workflow-edit-structured-rebuild-e2e.test.js` (10 E2E tests) covering all 4 critical fail-closed paths (ID collision, missing Content_Types.xml, broken presentation order, neighbor drift).
+
+### Changed
+- **`update-plan.js` ACTIONS set** — added `structured_rebuild` so plans using this action type pass validation before reaching `applyAction`.
+- **`structured-slide-spec.js` design token resolution** — uses `??` (nullish coalescing) instead of `||` for theme token fallback so explicitly set empty-string tokens are not silently overridden; default color tokens now uniformly include `#` prefix.
+- **`structured-slide-spec.js` source_brief** — returned as a shallow copy instead of a direct reference, following project immutability rules.
+
 ## [0.1.8.0] - 2026-03-27
 
 ### Added

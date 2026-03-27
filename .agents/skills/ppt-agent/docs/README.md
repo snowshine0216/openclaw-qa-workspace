@@ -410,10 +410,13 @@ Primary files:
 - `light_edit` preserves seed layout with scoped OOXML text edits.
 - `structured_rebuild` delegates to the existing `pptx` structured renderer for the chosen composition family.
 - No parallel edit renderer: structured fallback reuses the shared `pptx` mechanics.
+- `structured-slide-spec.js` converts a canonical slide brief to a normalized structured spec with layout mapping, content, and design tokens for the renderer.
+- `merge-back.js` implements the 6-step OOXML merge-back algorithm: `extractSlidePackage` → `allocateNonConflictingIds` → `updatePresentationXml` → `updateContentTypes` → `copyMediaDependencies` → `validateNeighboringSlides`. All steps are fail-closed with structured error codes.
 
 Primary files:
 
-- update: `scripts/lib/pptx-edit-ops.js`, `scripts/lib/edit-handoff.js`
+- update: `scripts/lib/pptx-edit-ops.js`, `scripts/lib/edit-handoff.js`, `scripts/lib/update-plan.js`
+- add: `scripts/lib/structured-slide-spec.js`, `scripts/lib/merge-back.js`
 
 ### FD4: Image meta-prompt pipeline
 

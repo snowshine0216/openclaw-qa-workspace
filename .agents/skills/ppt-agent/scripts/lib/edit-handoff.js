@@ -13,6 +13,7 @@ const {
 const { appendEvent, writeStageStatus } = require("./run-logging");
 const { readManifest, updateManifest } = require("./run-manifest");
 const { validateUpdatePlan } = require("./update-plan");
+const { buildStructuredSlideSpec } = require("./structured-slide-spec");
 
 function loadJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -256,6 +257,53 @@ function applyMergeAction({ runRoot, slideIndex, action, unpackedRoot, changeReq
   };
 }
 
+function applyStructuredRebuildAction({ runRoot, slideIndex, action, unpackedRoot }) {
+  const slideBriefPath = path.join(
+    runRoot,
+    "artifacts",
+    "slide-briefs",
+    `slide-${String(action.slide_number).padStart(2, "0")}.json`
+  );
+  let slideBrief;
+  if (fs.existsSync(slideBriefPath)) {
+    try {
+      slideBrief = JSON.parse(fs.readFileSync(slideBriefPath, "utf8"));
+    } catch (err) {
+      throw new Error(`slide brief for slide ${action.slide_number} is not valid JSON: ${err.message}`);
+    }
+  } else {
+    slideBrief = { slide_number: action.slide_number, title: action.reason || `Slide ${action.slide_number}`, composition_family: null, on_slide_copy: "" };
+  }
+
+  const themeSnapshotPath = path.join(runRoot, "artifacts", "source-theme-snapshot.json");
+  let themeSnapshot = null;
+  if (fs.existsSync(themeSnapshotPath)) {
+    try {
+      themeSnapshot = JSON.parse(fs.readFileSync(themeSnapshotPath, "utf8"));
+    } catch {
+      // Unusable snapshot — fall back to default tokens
+    }
+  }
+
+  const spec = buildStructuredSlideSpec(slideBrief, themeSnapshot);
+
+  const artifactPath = path.join(runRoot, "artifacts", `rebuilt-slide-${String(action.slide_number).padStart(2, "0")}.pptx`);
+
+  return {
+    ...jobBase(action.slide_number, action),
+    layout_strategy: action.layout_strategy,
+    image_strategy: action.image_strategy || "preserve",
+    image_action: buildImageOperation(action),
+    source_media_refs: action.source_media_refs || [],
+    destination_media_refs: action.source_media_refs || [],
+    transcript_path: action.transcript_path,
+    structured_spec: spec,
+    artifact_path: artifactPath,
+    status: "planned",
+    summary: `Structured rebuild planned for slide ${action.slide_number} (${spec.layout} layout)`
+  };
+}
+
 function applyAction(params) {
   const { action } = params;
   if (action.action === "revise") {
@@ -269,6 +317,9 @@ function applyAction(params) {
   }
   if (action.action === "merge") {
     return applyMergeAction(params);
+  }
+  if (action.action === "structured_rebuild") {
+    return applyStructuredRebuildAction(params);
   }
   throw new Error(`Unsupported action "${action.action}"`);
 }
