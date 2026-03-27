@@ -4,6 +4,15 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.10.0] - 2026-03-27
+
+### Fixed
+- **qa-plan-evolution async job result files are now manifest-scoped** — `asyncJobStore.mjs` and `manifestRunner.mjs` now derive per-manifest result files like `phase3_spawn_results.json` and `phase4_spawn_results.json`, preventing later phases in the same iteration from inheriting stale failure state from earlier phases.
+- **legacy in-flight qa-plan-evolution jobs remain resumable after the result-path change** — `refreshJobs()` now accepts the persisted legacy `spawn_results.json` path or the new manifest-derived path, so older queued/running jobs do not get stranded during upgrade.
+
+### Added
+- **new async job regression coverage** — added tests for per-phase spawn-results isolation, manifest-specific result writing, and legacy-job resume compatibility in `asyncJobStore.test.mjs` and `manifestRunner.test.mjs`.
+
 ## [0.1.9.0] - 2026-03-27
 
 ### Added
