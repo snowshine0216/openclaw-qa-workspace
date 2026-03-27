@@ -7,6 +7,13 @@ CONTEXT_DIR="$RUN_DIR/context"
 TS="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RUNS_ROOT="$(cd "$RUN_DIR/.." && pwd)"
+# Use artifact root for canonical feature run dirs (matches orchestrate.sh getRunRoot resolution)
+ARTIFACT_FEATURE_RUNS_ROOT="$(node --input-type=module -e "
+import { getRunRoot } from '$(cd "$SCRIPT_DIR/../../../.." && pwd)/.agents/skills/lib/artifactRoots.mjs';
+// Return the parent of a feature run
+const sample = getRunRoot('workspace-reporter', 'defects-analysis', '__sample__');
+console.log(sample.replace('/__sample__', ''));
+" 2>/dev/null || echo "$RUNS_ROOT")"
 ORCHESTRATE_SCRIPT="${ORCHESTRATE_SCRIPT:-$SCRIPT_DIR/orchestrate.sh}"
 
 [[ -n "$RAW_INPUT" && -n "$RUN_DIR" ]] || { echo "Usage: phase3.sh <input> <run-dir>" >&2; exit 1; }
@@ -29,7 +36,7 @@ if [[ "$route_kind" == "reporter_scope_release" ]]; then
     feature_key="$(printf '%s\n' "$feature" | jq -r '.feature_key')"
     selected_action="$(printf '%s\n' "$feature" | jq -r '.selected_action // .default_action')"
     effective_action="$selected_action"
-    canonical_run_dir="$RUNS_ROOT/$feature_key"
+    canonical_run_dir="$ARTIFACT_FEATURE_RUNS_ROOT/$feature_key"
     report_final_path="$canonical_run_dir/${feature_key}_REPORT_FINAL.md"
     feature_summary_path="$canonical_run_dir/context/feature_summary.json"
     summary_plan_json='{}'

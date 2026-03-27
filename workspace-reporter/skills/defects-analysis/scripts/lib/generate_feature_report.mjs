@@ -463,6 +463,8 @@ export function generateFeatureReport(runDir, runKey, jiraBaseUrl) {
 
 ${buildHeaderRows(metadata, summary, prSummary, reportDate)}
 
+**Feature Title:** ${metadata.feature_title ?? summary.feature_key}
+
 ---
 
 ## 2. Executive Summary

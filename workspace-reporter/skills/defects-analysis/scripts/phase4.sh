@@ -69,8 +69,21 @@ function parseRepository(content) {
 function parsePrNumber(content) {
   const fromUrl = content.match(/\/pull\/(\d+)/i)?.[1];
   if (fromUrl) return Number(fromUrl);
+  // heading: "# PR Impact Analysis: PR #22621" or "# PR Impact Analysis: #22621"
+  const fromHeading = content.match(/^#\s*PR Impact Analysis:.*?#(\d+)\s*$/im)?.[1];
+  if (fromHeading) return Number(fromHeading);
   const fromLabel = content.match(/\bPR\s*#?(\d+)\b/i)?.[1];
   if (fromLabel) return Number(fromLabel);
+  return null;
+}
+
+function parsePrTitle(content) {
+  // Format 1 (new): | **Title** | <title text> |
+  const tableMatch = content.match(/^\|\s*\*{0,2}Title\*{0,2}\s*\|\s*(.*?)\s*\|$/im);
+  if (tableMatch?.[1]?.trim()) return tableMatch[1].trim();
+  // Format 2 (old): ## PR Title\n**<title>**  or  ## PR Title\n<title>
+  const sectionMatch = content.match(/^##\s+PR Title\s*\n\*{0,2}([^\n*]+)\*{0,2}/im);
+  if (sectionMatch?.[1]?.trim()) return sectionMatch[1].trim();
   return null;
 }
 
@@ -86,6 +99,7 @@ for (const file of files) {
   topRiskyPrs.push({
     repository,
     number: parsePrNumber(content),
+    title: parsePrTitle(content),
     risk_level: riskLevel,
     summary: content.split('\n').find((line) => line.trim() && !line.startsWith('#'))?.trim() ?? 'Risk summary not captured.',
   });

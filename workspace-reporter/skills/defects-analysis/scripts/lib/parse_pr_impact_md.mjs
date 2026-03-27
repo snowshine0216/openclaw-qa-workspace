@@ -44,16 +44,37 @@ function normalizeRiskLevel(content) {
   return 'MEDIUM';
 }
 
+function extractTitle(markdown) {
+  // Format 1 (new): | **Title** | <title text> |
+  const tableTitle = extractTableValue(markdown, 'Title');
+  if (tableTitle) return tableTitle;
+  // Format 2 (old): ## PR Title\n**<title>**  or  ## PR Title\n<title>
+  const sectionMatch = markdown.match(/^##\s+PR Title\s*\n\*{0,2}([^\n*]+)\*{0,2}/im);
+  if (sectionMatch) return cleanValue(sectionMatch[1]);
+  return '';
+}
+
+function extractMergedAt(markdown) {
+  // Format 1 (new): | Merged At | 2026-03-23T... |
+  const tableVal = extractTableValue(markdown, 'Merged At');
+  if (tableVal) return tableVal;
+  // Format 2 (old): **Merged:** 2026-03-23  or  Merged At: 2026-03-23
+  const inlineMatch = markdown.match(/\bmerged(?:\s+at)?[:\s]+([0-9]{4}-[0-9]{2}-[0-9]{2})/i);
+  if (inlineMatch) return inlineMatch[1];
+  return '';
+}
+
 export function parsePrImpactMd(content) {
   if (!content || !String(content).trim()) {
     return {};
   }
 
   const markdown = String(content);
-  const headingNumber = markdown.match(/^#\s*PR Impact Analysis:\s*#?(\d+)\s*$/im)?.[1];
+  // Support both "PR Impact Analysis: #22621" and "PR Impact Analysis: PR #22621"
+  const headingNumber = markdown.match(/^#\s*PR Impact Analysis:.*?#(\d+)\s*$/im)?.[1];
   const urlMatch = markdown.match(/github\.com\/([^/\s]+\/[^/\s]+)\/pull\/(\d+)/i);
-  const title = extractTableValue(markdown, 'Title');
-  const mergedAt = extractTableValue(markdown, 'Merged At');
+  const title = extractTitle(markdown);
+  const mergedAt = extractMergedAt(markdown);
   const riskNote = extractRiskNote(markdown);
 
   return {

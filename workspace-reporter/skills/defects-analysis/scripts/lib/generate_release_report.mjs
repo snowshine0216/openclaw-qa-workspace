@@ -56,6 +56,161 @@ function hotspotRows(features) {
   return `| Area | Features |\n|------|----------|\n${rows}`;
 }
 
+function loadFeatureSummaryJson(feature) {
+  const summaryPath =
+    feature.feature_summary_path ??
+    (feature.canonical_run_dir ? join(feature.canonical_run_dir, 'context', 'feature_summary.json') : null);
+  return summaryPath ? safeReadJson(summaryPath) ?? {} : {};
+}
+
+function loadPrSummaryJson(feature) {
+  if (!feature.canonical_run_dir) return {};
+  return safeReadJson(join(feature.canonical_run_dir, 'context', 'pr_impact_summary.json')) ?? {};
+}
+
+function buildRiskAnalysisSection(features) {
+  const rows = [];
+  const hotspotMap = new Map();
+
+  for (const feature of features) {
+    const featureSummary = loadFeatureSummaryJson(feature);
+    const areas = featureSummary.top_risk_areas ?? feature.top_risk_areas ?? [];
+    const openHigh = feature.open_high_defects ?? 0;
+    const open = feature.open_defects ?? 0;
+    const risk = feature.risk_level ?? 'LOW';
+
+    rows.push(
+      `| ${feature.feature_key} | ${feature.feature_title} | ${risk} | ${open} open / ${openHigh} high | ${areas.length > 0 ? areas.join(', ') : '—'} |`,
+    );
+    for (const area of areas) {
+      hotspotMap.set(area, (hotspotMap.get(area) ?? 0) + 1);
+    }
+  }
+
+  const hotspotRanked = [...hotspotMap.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([area, count]) => `| ${area} | ${count} feature(s) |`)
+    .join('\n');
+
+  const tableHeader =
+    '| Feature | Title | Risk | Defect State | Hotspot Areas |\n|---------|-------|------|--------------|---------------|';
+  const featureTable = rows.length > 0 ? `${tableHeader}\n${rows.join('\n')}` : `${tableHeader}\n| — | — | — | — | — |`;
+
+  const hotspotTable =
+    hotspotRanked.length > 0
+      ? `### Cross-Feature Hotspots\n\n| Functional Area | Affected Features |\n|----------------|-------------------|\n${hotspotRanked}`
+      : '';
+
+  return `${featureTable}\n\n${hotspotTable}`.trim();
+}
+
+function buildCodeChangeSection(features) {
+  const allRepos = new Set();
+  const featureRows = [];
+  const prDetails = [];
+
+  for (const feature of features) {
+    const prSummary = loadPrSummaryJson(feature);
+    const repos = prSummary.repos_changed ?? feature.repos_changed ?? [];
+    for (const repo of repos) allRepos.add(repo);
+
+    const prCount = prSummary.pr_count ?? feature.pr_count ?? 0;
+    featureRows.push(
+      `| ${feature.feature_key} | ${feature.feature_title} | ${prCount} | ${repos.length > 0 ? repos.join(', ') : '—'} | ${feature.risk_level ?? '—'} |`,
+    );
+
+    const topPrs = (prSummary.top_risky_prs ?? []).filter((pr) => pr.title);
+    if (topPrs.length > 0) {
+      prDetails.push(`**${feature.feature_key}** — ${feature.feature_title}`);
+      for (const pr of topPrs.slice(0, 3)) {
+        const riskEmoji = pr.risk_level === 'HIGH' ? '🔴' : pr.risk_level === 'LOW' ? '🟢' : '🟡';
+        prDetails.push(`- PR #${pr.number ?? '—'} — ${pr.title} (${riskEmoji} ${pr.risk_level ?? 'MEDIUM'})`);
+      }
+    }
+  }
+
+  const tableHeader =
+    '| Feature | Title | PRs | Repos Changed | Risk |\n|---------|-------|-----|---------------|------|';
+  const table = featureRows.length > 0 ? `${tableHeader}\n${featureRows.join('\n')}` : `${tableHeader}\n| — | — | 0 | — | — |`;
+  const allReposList = allRepos.size > 0 ? `\n**All repositories changed:** ${[...allRepos].join(', ')}` : '';
+  const prSection = prDetails.length > 0 ? `\n\n### Notable PRs by Feature\n\n${prDetails.join('\n')}` : '';
+
+  return `${table}${allReposList}${prSection}`;
+}
+
+function buildResidualRiskSection(features) {
+  const sections = [];
+  for (const feature of features.filter((f) => (f.risk_level ?? 'LOW') !== 'LOW')) {
+    const featureSummary = loadFeatureSummaryJson(feature);
+    const areas = featureSummary.top_risk_areas ?? feature.top_risk_areas ?? [];
+    const blockingCount = (feature.blocking_defect_details ?? []).length;
+    const openHigh = feature.open_high_defects ?? 0;
+
+    const bullets = [];
+    if (blockingCount > 0) {
+      bullets.push(
+        `- **${blockingCount} blocking defect(s) unresolved:** ${feature.blocking_defect_details.map((d) => d.key).join(', ')}`,
+      );
+    }
+    if (openHigh > 0) {
+      bullets.push(`- ${openHigh} high-priority open defect(s) require targeted regression testing`);
+    }
+    if (areas.length > 0) {
+      bullets.push(`- Risk concentrated in: ${areas.join(', ')}`);
+    }
+
+    if (bullets.length > 0) {
+      sections.push(`**${feature.feature_key}** — ${feature.feature_title} (${feature.risk_level})\n${bullets.join('\n')}`);
+    }
+  }
+
+  if (sections.length === 0) {
+    return 'No HIGH/CRITICAL risk features. All features are LOW risk — standard release verification applies.';
+  }
+
+  return sections.join('\n\n');
+}
+
+function buildVerificationChecklist(features, runKey) {
+  const lines = [];
+  for (const feature of features) {
+    const blockingDefects = feature.blocking_defect_details ?? [];
+    if (blockingDefects.length > 0) {
+      for (const defect of blockingDefects) {
+        lines.push(
+          `- [ ] **${defect.key}** (${feature.feature_key}) — ${defect.summary || defect.key} | ${defect.priority ?? 'High'} | Status: ${defect.status ?? 'Open'}`,
+        );
+      }
+    }
+  }
+
+  if (lines.length > 0) {
+    lines.push('');
+    lines.push('**General:**');
+  }
+  lines.push(`- [ ] All feature packets verified under ${runKey}/features/`);
+  lines.push('- [ ] Blocking defect status re-confirmed with assignees before release gate');
+  lines.push('- [ ] Regression smoke test run on HIGH-risk features');
+  lines.push('- [ ] Cross-feature functional hotspot areas tested (see Section 4)');
+
+  return lines.join('\n');
+}
+
+function buildEnvRecommendations(features) {
+  const repos = new Set();
+  for (const feature of features) {
+    for (const repo of feature.repos_changed ?? []) repos.add(repo);
+  }
+  const lines = [
+    '- Validate in a release candidate environment with all merged PRs included.',
+    `- Repos with changes this release: ${repos.size > 0 ? [...repos].join(', ') : 'see feature packets'}`,
+    '- Run regression tests on all HIGH-risk feature flows.',
+    '- Test cross-platform consistency (Webstation vs Workstation) where applicable.',
+    '- Use throttled network for timing-dependent scenarios.',
+  ];
+  return lines.join('\n');
+}
+
 function loadFeatureTitle(runDir, featureKey, inputTitle) {
   const summary = safeReadJson(join(runDir, 'context', 'feature_summaries', `${featureKey}.json`));
   return summary?.feature_title ?? inputTitle ?? featureKey;
@@ -116,6 +271,31 @@ function packetSection(features) {
     .join('\n');
 }
 
+function buildDefectAnalysisSection(features) {
+  const sections = [];
+  for (const feature of features) {
+    const allDefects = [...(feature.blocking_defect_details ?? []), ...(feature.open_defect_details ?? [])];
+    const seen = new Set();
+    const dedupedDefects = allDefects.filter((d) => {
+      if (!d?.key || seen.has(d.key)) return false;
+      seen.add(d.key);
+      return true;
+    });
+    if (dedupedDefects.length === 0) continue;
+    const rows = dedupedDefects
+      .map((d) => `| ${d.key} | ${d.summary || '—'} | ${d.priority ?? '—'} | ${d.status ?? '—'} |`)
+      .join('\n');
+    sections.push(`**${feature.feature_key}** — ${feature.feature_title}
+| Defect | Summary | Priority | Status |
+|--------|---------|----------|--------|
+${rows}`);
+  }
+  if (sections.length === 0) {
+    return 'No open defects across all features.';
+  }
+  return sections.join('\n\n');
+}
+
 function buildBlockingSection(features) {
   if (features.length === 0) {
     return 'Blocking Features: none';
@@ -164,6 +344,7 @@ export function generateReleaseReport(runDir, runKey) {
   const totals = aggregateTotals(features);
   const blocking = blockingFeatures(features);
   const appendixRows = collectAppendixRows(features);
+  const overallRisk = blocking.length > 0 ? 'HIGH' : totals.open_high_defects > 0 ? 'HIGH' : totals.open_defects > 0 ? 'MEDIUM' : 'LOW';
 
   const report = `## 1. Report Header
 
@@ -184,7 +365,9 @@ export function generateReleaseReport(runDir, runKey) {
 | Open High-Priority Defects | ${totals.open_high_defects} |
 | Blocking Features | ${blocking.length} |
 
-### Risk Rating: **${blocking.length > 0 ? 'HIGH' : totals.open_defects > 0 ? 'MEDIUM' : 'LOW'}**
+### Risk Rating: **${overallRisk}**
+
+${blocking.length > 0 ? `**${blocking.length} feature(s) have unresolved blocking defects** — release should be held until resolved: ${blocking.map((f) => f.feature_key).join(', ')}.` : totals.open_defects > 0 ? `No blocking defects, but **${totals.open_defects} open defect(s)** remain across features. Proceed with targeted verification.` : 'All open defects resolved. Release is clear for standard sign-off.'}
 
 ---
 
@@ -196,53 +379,49 @@ ${featureRiskTable(features)}
 
 ## 4. Risk Analysis by Functional Area
 
-${hotspotRows(features)}
+${buildRiskAnalysisSection(features)}
 
 ---
 
 ## 5. Defect Analysis by Priority
 
-${buildBlockingSection(blocking)}
+${buildDefectAnalysisSection(features)}
 
 ---
 
 ## 6. Code Change Analysis
 
-Feature packet directories:
-${packetSection(features)}
+${buildCodeChangeSection(features)}
 
 ---
 
 ## 7. Residual Risk Assessment
 
-Highest-risk features: ${features.slice(0, 3).map((feature) => feature.feature_key).join(', ') || 'none'}.
+${buildResidualRiskSection(features)}
 
 ---
 
 ## 8. Recommended QA Focus Areas
 
-${features.flatMap((feature) => (feature.top_risk_areas ?? []).slice(0, 2).map((area) => `- ${feature.feature_key}: ${area}`)).join('\n') || '- No concentrated hotspots detected.'}
+${features.flatMap((feature) => (feature.top_risk_areas ?? []).slice(0, 2).map((area) => `- **${feature.feature_key}**: ${area}`)).join('\n') || '- No concentrated hotspots detected.'}
 
 ---
 
 ## 9. Test Environment Recommendations
 
-- Validate the packet-linked features in release candidate environments.
-- Use the feature packets for per-feature release sign-off.
+${buildEnvRecommendations(features)}
 
 ---
 
 ## 10. Verification Checklist for Release
 
-- Confirm each feature packet exists under ${runKey}/features/.
-- Review blocking features before release approval.
-- Reconcile aggregate totals with feature packet summaries.
+${buildVerificationChecklist(features, runKey)}
 
 ---
 
 ## 11. Conclusion
 
-Release Recommendation: ${blocking.length > 0 ? 'hold release until blocking feature risks are resolved' : totals.open_defects > 0 ? 'proceed only with targeted release verification' : 'ready for release verification'}.
+Release Recommendation: ${blocking.length > 0 ? `⛔ **HOLD** — Resolve blocking defects in ${blocking.map((f) => f.feature_key).join(', ')} before release` : totals.open_defects > 0 ? '⚠️ **CONDITIONAL** — Proceed with targeted release verification for open defects' : '✅ **READY** — All defects resolved, proceed to release sign-off'}.
 
 ---
 
@@ -251,6 +430,10 @@ Release Recommendation: ${blocking.length > 0 ? 'hold release until blocking fea
 | Feature | Defect | Summary | Priority | Status |
 |---------|--------|---------|----------|--------|
 ${appendixRows.join('\n') || '| — | — | — | — | — |'}
+
+### Feature Packet References
+
+${packetSection(features)}
 `;
 
   const outPath = join(runDir, `${runKey}_REPORT_DRAFT.md`);
