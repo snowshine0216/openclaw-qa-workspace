@@ -129,3 +129,38 @@ test('CLI exits 1 when arguments are missing', () => {
   const result = spawnSync(process.execPath, [SCRIPT], { encoding: 'utf8' });
   assert.notEqual(result.status, 0);
 });
+
+// New tests for section 12 / C1-C12 / known_limitations_seed.json
+
+test('prompt references known_limitations_seed.json as source artifact', () => {
+  const prompt = buildSubagentPrompt({
+    runDir: '/tmp/runs/BCIN-7289',
+    featureKey: 'BCIN-7289',
+    rubricPaths: RUBRIC_PATHS,
+    reviewNotesPath: null,
+    round: 1,
+  });
+  assert.match(prompt, /known_limitations_seed\.json/);
+});
+
+test('prompt says "all 12 numbered sections"', () => {
+  const prompt = buildSubagentPrompt({
+    runDir: '/tmp/runs/BCIN-7289',
+    featureKey: 'BCIN-7289',
+    rubricPaths: RUBRIC_PATHS,
+    reviewNotesPath: null,
+    round: 1,
+  });
+  assert.match(prompt, /all 12 numbered sections/);
+});
+
+test('prompt references C1\u2013C12 in self-review instructions', () => {
+  const prompt = buildSubagentPrompt({
+    runDir: '/tmp/runs/BCIN-7289',
+    featureKey: 'BCIN-7289',
+    rubricPaths: RUBRIC_PATHS,
+    reviewNotesPath: null,
+    round: 1,
+  });
+  assert.match(prompt, /C1.{1,3}C12/);
+});
