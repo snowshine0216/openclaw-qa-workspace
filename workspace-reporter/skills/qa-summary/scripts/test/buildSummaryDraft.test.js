@@ -4,7 +4,7 @@ import { buildSummaryDraft } from '../lib/buildSummaryDraft.mjs';
 
 const FEATURE_OVERVIEW = '### 1. Feature Overview\n| Field | Value |\n| --- | --- |\n| Feature | BCIN-7289 |';
 
-test('renders section 1 plus sections 2 through 11 in fixed order', async () => {
+test('renders section 1 plus sections 2 through 12 in fixed order', async () => {
   const result = await buildSummaryDraft({
     featureKey: 'BCIN-7289',
     plannerContext: {},
@@ -15,7 +15,8 @@ test('renders section 1 plus sections 2 through 11 in fixed order', async () => 
   assert.match(result.markdown, /### 2\. Background & Solution/);
   assert.match(result.markdown, /### 3\. Code Changes Summary/);
   assert.match(result.markdown, /### 11\. Automation Coverage/);
-  assert.equal(result.metadata.sectionsPresent, 11);
+  assert.match(result.markdown, /### 12\. Known Limitations/);
+  assert.equal(result.metadata.sectionsPresent, 12);
 });
 
 test('renders zero-defect tables without omitting required sections', async () => {
@@ -77,7 +78,7 @@ test('renders Code Changes Summary from both defect-fix and feature PR entries',
   assert.match(result.markdown, /Defect Fix/);
   assert.match(result.markdown, /Feature PR/);
   assert.match(result.markdown, /\[BCIN-1\]\(https:\/\/jira\/browse\/BCIN-1\)/);
-  assert.equal(result.metadata.sectionsPresent, 11);
+  assert.equal(result.metadata.sectionsPresent, 12);
 });
 
 test('applies approval feedback overrides to the regenerated draft', async () => {
@@ -493,4 +494,71 @@ test('zero defects with LOW risk does NOT render risk elevation explanation', as
   });
   assert.doesNotMatch(result.markdown, /Note: Risk elevated/);
   assert.match(result.markdown, /Overall risk: LOW/);
+});
+
+// Section 12 — Known Limitations tests
+
+test('section 12 renders PENDING when no known limitations data', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {},
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 12\. Known Limitations/);
+  assert.match(result.markdown, /PENDING — No known limitations identified/);
+});
+
+test('section 12 renders lines from knownLimitationsSeed when provided', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {},
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+    knownLimitationsSeed: { lines: ['i18n not in scope', 'offline mode deferred'], raw: '' },
+  });
+  assert.match(result.markdown, /### 12\. Known Limitations/);
+  assert.match(result.markdown, /i18n not in scope/);
+  assert.match(result.markdown, /offline mode deferred/);
+  // Section 12 specifically should not show PENDING
+  assert.doesNotMatch(result.markdown, /### 12\. Known Limitations[\s\S]*?PENDING/);
+});
+
+test('section 12 renders from backgroundSolutionData.outOfScopeLines when no seed provided', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      backgroundSolutionData: {
+        outOfScopeLines: ['accessibility not applicable', 'performance deferred'],
+      },
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 12\. Known Limitations/);
+  assert.match(result.markdown, /accessibility not applicable/);
+  assert.match(result.markdown, /performance deferred/);
+});
+
+test('section 12 renders from QA plan ## Known Limitations heading when no seed or outOfScopeLines', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {
+      planMarkdown: '## Known Limitations\n- browser extension not supported\n',
+    },
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.match(result.markdown, /### 12\. Known Limitations/);
+  assert.match(result.markdown, /browser extension not supported/);
+});
+
+test('sectionsPresent is 12', async () => {
+  const result = await buildSummaryDraft({
+    featureKey: 'BCIN-7289',
+    plannerContext: {},
+    featureOverviewTable: FEATURE_OVERVIEW,
+    defectSummary: { totalDefects: 0, openDefects: 0, defects: [], prs: [] },
+  });
+  assert.equal(result.metadata.sectionsPresent, 12);
 });
