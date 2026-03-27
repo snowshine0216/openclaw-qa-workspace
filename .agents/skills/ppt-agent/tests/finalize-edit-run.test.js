@@ -282,7 +282,7 @@ test("finalize-edit-run CLI exits non-zero when finalize returns a failed compar
     }
   });
 
-  const result = spawnSync("node", [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, [scriptPath, "--run-root", runRoot], { encoding: "utf8" });
 
   assert.notEqual(result.status, 0);
   const parsed = JSON.parse(result.stdout);

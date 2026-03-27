@@ -345,8 +345,123 @@ async function buildSlideFromSpec({
   return result;
 }
 
+/**
+ * Build a single-slide PPTX package from a normalized structured spec
+ * (output of buildStructuredSlideSpec()).
+ *
+ * @param {Object} params
+ * @param {Object} params.spec - Normalized structured spec with layout, content, design_tokens
+ * @param {string} params.outputPath - Path for the single-slide PPTX output
+ * @param {Function} [params.pptxFactory] - Optional PptxGenJS factory for testing
+ * @param {Function} [params.createDeckFromSpecImpl] - Optional override for testing
+ * @returns {Promise<Object>} Result with outputPath and slideCount
+ */
+async function buildSlideFromStructuredSpec({
+  spec,
+  outputPath,
+  pptxFactory,
+  createDeckFromSpecImpl
+}) {
+  if (!spec) {
+    throw new Error("spec is required");
+  }
+  if (!outputPath) {
+    throw new Error("outputPath is required");
+  }
+
+  const slideModel = {
+    title: spec.content.title,
+    bodyLines: spec.content.body_lines,
+    imagePaths: spec.content.image_paths
+  };
+
+  const slideSpec = {
+    layout: spec.layout,
+    title: spec.content.title,
+    role: spec.source_brief?.slide_goal || null
+  };
+
+  const deckFn = createDeckFromSpecImpl || createDeckFromSpec;
+
+  return deckFn({
+    deckTitle: spec.content.title || "Single Slide",
+    layout: "LAYOUT_16x9",
+    outputPath,
+    designTokens: spec.design_tokens || {},
+    slides: [{ slideModel, slideSpec }],
+    manuscriptPath: null,
+    pptxFactory
+  });
+}
+
+/**
+ * Execute all structured_rebuild jobs that have status "planned".
+ * For each job: renders the single-slide package then merges it into the working deck.
+ * Returns an updated copy of the jobs array with status "applied".
+ * Fail-closed: throws immediately if any rendering or merge fails.
+ *
+ * @param {Object} params
+ * @param {string} params.runRoot - Run root directory
+ * @param {Array} params.jobs - Array of edit jobs from edit_handoff.json
+ * @param {Function} [params.buildSlideImpl] - Override for buildSlideFromStructuredSpec (testing)
+ * @param {Function} [params.mergeRebuiltSlideImpl] - Override for mergeRebuiltSlide (testing)
+ * @returns {Promise<Array>} Updated jobs array
+ */
+async function executeStructuredRebuilds({
+  runRoot,
+  jobs,
+  buildSlideImpl,
+  mergeRebuiltSlideImpl
+}) {
+  const { mergeRebuiltSlide } = require("./merge-back");
+  const originalSlideIndexPath = path.join(runRoot, "artifacts", "original-slide-index.json");
+  const originalSlideIndex = fs.existsSync(originalSlideIndexPath)
+    ? JSON.parse(fs.readFileSync(originalSlideIndexPath, "utf8"))
+    : [];
+
+  const unpackedRoot = path.join(runRoot, "working", "unpacked");
+  const buildFn = buildSlideImpl || buildSlideFromStructuredSpec;
+  const mergeFn = mergeRebuiltSlideImpl || mergeRebuiltSlide;
+
+  const updatedJobs = [];
+  for (const job of jobs) {
+    if (job.action !== "structured_rebuild" || job.status !== "planned") {
+      updatedJobs.push(job);
+      continue;
+    }
+
+    const spec = job.structured_spec;
+    const outputPath = job.artifact_path;
+
+    await buildFn({ spec, outputPath });
+
+    const slideExists = originalSlideIndex.some(
+      (entry) => entry.slide_number === job.slide_number
+    );
+    const actionKind = slideExists ? "replace_existing" : "insert_after";
+    const replaceSlideFile = slideExists
+      ? (originalSlideIndex.find((e) => e.slide_number === job.slide_number) || {}).slide_file
+      : undefined;
+
+    mergeFn({
+      sourcePackagePath: outputPath,
+      targetUnpackedRoot: unpackedRoot,
+      targetSlideNumber: job.slide_number,
+      actionKind,
+      replaceSlideFile: replaceSlideFile ? path.basename(replaceSlideFile) : undefined,
+      originalSlideIndex
+    });
+
+    updatedJobs.push({ ...job, status: "applied" });
+  }
+
+  return updatedJobs;
+}
+
 module.exports = {
   parseManuscriptSlides,
   buildDeckFromHandoff,
-  buildSlideFromSpec
+  buildSlideFromSpec,
+  buildSlideFromStructuredSpec,
+  executeStructuredRebuilds
 };
