@@ -4,6 +4,28 @@ All notable repository-level changes are tracked in this file.
 
 This repository uses a four-part version in [`VERSION`](/Users/xuyin/Documents/Repository/openclaw-qa-workspace/VERSION): `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.1.8.0] - 2026-03-27
+
+### Added
+- **`qa-summary` Phase 2 now uses LLM-driven defect-summary subagent** — replaces `buildDefectSummary.mjs` with a two-step spawn pattern tracked via `task.phase2_step`: (1) spawn `defects-analysis` when needed, (2) spawn a defect-summary subagent that reads raw Jira/PR artifacts and writes `context/defect_summary.json` or `context/no_defects.json`.
+- **`qa-summary` Phase 3 now uses LLM-driven draft generation with exit gate** — replaces `buildSummaryDraft.mjs` with a spawn-manifest pattern: `phase3.sh` emits `phase3_spawn_manifest.json`; the subagent reads planner/defect context against `summary-generation-rubric.md`, self-reviews against `summary-review-rubric.md`, writes verdict to `context/phase3_review_delta.md`; retry loop up to 3 rounds.
+- **`qa-summary` Phase 4 now uses internal LLM review subagent** — removes dependency on `qa-summary-review` skill and `applyReviewRefactor.mjs`; replaced with `phase4_spawn_manifest.json` driving a review subagent that applies structural fixes in-place and writes `context/phase4_review_delta.md`; retry loop up to 3 rounds.
+- **new `references/summary-generation-rubric.md`** — 10-section hard constraints for the Phase 3 draft-generation subagent (tables, bullets, placeholder policy, prohibited filler).
+- **new `references/summary-review-rubric.md`** — 10 self-review criteria (C1–C10) covering sections, tables, defect counts, and filler detection; used by both Phase 3 and Phase 4 subagents.
+- **new `scripts/lib/build_defect_summary_spawn_manifest.mjs`** — reads defects-analysis run dir artifacts and builds a spawn manifest instructing the LLM to produce `defect_summary.json`.
+- **new `scripts/lib/build_summary_draft_spawn_manifest.mjs`** — builds Phase 3 spawn manifest for LLM draft generation + self-review; includes prior review notes on retry rounds.
+- **new `scripts/lib/build_summary_review_spawn_manifest.mjs`** — builds Phase 4 spawn manifest for internal review subagent; replaces the `qa-summary-review` external skill spawn.
+- **new `scripts/lib/validate_summary_review.mjs`** — shared verdict parser for Phase 3 and Phase 4; parameterized by phase name; `accept` clears `return_to_phase`; `return phaseN` increments round counter.
+
+### Changed
+- **`scripts/phase3.sh` now passes `--post` flag** — added `MODE` variable and `${MODE:+"$MODE"}` passthrough to `phase3.mjs`.
+- **`SKILL.md` updated** — removed `qa-summary-review` and `report-quality-reviewer` from skill reuse list; updated Phase 2/3/4 descriptions to reflect LLM-driven spawn pattern; added `summary-generation-rubric.md` and `summary-review-rubric.md` to Required References.
+
+### Removed
+- `buildDefectSummary.mjs`, `buildSummaryDraft.mjs`, `applyReviewRefactor.mjs`, `generateSummaryDraftArtifacts.mjs` are retired (kept in place but no longer called).
+- Dependency on `qa-summary-review` skill removed from Phase 4.
+- Dependency on `report-quality-reviewer` removed.
+
 ## [0.1.7.0] - 2026-03-27
 
 ### Added
